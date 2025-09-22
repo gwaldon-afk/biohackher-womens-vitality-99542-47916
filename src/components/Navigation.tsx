@@ -28,7 +28,7 @@ const Navigation = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Activity className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold gradient-text">Biohackher</span>
+            <span className="text-xl font-bold gradient-text">Biohack<em className="italic">her</em></span>
           </Link>
 
           {/* Desktop Navigation */}

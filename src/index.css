@@ -2,67 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Biohackher Design System - Women's Longevity Coach
-All colors MUST be HSL. Professional, sophisticated, feminine wellness aesthetic.
+/* Biohackher Design System - Authentic Brand Colors & Style
+All colors MUST be HSL. Warm, earthy, sophisticated feminine wellness aesthetic.
+Based on www.biohack-her.com brand identity.
 */
 
 @layer base {
   :root {
-    /* Base colors - Clean, modern foundation */
+    /* Base colors - Warm, organic foundation */
     --background: 0 0% 100%;
-    --foreground: 210 15% 20%;
+    --foreground: 25 15% 20%;
 
     /* Card system - Elevated surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 210 15% 20%;
+    --card-foreground: 25 15% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 15% 20%;
+    --popover-foreground: 25 15% 20%;
 
-    /* Primary - Sophisticated teal/sage */
-    --primary: 166 35% 45%;
-    --primary-foreground: 0 0% 100%;
-    --primary-light: 166 35% 65%;
-    --primary-dark: 166 45% 35%;
+    /* Primary - Warm beige/tan (header color from site) */
+    --primary: 25 35% 70%;
+    --primary-foreground: 25 15% 20%;
+    --primary-light: 25 40% 80%;
+    --primary-dark: 25 45% 55%;
 
-    /* Secondary - Warm coral accent */
-    --secondary: 15 75% 70%;
-    --secondary-foreground: 210 15% 20%;
-    --secondary-light: 15 65% 80%;
-    --secondary-dark: 15 85% 60%;
+    /* Secondary - Peachy salmon (popup accent color) */
+    --secondary: 15 65% 75%;
+    --secondary-foreground: 25 15% 20%;
+    --secondary-light: 15 70% 85%;
+    --secondary-dark: 15 70% 65%;
 
-    /* Muted - Neutral grays */
-    --muted: 210 10% 96%;
-    --muted-foreground: 210 10% 50%;
+    /* Muted - Warm neutrals */
+    --muted: 25 15% 96%;
+    --muted-foreground: 25 10% 50%;
 
-    /* Accent - Soft lavender for highlights */
-    --accent: 260 30% 85%;
-    --accent-foreground: 210 15% 20%;
+    /* Accent - Soft warm accent */
+    --accent: 35 40% 88%;
+    --accent-foreground: 25 15% 20%;
 
-    /* Health status colors */
-    --success: 120 60% 50%;
+    /* Health status colors - warmed versions */
+    --success: 120 45% 55%;
     --success-foreground: 0 0% 100%;
-    --warning: 35 90% 55%;
-    --warning-foreground: 0 0% 100%;
-    --destructive: 0 75% 60%;
+    --warning: 40 85% 60%;
+    --warning-foreground: 25 15% 20%;
+    --destructive: 0 65% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs */
-    --border: 210 20% 90%;
-    --input: 210 20% 95%;
-    --ring: 166 35% 45%;
+    /* Borders and inputs - warm tones */
+    --border: 25 20% 88%;
+    --input: 25 20% 94%;
+    --ring: 25 35% 70%;
 
-    /* Gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(166 35% 45%), hsl(166 45% 55%));
-    --gradient-secondary: linear-gradient(135deg, hsl(15 75% 70%), hsl(25 80% 75%));
-    --gradient-hero: linear-gradient(135deg, hsl(166 35% 45%) 0%, hsl(260 30% 85%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 10% 98%) 100%);
+    /* Gradients - warm, organic feel */
+    --gradient-primary: linear-gradient(135deg, hsl(25 35% 70%), hsl(15 65% 75%));
+    --gradient-secondary: linear-gradient(135deg, hsl(15 65% 75%), hsl(35 60% 80%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 35% 70%) 0%, hsl(15 65% 75%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(25 15% 98%) 100%);
 
-    /* Shadows for depth */
-    --shadow-sm: 0 1px 2px 0 hsl(210 20% 85% / 0.15);
-    --shadow-md: 0 4px 6px -1px hsl(210 20% 85% / 0.1), 0 2px 4px -1px hsl(210 20% 85% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(210 20% 85% / 0.1), 0 4px 6px -2px hsl(210 20% 85% / 0.05);
-    --shadow-glow: 0 0 20px hsl(166 35% 45% / 0.15);
+    /* Shadows - warm, subtle */
+    --shadow-sm: 0 1px 2px 0 hsl(25 20% 80% / 0.2);
+    --shadow-md: 0 4px 6px -1px hsl(25 20% 75% / 0.15), 0 2px 4px -1px hsl(25 20% 75% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(25 20% 75% / 0.15), 0 4px 6px -2px hsl(25 20% 75% / 0.08);
+    --shadow-glow: 0 0 25px hsl(25 35% 70% / 0.2);
 
     --radius: 0.75rem;
 
@@ -84,51 +85,51 @@ All colors MUST be HSL. Professional, sophisticated, feminine wellness aesthetic
   }
 
   .dark {
-    /* Dark mode - Maintain sophistication in darker palette */
-    --background: 210 25% 8%;
-    --foreground: 0 0% 95%;
+    /* Dark mode - Warm, sophisticated dark palette */
+    --background: 25 20% 8%;
+    --foreground: 25 10% 95%;
 
-    --card: 210 20% 12%;
-    --card-foreground: 0 0% 95%;
+    --card: 25 15% 12%;
+    --card-foreground: 25 10% 95%;
 
-    --popover: 210 20% 12%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 25 15% 12%;
+    --popover-foreground: 25 10% 95%;
 
-    --primary: 166 35% 55%;
-    --primary-foreground: 210 25% 8%;
-    --primary-light: 166 35% 75%;
-    --primary-dark: 166 45% 35%;
+    --primary: 25 40% 65%;
+    --primary-foreground: 25 20% 8%;
+    --primary-light: 25 45% 75%;
+    --primary-dark: 25 50% 50%;
 
-    --secondary: 15 65% 65%;
-    --secondary-foreground: 210 25% 8%;
-    --secondary-light: 15 55% 75%;
-    --secondary-dark: 15 75% 55%;
+    --secondary: 15 60% 70%;
+    --secondary-foreground: 25 20% 8%;
+    --secondary-light: 15 65% 80%;
+    --secondary-dark: 15 70% 60%;
 
-    --muted: 210 15% 18%;
-    --muted-foreground: 210 10% 65%;
+    --muted: 25 10% 18%;
+    --muted-foreground: 25 10% 65%;
 
-    --accent: 260 25% 25%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 35 30% 25%;
+    --accent-foreground: 25 10% 95%;
 
-    --success: 120 50% 45%;
-    --warning: 35 80% 50%;
-    --destructive: 0 65% 55%;
+    --success: 120 40% 50%;
+    --warning: 40 75% 55%;
+    --destructive: 0 60% 60%;
 
-    --border: 210 15% 20%;
-    --input: 210 15% 18%;
-    --ring: 166 35% 55%;
+    --border: 25 12% 20%;
+    --input: 25 10% 18%;
+    --ring: 25 40% 65%;
 
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(166 35% 45%), hsl(166 45% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(15 65% 65%), hsl(25 70% 70%));
-    --gradient-hero: linear-gradient(135deg, hsl(166 35% 45%) 0%, hsl(260 25% 35%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(210 20% 12%) 0%, hsl(210 15% 15%) 100%);
+    /* Dark mode gradients - maintain warmth */
+    --gradient-primary: linear-gradient(135deg, hsl(25 35% 55%), hsl(15 60% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(15 60% 70%), hsl(35 55% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(25 35% 55%) 0%, hsl(15 60% 65%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(25 15% 12%) 0%, hsl(25 10% 15%) 100%);
 
-    /* Dark shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(210 25% 5% / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(210 25% 5% / 0.2), 0 2px 4px -1px hsl(210 25% 5% / 0.15);
-    --shadow-lg: 0 10px 15px -3px hsl(210 25% 5% / 0.2), 0 4px 6px -2px hsl(210 25% 5% / 0.1);
-    --shadow-glow: 0 0 25px hsl(166 35% 45% / 0.2);
+    /* Dark shadows - warm undertones */
+    --shadow-sm: 0 1px 2px 0 hsl(25 15% 5% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(25 15% 5% / 0.2), 0 2px 4px -1px hsl(25 15% 5% / 0.15);
+    --shadow-lg: 0 10px 15px -3px hsl(25 15% 5% / 0.2), 0 4px 6px -2px hsl(25 15% 5% / 0.1);
+    --shadow-glow: 0 0 25px hsl(25 40% 65% / 0.2);
   }
 }
 

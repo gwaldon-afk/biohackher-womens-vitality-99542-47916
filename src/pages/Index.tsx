@@ -54,11 +54,10 @@ const Index = () => {
                   Women's Longevity Coach
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
-                  Biohackher
+                  Biohack<em className="italic">her</em>
                 </h1>
                 <p className="text-xl lg:text-2xl mb-8 text-white/90">
-                  Evidence-based biohacking for women navigating hormonal transitions. 
-                  Optimize your healthspan and reverse biological aging.
+                  Live well longer. Empowering women to beat ageing through biohacking.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link to="/onboarding">
