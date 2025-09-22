@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Onboarding = () => {
@@ -158,6 +158,24 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+      {/* Header with logo and close button */}
+      <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-4 max-w-4xl mx-auto">
+        <button 
+          onClick={() => navigate("/")}
+          className="text-2xl font-bold gradient-text hover:opacity-80 transition-opacity"
+        >
+          Biohack<em>her</em>
+        </button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/")}
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
+
       <div className="w-full max-w-lg">
         <div className="mb-8">
           <Progress value={progress} className="w-full" />
@@ -185,6 +203,16 @@ const Onboarding = () => {
           >
             {currentStep === totalSteps ? "Complete Setup" : "Next"}
             <ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+        
+        <div className="text-center mt-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Skip for now
           </Button>
         </div>
       </div>
