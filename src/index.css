@@ -2,41 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Biohackher Design System - Women's Longevity Coach
+All colors MUST be HSL. Professional, sophisticated, feminine wellness aesthetic.
 */
 
 @layer base {
   :root {
+    /* Base colors - Clean, modern foundation */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 210 15% 20%;
 
+    /* Card system - Elevated surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 15% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 15% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Sophisticated teal/sage */
+    --primary: 166 35% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 166 35% 65%;
+    --primary-dark: 166 45% 35%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Warm coral accent */
+    --secondary: 15 75% 70%;
+    --secondary-foreground: 210 15% 20%;
+    --secondary-light: 15 65% 80%;
+    --secondary-dark: 15 85% 60%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted - Neutral grays */
+    --muted: 210 10% 96%;
+    --muted-foreground: 210 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Soft lavender for highlights */
+    --accent: 260 30% 85%;
+    --accent-foreground: 210 15% 20%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Health status colors */
+    --success: 120 60% 50%;
+    --success-foreground: 0 0% 100%;
+    --warning: 35 90% 55%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 210 20% 90%;
+    --input: 210 20% 95%;
+    --ring: 166 35% 45%;
 
-    --radius: 0.5rem;
+    /* Gradients for premium feel */
+    --gradient-primary: linear-gradient(135deg, hsl(166 35% 45%), hsl(166 45% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(15 75% 70%), hsl(25 80% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(166 35% 45%) 0%, hsl(260 30% 85%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 10% 98%) 100%);
+
+    /* Shadows for depth */
+    --shadow-sm: 0 1px 2px 0 hsl(210 20% 85% / 0.15);
+    --shadow-md: 0 4px 6px -1px hsl(210 20% 85% / 0.1), 0 2px 4px -1px hsl(210 20% 85% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(210 20% 85% / 0.1), 0 4px 6px -2px hsl(210 20% 85% / 0.05);
+    --shadow-glow: 0 0 20px hsl(166 35% 45% / 0.15);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,41 +84,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode - Maintain sophistication in darker palette */
+    --background: 210 25% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 20% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 20% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 166 35% 55%;
+    --primary-foreground: 210 25% 8%;
+    --primary-light: 166 35% 75%;
+    --primary-dark: 166 45% 35%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 15 65% 65%;
+    --secondary-foreground: 210 25% 8%;
+    --secondary-light: 15 55% 75%;
+    --secondary-dark: 15 75% 55%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 15% 18%;
+    --muted-foreground: 210 10% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 260 25% 25%;
+    --accent-foreground: 0 0% 95%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --success: 120 50% 45%;
+    --warning: 35 80% 50%;
+    --destructive: 0 65% 55%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 210 15% 20%;
+    --input: 210 15% 18%;
+    --ring: 166 35% 55%;
+
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(166 35% 45%), hsl(166 45% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(15 65% 65%), hsl(25 70% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(166 35% 45%) 0%, hsl(260 25% 35%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(210 20% 12%) 0%, hsl(210 15% 15%) 100%);
+
+    /* Dark shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(210 25% 5% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(210 25% 5% / 0.2), 0 2px 4px -1px hsl(210 25% 5% / 0.15);
+    --shadow-lg: 0 10px 15px -3px hsl(210 25% 5% / 0.2), 0 4px 6px -2px hsl(210 25% 5% / 0.1);
+    --shadow-glow: 0 0 25px hsl(166 35% 45% / 0.2);
   }
 }
 
@@ -100,6 +138,69 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Custom component classes using design tokens */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+
+  .card-elevated {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-md);
+  }
+
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .primary-gradient {
+    background: var(--gradient-primary);
+  }
+
+  .secondary-gradient {
+    background: var(--gradient-secondary);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Evidence badge styles */
+  .evidence-gold {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+  }
+
+  .evidence-silver {
+    @apply bg-gray-100 text-gray-800 border-gray-200;
+  }
+
+  .evidence-bronze {
+    @apply bg-amber-100 text-amber-800 border-amber-200;
+  }
+
+  /* Biohackher Age score display */
+  .age-score {
+    @apply text-4xl font-bold gradient-text;
+  }
+
+  /* Custom scrollbar */
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground rounded-full;
   }
 }
