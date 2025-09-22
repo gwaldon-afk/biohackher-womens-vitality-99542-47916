@@ -196,7 +196,7 @@ const Settings = () => {
                     <div>
                       <h3 className="font-medium">Daily Nudges</h3>
                       <p className="text-sm text-muted-foreground">
-                        Receive personalized daily health recommendations
+                        Receive personalised daily health recommendations
                       </p>
                     </div>
                     <Switch
@@ -336,7 +336,7 @@ const Settings = () => {
                       <h3 className="font-medium text-orange-800 mb-2">Your Privacy Matters</h3>
                       <p className="text-sm text-orange-700">
                         We use end-to-end encryption for all health data and never sell personal information. 
-                        Your data is stored securely and used only to provide personalized recommendations.
+                        Your data is stored securely and used only to provide personalised recommendations.
                       </p>
                     </div>
                   </div>

@@ -28,7 +28,7 @@ const Sleep = () => {
     "blue-light": {
       title: "Blue Light Management", 
       icon: Lightbulb,
-      description: "Optimize circadian rhythm through light exposure",
+      description: "Optimise circadian rhythm through light exposure",
       items: [
         { id: "morning-sun", text: "Get 10-15 minutes natural sunlight within 2h of waking" },
         { id: "bright-day", text: "Maximize bright light exposure during day (>1000 lux)" },
@@ -116,7 +116,7 @@ const Sleep = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Sleep Optimization</h1>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">Sleep Optimisation</h1>
           <p className="text-muted-foreground">
             Evidence-based routines and protocols for restorative sleep
           </p>

@@ -81,7 +81,7 @@ const Nutrition = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">Nutrition & Protein</h1>
           <p className="text-muted-foreground">
-            Optimize your protein intake and navigate dietary restrictions for longevity
+            Optimise your protein intake and navigate dietary restrictions for longevity
           </p>
         </div>
 
@@ -203,7 +203,7 @@ const Nutrition = () => {
                 </div>
                 
                 <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-                  <h3 className="font-medium mb-2">Leucine Optimization Tips</h3>
+                  <h3 className="font-medium mb-2">Leucine Optimisation Tips</h3>
                   <ul className="text-sm space-y-1 text-muted-foreground">
                     <li>• Combine lower leucine proteins (like plant proteins) with higher ones</li>
                     <li>• Time protein intake around workouts for enhanced muscle building</li>
@@ -242,7 +242,7 @@ const Nutrition = () => {
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-orange-600" />
                     <p className="text-orange-800 font-medium">
-                      IBS Management: Consider working with a registered dietitian for personalized FODMAP guidance.
+                      IBS Management: Consider working with a registered dietitian for personalised FODMAP guidance.
                     </p>
                   </div>
                 </CardContent>
@@ -294,7 +294,7 @@ const Nutrition = () => {
                   {isLowFODMAP ? "Low-FODMAP" : "Standard"} Meal Plan
                 </CardTitle>
                 <CardDescription>
-                  Protein-optimized meals {isLowFODMAP ? "suitable for IBS management" : "for general wellness"}
+                  Protein-optimised meals {isLowFODMAP ? "suitable for IBS management" : "for general wellness"}
                 </CardDescription>
               </CardHeader>
               <CardContent>

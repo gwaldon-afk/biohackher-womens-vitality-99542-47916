@@ -21,11 +21,11 @@ const Index = () => {
     {
       icon: Heart,
       title: "Cycle-Aware Coaching",
-      description: "Personalized training and nutrition recommendations that adapt to your hormonal stage and cycle phase."
+      description: "Personalised training and nutrition recommendations that adapt to your hormonal stage and cycle phase."
     },
     {
       icon: Moon,
-      title: "Sleep Optimization",
+      title: "Sleep Optimisation",
       description: "Comprehensive sleep routines, red light protocols, and circadian rhythm management."
     },
     {
@@ -93,7 +93,7 @@ const Index = () => {
               Your Complete Longevity Toolkit
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Science-backed protocols designed specifically for women's hormonal health and aging optimization
+              Science-backed protocols designed specifically for women's hormonal health and ageing optimisation
             </p>
           </div>
           

@@ -42,7 +42,7 @@ const Onboarding = () => {
             <CardHeader className="text-center">
               <CardTitle className="text-2xl gradient-text">What's your age range?</CardTitle>
               <CardDescription>
-                This helps us personalize your biohacking journey
+                This helps us personalise your biohacking journey
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -121,7 +121,7 @@ const Onboarding = () => {
                   "Improve sleep quality",
                   "Manage symptoms naturally",
                   "Increase energy levels",
-                  "Optimize nutrition",
+                  "Optimise nutrition",
                   "Build resilience",
                   "Track biomarkers"
                 ].map((goal) => (

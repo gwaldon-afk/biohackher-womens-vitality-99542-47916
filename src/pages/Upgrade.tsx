@@ -102,8 +102,8 @@ const Upgrade = () => {
             Upgrade Your Longevity Journey
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Unlock advanced biohacking protocols, personalized coaching, and comprehensive tracking 
-            to optimize your healthspan and reverse biological aging.
+            Unlock advanced biohacking protocols, personalised coaching, and comprehensive tracking 
+            to optimise your healthspan and reverse biological ageing.
           </p>
         </div>
 

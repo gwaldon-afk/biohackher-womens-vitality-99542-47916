@@ -22,7 +22,7 @@ const Dashboard = () => {
 
   const todaysNudge = {
     title: "Morning Sunlight Exposure",
-    description: "Get 10-15 minutes of natural light within 2 hours of waking to optimize your circadian rhythm.",
+    description: "Get 10-15 minutes of natural light within 2 hours of waking to optimise your circadian rhythm.",
     type: "circadian",
     evidence: "Gold"
   };

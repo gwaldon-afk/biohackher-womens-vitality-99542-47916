@@ -167,7 +167,7 @@ const Coaching = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">Cycle-Aware Coaching</h1>
           <p className="text-muted-foreground">
-            Optimize your training, recovery, and nutrition based on your hormonal stage
+            Optimise your training, recovery, and nutrition based on your hormonal stage
           </p>
         </div>
 
@@ -240,7 +240,7 @@ const Coaching = () => {
                   Training Recommendations
                 </CardTitle>
                 <CardDescription>
-                  Optimize your workouts based on your current hormonal state
+                  Optimise your workouts based on your current hormonal state
                 </CardDescription>
               </CardHeader>
               <CardContent>

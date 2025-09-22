@@ -78,7 +78,7 @@ const Symptoms = () => {
           contraindications: ["Panic disorders"]
         },
         {
-          title: "Omega-3 Optimization",
+          title: "Omega-3 Optimisation",
           description: "2-3g EPA daily from high-quality fish oil",
           evidence: "Gold",
           contraindications: ["Blood thinners"]
