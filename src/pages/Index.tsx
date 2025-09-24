@@ -60,7 +60,7 @@ const Index = () => {
                   Live well longer. Empowering women to beat ageing through biohacking.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link to="/onboarding">
+                  <Link to="/auth">
                     <Button size="lg" className="bg-white text-primary hover:bg-white/90">
                       Start Your Journey
                     </Button>
@@ -126,7 +126,7 @@ const Index = () => {
               Join thousands of women who are taking control of their aging process with evidence-based protocols.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/onboarding">
+              <Link to="/auth">
                 <Button size="lg" className="primary-gradient">
                   Get Started Free
                 </Button>
