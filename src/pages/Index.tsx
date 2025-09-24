@@ -62,7 +62,7 @@ const Index = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link to="/auth">
                     <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-                      Start Your Journey
+                      Map my journey
                     </Button>
                   </Link>
                   <Link to="/dashboard">
