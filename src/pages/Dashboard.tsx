@@ -307,7 +307,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-2 border-t-2 border-dashed border-gray-600"></div>
-                  <span>No Impact (0 baseline)</span>
+                  <span>No Impact</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
@@ -317,7 +317,7 @@ const Dashboard = () => {
               <div className="text-right">
                 <div className="text-sm text-gray-500">Weekly Longevity Score</div>
                 <div className={`text-lg font-bold ${weeklyColor}`}>
-                  {weeklyScore >= 0 ? '+' : ''}{weeklyScore.toFixed(2)} days
+                  {weeklyScore >= 0 ? '+' : ''}{weeklyScore.toFixed(2)}
                 </div>
               </div>
             </div>
