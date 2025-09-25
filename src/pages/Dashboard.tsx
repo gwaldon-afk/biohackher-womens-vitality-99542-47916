@@ -387,7 +387,7 @@ const Dashboard = () => {
                   
                   <div className="flex items-center justify-between">
                     <ProgressCircle value={metric.value} size="md">
-                      <span className="text-sm font-semibold text-gray-900">{Math.round(metric.value)}</span>
+                      <span className="text-xs font-semibold text-gray-900">{Math.round(metric.value)}</span>
                     </ProgressCircle>
                     
                     <div className="text-right">
