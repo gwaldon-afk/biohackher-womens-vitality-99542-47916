@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine, Scatter, LabelList } from 'recharts';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -274,7 +274,7 @@ const Dashboard = () => {
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <ComposedChart data={scores} margin={{ top: 40, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" strokeOpacity={0.5} />
                   <XAxis 
                     dataKey="date" 
@@ -294,13 +294,29 @@ const Dashboard = () => {
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
-                    maxBarSize={4}
-                    radius={[0.5, 0.5, 0.5, 0.5]}
+                    maxBarSize={1}
+                    radius={[0, 0, 0, 0]}
                   >
                     {scores.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
                     ))}
+                    <LabelList
+                      dataKey="longevity_impact_score"
+                      position="top"
+                      offset={8}
+                      style={{ fontSize: '10px', fill: '#374151', fontWeight: '500' }}
+                      formatter={(value: number) => value.toFixed(0)}
+                    />
                   </Bar>
+                  <Scatter 
+                    dataKey="biological_age_impact" 
+                    name="Bar Tips"
+                    fill="#10b981"
+                  >
+                    {scores.map((entry, index) => (
+                      <Cell key={`dot-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
+                    ))}
+                  </Scatter>
                   <Line 
                     type="monotone" 
                     dataKey="moving_average" 
