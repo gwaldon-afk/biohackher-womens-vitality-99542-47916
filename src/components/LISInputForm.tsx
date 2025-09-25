@@ -16,8 +16,8 @@ import { z } from "zod";
 // Validation schemas
 const sleepSchema = z.object({
   totalSleepHours: z.number().min(0).max(24),
-  remPercentage: z.number().min(0).max(100),
-  deepSleepPercentage: z.number().min(0).max(100)
+  remHours: z.number().min(0).max(12),
+  deepSleepHours: z.number().min(0).max(12)
 });
 
 const stressSchema = z.object({
@@ -60,8 +60,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   // Manual input state
   const [sleepData, setSleepData] = useState({
     totalSleepHours: 8,
-    remPercentage: 25,
-    deepSleepPercentage: 15
+    remHours: 2,
+    deepSleepHours: 1.5
   });
 
   const [stressData, setStressData] = useState({
@@ -247,25 +247,27 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="remSleep">REM Sleep (%)</Label>
+                      <Label htmlFor="remSleep">REM Sleep (hours)</Label>
                       <Input
                         id="remSleep"
                         type="number"
                         min="0"
-                        max="100"
-                        value={sleepData.remPercentage}
-                        onChange={(e) => setSleepData({...sleepData, remPercentage: parseInt(e.target.value)})}
+                        max="12"
+                        step="0.5"
+                        value={sleepData.remHours}
+                        onChange={(e) => setSleepData({...sleepData, remHours: parseFloat(e.target.value)})}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="deepSleep">Deep Sleep (%)</Label>
+                      <Label htmlFor="deepSleep">Deep Sleep (hours)</Label>
                       <Input
                         id="deepSleep"
                         type="number"
                         min="0"
-                        max="100"
-                        value={sleepData.deepSleepPercentage}
-                        onChange={(e) => setSleepData({...sleepData, deepSleepPercentage: parseInt(e.target.value)})}
+                        max="12"
+                        step="0.5"
+                        value={sleepData.deepSleepHours}
+                        onChange={(e) => setSleepData({...sleepData, deepSleepHours: parseFloat(e.target.value)})}
                       />
                     </div>
                   </CardContent>
