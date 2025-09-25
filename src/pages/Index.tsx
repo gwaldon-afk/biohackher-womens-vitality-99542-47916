@@ -78,6 +78,7 @@ const Index = () => {
                   src={heroImage} 
                   alt="Minimalist line art portrait representing wellness and feminine strength" 
                   className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
+                  key="hero-line-art"
                 />
               </div>
             </div>
