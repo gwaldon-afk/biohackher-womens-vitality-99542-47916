@@ -9,10 +9,14 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User, CalendarIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import NutritionalScorecard from "./NutritionalScorecard";
 
 // Validation schemas
@@ -97,6 +101,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     learningMinutes: 45
   });
 
+  // Add date state for the score entry
+  const [scoreDate, setScoreDate] = useState<Date>(new Date());
+
   // Nutritional scorecard state
   const [nutritionalScore, setNutritionalScore] = useState(0);
   const [nutritionalGrade, setNutritionalGrade] = useState('C');
@@ -158,7 +165,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
       
       // Save to Supabase
       const { error } = await supabase.from('daily_scores').insert({
-        date: new Date().toISOString().split('T')[0],
+        date: format(scoreDate, 'yyyy-MM-dd'),
         user_id: user.id,
         longevity_impact_score: score,
         biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
@@ -242,6 +249,34 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               Input your daily metrics to calculate your personalized LIS score
             </DialogDescription>
           </DialogHeader>
+
+          {/* Date Selection */}
+          <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+            <Label className="text-sm font-medium mb-2 block">Day</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !scoreDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {scoreDate ? format(scoreDate, "dd/MM/yyyy") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={scoreDate}
+                  onSelect={(date) => date && setScoreDate(date)}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
