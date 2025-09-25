@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 
 const Index = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: Activity,
@@ -60,16 +61,27 @@ const Index = () => {
                   Empowering women to beat ageing through biohacking.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
-                  <Link to="/auth" onClick={() => console.log("Map my journey clicked")} className="relative z-40">
-                    <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto">
-                      Map my journey
-                    </Button>
-                  </Link>
-                  <Link to="/dashboard" onClick={() => console.log("View Dashboard clicked")} className="relative z-40">
-                    <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto">
-                      View Dashboard
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
+                    onClick={() => {
+                      console.log("Map my journey clicked");
+                      navigate("/auth");
+                    }}
+                  >
+                    Map my journey
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto"
+                    onClick={() => {
+                      console.log("View Dashboard clicked");
+                      navigate("/dashboard");
+                    }}
+                  >
+                    View Dashboard
+                  </Button>
                 </div>
               </div>
               
@@ -126,16 +138,27 @@ const Index = () => {
               Join thousands of women who are taking control of their aging process with evidence-based protocols.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
-              <Link to="/auth" onClick={() => console.log("Get Started Free clicked")} className="relative z-30">
-                <Button size="lg" className="primary-gradient relative z-40 pointer-events-auto">
-                  Get Started Free
-                </Button>
-              </Link>
-              <Link to="/upgrade" onClick={() => console.log("View Premium Plans clicked")} className="relative z-30">
-                <Button size="lg" variant="outline" className="relative z-40 pointer-events-auto">
-                  View Premium Plans
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="primary-gradient relative z-40 pointer-events-auto"
+                onClick={() => {
+                  console.log("Get Started Free clicked");
+                  navigate("/auth");
+                }}
+              >
+                Get Started Free
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="relative z-40 pointer-events-auto"
+                onClick={() => {
+                  console.log("View Premium Plans clicked");
+                  navigate("/upgrade");
+                }}
+              >
+                View Premium Plans
+              </Button>
             </div>
           </div>
         </div>
