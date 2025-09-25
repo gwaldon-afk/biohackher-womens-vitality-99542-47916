@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -101,12 +101,15 @@ const Dashboard = () => {
   const generateMockScores = (): DailyScore[] => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days.map((day, index) => {
-      const score = 50 + Math.random() * 40; // Random score between 50-90
+      // Generate scores on a 5-point scale (-2 to +2, with 0 being neutral)
+      const biologicalImpact = (Math.random() - 0.5) * 4; // Range: -2 to +2
+      const score = 50 + (biologicalImpact * 12.5); // Convert to 0-100 scale for display
+      
       return {
         date: day,
         longevity_impact_score: parseFloat(score.toFixed(1)),
-        biological_age_impact: score > 65 ? 0.2 : -0.1,
-        color_code: score > 65 ? 'green' : 'red' as 'green' | 'red',
+        biological_age_impact: parseFloat(biologicalImpact.toFixed(2)),
+        color_code: biologicalImpact >= 0 ? 'green' : 'red' as 'green' | 'red',
         moving_average: parseFloat((score + (Math.random() - 0.5) * 10).toFixed(1)),
         sleep_score: 65 + Math.random() * 25,
         stress_score: 55 + Math.random() * 30,
@@ -172,8 +175,12 @@ const Dashboard = () => {
     }
   ];
 
+  // Calculate weekly cumulative score
+  const weeklyScore = scores.reduce((sum, score) => sum + score.biological_age_impact, 0);
+  const weeklyColor = weeklyScore >= 0 ? 'text-green-600' : 'text-red-600';
+
   const currentScore = summary?.average_score || 72.5;
-  const bioAgeImpact = summary?.total_biological_age_impact || 1.2;
+  const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
 
   const chartConfig = {
     longevity_impact_score: {
@@ -244,12 +251,15 @@ const Dashboard = () => {
                 <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis domain={[0, 100]} />
+                  <YAxis domain={[-2, 2]} />
                   <Bar 
-                    dataKey="longevity_impact_score" 
-                    fill="hsl(var(--primary))"
-                    name="Daily Score"
-                  />
+                    dataKey="biological_age_impact" 
+                    name="Daily Impact"
+                  >
+                    {scores.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact >= 0 ? '#22c55e' : '#ef4444'} />
+                    ))}
+                  </Bar>
                   <Line 
                     type="monotone" 
                     dataKey="moving_average" 
@@ -262,14 +272,22 @@ const Dashboard = () => {
                 </ComposedChart>
               </ResponsiveContainer>
             </ChartContainer>
-            <div className="flex justify-center gap-6 mt-4 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span>Positive Impact ({summary?.green_days || 0} days)</span>
+            <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-center gap-6 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-500 rounded"></div>
+                  <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact >= 0).length} days)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-red-500 rounded"></div>
+                  <span>Negative Impact ({summary?.red_days || scores.filter(s => s.biological_age_impact < 0).length} days)</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-red-500 rounded"></div>
-                <span>Negative Impact ({summary?.red_days || 0} days)</span>
+              <div className="text-right">
+                <div className="text-sm text-gray-500">Weekly Total</div>
+                <div className={`text-lg font-bold ${weeklyColor}`}>
+                  {weeklyScore >= 0 ? '+' : ''}{weeklyScore.toFixed(2)} days
+                </div>
               </div>
             </div>
           </CardContent>
