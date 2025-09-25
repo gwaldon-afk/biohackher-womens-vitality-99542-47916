@@ -298,7 +298,7 @@ const Dashboard = () => {
                     radius={[0, 0, 0, 0]}
                   >
                     {scores.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
+                      <Cell key={`bar-cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
                     ))}
                     <LabelList
                       dataKey="longevity_impact_score"
@@ -314,7 +314,7 @@ const Dashboard = () => {
                     fill="#10b981"
                   >
                     {scores.map((entry, index) => (
-                      <Cell key={`dot-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
+                      <Cell key={`scatter-cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
                     ))}
                   </Scatter>
                   <Line 
