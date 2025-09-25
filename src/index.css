@@ -9,61 +9,61 @@ Based on www.biohack-her.com brand identity.
 
 @layer base {
   :root {
-    /* Base colors - Warm, organic foundation */
+    /* Base colors - Brand Stone foundation */
     --background: 0 0% 100%;
-    --foreground: 25 15% 20%;
+    --foreground: 0 0% 0%;
 
-    /* Card system - Elevated surfaces */
-    --card: 0 0% 100%;
-    --card-foreground: 25 15% 20%;
+    /* Card system - Brand Stone surfaces */
+    --card: 30 24% 95%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 25 15% 20%;
+    --popover: 30 24% 95%;
+    --popover-foreground: 0 0% 0%;
 
-    /* Primary - Brand peach/salmon from uploaded assets */
-    --primary: 20 60% 75%;
-    --primary-foreground: 25 15% 20%;
-    --primary-light: 20 50% 85%;
-    --primary-dark: 20 70% 65%;
+    /* Primary - Brand Peach */
+    --primary: 20 86% 82%;
+    --primary-foreground: 0 0% 0%;
+    --primary-light: 20 86% 90%;
+    --primary-dark: 20 86% 74%;
 
-    /* Secondary - Peachy salmon (popup accent color) */
-    --secondary: 15 65% 75%;
-    --secondary-foreground: 25 15% 20%;
-    --secondary-light: 15 70% 85%;
-    --secondary-dark: 15 70% 65%;
+    /* Secondary - Brand Stone */
+    --secondary: 30 24% 87%;
+    --secondary-foreground: 0 0% 0%;
+    --secondary-light: 30 24% 92%;
+    --secondary-dark: 30 24% 82%;
 
-    /* Muted - Warm neutrals */
-    --muted: 25 15% 96%;
-    --muted-foreground: 25 10% 50%;
+    /* Muted - Brand Stone variants */
+    --muted: 30 24% 94%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent - Soft warm accent */
-    --accent: 35 40% 88%;
-    --accent-foreground: 25 15% 20%;
+    /* Accent - Brand Stone accent */
+    --accent: 30 24% 90%;
+    --accent-foreground: 0 0% 0%;
 
-    /* Health status colors - warmed versions */
+    /* Health status colors - brand aligned */
     --success: 120 45% 55%;
     --success-foreground: 0 0% 100%;
     --warning: 40 85% 60%;
-    --warning-foreground: 25 15% 20%;
+    --warning-foreground: 0 0% 0%;
     --destructive: 0 65% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs - warm tones */
-    --border: 25 20% 88%;
-    --input: 25 20% 94%;
-    --ring: 25 35% 70%;
+    /* Borders and inputs - brand stone tones */
+    --border: 30 24% 82%;
+    --input: 30 24% 90%;
+    --ring: 20 86% 82%;
 
-    /* Gradients - warm, elegant brand tones */
-    --gradient-primary: linear-gradient(135deg, hsl(20 60% 75%), hsl(20 50% 85%));
-    --gradient-secondary: linear-gradient(135deg, hsl(15 65% 75%), hsl(35 60% 80%));
-    --gradient-hero: linear-gradient(135deg, hsl(20 60% 75%) 0%, hsl(20 50% 85%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(20 10% 98%) 100%);
+    /* Gradients - Brand Peach and Stone */
+    --gradient-primary: linear-gradient(135deg, hsl(20 86% 82%), hsl(20 86% 90%));
+    --gradient-secondary: linear-gradient(135deg, hsl(30 24% 87%), hsl(30 24% 92%));
+    --gradient-hero: linear-gradient(135deg, hsl(20 86% 82%) 0%, hsl(30 24% 87%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(30 24% 95%) 0%, hsl(30 24% 92%) 100%);
 
-    /* Shadows - warm, subtle */
-    --shadow-sm: 0 1px 2px 0 hsl(25 20% 80% / 0.2);
-    --shadow-md: 0 4px 6px -1px hsl(25 20% 75% / 0.15), 0 2px 4px -1px hsl(25 20% 75% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(25 20% 75% / 0.15), 0 4px 6px -2px hsl(25 20% 75% / 0.08);
-    --shadow-glow: 0 0 25px hsl(25 35% 70% / 0.2);
+    /* Shadows - Brand aligned */
+    --shadow-sm: 0 1px 2px 0 hsl(30 24% 70% / 0.2);
+    --shadow-md: 0 4px 6px -1px hsl(30 24% 65% / 0.15), 0 2px 4px -1px hsl(30 24% 65% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(30 24% 65% / 0.15), 0 4px 6px -2px hsl(30 24% 65% / 0.08);
+    --shadow-glow: 0 0 25px hsl(20 86% 82% / 0.3);
 
     --radius: 0.75rem;
 
@@ -85,25 +85,25 @@ Based on www.biohack-her.com brand identity.
   }
 
   .dark {
-    /* Dark mode - Warm, sophisticated dark palette */
-    --background: 25 20% 8%;
-    --foreground: 25 10% 95%;
+    /* Dark mode - Brand aligned dark palette */
+    --background: 0 0% 8%;
+    --foreground: 30 24% 87%;
 
-    --card: 25 15% 12%;
-    --card-foreground: 25 10% 95%;
+    --card: 0 0% 12%;
+    --card-foreground: 30 24% 87%;
 
-    --popover: 25 15% 12%;
-    --popover-foreground: 25 10% 95%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 30 24% 87%;
 
-    --primary: 25 40% 65%;
-    --primary-foreground: 25 20% 8%;
-    --primary-light: 25 45% 75%;
-    --primary-dark: 25 50% 50%;
+    --primary: 20 86% 70%;
+    --primary-foreground: 0 0% 0%;
+    --primary-light: 20 86% 80%;
+    --primary-dark: 20 86% 60%;
 
-    --secondary: 15 60% 70%;
-    --secondary-foreground: 25 20% 8%;
-    --secondary-light: 15 65% 80%;
-    --secondary-dark: 15 70% 60%;
+    --secondary: 30 24% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --secondary-light: 30 24% 80%;
+    --secondary-dark: 30 24% 60%;
 
     --muted: 25 10% 18%;
     --muted-foreground: 25 10% 65%;
@@ -139,11 +139,11 @@ Based on www.biohack-her.com brand identity.
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-avenir antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-albra font-semibold tracking-tight;
   }
 }
 

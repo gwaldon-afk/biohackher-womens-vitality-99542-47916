@@ -13,6 +13,12 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'albra': ['Playfair Display', 'serif'],
+        'avenir': ['Inter', 'sans-serif'],
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'serif': ['Playfair Display', 'serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
