@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-image.jpg";
+import brandHeroImage from "@/assets/brand-hero-image.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +51,9 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
-                  Biohack<em className="italic">her</em>
+                  <span className="text-white">Biohack</span>
+                  <span className="text-white/70 italic">her</span>
+                  <sup className="text-sm">®</sup>
                 </h1>
                 <p className="text-xl lg:text-2xl mb-8 text-white/90">
                   Live well longer.<br />
@@ -73,8 +75,8 @@ const Index = () => {
               
               <div className="relative">
                 <img 
-                  src={heroImage} 
-                  alt="Confident woman tracking her wellness journey with Biohackher" 
+                  src={brandHeroImage} 
+                  alt="Woman in pink activewear demonstrating biohacking wellness lifestyle with tropical plants" 
                   className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
                 />
               </div>
