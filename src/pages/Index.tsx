@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-line-art.png";
+import heroImage from "@/assets/hero-image.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -76,9 +76,8 @@ const Index = () => {
               <div className="relative">
                 <img 
                   src={heroImage} 
-                  alt="Minimalist line art portrait representing wellness and feminine strength" 
+                  alt="Confident woman tracking her wellness journey with Biohackher" 
                   className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
-                  key="hero-line-art"
                 />
               </div>
             </div>
