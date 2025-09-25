@@ -230,10 +230,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
             </TabsList>
 
             <TabsContent value="manual" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {/* Sleep Quality */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Moon className="h-4 w-4 text-blue-500" />
                       Sleep Quality
@@ -243,7 +243,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Quality sleep is crucial for cellular repair, memory consolidation, and hormone regulation. Optimal sleep duration and REM percentage directly impact longevity.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label htmlFor="totalSleep">Total Sleep (hours)</Label>
                       <Input
@@ -284,8 +284,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Stress Management */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-red-500" />
                       Stress Management
@@ -295,7 +295,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Chronic stress accelerates aging through inflammation and cellular damage. HRV measures autonomic nervous system balance and stress resilience.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label htmlFor="hrv">Heart Rate Variability</Label>
                       <Input
@@ -322,8 +322,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Physical Activity */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Activity className="h-4 w-4 text-green-500" />
                       Physical Activity
@@ -333,7 +333,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Regular movement improves cardiovascular health, maintains muscle mass, and enhances mitochondrial function—key factors in healthy aging.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label htmlFor="activeMinutes">Active Minutes</Label>
                       <Input
@@ -389,8 +389,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Nutrition */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Utensils className="h-4 w-4 text-orange-500" />
                       Nutrition
@@ -405,7 +405,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Nutrient-dense whole foods provide antioxidants, reduce inflammation, and support cellular repair mechanisms critical for longevity.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label className="text-sm font-medium">Choose your nutrition tracking method:</Label>
                       <RadioGroup
@@ -466,8 +466,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Social Connections */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Users className="h-4 w-4 text-purple-500" />
                       Social Connections
@@ -477,7 +477,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Strong social bonds reduce stress hormones, boost immune function, and provide emotional support—significantly impacting lifespan.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label htmlFor="interactionQuality">Interaction Quality (1-10)</Label>
                       <Input
@@ -504,8 +504,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Cognitive Engagement */}
-                <Card>
-                  <CardHeader className="pb-3">
+                <Card className="h-80 flex flex-col">
+                  <CardHeader className="pb-3 flex-shrink-0">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Brain className="h-4 w-4 text-pink-500" />
                       Cognitive Engagement
@@ -515,7 +515,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       Mental stimulation and mindfulness practices promote neuroplasticity, reduce cognitive decline, and support brain health throughout aging.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
                     <div>
                       <Label htmlFor="meditationMinutes">Meditation (minutes)</Label>
                       <Input
