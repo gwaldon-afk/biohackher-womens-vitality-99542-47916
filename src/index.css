@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Biohackher Design System - Authentic Brand Colors & Style
+/* Daily Longevity Design System - Authentic Brand Colors & Style
 All colors MUST be HSL. Warm, earthy, sophisticated feminine wellness aesthetic.
-Based on www.biohack-her.com brand identity.
+Based on modern longevity and wellness brand identity.
 */
 
 @layer base {
@@ -187,7 +187,7 @@ Based on www.biohack-her.com brand identity.
     @apply bg-amber-100 text-amber-800 border-amber-200;
   }
 
-  /* Biohackher Age score display */
+  /* Daily Longevity Inputs score display */
   .age-score {
     @apply text-4xl font-bold gradient-text;
   }
