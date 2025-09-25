@@ -64,12 +64,19 @@ const Dashboard = () => {
       if (fetchedScores.length === 0) {
         const mockScores = generateMockScores();
         setScores(mockScores);
+        
+        // Calculate summary from actual mock data
+        const avgScore = mockScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / mockScores.length;
+        const totalBioAge = mockScores.reduce((sum, s) => sum + s.biological_age_impact, 0);
+        const greenDays = mockScores.filter(s => s.biological_age_impact > 0).length;
+        const redDays = mockScores.filter(s => s.biological_age_impact < 0).length;
+        
         setSummary({
-          total_days: 7,
-          average_score: 72.5,
-          total_biological_age_impact: 1.2,
-          green_days: 5,
-          red_days: 2
+          total_days: mockScores.length,
+          average_score: parseFloat(avgScore.toFixed(2)),
+          total_biological_age_impact: parseFloat(totalBioAge.toFixed(2)),
+          green_days: greenDays,
+          red_days: redDays
         });
       } else {
         setScores(fetchedScores);
@@ -80,12 +87,19 @@ const Dashboard = () => {
       // Show mock data on error
       const mockScores = generateMockScores();
       setScores(mockScores);
+      
+      // Calculate summary from actual mock data
+      const avgScore = mockScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / mockScores.length;
+      const totalBioAge = mockScores.reduce((sum, s) => sum + s.biological_age_impact, 0);
+      const greenDays = mockScores.filter(s => s.biological_age_impact > 0).length;
+      const redDays = mockScores.filter(s => s.biological_age_impact < 0).length;
+      
       setSummary({
-        total_days: 7,
-        average_score: 72.5,
-        total_biological_age_impact: 1.2,
-        green_days: 5,
-        red_days: 2
+        total_days: mockScores.length,
+        average_score: parseFloat(avgScore.toFixed(2)),
+        total_biological_age_impact: parseFloat(totalBioAge.toFixed(2)),
+        green_days: greenDays,
+        red_days: redDays
       });
       
       toast({
