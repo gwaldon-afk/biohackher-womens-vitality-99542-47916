@@ -51,7 +51,7 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
                 <h1 className="text-4xl lg:text-6xl font-albra font-bold mb-6 text-white">
-                  <span className="text-white">Biohack</span>
+                  <span className="text-foreground">Biohack</span>
                   <span className="text-white italic">her</span>
                   <sup className="text-sm font-normal ml-1">®</sup>
                 </h1>
