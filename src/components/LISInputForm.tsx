@@ -430,8 +430,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                             // Reset nutritional score when switching back to simple
                             setNutritionalScore(0);
                             setNutritionalGrade('C');
+                          } else if (value === "detailed") {
+                            // Automatically open scorecard when selecting detailed mode
+                            setScorecardDialogOpen(true);
                           }
-                          // Don't automatically open scorecard when selecting detailed
                         }}
                         className="mt-2"
                       >
