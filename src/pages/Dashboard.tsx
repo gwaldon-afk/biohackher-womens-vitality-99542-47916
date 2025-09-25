@@ -274,13 +274,13 @@ const Dashboard = () => {
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={scores} margin={{ top: 50, right: 30, left: 20, bottom: 35 }}>
+                <ComposedChart data={scores} margin={{ top: 50, right: 30, left: 20, bottom: 45 }}>
                   <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" strokeOpacity={0.5} />
                   <XAxis 
                     dataKey="date" 
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6b7280', dy: 10 }}
+                    tick={{ fontSize: 12, fill: '#6b7280', dy: 20 }}
                   />
                   <YAxis 
                     domain={[-2, 2]} 
