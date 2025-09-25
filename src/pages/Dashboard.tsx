@@ -232,38 +232,43 @@ const Dashboard = () => {
           </h1>
           
           <LISInputForm onScoreCalculated={fetchScoreHistory}>
-            <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg text-gray-900">Your Longevity Impact Score</CardTitle>
-                <CardDescription className="text-gray-600">
-                  LISE - Daily biological age impact assessment
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <ProgressCircle value={currentScore} size="xl">
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                      <div className="text-sm text-gray-500">LIS</div>
-                    </div>
-                  </ProgressCircle>
-                </div>
-                <div className="text-sm text-gray-600">
-                  {bioAgeImpact >= 0 ? (
-                    <span className="font-semibold text-green-600">
-                      -{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
-                    </span>
-                  ) : (
-                    <span className="font-semibold text-red-600">
-                      +{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs text-gray-400 mt-2">
-                  Click to update your metrics
-                </div>
-              </CardContent>
-            </Card>
+            <div 
+              className="max-w-md mx-auto cursor-pointer" 
+              onClick={() => console.log("Card wrapper clicked")}
+            >
+              <Card className="bg-white shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-lg text-gray-900">Your Longevity Impact Score</CardTitle>
+                  <CardDescription className="text-gray-600">
+                    LISE - Daily biological age impact assessment
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="flex items-center justify-center mb-4">
+                    <ProgressCircle value={currentScore} size="xl">
+                      <div className="text-center">
+                        <div className="text-4xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                        <div className="text-sm text-gray-500">LIS</div>
+                      </div>
+                    </ProgressCircle>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {bioAgeImpact >= 0 ? (
+                      <span className="font-semibold text-green-600">
+                        -{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                      </span>
+                    ) : (
+                      <span className="font-semibold text-red-600">
+                        +{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-2">
+                    Click to update your metrics
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </LISInputForm>
         </div>
 

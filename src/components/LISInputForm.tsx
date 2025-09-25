@@ -178,7 +178,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild onClick={() => console.log("LIS Form trigger clicked")}>
         {children}
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
