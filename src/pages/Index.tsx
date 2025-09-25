@@ -50,10 +50,10 @@ const Index = () => {
           <div className="container mx-auto px-4 py-16 lg:py-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
+                <h1 className="text-4xl lg:text-6xl font-albra font-bold mb-6 text-white">
                   <span className="text-white">Biohack</span>
-                  <span className="text-white/70 italic">her</span>
-                  <sup className="text-sm">®</sup>
+                  <span className="text-white italic">her</span>
+                  <sup className="text-sm font-normal">®</sup>
                 </h1>
                 <p className="text-xl lg:text-2xl mb-8 text-white/90">
                   Live well longer.<br />
