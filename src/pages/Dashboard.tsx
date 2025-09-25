@@ -275,24 +275,39 @@ const Dashboard = () => {
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis domain={[-2, 2]} tickCount={4} ticks={[-2, -1, 1, 2]} />
-                  <ReferenceLine y={0} stroke="#666666" strokeWidth={2} strokeDasharray="5 5" />
+                  <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" strokeOpacity={0.5} />
+                  <XAxis 
+                    dataKey="date" 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                  />
+                  <YAxis 
+                    domain={[-2, 2]} 
+                    tickCount={4} 
+                    ticks={[-2, -1, 1, 2]}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#6b7280' }}
+                  />
+                  <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
+                    maxBarSize={24}
+                    radius={[2, 2, 2, 2]}
                   >
                     {scores.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#22c55e' : '#ef4444'} />
+                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
                     ))}
                   </Bar>
                   <Line 
                     type="monotone" 
                     dataKey="moving_average" 
-                    stroke="#8884d8" 
-                    strokeWidth={2}
-                    dot={{ fill: '#8884d8', r: 3 }}
+                    stroke="#6366f1" 
+                    strokeWidth={2.5}
+                    dot={{ fill: '#6366f1', r: 4, strokeWidth: 2, stroke: '#ffffff' }}
+                    activeDot={{ r: 6, strokeWidth: 2, stroke: '#ffffff' }}
                     name="Cumulative Average"
                   />
                   <ChartTooltip content={<ChartTooltipContent />} />
