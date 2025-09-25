@@ -45,11 +45,11 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden z-10">
         <div className="hero-gradient">
           <div className="container mx-auto px-4 py-16 lg:py-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="text-center lg:text-left">
+              <div className="text-center lg:text-left z-20 relative">
                 <h1 className="text-4xl lg:text-6xl font-albra font-bold mb-6 text-white">
                   <span className="text-foreground">Biohack</span>
                   <span className="text-white italic">her</span>
@@ -59,14 +59,14 @@ const Index = () => {
                   Live well longer.<br />
                   Empowering women to beat ageing through biohacking.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link to="/auth" onClick={() => console.log("Map my journey clicked")}>
-                    <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
+                  <Link to="/auth" onClick={() => console.log("Map my journey clicked")} className="relative z-40">
+                    <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto">
                       Map my journey
                     </Button>
                   </Link>
-                  <Link to="/dashboard" onClick={() => console.log("View Dashboard clicked")}>
-                    <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90">
+                  <Link to="/dashboard" onClick={() => console.log("View Dashboard clicked")} className="relative z-40">
+                    <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto">
                       View Dashboard
                     </Button>
                   </Link>
@@ -116,7 +116,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-24 bg-muted/30">
+      <section className="py-16 lg:py-24 bg-muted/30 relative z-10">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-6">
@@ -125,14 +125,14 @@ const Index = () => {
             <p className="text-xl text-muted-foreground mb-8">
               Join thousands of women who are taking control of their aging process with evidence-based protocols.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/auth" onClick={() => console.log("Get Started Free clicked")}>
-                <Button size="lg" className="primary-gradient">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
+              <Link to="/auth" onClick={() => console.log("Get Started Free clicked")} className="relative z-30">
+                <Button size="lg" className="primary-gradient relative z-40 pointer-events-auto">
                   Get Started Free
                 </Button>
               </Link>
-              <Link to="/upgrade" onClick={() => console.log("View Premium Plans clicked")}>
-                <Button size="lg" variant="outline">
+              <Link to="/upgrade" onClick={() => console.log("View Premium Plans clicked")} className="relative z-30">
+                <Button size="lg" variant="outline" className="relative z-40 pointer-events-auto">
                   View Premium Plans
                 </Button>
               </Link>
