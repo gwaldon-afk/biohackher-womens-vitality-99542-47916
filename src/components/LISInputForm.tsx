@@ -12,6 +12,7 @@ import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User } from 
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import NutritionalScorecard from "./NutritionalScorecard";
 
 // Validation schemas
 const sleepSchema = z.object({
@@ -89,6 +90,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     meditationMinutes: 20,
     learningMinutes: 45
   });
+
+  // Nutritional scorecard state
+  const [nutritionalScore, setNutritionalScore] = useState(0);
+  const [nutritionalGrade, setNutritionalGrade] = useState('C');
 
   const validateInputs = () => {
     try {
@@ -481,6 +486,15 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                   </CardContent>
                 </Card>
               </div>
+
+              {/* Nutritional Scorecard */}
+              <NutritionalScorecard 
+                onScoreCalculated={(score, grade) => {
+                  setNutritionalScore(score);
+                  setNutritionalGrade(grade);
+                }}
+                hasDairySensitivity={false} // This could be set based on user profile
+              />
 
               <Separator />
 
