@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -15,7 +16,8 @@ import { z } from "zod";
 // Validation schemas
 const sleepSchema = z.object({
   totalSleepHours: z.number().min(0).max(24),
-  remPercentage: z.number().min(0).max(100)
+  remPercentage: z.number().min(0).max(100),
+  deepSleepPercentage: z.number().min(0).max(100)
 });
 
 const stressSchema = z.object({
@@ -25,7 +27,9 @@ const stressSchema = z.object({
 
 const activitySchema = z.object({
   activeMinutes: z.number().min(0).max(1440),
-  steps: z.number().min(0).max(100000)
+  steps: z.number().min(0).max(100000),
+  intensity: z.number().min(1).max(10),
+  type: z.enum(["strength", "cardio", "hiit"])
 });
 
 const nutritionSchema = z.object({
@@ -56,7 +60,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   // Manual input state
   const [sleepData, setSleepData] = useState({
     totalSleepHours: 8,
-    remPercentage: 25
+    remPercentage: 25,
+    deepSleepPercentage: 15
   });
 
   const [stressData, setStressData] = useState({
@@ -66,7 +71,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
   const [activityData, setActivityData] = useState({
     activeMinutes: 60,
-    steps: 8000
+    steps: 8000,
+    intensity: 6,
+    type: "cardio" as "strength" | "cardio" | "hiit"
   });
 
   const [nutritionData, setNutritionData] = useState({
@@ -250,6 +257,17 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         onChange={(e) => setSleepData({...sleepData, remPercentage: parseInt(e.target.value)})}
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="deepSleep">Deep Sleep (%)</Label>
+                      <Input
+                        id="deepSleep"
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={sleepData.deepSleepPercentage}
+                        onChange={(e) => setSleepData({...sleepData, deepSleepPercentage: parseInt(e.target.value)})}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -325,6 +343,35 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         value={activityData.steps}
                         onChange={(e) => setActivityData({...activityData, steps: parseInt(e.target.value)})}
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="intensity">Intensity (1-10)</Label>
+                      <Input
+                        id="intensity"
+                        type="number"
+                        min="1"
+                        max="10"
+                        value={activityData.intensity}
+                        onChange={(e) => setActivityData({...activityData, intensity: parseInt(e.target.value)})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="activityType">Activity Type</Label>
+                      <Select
+                        value={activityData.type}
+                        onValueChange={(value: "strength" | "cardio" | "hiit") => 
+                          setActivityData({...activityData, type: value})
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select activity type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="strength">Strength Training</SelectItem>
+                          <SelectItem value="cardio">Cardio</SelectItem>
+                          <SelectItem value="hiit">HIIT</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </CardContent>
                 </Card>
