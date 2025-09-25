@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/brand-face-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +76,7 @@ const Index = () => {
               <div className="relative">
                 <img 
                   src={heroImage} 
-                  alt="Confident woman tracking her wellness journey with Biohackher" 
+                  alt="Biohackher brand logo - stylized feminine face representing wellness and longevity" 
                   className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
                 />
               </div>
