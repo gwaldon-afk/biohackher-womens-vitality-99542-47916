@@ -50,9 +50,6 @@ const Index = () => {
           <div className="container mx-auto px-4 py-16 lg:py-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left">
-                <Badge className="mb-6 bg-white/10 text-white border-white/20">
-                  Women's Longevity Coach
-                </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
                   Biohack<em className="italic">her</em>
                 </h1>
