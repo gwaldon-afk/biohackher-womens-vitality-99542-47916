@@ -234,9 +234,9 @@ const Dashboard = () => {
           <LISInputForm onScoreCalculated={fetchScoreHistory}>
             <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
               <CardHeader>
-                <CardTitle className="text-lg text-gray-900">Your Longevity Impact Score</CardTitle>
+                <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
                 <CardDescription className="text-gray-600">
-                  LISE - Daily biological age impact assessment
+                  LIS - Daily biological age impact assessment
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
