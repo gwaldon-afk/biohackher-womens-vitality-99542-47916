@@ -111,7 +111,7 @@ const Dashboard = () => {
         date: day,
         longevity_impact_score: parseFloat(score.toFixed(1)),
         biological_age_impact: biologicalImpact,
-        color_code: biologicalImpact >= 0 ? 'green' : 'red' as 'green' | 'red',
+        color_code: biologicalImpact > 0 ? 'green' : 'red' as 'green' | 'red',
         moving_average: 0, // Will be calculated below
         sleep_score: 65 + Math.random() * 25,
         stress_score: 55 + Math.random() * 30,
