@@ -201,8 +201,8 @@ const Dashboard = () => {
     }
   ];
 
-  // Calculate weekly cumulative score
-  const weeklyScore = scores.reduce((sum, score) => sum + score.biological_age_impact, 0);
+  // Calculate weekly cumulative score - sum of daily longevity impact scores
+  const weeklyScore = scores.reduce((sum, score) => sum + score.longevity_impact_score, 0);
   const weeklyColor = weeklyScore >= 0 ? 'text-green-600' : 'text-red-600';
 
   const currentScore = summary?.average_score || 72.5;
