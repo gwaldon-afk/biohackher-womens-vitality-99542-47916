@@ -294,8 +294,8 @@ const Dashboard = () => {
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
-                    maxBarSize={24}
-                    radius={[2, 2, 2, 2]}
+                    maxBarSize={4}
+                    radius={[0.5, 0.5, 0.5, 0.5]}
                   >
                     {scores.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
