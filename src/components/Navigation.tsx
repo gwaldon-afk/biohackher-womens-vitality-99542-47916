@@ -33,10 +33,10 @@ const Navigation = () => {
           <Link to="/" className="flex items-center space-x-3">
             <Activity className="h-8 w-8 text-primary" />
             <div className="flex flex-col">
-              <span className="text-xl font-bold">
+              <span className="text-xl font-albra font-bold">
                 <span className="text-foreground">Biohack</span>
                 <span className="text-primary italic">her</span>
-                <sup className="text-xs">®</sup>
+                <sup className="text-xs font-normal ml-1">®</sup>
               </span>
               <span className="text-xs text-muted-foreground -mt-1 font-light tracking-wider">LIVE WELL LONGER</span>
             </div>
