@@ -112,13 +112,23 @@ const Dashboard = () => {
         longevity_impact_score: parseFloat(score.toFixed(1)),
         biological_age_impact: biologicalImpact,
         color_code: biologicalImpact >= 0 ? 'green' : 'red' as 'green' | 'red',
-        moving_average: parseFloat((score + (Math.random() - 0.5) * 10).toFixed(1)),
+        moving_average: 0, // Will be calculated below
         sleep_score: 65 + Math.random() * 25,
         stress_score: 55 + Math.random() * 30,
         physical_activity_score: 60 + Math.random() * 30,
         nutrition_score: 50 + Math.random() * 35,
         social_connections_score: 45 + Math.random() * 40,
         cognitive_engagement_score: 55 + Math.random() * 25
+      };
+    }).map((score, index, array) => {
+      // Calculate cumulative moving average up to this point
+      const scoresUpToNow = array.slice(0, index + 1);
+      const cumulativeSum = scoresUpToNow.reduce((sum, s) => sum + s.biological_age_impact, 0);
+      const movingAverage = cumulativeSum / (index + 1);
+      
+      return {
+        ...score,
+        moving_average: parseFloat(movingAverage.toFixed(2))
       };
     });
   };
@@ -188,6 +198,10 @@ const Dashboard = () => {
     biological_age_impact: {
       label: "Daily LIS Score",
       color: "hsl(var(--primary))",
+    },
+    moving_average: {
+      label: "Cumulative Average",
+      color: "#8884d8",
     },
   };
 
@@ -260,11 +274,11 @@ const Dashboard = () => {
                   </Bar>
                   <Line 
                     type="monotone" 
-                    dataKey="biological_age_impact" 
+                    dataKey="moving_average" 
                     stroke="#8884d8" 
                     strokeWidth={2}
                     dot={{ fill: '#8884d8', r: 3 }}
-                    name="Trend Line"
+                    name="Cumulative Average"
                   />
                   <ChartTooltip content={<ChartTooltipContent />} />
                 </ComposedChart>
