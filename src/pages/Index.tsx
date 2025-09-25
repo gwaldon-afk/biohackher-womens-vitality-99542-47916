@@ -11,7 +11,7 @@ const Index = () => {
   const features = [
     {
       icon: Activity,
-      title: "Biohackher Age",
+      title: "Daily Longevity Inputs",
       description: "Track your biological age with our proprietary algorithm based on sleep, HRV, and lifestyle metrics."
     },
     {
@@ -111,7 +111,16 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="card-elevated hover:shadow-lg transition-shadow">
+              <Card 
+                key={index} 
+                className="card-elevated hover:shadow-lg transition-shadow cursor-pointer" 
+                onClick={() => {
+                  console.log(`${feature.title} card clicked`);
+                  if (feature.title === "Daily Longevity Inputs") {
+                    navigate("/dashboard");
+                  }
+                }}
+              >
                 <CardHeader>
                   <feature.icon className="h-10 w-10 text-primary mb-4" />
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
