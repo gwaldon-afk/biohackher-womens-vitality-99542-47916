@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine } from 'recharts';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -264,13 +264,22 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis domain={[-2, 2]} tickCount={5} ticks={[-2, -1, 0, 1, 2]} />
+                  <ReferenceLine y={0} stroke="#000000" strokeWidth={3} strokeDasharray="0" />
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
                   >
-                    {scores.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact >= 0 ? '#22c55e' : '#ef4444'} />
-                    ))}
+                    {scores.map((entry, index) => {
+                      let fill;
+                      if (entry.biological_age_impact === 0) {
+                        fill = '#000000'; // Black for zero values
+                      } else if (entry.biological_age_impact > 0) {
+                        fill = '#22c55e'; // Green for positive
+                      } else {
+                        fill = '#ef4444'; // Red for negative
+                      }
+                      return <Cell key={`cell-${index}`} fill={fill} />;
+                    })}
                   </Bar>
                   <Line 
                     type="monotone" 
@@ -288,7 +297,11 @@ const Dashboard = () => {
               <div className="flex justify-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact >= 0).length} days)</span>
+                  <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact > 0).length} days)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-black rounded"></div>
+                  <span>Neutral Impact ({scores.filter(s => s.biological_age_impact === 0).length} days)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
