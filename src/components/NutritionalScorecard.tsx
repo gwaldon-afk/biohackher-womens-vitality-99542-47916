@@ -296,12 +296,16 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 className="flex flex-wrap gap-6"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="-5" id="sugar-yes" />
-                  <Label htmlFor="sugar-yes" className="text-sm cursor-pointer">Yes, I consumed refined sugars or processed foods -5</Label>
+                  <RadioGroupItem value="0" id="sugar-none" />
+                  <Label htmlFor="sugar-none" className="text-sm cursor-pointer">I had none +0</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="0" id="sugar-no" />
-                  <Label htmlFor="sugar-no" className="text-sm cursor-pointer">No, I did not +0</Label>
+                  <RadioGroupItem value="-2" id="sugar-some" />
+                  <Label htmlFor="sugar-some" className="text-sm cursor-pointer">I had some -2</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="-5" id="sugar-cheat" />
+                  <Label htmlFor="sugar-cheat" className="text-sm cursor-pointer">I had a cheat day -5</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -326,16 +330,16 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 className="flex flex-wrap gap-6"
               >
                 <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="0" id="alcohol-none" />
+                  <Label htmlFor="alcohol-none" className="text-sm cursor-pointer">None +0</Label>
+                </div>
+                <div className="flex items-center space-x-2">
                   <RadioGroupItem value="-2" id="alcohol-one" />
-                  <Label htmlFor="alcohol-one" className="text-sm cursor-pointer">Yes, I had one alcoholic beverage -2</Label>
+                  <Label htmlFor="alcohol-one" className="text-sm cursor-pointer">1 drink -2</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="-5" id="alcohol-multiple" />
-                  <Label htmlFor="alcohol-multiple" className="text-sm cursor-pointer">Yes, I had two or more alcoholic beverages -5</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="0" id="alcohol-no" />
-                  <Label htmlFor="alcohol-no" className="text-sm cursor-pointer">No, I did not +0</Label>
+                  <Label htmlFor="alcohol-multiple" className="text-sm cursor-pointer">2 or more drinks -5</Label>
                 </div>
               </RadioGroup>
             </div>
