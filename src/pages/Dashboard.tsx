@@ -243,8 +243,8 @@ const Dashboard = () => {
                 <div className="flex items-center justify-center mb-4">
                   <ProgressCircle value={currentScore} size="xl">
                     <div className="text-center">
-                      <div className="text-4xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                      <div className="text-sm text-gray-500">LIS</div>
+                      <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                      <div className="text-xs text-gray-500">LIS</div>
                     </div>
                   </ProgressCircle>
                 </div>
