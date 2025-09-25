@@ -18,9 +18,18 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const url = new URL(req.url);
-    const userId = url.searchParams.get('user_id');
-    const days = parseInt(url.searchParams.get('days') || '30', 10);
+    let userId: string;
+    let days: number;
+
+    if (req.method === 'GET') {
+      const url = new URL(req.url);
+      userId = url.searchParams.get('user_id') || '';
+      days = parseInt(url.searchParams.get('days') || '30', 10);
+    } else {
+      const { user_id, days: requestDays } = await req.json();
+      userId = user_id;
+      days = requestDays || 30;
+    }
 
     if (!userId) {
       return new Response(
@@ -51,11 +60,11 @@ serve(async (req) => {
       throw error;
     }
 
-    // Calculate 7-day moving averages
+    // Calculate cumulative moving averages based on biological age impact
     const scoresWithMovingAverage = scores.map((score, index) => {
-      const startIdx = Math.max(0, index - 6);
-      const recentScores = scores.slice(startIdx, index + 1);
-      const movingAverage = recentScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / recentScores.length;
+      const scoresUpToNow = scores.slice(0, index + 1);
+      const cumulativeSum = scoresUpToNow.reduce((sum, s) => sum + s.biological_age_impact, 0);
+      const movingAverage = cumulativeSum / (index + 1);
       
       return {
         ...score,
