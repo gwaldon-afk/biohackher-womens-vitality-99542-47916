@@ -20,11 +20,11 @@ Based on www.biohack-her.com brand identity.
     --popover: 0 0% 100%;
     --popover-foreground: 25 15% 20%;
 
-    /* Primary - Warm beige/tan (header color from site) */
-    --primary: 25 35% 70%;
+    /* Primary - Brand peach/salmon from uploaded assets */
+    --primary: 20 60% 75%;
     --primary-foreground: 25 15% 20%;
-    --primary-light: 25 40% 80%;
-    --primary-dark: 25 45% 55%;
+    --primary-light: 20 50% 85%;
+    --primary-dark: 20 70% 65%;
 
     /* Secondary - Peachy salmon (popup accent color) */
     --secondary: 15 65% 75%;
@@ -53,11 +53,11 @@ Based on www.biohack-her.com brand identity.
     --input: 25 20% 94%;
     --ring: 25 35% 70%;
 
-    /* Gradients - warm, organic feel */
-    --gradient-primary: linear-gradient(135deg, hsl(25 35% 70%), hsl(15 65% 75%));
+    /* Gradients - warm, elegant brand tones */
+    --gradient-primary: linear-gradient(135deg, hsl(20 60% 75%), hsl(20 50% 85%));
     --gradient-secondary: linear-gradient(135deg, hsl(15 65% 75%), hsl(35 60% 80%));
-    --gradient-hero: linear-gradient(135deg, hsl(25 35% 70%) 0%, hsl(15 65% 75%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(25 15% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(20 60% 75%) 0%, hsl(20 50% 85%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(20 10% 98%) 100%);
 
     /* Shadows - warm, subtle */
     --shadow-sm: 0 1px 2px 0 hsl(25 20% 80% / 0.2);

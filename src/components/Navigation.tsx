@@ -34,7 +34,7 @@ const Navigation = () => {
             <Activity className="h-8 w-8 text-primary" />
             <div className="flex flex-col">
               <span className="text-xl font-bold gradient-text">Biohack<em className="italic">her</em></span>
-              <span className="text-xs text-muted-foreground -mt-1">Women's Longevity Coach</span>
+              <span className="text-xs text-muted-foreground -mt-1 font-light tracking-wider">LIVE WELL LONGER</span>
             </div>
           </Link>
 
