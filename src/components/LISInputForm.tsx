@@ -143,10 +143,23 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     try {
       const score = calculateScore();
       
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to save your score.",
+          variant: "destructive"
+        });
+        setLoading(false);
+        return;
+      }
+      
       // Save to Supabase
       const { error } = await supabase.from('daily_scores').insert({
         date: new Date().toISOString().split('T')[0],
-        user_id: 'placeholder-user-id',
+        user_id: user.id,
         longevity_impact_score: score,
         biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
         color_code: score > 75 ? 'green' : score > 50 ? 'yellow' : 'red'
