@@ -100,15 +100,17 @@ const Dashboard = () => {
 
   const generateMockScores = (): DailyScore[] => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const possibleValues = [-2, -1, 0, 1, 2];
+    
     return days.map((day, index) => {
-      // Generate scores on a 5-point scale (-2 to +2, with 0 being neutral)
-      const biologicalImpact = (Math.random() - 0.5) * 4; // Range: -2 to +2
+      // Generate discrete scores on a 5-point scale (-2, -1, 0, +1, +2)
+      const biologicalImpact = possibleValues[Math.floor(Math.random() * possibleValues.length)];
       const score = 50 + (biologicalImpact * 12.5); // Convert to 0-100 scale for display
       
       return {
         date: day,
         longevity_impact_score: parseFloat(score.toFixed(1)),
-        biological_age_impact: parseFloat(biologicalImpact.toFixed(2)),
+        biological_age_impact: biologicalImpact,
         color_code: biologicalImpact >= 0 ? 'green' : 'red' as 'green' | 'red',
         moving_average: parseFloat((score + (Math.random() - 0.5) * 10).toFixed(1)),
         sleep_score: 65 + Math.random() * 25,
