@@ -34,7 +34,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section - Biohackher Age */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-4 text-foreground">
             Welcome back, <span className="gradient-text">Sarah</span>
           </h1>
           
@@ -60,35 +60,35 @@ const Dashboard = () => {
         </div>
 
         {/* Today's Nudge */}
-        <Card className="mb-8 border-primary/20 bg-primary/5">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                🌅 Today's Nudge
-              </CardTitle>
-              <Badge variant="outline" className="evidence-gold border-yellow-500">
-                {todaysNudge.evidence} Evidence
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <h3 className="font-semibold mb-2">{todaysNudge.title}</h3>
-            <p className="text-muted-foreground mb-4">{todaysNudge.description}</p>
-            <Button size="sm" className="primary-gradient">
-              Start Now
-            </Button>
-          </CardContent>
-        </Card>
+          <Card className="mb-8 border-primary/20 bg-primary/5">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-card-foreground">
+                  🌅 Today's Nudge
+                </CardTitle>
+                <Badge variant="outline" className="evidence-gold border-yellow-500 text-yellow-700 bg-yellow-50">
+                  {todaysNudge.evidence} Evidence
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <h3 className="font-semibold mb-2 text-card-foreground">{todaysNudge.title}</h3>
+              <p className="text-muted-foreground mb-4">{todaysNudge.description}</p>
+              <Button size="sm" className="primary-gradient">
+                Start Now
+              </Button>
+            </CardContent>
+          </Card>
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {metrics.map((metric) => (
-            <Card key={metric.name} className="hover:shadow-md transition-shadow">
+            <Card key={metric.name} className="hover:shadow-md transition-shadow bg-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <metric.icon className={`h-5 w-5 ${metric.color}`} />
-                    <h3 className="font-medium">{metric.name}</h3>
+                    <h3 className="font-medium text-card-foreground">{metric.name}</h3>
                   </div>
                   <div className="flex items-center gap-1">
                     {metric.trend === "up" ? (
@@ -101,12 +101,12 @@ const Dashboard = () => {
                 
                 <div className="flex items-center justify-between">
                   <ProgressCircle value={metric.value} size="md">
-                    <span className="text-sm font-semibold">{metric.value}%</span>
+                    <span className="text-sm font-semibold text-card-foreground">{metric.value}%</span>
                   </ProgressCircle>
                   
                   <div className="text-right">
                     <div className="text-xs text-muted-foreground">7-day avg</div>
-                    <div className="text-sm font-medium">
+                    <div className="text-sm font-medium text-card-foreground">
                       {metric.trend === "up" ? "↗️" : "↘️"} {Math.floor(Math.random() * 10 + 1)}%
                     </div>
                   </div>
@@ -118,19 +118,19 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button variant="outline" className="h-20 flex-col gap-2">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
             <Thermometer className="h-5 w-5" />
             Log Symptoms
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
             <Activity className="h-5 w-5" />
             Start Therapy
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
             <Moon className="h-5 w-5" />
             Sleep Routine
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
             <Utensils className="h-5 w-5" />
             Track Nutrition
           </Button>
