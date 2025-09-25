@@ -159,7 +159,7 @@ Based on www.biohack-her.com brand identity.
   }
 
   .hero-gradient {
-    background: var(--gradient-hero);
+    background: hsl(var(--primary));
   }
 
   .primary-gradient {
