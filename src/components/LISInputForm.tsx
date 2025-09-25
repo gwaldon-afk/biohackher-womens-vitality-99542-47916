@@ -178,8 +178,13 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild onClick={() => console.log("LIS Form trigger clicked")}>
-        {children}
+      <DialogTrigger asChild>
+        <div onClick={() => {
+          console.log("Direct click handler triggered");
+          setOpen(true);
+        }}>
+          {children}
+        </div>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
