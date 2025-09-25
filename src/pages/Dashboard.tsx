@@ -185,13 +185,9 @@ const Dashboard = () => {
   const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
 
   const chartConfig = {
-    longevity_impact_score: {
-      label: "Daily Score",
+    biological_age_impact: {
+      label: "Daily LIS Score",
       color: "hsl(var(--primary))",
-    },
-    moving_average: {
-      label: "7-Day Average",
-      color: "hsl(var(--muted-foreground))",
     },
   };
 
@@ -253,10 +249,10 @@ const Dashboard = () => {
                 <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis domain={[-2, 2]} />
+                  <YAxis domain={[-2, 2]} tickCount={5} ticks={[-2, -1, 0, 1, 2]} />
                   <Bar 
                     dataKey="biological_age_impact" 
-                    name="Daily Impact"
+                    name="Daily LIS Score"
                   >
                     {scores.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.biological_age_impact >= 0 ? '#22c55e' : '#ef4444'} />
@@ -264,11 +260,11 @@ const Dashboard = () => {
                   </Bar>
                   <Line 
                     type="monotone" 
-                    dataKey="moving_average" 
-                    stroke="hsl(var(--muted-foreground))" 
+                    dataKey="biological_age_impact" 
+                    stroke="#8884d8" 
                     strokeWidth={2}
-                    dot={false}
-                    name="7-Day Average"
+                    dot={{ fill: '#8884d8', r: 3 }}
+                    name="Trend Line"
                   />
                   <ChartTooltip content={<ChartTooltipContent />} />
                 </ComposedChart>
