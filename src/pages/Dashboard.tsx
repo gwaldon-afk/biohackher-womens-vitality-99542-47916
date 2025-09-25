@@ -278,6 +278,7 @@ const Dashboard = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
                   <YAxis domain={[-2, 2]} tickCount={4} ticks={[-2, -1, 1, 2]} />
+                  <ReferenceLine y={0} stroke="#666666" strokeWidth={2} strokeDasharray="5 5" />
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
@@ -305,12 +306,16 @@ const Dashboard = () => {
                   <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact > 0).length} days)</span>
                 </div>
                 <div className="flex items-center gap-2">
+                  <div className="w-4 h-2 border-t-2 border-dashed border-gray-600"></div>
+                  <span>No Impact (0 baseline)</span>
+                </div>
+                <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
                   <span>Negative Impact ({summary?.red_days || scores.filter(s => s.biological_age_impact < 0).length} days)</span>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-500">Weekly Total</div>
+                <div className="text-sm text-gray-500">Weekly Longevity Score</div>
                 <div className={`text-lg font-bold ${weeklyColor}`}>
                   {weeklyScore >= 0 ? '+' : ''}{weeklyScore.toFixed(2)} days
                 </div>
