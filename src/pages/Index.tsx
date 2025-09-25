@@ -60,12 +60,12 @@ const Index = () => {
                   Empowering women to beat ageing through biohacking.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link to="/auth">
+                  <Link to="/auth" onClick={() => console.log("Map my journey clicked")}>
                     <Button size="lg" className="bg-white text-primary hover:bg-white/90">
                       Map my journey
                     </Button>
                   </Link>
-                  <Link to="/dashboard">
+                  <Link to="/dashboard" onClick={() => console.log("View Dashboard clicked")}>
                     <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90">
                       View Dashboard
                     </Button>
@@ -126,12 +126,12 @@ const Index = () => {
               Join thousands of women who are taking control of their aging process with evidence-based protocols.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/auth">
+              <Link to="/auth" onClick={() => console.log("Get Started Free clicked")}>
                 <Button size="lg" className="primary-gradient">
                   Get Started Free
                 </Button>
               </Link>
-              <Link to="/upgrade">
+              <Link to="/upgrade" onClick={() => console.log("View Premium Plans clicked")}>
                 <Button size="lg" variant="outline">
                   View Premium Plans
                 </Button>
