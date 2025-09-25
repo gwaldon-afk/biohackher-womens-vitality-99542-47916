@@ -1,25 +1,29 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, User, Settings, Crown } from "lucide-react";
+import { Menu, X, Activity, User, Settings, Crown, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const navItems = [
+  const mainNavItems = [
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/symptoms", label: "Symptoms" },
+  ];
+
+  const biohackingItems = [
     { href: "/therapies", label: "Therapies" },
     { href: "/sleep", label: "Sleep" },
     { href: "/nutrition", label: "Nutrition" },
     { href: "/coaching", label: "Coaching" },
-    { href: "/reports", label: "Reports" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
+  const isBiohackingActive = () => biohackingItems.some(item => isActive(item.href));
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,7 +37,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => (
+            {mainNavItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
@@ -47,6 +51,46 @@ const Navigation = () => {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Biohacking Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className={cn(
+                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1",
+                isBiohackingActive()
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}>
+                Biohacking
+                <ChevronDown className="h-3 w-3" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="bg-background border border-border">
+                {biohackingItems.map((item) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "w-full cursor-pointer",
+                        isActive(item.href) ? "text-primary bg-primary/10" : ""
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link
+              to="/reports"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                isActive("/reports")
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              Reports
+            </Link>
           </div>
 
           {/* Desktop Actions */}
@@ -82,7 +126,7 @@ const Navigation = () => {
         {isOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
-              {navItems.map((item) => (
+              {mainNavItems.map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
@@ -97,6 +141,42 @@ const Navigation = () => {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* Biohacking Section in Mobile */}
+              <div className="px-2 py-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Biohacking</p>
+                <div className="flex flex-col space-y-2 ml-2">
+                  {biohackingItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className={cn(
+                        "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
+                        isActive(item.href)
+                          ? "text-primary bg-primary/10 rounded"
+                          : "text-muted-foreground"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                to="/reports"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
+                  isActive("/reports")
+                    ? "text-primary bg-primary/10 rounded"
+                    : "text-muted-foreground"
+                )}
+                onClick={() => setIsOpen(false)}
+              >
+                Reports
+              </Link>
+
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
                 <Link to="/upgrade" onClick={() => setIsOpen(false)}>
                   <Button variant="outline" className="w-full text-secondary border-secondary">
