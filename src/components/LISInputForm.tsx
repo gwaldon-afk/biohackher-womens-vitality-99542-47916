@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -80,6 +81,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const [nutritionData, setNutritionData] = useState({
     mealQuality: 7
   });
+
+  // Add state for nutrition input mode
+  const [nutritionInputMode, setNutritionInputMode] = useState<"simple" | "detailed">("simple");
+  const [showScorecard, setShowScorecard] = useState(false);
 
   const [socialData, setSocialData] = useState({
     interactionQuality: 6,
@@ -390,23 +395,73 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       <Utensils className="h-4 w-4 text-orange-500" />
                       Nutrition
                       <Badge variant="secondary">15%</Badge>
+                      {nutritionalScore !== 0 && (
+                        <Badge variant="outline" className="ml-auto">
+                          Score: {nutritionalScore} ({nutritionalGrade})
+                        </Badge>
+                      )}
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Nutrient-dense whole foods provide antioxidants, reduce inflammation, and support cellular repair mechanisms critical for longevity.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="mealQuality">Meal Quality (1-10)</Label>
-                      <Input
-                        id="mealQuality"
-                        type="number"
-                        min="1"
-                        max="10"
-                        value={nutritionData.mealQuality}
-                        onChange={(e) => setNutritionData({mealQuality: parseInt(e.target.value)})}
-                      />
+                      <Label className="text-sm font-medium">Choose your nutrition tracking method:</Label>
+                      <RadioGroup
+                        value={nutritionInputMode}
+                        onValueChange={(value: "simple" | "detailed") => {
+                          setNutritionInputMode(value);
+                          if (value === "detailed") {
+                            setShowScorecard(true);
+                          } else {
+                            setShowScorecard(false);
+                          }
+                        }}
+                        className="mt-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="simple" id="nutrition-simple" />
+                          <Label htmlFor="nutrition-simple" className="text-sm cursor-pointer">
+                            Simple meal quality rating (1-10)
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="detailed" id="nutrition-detailed" />
+                          <Label htmlFor="nutrition-detailed" className="text-sm cursor-pointer">
+                            Complete Daily Nutrition Scorecard
+                          </Label>
+                        </div>
+                      </RadioGroup>
                     </div>
+
+                    {nutritionInputMode === "simple" && (
+                      <div>
+                        <Label htmlFor="mealQuality">Meal Quality (1-10)</Label>
+                        <Input
+                          id="mealQuality"
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={nutritionData.mealQuality}
+                          onChange={(e) => setNutritionData({mealQuality: parseInt(e.target.value)})}
+                        />
+                      </div>
+                    )}
+
+                    {nutritionInputMode === "detailed" && nutritionalScore !== 0 && (
+                      <div className="p-3 bg-muted rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">Daily Nutrition Score</p>
+                            <p className="text-xs text-muted-foreground">Based on your completed scorecard</p>
+                          </div>
+                          <Badge variant="outline" className="text-base">
+                            {nutritionalScore} ({nutritionalGrade})
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -487,14 +542,16 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
               </div>
 
-              {/* Nutritional Scorecard */}
-              <NutritionalScorecard 
-                onScoreCalculated={(score, grade) => {
-                  setNutritionalScore(score);
-                  setNutritionalGrade(grade);
-                }}
-                hasDairySensitivity={false} // This could be set based on user profile
-              />
+              {/* Nutritional Scorecard - only show when detailed mode is selected */}
+              {showScorecard && (
+                <NutritionalScorecard 
+                  onScoreCalculated={(score, grade) => {
+                    setNutritionalScore(score);
+                    setNutritionalGrade(grade);
+                  }}
+                  hasDairySensitivity={false} // This could be set based on user profile
+                />
+              )}
 
               <Separator />
 
