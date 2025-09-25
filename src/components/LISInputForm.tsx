@@ -492,8 +492,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         </p>
                         <Button 
                           size="sm" 
-                          onClick={() => {
-                            console.log("Open Scorecard button clicked");
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             setShowScorecard(true);
                           }}
                         >
