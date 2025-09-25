@@ -473,7 +473,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                             <p className="text-sm font-medium">Daily Nutrition Score</p>
                             <p className="text-xs text-muted-foreground">Calculated from completed scorecard</p>
                           </div>
-                          <Badge variant="outline" className="text-base">
+                          <Badge variant="outline" className="text-xs">
                             {nutritionalScore} ({nutritionalGrade})
                           </Badge>
                         </div>
