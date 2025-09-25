@@ -1,15 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Download, TrendingUp, Crown, Lock } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FileText, Download, TrendingUp, Crown, Lock, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
 
 const Reports = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [reportType, setReportType] = useState("30-day");
+  const [historicalData, setHistoricalData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchHistoricalData();
+  }, []);
+
+  const fetchHistoricalData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to view your reports.",
+          variant: "destructive"
+        });
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false })
+        .limit(30);
+
+      if (error) throw error;
+
+      setHistoricalData(data || []);
+    } catch (error) {
+      console.error('Error fetching historical data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load historical data.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sampleMetrics = {
     biohackherAge: { current: 34, trend: -2 },
@@ -183,108 +230,153 @@ Report ID: BH-${Date.now()}
             </Card>
           </div>
 
-          {/* Report Preview */}
+          {/* Historical Data Display */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-xl">{currentReport.title}</CardTitle>
-                    <CardDescription>Preview • {currentReport.period}</CardDescription>
-                  </div>
-                  <Badge variant="outline" className="text-primary">
-                    Preview Mode
-                  </Badge>
-                </div>
+                <CardTitle className="text-xl">Historical Data</CardTitle>
+                <CardDescription>Detailed view of your past entries for investigation</CardDescription>
               </CardHeader>
               <CardContent>
-                <Tabs defaultValue="overview" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="metrics">Metrics</TabsTrigger>
-                    <TabsTrigger value="insights">Insights</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="overview" className="mt-6">
-                    <div className="space-y-6">
-                      {/* Biohackher Age Section */}
-                      <div className="text-center p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
-                        <h3 className="text-lg font-semibold mb-2">Your Biohackher Age</h3>
-                        <div className="text-4xl font-bold gradient-text mb-2">
-                          {sampleMetrics.biohackherAge.current} years
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {Math.abs(sampleMetrics.biohackherAge.trend)} years younger than last period
-                        </p>
-                      </div>
+                {loading ? (
+                  <div className="text-center py-8">Loading your data...</div>
+                ) : historicalData.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No data found. Start tracking your daily metrics to see reports here.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Accordion type="single" collapsible className="w-full">
+                      {historicalData.map((entry, index) => (
+                        <AccordionItem key={entry.id} value={`item-${index}`}>
+                          <AccordionTrigger className="text-left">
+                            <div className="flex items-center justify-between w-full pr-4">
+                              <div className="flex items-center gap-4">
+                                <span className="font-medium">
+                                  {format(new Date(entry.date), 'dd/MM/yyyy')}
+                                </span>
+                                <Badge variant="outline" className={
+                                  entry.color_code === 'green' ? 'border-green-500 text-green-600' :
+                                  entry.color_code === 'yellow' ? 'border-yellow-500 text-yellow-600' :
+                                  'border-red-500 text-red-600'
+                                }>
+                                  LIS: {entry.longevity_impact_score}
+                                </Badge>
+                              </div>
+                              <span className={`text-sm font-medium ${
+                                entry.biological_age_impact > 0 ? 'text-green-600' : 
+                                entry.biological_age_impact < 0 ? 'text-red-600' : 'text-yellow-600'
+                              }`}>
+                                {entry.biological_age_impact > 0 ? '-' : '+'}
+                                {Math.abs(entry.biological_age_impact)} days
+                              </span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+                              {/* Sleep Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Moon className="h-4 w-4 text-blue-500" />
+                                  <h4 className="font-semibold">Sleep Quality</h4>
+                                  <Badge variant="secondary">{Math.round(entry.sleep_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  <div>Total Sleep: {entry.total_sleep_hours}h</div>
+                                  <div>REM Sleep: {entry.rem_hours}h</div>
+                                  <div>Deep Sleep: {entry.deep_sleep_hours}h</div>
+                                </div>
+                              </div>
 
-                      {/* Key Highlights */}
-                      <div>
-                        <h3 className="text-lg font-semibold mb-4">Key Highlights</h3>
-                        <div className="space-y-2">
-                          {currentReport.highlights.map((highlight, index) => (
-                            <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                              <TrendingUp className="h-4 w-4 text-green-500" />
-                              <span className="text-sm">{highlight}</span>
+                              {/* Stress Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Heart className="h-4 w-4 text-red-500" />
+                                  <h4 className="font-semibold">Stress</h4>
+                                  <Badge variant="secondary">{Math.round(entry.stress_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  <div>HRV: {entry.hrv}ms</div>
+                                  <div>Stress Level: {entry.self_reported_stress}/10</div>
+                                </div>
+                              </div>
+
+                              {/* Activity Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Activity className="h-4 w-4 text-green-500" />
+                                  <h4 className="font-semibold">Activity</h4>
+                                  <Badge variant="secondary">{Math.round(entry.physical_activity_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  <div>Active Minutes: {entry.active_minutes}min</div>
+                                  <div>Steps: {entry.steps?.toLocaleString()}</div>
+                                  <div>Type: {entry.activity_type}</div>
+                                  <div>Intensity: {entry.activity_intensity}/10</div>
+                                </div>
+                              </div>
+
+                              {/* Nutrition Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Utensils className="h-4 w-4 text-orange-500" />
+                                  <h4 className="font-semibold">Nutrition</h4>
+                                  <Badge variant="secondary">{Math.round(entry.nutrition_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  {entry.nutritional_detailed_score !== null ? (
+                                    <>
+                                      <div>Detailed Score: {entry.nutritional_detailed_score} ({entry.nutritional_grade})</div>
+                                      <Badge variant="outline" className="text-xs">Detailed Tracking</Badge>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div>Meal Quality: {entry.meal_quality}/10</div>
+                                      <Badge variant="outline" className="text-xs">Simple Tracking</Badge>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Social Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Users className="h-4 w-4 text-purple-500" />
+                                  <h4 className="font-semibold">Social</h4>
+                                  <Badge variant="secondary">{Math.round(entry.social_connections_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  <div>Interaction Quality: {entry.social_interaction_quality}/10</div>
+                                  <div>Social Time: {entry.social_time_minutes}min</div>
+                                </div>
+                              </div>
+
+                              {/* Cognitive Data */}
+                              <div className="p-4 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <Brain className="h-4 w-4 text-indigo-500" />
+                                  <h4 className="font-semibold">Cognitive</h4>
+                                  <Badge variant="secondary">{Math.round(entry.cognitive_engagement_score || 0)}</Badge>
+                                </div>
+                                <div className="space-y-2 text-sm">
+                                  <div>Meditation: {entry.meditation_minutes}min</div>
+                                  <div>Learning: {entry.learning_minutes}min</div>
+                                </div>
+                              </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="metrics" className="mt-6">
-                    <div className="grid gap-4">
-                      {Object.entries(sampleMetrics).map(([key, metric]) => (
-                        <div key={key} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div>
-                            <h3 className="font-medium capitalize">
-                              {key.replace(/([A-Z])/g, ' $1').trim()}
-                            </h3>
-                            <p className="text-sm text-muted-foreground">
-                              Current period average
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-lg font-semibold">
-                              {key === 'biohackherAge' ? `${metric.current} yrs` : `${metric.current}%`}
+                            
+                            <div className="mt-4 pt-4 border-t">
+                              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                <span>Input Method: {entry.input_mode || 'manual'}</span>
+                                <span>Updated: {format(new Date(entry.updated_at), 'HH:mm on dd/MM/yyyy')}</span>
+                              </div>
                             </div>
-                            <div className={`text-sm flex items-center ${
-                              metric.trend > 0 ? 'text-green-600' : 'text-red-600'
-                            }`}>
-                              {metric.trend > 0 ? '↗' : '↘'} {Math.abs(metric.trend)}
-                            </div>
-                          </div>
-                        </div>
+                          </AccordionContent>
+                        </AccordionItem>
                       ))}
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="insights" className="mt-6">
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-semibold mb-4">Personalised Recommendations</h3>
-                        <div className="space-y-3">
-                          {currentReport.recommendations.map((rec, index) => (
-                            <div key={index} className="p-4 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-                              <p className="text-sm">{rec}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="p-4 bg-muted/30 rounded-lg">
-                        <h4 className="font-medium mb-2">Next Steps</h4>
-                        <ul className="text-sm space-y-1 text-muted-foreground">
-                          <li>• Schedule follow-up biomarker testing</li>
-                          <li>• Continue current successful protocols</li>
-                          <li>• Consider consultation with healthcare provider</li>
-                          <li>• Set goals for next measurement period</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                    </Accordion>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>

@@ -163,13 +163,46 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
         return;
       }
       
-      // Save to Supabase
+      // Save to Supabase with all detailed input data
       const { error } = await supabase.from('daily_scores').insert({
         date: format(scoreDate, 'yyyy-MM-dd'),
         user_id: user.id,
         longevity_impact_score: score,
         biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
-        color_code: score > 75 ? 'green' : score > 50 ? 'yellow' : 'red'
+        color_code: score > 75 ? 'green' : score > 50 ? 'yellow' : 'red',
+        // Sleep data
+        total_sleep_hours: sleepData.totalSleepHours,
+        rem_hours: sleepData.remHours,
+        deep_sleep_hours: sleepData.deepSleepHours,
+        // Stress data
+        hrv: stressData.hrv,
+        self_reported_stress: stressData.selfReportedStress,
+        // Activity data
+        active_minutes: activityData.activeMinutes,
+        steps: activityData.steps,
+        activity_intensity: activityData.intensity,
+        activity_type: activityData.type,
+        // Nutrition data
+        meal_quality: nutritionInputMode === "simple" ? nutritionData.mealQuality : null,
+        nutritional_detailed_score: nutritionInputMode === "detailed" ? nutritionalScore : null,
+        nutritional_grade: nutritionInputMode === "detailed" ? nutritionalGrade : null,
+        // Social data
+        social_interaction_quality: socialData.interactionQuality,
+        social_time_minutes: socialData.socialTimeMinutes,
+        // Cognitive data
+        meditation_minutes: cognitiveData.meditationMinutes,
+        learning_minutes: cognitiveData.learningMinutes,
+        // Input method
+        input_mode: activeTab,
+        // Individual pillar scores for reference
+        sleep_score: (sleepData.totalSleepHours / 8) * 25,
+        stress_score: ((200 - stressData.hrv) / 200 + (10 - stressData.selfReportedStress) / 10) * 10,
+        physical_activity_score: (activityData.activeMinutes / 60) * 15,
+        nutrition_score: nutritionInputMode === "detailed" && nutritionalScore !== 0 
+          ? (nutritionalScore + 10) / 20 * 15 
+          : (nutritionData.mealQuality / 10) * 15,
+        social_connections_score: ((socialData.interactionQuality / 10) + (socialData.socialTimeMinutes / 120)) * 7.5,
+        cognitive_engagement_score: ((cognitiveData.meditationMinutes + cognitiveData.learningMinutes) / 65) * 10
       });
 
       if (error) throw error;

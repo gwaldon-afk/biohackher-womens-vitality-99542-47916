@@ -16,50 +16,101 @@ export type Database = {
     Tables: {
       daily_scores: {
         Row: {
+          active_minutes: number | null
+          activity_intensity: number | null
+          activity_type: string | null
           biological_age_impact: number
           cognitive_engagement_score: number | null
           color_code: string
           created_at: string
           date: string
+          deep_sleep_hours: number | null
+          hrv: number | null
           id: string
+          input_mode: string | null
+          learning_minutes: number | null
           longevity_impact_score: number
+          meal_quality: number | null
+          meditation_minutes: number | null
           nutrition_score: number | null
+          nutritional_detailed_score: number | null
+          nutritional_grade: string | null
           physical_activity_score: number | null
+          rem_hours: number | null
+          self_reported_stress: number | null
           sleep_score: number | null
           social_connections_score: number | null
+          social_interaction_quality: number | null
+          social_time_minutes: number | null
+          steps: number | null
           stress_score: number | null
+          total_sleep_hours: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          active_minutes?: number | null
+          activity_intensity?: number | null
+          activity_type?: string | null
           biological_age_impact: number
           cognitive_engagement_score?: number | null
           color_code: string
           created_at?: string
           date: string
+          deep_sleep_hours?: number | null
+          hrv?: number | null
           id?: string
+          input_mode?: string | null
+          learning_minutes?: number | null
           longevity_impact_score: number
+          meal_quality?: number | null
+          meditation_minutes?: number | null
           nutrition_score?: number | null
+          nutritional_detailed_score?: number | null
+          nutritional_grade?: string | null
           physical_activity_score?: number | null
+          rem_hours?: number | null
+          self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
+          social_interaction_quality?: number | null
+          social_time_minutes?: number | null
+          steps?: number | null
           stress_score?: number | null
+          total_sleep_hours?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          active_minutes?: number | null
+          activity_intensity?: number | null
+          activity_type?: string | null
           biological_age_impact?: number
           cognitive_engagement_score?: number | null
           color_code?: string
           created_at?: string
           date?: string
+          deep_sleep_hours?: number | null
+          hrv?: number | null
           id?: string
+          input_mode?: string | null
+          learning_minutes?: number | null
           longevity_impact_score?: number
+          meal_quality?: number | null
+          meditation_minutes?: number | null
           nutrition_score?: number | null
+          nutritional_detailed_score?: number | null
+          nutritional_grade?: string | null
           physical_activity_score?: number | null
+          rem_hours?: number | null
+          self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
+          social_interaction_quality?: number | null
+          social_time_minutes?: number | null
+          steps?: number | null
           stress_score?: number | null
+          total_sleep_hours?: number | null
           updated_at?: string
           user_id?: string
         }
