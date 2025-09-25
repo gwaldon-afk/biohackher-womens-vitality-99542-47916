@@ -162,10 +162,20 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
         setLoading(false);
         return;
       }
+
+      const dateString = format(scoreDate, 'yyyy-MM-dd');
       
-      // Save to Supabase with all detailed input data
-      const { error } = await supabase.from('daily_scores').insert({
-        date: format(scoreDate, 'yyyy-MM-dd'),
+      // Check if entry already exists for this date
+      const { data: existingEntry } = await supabase
+        .from('daily_scores')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('date', dateString)
+        .maybeSingle();
+
+      let result;
+      const dataToSave = {
+        date: dateString,
         user_id: user.id,
         longevity_impact_score: score,
         biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
@@ -203,13 +213,26 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
           : (nutritionData.mealQuality / 10) * 15,
         social_connections_score: ((socialData.interactionQuality / 10) + (socialData.socialTimeMinutes / 120)) * 7.5,
         cognitive_engagement_score: ((cognitiveData.meditationMinutes + cognitiveData.learningMinutes) / 65) * 10
-      });
+      };
 
-      if (error) throw error;
+      if (existingEntry) {
+        // Update existing entry
+        result = await supabase
+          .from('daily_scores')
+          .update(dataToSave)
+          .eq('id', existingEntry.id);
+      } else {
+        // Insert new entry
+        result = await supabase
+          .from('daily_scores')
+          .insert(dataToSave);
+      }
+
+      if (result.error) throw result.error;
 
       toast({
         title: "Score Updated!",
-        description: `Your Longevity Impact Score: ${score}/100`,
+        description: `Your Longevity Impact Score: ${score}/100 for ${format(scoreDate, 'dd/MM/yyyy')}`,
         variant: "default"
       });
 
@@ -219,7 +242,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
       console.error('Error saving score:', error);
       toast({
         title: "Error",
-        description: "Failed to save your score. Please try again.",
+        description: `Failed to save your score: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     } finally {
