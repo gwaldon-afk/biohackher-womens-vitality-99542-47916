@@ -30,9 +30,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-3">
             <Activity className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold gradient-text">Biohack<em className="italic">her</em></span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold gradient-text">Biohack<em className="italic">her</em></span>
+              <span className="text-xs text-muted-foreground -mt-1">Women's Longevity Coach</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
