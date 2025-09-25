@@ -428,6 +428,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                             setShowScorecard(true);
                           } else {
                             setShowScorecard(false);
+                            // Reset nutritional score when switching back to simple
+                            setNutritionalScore(0);
+                            setNutritionalGrade('C');
                           }
                         }}
                         className="mt-2"
@@ -466,12 +469,34 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm font-medium">Daily Nutrition Score</p>
-                            <p className="text-xs text-muted-foreground">Based on completed scorecard</p>
+                            <p className="text-xs text-muted-foreground">Calculated from completed scorecard</p>
                           </div>
                           <Badge variant="outline" className="text-base">
                             {nutritionalScore} ({nutritionalGrade})
                           </Badge>
                         </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="mt-2 w-full"
+                          onClick={() => setShowScorecard(true)}
+                        >
+                          Update Scorecard
+                        </Button>
+                      </div>
+                    )}
+
+                    {nutritionInputMode === "detailed" && nutritionalScore === 0 && (
+                      <div className="p-3 bg-muted/50 rounded-lg text-center">
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Complete the nutrition scorecard to get your daily score
+                        </p>
+                        <Button 
+                          size="sm" 
+                          onClick={() => setShowScorecard(true)}
+                        >
+                          Open Scorecard
+                        </Button>
                       </div>
                     )}
                   </CardContent>
@@ -560,6 +585,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                   onScoreCalculated={(score, grade) => {
                     setNutritionalScore(score);
                     setNutritionalGrade(grade);
+                    // Close the scorecard after calculation
+                    setShowScorecard(false);
                   }}
                   hasDairySensitivity={false} // This could be set based on user profile
                 />
