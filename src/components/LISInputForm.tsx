@@ -214,6 +214,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Sleep Quality
                     <Badge variant="secondary">25%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Quality sleep is crucial for cellular repair, memory consolidation, and hormone regulation. Optimal sleep duration and REM percentage directly impact longevity.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -250,6 +253,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Stress Management
                     <Badge variant="secondary">20%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Chronic stress accelerates aging through inflammation and cellular damage. HRV measures autonomic nervous system balance and stress resilience.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -285,6 +291,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Physical Activity
                     <Badge variant="secondary">15%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Regular movement improves cardiovascular health, maintains muscle mass, and enhances mitochondrial function—key factors in healthy aging.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -320,6 +329,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Nutrition
                     <Badge variant="secondary">15%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Nutrient-dense whole foods provide antioxidants, reduce inflammation, and support cellular repair mechanisms critical for longevity.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div>
@@ -344,6 +356,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Social Connections
                     <Badge variant="secondary">15%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Strong social bonds reduce stress hormones, boost immune function, and provide emotional support—significantly impacting lifespan.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -379,6 +394,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     Cognitive Engagement
                     <Badge variant="secondary">10%</Badge>
                   </CardTitle>
+                  <CardDescription className="text-xs">
+                    Mental stimulation and mindfulness practices promote neuroplasticity, reduce cognitive decline, and support brain health throughout aging.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
