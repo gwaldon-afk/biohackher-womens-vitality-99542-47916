@@ -54,7 +54,8 @@ const Index = () => {
                   Biohack<em className="italic">her</em>
                 </h1>
                 <p className="text-xl lg:text-2xl mb-8 text-white/90">
-                  Live well longer. Empowering women to beat ageing through biohacking.
+                  Live well longer.<br />
+                  Empowering women to beat ageing through biohacking.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <Link to="/auth">
