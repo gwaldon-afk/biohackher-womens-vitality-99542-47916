@@ -28,31 +28,31 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section - Biohackher Age */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">
             Welcome back, <span className="gradient-text">Sarah</span>
           </h1>
           
-          <Card className="max-w-md mx-auto card-elevated">
+          <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200">
             <CardHeader>
-              <CardTitle className="text-lg">Your Biohackher Age</CardTitle>
-              <CardDescription>Based on your biomarkers and lifestyle data</CardDescription>
+              <CardTitle className="text-lg text-gray-900">Your Biohackher Age</CardTitle>
+              <CardDescription className="text-gray-600">Based on your biomarkers and lifestyle data</CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <div className="flex items-center justify-center mb-4">
                 <ProgressCircle value={75} size="xl">
                   <div className="text-center">
-                    <div className="age-score">{biohackherAge}</div>
-                    <div className="text-sm text-muted-foreground">years</div>
+                    <div className="text-4xl font-bold text-gray-900">{biohackherAge}</div>
+                    <div className="text-sm text-gray-500">years</div>
                   </div>
                 </ProgressCircle>
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-gray-600">
                 You're <span className="font-semibold text-primary">{improvement} years younger</span> than your chronological age
               </div>
             </CardContent>
@@ -60,35 +60,35 @@ const Dashboard = () => {
         </div>
 
         {/* Today's Nudge */}
-          <Card className="mb-8 border-primary/20 bg-primary/5">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-card-foreground">
-                  🌅 Today's Nudge
-                </CardTitle>
-                <Badge variant="outline" className="evidence-gold border-yellow-500 text-yellow-700 bg-yellow-50">
-                  {todaysNudge.evidence} Evidence
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <h3 className="font-semibold mb-2 text-card-foreground">{todaysNudge.title}</h3>
-              <p className="text-muted-foreground mb-4">{todaysNudge.description}</p>
-              <Button size="sm" className="primary-gradient">
-                Start Now
-              </Button>
-            </CardContent>
-          </Card>
+        <Card className="mb-8 bg-amber-50 border-amber-200 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2 text-gray-900">
+                🌅 Today's Nudge
+              </CardTitle>
+              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
+                {todaysNudge.evidence} Evidence
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <h3 className="font-semibold mb-2 text-gray-900">{todaysNudge.title}</h3>
+            <p className="text-gray-700 mb-4">{todaysNudge.description}</p>
+            <Button size="sm" className="primary-gradient text-white">
+              Start Now
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {metrics.map((metric) => (
-            <Card key={metric.name} className="hover:shadow-md transition-shadow bg-card">
+            <Card key={metric.name} className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <metric.icon className={`h-5 w-5 ${metric.color}`} />
-                    <h3 className="font-medium text-card-foreground">{metric.name}</h3>
+                    <h3 className="font-medium text-gray-900">{metric.name}</h3>
                   </div>
                   <div className="flex items-center gap-1">
                     {metric.trend === "up" ? (
@@ -101,12 +101,12 @@ const Dashboard = () => {
                 
                 <div className="flex items-center justify-between">
                   <ProgressCircle value={metric.value} size="md">
-                    <span className="text-sm font-semibold text-card-foreground">{metric.value}%</span>
+                    <span className="text-sm font-semibold text-gray-900">{metric.value}%</span>
                   </ProgressCircle>
                   
                   <div className="text-right">
-                    <div className="text-xs text-muted-foreground">7-day avg</div>
-                    <div className="text-sm font-medium text-card-foreground">
+                    <div className="text-xs text-gray-500">7-day avg</div>
+                    <div className="text-sm font-medium text-gray-900">
                       {metric.trend === "up" ? "↗️" : "↘️"} {Math.floor(Math.random() * 10 + 1)}%
                     </div>
                   </div>
@@ -118,19 +118,19 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Thermometer className="h-5 w-5" />
             Log Symptoms
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Activity className="h-5 w-5" />
             Start Therapy
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Moon className="h-5 w-5" />
             Sleep Routine
           </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-card text-card-foreground border-border">
+          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Utensils className="h-5 w-5" />
             Track Nutrition
           </Button>
