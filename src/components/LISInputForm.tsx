@@ -424,14 +424,13 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         value={nutritionInputMode}
                         onValueChange={(value: "simple" | "detailed") => {
                           setNutritionInputMode(value);
-                          if (value === "detailed") {
-                            setShowScorecard(true);
-                          } else {
+                          if (value === "simple") {
                             setShowScorecard(false);
                             // Reset nutritional score when switching back to simple
                             setNutritionalScore(0);
                             setNutritionalGrade('C');
                           }
+                          // Don't automatically open scorecard when selecting detailed
                         }}
                         className="mt-2"
                       >
@@ -493,7 +492,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         </p>
                         <Button 
                           size="sm" 
-                          onClick={() => setShowScorecard(true)}
+                          onClick={() => {
+                            console.log("Open Scorecard button clicked");
+                            setShowScorecard(true);
+                          }}
                         >
                           Open Scorecard
                         </Button>
