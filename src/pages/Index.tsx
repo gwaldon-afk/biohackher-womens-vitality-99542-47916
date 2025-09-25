@@ -5,9 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import LISInputForm from "@/components/LISInputForm";
 
 const Index = () => {
   const navigate = useNavigate();
+  
+  const handleScoreCalculated = () => {
+    // Callback when LIS score is calculated
+    console.log("LIS score calculated from homepage");
+  };
   const features = [
     {
       icon: Activity,
@@ -110,28 +116,45 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="card-elevated hover:shadow-lg transition-shadow cursor-pointer" 
-                onClick={() => {
-                  console.log(`${feature.title} card clicked`);
-                  if (feature.title === "Daily Longevity Inputs") {
-                    navigate("/dashboard");
-                  }
-                }}
-              >
-                <CardHeader>
-                  <feature.icon className="h-10 w-10 text-primary mb-4" />
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
+            {features.map((feature, index) => {
+              if (feature.title === "Daily Longevity Inputs") {
+                return (
+                  <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
+                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer">
+                      <CardHeader>
+                        <feature.icon className="h-10 w-10 text-primary mb-4" />
+                        <CardTitle className="text-xl">{feature.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="text-base">
+                          {feature.description}
+                        </CardDescription>
+                      </CardContent>
+                    </Card>
+                  </LISInputForm>
+                );
+              }
+              
+              return (
+                <Card 
+                  key={index} 
+                  className="card-elevated hover:shadow-lg transition-shadow cursor-pointer" 
+                  onClick={() => {
+                    console.log(`${feature.title} card clicked`);
+                  }}
+                >
+                  <CardHeader>
+                    <feature.icon className="h-10 w-10 text-primary mb-4" />
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
