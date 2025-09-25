@@ -274,7 +274,7 @@ const Dashboard = () => {
           <CardContent>
             <ChartContainer config={chartConfig} className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={scores} margin={{ top: 40, right: 30, left: 20, bottom: 5 }}>
+                <ComposedChart data={scores} margin={{ top: 50, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" strokeOpacity={0.5} />
                   <XAxis 
                     dataKey="date" 
@@ -303,7 +303,7 @@ const Dashboard = () => {
                     <LabelList
                       dataKey="longevity_impact_score"
                       position="top"
-                      offset={8}
+                      offset={12}
                       style={{ fontSize: '10px', fill: '#374151', fontWeight: '500' }}
                       formatter={(value: number) => value.toFixed(0)}
                     />
