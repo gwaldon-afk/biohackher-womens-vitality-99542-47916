@@ -114,10 +114,10 @@ const Dashboard = () => {
 
   const generateMockScores = (): DailyScore[] => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const possibleValues = [-2, -1, 0, 1, 2];
+    const possibleValues = [-2, -1, 1, 2]; // Removed 0 - every day has some impact
     
     return days.map((day, index) => {
-      // Generate discrete scores on a 5-point scale (-2, -1, 0, +1, +2)
+      // Generate discrete scores on a 4-point scale (-2, -1, +1, +2)
       const biologicalImpact = possibleValues[Math.floor(Math.random() * possibleValues.length)];
       const score = 50 + (biologicalImpact * 12.5); // Convert to 0-100 scale for display
       
@@ -277,23 +277,14 @@ const Dashboard = () => {
                 <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis domain={[-2, 2]} tickCount={5} ticks={[-2, -1, 0, 1, 2]} />
-                  <ReferenceLine y={0} stroke="#000000" strokeWidth={3} strokeDasharray="0" />
+                  <YAxis domain={[-2, 2]} tickCount={4} ticks={[-2, -1, 1, 2]} />
                   <Bar 
                     dataKey="biological_age_impact" 
                     name="Daily LIS Score"
                   >
-                    {scores.map((entry, index) => {
-                      let fill;
-                      if (entry.biological_age_impact === 0) {
-                        fill = '#000000'; // Black for zero values
-                      } else if (entry.biological_age_impact > 0) {
-                        fill = '#22c55e'; // Green for positive
-                      } else {
-                        fill = '#ef4444'; // Red for negative
-                      }
-                      return <Cell key={`cell-${index}`} fill={fill} />;
-                    })}
+                    {scores.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.biological_age_impact > 0 ? '#22c55e' : '#ef4444'} />
+                    ))}
                   </Bar>
                   <Line 
                     type="monotone" 
@@ -312,10 +303,6 @@ const Dashboard = () => {
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-green-500 rounded"></div>
                   <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact > 0).length} days)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-black rounded"></div>
-                  <span>Neutral Impact ({scores.filter(s => s.biological_age_impact === 0).length} days)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
