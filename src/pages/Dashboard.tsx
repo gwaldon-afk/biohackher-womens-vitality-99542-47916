@@ -2,29 +2,188 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressCircle } from "@/components/ui/progress-circle";
-import { TrendingUp, TrendingDown, Activity, Heart, Moon, Footprints, Utensils, Thermometer } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+interface DailyScore {
+  date: string;
+  longevity_impact_score: number;
+  biological_age_impact: number;
+  color_code: 'green' | 'red';
+  moving_average: number;
+  sleep_score: number;
+  stress_score: number;
+  physical_activity_score: number;
+  nutrition_score: number;
+  social_connections_score: number;
+  cognitive_engagement_score: number;
+}
+
+interface ScoreSummary {
+  total_days: number;
+  average_score: number;
+  total_biological_age_impact: number;
+  green_days: number;
+  red_days: number;
+}
 
 const Dashboard = () => {
-  // Mock data - in real app would come from API/state
-  const biohackherAge = 34;
-  const chronologicalAge = 42;
-  const improvement = chronologicalAge - biohackherAge;
+  const [scores, setScores] = useState<DailyScore[]>([]);
+  const [summary, setSummary] = useState<ScoreSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const metrics = [
-    { name: "Sleep Quality", value: 78, trend: "up", icon: Moon, color: "text-blue-500" },
-    { name: "HRV", value: 65, trend: "up", icon: Heart, color: "text-red-500" },
-    { name: "Resting HR", value: 58, trend: "down", icon: Activity, color: "text-green-500" },
-    { name: "Daily Steps", value: 85, trend: "up", icon: Footprints, color: "text-purple-500" },
-    { name: "Protein Intake", value: 72, trend: "up", icon: Utensils, color: "text-orange-500" },
-    { name: "Symptom Score", value: 25, trend: "down", icon: Thermometer, color: "text-pink-500" }
+  useEffect(() => {
+    fetchScoreHistory();
+  }, []);
+
+  const fetchScoreHistory = async () => {
+    try {
+      // Mock user ID - in real app would come from auth
+      const mockUserId = "123e4567-e89b-12d3-a456-426614174000";
+      
+      const response = await supabase.functions.invoke('score-history', {
+        body: {
+          user_id: mockUserId,
+          days: 7
+        }
+      });
+
+      if (response.error) {
+        throw response.error;
+      }
+
+      const { scores: fetchedScores, summary: fetchedSummary } = response.data;
+      
+      // Generate mock data if no scores exist
+      if (fetchedScores.length === 0) {
+        const mockScores = generateMockScores();
+        setScores(mockScores);
+        setSummary({
+          total_days: 7,
+          average_score: 72.5,
+          total_biological_age_impact: 1.2,
+          green_days: 5,
+          red_days: 2
+        });
+      } else {
+        setScores(fetchedScores);
+        setSummary(fetchedSummary);
+      }
+    } catch (error) {
+      console.error('Error fetching scores:', error);
+      // Show mock data on error
+      const mockScores = generateMockScores();
+      setScores(mockScores);
+      setSummary({
+        total_days: 7,
+        average_score: 72.5,
+        total_biological_age_impact: 1.2,
+        green_days: 5,
+        red_days: 2
+      });
+      
+      toast({
+        title: "Demo Mode",
+        description: "Showing sample data. Connect your wearables to see real scores.",
+        variant: "default"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateMockScores = (): DailyScore[] => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days.map((day, index) => {
+      const score = 50 + Math.random() * 40; // Random score between 50-90
+      return {
+        date: day,
+        longevity_impact_score: parseFloat(score.toFixed(1)),
+        biological_age_impact: score > 65 ? 0.2 : -0.1,
+        color_code: score > 65 ? 'green' : 'red' as 'green' | 'red',
+        moving_average: parseFloat((score + (Math.random() - 0.5) * 10).toFixed(1)),
+        sleep_score: 65 + Math.random() * 25,
+        stress_score: 55 + Math.random() * 30,
+        physical_activity_score: 60 + Math.random() * 30,
+        nutrition_score: 50 + Math.random() * 35,
+        social_connections_score: 45 + Math.random() * 40,
+        cognitive_engagement_score: 55 + Math.random() * 25
+      };
+    });
+  };
+
+  // Current day's pillar scores for display
+  const currentDayScores = scores.length > 0 ? scores[scores.length - 1] : null;
+  
+  const pillarMetrics = [
+    { 
+      name: "Sleep Quality", 
+      value: currentDayScores?.sleep_score || 78, 
+      trend: "up", 
+      icon: Moon, 
+      color: "text-blue-500",
+      weight: "25%" 
+    },
+    { 
+      name: "Stress Management", 
+      value: currentDayScores?.stress_score || 65, 
+      trend: "up", 
+      icon: Heart, 
+      color: "text-red-500",
+      weight: "20%" 
+    },
+    { 
+      name: "Physical Activity", 
+      value: currentDayScores?.physical_activity_score || 82, 
+      trend: "up", 
+      icon: Activity, 
+      color: "text-green-500",
+      weight: "15%" 
+    },
+    { 
+      name: "Nutrition", 
+      value: currentDayScores?.nutrition_score || 72, 
+      trend: "down", 
+      icon: Utensils, 
+      color: "text-orange-500",
+      weight: "15%" 
+    },
+    { 
+      name: "Social Connections", 
+      value: currentDayScores?.social_connections_score || 68, 
+      trend: "up", 
+      icon: Users, 
+      color: "text-purple-500",
+      weight: "15%" 
+    },
+    { 
+      name: "Cognitive Engagement", 
+      value: currentDayScores?.cognitive_engagement_score || 74, 
+      trend: "up", 
+      icon: Brain, 
+      color: "text-pink-500",
+      weight: "10%" 
+    }
   ];
 
-  const todaysNudge = {
-    title: "Morning Sunlight Exposure",
-    description: "Get 10-15 minutes of natural light within 2 hours of waking to optimise your circadian rhythm.",
-    type: "circadian",
-    evidence: "Gold"
+  const currentScore = summary?.average_score || 72.5;
+  const bioAgeImpact = summary?.total_biological_age_impact || 1.2;
+
+  const chartConfig = {
+    longevity_impact_score: {
+      label: "Daily Score",
+      color: "hsl(var(--primary))",
+    },
+    moving_average: {
+      label: "7-Day Average",
+      color: "hsl(var(--muted-foreground))",
+    },
   };
 
   return (
@@ -32,7 +191,7 @@ const Dashboard = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section - Biohackher Age */}
+        {/* Hero Section - Longevity Impact Score */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 text-gray-900">
             Welcome back, <span className="gradient-text">Sarah</span>
@@ -40,99 +199,141 @@ const Dashboard = () => {
           
           <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200">
             <CardHeader>
-              <CardTitle className="text-lg text-gray-900">Your Biohackher Age</CardTitle>
-              <CardDescription className="text-gray-600">Based on your biomarkers and lifestyle data</CardDescription>
+              <CardTitle className="text-lg text-gray-900">Your Longevity Impact Score</CardTitle>
+              <CardDescription className="text-gray-600">
+                LISE - Daily biological age impact assessment
+              </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <div className="flex items-center justify-center mb-4">
-                <ProgressCircle value={75} size="xl">
+                <ProgressCircle value={currentScore} size="xl">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-gray-900">{biohackherAge}</div>
-                    <div className="text-sm text-gray-500">years</div>
+                    <div className="text-4xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                    <div className="text-sm text-gray-500">LIS</div>
                   </div>
                 </ProgressCircle>
               </div>
               <div className="text-sm text-gray-600">
-                You're <span className="font-semibold text-primary">{improvement} years younger</span> than your chronological age
+                {bioAgeImpact >= 0 ? (
+                  <span className="font-semibold text-green-600">
+                    -{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                  </span>
+                ) : (
+                  <span className="font-semibold text-red-600">
+                    +{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                  </span>
+                )}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Today's Nudge */}
-        <Card className="mb-8 bg-amber-50 border-amber-200 shadow-sm">
+        {/* LIS Chart Section */}
+        <Card className="mb-8 bg-white shadow-sm border border-gray-200">
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-gray-900">
-                🌅 Today's Nudge
-              </CardTitle>
-              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">
-                {todaysNudge.evidence} Evidence
-              </Badge>
-            </div>
+            <CardTitle className="flex items-center gap-2 text-gray-900">
+              📊 Weekly Longevity Impact Scores
+            </CardTitle>
+            <CardDescription>
+              Daily scores with 7-day moving average trend line
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <h3 className="font-semibold mb-2 text-gray-900">{todaysNudge.title}</h3>
-            <p className="text-gray-700 mb-4">{todaysNudge.description}</p>
-            <Button size="sm" className="primary-gradient text-white">
-              Start Now
-            </Button>
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={scores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis domain={[0, 100]} />
+                  <Bar 
+                    dataKey="longevity_impact_score" 
+                    fill="hsl(var(--primary))"
+                    name="Daily Score"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="moving_average" 
+                    stroke="hsl(var(--muted-foreground))" 
+                    strokeWidth={2}
+                    dot={false}
+                    name="7-Day Average"
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            <div className="flex justify-center gap-6 mt-4 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-green-500 rounded"></div>
+                <span>Positive Impact ({summary?.green_days || 0} days)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-red-500 rounded"></div>
+                <span>Negative Impact ({summary?.red_days || 0} days)</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {metrics.map((metric) => (
-            <Card key={metric.name} className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <metric.icon className={`h-5 w-5 ${metric.color}`} />
-                    <h3 className="font-medium text-gray-900">{metric.name}</h3>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {metric.trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <ProgressCircle value={metric.value} size="md">
-                    <span className="text-sm font-semibold text-gray-900">{metric.value}%</span>
-                  </ProgressCircle>
-                  
-                  <div className="text-right">
-                    <div className="text-xs text-gray-500">7-day avg</div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {metric.trend === "up" ? "↗️" : "↘️"} {Math.floor(Math.random() * 10 + 1)}%
+        {/* Longevity Pillars Grid */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">Six Longevity Pillars</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {pillarMetrics.map((metric) => (
+              <Card key={metric.name} className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <metric.icon className={`h-5 w-5 ${metric.color}`} />
+                      <div>
+                        <h3 className="font-medium text-gray-900">{metric.name}</h3>
+                        <p className="text-xs text-gray-500">Weight: {metric.weight}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {metric.trend === "up" ? (
+                        <TrendingUp className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4 text-red-500" />
+                      )}
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  
+                  <div className="flex items-center justify-between">
+                    <ProgressCircle value={metric.value} size="md">
+                      <span className="text-sm font-semibold text-gray-900">{Math.round(metric.value)}</span>
+                    </ProgressCircle>
+                    
+                    <div className="text-right">
+                      <div className="text-xs text-gray-500">Impact</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {metric.trend === "up" ? "+" : "-"}{(Math.random() * 0.3).toFixed(1)}d
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Data Input Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Thermometer className="h-5 w-5" />
-            Log Symptoms
+            <Heart className="h-5 w-5" />
+            Log Daily Mood
           </Button>
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Activity className="h-5 w-5" />
-            Start Therapy
+            Sync Wearables
           </Button>
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Moon className="h-5 w-5" />
-            Sleep Routine
+            <Brain className="h-5 w-5" />
+            Track Habits
           </Button>
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Utensils className="h-5 w-5" />
-            Track Nutrition
+            <Users className="h-5 w-5" />
+            Journal Entry
           </Button>
         </div>
       </main>

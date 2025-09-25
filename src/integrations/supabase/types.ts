@@ -14,6 +14,106 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_scores: {
+        Row: {
+          biological_age_impact: number
+          cognitive_engagement_score: number | null
+          color_code: string
+          created_at: string
+          date: string
+          id: string
+          longevity_impact_score: number
+          nutrition_score: number | null
+          physical_activity_score: number | null
+          sleep_score: number | null
+          social_connections_score: number | null
+          stress_score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          biological_age_impact: number
+          cognitive_engagement_score?: number | null
+          color_code: string
+          created_at?: string
+          date: string
+          id?: string
+          longevity_impact_score: number
+          nutrition_score?: number | null
+          physical_activity_score?: number | null
+          sleep_score?: number | null
+          social_connections_score?: number | null
+          stress_score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          biological_age_impact?: number
+          cognitive_engagement_score?: number | null
+          color_code?: string
+          created_at?: string
+          date?: string
+          id?: string
+          longevity_impact_score?: number
+          nutrition_score?: number | null
+          physical_activity_score?: number | null
+          sleep_score?: number | null
+          social_connections_score?: number | null
+          stress_score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_scores_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      habit_tracking: {
+        Row: {
+          created_at: string
+          date: string
+          duration_minutes: number | null
+          habit_type: string
+          id: string
+          intensity_level: number | null
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          duration_minutes?: number | null
+          habit_type: string
+          id?: string
+          intensity_level?: number | null
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_minutes?: number | null
+          habit_type?: string
+          id?: string
+          intensity_level?: number | null
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_tracking_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -40,6 +140,106 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      self_reported_metrics: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          journal_entry: string | null
+          loveable_score: number | null
+          social_interaction_quality: number | null
+          stress_level: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          journal_entry?: string | null
+          loveable_score?: number | null
+          social_interaction_quality?: number | null
+          stress_level?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          journal_entry?: string | null
+          loveable_score?: number | null
+          social_interaction_quality?: number | null
+          stress_level?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "self_reported_metrics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      wearable_data: {
+        Row: {
+          active_minutes: number | null
+          created_at: string
+          date: string
+          device_type: string
+          exercise_intensity_zones: Json | null
+          heart_rate_variability: number | null
+          id: string
+          raw_data: Json | null
+          rem_sleep_percentage: number | null
+          resting_heart_rate: number | null
+          steps: number | null
+          total_sleep_hours: number | null
+          user_id: string
+        }
+        Insert: {
+          active_minutes?: number | null
+          created_at?: string
+          date: string
+          device_type: string
+          exercise_intensity_zones?: Json | null
+          heart_rate_variability?: number | null
+          id?: string
+          raw_data?: Json | null
+          rem_sleep_percentage?: number | null
+          resting_heart_rate?: number | null
+          steps?: number | null
+          total_sleep_hours?: number | null
+          user_id: string
+        }
+        Update: {
+          active_minutes?: number | null
+          created_at?: string
+          date?: string
+          device_type?: string
+          exercise_intensity_zones?: Json | null
+          heart_rate_variability?: number | null
+          id?: string
+          raw_data?: Json | null
+          rem_sleep_percentage?: number | null
+          resting_heart_rate?: number | null
+          steps?: number | null
+          total_sleep_hours?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wearable_data_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
       }
     }
     Views: {
