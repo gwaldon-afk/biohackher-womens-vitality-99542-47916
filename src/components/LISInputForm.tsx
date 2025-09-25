@@ -113,7 +113,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
       if (error instanceof z.ZodError) {
         toast({
           title: "Validation Error",
-          description: error.errors[0].message,
+          description: "Please check all input values are within valid ranges.",
           variant: "destructive"
         });
       }
@@ -121,46 +121,51 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     }
   };
 
-  const handleManualSubmit = async () => {
-    if (!validateInputs()) return;
+  const calculateScore = () => {
+    // Placeholder calculation - would be replaced with actual scoring logic
+    const sleepScore = (sleepData.totalSleepHours / 8) * 25;
+    const stressScore = ((200 - stressData.hrv) / 200 + (10 - stressData.selfReportedStress) / 10) * 10;
+    const activityScore = (activityData.activeMinutes / 60) * 15;
+    const nutritionScore = nutritionInputMode === "detailed" && nutritionalScore !== 0 
+      ? (nutritionalScore + 10) / 20 * 15  // Convert nutritional score to 15-point scale
+      : (nutritionData.mealQuality / 10) * 15;
+    const socialScore = ((socialData.interactionQuality / 10) + (socialData.socialTimeMinutes / 120)) * 7.5;
+    const cognitiveScore = ((cognitiveData.meditationMinutes + cognitiveData.learningMinutes) / 65) * 10;
+    
+    return Math.round(sleepScore + stressScore + activityScore + nutritionScore + socialScore + cognitiveScore);
+  };
 
+  const handleSubmit = async () => {
+    if (!validateInputs()) return;
+    
     setLoading(true);
     try {
-      const mockUserId = "123e4567-e89b-12d3-a456-426614174000";
+      const score = calculateScore();
       
-      const response = await supabase.functions.invoke('score-calculate', {
-        body: {
-          user_id: mockUserId,
-          date: new Date().toISOString().split('T')[0],
-          sleep_data: sleepData,
-          stress_data: stressData,
-          activity_data: activityData,
-          nutrition_data: nutritionData,
-          social_data: socialData,
-          cognitive_data: cognitiveData,
-          self_reported: {
-            stress_level: stressData.selfReportedStress
-          }
-        }
+      // Save to Supabase
+      const { error } = await supabase.from('daily_scores').insert({
+        date: new Date().toISOString().split('T')[0],
+        user_id: 'placeholder-user-id',
+        longevity_impact_score: score,
+        biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
+        color_code: score > 75 ? 'green' : score > 50 ? 'yellow' : 'red'
       });
 
-      if (response.error) {
-        throw response.error;
-      }
+      if (error) throw error;
 
       toast({
-        title: "LIS Score Calculated",
-        description: `Your Longevity Impact Score: ${response.data.longevity_impact_score}`,
+        title: "Score Updated!",
+        description: `Your Longevity Impact Score: ${score}/100`,
         variant: "default"
       });
 
       setOpen(false);
       onScoreCalculated();
     } catch (error) {
-      console.error('Error calculating LIS:', error);
+      console.error('Error saving score:', error);
       toast({
         title: "Error",
-        description: "Failed to calculate LIS score. Please try again.",
+        description: "Failed to save your score. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -171,21 +176,25 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const handleWearableSync = async () => {
     setLoading(true);
     try {
-      // Simulate wearable data sync
+      // Placeholder for wearable sync logic
+      toast({
+        title: "Sync Started",
+        description: "Syncing with your wearable devices...",
+        variant: "default"
+      });
+      
+      // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
-        title: "Wearable Data Synced",
-        description: "Successfully synced data from your connected devices.",
+        title: "Sync Complete",
+        description: "Your wearable data has been updated.",
         variant: "default"
       });
-
-      setOpen(false);
-      onScoreCalculated();
     } catch (error) {
       toast({
-        title: "Sync Error",
-        description: "Failed to sync wearable data. Please try again.",
+        title: "Sync Failed",
+        description: "Unable to sync with wearable devices.",
         variant: "destructive"
       });
     } finally {
@@ -193,9 +202,12 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     }
   };
 
+  // Calculate current score for display
+  const currentScore = calculateScore();
+
   return (
     <>
-      <div 
+      <div
         onClick={() => {
           console.log("Card clicked - opening modal");
           setOpen(true);
@@ -230,20 +242,20 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
             </TabsList>
 
             <TabsContent value="manual" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Sleep Quality */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Moon className="h-4 w-4 text-blue-500" />
                       Sleep Quality
                       <Badge variant="secondary">25%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Quality sleep is crucial for cellular repair, memory consolidation, and hormone regulation. Optimal sleep duration and REM percentage directly impact longevity.
+                      Quality sleep is crucial for cellular repair, memory consolidation, and hormone regulation.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
                       <Label htmlFor="totalSleep">Total Sleep (hours)</Label>
                       <Input
@@ -284,18 +296,18 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Stress Management */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-red-500" />
                       Stress Management
                       <Badge variant="secondary">20%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Chronic stress accelerates aging through inflammation and cellular damage. HRV measures autonomic nervous system balance and stress resilience.
+                      Chronic stress accelerates aging through inflammation and cellular damage.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
                       <Label htmlFor="hrv">Heart Rate Variability</Label>
                       <Input
@@ -308,7 +320,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="stressLevel">Stress Level (1-10)</Label>
+                      <Label htmlFor="stressLevel">Self-Reported Stress (1-10)</Label>
                       <Input
                         id="stressLevel"
                         type="number"
@@ -322,18 +334,18 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Physical Activity */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Activity className="h-4 w-4 text-green-500" />
                       Physical Activity
                       <Badge variant="secondary">15%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Regular movement improves cardiovascular health, maintains muscle mass, and enhances mitochondrial function—key factors in healthy aging.
+                      Regular movement improves cardiovascular health and maintains muscle mass.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
                       <Label htmlFor="activeMinutes">Active Minutes</Label>
                       <Input
@@ -389,8 +401,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Nutrition */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Utensils className="h-4 w-4 text-orange-500" />
                       Nutrition
@@ -402,12 +414,12 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       )}
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Nutrient-dense whole foods provide antioxidants, reduce inflammation, and support cellular repair mechanisms critical for longevity.
+                      Nutrient-dense whole foods provide antioxidants and reduce inflammation.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
-                      <Label className="text-sm font-medium">Choose your nutrition tracking method:</Label>
+                      <Label className="text-sm font-medium">Choose tracking method:</Label>
                       <RadioGroup
                         value={nutritionInputMode}
                         onValueChange={(value: "simple" | "detailed") => {
@@ -423,13 +435,13 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="simple" id="nutrition-simple" />
                           <Label htmlFor="nutrition-simple" className="text-sm cursor-pointer">
-                            Simple meal quality rating (1-10)
+                            Simple meal quality (1-10)
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="detailed" id="nutrition-detailed" />
                           <Label htmlFor="nutrition-detailed" className="text-sm cursor-pointer">
-                            Complete Daily Nutrition Scorecard
+                            Complete Nutrition Scorecard
                           </Label>
                         </div>
                       </RadioGroup>
@@ -454,7 +466,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm font-medium">Daily Nutrition Score</p>
-                            <p className="text-xs text-muted-foreground">Based on your completed scorecard</p>
+                            <p className="text-xs text-muted-foreground">Based on completed scorecard</p>
                           </div>
                           <Badge variant="outline" className="text-base">
                             {nutritionalScore} ({nutritionalGrade})
@@ -466,18 +478,18 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Social Connections */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Users className="h-4 w-4 text-purple-500" />
                       Social Connections
                       <Badge variant="secondary">15%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Strong social bonds reduce stress hormones, boost immune function, and provide emotional support—significantly impacting lifespan.
+                      Strong social bonds reduce stress hormones and boost immune function.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
                       <Label htmlFor="interactionQuality">Interaction Quality (1-10)</Label>
                       <Input
@@ -504,18 +516,18 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
 
                 {/* Cognitive Engagement */}
-                <Card className="h-80 flex flex-col">
-                  <CardHeader className="pb-3 flex-shrink-0">
+                <Card className="h-[400px] flex flex-col">
+                  <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Brain className="h-4 w-4 text-pink-500" />
                       Cognitive Engagement
                       <Badge variant="secondary">10%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Mental stimulation and mindfulness practices promote neuroplasticity, reduce cognitive decline, and support brain health throughout aging.
+                      Mental stimulation promotes neuroplasticity and supports brain health.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 overflow-y-auto">
+                  <CardContent className="space-y-3 flex-1">
                     <div>
                       <Label htmlFor="meditationMinutes">Meditation (minutes)</Label>
                       <Input
@@ -555,59 +567,36 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
               <Separator />
 
-              <div className="flex justify-end gap-4">
-                <Button variant="outline" onClick={() => setOpen(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleManualSubmit} disabled={loading}>
-                  {loading ? "Calculating..." : "Calculate LIS Score"}
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Current Score: <span className="font-bold text-foreground">{currentScore}/100</span>
+                  </p>
+                </div>
+                <Button onClick={handleSubmit} disabled={loading} className="min-w-32">
+                  {loading ? "Saving..." : "Update Score"}
                 </Button>
               </div>
             </TabsContent>
 
             <TabsContent value="wearable" className="space-y-6">
-              <div className="text-center py-8">
-                <Smartphone className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold mb-2">Sync Wearable Data</h3>
-                <p className="text-gray-600 mb-6">
-                  Automatically pull data from your connected fitness trackers and health devices
+              <div className="text-center py-12 space-y-4">
+                <Smartphone className="h-12 w-12 mx-auto text-muted-foreground" />
+                <h3 className="text-lg font-semibold">Sync Your Wearables</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  Connect your fitness trackers and health devices to automatically import your daily metrics.
                 </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                  <Card className="p-4">
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Moon className="h-6 w-6 text-blue-600" />
-                      </div>
-                      <h4 className="font-medium">Sleep Tracking</h4>
-                      <p className="text-sm text-gray-500">Hours, REM, Deep Sleep</p>
-                    </div>
-                  </Card>
-                  
-                  <Card className="p-4">
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Heart className="h-6 w-6 text-red-600" />
-                      </div>
-                      <h4 className="font-medium">Heart Metrics</h4>
-                      <p className="text-sm text-gray-500">HRV, Resting HR</p>
-                    </div>
-                  </Card>
-                  
-                  <Card className="p-4">
-                    <div className="text-center">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                        <Activity className="h-6 w-6 text-green-600" />
-                      </div>
-                      <h4 className="font-medium">Activity Data</h4>
-                      <p className="text-sm text-gray-500">Steps, Active Minutes</p>
-                    </div>
-                  </Card>
+                <div className="space-y-2">
+                  <Button onClick={handleWearableSync} disabled={loading} className="w-full max-w-xs">
+                    {loading ? "Syncing..." : "Sync Apple Health"}
+                  </Button>
+                  <Button onClick={handleWearableSync} disabled={loading} variant="outline" className="w-full max-w-xs">
+                    {loading ? "Syncing..." : "Sync Google Fit"}
+                  </Button>
+                  <Button onClick={handleWearableSync} disabled={loading} variant="outline" className="w-full max-w-xs">
+                    {loading ? "Syncing..." : "Sync Fitbit"}
+                  </Button>
                 </div>
-
-                <Button onClick={handleWearableSync} disabled={loading} size="lg">
-                  {loading ? "Syncing..." : "Sync Wearable Data"}
-                </Button>
               </div>
             </TabsContent>
           </Tabs>
