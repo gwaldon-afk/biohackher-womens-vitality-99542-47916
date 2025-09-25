@@ -120,12 +120,12 @@ const Index = () => {
               if (feature.title === "Daily Longevity Inputs") {
                 return (
                   <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
-                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer">
-                      <CardHeader>
+                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col">
+                      <CardHeader className="flex-shrink-0">
                         <feature.icon className="h-10 w-10 text-primary mb-4" />
                         <CardTitle className="text-xl">{feature.title}</CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="flex-1">
                         <CardDescription className="text-base">
                           {feature.description}
                         </CardDescription>
@@ -138,16 +138,16 @@ const Index = () => {
               return (
                 <Card 
                   key={index} 
-                  className="card-elevated hover:shadow-lg transition-shadow cursor-pointer" 
+                  className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" 
                   onClick={() => {
                     console.log(`${feature.title} card clicked`);
                   }}
                 >
-                  <CardHeader>
+                  <CardHeader className="flex-shrink-0">
                     <feature.icon className="h-10 w-10 text-primary mb-4" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1">
                     <CardDescription className="text-base">
                       {feature.description}
                     </CardDescription>
