@@ -85,6 +85,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   // Add state for nutrition input mode
   const [nutritionInputMode, setNutritionInputMode] = useState<"simple" | "detailed">("simple");
   const [showScorecard, setShowScorecard] = useState(false);
+  const [scorecardDialogOpen, setScorecardDialogOpen] = useState(false);
 
   const [socialData, setSocialData] = useState({
     interactionQuality: 6,
@@ -478,7 +479,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                           size="sm" 
                           variant="outline" 
                           className="mt-2 w-full"
-                          onClick={() => setShowScorecard(true)}
+                          onClick={() => setScorecardDialogOpen(true)}
                         >
                           Update Scorecard
                         </Button>
@@ -495,7 +496,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            setShowScorecard(true);
+                            setScorecardDialogOpen(true);
                           }}
                         >
                           Open Scorecard
@@ -582,18 +583,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                 </Card>
               </div>
 
-              {/* Nutritional Scorecard - only show when detailed mode is selected */}
-              {showScorecard && (
-                <NutritionalScorecard 
-                  onScoreCalculated={(score, grade) => {
-                    setNutritionalScore(score);
-                    setNutritionalGrade(grade);
-                    // Close the scorecard after calculation
-                    setShowScorecard(false);
-                  }}
-                  hasDairySensitivity={false} // This could be set based on user profile
-                />
-              )}
+              {/* Remove the scorecard from bottom - now it's in a dialog */}
 
               <Separator />
 
@@ -630,6 +620,31 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               </div>
             </TabsContent>
           </Tabs>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nutritional Scorecard Dialog */}
+      <Dialog open={scorecardDialogOpen} onOpenChange={setScorecardDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Utensils className="h-5 w-5" />
+              Daily Nutritional Scorecard
+            </DialogTitle>
+            <DialogDescription>
+              Complete your nutrition assessment to get your daily score
+            </DialogDescription>
+          </DialogHeader>
+          
+          <NutritionalScorecard 
+            onScoreCalculated={(score, grade) => {
+              setNutritionalScore(score);
+              setNutritionalGrade(grade);
+              // Close the scorecard dialog after calculation
+              setScorecardDialogOpen(false);
+            }}
+            hasDairySensitivity={false} // This could be set based on user profile
+          />
         </DialogContent>
       </Dialog>
     </>
