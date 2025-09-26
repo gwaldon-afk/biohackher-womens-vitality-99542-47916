@@ -236,6 +236,51 @@ export type Database = {
           },
         ]
       }
+      symptom_assessments: {
+        Row: {
+          answers: Json
+          completed_at: string
+          created_at: string
+          detail_scores: Json | null
+          id: string
+          overall_score: number
+          primary_issues: string[] | null
+          recommendations: Json
+          score_category: string
+          symptom_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          completed_at?: string
+          created_at?: string
+          detail_scores?: Json | null
+          id?: string
+          overall_score: number
+          primary_issues?: string[] | null
+          recommendations: Json
+          score_category: string
+          symptom_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string
+          created_at?: string
+          detail_scores?: Json | null
+          id?: string
+          overall_score?: number
+          primary_issues?: string[] | null
+          recommendations?: Json
+          score_category?: string
+          symptom_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_symptoms: {
         Row: {
           created_at: string

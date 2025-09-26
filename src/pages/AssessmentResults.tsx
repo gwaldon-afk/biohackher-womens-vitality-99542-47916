@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface AssessmentScore {
   overall: number;
@@ -29,9 +31,11 @@ const AssessmentResults = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const [score, setScore] = useState<AssessmentScore | null>(null);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
   
   useEffect(() => {
     const answers: Record<string, string> = {};
@@ -48,8 +52,56 @@ const AssessmentResults = () => {
       
       setScore(calculatedScore);
       setRecommendations(personalizedRecommendations);
+      
+      // Save assessment to database
+      saveAssessment(answers, calculatedScore, personalizedRecommendations);
     }
   }, [symptomId, searchParams]);
+
+  const saveAssessment = async (
+    answers: Record<string, string>, 
+    calculatedScore: AssessmentScore, 
+    personalizedRecommendations: Recommendation[]
+  ) => {
+    if (!user || !symptomId || isSaving) return;
+    
+    setIsSaving(true);
+    
+    try {
+      const { error } = await supabase
+        .from('symptom_assessments')
+      .insert([{
+        user_id: user.id,
+        symptom_type: symptomId,
+        answers,
+        overall_score: calculatedScore.overall,
+        score_category: calculatedScore.category,
+        primary_issues: calculatedScore.primaryIssues,
+        detail_scores: calculatedScore.detailScores || {},
+        recommendations: personalizedRecommendations.map(rec => ({
+          title: rec.title,
+          description: rec.description,
+          priority: rec.priority,
+          category: rec.category
+        }))
+      }]);
+
+      if (error) {
+        console.error('Error saving assessment:', error);
+        toast({
+          variant: "destructive",
+          title: "Save Error",
+          description: "Failed to save your assessment results."
+        });
+      } else {
+        console.log('Assessment saved successfully');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving assessment:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const getSymptomName = (id: string) => {
     const nameMap: Record<string, string> = {
