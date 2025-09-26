@@ -256,7 +256,8 @@ const Dashboard = () => {
       return `Excellent! Your current path adds ${Math.abs(fiveYearImpact).toFixed(1)} years to your lifespan in 5 years by making your biological age younger. With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger, an additional improvement of ${Math.abs(optimalImpact - Math.abs(fiveYearImpact)).toFixed(1)} years! Priority: maintain current habits and optimize sleep quality, physical activity, stress management, and nutrition.`;
     } else {
       // Minimal impact
-      return `Your current path has minimal impact on biological aging in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger biological age, a total improvement of ${Math.abs(optimalImpact).toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
+      const impactDescription = fiveYearImpact > 0 ? "aging slightly faster" : fiveYearImpact < 0 ? "aging slightly slower" : "neutral aging";
+      return `Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years - ${impactDescription}). But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger biological age, a total improvement of ${Math.abs(optimalImpact).toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
     }
   };
 
