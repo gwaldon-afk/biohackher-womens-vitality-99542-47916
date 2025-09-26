@@ -283,9 +283,9 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="text-center">
                 <TooltipProvider>
-                  <Tooltip>
+                  <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
-                      <div className="flex items-center justify-center mb-4 cursor-help">
+                      <div className="flex items-center justify-center mb-4 cursor-help transition-transform hover:scale-105">
                         <ProgressCircle value={currentScore} size="xl">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
@@ -294,8 +294,8 @@ const Dashboard = () => {
                         </ProgressCircle>
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs p-3">
-                      <p className="text-sm">{getLongevityMessage()}</p>
+                    <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
+                      <p className="text-sm font-medium">{getLongevityMessage()}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -408,15 +408,6 @@ const Dashboard = () => {
                       formatter={(value: number) => value.toFixed(0)}
                     />
                   </Bar>
-                  <Scatter 
-                    dataKey="biological_age_impact" 
-                    name="Bar Tips"
-                    fill="#10b981"
-                  >
-                    {scores.map((entry, index) => (
-                      <Cell key={`scatter-cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
-                    ))}
-                  </Scatter>
                   <Line 
                     type="monotone" 
                     dataKey="moving_average" 
