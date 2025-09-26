@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -123,29 +122,31 @@ const SymptomAssessment = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isComplete, setIsComplete] = useState(false);
 
   const questions = symptomId ? assessmentQuestions[symptomId as keyof typeof assessmentQuestions] : [];
-  const progress = questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   const handleAnswer = (questionId: number, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-    } else {
-      completeAssessment();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Check if all questions are answered
+    const allAnswered = questions.every(q => answers[q.id] && answers[q.id].trim() !== "");
+    
+    if (!allAnswered) {
+      toast({
+        variant: "destructive",
+        title: "Please answer all questions",
+        description: "All questions must be completed before submitting."
+      });
+      return;
     }
-  };
-
-  const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(prev => prev - 1);
-    }
+    
+    completeAssessment();
   };
 
   const completeAssessment = async () => {
@@ -253,84 +254,76 @@ const SymptomAssessment = () => {
     );
   }
 
-  const currentQ = questions[currentQuestion];
-  const currentAnswer = answers[currentQ.id];
-
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <div className="mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/symptoms')}
-            className="mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Symptoms
-          </Button>
-          
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-2">{getSymptomName(symptomId)} Assessment</h1>
-            <p className="text-muted-foreground">
-              Question {currentQuestion + 1} of {questions.length}
-            </p>
-            <Progress value={progress} className="mt-4" />
+        <main className="container mx-auto px-4 py-8 max-w-4xl">
+          <div className="mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/symptoms')}
+              className="mb-4"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Symptoms
+            </Button>
+            
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold mb-2">{getSymptomName(symptomId)} Assessment</h1>
+              <p className="text-muted-foreground">
+                Please answer all questions to get your personalized recommendations
+              </p>
+            </div>
           </div>
-        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">{currentQ.question}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {currentQ.type === "radio" && currentQ.options && (
-              <RadioGroup
-                value={currentAnswer || ""}
-                onValueChange={(value) => handleAnswer(currentQ.id, value)}
-              >
-                {currentQ.options.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option.value} id={option.value} />
-                    <Label htmlFor={option.value} className="cursor-pointer">
-                      {option.label}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            )}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {questions.map((question, index) => (
+              <Card key={question.id}>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                      {index + 1}
+                    </span>
+                    {question.question}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {question.type === "radio" && question.options && (
+                    <RadioGroup
+                      value={answers[question.id] || ""}
+                      onValueChange={(value) => handleAnswer(question.id, value)}
+                    >
+                      {question.options.map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
+                          <Label htmlFor={`${question.id}-${option.value}`} className="cursor-pointer flex-1">
+                            {option.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  )}
 
-            {currentQ.type === "textarea" && (
-              <Textarea
-                placeholder={('placeholder' in currentQ) ? currentQ.placeholder : "Enter your response..."}
-                value={currentAnswer || ""}
-                onChange={(e) => handleAnswer(currentQ.id, e.target.value)}
-                rows={4}
-              />
-            )}
+                  {question.type === "textarea" && (
+                    <Textarea
+                      placeholder={('placeholder' in question) ? question.placeholder : "Enter your response..."}
+                      value={answers[question.id] || ""}
+                      onChange={(e) => handleAnswer(question.id, e.target.value)}
+                      rows={4}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            ))}
 
-            <div className="flex justify-between pt-6">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentQuestion === 0}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Previous
-              </Button>
-              
-              <Button
-                onClick={handleNext}
-                disabled={!currentAnswer}
-              >
-                {currentQuestion === questions.length - 1 ? "Complete" : "Next"}
-                <ArrowRight className="h-4 w-4 ml-2" />
+            <div className="flex justify-center pt-6">
+              <Button type="submit" size="lg" className="px-8">
+                Complete Assessment
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+          </form>
+        </main>
     </div>
   );
 };
