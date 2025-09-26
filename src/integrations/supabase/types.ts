@@ -165,6 +165,60 @@ export type Database = {
           },
         ]
       }
+      nutrition_preferences: {
+        Row: {
+          activity_level: string | null
+          allergies: string[] | null
+          created_at: string
+          dislikes: string[] | null
+          fitness_goal: string | null
+          has_ibs: boolean | null
+          id: string
+          is_low_fodmap: boolean | null
+          selected_breakfast_recipe: string | null
+          selected_dinner_recipe: string | null
+          selected_lunch_recipe: string | null
+          selected_recipe_style: string | null
+          updated_at: string
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          allergies?: string[] | null
+          created_at?: string
+          dislikes?: string[] | null
+          fitness_goal?: string | null
+          has_ibs?: boolean | null
+          id?: string
+          is_low_fodmap?: boolean | null
+          selected_breakfast_recipe?: string | null
+          selected_dinner_recipe?: string | null
+          selected_lunch_recipe?: string | null
+          selected_recipe_style?: string | null
+          updated_at?: string
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          allergies?: string[] | null
+          created_at?: string
+          dislikes?: string[] | null
+          fitness_goal?: string | null
+          has_ibs?: boolean | null
+          id?: string
+          is_low_fodmap?: boolean | null
+          selected_breakfast_recipe?: string | null
+          selected_dinner_recipe?: string | null
+          selected_lunch_recipe?: string | null
+          selected_recipe_style?: string | null
+          updated_at?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

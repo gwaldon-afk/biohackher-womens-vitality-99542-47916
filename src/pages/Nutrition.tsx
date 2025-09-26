@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,10 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, Utensils, Activity, AlertCircle, Target } from "lucide-react";
+import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const Nutrition = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Form state
   const [weight, setWeight] = useState("");
   const [activityLevel, setActivityLevel] = useState("moderate");
   const [goal, setGoal] = useState("maintenance");
@@ -17,12 +24,105 @@ const Nutrition = () => {
   const [hasIBS, setHasIBS] = useState(false);
   const [allergies, setAllergies] = useState<string[]>([]);
   const [dislikes, setDislikes] = useState<string[]>([]);
-  const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
-  const [showWeeklyPlan, setShowWeeklyPlan] = useState(false);
   const [selectedRecipeStyle, setSelectedRecipeStyle] = useState("simple");
   const [selectedBreakfastRecipe, setSelectedBreakfastRecipe] = useState("");
   const [selectedLunchRecipe, setSelectedLunchRecipe] = useState("");
   const [selectedDinnerRecipe, setSelectedDinnerRecipe] = useState("");
+  
+  // UI state
+  const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
+  const [showWeeklyPlan, setShowWeeklyPlan] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasPreferences, setHasPreferences] = useState(false);
+
+  // Load saved preferences on component mount
+  useEffect(() => {
+    if (user) {
+      loadUserPreferences();
+    }
+  }, [user]);
+
+  const loadUserPreferences = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('nutrition_preferences')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error loading preferences:', error);
+        return;
+      }
+
+      if (data) {
+        setWeight(data.weight?.toString() || "");
+        setActivityLevel(data.activity_level || "moderate");
+        setGoal(data.fitness_goal || "maintenance");
+        setAllergies(data.allergies || []);
+        setDislikes(data.dislikes || []);
+        setSelectedRecipeStyle(data.selected_recipe_style || "simple");
+        setSelectedBreakfastRecipe(data.selected_breakfast_recipe || "");
+        setSelectedLunchRecipe(data.selected_lunch_recipe || "");
+        setSelectedDinnerRecipe(data.selected_dinner_recipe || "");
+        setIsLowFODMAP(data.is_low_fodmap || false);
+        setHasIBS(data.has_ibs || false);
+        setHasPreferences(true);
+      }
+    } catch (error) {
+      console.error('Error loading preferences:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveUserPreferences = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      const preferences = {
+        user_id: user.id,
+        weight: weight ? parseFloat(weight) : null,
+        activity_level: activityLevel,
+        fitness_goal: goal,
+        allergies,
+        dislikes,
+        selected_recipe_style: selectedRecipeStyle,
+        selected_breakfast_recipe: selectedBreakfastRecipe,
+        selected_lunch_recipe: selectedLunchRecipe,
+        selected_dinner_recipe: selectedDinnerRecipe,
+        is_low_fodmap: isLowFODMAP,
+        has_ibs: hasIBS
+      };
+
+      const { error } = await supabase
+        .from('nutrition_preferences')
+        .upsert(preferences, { onConflict: 'user_id' });
+
+      if (error) {
+        throw error;
+      }
+
+      setHasPreferences(true);
+      setIsEditing(false);
+      toast({
+        title: "Preferences saved",
+        description: "Your nutrition preferences have been updated successfully.",
+      });
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      toast({
+        title: "Error saving preferences",
+        description: "There was an error saving your preferences. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const commonAllergies = [
     "Dairy", "Eggs", "Fish", "Shellfish", "Tree Nuts", "Peanuts", "Soy", "Gluten"
@@ -290,7 +390,11 @@ const Nutrition = () => {
 
   const generateWeeklyPlan = () => {
     if (!weight) {
-      alert("Please enter your weight first to generate a personalized plan.");
+      toast({
+        title: "Missing information",
+        description: "Please set your weight in your preferences first.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -504,6 +608,288 @@ const Nutrition = () => {
             Calculate your personalized protein needs and explore leucine-rich foods for optimal muscle protein synthesis
           </p>
         </div>
+
+        {/* Current Preferences Display */}
+        {!isLoading && hasPreferences && !isEditing && (
+          <Card className="mb-6 border-primary/20 bg-primary/5">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Your Current Preferences
+                  </CardTitle>
+                  <CardDescription>
+                    Your saved nutrition and dietary preferences
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit Preferences
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {weight && (
+                  <div className="p-3 bg-background rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Weight</div>
+                    <div className="font-semibold">{weight} kg</div>
+                  </div>
+                )}
+                <div className="p-3 bg-background rounded-lg border">
+                  <div className="text-sm text-muted-foreground">Activity Level</div>
+                  <div className="font-semibold capitalize">{activityLevel.replace('-', ' ')}</div>
+                </div>
+                <div className="p-3 bg-background rounded-lg border">
+                  <div className="text-sm text-muted-foreground">Goal</div>
+                  <div className="font-semibold capitalize">{goal.replace('-', ' ')}</div>
+                </div>
+                <div className="p-3 bg-background rounded-lg border">
+                  <div className="text-sm text-muted-foreground">Recipe Style</div>
+                  <div className="font-semibold capitalize">{selectedRecipeStyle}</div>
+                </div>
+                {allergies.length > 0 && (
+                  <div className="p-3 bg-background rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Allergies</div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {allergies.map((allergy) => (
+                        <Badge key={allergy} variant="destructive" className="text-xs">
+                          {allergy}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {dislikes.length > 0 && (
+                  <div className="p-3 bg-background rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Dislikes</div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {dislikes.map((dislike) => (
+                        <Badge key={dislike} variant="secondary" className="text-xs">
+                          {dislike}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(isLowFODMAP || hasIBS) && (
+                  <div className="p-3 bg-background rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Dietary Requirements</div>
+                    <div className="flex gap-1 mt-1">
+                      {isLowFODMAP && (
+                        <Badge variant="outline" className="text-xs">Low FODMAP</Badge>
+                      )}
+                      {hasIBS && (
+                        <Badge variant="outline" className="text-xs">IBS Friendly</Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Show selected recipes if any */}
+              {(selectedBreakfastRecipe || selectedLunchRecipe || selectedDinnerRecipe) && (
+                <div className="mt-4 p-3 bg-background rounded-lg border">
+                  <div className="text-sm text-muted-foreground mb-2">Selected Recipes</div>
+                  <div className="grid gap-2 text-sm">
+                    {selectedBreakfastRecipe && (
+                      <div><span className="font-medium">Breakfast:</span> {selectedBreakfastRecipe}</div>
+                    )}
+                    {selectedLunchRecipe && (
+                      <div><span className="font-medium">Lunch:</span> {selectedLunchRecipe}</div>
+                    )}
+                    {selectedDinnerRecipe && (
+                      <div><span className="font-medium">Dinner:</span> {selectedDinnerRecipe}</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Edit Mode or Initial Setup */}
+        {!isLoading && (!hasPreferences || isEditing) && (
+          <Card className="mb-6 border-orange-200 bg-orange-50/50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Edit className="h-5 w-5 text-orange-600" />
+                    {hasPreferences ? "Edit Your Preferences" : "Set Up Your Preferences"}
+                  </CardTitle>
+                  <CardDescription>
+                    {hasPreferences ? "Update your nutrition and dietary preferences" : "Configure your personal nutrition settings for tailored recommendations"}
+                  </CardDescription>
+                </div>
+                {hasPreferences && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Basic Details */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="edit-weight">Body Weight (kg)</Label>
+                    <Input
+                      id="edit-weight"
+                      type="number"
+                      placeholder="Enter weight in kg"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="edit-activity">Activity Level</Label>
+                    <select 
+                      id="edit-activity"
+                      className="w-full p-2 border rounded-md bg-background"
+                      value={activityLevel}
+                      onChange={(e) => setActivityLevel(e.target.value)}
+                    >
+                      <option value="sedentary">Sedentary (little/no exercise)</option>
+                      <option value="moderate">Moderate (3-5 days/week)</option>
+                      <option value="active">Very Active (6-7 days/week)</option>
+                      <option value="athlete">Athlete (2x/day, intense)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="edit-goal">Fitness Goal</Label>
+                    <select 
+                      id="edit-goal"
+                      className="w-full p-2 border rounded-md bg-background"
+                      value={goal}
+                      onChange={(e) => setGoal(e.target.value)}
+                    >
+                      <option value="weight-loss">Weight Loss</option>
+                      <option value="maintenance">Maintenance</option>
+                      <option value="muscle-gain">Muscle Gain</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Recipe Style */}
+                <div>
+                  <Label>Recipe Style Preference</Label>
+                  <div className="flex gap-4 mt-2">
+                    {Object.entries(recipeCategories).map(([key, category]) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="recipeStyle"
+                          value={key}
+                          checked={selectedRecipeStyle === key}
+                          onChange={(e) => setSelectedRecipeStyle(e.target.value)}
+                          className="text-primary"
+                        />
+                        <span className="font-medium">{category.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dietary Requirements */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-fodmap"
+                      checked={isLowFODMAP}
+                      onCheckedChange={setIsLowFODMAP}
+                    />
+                    <Label htmlFor="edit-fodmap">Follow Low-FODMAP diet</Label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-ibs"
+                      checked={hasIBS}
+                      onCheckedChange={setHasIBS}
+                    />
+                    <Label htmlFor="edit-ibs">I have IBS or digestive sensitivities</Label>
+                  </div>
+                </div>
+
+                {/* Allergies */}
+                <div>
+                  <Label>Food Allergies</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                    {commonAllergies.map((allergy) => (
+                      <label key={allergy} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={allergies.includes(allergy)}
+                          onChange={() => toggleAllergy(allergy)}
+                        />
+                        {allergy}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dislikes */}
+                <div>
+                  <Label>Food Dislikes</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                    {commonDislikes.map((dislike) => (
+                      <label key={dislike} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={dislikes.includes(dislike)}
+                          onChange={() => toggleDislike(dislike)}
+                        />
+                        {dislike}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="flex gap-3 pt-4">
+                  <Button 
+                    onClick={saveUserPreferences}
+                    disabled={isSaving}
+                    className="flex items-center gap-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    {isSaving ? "Saving..." : "Save Preferences"}
+                  </Button>
+                  {hasPreferences && (
+                    <Button 
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {isLoading && (
+          <Card className="mb-6">
+            <CardContent className="p-6 text-center">
+              <div className="text-muted-foreground">Loading your preferences...</div>
+            </CardContent>
+          </Card>
+        )}
 
         <Tabs defaultValue="calculator" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
