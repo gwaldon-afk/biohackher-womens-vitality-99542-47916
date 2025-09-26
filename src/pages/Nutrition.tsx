@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,6 +38,83 @@ const Nutrition = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasPreferences, setHasPreferences] = useState(false);
   const [weekIndex, setWeekIndex] = useState(0);
+  const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
+
+  // Recipe instructions for common meals
+  const recipeInstructions: { [key: string]: { ingredients: string[], steps: string[] } } = {
+    "Scrambled Eggs on Toast": {
+      ingredients: ["2 eggs", "2 slices whole grain bread", "1 tbsp butter", "Salt & pepper"],
+      steps: [
+        "Toast bread slices until golden brown",
+        "Crack eggs into a bowl, whisk with salt and pepper",
+        "Heat butter in non-stick pan over medium-low heat",
+        "Pour in eggs, gently stir with spatula as they cook",
+        "Remove from heat when just set, serve on toast"
+      ]
+    },
+    "Greek Yogurt Berry Bowl": {
+      ingredients: ["1 cup Greek yogurt", "1/2 cup mixed berries", "1 tbsp honey", "2 tbsp granola"],
+      steps: [
+        "Place Greek yogurt in a bowl",
+        "Top with fresh berries",
+        "Drizzle with honey",
+        "Sprinkle granola on top",
+        "Serve immediately"
+      ]
+    },
+    "Avocado Toast with Egg": {
+      ingredients: ["1 ripe avocado", "2 slices sourdough", "1 egg", "Lemon juice", "Salt & pepper"],
+      steps: [
+        "Toast sourdough slices",
+        "Mash avocado with lemon juice, salt, and pepper",
+        "Fry or poach egg to your liking",
+        "Spread avocado on toast",
+        "Top with cooked egg"
+      ]
+    },
+    "Mediterranean Salad Bowl": {
+      ingredients: ["Mixed greens", "Cherry tomatoes", "Cucumber", "Olives", "Feta cheese", "Olive oil"],
+      steps: [
+        "Wash and dry mixed greens",
+        "Chop tomatoes and cucumber",
+        "Combine vegetables in bowl",
+        "Add olives and crumbled feta",
+        "Drizzle with olive oil and serve"
+      ]
+    },
+    "Grilled Chicken & Vegetables": {
+      ingredients: ["Chicken breast", "Bell peppers", "Zucchini", "Olive oil", "Herbs", "Salt & pepper"],
+      steps: [
+        "Season chicken with salt, pepper, and herbs",
+        "Cut vegetables into even pieces",
+        "Heat grill or grill pan to medium-high",
+        "Grill chicken 6-7 minutes per side until cooked",
+        "Grill vegetables until tender, serve together"
+      ]
+    }
+  };
+
+  // Function to get recipe for a meal name
+  const getRecipeForMeal = (mealName: string) => {
+    // Try exact match first
+    if (recipeInstructions[mealName]) {
+      return recipeInstructions[mealName];
+    }
+    
+    // Try partial matches for common meal types
+    const lowerMeal = mealName.toLowerCase();
+    if (lowerMeal.includes('scrambled eggs')) return recipeInstructions["Scrambled Eggs on Toast"];
+    if (lowerMeal.includes('greek yogurt') || lowerMeal.includes('yogurt bowl')) return recipeInstructions["Greek Yogurt Berry Bowl"];
+    if (lowerMeal.includes('avocado toast')) return recipeInstructions["Avocado Toast with Egg"];
+    if (lowerMeal.includes('salad') || lowerMeal.includes('mediterranean')) return recipeInstructions["Mediterranean Salad Bowl"];
+    if (lowerMeal.includes('grilled chicken') || lowerMeal.includes('chicken')) return recipeInstructions["Grilled Chicken & Vegetables"];
+    
+    // Default simple recipe
+    return {
+      ingredients: ["Check recipe ingredients above"],
+      steps: ["This is a nutritious meal option", "Prepare using fresh, whole ingredients", "Cook with minimal processing", "Enjoy as part of your balanced diet"]
+    };
+  };
 
   // Load saved preferences on component mount
   useEffect(() => {
@@ -1676,13 +1754,58 @@ const Nutrition = () => {
                                 return (
                                   <div key={mealType} className="border rounded-lg p-4">
                                     <div className="mb-3">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <div>
-                                          <h5 className="font-bold text-xl gradient-text">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
-                                          {meal.recipeDescription && (
-                                            <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
-                                          )}
-                                        </div>
+                                       <div className="flex items-center justify-between mb-2">
+                                         <div>
+                                           <Dialog>
+                                             <DialogTrigger asChild>
+                                               <button 
+                                                 className="font-bold text-xl gradient-text hover:opacity-80 transition-opacity text-left underline decoration-dotted underline-offset-4"
+                                                 onClick={() => setSelectedRecipe({
+                                                   name: meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                   ...getRecipeForMeal(meal.recipeName || mealType)
+                                                 })}
+                                               >
+                                                 {meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
+                                               </button>
+                                             </DialogTrigger>
+                                             <DialogContent className="max-w-md">
+                                               <DialogHeader>
+                                                 <DialogTitle className="gradient-text text-left">
+                                                   {selectedRecipe?.name || 'Recipe'}
+                                                 </DialogTitle>
+                                               </DialogHeader>
+                                               <div className="space-y-4">
+                                                 <div>
+                                                   <h4 className="font-semibold text-primary mb-2">Ingredients:</h4>
+                                                   <ul className="space-y-1">
+                                                     {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
+                                                       <li key={idx} className="text-sm flex items-center gap-2">
+                                                         <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span>
+                                                         {ingredient}
+                                                       </li>
+                                                     ))}
+                                                   </ul>
+                                                 </div>
+                                                 <div>
+                                                   <h4 className="font-semibold text-primary mb-2">Instructions:</h4>
+                                                   <ol className="space-y-2">
+                                                     {selectedRecipe?.steps?.map((step: string, idx: number) => (
+                                                       <li key={idx} className="text-sm flex gap-3">
+                                                         <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
+                                                           {idx + 1}
+                                                         </span>
+                                                         {step}
+                                                       </li>
+                                                     ))}
+                                                   </ol>
+                                                 </div>
+                                               </div>
+                                             </DialogContent>
+                                           </Dialog>
+                                           {meal.recipeDescription && (
+                                             <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
+                                           )}
+                                         </div>
                                         <div className="text-sm font-medium text-right">
                                           {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
                                         </div>
