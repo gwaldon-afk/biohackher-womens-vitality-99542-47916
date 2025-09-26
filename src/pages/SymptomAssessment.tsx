@@ -122,6 +122,9 @@ const SymptomAssessment = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   
+  // Debug log to ensure we're running the latest code
+  console.log('SymptomAssessment: Running latest version without currentQuestion', { symptomId });
+  
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isComplete, setIsComplete] = useState(false);
 
