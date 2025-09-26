@@ -163,8 +163,25 @@ const SymptomAssessment = () => {
   const completeAssessment = async () => {
     console.log('💾 Starting completeAssessment', { user: !!user, symptomId });
     
-    if (!user || !symptomId) {
-      console.log('❌ Missing user or symptomId', { user: !!user, symptomId });
+    if (!user) {
+      console.log('❌ User not authenticated');
+      toast({
+        variant: "destructive",
+        title: "Authentication Required",
+        description: "Please log in to save your assessment results."
+      });
+      // Redirect to auth page or show login modal
+      navigate('/auth');
+      return;
+    }
+
+    if (!symptomId) {
+      console.log('❌ Missing symptomId');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Symptom ID is missing. Please try again."
+      });
       return;
     }
 
