@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Symptoms from "./pages/Symptoms";
 import SymptomAssessment from "./pages/SymptomAssessment";
 import Therapies from "./pages/Therapies";
+import Supplements from "./pages/Supplements";
 import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
 import Coaching from "./pages/Coaching";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/symptoms" element={<Symptoms />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/therapies" element={<Therapies />} />
+            <Route path="/supplements" element={<Supplements />} />
             <Route path="/sleep" element={<Sleep />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/coaching" element={<Coaching />} />
