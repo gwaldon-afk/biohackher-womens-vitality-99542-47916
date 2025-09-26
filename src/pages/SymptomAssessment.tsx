@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,7 +89,6 @@ const assessmentQuestions = {
       ]
     }
   ],
-  // Add more assessments for other symptoms...
   "joint-pain": [
     {
       id: 1,
@@ -122,8 +121,7 @@ const SymptomAssessment = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   
-  // Debug log to ensure we're running the latest code
-  console.log('SymptomAssessment: Running latest version without currentQuestion', { symptomId });
+  console.log('🚀 SymptomAssessment loaded - FRESH VERSION', { symptomId, user: !!user });
   
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isComplete, setIsComplete] = useState(false);
@@ -131,16 +129,25 @@ const SymptomAssessment = () => {
   const questions = symptomId ? assessmentQuestions[symptomId as keyof typeof assessmentQuestions] : [];
 
   const handleAnswer = (questionId: number, answer: string) => {
+    console.log('📝 Answer updated:', { questionId, answer });
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🎯 Form submitted!', { questions: questions.length, answers });
     
     // Check if all questions are answered
-    const allAnswered = questions.every(q => answers[q.id] && answers[q.id].trim() !== "");
+    const allAnswered = questions.every(q => {
+      const hasAnswer = answers[q.id] && answers[q.id].trim() !== "";
+      console.log(`❓ Question ${q.id}: ${hasAnswer ? '✅ ANSWERED' : '❌ MISSING'}`, answers[q.id]);
+      return hasAnswer;
+    });
+    
+    console.log('✅ All questions answered:', allAnswered);
     
     if (!allAnswered) {
+      console.log('❌ Validation failed - showing toast');
       toast({
         variant: "destructive",
         title: "Please answer all questions",
@@ -149,13 +156,21 @@ const SymptomAssessment = () => {
       return;
     }
     
+    console.log('🎉 Validation passed - calling completeAssessment');
     completeAssessment();
   };
 
   const completeAssessment = async () => {
-    if (!user || !symptomId) return;
+    console.log('💾 Starting completeAssessment', { user: !!user, symptomId });
+    
+    if (!user || !symptomId) {
+      console.log('❌ Missing user or symptomId', { user: !!user, symptomId });
+      return;
+    }
 
     try {
+      console.log('📤 Saving to database...', answers);
+      
       // Save assessment results to database
       const { error } = await supabase
         .from('user_symptoms')
@@ -169,15 +184,19 @@ const SymptomAssessment = () => {
           updated_at: new Date().toISOString()
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Database error:', error);
+        throw error;
+      }
 
+      console.log('✅ Assessment saved successfully');
       setIsComplete(true);
       toast({
         title: "Assessment Complete",
         description: "Your responses have been saved and recommendations are ready."
       });
     } catch (error) {
-      console.error('Error saving assessment:', error);
+      console.error('❌ Error saving assessment:', error);
       toast({
         variant: "destructive",
         title: "Error saving assessment",
@@ -261,72 +280,77 @@ const SymptomAssessment = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
-          <div className="mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/symptoms')}
-              className="mb-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Symptoms
-            </Button>
-            
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold mb-2">{getSymptomName(symptomId)} Assessment</h1>
-              <p className="text-muted-foreground">
-                Please answer all questions to get your personalized recommendations
-              </p>
-            </div>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/symptoms')}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Symptoms
+          </Button>
+          
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold mb-2">{getSymptomName(symptomId)} Assessment</h1>
+            <p className="text-muted-foreground">
+              Please answer all questions to get your personalized recommendations
+            </p>
           </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {questions.map((question, index) => (
-              <Card key={question.id}>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
-                      {index + 1}
-                    </span>
-                    {question.question}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {question.type === "radio" && question.options && (
-                    <RadioGroup
-                      value={answers[question.id] || ""}
-                      onValueChange={(value) => handleAnswer(question.id, value)}
-                    >
-                      {question.options.map((option) => (
-                        <div key={option.value} className="flex items-center space-x-2">
-                          <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
-                          <Label htmlFor={`${question.id}-${option.value}`} className="cursor-pointer flex-1">
-                            {option.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  )}
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {questions.map((question, index) => (
+            <Card key={question.id}>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
+                    {index + 1}
+                  </span>
+                  {question.question}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {question.type === "radio" && question.options && (
+                  <RadioGroup
+                    value={answers[question.id] || ""}
+                    onValueChange={(value) => handleAnswer(question.id, value)}
+                  >
+                    {question.options.map((option) => (
+                      <div key={option.value} className="flex items-center space-x-2">
+                        <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
+                        <Label htmlFor={`${question.id}-${option.value}`} className="cursor-pointer flex-1">
+                          {option.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                )}
 
-                  {question.type === "textarea" && (
-                    <Textarea
-                      placeholder={('placeholder' in question) ? question.placeholder : "Enter your response..."}
-                      value={answers[question.id] || ""}
-                      onChange={(e) => handleAnswer(question.id, e.target.value)}
-                      rows={4}
-                    />
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                {question.type === "textarea" && (
+                  <Textarea
+                    placeholder={('placeholder' in question) ? question.placeholder : "Enter your response..."}
+                    value={answers[question.id] || ""}
+                    onChange={(e) => handleAnswer(question.id, e.target.value)}
+                    rows={4}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          ))}
 
-            <div className="flex justify-center pt-6">
-              <Button type="submit" size="lg" className="px-8">
-                Complete Assessment
-              </Button>
-            </div>
-          </form>
-        </main>
+          <div className="flex justify-center pt-6">
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="px-8"
+              onClick={() => console.log('🔥 Button clicked directly!')}
+            >
+              🚀 Complete Assessment
+            </Button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 };
