@@ -445,22 +445,23 @@ const Dashboard = () => {
                     tick={{ fontSize: 12, fill: '#6b7280', dy: 20 }}
                   />
                   <YAxis 
-                    domain={[-2, 2]} 
-                    tickCount={4} 
-                    ticks={[-2, -1, 1, 2]}
+                    domain={[0, 150]} 
+                    tickCount={6} 
                     axisLine={false}
                     tickLine={false}
                     tick={{ fontSize: 12, fill: '#6b7280' }}
+                    label={{ value: 'LIS Score', angle: -90, position: 'insideLeft' }}
                   />
-                  <ReferenceLine y={0} stroke="#9ca3af" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
+                  <ReferenceLine y={90} stroke="#10b981" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
+                  <ReferenceLine y={70} stroke="#f59e0b" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
                   <Bar 
-                    dataKey="biological_age_impact" 
+                    dataKey="longevity_impact_score" 
                     name="Daily LIS Score"
                     maxBarSize={1}
                     radius={[0, 0, 0, 0]}
                   >
                     {scores.map((entry, index) => (
-                      <Cell key={`bar-cell-${index}`} fill={entry.biological_age_impact > 0 ? '#10b981' : '#f87171'} />
+                      <Cell key={`bar-cell-${index}`} fill={entry.longevity_impact_score > 90 ? '#10b981' : entry.longevity_impact_score > 70 ? '#f59e0b' : '#f87171'} />
                     ))}
                     <LabelList
                       dataKey="longevity_impact_score"
@@ -487,15 +488,15 @@ const Dashboard = () => {
               <div className="flex justify-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span>Positive Impact ({summary?.green_days || scores.filter(s => s.biological_age_impact > 0).length} days)</span>
+                  <span>Good Scores (90+) ({scores.filter(s => s.longevity_impact_score >= 90).length} days)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-4 h-2 border-t-2 border-dashed border-gray-600"></div>
-                  <span>No Impact</span>
+                  <div className="w-4 h-4 bg-yellow-500 rounded"></div>
+                  <span>Moderate Scores (70-89) ({scores.filter(s => s.longevity_impact_score >= 70 && s.longevity_impact_score < 90).length} days)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-500 rounded"></div>
-                  <span>Negative Impact ({summary?.red_days || scores.filter(s => s.biological_age_impact < 0).length} days)</span>
+                  <span>Low Scores (&lt;70) ({scores.filter(s => s.longevity_impact_score < 70).length} days)</span>
                 </div>
               </div>
               <div className="text-right">
@@ -512,7 +513,7 @@ const Dashboard = () => {
         {!projectionLoading && (
           <div className="mb-8">
             <LongevityProjection 
-              sustainedLIS={sustainedLIS}
+              sustainedLIS={currentScore}
               dataPoints={dataPoints}
             />
           </div>
@@ -524,13 +525,13 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold text-gray-900">Six Longevity Pillars</h2>
             {!projectionLoading && (
               <div className="text-sm text-gray-600">
-                Sustained LIS: <span className="font-semibold">{sustainedLIS.toFixed(1)}</span>
+                Sustained LIS: <span className="font-semibold">{currentScore.toFixed(1)}</span>
                 <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                  sustainedLIS >= 110 ? 'bg-green-100 text-green-700' : 
-                  sustainedLIS >= 90 ? 'bg-blue-100 text-blue-700' : 
+                  currentScore >= 110 ? 'bg-green-100 text-green-700' : 
+                  currentScore >= 90 ? 'bg-blue-100 text-blue-700' : 
                   'bg-amber-100 text-amber-700'
                 }`}>
-                  {sustainedLIS >= 110 ? 'Excellent' : sustainedLIS >= 90 ? 'Good' : 'Needs Focus'}
+                  {currentScore >= 110 ? 'Excellent' : currentScore >= 90 ? 'Good' : 'Needs Focus'}
                 </span>
               </div>
             )}
@@ -577,7 +578,7 @@ const Dashboard = () => {
           </div>
           
           {/* Pillar Improvement Suggestions */}
-          {!projectionLoading && sustainedLIS < 110 && (
+          {!projectionLoading && currentScore < 110 && (
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h4 className="font-semibold text-blue-900 mb-2">💡 Longevity Optimization Tips</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
