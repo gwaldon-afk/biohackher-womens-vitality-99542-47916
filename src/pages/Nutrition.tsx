@@ -186,25 +186,67 @@ const Nutrition = () => {
     const generateMeal = (mealType: string, dayIndex: number) => {
       let protein, carb, vegetable, fat;
       
-      // Select foods based on FODMAP preference and variety
-      if (isLowFODMAP) {
-        const proteinOptions = ["Chicken Breast", "Salmon", "Eggs"];
-        const carbOptions = ["Brown Rice", "Quinoa"];
-        const vegOptions = ["Spinach", "Carrots"];
-        
-        protein = proteinOptions[dayIndex % proteinOptions.length];
-        carb = carbOptions[dayIndex % carbOptions.length];
-        vegetable = vegOptions[dayIndex % vegOptions.length];
-        fat = dayIndex % 2 === 0 ? "Olive Oil" : "Avocado";
-      } else {
-        const proteinOptions = ["Chicken Breast", "Salmon", "Greek Yogurt", "Cottage Cheese"];
-        const carbOptions = ["Brown Rice", "Quinoa", "Sweet Potato", "Oats"];
-        const vegOptions = ["Spinach", "Broccoli", "Carrots"];
-        
-        protein = proteinOptions[dayIndex % proteinOptions.length];
-        carb = carbOptions[dayIndex % carbOptions.length];
-        vegetable = vegOptions[dayIndex % vegOptions.length];
-        fat = dayIndex % 3 === 0 ? "Avocado" : dayIndex % 3 === 1 ? "Almonds" : "Olive Oil";
+      // Meal-specific food selections
+      if (mealType === "breakfast") {
+        if (isLowFODMAP) {
+          const proteinOptions = ["Eggs", "Greek Yogurt"];
+          const carbOptions = ["Oats", "Quinoa"];
+          const vegOptions = ["Spinach"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[0];
+          fat = dayIndex % 2 === 0 ? "Almonds" : "Olive Oil";
+        } else {
+          const proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"];
+          const carbOptions = ["Oats", "Quinoa"];
+          const vegOptions = ["Spinach"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[0];
+          fat = dayIndex % 2 === 0 ? "Almonds" : "Avocado";
+        }
+      } else if (mealType === "lunch") {
+        if (isLowFODMAP) {
+          const proteinOptions = ["Chicken Breast", "Salmon"];
+          const carbOptions = ["Brown Rice", "Quinoa"];
+          const vegOptions = ["Spinach", "Carrots"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[dayIndex % vegOptions.length];
+          fat = "Olive Oil";
+        } else {
+          const proteinOptions = ["Chicken Breast", "Salmon", "Tofu"];
+          const carbOptions = ["Brown Rice", "Quinoa", "Sweet Potato"];
+          const vegOptions = ["Spinach", "Broccoli"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[dayIndex % vegOptions.length];
+          fat = "Olive Oil";
+        }
+      } else { // dinner
+        if (isLowFODMAP) {
+          const proteinOptions = ["Salmon", "Chicken Breast"];
+          const carbOptions = ["Sweet Potato", "Brown Rice"];
+          const vegOptions = ["Carrots", "Broccoli"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[dayIndex % vegOptions.length];
+          fat = "Avocado";
+        } else {
+          const proteinOptions = ["Salmon", "Chicken Breast"];
+          const carbOptions = ["Sweet Potato", "Brown Rice"];
+          const vegOptions = ["Broccoli", "Carrots"];
+          
+          protein = proteinOptions[dayIndex % proteinOptions.length];
+          carb = carbOptions[dayIndex % carbOptions.length];
+          vegetable = vegOptions[dayIndex % vegOptions.length];
+          fat = dayIndex % 2 === 0 ? "Avocado" : "Olive Oil";
+        }
       }
       
       // Calculate portions to meet macro targets
