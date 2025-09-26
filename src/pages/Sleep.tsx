@@ -308,7 +308,7 @@ const Sleep = () => {
               Take our comprehensive symptom assessment to identify potential sleep-related health issues.
             </p>
             <Button 
-              onClick={() => navigate("/symptom-assessment")}
+              onClick={() => navigate("/assessment/sleep")}
               className="bg-primary hover:bg-primary-dark text-primary-foreground"
             >
               Start Symptom Assessment
