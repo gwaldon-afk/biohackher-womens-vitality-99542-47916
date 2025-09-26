@@ -251,6 +251,44 @@ const Dashboard = () => {
                     </div>
                   </ProgressCircle>
                 </div>
+                
+                {/* Longevity Projection Summary */}
+                {!projectionLoading && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                    <div className="text-xs text-gray-600 mb-1">5-Year Biological Age Impact</div>
+                    <div className={`text-lg font-bold ${sustainedLIS >= 100 ? 'text-green-600' : sustainedLIS >= 90 ? 'text-blue-600' : 'text-red-600'}`}>
+                      {(() => {
+                        // Calculate 5-year impact using the same algorithm as LongevityProjection
+                        let baseImpact = 0;
+                        if (sustainedLIS >= 60 && sustainedLIS < 70) {
+                          baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
+                        } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
+                          baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
+                        } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
+                          baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
+                        } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
+                          baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
+                        } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
+                          baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
+                        } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
+                          baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
+                        } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
+                          baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
+                        } else if (sustainedLIS < 60) {
+                          baseImpact = 2.5;
+                        } else if (sustainedLIS > 140) {
+                          baseImpact = -2.5;
+                        }
+                        const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
+                        return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
+                      })()}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Based on {dataPoints}-day trend
+                    </div>
+                  </div>
+                )}
+                
                 <div className="text-sm text-gray-600">
                   {bioAgeImpact >= 0 ? (
                     <span className="font-semibold text-green-600">
@@ -381,7 +419,21 @@ const Dashboard = () => {
 
         {/* Longevity Pillars Grid */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6 text-gray-900">Six Longevity Pillars</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Six Longevity Pillars</h2>
+            {!projectionLoading && (
+              <div className="text-sm text-gray-600">
+                Sustained LIS: <span className="font-semibold">{sustainedLIS.toFixed(1)}</span>
+                <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                  sustainedLIS >= 110 ? 'bg-green-100 text-green-700' : 
+                  sustainedLIS >= 90 ? 'bg-blue-100 text-blue-700' : 
+                  'bg-amber-100 text-amber-700'
+                }`}>
+                  {sustainedLIS >= 110 ? 'Excellent' : sustainedLIS >= 90 ? 'Good' : 'Needs Focus'}
+                </span>
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pillarMetrics.map((metric) => (
               <Card key={metric.name} className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -409,9 +461,12 @@ const Dashboard = () => {
                     </ProgressCircle>
                     
                     <div className="text-right">
-                      <div className="text-xs text-gray-500">Impact</div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {metric.trend === "up" ? "+" : "-"}{(Math.random() * 0.3).toFixed(1)}d
+                      <div className="text-xs text-gray-500">Longevity Impact</div>
+                      <div className={`text-sm font-medium ${metric.value >= 80 ? 'text-green-600' : metric.value >= 60 ? 'text-blue-600' : 'text-red-600'}`}>
+                        {metric.value >= 80 ? 'Positive' : metric.value >= 60 ? 'Neutral' : 'Negative'}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        {metric.trend === "up" ? "+" : "-"}{(Math.random() * 0.3).toFixed(1)}y impact
                       </div>
                     </div>
                   </div>
@@ -419,6 +474,33 @@ const Dashboard = () => {
               </Card>
             ))}
           </div>
+          
+          {/* Pillar Improvement Suggestions */}
+          {!projectionLoading && sustainedLIS < 110 && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="font-semibold text-blue-900 mb-2">💡 Longevity Optimization Tips</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
+                <div>
+                  <strong>Sleep Quality:</strong> Aim for 7-8 hours with consistent bedtime
+                </div>
+                <div>
+                  <strong>Physical Activity:</strong> 150+ minutes moderate exercise weekly
+                </div>
+                <div>
+                  <strong>Stress Management:</strong> Daily meditation or mindfulness practice
+                </div>
+                <div>
+                  <strong>Nutrition:</strong> Mediterranean diet with antioxidant-rich foods
+                </div>
+                <div>
+                  <strong>Social Connections:</strong> Regular meaningful social interactions
+                </div>
+                <div>
+                  <strong>Cognitive Engagement:</strong> Learning new skills and mental challenges
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Data Input Actions */}
