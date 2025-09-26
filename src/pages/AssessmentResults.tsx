@@ -5,24 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 
 interface AssessmentScore {
   overall: number;
-  sleepQuality: number;
-  fallAsleepTime: number;
-  nightWakings: number;
   category: 'excellent' | 'good' | 'fair' | 'poor';
   primaryIssues: string[];
+  detailScores?: Record<string, number>;
 }
 
 interface Recommendation {
   title: string;
   description: string;
   priority: 'high' | 'medium' | 'low';
-  category: 'routine' | 'supplement' | 'environment' | 'lifestyle';
+  category: 'routine' | 'supplement' | 'environment' | 'lifestyle' | 'diet' | 'therapy';
   icon: any;
 }
 
@@ -36,21 +34,57 @@ const AssessmentResults = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   
   useEffect(() => {
-    // Get answers from URL params (passed from assessment completion)
-    const answers = {
-      1: searchParams.get('q1') || '',
-      2: searchParams.get('q2') || '',
-      3: searchParams.get('q3') || ''
-    };
+    const answers: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      if (key.startsWith('q')) {
+        const questionNum = key.substring(1);
+        answers[questionNum] = value;
+      }
+    });
     
-    if (symptomId === 'sleep' && answers[1]) {
-      const calculatedScore = calculateSleepScore(answers);
-      const personalizedRecommendations = generateRecommendations(calculatedScore, answers);
+    if (symptomId && Object.keys(answers).length > 0) {
+      const calculatedScore = calculateScore(symptomId, answers);
+      const personalizedRecommendations = generateRecommendations(symptomId, calculatedScore, answers);
       
       setScore(calculatedScore);
       setRecommendations(personalizedRecommendations);
     }
   }, [symptomId, searchParams]);
+
+  const getSymptomName = (id: string) => {
+    const nameMap: Record<string, string> = {
+      "hot-flashes": "Hot Flashes",
+      "sleep": "Sleep Issues",
+      "joint-pain": "Joint Pain",
+      "brain-fog": "Brain Fog",
+      "energy-levels": "Low Energy",
+      "bloating": "Bloating",
+      "weight-changes": "Weight Changes",
+      "hair-thinning": "Hair Thinning",
+      "anxiety": "Anxiety",
+      "irregular-periods": "Irregular Periods",
+      "headaches": "Headaches",
+      "night-sweats": "Night Sweats",
+      "memory-issues": "Memory Issues",
+      "gut": "Gut Health"
+    };
+    return nameMap[id] || id;
+  };
+
+  const calculateScore = (symptomType: string, answers: Record<string, string>): AssessmentScore => {
+    switch (symptomType) {
+      case 'sleep':
+        return calculateSleepScore(answers);
+      case 'hot-flashes':
+        return calculateHotFlashesScore(answers);
+      case 'joint-pain':
+        return calculateJointPainScore(answers);
+      case 'gut':
+        return calculateGutScore(answers);
+      default:
+        return calculateGenericScore(answers);
+    }
+  };
 
   const calculateSleepScore = (answers: Record<string, string>): AssessmentScore => {
     let overallScore = 100;
@@ -123,7 +157,6 @@ const AssessmentResults = () => {
         break;
     }
 
-    // Determine category
     let category: 'excellent' | 'good' | 'fair' | 'poor';
     if (overallScore >= 85) category = 'excellent';
     else if (overallScore >= 70) category = 'good';
@@ -132,18 +165,256 @@ const AssessmentResults = () => {
 
     return {
       overall: Math.max(0, overallScore),
-      sleepQuality: sleepQualityScore,
-      fallAsleepTime: fallAsleepScore,
-      nightWakings: nightWakingsScore,
+      category,
+      primaryIssues,
+      detailScores: {
+        'Sleep Quality': sleepQualityScore,
+        'Fall Asleep Time': fallAsleepScore,
+        'Sleep Continuity': nightWakingsScore
+      }
+    };
+  };
+
+  const calculateHotFlashesScore = (answers: Record<string, string>): AssessmentScore => {
+    let overallScore = 100;
+    const primaryIssues: string[] = [];
+
+    // Frequency (Question 1)
+    switch (answers['1']) {
+      case 'frequent':
+        overallScore -= 40;
+        primaryIssues.push('Very frequent hot flashes');
+        break;
+      case 'daily':
+        overallScore -= 30;
+        primaryIssues.push('Daily hot flashes');
+        break;
+      case 'weekly':
+        overallScore -= 15;
+        primaryIssues.push('Weekly hot flashes');
+        break;
+      case 'rare':
+        overallScore -= 5;
+        break;
+    }
+
+    // Severity (Question 2)
+    switch (answers['2']) {
+      case 'extreme':
+        overallScore -= 35;
+        primaryIssues.push('Severe intensity');
+        break;
+      case 'severe':
+        overallScore -= 25;
+        primaryIssues.push('High intensity');
+        break;
+      case 'moderate':
+        overallScore -= 15;
+        primaryIssues.push('Moderate intensity');
+        break;
+      case 'mild':
+        overallScore -= 5;
+        break;
+    }
+
+    // Timing patterns (Question 3)
+    if (answers['3'] === 'night') {
+      primaryIssues.push('Night-time hot flashes disrupting sleep');
+    } else if (answers['3'] === 'triggers') {
+      primaryIssues.push('Trigger-based hot flashes');
+    }
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: Math.max(0, overallScore),
       category,
       primaryIssues
     };
   };
 
-  const generateRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  const calculateJointPainScore = (answers: Record<string, string>): AssessmentScore => {
+    let overallScore = 100;
+    const primaryIssues: string[] = [];
+
+    // Location affects mobility impact
+    if (answers['1'] === 'multiple') {
+      overallScore -= 25;
+      primaryIssues.push('Multiple joint involvement');
+    } else if (answers['1'] === 'hips') {
+      overallScore -= 20;
+      primaryIssues.push('Hip joint pain affecting mobility');
+    } else if (answers['1'] === 'knees') {
+      overallScore -= 15;
+      primaryIssues.push('Knee pain affecting movement');
+    } else if (answers['1'] === 'hands') {
+      overallScore -= 10;
+      primaryIssues.push('Hand joint pain affecting daily tasks');
+    }
+
+    // Pain intensity (Question 2)
+    switch (answers['2']) {
+      case 'extreme':
+        overallScore -= 40;
+        primaryIssues.push('Severe pain intensity');
+        break;
+      case 'severe':
+        overallScore -= 30;
+        primaryIssues.push('High pain intensity');
+        break;
+      case 'moderate':
+        overallScore -= 20;
+        primaryIssues.push('Moderate pain levels');
+        break;
+      case 'mild':
+        overallScore -= 10;
+        break;
+    }
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: Math.max(0, overallScore),
+      category,
+      primaryIssues
+    };
+  };
+
+  const calculateGutScore = (answers: Record<string, string>): AssessmentScore => {
+    let overallScore = 100;
+    const primaryIssues: string[] = [];
+
+    // Frequency (Question 1)
+    switch (answers['1']) {
+      case 'frequent':
+        overallScore -= 35;
+        primaryIssues.push('Daily digestive issues');
+        break;
+      case 'daily':
+        overallScore -= 25;
+        primaryIssues.push('Regular digestive discomfort');
+        break;
+      case 'weekly':
+        overallScore -= 15;
+        primaryIssues.push('Weekly digestive symptoms');
+        break;
+      case 'rare':
+        overallScore -= 5;
+        break;
+    }
+
+    // Symptom type (Question 2)
+    switch (answers['2']) {
+      case 'pain':
+        overallScore -= 25;
+        primaryIssues.push('Abdominal pain and cramping');
+        break;
+      case 'bloating':
+        overallScore -= 20;
+        primaryIssues.push('Bloating and gas issues');
+        break;
+      case 'diarrhea':
+        overallScore -= 25;
+        primaryIssues.push('Loose stools and diarrhea');
+        break;
+      case 'constipation':
+        overallScore -= 20;
+        primaryIssues.push('Constipation issues');
+        break;
+      case 'reflux':
+        overallScore -= 15;
+        primaryIssues.push('Acid reflux and heartburn');
+        break;
+    }
+
+    // Energy after meals (Question 3)
+    switch (answers['3']) {
+      case 'exhausted':
+        overallScore -= 20;
+        primaryIssues.push('Severe post-meal fatigue');
+        break;
+      case 'tired':
+        overallScore -= 15;
+        primaryIssues.push('Post-meal energy dips');
+        break;
+      case 'neutral':
+        overallScore -= 5;
+        break;
+      case 'energized':
+        break;
+    }
+
+    // Overall comfort (Question 5)
+    switch (answers['5']) {
+      case 'poor':
+        overallScore -= 25;
+        primaryIssues.push('Poor overall digestive comfort');
+        break;
+      case 'moderate':
+        overallScore -= 15;
+        primaryIssues.push('Moderate digestive discomfort');
+        break;
+      case 'good':
+        break;
+    }
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: Math.max(0, overallScore),
+      category,
+      primaryIssues
+    };
+  };
+
+  const calculateGenericScore = (answers: Record<string, string>): AssessmentScore => {
+    // Generic scoring for symptoms without specific logic yet
+    let overallScore = 75; // Default moderate score
+    const primaryIssues = ['Assessment completed'];
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: overallScore,
+      category,
+      primaryIssues
+    };
+  };
+
+  const generateRecommendations = (symptomType: string, score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    switch (symptomType) {
+      case 'sleep':
+        return generateSleepRecommendations(score, answers);
+      case 'hot-flashes':
+        return generateHotFlashesRecommendations(score, answers);
+      case 'joint-pain':
+        return generateJointPainRecommendations(score, answers);
+      case 'gut':
+        return generateGutRecommendations(score, answers);
+      default:
+        return generateGenericRecommendations(symptomType, score);
+    }
+  };
+
+  const generateSleepRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     const recs: Recommendation[] = [];
 
-    // Always include basic sleep hygiene
     recs.push({
       title: "Evening Wind-Down Routine",
       description: "Create a consistent pre-sleep routine starting 2 hours before bed. Dim lights, avoid screens, and practice relaxation techniques.",
@@ -152,7 +423,6 @@ const AssessmentResults = () => {
       icon: Moon
     });
 
-    // Recommendations based on specific issues
     if (answers['2'] === 'slow' || answers['2'] === 'very-slow') {
       recs.push({
         title: "Magnesium Glycinate Supplement",
@@ -179,49 +449,156 @@ const AssessmentResults = () => {
         category: 'environment',
         icon: Moon
       });
+    }
 
+    return recs;
+  };
+
+  const generateHotFlashesRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    const recs: Recommendation[] = [];
+
+    recs.push({
+      title: "Cooling Techniques",
+      description: "Keep a portable fan nearby, dress in breathable layers, and use cooling towels or cooling pads during episodes.",
+      priority: 'high',
+      category: 'lifestyle',
+      icon: Thermometer
+    });
+
+    if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
       recs.push({
-        title: "L-Theanine for Night Wakings",
-        description: "Take 200-400mg of L-Theanine 1-2 hours before bed to promote calm alertness and reduce anxiety-related wakings.",
-        priority: 'medium',
+        title: "Black Cohosh Supplement",
+        description: "Consider 40-80mg daily of standardized black cohosh extract, which has shown effectiveness for hot flash reduction.",
+        priority: 'high',
         category: 'supplement',
         icon: Pill
       });
-    }
-
-    if (answers['1'] === 'poor' || answers['1'] === 'fair') {
-      recs.push({
-        title: "Circadian Rhythm Reset",
-        description: "Get 10-15 minutes of natural sunlight within 2 hours of waking and maintain consistent sleep-wake times even on weekends.",
-        priority: 'high',
-        category: 'lifestyle',
-        icon: Lightbulb
-      });
 
       recs.push({
-        title: "Glycine for Sleep Quality",
-        description: "Take 3g of glycine 30 minutes before bed to help lower your core body temperature and improve deep sleep phases.",
+        title: "Hormone Balance Support",
+        description: "Include phytoestrogen-rich foods like soy, flax seeds, and legumes. Consider consulting about bioidentical hormone options.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill
+        category: 'diet',
+        icon: Heart
       });
     }
 
-    // Add progressive recommendations based on overall score
-    if (score.overall < 60) {
+    if (answers['3'] === 'night') {
       recs.push({
-        title: "Sleep Restriction Therapy",
-        description: "Temporarily limit time in bed to only when you're actually sleeping to improve sleep efficiency and consolidation.",
+        title: "Night-time Environment Setup",
+        description: "Use moisture-wicking sleepwear, cooling mattress pads, and keep room temperature cool (65-68°F).",
         priority: 'high',
-        category: 'lifestyle',
+        category: 'environment',
         icon: Moon
       });
     }
 
-    return recs.sort((a, b) => {
-      const priorityOrder = { high: 3, medium: 2, low: 1 };
-      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    return recs;
+  };
+
+  const generateJointPainRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    const recs: Recommendation[] = [];
+
+    recs.push({
+      title: "Anti-Inflammatory Protocol",
+      description: "Incorporate turmeric (curcumin) 500-1000mg daily with black pepper for absorption. Add omega-3 fatty acids 2-3g daily.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Pill
     });
+
+    if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
+      recs.push({
+        title: "Gentle Movement Therapy",
+        description: "Start with low-impact exercises like water therapy, tai chi, or gentle yoga to maintain joint mobility without strain.",
+        priority: 'high',
+        category: 'therapy',
+        icon: Heart
+      });
+
+      recs.push({
+        title: "Heat and Cold Therapy",
+        description: "Alternate between warm compresses (15 min) and cold therapy (10 min) to reduce inflammation and pain.",
+        priority: 'medium',
+        category: 'therapy',
+        icon: Thermometer
+      });
+    }
+
+    if (answers['1'] === 'multiple') {
+      recs.push({
+        title: "Systemic Anti-Inflammatory Diet",
+        description: "Eliminate processed foods, sugar, and inflammatory oils. Focus on Mediterranean diet rich in antioxidants and omega-3s.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart
+      });
+    }
+
+    return recs;
+  };
+
+  const generateGutRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    const recs: Recommendation[] = [];
+
+    recs.push({
+      title: "Digestive Enzyme Support",
+      description: "Take broad-spectrum digestive enzymes with meals to improve breakdown and absorption of nutrients.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Pill
+    });
+
+    if (answers['2'] === 'bloating') {
+      recs.push({
+        title: "FODMAP Elimination Protocol",
+        description: "Try a low-FODMAP diet for 2-4 weeks to identify trigger foods, then systematically reintroduce to find your tolerance levels.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart
+      });
+    }
+
+    if (answers['2'] === 'constipation') {
+      recs.push({
+        title: "Fiber and Hydration Protocol",
+        description: "Increase soluble fiber gradually, drink 8-10 glasses of water daily, and consider magnesium oxide 400-600mg at bedtime.",
+        priority: 'high',
+        category: 'lifestyle',
+        icon: Heart
+      });
+    }
+
+    if (answers['3'] === 'exhausted' || answers['3'] === 'tired') {
+      recs.push({
+        title: "Gut-Brain Axis Support",
+        description: "Include probiotic-rich foods and consider a high-quality multi-strain probiotic (50+ billion CFU) to support gut-brain communication.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Brain
+      });
+    }
+
+    return recs;
+  };
+
+  const generateGenericRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
+    return [
+      {
+        title: "Comprehensive Assessment Complete",
+        description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalized treatment options.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: CheckCircle2
+      },
+      {
+        title: "Holistic Wellness Approach",
+        description: "Focus on sleep quality, stress management, regular exercise, and anti-inflammatory nutrition to support overall health.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Heart
+      }
+    ];
   };
 
   const getScoreColor = (score: number) => {
@@ -277,17 +654,19 @@ const AssessmentResults = () => {
         <div className="mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/sleep')}
+            onClick={() => navigate('/symptoms')}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Sleep Optimization
+            Back to Symptoms
           </Button>
           
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2 gradient-text">Your Sleep Assessment Results</h1>
+            <h1 className="text-3xl font-bold mb-2 gradient-text">
+              {getSymptomName(symptomId!)} Assessment Results
+            </h1>
             <p className="text-muted-foreground">
-              Personalized recommendations based on your sleep patterns
+              Personalized recommendations based on your assessment
             </p>
           </div>
         </div>
@@ -299,9 +678,9 @@ const AssessmentResults = () => {
               <div>
                 <CardTitle className="flex items-center gap-3">
                   {getScoreIcon(score.overall)}
-                  Your Sleep Score
+                  Your Assessment Score
                 </CardTitle>
-                <CardDescription>Based on your assessment responses</CardDescription>
+                <CardDescription>Based on your responses</CardDescription>
               </div>
               <div className="text-right">
                 <div className={`text-4xl font-bold ${getScoreColor(score.overall)}`}>
@@ -314,33 +693,23 @@ const AssessmentResults = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Sleep Quality</span>
-                  <span className="text-sm">{score.sleepQuality}%</span>
-                </div>
-                <Progress value={score.sleepQuality} className="h-2" />
+            {score.detailScores && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                {Object.entries(score.detailScores).map(([category, scoreValue]) => (
+                  <div key={category}>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium">{category}</span>
+                      <span className="text-sm">{scoreValue}%</span>
+                    </div>
+                    <Progress value={scoreValue} className="h-2" />
+                  </div>
+                ))}
               </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Fall Asleep Time</span>
-                  <span className="text-sm">{score.fallAsleepTime}%</span>
-                </div>
-                <Progress value={score.fallAsleepTime} className="h-2" />
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Sleep Continuity</span>
-                  <span className="text-sm">{score.nightWakings}%</span>
-                </div>
-                <Progress value={score.nightWakings} className="h-2" />
-              </div>
-            </div>
+            )}
             
             {score.primaryIssues.length > 0 && (
               <div className="bg-muted/30 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Primary Areas for Improvement:</h4>
+                <h4 className="font-semibold mb-2">Key Areas Identified:</h4>
                 <div className="flex flex-wrap gap-2">
                   {score.primaryIssues.map((issue, index) => (
                     <Badge key={index} variant="outline" className="text-sm">
@@ -355,12 +724,13 @@ const AssessmentResults = () => {
 
         {/* Recommendations */}
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="all">All Recommendations</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="routine">Routines</TabsTrigger>
             <TabsTrigger value="supplement">Supplements</TabsTrigger>
-            <TabsTrigger value="environment">Environment</TabsTrigger>
+            <TabsTrigger value="diet">Diet</TabsTrigger>
             <TabsTrigger value="lifestyle">Lifestyle</TabsTrigger>
+            <TabsTrigger value="therapy">Therapy</TabsTrigger>
           </TabsList>
           
           <TabsContent value="all" className="mt-6">
@@ -389,7 +759,7 @@ const AssessmentResults = () => {
             </div>
           </TabsContent>
           
-          {['routine', 'supplement', 'environment', 'lifestyle'].map(category => (
+          {['routine', 'supplement', 'diet', 'lifestyle', 'therapy'].map(category => (
             <TabsContent key={category} value={category} className="mt-6">
               <div className="grid gap-4">
                 {recommendations
@@ -421,10 +791,15 @@ const AssessmentResults = () => {
         <div className="mt-8 text-center space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
-              onClick={() => navigate('/sleep')}
+              onClick={() => {
+                // Navigate to relevant biohacking page based on symptom type
+                if (symptomId === 'sleep') navigate('/sleep');
+                else if (symptomId === 'gut' || symptomId === 'bloating') navigate('/supplements');
+                else navigate('/therapies');
+              }}
               className="bg-primary hover:bg-primary-dark text-primary-foreground"
             >
-              Explore Sleep Optimization Tools
+              Explore Related Biohacking Tools
             </Button>
             <Button 
               variant="outline"
