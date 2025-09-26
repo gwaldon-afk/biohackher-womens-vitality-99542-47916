@@ -136,6 +136,19 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
           </AlertDescription>
         </Alert>
 
+        {/* Quality of Life Assessment */}
+        <Alert className="bg-indigo-50 border-indigo-200 text-indigo-700">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <div className="font-semibold mb-1">🌟 Quality of Life Impact</div>
+            {sustainedLIS >= 100 ? (
+              "Your current habits don't just add years to your life - they add life to your years! You're likely experiencing better energy, cognitive function, emotional wellbeing, and physical vitality that compound over time."
+            ) : (
+              "Optimizing your longevity habits will enhance not just lifespan but healthspan - meaning more years of vitality, mental clarity, physical strength, and overall life satisfaction. The goal is vibrant, high-quality years."
+            )}
+          </AlertDescription>
+        </Alert>
+
         {/* Projection Chart */}
         <div>
           <h4 className="font-medium text-gray-900 mb-4 text-center">
@@ -155,7 +168,8 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#6b7280' }}
-                  domain={['dataMin - 1', 'dataMax + 1']}
+                  domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                  tickFormatter={(value) => `${value > 0 ? '+' : ''}${value}y`}
                 />
                 <Bar dataKey="impact" radius={[4, 4, 0, 0]}>
                   {projectionData.map((entry, index) => (
@@ -206,13 +220,13 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
                 <div className="text-center">
                   <div className="text-xs text-gray-600 mb-1">5-Year</div>
                   <div className={`text-lg font-bold ${projectionData[0].impact > 0 ? 'text-red-600' : projectionData[0].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                    {projectionData[0].impact > 0 ? '+' : ''}{projectionData[0].impact.toFixed(1)}y
+                    {projectionData[0].impact > 0 ? `+${projectionData[0].impact.toFixed(1)}y older` : projectionData[0].impact < 0 ? `${Math.abs(projectionData[0].impact).toFixed(1)}y younger` : `${projectionData[0].impact.toFixed(1)}y same`}
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-600 mb-1">20-Year</div>
                   <div className={`text-lg font-bold ${projectionData[3].impact > 0 ? 'text-red-600' : projectionData[3].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                    {projectionData[3].impact > 0 ? '+' : ''}{projectionData[3].impact.toFixed(1)}y
+                    {projectionData[3].impact > 0 ? `+${projectionData[3].impact.toFixed(1)}y older` : projectionData[3].impact < 0 ? `${Math.abs(projectionData[3].impact).toFixed(1)}y younger` : `${projectionData[3].impact.toFixed(1)}y same`}
                   </div>
                 </div>
               </div>
@@ -225,13 +239,13 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
                 <div className="text-center">
                   <div className="text-xs text-gray-600 mb-1">5-Year</div>
                   <div className="text-lg font-bold text-green-600">
-                    {optimalProjectionData[0].impact.toFixed(1)}y younger
+                    {Math.abs(optimalProjectionData[0].impact).toFixed(1)}y younger
                   </div>
                 </div>
                 <div className="text-center">
                   <div className="text-xs text-gray-600 mb-1">20-Year</div>
                   <div className="text-lg font-bold text-green-600">
-                    {optimalProjectionData[3].impact.toFixed(1)}y younger
+                    {Math.abs(optimalProjectionData[3].impact).toFixed(1)}y younger
                   </div>
                 </div>
               </div>
