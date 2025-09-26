@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import LISInputForm from "@/components/LISInputForm";
+import LongevityProjection from "@/components/LongevityProjection";
+import { useLongevityProjection } from "@/hooks/useLongevityProjection";
 
 interface DailyScore {
   date: string;
@@ -38,6 +40,7 @@ const Dashboard = () => {
   const [summary, setSummary] = useState<ScoreSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { sustainedLIS, dataPoints, isLoading: projectionLoading } = useLongevityProjection();
 
   useEffect(() => {
     fetchScoreHistory();
@@ -365,6 +368,16 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Longevity Age Projection */}
+        {!projectionLoading && (
+          <div className="mb-8">
+            <LongevityProjection 
+              sustainedLIS={sustainedLIS}
+              dataPoints={dataPoints}
+            />
+          </div>
+        )}
 
         {/* Longevity Pillars Grid */}
         <div className="mb-8">
