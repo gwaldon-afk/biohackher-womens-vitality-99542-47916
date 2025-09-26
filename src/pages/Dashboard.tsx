@@ -245,14 +245,18 @@ const Dashboard = () => {
     
     const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
     const optimalImpact = calculateLongevityImpact(135, 5); // Optimal LIS score
+    const totalImprovement = Math.abs(fiveYearImpact - optimalImpact);
     
-    // Generate motivational message based on impact
-    if (fiveYearImpact < -0.5) {
-      return `🎉 Excellent! Your habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years. With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger.`;
-    } else if (fiveYearImpact <= 0.5 && fiveYearImpact >= -0.5) {
-      return `📊 Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years). With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger in 5 years.`;
+    // Generate detailed message based on current impact
+    if (fiveYearImpact > 0) {
+      // Current path ages you faster
+      return `Your current path means your biological age will be ${fiveYearImpact.toFixed(1)} years older than your actual age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger instead - shifting from aging ${fiveYearImpact.toFixed(1)} years faster to ${Math.abs(optimalImpact).toFixed(1)} years slower, a total improvement of ${totalImprovement.toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
+    } else if (fiveYearImpact < 0) {
+      // Current path makes you younger
+      return `Excellent! Your current path adds ${Math.abs(fiveYearImpact).toFixed(1)} years to your lifespan in 5 years by making your biological age younger. With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger, an additional improvement of ${Math.abs(optimalImpact - Math.abs(fiveYearImpact)).toFixed(1)} years! Priority: maintain current habits and optimize sleep quality, physical activity, stress management, and nutrition.`;
     } else {
-      return `🚨 Your habits may add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger instead!`;
+      // Minimal impact
+      return `Your current path has minimal impact on biological aging in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger biological age, a total improvement of ${Math.abs(optimalImpact).toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
     }
   };
 
