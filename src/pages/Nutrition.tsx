@@ -73,93 +73,93 @@ const Nutrition = () => {
       ]
     },
     "Mediterranean Salad Bowl": {
-      ingredients: ["Mixed greens", "Cherry tomatoes", "Cucumber", "Olives", "Feta cheese", "Olive oil"],
+      ingredients: ["4 cups mixed greens", "1 cup cherry tomatoes, halved", "1 medium cucumber, diced", "1/4 cup kalamata olives", "1/2 cup feta cheese, crumbled", "2 tbsp extra virgin olive oil", "1 tbsp lemon juice"],
       steps: [
-        "Wash and dry mixed greens",
-        "Chop tomatoes and cucumber",
-        "Combine vegetables in bowl",
-        "Add olives and crumbled feta",
-        "Drizzle with olive oil and serve"
+        "Wash and dry 4 cups mixed greens",
+        "Halve 1 cup cherry tomatoes and dice 1 cucumber",
+        "Combine vegetables in large bowl",
+        "Add 1/4 cup olives and 1/2 cup crumbled feta",
+        "Drizzle with 2 tbsp olive oil and 1 tbsp lemon juice, toss and serve"
       ]
     },
     "Grilled Chicken & Vegetables": {
-      ingredients: ["Chicken breast", "Bell peppers", "Zucchini", "Olive oil", "Herbs", "Salt & pepper"],
+      ingredients: ["1 chicken breast (6 oz)", "1 bell pepper, sliced", "1 medium zucchini, sliced", "2 tbsp olive oil", "1 tsp mixed herbs", "Salt & pepper to taste"],
       steps: [
-        "Season chicken with salt, pepper, and herbs",
-        "Cut vegetables into even pieces",
+        "Season 6 oz chicken breast with salt, pepper, and 1 tsp herbs",
+        "Cut 1 bell pepper and 1 zucchini into even slices",
         "Heat grill or grill pan to medium-high",
-        "Grill chicken 6-7 minutes per side until cooked",
-        "Grill vegetables until tender, serve together"
+        "Brush vegetables with 1 tbsp olive oil",
+        "Grill chicken 6-7 minutes per side, vegetables 4-5 minutes until tender"
       ]
     },
     "Quinoa Power Bowl": {
-      ingredients: ["1 cup quinoa", "Mixed vegetables", "Chickpeas", "Olive oil", "Lemon", "Herbs"],
+      ingredients: ["1 cup dry quinoa", "2 cups mixed vegetables (broccoli, carrots, bell peppers)", "1/2 cup canned chickpeas, drained", "2 tbsp olive oil", "1 lemon (juiced)", "1 tsp fresh herbs"],
       steps: [
-        "Cook quinoa according to package directions",
-        "Steam or roast mixed vegetables",
-        "Drain and rinse chickpeas",
-        "Combine quinoa, vegetables, and chickpeas",
-        "Dress with olive oil, lemon juice, and herbs"
+        "Cook 1 cup quinoa in 2 cups water for 15 minutes",
+        "Steam or roast 2 cups mixed vegetables until tender",
+        "Drain and rinse 1/2 cup chickpeas",
+        "Combine cooked quinoa, vegetables, and chickpeas in bowl",
+        "Dress with 2 tbsp olive oil, lemon juice, and herbs"
       ]
     },
     "Salmon with Sweet Potato": {
-      ingredients: ["Salmon fillet", "Sweet potato", "Broccoli", "Olive oil", "Garlic", "Herbs"],
+      ingredients: ["1 salmon fillet (6 oz)", "1 large sweet potato, cubed", "2 cups broccoli florets", "2 tbsp olive oil", "2 cloves garlic, minced", "1 tsp dried herbs", "Salt & pepper"],
       steps: [
         "Preheat oven to 400°F (200°C)",
-        "Cut sweet potato into cubes, toss with oil",
+        "Cut 1 sweet potato into 1-inch cubes, toss with 1 tbsp oil",
         "Roast sweet potato for 20 minutes",
-        "Season salmon and add to pan with broccoli",
-        "Bake 15 minutes until salmon flakes easily"
+        "Season 6 oz salmon with herbs, salt, and pepper",
+        "Add salmon and 2 cups broccoli to pan, bake 15 minutes"
       ]
     },
     "Protein Smoothie Bowl": {
-      ingredients: ["Protein powder", "Frozen berries", "Banana", "Almond milk", "Toppings"],
+      ingredients: ["1 scoop protein powder (25g)", "1 cup frozen mixed berries", "1/2 banana", "1/2 cup unsweetened almond milk", "2 tbsp granola", "1 tbsp chia seeds", "Fresh berries for topping"],
       steps: [
-        "Blend protein powder with frozen fruit and milk",
+        "Blend 1 scoop protein powder with 1 cup frozen berries and 1/2 banana",
+        "Add 1/2 cup almond milk gradually until thick consistency",
         "Pour into bowl",
-        "Add fresh fruit toppings",
-        "Sprinkle with nuts or seeds",
+        "Top with 2 tbsp granola, 1 tbsp chia seeds, and fresh berries",
         "Serve immediately"
       ]
     },
     "Turkey & Veggie Wrap": {
-      ingredients: ["Whole wheat tortilla", "Turkey slices", "Vegetables", "Hummus", "Spinach"],
+      ingredients: ["1 large whole wheat tortilla", "4 oz sliced turkey breast", "1/4 avocado, sliced", "1/4 cup shredded carrots", "2 tbsp hummus", "1 cup fresh spinach leaves"],
       steps: [
-        "Lay tortilla flat on surface",
-        "Spread hummus evenly",
-        "Layer turkey, vegetables, and spinach",
-        "Roll tightly from one end",
-        "Cut in half and serve"
+        "Lay 1 tortilla flat on clean surface",
+        "Spread 2 tbsp hummus evenly across center",
+        "Layer 4 oz turkey, 1/4 sliced avocado, carrots, and 1 cup spinach",
+        "Roll tightly from one end, tucking in sides",
+        "Cut in half diagonally and serve"
       ]
     },
     "Lentil Curry": {
-      ingredients: ["Red lentils", "Coconut milk", "Curry spices", "Onion", "Garlic", "Rice"],
+      ingredients: ["1 cup dried red lentils", "1 can (14 oz) coconut milk", "2 tsp curry powder", "1 medium onion, diced", "3 cloves garlic, minced", "1 cup jasmine rice", "2 tbsp coconut oil", "Salt to taste"],
       steps: [
-        "Sauté onion and garlic until fragrant",
-        "Add curry spices and cook 1 minute",
-        "Add lentils and coconut milk",
-        "Simmer 20 minutes until lentils are soft",
-        "Serve over cooked rice"
+        "Sauté 1 diced onion and 3 cloves garlic in 2 tbsp oil until fragrant",
+        "Add 2 tsp curry powder and cook 1 minute",
+        "Add 1 cup lentils and 14 oz coconut milk plus 1 cup water",
+        "Simmer 20-25 minutes until lentils are soft and creamy",
+        "Serve over 1 cup cooked jasmine rice"
       ]
     },
     "Baked Cod with Herbs": {
-      ingredients: ["Cod fillet", "Herbs", "Lemon", "Olive oil", "Vegetables"],
+      ingredients: ["1 cod fillet (6 oz)", "2 tbsp fresh herbs (parsley, dill, thyme)", "1 lemon (juiced and zested)", "2 tbsp olive oil", "2 cups seasonal vegetables (asparagus, carrots)", "Salt & pepper"],
       steps: [
         "Preheat oven to 375°F (190°C)",
-        "Place cod on baking sheet",
-        "Drizzle with olive oil and lemon juice",
-        "Season with herbs and salt",
-        "Bake 15-20 minutes until fish flakes"
+        "Place 6 oz cod fillet on parchment-lined baking sheet",
+        "Drizzle with 2 tbsp olive oil and lemon juice",
+        "Season with 2 tbsp fresh herbs, lemon zest, salt, and pepper",
+        "Add 2 cups vegetables to pan, bake 15-20 minutes until fish flakes"
       ]
     },
     "Overnight Oats": {
-      ingredients: ["Rolled oats", "Milk", "Chia seeds", "Honey", "Berries"],
+      ingredients: ["1/2 cup rolled oats", "1/2 cup milk of choice", "1 tbsp chia seeds", "1 tbsp honey or maple syrup", "1/2 cup fresh berries", "1 tbsp almond butter (optional)"],
       steps: [
-        "Mix oats, milk, and chia seeds",
-        "Add honey to taste",
-        "Refrigerate overnight",
-        "Top with fresh berries",
-        "Enjoy cold or warm slightly"
+        "Mix 1/2 cup oats, 1/2 cup milk, and 1 tbsp chia seeds in jar",
+        "Add 1 tbsp honey and stir well",
+        "Refrigerate overnight (minimum 4 hours)",
+        "Top with 1/2 cup fresh berries and almond butter if desired",
+        "Enjoy cold or warm slightly before serving"
       ]
     }
   };
