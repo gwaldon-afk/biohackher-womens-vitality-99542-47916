@@ -30,7 +30,7 @@ const Sleep = () => {
     },
     {
       id: "conditions",
-      title: "Medical Conditions",
+      title: "Related Medical Conditions",
       icon: Stethoscope,
       color: "bg-accent text-accent-foreground"
     },
