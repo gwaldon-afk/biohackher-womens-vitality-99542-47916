@@ -244,19 +244,22 @@ const Dashboard = () => {
     if (!sustainedLIS || projectionLoading) return "Calculating longevity impact...";
     
     const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-    const optimalImpact = calculateLongevityImpact(135, 5); // Optimal LIS score
-    const totalImprovement = Math.abs(fiveYearImpact - optimalImpact);
+    const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
+    const optimalFiveYear = calculateLongevityImpact(135, 5); // Optimal LIS score
+    const optimalTwentyYear = calculateLongevityImpact(135, 20);
+    const totalImprovementFiveYear = Math.abs(fiveYearImpact - optimalFiveYear);
+    const totalImprovementTwentyYear = Math.abs(twentyYearImpact - optimalTwentyYear);
     
     // Generate detailed message based on current impact
     if (fiveYearImpact > 0) {
       // Current path ages you faster
-      return `Your current path means your biological age will be ${fiveYearImpact.toFixed(1)} years older than your actual age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger instead - shifting from aging ${fiveYearImpact.toFixed(1)} years faster to ${Math.abs(optimalImpact).toFixed(1)} years slower, a total improvement of ${totalImprovement.toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
+      return `Your current path means your biological age will be ${fiveYearImpact.toFixed(1)} years older in 5 years and ${twentyYearImpact.toFixed(1)} years older in 20 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years - total improvements of ${totalImprovementFiveYear.toFixed(1)} and ${totalImprovementTwentyYear.toFixed(1)} years respectively! Priority: sleep quality, physical activity, stress management, and nutrition.`;
     } else if (fiveYearImpact < 0) {
       // Current path makes you younger
-      return `Excellent! Your current path adds ${Math.abs(fiveYearImpact).toFixed(1)} years to your lifespan in 5 years by making your biological age younger. With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger, an additional improvement of ${Math.abs(optimalImpact - Math.abs(fiveYearImpact)).toFixed(1)} years! Priority: maintain current habits and optimize sleep quality, physical activity, stress management, and nutrition.`;
+      return `Excellent! Your current path makes your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years. With optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years, additional improvements of ${Math.abs(optimalFiveYear - Math.abs(fiveYearImpact)).toFixed(1)} and ${Math.abs(optimalTwentyYear - Math.abs(twentyYearImpact)).toFixed(1)} years respectively! Priority: maintain current habits and optimize sleep quality, physical activity, stress management, and nutrition.`;
     } else {
       // Minimal impact
-      return `Your current habits show minimal ${fiveYearImpact < 0 ? 'negative' : 'positive'} impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years). But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger biological age, a total improvement of ${Math.abs(optimalImpact).toFixed(1)} years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
+      return `Your current habits show minimal ${fiveYearImpact < 0 ? 'negative' : 'positive'} impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years in 5 years, ${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years in 20 years). But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
     }
   };
 
