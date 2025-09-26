@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Symptoms from "./pages/Symptoms";
+import SymptomAssessment from "./pages/SymptomAssessment";
 import Therapies from "./pages/Therapies";
 import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/symptoms" element={<Symptoms />} />
+            <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/therapies" element={<Therapies />} />
             <Route path="/sleep" element={<Sleep />} />
             <Route path="/nutrition" element={<Nutrition />} />
