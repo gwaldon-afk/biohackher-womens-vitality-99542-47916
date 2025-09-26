@@ -236,6 +236,42 @@ export type Database = {
           },
         ]
       }
+      user_symptoms: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          notes: string | null
+          severity: string
+          symptom_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          severity?: string
+          symptom_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          severity?: string
+          symptom_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wearable_data: {
         Row: {
           active_minutes: number | null
