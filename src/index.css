@@ -20,11 +20,11 @@ Based on modern longevity and wellness brand identity.
     --popover: 30 24% 95%;
     --popover-foreground: 0 0% 0%;
 
-    /* Primary - Brand Peach */
-    --primary: 20 86% 82%;
-    --primary-foreground: 0 0% 0%;
-    --primary-light: 20 86% 90%;
-    --primary-dark: 20 86% 74%;
+  /* Primary - Brand Peach with darker variant for HER styling */
+  --primary: 20 86% 82%;
+  --primary-foreground: 0 0% 0%;
+  --primary-light: 20 86% 90%;
+  --primary-dark: 20 86% 68%; /* Darker peach like HER in logo */
 
     /* Secondary - Brand Stone */
     --secondary: 30 24% 87%;

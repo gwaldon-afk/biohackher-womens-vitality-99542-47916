@@ -222,7 +222,7 @@ const Supplements = () => {
                   className={`cursor-pointer flex flex-col items-center p-6 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full ${
                     selectedPillar === key
                       ? 'border-primary bg-primary text-primary-foreground shadow-lg'
-                      : 'border-gray-200 bg-primary/20 hover:border-primary/50 hover:bg-primary/30'
+                      : 'border-gray-200 bg-primary-dark hover:border-primary/50 hover:bg-primary'
                   }`}
                 >
                   <pillar.icon className={`h-10 w-10 mb-3 ${
