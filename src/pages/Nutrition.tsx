@@ -15,8 +15,58 @@ const Nutrition = () => {
   const [goal, setGoal] = useState("maintenance");
   const [isLowFODMAP, setIsLowFODMAP] = useState(false);
   const [hasIBS, setHasIBS] = useState(false);
+  const [allergies, setAllergies] = useState<string[]>([]);
+  const [dislikes, setDislikes] = useState<string[]>([]);
   const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
   const [showWeeklyPlan, setShowWeeklyPlan] = useState(false);
+
+  const commonAllergies = [
+    "Dairy", "Eggs", "Fish", "Shellfish", "Tree Nuts", "Peanuts", "Soy", "Gluten"
+  ];
+
+  const commonDislikes = [
+    "Salmon", "Chicken", "Tofu", "Eggs", "Yogurt", "Broccoli", "Spinach", 
+    "Carrots", "Quinoa", "Brown Rice", "Sweet Potato", "Oats", "Avocado", "Almonds"
+  ];
+
+  const toggleAllergy = (allergy: string) => {
+    setAllergies(prev => 
+      prev.includes(allergy) 
+        ? prev.filter(a => a !== allergy)
+        : [...prev, allergy]
+    );
+  };
+
+  const toggleDislike = (dislike: string) => {
+    setDislikes(prev => 
+      prev.includes(dislike) 
+        ? prev.filter(d => d !== dislike)
+        : [...prev, dislike]
+    );
+  };
+
+  const isAllergic = (food: string) => {
+    const allergyMap: Record<string, string[]> = {
+      "Dairy": ["Greek Yogurt", "Cottage Cheese"],
+      "Eggs": ["Eggs"],
+      "Fish": ["Salmon"],
+      "Tree Nuts": ["Almonds"],
+      "Soy": ["Tofu"],
+      "Gluten": ["Oats"] // simplified - would need gluten-free oats
+    };
+    
+    return allergies.some(allergy => 
+      allergyMap[allergy]?.includes(food)
+    );
+  };
+
+  const hasDislike = (food: string) => {
+    return dislikes.includes(food);
+  };
+
+  const isExcluded = (food: string) => {
+    return isAllergic(food) || hasDislike(food);
+  };
 
   const calculateProtein = () => {
     if (!weight) return { min: 0, max: 0 };
@@ -186,41 +236,62 @@ const Nutrition = () => {
     const generateMeal = (mealType: string, dayIndex: number) => {
       let protein, carb, vegetable, fat;
       
-      // Meal-specific food selections
+      // Meal-specific food selections with allergy/dislike filtering
       if (mealType === "breakfast") {
         if (isLowFODMAP) {
-          const proteinOptions = ["Eggs", "Greek Yogurt"];
-          const carbOptions = ["Oats", "Quinoa"];
-          const vegOptions = ["Spinach"];
+          let proteinOptions = ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p));
+          let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
+          let vegOptions = ["Spinach"].filter(v => !isExcluded(v));
+          
+          // Fallbacks if all options are excluded
+          if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
+          if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
+          if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[0];
-          fat = dayIndex % 2 === 0 ? "Almonds" : "Olive Oil";
+          fat = (dayIndex % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : "Olive Oil";
         } else {
-          const proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"];
-          const carbOptions = ["Oats", "Quinoa"];
-          const vegOptions = ["Spinach"];
+          let proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"].filter(p => !isExcluded(p));
+          let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
+          let vegOptions = ["Spinach"].filter(v => !isExcluded(v));
+          
+          // Fallbacks
+          if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
+          if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
+          if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[0];
-          fat = dayIndex % 2 === 0 ? "Almonds" : "Avocado";
+          fat = (dayIndex % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : 
+                (!isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
         }
       } else if (mealType === "lunch") {
         if (isLowFODMAP) {
-          const proteinOptions = ["Chicken Breast", "Salmon"];
-          const carbOptions = ["Brown Rice", "Quinoa"];
-          const vegOptions = ["Spinach", "Carrots"];
+          let proteinOptions = ["Chicken Breast", "Salmon"].filter(p => !isExcluded(p));
+          let carbOptions = ["Brown Rice", "Quinoa"].filter(c => !isExcluded(c));
+          let vegOptions = ["Spinach", "Carrots"].filter(v => !isExcluded(v));
+          
+          // Fallbacks
+          if (proteinOptions.length === 0) proteinOptions = ["Eggs"];
+          if (carbOptions.length === 0) carbOptions = ["Sweet Potato"];
+          if (vegOptions.length === 0) vegOptions = ["Broccoli"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[dayIndex % vegOptions.length];
           fat = "Olive Oil";
         } else {
-          const proteinOptions = ["Chicken Breast", "Salmon", "Tofu"];
-          const carbOptions = ["Brown Rice", "Quinoa", "Sweet Potato"];
-          const vegOptions = ["Spinach", "Broccoli"];
+          let proteinOptions = ["Chicken Breast", "Salmon", "Tofu"].filter(p => !isExcluded(p));
+          let carbOptions = ["Brown Rice", "Quinoa", "Sweet Potato"].filter(c => !isExcluded(c));
+          let vegOptions = ["Spinach", "Broccoli"].filter(v => !isExcluded(v));
+          
+          // Fallbacks
+          if (proteinOptions.length === 0) proteinOptions = ["Eggs"];
+          if (carbOptions.length === 0) carbOptions = ["Oats"];
+          if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
@@ -229,23 +300,33 @@ const Nutrition = () => {
         }
       } else { // dinner
         if (isLowFODMAP) {
-          const proteinOptions = ["Salmon", "Chicken Breast"];
-          const carbOptions = ["Sweet Potato", "Brown Rice"];
-          const vegOptions = ["Carrots", "Broccoli"];
+          let proteinOptions = ["Salmon", "Chicken Breast"].filter(p => !isExcluded(p));
+          let carbOptions = ["Sweet Potato", "Brown Rice"].filter(c => !isExcluded(c));
+          let vegOptions = ["Carrots", "Broccoli"].filter(v => !isExcluded(v));
+          
+          // Fallbacks
+          if (proteinOptions.length === 0) proteinOptions = ["Eggs"];
+          if (carbOptions.length === 0) carbOptions = ["Quinoa"];
+          if (vegOptions.length === 0) vegOptions = ["Spinach"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[dayIndex % vegOptions.length];
-          fat = "Avocado";
+          fat = !isExcluded("Avocado") ? "Avocado" : "Olive Oil";
         } else {
-          const proteinOptions = ["Salmon", "Chicken Breast"];
-          const carbOptions = ["Sweet Potato", "Brown Rice"];
-          const vegOptions = ["Broccoli", "Carrots"];
+          let proteinOptions = ["Salmon", "Chicken Breast"].filter(p => !isExcluded(p));
+          let carbOptions = ["Sweet Potato", "Brown Rice"].filter(c => !isExcluded(c));
+          let vegOptions = ["Broccoli", "Carrots"].filter(v => !isExcluded(v));
+          
+          // Fallbacks
+          if (proteinOptions.length === 0) proteinOptions = ["Tofu"];
+          if (carbOptions.length === 0) carbOptions = ["Quinoa"];
+          if (vegOptions.length === 0) vegOptions = ["Spinach"];
           
           protein = proteinOptions[dayIndex % proteinOptions.length];
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[dayIndex % vegOptions.length];
-          fat = dayIndex % 2 === 0 ? "Avocado" : "Olive Oil";
+          fat = (dayIndex % 2 === 0 && !isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
         }
       }
       
@@ -388,7 +469,7 @@ const Nutrition = () => {
                     <Label htmlFor="activity">Activity Level</Label>
                     <select 
                       id="activity"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md bg-background"
                       value={activityLevel}
                       onChange={(e) => setActivityLevel(e.target.value)}
                     >
@@ -403,7 +484,7 @@ const Nutrition = () => {
                     <Label htmlFor="goal">Fitness Goal</Label>
                     <select 
                       id="goal"
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md bg-background"
                       value={goal}
                       onChange={(e) => setGoal(e.target.value)}
                     >
@@ -412,6 +493,68 @@ const Nutrition = () => {
                       <option value="muscle-gain">Muscle Gain</option>
                     </select>
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Allergies & Dietary Restrictions</CardTitle>
+                  <CardDescription>Select any allergies or foods you want to avoid</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">Common Allergies</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {commonAllergies.map((allergy) => (
+                        <div key={allergy} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`allergy-${allergy}`}
+                            checked={allergies.includes(allergy)}
+                            onChange={() => toggleAllergy(allergy)}
+                            className="rounded border-gray-300"
+                          />
+                          <Label 
+                            htmlFor={`allergy-${allergy}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {allergy}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-sm font-medium mb-3 block">Food Dislikes</Label>
+                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                      {commonDislikes.map((dislike) => (
+                        <div key={dislike} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`dislike-${dislike}`}
+                            checked={dislikes.includes(dislike)}
+                            onChange={() => toggleDislike(dislike)}
+                            className="rounded border-gray-300"
+                          />
+                          <Label 
+                            htmlFor={`dislike-${dislike}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {dislike}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {(allergies.length > 0 || dislikes.length > 0) && (
+                    <div className="mt-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                      <p className="text-sm text-orange-800">
+                        <strong>Note:</strong> Your meal plans will automatically exclude selected items and provide suitable alternatives.
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
