@@ -64,7 +64,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     const fiveYearImpact = projectionData[0].impact;
     const twentyYearImpact = projectionData[3].impact;
     
-    // If the 5-year impact is negative (younger), celebrate regardless of LIS
+    // If the 5-year impact is significantly negative (younger), celebrate
     if (fiveYearImpact < -0.5) {
       return {
         type: "celebration" as const,
@@ -73,12 +73,12 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
         color: "text-green-700 bg-green-50 border-green-200"
       };
     }
-    // If impact is slightly negative or neutral, encourage but be realistic
-    else if (fiveYearImpact <= 0.2 && fiveYearImpact >= -0.5) {
+    // If impact is neutral/minimal, be honest about limited impact
+    else if (fiveYearImpact <= 0.5 && fiveYearImpact >= -0.5) {
       return {
         type: "encouragement" as const,
-        title: "Nearly There! 💪",
-        message: `You're close to optimal! Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years in 5 years). Small improvements in your daily habits could shift this to a significantly positive aging trajectory.`,
+        title: "Limited Longevity Impact 📊",
+        message: `Your current habits are unlikely to significantly impact your lifespan (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years projected). To improve your longevity, I recommend focusing on: consistent sleep (7-8 hours), regular exercise (150 min/week), stress management, and social connections.`,
         color: "text-blue-700 bg-blue-50 border-blue-200"
       };
     }
@@ -86,8 +86,8 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     else {
       return {
         type: "empowerment" as const,
-        title: "Time for Action 🚀",
-        message: `Your current habits are projected to add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years (${twentyYearImpact.toFixed(1)} years in 20 years). The good news? Every positive change you make today can reverse this trend and get you on a path to biological age reduction.`,
+        title: "Urgent Action Needed 🚨",
+        message: `Your current habits are projected to add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years (${twentyYearImpact.toFixed(1)} years in 20 years). Priority areas: improve sleep quality, increase physical activity, manage stress levels, and enhance nutrition. Each improvement can significantly reverse this aging trajectory.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
