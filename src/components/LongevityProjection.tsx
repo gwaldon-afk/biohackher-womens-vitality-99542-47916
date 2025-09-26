@@ -48,7 +48,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     return baseImpact * scaleFactor;
   };
 
-  // Generate projection data
+  // Generate projection data for both current and optimal scenarios
   const projectionData: ProjectionData[] = [
     { period: "5 Years", years: 5, impact: calculateLongevityImpact(sustainedLIS, 5), color: "" },
     { period: "10 Years", years: 10, impact: calculateLongevityImpact(sustainedLIS, 10), color: "" },
@@ -59,17 +59,27 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     color: item.impact > 0 ? "#ef4444" : item.impact < 0 ? "#10b981" : "#6b7280"
   }));
 
+  // Generate optimal projection data (LIS = 135)
+  const optimalProjectionData: ProjectionData[] = [
+    { period: "5 Years", years: 5, impact: calculateLongevityImpact(135, 5), color: "#10b981" },
+    { period: "10 Years", years: 10, impact: calculateLongevityImpact(135, 10), color: "#10b981" },
+    { period: "15 Years", years: 15, impact: calculateLongevityImpact(135, 15), color: "#10b981" },
+    { period: "20 Years", years: 20, impact: calculateLongevityImpact(135, 20), color: "#10b981" }
+  ];
+
   // Determine messaging based on sustained LIS and actual impact
   const getMotivationalMessage = (lis: number) => {
     const fiveYearImpact = projectionData[0].impact;
     const twentyYearImpact = projectionData[3].impact;
+    const optimalFiveYear = optimalProjectionData[0].impact;
+    const optimalTwentyYear = optimalProjectionData[3].impact;
     
     // If the 5-year impact is significantly negative (younger), celebrate
     if (fiveYearImpact < -0.5) {
       return {
         type: "celebration" as const,
         title: "Excellent Trajectory! 🎉",
-        message: `Outstanding! Your current habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years. Keep up this fantastic work!`,
+        message: `Outstanding! Your current habits project to ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years (${Math.abs(twentyYearImpact).toFixed(1)} in 20 years). With optimal habits, you could potentially reach ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years!`,
         color: "text-green-700 bg-green-50 border-green-200"
       };
     }
@@ -77,8 +87,8 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     else if (fiveYearImpact <= 0.5 && fiveYearImpact >= -0.5) {
       return {
         type: "encouragement" as const,
-        title: "Limited Longevity Impact 📊",
-        message: `Your current habits are unlikely to significantly impact your lifespan (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years projected). To improve your longevity, I recommend focusing on: consistent sleep (7-8 hours), regular exercise (150 min/week), stress management, and social connections.`,
+        title: "Huge Potential Ahead 💪",
+        message: `Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years). But here's the exciting part: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years! Focus on: consistent sleep (7-8hrs), regular exercise, stress management, and nutrition.`,
         color: "text-blue-700 bg-blue-50 border-blue-200"
       };
     }
@@ -86,8 +96,8 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     else {
       return {
         type: "empowerment" as const,
-        title: "Urgent Action Needed 🚨",
-        message: `Your current habits are projected to add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years (${twentyYearImpact.toFixed(1)} years in 20 years). Priority areas: improve sleep quality, increase physical activity, manage stress levels, and enhance nutrition. Each improvement can significantly reverse this aging trajectory.`,
+        title: "Transform Your Trajectory 🚀",
+        message: `Your current path adds ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger instead - that's a ${(fiveYearImpact + Math.abs(optimalFiveYear)).toFixed(1)}-year turnaround! Priority: sleep quality, physical activity, stress management, and nutrition.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
@@ -185,28 +195,63 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
         {/* Key Projections Summary */}
         <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
           <h4 className="font-semibold text-gray-900 mb-3 text-center">Key Longevity Age Estimates</h4>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <div className="text-xs text-gray-600 mb-1">5-Year Impact</div>
-              <div className={`text-2xl font-bold ${projectionData[0].impact > 0 ? 'text-red-600' : projectionData[0].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                {projectionData[0].impact > 0 ? '+' : ''}{projectionData[0].impact.toFixed(1)} years
-              </div>
-              <div className="text-xs text-gray-500">
-                {projectionData[0].impact > 0 ? 'Older' : projectionData[0].impact < 0 ? 'Younger' : 'No change'}
+          
+          {/* Current vs Optimal Comparison */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Current Projections */}
+            <div>
+              <h5 className="text-sm font-medium text-gray-700 mb-3 text-center">Current Habits</h5>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">5-Year</div>
+                  <div className={`text-lg font-bold ${projectionData[0].impact > 0 ? 'text-red-600' : projectionData[0].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                    {projectionData[0].impact > 0 ? '+' : ''}{projectionData[0].impact.toFixed(1)}y
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">20-Year</div>
+                  <div className={`text-lg font-bold ${projectionData[3].impact > 0 ? 'text-red-600' : projectionData[3].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                    {projectionData[3].impact > 0 ? '+' : ''}{projectionData[3].impact.toFixed(1)}y
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="text-center">
-              <div className="text-xs text-gray-600 mb-1">20-Year Impact</div>
-              <div className={`text-2xl font-bold ${projectionData[3].impact > 0 ? 'text-red-600' : projectionData[3].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                {projectionData[3].impact > 0 ? '+' : ''}{projectionData[3].impact.toFixed(1)} years
+
+            {/* Optimal Projections */}
+            <div className="border-l border-purple-200 pl-4 md:pl-6">
+              <h5 className="text-sm font-medium text-gray-700 mb-3 text-center">Optimal Habits Potential</h5>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">5-Year</div>
+                  <div className="text-lg font-bold text-green-600">
+                    {optimalProjectionData[0].impact.toFixed(1)}y younger
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">20-Year</div>
+                  <div className="text-lg font-bold text-green-600">
+                    {optimalProjectionData[3].impact.toFixed(1)}y younger
+                  </div>
+                </div>
               </div>
-              <div className="text-xs text-gray-500">
-                {projectionData[3].impact > 0 ? 'Older' : projectionData[3].impact < 0 ? 'Younger' : 'No change'}
+              
+              {/* Opportunity Gap */}
+              <div className="mt-3 text-center">
+                <div className="text-xs text-purple-600 font-medium">
+                  Opportunity Gap: {(() => {
+                    const currentFiveYear = projectionData[0].impact;
+                    const optimalFiveYear = optimalProjectionData[0].impact;
+                    const gap = Math.abs(currentFiveYear - optimalFiveYear);
+                    return `${gap.toFixed(1)} years`;
+                  })()} (5yr)
+                </div>
               </div>
             </div>
           </div>
-          <div className="mt-3 text-xs text-center text-gray-600">
-            Based on sustained LIS of {sustainedLIS.toFixed(1)} over {dataPoints} days
+          
+          <div className="mt-4 text-xs text-center text-gray-600">
+            Current based on sustained LIS of {sustainedLIS.toFixed(1)} • Optimal assumes LIS of 135
           </div>
         </div>
 

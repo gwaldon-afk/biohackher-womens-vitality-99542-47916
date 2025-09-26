@@ -213,41 +213,46 @@ const Dashboard = () => {
   const currentScore = summary?.average_score || 72.5;
   const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
 
+  // Calculate longevity impact for any LIS score
+  const calculateLongevityImpact = (lis: number, years: number = 5): number => {
+    let baseImpact = 0;
+    if (lis >= 60 && lis < 70) {
+      baseImpact = 1.5 + ((lis - 60) / 10) * (2.5 - 1.5);
+    } else if (lis >= 70 && lis < 80) {
+      baseImpact = 0.8 + ((lis - 70) / 10) * (1.5 - 0.8);
+    } else if (lis >= 80 && lis < 90) {
+      baseImpact = 0.2 + ((lis - 80) / 10) * (0.8 - 0.2);
+    } else if (lis >= 90 && lis <= 110) {
+      baseImpact = -0.2 + ((lis - 90) / 20) * (0.2 - (-0.2));
+    } else if (lis > 110 && lis <= 120) {
+      baseImpact = -0.8 + ((lis - 110) / 10) * (-0.2 - (-0.8));
+    } else if (lis > 120 && lis <= 130) {
+      baseImpact = -1.5 + ((lis - 120) / 10) * (-0.8 - (-1.5));
+    } else if (lis > 130 && lis <= 140) {
+      baseImpact = -2.5 + ((lis - 130) / 10) * (-1.5 - (-2.5));
+    } else if (lis < 60) {
+      baseImpact = 2.5;
+    } else if (lis > 140) {
+      baseImpact = -2.5;
+    }
+    const scaleFactor = Math.sqrt(years / 5);
+    return baseImpact * scaleFactor;
+  };
+
   // Generate longevity impact message for tooltip
   const getLongevityMessage = () => {
     if (!sustainedLIS || projectionLoading) return "Calculating longevity impact...";
     
-    // Calculate 5-year impact using the same algorithm as LongevityProjection
-    let baseImpact = 0;
-    if (sustainedLIS >= 60 && sustainedLIS < 70) {
-      baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
-    } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
-      baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
-    } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
-      baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
-    } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
-      baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
-    } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
-      baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
-    } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
-      baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
-    } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
-      baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
-    } else if (sustainedLIS < 60) {
-      baseImpact = 2.5;
-    } else if (sustainedLIS > 140) {
-      baseImpact = -2.5;
-    }
-    
-    const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
+    const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+    const optimalImpact = calculateLongevityImpact(135, 5); // Optimal LIS score
     
     // Generate motivational message based on impact
     if (fiveYearImpact < -0.5) {
-      return `🎉 Excellent! Your habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years.`;
+      return `🎉 Excellent! Your habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years. With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger.`;
     } else if (fiveYearImpact <= 0.5 && fiveYearImpact >= -0.5) {
-      return `📊 Your current habits show minimal longevity impact. Focus on sleep, exercise, stress management, and nutrition to improve your projection.`;
+      return `📊 Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years). With optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger in 5 years.`;
     } else {
-      return `🚨 Your habits may add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. Prioritize sleep quality, physical activity, and stress management.`;
+      return `🚨 Your habits may add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But with optimal habits, you could achieve ${Math.abs(optimalImpact).toFixed(1)} years younger instead!`;
     }
   };
 
@@ -303,60 +308,42 @@ const Dashboard = () => {
                 {/* Longevity Projection Summary */}
                 {!projectionLoading && (
                   <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                    <div className="text-xs text-gray-600 mb-1">5-Year Biological Age Impact</div>
-                    <div className={`text-lg font-bold ${(() => {
-                      // Calculate 5-year impact to determine color
-                      let baseImpact = 0;
-                      if (sustainedLIS >= 60 && sustainedLIS < 70) {
-                        baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
-                      } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
-                        baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
-                      } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
-                        baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
-                      } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
-                        baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
-                      } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
-                        baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
-                      } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
-                        baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
-                      } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
-                        baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
-                      } else if (sustainedLIS < 60) {
-                        baseImpact = 2.5;
-                      } else if (sustainedLIS > 140) {
-                        baseImpact = -2.5;
-                      }
-                      const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
-                      // Green for negative impact (younger), Red for positive impact (older), Gray for neutral
-                      return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                    })()}`}>
-                      {(() => {
-                        // Calculate 5-year impact using the same algorithm as LongevityProjection
-                        let baseImpact = 0;
-                        if (sustainedLIS >= 60 && sustainedLIS < 70) {
-                          baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
-                        } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
-                          baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
-                        } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
-                          baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
-                        } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
-                          baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
-                        } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
-                          baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
-                        } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
-                          baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
-                        } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
-                          baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
-                        } else if (sustainedLIS < 60) {
-                          baseImpact = 2.5;
-                        } else if (sustainedLIS > 140) {
-                          baseImpact = -2.5;
-                        }
-                        const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
-                        return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
-                      })()}
+                    <div className="text-xs text-gray-600 mb-1 text-center">5-Year Biological Age Impact</div>
+                    
+                    {/* Current Impact */}
+                    <div className="text-center mb-3">
+                      <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                      <div className={`text-lg font-bold ${(() => {
+                        const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                        return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                      })()}`}>
+                        {(() => {
+                          const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                          return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
+                        })()}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500">
+
+                    {/* Potential Optimal Impact */}
+                    <div className="text-center border-t border-purple-200 pt-2">
+                      <div className="text-xs text-gray-500 mb-1">Potential with Optimal Habits</div>
+                      <div className="text-sm font-bold text-green-600">
+                        {(() => {
+                          const optimalImpact = calculateLongevityImpact(135, 5);
+                          return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years younger`;
+                        })()}
+                      </div>
+                      <div className="text-xs text-purple-600 font-medium mt-1">
+                        Gap: {(() => {
+                          const currentImpact = calculateLongevityImpact(sustainedLIS, 5);
+                          const optimalImpact = calculateLongevityImpact(135, 5);
+                          const gap = Math.abs(currentImpact - optimalImpact);
+                          return `${gap.toFixed(1)} years opportunity`;
+                        })()}
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 text-center mt-2">
                       Based on {dataPoints}-day trend
                     </div>
                   </div>
