@@ -179,6 +179,7 @@ const SymptomAssessment = () => {
   
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isComplete, setIsComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const questions = symptomId ? (assessmentQuestions[symptomId as keyof typeof assessmentQuestions] || []) : [];
 
@@ -217,6 +218,13 @@ const SymptomAssessment = () => {
   const completeAssessment = async () => {
     console.log('💾 Starting completeAssessment', { user: !!user, symptomId });
     
+    if (isSubmitting) {
+      console.log('🛑 Already submitting, ignoring duplicate call');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
     if (!user) {
       console.log('❌ User not authenticated');
       toast({
@@ -224,8 +232,8 @@ const SymptomAssessment = () => {
         title: "Authentication Required",
         description: "Please log in to save your assessment results."
       });
-      // Redirect to auth page or show login modal
       navigate('/auth');
+      setIsSubmitting(false);
       return;
     }
 
@@ -236,13 +244,14 @@ const SymptomAssessment = () => {
         title: "Error",
         description: "Symptom ID is missing. Please try again."
       });
+      setIsSubmitting(false);
       return;
     }
 
     try {
       console.log('📤 Saving to database...', answers);
       
-      // Save assessment results to database
+      // Save assessment results to database with proper conflict resolution
       const { error } = await supabase
         .from('user_symptoms')
         .upsert({
@@ -253,6 +262,8 @@ const SymptomAssessment = () => {
           frequency: 'Weekly', // This would be calculated based on answers
           notes: JSON.stringify(answers),
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,symptom_id'
         });
 
       if (error) {
@@ -266,6 +277,8 @@ const SymptomAssessment = () => {
         description: "Your responses have been saved. View your symptom summary."
       });
       
+      setIsComplete(true);
+      
       // Navigate back to symptoms page to show summary
       setTimeout(() => {
         navigate('/symptoms?completed=true');
@@ -277,6 +290,8 @@ const SymptomAssessment = () => {
         title: "Error saving assessment",
         description: "Please try again later."
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -419,9 +434,10 @@ const SymptomAssessment = () => {
               type="submit" 
               size="lg" 
               className="px-8"
+              disabled={isSubmitting}
               onClick={() => console.log('🔥 Button clicked directly!')}
             >
-              🚀 Complete Assessment
+              {isSubmitting ? "Saving..." : "🚀 Complete Assessment"}
             </Button>
           </div>
         </form>
