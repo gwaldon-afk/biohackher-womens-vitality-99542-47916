@@ -91,6 +91,76 @@ const Nutrition = () => {
         "Grill chicken 6-7 minutes per side until cooked",
         "Grill vegetables until tender, serve together"
       ]
+    },
+    "Quinoa Power Bowl": {
+      ingredients: ["1 cup quinoa", "Mixed vegetables", "Chickpeas", "Olive oil", "Lemon", "Herbs"],
+      steps: [
+        "Cook quinoa according to package directions",
+        "Steam or roast mixed vegetables",
+        "Drain and rinse chickpeas",
+        "Combine quinoa, vegetables, and chickpeas",
+        "Dress with olive oil, lemon juice, and herbs"
+      ]
+    },
+    "Salmon with Sweet Potato": {
+      ingredients: ["Salmon fillet", "Sweet potato", "Broccoli", "Olive oil", "Garlic", "Herbs"],
+      steps: [
+        "Preheat oven to 400°F (200°C)",
+        "Cut sweet potato into cubes, toss with oil",
+        "Roast sweet potato for 20 minutes",
+        "Season salmon and add to pan with broccoli",
+        "Bake 15 minutes until salmon flakes easily"
+      ]
+    },
+    "Protein Smoothie Bowl": {
+      ingredients: ["Protein powder", "Frozen berries", "Banana", "Almond milk", "Toppings"],
+      steps: [
+        "Blend protein powder with frozen fruit and milk",
+        "Pour into bowl",
+        "Add fresh fruit toppings",
+        "Sprinkle with nuts or seeds",
+        "Serve immediately"
+      ]
+    },
+    "Turkey & Veggie Wrap": {
+      ingredients: ["Whole wheat tortilla", "Turkey slices", "Vegetables", "Hummus", "Spinach"],
+      steps: [
+        "Lay tortilla flat on surface",
+        "Spread hummus evenly",
+        "Layer turkey, vegetables, and spinach",
+        "Roll tightly from one end",
+        "Cut in half and serve"
+      ]
+    },
+    "Lentil Curry": {
+      ingredients: ["Red lentils", "Coconut milk", "Curry spices", "Onion", "Garlic", "Rice"],
+      steps: [
+        "Sauté onion and garlic until fragrant",
+        "Add curry spices and cook 1 minute",
+        "Add lentils and coconut milk",
+        "Simmer 20 minutes until lentils are soft",
+        "Serve over cooked rice"
+      ]
+    },
+    "Baked Cod with Herbs": {
+      ingredients: ["Cod fillet", "Herbs", "Lemon", "Olive oil", "Vegetables"],
+      steps: [
+        "Preheat oven to 375°F (190°C)",
+        "Place cod on baking sheet",
+        "Drizzle with olive oil and lemon juice",
+        "Season with herbs and salt",
+        "Bake 15-20 minutes until fish flakes"
+      ]
+    },
+    "Overnight Oats": {
+      ingredients: ["Rolled oats", "Milk", "Chia seeds", "Honey", "Berries"],
+      steps: [
+        "Mix oats, milk, and chia seeds",
+        "Add honey to taste",
+        "Refrigerate overnight",
+        "Top with fresh berries",
+        "Enjoy cold or warm slightly"
+      ]
     }
   };
 
@@ -103,16 +173,40 @@ const Nutrition = () => {
     
     // Try partial matches for common meal types
     const lowerMeal = mealName.toLowerCase();
-    if (lowerMeal.includes('scrambled eggs')) return recipeInstructions["Scrambled Eggs on Toast"];
-    if (lowerMeal.includes('greek yogurt') || lowerMeal.includes('yogurt bowl')) return recipeInstructions["Greek Yogurt Berry Bowl"];
+    
+    // Breakfast items
+    if (lowerMeal.includes('scrambled eggs') || lowerMeal.includes('eggs on toast')) return recipeInstructions["Scrambled Eggs on Toast"];
+    if (lowerMeal.includes('greek yogurt') || lowerMeal.includes('yogurt bowl') || lowerMeal.includes('berry bowl')) return recipeInstructions["Greek Yogurt Berry Bowl"];
     if (lowerMeal.includes('avocado toast')) return recipeInstructions["Avocado Toast with Egg"];
+    if (lowerMeal.includes('oats') || lowerMeal.includes('oatmeal') || lowerMeal.includes('porridge')) return recipeInstructions["Overnight Oats"];
+    if (lowerMeal.includes('smoothie') || lowerMeal.includes('protein bowl')) return recipeInstructions["Protein Smoothie Bowl"];
+    
+    // Lunch items
     if (lowerMeal.includes('salad') || lowerMeal.includes('mediterranean')) return recipeInstructions["Mediterranean Salad Bowl"];
-    if (lowerMeal.includes('grilled chicken') || lowerMeal.includes('chicken')) return recipeInstructions["Grilled Chicken & Vegetables"];
+    if (lowerMeal.includes('quinoa') || lowerMeal.includes('power bowl') || lowerMeal.includes('grain bowl')) return recipeInstructions["Quinoa Power Bowl"];
+    if (lowerMeal.includes('wrap') || lowerMeal.includes('turkey')) return recipeInstructions["Turkey & Veggie Wrap"];
+    if (lowerMeal.includes('lentil') || lowerMeal.includes('curry')) return recipeInstructions["Lentil Curry"];
+    
+    // Dinner items
+    if (lowerMeal.includes('grilled chicken') || lowerMeal.includes('chicken breast')) return recipeInstructions["Grilled Chicken & Vegetables"];
+    if (lowerMeal.includes('salmon') || lowerMeal.includes('sweet potato')) return recipeInstructions["Salmon with Sweet Potato"];
+    if (lowerMeal.includes('cod') || lowerMeal.includes('baked fish') || lowerMeal.includes('white fish')) return recipeInstructions["Baked Cod with Herbs"];
+    
+    // Generic categories
+    if (lowerMeal.includes('fish') || lowerMeal.includes('seafood')) return recipeInstructions["Baked Cod with Herbs"];
+    if (lowerMeal.includes('chicken') || lowerMeal.includes('poultry')) return recipeInstructions["Grilled Chicken & Vegetables"];
+    if (lowerMeal.includes('vegetarian') || lowerMeal.includes('veggie')) return recipeInstructions["Quinoa Power Bowl"];
     
     // Default simple recipe
     return {
-      ingredients: ["Check recipe ingredients above"],
-      steps: ["This is a nutritious meal option", "Prepare using fresh, whole ingredients", "Cook with minimal processing", "Enjoy as part of your balanced diet"]
+      ingredients: ["Fresh, whole food ingredients as listed in meal plan above"],
+      steps: [
+        "Gather all ingredients listed in your meal plan",
+        "Prepare ingredients by washing, chopping as needed",
+        "Cook using healthy methods: steaming, grilling, or light sautéing",
+        "Season with herbs and spices for flavor",
+        "Serve fresh and enjoy as part of your balanced nutrition plan"
+      ]
     };
   };
 
