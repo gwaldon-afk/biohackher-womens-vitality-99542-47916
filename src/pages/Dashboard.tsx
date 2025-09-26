@@ -260,7 +260,8 @@ const Dashboard = () => {
                   )}
                 </div>
                 <div className="text-xs text-gray-400 mt-2">
-                  Click to update your metrics
+                  {bioAgeImpact !== undefined && bioAgeImpact !== null ? 
+                    `${bioAgeImpact >= 0 ? '+' : ''}${bioAgeImpact.toFixed(1)}` : 'N/A'}
                 </div>
               </CardContent>
             </Card>
