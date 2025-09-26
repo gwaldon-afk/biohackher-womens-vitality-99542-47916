@@ -323,7 +323,7 @@ const Dashboard = () => {
                                 })()}`}>
                                   {(() => {
                                     const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                    return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
+                                    return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} Yr ${fiveYearImpact > 0 ? 'Older' : 'Younger'}`;
                                   })()}
                                 </div>
                               </div>
@@ -340,15 +340,15 @@ const Dashboard = () => {
                           <div className="text-base font-bold text-green-600">
                             {(() => {
                               const optimalImpact = calculateLongevityImpact(135, 5);
-                              return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years`;
+                              return `${Math.abs(optimalImpact).toFixed(1)} Yr Younger`;
                             })()}
                           </div>
                           <div className="text-xs text-purple-600 font-medium mt-1">
                             Gap: {(() => {
-                            const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                            const optimalImpact = calculateLongevityImpact(135, 5);
-                            const gap = Math.abs(fiveYearImpact - optimalImpact);
-                              return `${gap.toFixed(1)} years`;
+                              const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+                              const optimalImpact = calculateLongevityImpact(135, 5);
+                              const gap = Math.abs(fiveYearImpact - optimalImpact);
+                              return `${gap.toFixed(1)} Yr opportunity`;
                             })()}
                           </div>
                         </div>
@@ -367,7 +367,7 @@ const Dashboard = () => {
                           })()}`}>
                             {(() => {
                               const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-                              return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years`;
+                              return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} Yr ${twentyYearImpact > 0 ? 'Older' : 'Younger'}`;
                             })()}
                           </div>
                         </div>
@@ -378,7 +378,7 @@ const Dashboard = () => {
                           <div className="text-base font-bold text-green-600">
                             {(() => {
                               const optimalImpact = calculateLongevityImpact(135, 20);
-                              return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years`;
+                              return `${Math.abs(optimalImpact).toFixed(1)} Yr Younger`;
                             })()}
                           </div>
                           <div className="text-xs text-purple-600 font-medium mt-1">
@@ -386,7 +386,7 @@ const Dashboard = () => {
                               const currentImpact = calculateLongevityImpact(currentScore, 20);
                               const optimalImpact = calculateLongevityImpact(135, 20);
                               const gap = Math.abs(currentImpact - optimalImpact);
-                              return `${gap.toFixed(1)} years`;
+                              return `${gap.toFixed(1)} Yr opportunity`;
                             })()}
                           </div>
                         </div>
