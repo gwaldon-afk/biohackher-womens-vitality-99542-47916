@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressCircle } from "@/components/ui/progress-circle";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -212,6 +213,44 @@ const Dashboard = () => {
   const currentScore = summary?.average_score || 72.5;
   const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
 
+  // Generate longevity impact message for tooltip
+  const getLongevityMessage = () => {
+    if (!sustainedLIS || projectionLoading) return "Calculating longevity impact...";
+    
+    // Calculate 5-year impact using the same algorithm as LongevityProjection
+    let baseImpact = 0;
+    if (sustainedLIS >= 60 && sustainedLIS < 70) {
+      baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
+    } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
+      baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
+    } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
+      baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
+    } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
+      baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
+    } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
+      baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
+    } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
+      baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
+    } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
+      baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
+    } else if (sustainedLIS < 60) {
+      baseImpact = 2.5;
+    } else if (sustainedLIS > 140) {
+      baseImpact = -2.5;
+    }
+    
+    const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
+    
+    // Generate motivational message based on impact
+    if (fiveYearImpact < -0.5) {
+      return `🎉 Excellent! Your habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years.`;
+    } else if (fiveYearImpact <= 0.5 && fiveYearImpact >= -0.5) {
+      return `📊 Your current habits show minimal longevity impact. Focus on sleep, exercise, stress management, and nutrition to improve your projection.`;
+    } else {
+      return `🚨 Your habits may add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. Prioritize sleep quality, physical activity, and stress management.`;
+    }
+  };
+
   const chartConfig = {
     biological_age_impact: {
       label: "Daily LIS Score",
@@ -243,14 +282,23 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <div className="flex items-center justify-center mb-4">
-                  <ProgressCircle value={currentScore} size="xl">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                      <div className="text-xs text-gray-500">LIS</div>
-                    </div>
-                  </ProgressCircle>
-                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center justify-center mb-4 cursor-help">
+                        <ProgressCircle value={currentScore} size="xl">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                            <div className="text-xs text-gray-500">LIS</div>
+                          </div>
+                        </ProgressCircle>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-3">
+                      <p className="text-sm">{getLongevityMessage()}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 
                 {/* Longevity Projection Summary */}
                 {!projectionLoading && (
