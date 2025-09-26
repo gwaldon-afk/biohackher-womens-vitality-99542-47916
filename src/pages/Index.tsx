@@ -143,6 +143,8 @@ const Index = () => {
                     console.log(`${feature.title} card clicked`);
                     if (feature.title === "Symptom Management") {
                       navigate("/symptoms");
+                    } else if (feature.title === "Sleep Optimisation") {
+                      navigate("/sleep");
                     }
                   }}
                 >
