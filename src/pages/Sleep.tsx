@@ -183,15 +183,42 @@ const Sleep = () => {
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Adults sleeping 7-8 hours nightly have 15% lower mortality risk</span>
+                <span>Adults sleeping 7-8 hours nightly have 15% lower mortality risk 
+                  <a 
+                    href="https://pubmed.ncbi.nlm.nih.gov/20469800/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="ml-1 text-primary hover:text-primary-dark underline"
+                  >
+                    (Research)
+                  </a>
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Poor sleep ages immune system by 3-5 years accelerating cellular aging</span>
+                <span>Poor sleep ages immune system by 3-5 years accelerating cellular aging 
+                  <a 
+                    href="https://www.pnas.org/doi/10.1073/pnas.1417490112" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="ml-1 text-primary hover:text-primary-dark underline"
+                  >
+                    (Research)
+                  </a>
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Quality sleep improves telomere length maintenance</span>
+                <span>Quality sleep improves telomere length maintenance 
+                  <a 
+                    href="https://pubmed.ncbi.nlm.nih.gov/25425069/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="ml-1 text-primary hover:text-primary-dark underline"
+                  >
+                    (Research)
+                  </a>
+                </span>
               </li>
             </ul>
           </div>
@@ -219,7 +246,17 @@ const Sleep = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 Recent studies show that circadian disruption accelerates aging by disrupting cellular clocks in every organ system.
               </p>
-              <Badge variant="outline" className="text-xs">Nature Medicine</Badge>
+              <div className="flex gap-2">
+                <Badge variant="outline" className="text-xs">Nature Medicine</Badge>
+                <a 
+                  href="https://www.nature.com/articles/s41591-023-02535-8" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:text-primary-dark underline"
+                >
+                  Read Study →
+                </a>
+              </div>
             </div>
             
             <div className="border rounded-lg p-4">
@@ -230,7 +267,17 @@ const Sleep = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 The brain's waste clearance system is 60% more active during sleep, particularly during slow-wave sleep phases.
               </p>
-              <Badge variant="outline" className="text-xs">Science Translational Medicine</Badge>
+              <div className="flex gap-2">
+                <Badge variant="outline" className="text-xs">Science Translational Medicine</Badge>
+                <a 
+                  href="https://www.science.org/doi/10.1126/scitranslmed.aah6455" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:text-primary-dark underline"
+                >
+                  Read Study →
+                </a>
+              </div>
             </div>
             
             <div className="border rounded-lg p-4">
@@ -241,17 +288,63 @@ const Sleep = () => {
               <p className="text-sm text-muted-foreground mb-2">
                 Poor sleep quality downregulates longevity genes including SIRT1, FOXO3, and mTOR pathway components.
               </p>
-              <Badge variant="outline" className="text-xs">Cell Metabolism</Badge>
+              <div className="flex gap-2">
+                <Badge variant="outline" className="text-xs">Cell Metabolism</Badge>
+                <a 
+                  href="https://www.cell.com/cell-metabolism/fulltext/S1550-4131(18)30124-1" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:text-primary-dark underline"
+                >
+                  Read Study →
+                </a>
+              </div>
             </div>
           </div>
           
           <div className="bg-muted/30 p-4 rounded-lg">
             <h4 className="font-semibold mb-2">Key Research Findings</h4>
-            <ul className="text-sm space-y-1">
-              <li>• Sleep debt cannot be fully "paid back" on weekends</li>
-              <li>• Each hour of sleep debt increases mortality risk by 9%</li>
-              <li>• Deep sleep percentage declines by 2% per decade after age 30</li>
-              <li>• Sleep timing consistency matters more than duration for longevity</li>
+            <ul className="text-sm space-y-2">
+              <li>• Sleep debt cannot be fully "paid back" on weekends 
+                <a 
+                  href="https://pubmed.ncbi.nlm.nih.gov/30281059/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-1 text-primary hover:text-primary-dark underline text-xs"
+                >
+                  (Study)
+                </a>
+              </li>
+              <li>• Each hour of sleep debt increases mortality risk by 9%
+                <a 
+                  href="https://academic.oup.com/sleep/article/33/5/585/2454673" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-1 text-primary hover:text-primary-dark underline text-xs"
+                >
+                  (Study)
+                </a>
+              </li>
+              <li>• Deep sleep percentage declines by 2% per decade after age 30
+                <a 
+                  href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3119836/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-1 text-primary hover:text-primary-dark underline text-xs"
+                >
+                  (Study)
+                </a>
+              </li>
+              <li>• Sleep timing consistency matters more than duration for longevity
+                <a 
+                  href="https://www.science.org/doi/10.1126/sciadv.abd8888" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-1 text-primary hover:text-primary-dark underline text-xs"
+                >
+                  (Study)
+                </a>
+              </li>
             </ul>
           </div>
         </CardContent>

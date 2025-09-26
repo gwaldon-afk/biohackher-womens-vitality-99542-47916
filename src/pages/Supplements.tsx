@@ -21,7 +21,8 @@ const Supplements = () => {
           benefits: ["Cognitive enhancement", "Nerve growth factor", "Memory support"],
           evidence: "Silver",
           contraindications: ["Mushroom allergies", "Autoimmune conditions"],
-          timing: "Morning with food"
+          timing: "Morning with food",
+          research: "https://pubmed.ncbi.nlm.nih.gov/31413233/"
         },
         {
           name: "Phosphatidylserine",
@@ -29,7 +30,8 @@ const Supplements = () => {
           benefits: ["Memory improvement", "Focus enhancement", "Stress reduction"],
           evidence: "Gold",
           contraindications: ["Blood thinners", "Soy allergies"],
-          timing: "Evening before bed"
+          timing: "Evening before bed",
+          research: "https://pubmed.ncbi.nlm.nih.gov/25933483/"
         },
         {
           name: "Alpha-GPC",
@@ -37,7 +39,8 @@ const Supplements = () => {
           benefits: ["Choline support", "Memory formation", "Focus"],
           evidence: "Silver",
           contraindications: ["Acetylcholine sensitivity"],
-          timing: "Morning on empty stomach"
+          timing: "Morning on empty stomach",
+          research: "https://pubmed.ncbi.nlm.nih.gov/12637119/"
         },
         {
           name: "Bacopa Monnieri",
@@ -45,7 +48,8 @@ const Supplements = () => {
           benefits: ["Memory enhancement", "Anxiety reduction", "Learning support"],
           evidence: "Gold",
           contraindications: ["Thyroid medications", "Sedatives"],
-          timing: "With meals"
+          timing: "With meals",
+          research: "https://pubmed.ncbi.nlm.nih.gov/23772955/"
         }
       ]
     },
@@ -61,7 +65,8 @@ const Supplements = () => {
           benefits: ["Mitochondrial support", "Energy production", "Heart health"],
           evidence: "Gold",
           contraindications: ["Blood pressure medications"],
-          timing: "With fatty meal"
+          timing: "With fatty meal",
+          research: "https://pubmed.ncbi.nlm.nih.gov/29302906/"
         },
         {
           name: "Curcumin Complex",
@@ -69,7 +74,8 @@ const Supplements = () => {
           benefits: ["Anti-inflammatory", "Joint support", "Recovery"],
           evidence: "Gold",
           contraindications: ["Blood thinners", "Gallstones"],
-          timing: "With meals"
+          timing: "With meals",
+          research: "https://pubmed.ncbi.nlm.nih.gov/32474596/"
         },
         {
           name: "Omega-3 EPA/DHA",
@@ -77,7 +83,8 @@ const Supplements = () => {
           benefits: ["Inflammation reduction", "Heart health", "Brain support"],
           evidence: "Gold",
           contraindications: ["Blood thinners", "Fish allergies"],
-          timing: "With meals"
+          timing: "With meals",
+          research: "https://pubmed.ncbi.nlm.nih.gov/31662871/"
         },
         {
           name: "Magnesium Glycinate",
@@ -85,7 +92,8 @@ const Supplements = () => {
           benefits: ["Muscle function", "Sleep quality", "Stress reduction"],
           evidence: "Gold",
           contraindications: ["Kidney disease"],
-          timing: "Evening before bed"
+          timing: "Evening before bed",
+          research: "https://pubmed.ncbi.nlm.nih.gov/23853635/"
         }
       ]
     },
@@ -141,7 +149,8 @@ const Supplements = () => {
           benefits: ["Stress adaptation", "Cortisol regulation", "Energy balance"],
           evidence: "Gold",
           contraindications: ["Autoimmune conditions", "Nightshade allergies"],
-          timing: "Morning or evening"
+          timing: "Morning or evening",
+          research: "https://pubmed.ncbi.nlm.nih.gov/31991619/"
         },
         {
           name: "Vitex (Chasteberry)",
@@ -149,7 +158,8 @@ const Supplements = () => {
           benefits: ["Hormone regulation", "Cycle support", "PMS relief"],
           evidence: "Silver",
           contraindications: ["Pregnancy", "Hormone medications"],
-          timing: "Morning on empty stomach"
+          timing: "Morning on empty stomach",
+          research: "https://pubmed.ncbi.nlm.nih.gov/23136064/"
         },
         {
           name: "Inositol",
@@ -157,7 +167,8 @@ const Supplements = () => {
           benefits: ["Insulin sensitivity", "Hormone balance", "Mood support"],
           evidence: "Gold",
           contraindications: ["Bipolar disorder medications"],
-          timing: "Divided doses with meals"
+          timing: "Divided doses with meals",
+          research: "https://pubmed.ncbi.nlm.nih.gov/31788629/"
         },
         {
           name: "Evening Primrose Oil",
@@ -295,6 +306,19 @@ const Supplements = () => {
                               <li key={i} className="text-muted-foreground">{benefit}</li>
                             ))}
                           </ul>
+                          {(supplement as any).research && (
+                            <div className="mt-4 pt-3 border-t">
+                              <p className="text-xs font-medium text-muted-foreground mb-2">Supporting Research:</p>
+                              <a 
+                                href={(supplement as any).research} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-xs text-primary hover:text-primary-dark underline inline-flex items-center gap-1"
+                              >
+                                View Clinical Study →
+                              </a>
+                            </div>
+                          )}
                         </div>
                       </TabsContent>
                       

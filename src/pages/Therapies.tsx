@@ -24,7 +24,8 @@ const Therapies = () => {
         { name: "Targeted Area", duration: 8, distance: "6 inches" }
       ],
       contraindications: ["Pregnancy", "Cancer treatment area", "Photosensitizing medications"],
-      benefits: ["Collagen production", "Wound healing", "Reduced inflammation"]
+      benefits: ["Collagen production", "Wound healing", "Reduced inflammation"],
+      research: "https://pubmed.ncbi.nlm.nih.gov/33147112/"
     },
     {
       id: "cold-therapy", 
@@ -38,7 +39,8 @@ const Therapies = () => {
         { name: "Cryotherapy", duration: 1, temperature: "Below 32°F" }
       ],
       contraindications: ["Heart conditions", "Pregnancy", "Eating disorders"],
-      benefits: ["Brown fat activation", "Mood enhancement", "Immune boost"]
+      benefits: ["Brown fat activation", "Mood enhancement", "Immune boost"],
+      research: "https://pubmed.ncbi.nlm.nih.gov/32020712/"
     },
     {
       id: "contrast-therapy",
@@ -52,7 +54,8 @@ const Therapies = () => {
         { name: "Steam + Ice", duration: 15, cycles: "3 rounds" }
       ],
       contraindications: ["Cardiovascular disease", "Pregnancy", "Blood pressure issues"],
-      benefits: ["Enhanced circulation", "Faster recovery", "Stress resilience"]
+      benefits: ["Enhanced circulation", "Faster recovery", "Stress resilience"],
+      research: "https://pubmed.ncbi.nlm.nih.gov/29083549/"
     },
     {
       id: "breathwork",
@@ -66,7 +69,8 @@ const Therapies = () => {
         { name: "Coherent Breathing", duration: 12, pattern: "5in-5out" }
       ],
       contraindications: ["Panic disorders", "Severe anxiety", "Breathing disorders"],
-      benefits: ["Parasympathetic activation", "Stress reduction", "Sleep improvement"]
+      benefits: ["Parasympathetic activation", "Stress reduction", "Sleep improvement"],
+      research: "https://pubmed.ncbi.nlm.nih.gov/31756711/"
     }
   ];
 
@@ -211,6 +215,19 @@ const Therapies = () => {
                             </li>
                           ))}
                         </ul>
+                        {(currentTherapy as any).research && (
+                          <div className="mt-6 pt-4 border-t">
+                            <h4 className="text-sm font-medium text-muted-foreground mb-2">Supporting Research:</h4>
+                            <a 
+                              href={(currentTherapy as any).research} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-sm text-primary hover:text-primary-dark underline inline-flex items-center gap-1"
+                            >
+                              View Clinical Study →
+                            </a>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
