@@ -386,7 +386,230 @@ const Nutrition = () => {
     }
   };
 
+  const foodLongevityBenefits = {
+    "Chicken Breast": {
+      benefits: ["High-quality protein for muscle maintenance", "Selenium supports immune function", "B vitamins for energy metabolism"],
+      longevityScore: 8
+    },
+    "Salmon": {
+      benefits: ["Omega-3 fatty acids reduce inflammation", "Supports heart and brain health", "Astaxanthin provides antioxidant protection"],
+      longevityScore: 9
+    },
+    "Greek Yogurt": {
+      benefits: ["Probiotics support gut health", "High protein maintains muscle mass", "Calcium strengthens bones"],
+      longevityScore: 8
+    },
+    "Eggs": {
+      benefits: ["Complete protein with all essential amino acids", "Choline supports brain function", "Lutein protects eye health"],
+      longevityScore: 8
+    },
+    "Tofu": {
+      benefits: ["Plant-based protein", "Isoflavones may reduce cancer risk", "Low in saturated fat"],
+      longevityScore: 7
+    },
+    "Cottage Cheese": {
+      benefits: ["Casein protein for sustained amino acid release", "High calcium content", "Low in calories"],
+      longevityScore: 7
+    },
+    "Brown Rice": {
+      benefits: ["Whole grain fiber supports digestive health", "B vitamins for energy", "Selenium acts as antioxidant"],
+      longevityScore: 6
+    },
+    "Quinoa": {
+      benefits: ["Complete protein from plants", "High in fiber and minerals", "Gluten-free whole grain"],
+      longevityScore: 8
+    },
+    "Sweet Potato": {
+      benefits: ["Beta-carotene converts to vitamin A", "High fiber supports gut health", "Potassium for heart health"],
+      longevityScore: 8
+    },
+    "Oats": {
+      benefits: ["Beta-glucan lowers cholesterol", "Sustained energy release", "High in soluble fiber"],
+      longevityScore: 7
+    },
+    "Spinach": {
+      benefits: ["Folate supports DNA repair", "Nitrates improve circulation", "Antioxidants protect against aging"],
+      longevityScore: 9
+    },
+    "Broccoli": {
+      benefits: ["Sulforaphane has anti-cancer properties", "High in vitamin C", "Supports detoxification"],
+      longevityScore: 9
+    },
+    "Carrots": {
+      benefits: ["Beta-carotene for eye health", "Fiber supports digestion", "Antioxidants fight inflammation"],
+      longevityScore: 7
+    },
+    "Avocado": {
+      benefits: ["Monounsaturated fats for heart health", "Fiber aids digestion", "Potassium regulates blood pressure"],
+      longevityScore: 8
+    },
+    "Almonds": {
+      benefits: ["Vitamin E protects cells", "Healthy fats support brain function", "Magnesium for muscle and nerve function"],
+      longevityScore: 8
+    },
+    "Olive Oil": {
+      benefits: ["Extra virgin olive oil has anti-inflammatory compounds", "Monounsaturated fats protect heart", "Polyphenols act as antioxidants"],
+      longevityScore: 9
+    }
+  };
+
+  const generateShoppingList = () => {
+    if (!weeklyPlan) return [];
+    
+    const ingredientQuantities: Record<string, number> = {};
+    
+    weeklyPlan.forEach((dayPlan: any) => {
+      ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
+        const meal = dayPlan[mealType];
+        meal.foods.forEach((food: any) => {
+          const baseAmount = food.amount.includes('tbsp') ? 
+            parseFloat(food.amount) : 
+            parseFloat(food.amount.replace('g', ''));
+          
+          if (ingredientQuantities[food.name]) {
+            ingredientQuantities[food.name] += baseAmount;
+          } else {
+            ingredientQuantities[food.name] = baseAmount;
+          }
+        });
+      });
+    });
+    
+    return Object.entries(ingredientQuantities).map(([name, quantity]) => ({
+      name,
+      quantity: Math.round(quantity),
+      unit: name === "Olive Oil" ? "tbsp" : "g"
+    }));
+  };
+
+  const printWeeklyPlan = () => {
+    const printContent = document.getElementById('weekly-plan-print');
+    if (printContent) {
+      const newWindow = window.open('', '_blank');
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head>
+              <title>7-Day Nutrition Plan</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .day-header { background: #f0f0f0; padding: 10px; margin: 20px 0 10px 0; }
+                .meal { margin: 10px 0; padding: 10px; border-left: 3px solid #007bff; }
+                .meal-name { font-weight: bold; font-size: 16px; color: #007bff; }
+                .meal-description { font-style: italic; color: #666; margin: 5px 0; }
+                .foods { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
+                .food-item { background: #f8f9fa; padding: 8px; border-radius: 4px; min-width: 120px; text-align: center; }
+                .nutrition { font-size: 12px; color: #666; margin-top: 5px; }
+                @media print { body { margin: 0; } }
+              </style>
+            </head>
+            <body>
+              ${printContent.innerHTML}
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+    }
+  };
+
+  const printShoppingList = () => {
+    const shoppingList = generateShoppingList();
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>Shopping List - 7-Day Nutrition Plan</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              h1 { color: #007bff; }
+              .ingredient { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+              .category { font-weight: bold; margin-top: 20px; color: #333; }
+              @media print { body { margin: 0; } }
+            </style>
+          </head>
+          <body>
+            <h1>Shopping List - 7-Day Nutrition Plan</h1>
+            <h3>Proteins:</h3>
+            ${shoppingList.filter(item => ['Chicken Breast', 'Salmon', 'Greek Yogurt', 'Eggs', 'Tofu', 'Cottage Cheese'].includes(item.name))
+              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
+            <h3>Carbohydrates:</h3>
+            ${shoppingList.filter(item => ['Brown Rice', 'Quinoa', 'Sweet Potato', 'Oats'].includes(item.name))
+              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
+            <h3>Vegetables:</h3>
+            ${shoppingList.filter(item => ['Spinach', 'Broccoli', 'Carrots'].includes(item.name))
+              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
+            <h3>Fats & Oils:</h3>
+            ${shoppingList.filter(item => ['Avocado', 'Almonds', 'Olive Oil'].includes(item.name))
+              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
+      newWindow.print();
+    }
+  };
+
   const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
+
+  const printLongevityBenefits = () => {
+    if (!weeklyPlan) return;
+    
+    const uniqueFoods = new Set<string>();
+    weeklyPlan.forEach((dayPlan: any) => {
+      ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
+        const meal = dayPlan[mealType];
+        meal.foods.forEach((food: any) => {
+          uniqueFoods.add(food.name);
+        });
+      });
+    });
+    
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write(`
+        <html>
+          <head>
+            <title>Longevity Benefits - 7-Day Nutrition Plan</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; }
+              h1 { color: #007bff; }
+              .food-benefit { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+              .food-name { font-weight: bold; font-size: 18px; color: #333; margin-bottom: 10px; }
+              .longevity-score { float: right; background: #007bff; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; }
+              .benefits { list-style-type: none; padding: 0; }
+              .benefits li { padding: 5px 0; padding-left: 20px; position: relative; }
+              .benefits li:before { content: "✓"; position: absolute; left: 0; color: #28a745; font-weight: bold; }
+              @media print { body { margin: 0; } }
+            </style>
+          </head>
+          <body>
+            <h1>Longevity Benefits of Your 7-Day Meal Plan</h1>
+            <p>The foods in your personalized meal plan offer numerous health and longevity benefits:</p>
+            ${Array.from(uniqueFoods).map(foodName => {
+              const benefits = foodLongevityBenefits[foodName as keyof typeof foodLongevityBenefits];
+              if (!benefits) return '';
+              return `
+                <div class="food-benefit">
+                  <div class="food-name">
+                    ${foodName}
+                    <span class="longevity-score">Longevity Score: ${benefits.longevityScore}/10</span>
+                  </div>
+                  <ul class="benefits">
+                    ${benefits.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                  </ul>
+                </div>
+              `;
+            }).join('')}
+          </body>
+        </html>
+      `);
+      newWindow.document.close();
+      newWindow.print();
+    }
+  };
 
   const generateWeeklyPlan = () => {
     if (!weight) {
@@ -408,10 +631,25 @@ const Nutrition = () => {
     const fatPerMeal = Math.round(macros.fat / mealsPerDay);
     
     const generateMeal = (mealType: string, dayIndex: number) => {
-      let protein, carb, vegetable, fat;
+      let protein, carb, vegetable, fat, recipeName, recipeDescription;
+      
+      // Get selected recipes for more appealing names
+      const currentRecipes = recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories];
       
       // Meal-specific food selections with allergy/dislike filtering
       if (mealType === "breakfast") {
+        // Use selected breakfast recipe if available, otherwise rotate through options
+        if (selectedBreakfastRecipe) {
+          const selectedRecipe = currentRecipes.breakfast.find(r => r.name === selectedBreakfastRecipe);
+          if (selectedRecipe) {
+            recipeName = selectedRecipe.name;
+            recipeDescription = selectedRecipe.description;
+          }
+        } else {
+          const dailyRecipe = currentRecipes.breakfast[dayIndex % currentRecipes.breakfast.length];
+          recipeName = dailyRecipe.name;
+          recipeDescription = dailyRecipe.description;
+        }
         if (isLowFODMAP) {
           let proteinOptions = ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p));
           let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
@@ -472,7 +710,21 @@ const Nutrition = () => {
           vegetable = vegOptions[dayIndex % vegOptions.length];
           fat = "Olive Oil";
         }
+        
+        // Default recipe name if none selected
+        if (!recipeName) {
+          recipeName = currentRecipes.lunch[dayIndex % currentRecipes.lunch.length].name;
+          recipeDescription = currentRecipes.lunch[dayIndex % currentRecipes.lunch.length].description;
+        }
       } else { // dinner
+        // Use selected dinner recipe if available
+        if (selectedDinnerRecipe) {
+          const selectedRecipe = currentRecipes.dinner.find(r => r.name === selectedDinnerRecipe);
+          if (selectedRecipe) {
+            recipeName = selectedRecipe.name;
+            recipeDescription = selectedRecipe.description;
+          }
+        }
         if (isLowFODMAP) {
           let proteinOptions = ["Salmon", "Chicken Breast"].filter(p => !isExcluded(p));
           let carbOptions = ["Sweet Potato", "Brown Rice"].filter(c => !isExcluded(c));
@@ -501,6 +753,12 @@ const Nutrition = () => {
           carb = carbOptions[dayIndex % carbOptions.length];
           vegetable = vegOptions[dayIndex % vegOptions.length];
           fat = (dayIndex % 2 === 0 && !isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
+        }
+        
+        // Default recipe name if none selected
+        if (!recipeName) {
+          recipeName = currentRecipes.dinner[dayIndex % currentRecipes.dinner.length].name;
+          recipeDescription = currentRecipes.dinner[dayIndex % currentRecipes.dinner.length].description;
         }
       }
       
@@ -546,6 +804,8 @@ const Nutrition = () => {
       );
       
       return {
+        recipeName,
+        recipeDescription,
         foods: [
           { name: protein, amount: `${proteinServing}g`, nutrition: proteinFood },
           { name: carb, amount: `${carbServing}g`, nutrition: carbFood },
@@ -1335,13 +1595,36 @@ const Nutrition = () => {
                   <div className="mt-8">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold">Your Personalized 7-Day Meal Plan</h3>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowWeeklyPlan(false)}
-                      >
-                        Hide Plan
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={printWeeklyPlan}
+                        >
+                          🖨️ Print Plan
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={printShoppingList}
+                        >
+                          📋 Print Shopping List
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={printLongevityBenefits}
+                        >
+                          🧬 Longevity Benefits
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setShowWeeklyPlan(false)}
+                        >
+                          Hide Plan
+                        </Button>
+                      </div>
                     </div>
                     
                     <div className="mb-4 p-4 bg-primary/10 rounded-lg">
@@ -1366,7 +1649,7 @@ const Nutrition = () => {
                       </div>
                     </div>
                     
-                    <div className="space-y-6">
+                    <div id="weekly-plan-print" className="space-y-6">
                       {weeklyPlan.map((dayPlan: any, index: number) => (
                         <Card key={index} className="border-l-4 border-l-primary">
                           <CardContent className="p-6">
@@ -1382,13 +1665,20 @@ const Nutrition = () => {
                               {['breakfast', 'lunch', 'dinner'].map((mealType) => {
                                 const meal = dayPlan[mealType];
                                 return (
-                                  <div key={mealType} className="border rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                      <h5 className="font-medium capitalize text-lg">{mealType}</h5>
-                                      <div className="text-sm font-medium">
-                                        {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
-                                      </div>
-                                    </div>
+                                   <div key={mealType} className="border rounded-lg p-4">
+                                     <div className="mb-3">
+                                       <div className="flex items-center justify-between mb-2">
+                                         <div>
+                                           <h5 className="font-bold text-lg text-primary">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
+                                           {meal.recipeDescription && (
+                                             <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
+                                           )}
+                                         </div>
+                                         <div className="text-sm font-medium text-right">
+                                           {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
+                                         </div>
+                                       </div>
+                                     </div>
                                     
                                     <div className="flex flex-wrap gap-2 justify-center">
                                       {meal.foods.map((food: any, foodIndex: number) => {
