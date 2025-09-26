@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer } from "lucide-react";
+import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
 const Symptoms = () => {
@@ -115,6 +115,114 @@ const Symptoms = () => {
           description: "Broad-spectrum enzymes with protein-rich meals",
           evidence: "Bronze",
           contraindications: ["Pancreatic conditions"]
+        }
+      ]
+    },
+    {
+      id: "joint-pain",
+      name: "Joint Pain",
+      icon: Bone,
+      severity: "Moderate",
+      frequency: "Daily",
+      actions: [
+        {
+          title: "Curcumin Supplementation",
+          description: "500mg curcumin with black pepper extract twice daily",
+          evidence: "Gold",
+          contraindications: ["Blood thinners", "Gallstones", "Pregnancy"]
+        },
+        {
+          title: "Cold-Heat Contrast Therapy",
+          description: "Alternate between cold and heat therapy for 15 minutes each",
+          evidence: "Silver",
+          contraindications: ["Circulation disorders", "Neuropathy"]
+        },
+        {
+          title: "Omega-3 Loading Protocol",
+          description: "4g high-EPA fish oil daily for inflammation reduction",
+          evidence: "Gold",
+          contraindications: ["Blood thinners", "Fish allergies"]
+        }
+      ]
+    },
+    {
+      id: "brain-fog",
+      name: "Brain Fog",
+      icon: Zap,
+      severity: "Moderate",
+      frequency: "4-5x/week",
+      actions: [
+        {
+          title: "Lion's Mane Mushroom",
+          description: "1000mg standardized extract daily for cognitive support",
+          evidence: "Silver",
+          contraindications: ["Mushroom allergies", "Autoimmune conditions"]
+        },
+        {
+          title: "Cognitive Load Balancing",
+          description: "Time-blocking with 25-minute focused work sessions",
+          evidence: "Bronze",
+          contraindications: ["ADHD without proper management"]
+        },
+        {
+          title: "B-Complex Optimization",
+          description: "High-potency B-complex with methylated B12 and folate",
+          evidence: "Gold",
+          contraindications: ["B12 sensitivity", "Kidney disease"]
+        }
+      ]
+    },
+    {
+      id: "energy-levels",
+      name: "Low Energy",
+      icon: Battery,
+      severity: "High",
+      frequency: "Daily",
+      actions: [
+        {
+          title: "Mitochondrial Support Stack",
+          description: "CoQ10 200mg + PQQ 20mg + Magnesium daily",
+          evidence: "Silver",
+          contraindications: ["Blood pressure medications", "Diabetes medications"]
+        },
+        {
+          title: "Circadian Light Therapy",
+          description: "10,000 lux light therapy for 30 minutes upon waking",
+          evidence: "Gold",
+          contraindications: ["Bipolar disorder", "Eye conditions"]
+        },
+        {
+          title: "Adaptogenic Protocol",
+          description: "Rhodiola 300mg + Ashwagandha 600mg in morning",
+          evidence: "Silver",
+          contraindications: ["Autoimmune conditions", "Nightshade allergies"]
+        }
+      ]
+    },
+    {
+      id: "bloating",
+      name: "Bloating",
+      icon: Wind,
+      severity: "Mild",
+      frequency: "After meals",
+      actions: [
+        {
+          title: "FODMAP Elimination",
+          description: "2-week low-FODMAP protocol followed by systematic reintroduction",
+          evidence: "Gold",
+          contraindications: ["Eating disorders", "Severe malnutrition"]
+        },
+        {
+          title: "Digestive Bitters Protocol",
+          description: "Bitter herbs tincture 15 minutes before each meal",
+          evidence: "Bronze",
+          contraindications: ["Gallstones", "Acid reflux"]
+        },
+        {
+          title: "Abdominal Breathing Practice",
+          description: "Diaphragmatic breathing for 5 minutes before meals",
+          evidence: "Silver",
+          contraindications: ["Recent abdominal surgery"]
         }
       ]
     }
