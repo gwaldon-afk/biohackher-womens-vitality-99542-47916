@@ -112,6 +112,60 @@ const assessmentQuestions = {
         { value: "extreme", label: "Extreme (9-10/10)" }
       ]
     }
+  ],
+  
+  // Gut Health Assessment
+  "gut": [
+    {
+      id: 1,
+      question: "How often do you experience digestive discomfort?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely (less than once a week)" },
+        { value: "weekly", label: "Weekly (1-3 times per week)" },
+        { value: "daily", label: "Daily" },
+        { value: "frequent", label: "Multiple times daily" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What type of digestive symptoms do you experience most? (Select primary symptom)",
+      type: "radio",
+      options: [
+        { value: "bloating", label: "Bloating and gas" },
+        { value: "constipation", label: "Constipation" },
+        { value: "diarrhea", label: "Diarrhea or loose stools" },
+        { value: "pain", label: "Abdominal pain or cramping" },
+        { value: "reflux", label: "Heartburn or acid reflux" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How would you rate your energy levels after meals?",
+      type: "radio",
+      options: [
+        { value: "energized", label: "Energized and comfortable" },
+        { value: "neutral", label: "No significant change" },
+        { value: "tired", label: "Somewhat tired or sluggish" },
+        { value: "exhausted", label: "Very tired or need to rest" }
+      ]
+    },
+    {
+      id: 4,
+      question: "Have you noticed any food triggers that worsen your symptoms?",
+      type: "textarea",
+      placeholder: "Please describe any foods that seem to trigger your digestive symptoms..."
+    },
+    {
+      id: 5,
+      question: "Rate your overall digestive comfort on a scale of 1-10",
+      type: "radio",
+      options: [
+        { value: "good", label: "Good (7-10/10)" },
+        { value: "moderate", label: "Moderate (4-6/10)" },
+        { value: "poor", label: "Poor (1-3/10)" }
+      ]
+    }
   ]
 };
 
@@ -126,7 +180,7 @@ const SymptomAssessment = () => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [isComplete, setIsComplete] = useState(false);
 
-  const questions = symptomId ? assessmentQuestions[symptomId as keyof typeof assessmentQuestions] : [];
+  const questions = symptomId ? (assessmentQuestions[symptomId as keyof typeof assessmentQuestions] || []) : [];
 
   const handleAnswer = (questionId: number, answer: string) => {
     console.log('📝 Answer updated:', { questionId, answer });
