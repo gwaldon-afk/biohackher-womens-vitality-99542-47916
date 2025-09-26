@@ -820,16 +820,21 @@ const Nutrition = () => {
                                       </div>
                                     </div>
                                     
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                                      {meal.foods.map((food: any, foodIndex: number) => (
-                                        <div key={foodIndex} className="bg-muted/30 p-3 rounded">
-                                          <div className="font-medium text-sm">{food.name}</div>
-                                          <div className="text-primary font-semibold">{food.amount}</div>
-                                          <div className="text-xs text-muted-foreground mt-1">
-                                            {Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100))} cal
+                                    <div className="flex flex-wrap gap-2 justify-center">
+                                      {meal.foods.map((food: any, foodIndex: number) => {
+                                        const foodCalories = Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100));
+                                        const foodKj = Math.round(foodCalories * 4.184);
+                                        return (
+                                          <div key={foodIndex} className="bg-muted/30 p-2 rounded text-center min-w-[120px]">
+                                            <div className="font-medium text-sm mb-1">{food.name}</div>
+                                            <div className="text-primary font-semibold text-lg">{food.amount}</div>
+                                            <div className="text-xs text-muted-foreground">
+                                              <div>{foodCalories} cal</div>
+                                              <div>{foodKj} kJ</div>
+                                            </div>
                                           </div>
-                                        </div>
-                                      ))}
+                                        );
+                                      })}
                                     </div>
                                   </div>
                                 );
