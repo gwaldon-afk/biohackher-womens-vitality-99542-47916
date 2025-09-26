@@ -19,6 +19,10 @@ const Nutrition = () => {
   const [dislikes, setDislikes] = useState<string[]>([]);
   const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
   const [showWeeklyPlan, setShowWeeklyPlan] = useState(false);
+  const [selectedRecipeStyle, setSelectedRecipeStyle] = useState("simple");
+  const [selectedBreakfastRecipe, setSelectedBreakfastRecipe] = useState("");
+  const [selectedLunchRecipe, setSelectedLunchRecipe] = useState("");
+  const [selectedDinnerRecipe, setSelectedDinnerRecipe] = useState("");
 
   const commonAllergies = [
     "Dairy", "Eggs", "Fish", "Shellfish", "Tree Nuts", "Peanuts", "Soy", "Gluten"
@@ -213,6 +217,72 @@ const Nutrition = () => {
       lunch: "Chicken and rice bowl with spinach",
       dinner: "Grilled fish with carrots and potatoes", 
       snack: "Rice cakes with peanut butter"
+    }
+  };
+
+  const recipeCategories = {
+    simple: {
+      name: "Simple",
+      breakfast: [
+        { name: "Scrambled Eggs & Toast", description: "Fluffy scrambled eggs with whole grain toast and avocado" },
+        { name: "Overnight Oats", description: "Rolled oats with milk, berries, and honey" },
+        { name: "Greek Yogurt Bowl", description: "Greek yogurt with granola and fresh fruit" },
+        { name: "Protein Smoothie", description: "Banana, protein powder, spinach, and almond milk" }
+      ],
+      lunch: [
+        { name: "Grilled Chicken Salad", description: "Mixed greens with grilled chicken, cherry tomatoes, and balsamic" },
+        { name: "Tuna Wrap", description: "Whole wheat wrap with tuna, cucumber, and lettuce" },
+        { name: "Quinoa Bowl", description: "Quinoa with roasted vegetables and lean protein" },
+        { name: "Soup & Sandwich", description: "Vegetable soup with turkey and avocado sandwich" }
+      ],
+      dinner: [
+        { name: "Baked Salmon", description: "Herb-crusted salmon with steamed broccoli and sweet potato" },
+        { name: "Chicken Stir-fry", description: "Lean chicken with mixed vegetables over brown rice" },
+        { name: "Turkey Meatballs", description: "Lean turkey meatballs with marinara and zucchini noodles" },
+        { name: "Grilled Fish Tacos", description: "Grilled white fish with cabbage slaw in corn tortillas" }
+      ]
+    },
+    mediterranean: {
+      name: "Mediterranean",
+      breakfast: [
+        { name: "Greek Omelet", description: "Eggs with feta, spinach, tomatoes, and olives" },
+        { name: "Mediterranean Bowl", description: "Quinoa with cucumber, tomatoes, feta, and olive oil" },
+        { name: "Fig & Yogurt Parfait", description: "Greek yogurt with fresh figs, nuts, and honey" },
+        { name: "Shakshuka", description: "Eggs poached in spiced tomato and pepper sauce" }
+      ],
+      lunch: [
+        { name: "Greek Salad with Chicken", description: "Traditional Greek salad topped with grilled chicken" },
+        { name: "Hummus & Veggie Wrap", description: "Whole wheat wrap with hummus, vegetables, and feta" },
+        { name: "Mediterranean Quinoa Salad", description: "Quinoa with olives, cucumber, tomatoes, and herbs" },
+        { name: "Lentil Soup", description: "Mediterranean-style lentil soup with vegetables and herbs" }
+      ],
+      dinner: [
+        { name: "Herb-Crusted Lamb", description: "Grilled lamb with Mediterranean herbs and roasted vegetables" },
+        { name: "Mediterranean Sea Bass", description: "Baked sea bass with olives, tomatoes, and capers" },
+        { name: "Stuffed Bell Peppers", description: "Peppers stuffed with quinoa, herbs, and feta cheese" },
+        { name: "Chicken Souvlaki", description: "Marinated chicken skewers with tzatziki and pita" }
+      ]
+    },
+    spicy: {
+      name: "Spicy",
+      breakfast: [
+        { name: "Spicy Breakfast Burrito", description: "Scrambled eggs with jalapeños, salsa, and pepper jack cheese" },
+        { name: "Cajun Breakfast Bowl", description: "Quinoa with spicy shrimp, peppers, and hot sauce" },
+        { name: "Spicy Avocado Toast", description: "Whole grain toast with avocado, sriracha, and chili flakes" },
+        { name: "Mexican Egg Scramble", description: "Eggs with peppers, onions, and spicy Mexican seasonings" }
+      ],
+      lunch: [
+        { name: "Buffalo Chicken Salad", description: "Mixed greens with buffalo chicken, celery, and blue cheese" },
+        { name: "Spicy Thai Beef Salad", description: "Thai-style beef salad with chili lime dressing" },
+        { name: "Korean BBQ Bowl", description: "Marinated beef with kimchi over steamed rice" },
+        { name: "Cajun Shrimp Wrap", description: "Spicy Cajun shrimp with vegetables in a tortilla wrap" }
+      ],
+      dinner: [
+        { name: "Spicy Salmon Curry", description: "Salmon in coconut curry sauce with vegetables" },
+        { name: "Jalapeño Stuffed Chicken", description: "Chicken breast stuffed with jalapeños and cheese" },
+        { name: "Thai Basil Beef", description: "Ground beef with Thai basil, chili, and jasmine rice" },
+        { name: "Spicy Black Bean Tacos", description: "Black beans with chipotle peppers in corn tortillas" }
+      ]
     }
   };
 
@@ -742,13 +812,127 @@ const Nutrition = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4">
-                  {Object.entries(currentMealPlan).map(([meal, description]) => (
-                    <div key={meal} className="p-4 border rounded-lg">
-                      <h3 className="font-semibold capitalize mb-2">{meal}</h3>
-                      <p className="text-muted-foreground">{description}</p>
+                {/* Recipe Category Selection */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Choose Your Recipe Style</h3>
+                  <div className="flex gap-4 mb-6">
+                    {Object.entries(recipeCategories).map(([key, category]) => (
+                      <label key={key} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="recipeStyle"
+                          value={key}
+                          checked={selectedRecipeStyle === key}
+                          onChange={(e) => setSelectedRecipeStyle(e.target.value)}
+                          className="text-primary"
+                        />
+                        <span className="font-medium">{category.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recipe Selection for Each Meal */}
+                <div className="space-y-6">
+                  {/* Breakfast Recipes */}
+                  <div className="border rounded-lg p-4">
+                    <h4 className="text-lg font-semibold mb-3 text-primary">🌅 Breakfast Options</h4>
+                    <div className="grid gap-3">
+                      {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].breakfast.map((recipe, index) => (
+                        <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
+                          <input
+                            type="radio"
+                            name="breakfast"
+                            value={recipe.name}
+                            checked={selectedBreakfastRecipe === recipe.name}
+                            onChange={(e) => setSelectedBreakfastRecipe(e.target.value)}
+                            className="mt-1 text-primary"
+                          />
+                          <div>
+                            <div className="font-medium">{recipe.name}</div>
+                            <div className="text-sm text-muted-foreground">{recipe.description}</div>
+                          </div>
+                        </label>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Lunch Recipes */}
+                  <div className="border rounded-lg p-4">
+                    <h4 className="text-lg font-semibold mb-3 text-primary">🍽️ Lunch Options</h4>
+                    <div className="grid gap-3">
+                      {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].lunch.map((recipe, index) => (
+                        <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
+                          <input
+                            type="radio"
+                            name="lunch"
+                            value={recipe.name}
+                            checked={selectedLunchRecipe === recipe.name}
+                            onChange={(e) => setSelectedLunchRecipe(e.target.value)}
+                            className="mt-1 text-primary"
+                          />
+                          <div>
+                            <div className="font-medium">{recipe.name}</div>
+                            <div className="text-sm text-muted-foreground">{recipe.description}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Dinner Recipes */}
+                  <div className="border rounded-lg p-4">
+                    <h4 className="text-lg font-semibold mb-3 text-primary">🌙 Dinner Options</h4>
+                    <div className="grid gap-3">
+                      {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].dinner.map((recipe, index) => (
+                        <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
+                          <input
+                            type="radio"
+                            name="dinner"
+                            value={recipe.name}
+                            checked={selectedDinnerRecipe === recipe.name}
+                            onChange={(e) => setSelectedDinnerRecipe(e.target.value)}
+                            className="mt-1 text-primary"
+                          />
+                          <div>
+                            <div className="font-medium">{recipe.name}</div>
+                            <div className="text-sm text-muted-foreground">{recipe.description}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Current Selected Recipes Summary */}
+                {(selectedBreakfastRecipe || selectedLunchRecipe || selectedDinnerRecipe) && (
+                  <div className="mt-6 p-4 bg-primary/10 rounded-lg">
+                    <h4 className="font-semibold mb-3">Your Selected Recipes:</h4>
+                    <div className="grid gap-2 text-sm">
+                      {selectedBreakfastRecipe && (
+                        <div><span className="font-medium">Breakfast:</span> {selectedBreakfastRecipe}</div>
+                      )}
+                      {selectedLunchRecipe && (
+                        <div><span className="font-medium">Lunch:</span> {selectedLunchRecipe}</div>
+                      )}
+                      {selectedDinnerRecipe && (
+                        <div><span className="font-medium">Dinner:</span> {selectedDinnerRecipe}</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Original meal plan - now showing as a simplified view */}
+                <div className="mt-6 pt-6 border-t">
+                  <h4 className="font-semibold mb-4">Standard {isLowFODMAP ? "Low-FODMAP" : "Balanced"} Meal Template:</h4>
+                  <div className="grid gap-4">
+                    {Object.entries(currentMealPlan).map(([meal, description]) => (
+                      <div key={meal} className="p-4 border rounded-lg">
+                        <h3 className="font-semibold capitalize mb-2">{meal}</h3>
+                        <p className="text-muted-foreground">{description}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 
                 <div className="mt-6 flex gap-4">
