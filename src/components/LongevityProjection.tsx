@@ -97,7 +97,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
       return {
         type: "empowerment" as const,
         title: "Transform Your Trajectory 🚀",
-        message: `Your current path adds ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger instead - that's a ${(fiveYearImpact + Math.abs(optimalFiveYear)).toFixed(1)}-year turnaround! Priority: sleep quality, physical activity, stress management, and nutrition.`,
+        message: `Your current path adds ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger instead - shifting from aging ${fiveYearImpact.toFixed(1)} years faster to ${Math.abs(optimalFiveYear).toFixed(1)} years slower! Priority: sleep quality, physical activity, stress management, and nutrition.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
