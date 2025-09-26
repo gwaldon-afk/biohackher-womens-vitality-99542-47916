@@ -59,30 +59,35 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     color: item.impact > 0 ? "#ef4444" : item.impact < 0 ? "#10b981" : "#6b7280"
   }));
 
-  // Determine messaging based on sustained LIS
+  // Determine messaging based on sustained LIS and actual impact
   const getMotivationalMessage = (lis: number) => {
     const fiveYearImpact = projectionData[0].impact;
     const twentyYearImpact = projectionData[3].impact;
     
-    if (lis > 110) {
+    // If the 5-year impact is negative (younger), celebrate regardless of LIS
+    if (fiveYearImpact < -0.5) {
       return {
         type: "celebration" as const,
-        title: "Outstanding Work! 🎉",
-        message: `You're doing amazing! If you maintain these habits, your biological age could be ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years than your chronological age.`,
+        title: "Excellent Trajectory! 🎉",
+        message: `Outstanding! Your current habits are projected to make your biological age ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years. Keep up this fantastic work!`,
         color: "text-green-700 bg-green-50 border-green-200"
       };
-    } else if (lis >= 90) {
+    }
+    // If impact is slightly negative or neutral, encourage but be realistic
+    else if (fiveYearImpact <= 0.2 && fiveYearImpact >= -0.5) {
       return {
         type: "encouragement" as const,
-        title: "Solid Foundation 💪",
-        message: `Your current habits are on the right track. With small improvements, you could achieve a biological age ${Math.abs(fiveYearImpact).toFixed(1)} years ${fiveYearImpact < 0 ? 'younger' : 'older'} in 5 years, and ${Math.abs(twentyYearImpact).toFixed(1)} years ${twentyYearImpact < 0 ? 'younger' : 'older'} in 20 years.`,
+        title: "Nearly There! 💪",
+        message: `You're close to optimal! Your current habits show minimal impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years in 5 years). Small improvements in your daily habits could shift this to a significantly positive aging trajectory.`,
         color: "text-blue-700 bg-blue-50 border-blue-200"
       };
-    } else {
+    }
+    // If impact is positive (aging faster), be direct about need for change
+    else {
       return {
         type: "empowerment" as const,
-        title: "Great Potential Ahead 🚀",
-        message: `Your current path shows a ${Math.abs(fiveYearImpact).toFixed(1)}-year biological age increase in 5 years, but you have the power to reverse this! Small, consistent improvements can change this projection and set you on a path to a healthier future.`,
+        title: "Time for Action 🚀",
+        message: `Your current habits are projected to add ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years (${twentyYearImpact.toFixed(1)} years in 20 years). The good news? Every positive change you make today can reverse this trend and get you on a path to biological age reduction.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
