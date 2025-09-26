@@ -574,6 +574,21 @@ const Nutrition = () => {
     }
   };
 
+  const mealPlans = {
+    regular: {
+      breakfast: "Greek yogurt with berries and almonds",
+      lunch: "Grilled chicken salad with quinoa",
+      dinner: "Salmon with roasted vegetables",
+      snack: "Hard-boiled eggs with carrots"
+    },
+    lowFODMAP: {
+      breakfast: "Lactose-free yogurt with strawberries",
+      lunch: "Chicken and rice bowl with spinach",
+      dinner: "Grilled fish with carrots and potatoes", 
+      snack: "Rice cakes with peanut butter"
+    }
+  };
+
   const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
 
   const generateWeeklyPlan = (useExistingVariety: boolean = false) => {
@@ -900,36 +915,6 @@ const Nutrition = () => {
       "Wheat, Rye, Barley", "Regular dairy", "Beans, Lentils",
       "Onions, Garlic", "Apples, Pears", "Cashews, Pistachios"
     ]
-  };
-
-  const mealPlans = {
-    regular: {
-      breakfast: "Greek yogurt with berries and almonds",
-      lunch: "Grilled chicken salad with quinoa",
-      dinner: "Salmon with roasted vegetables",
-      snack: "Hard-boiled eggs with carrots"
-    },
-    lowFODMAP: {
-      breakfast: "Lactose-free yogurt with strawberries",
-      lunch: "Chicken and rice bowl with spinach",
-      dinner: "Grilled fish with carrots and potatoes", 
-      snack: "Rice cakes with peanut butter"
-    }
-  };
-
-  const mealPlans = {
-    regular: {
-      breakfast: "Greek yogurt with berries and almonds",
-      lunch: "Grilled chicken salad with quinoa",
-      dinner: "Salmon with roasted vegetables",
-      snack: "Hard-boiled eggs with carrots"
-    },
-    lowFODMAP: {
-      breakfast: "Lactose-free yogurt with strawberries",
-      lunch: "Chicken and rice bowl with spinach",
-      dinner: "Grilled fish with carrots and potatoes", 
-      snack: "Rice cakes with peanut butter"
-    }
   };
 
 
