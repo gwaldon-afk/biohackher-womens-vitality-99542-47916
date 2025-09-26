@@ -18,6 +18,7 @@ import Coaching from "./pages/Coaching";
 import Reports from "./pages/Reports";
 import Upgrade from "./pages/Upgrade";
 import Settings from "./pages/Settings";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/faq" element={<FAQ />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
