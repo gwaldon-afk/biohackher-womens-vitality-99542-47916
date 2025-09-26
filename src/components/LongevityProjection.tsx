@@ -61,25 +61,28 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
 
   // Determine messaging based on sustained LIS
   const getMotivationalMessage = (lis: number) => {
+    const fiveYearImpact = projectionData[0].impact;
+    const twentyYearImpact = projectionData[3].impact;
+    
     if (lis > 110) {
       return {
         type: "celebration" as const,
         title: "Outstanding Work! 🎉",
-        message: `You're doing amazing! Keep up this excellent work. If you maintain these habits, your Longevity Age could be ${Math.abs(projectionData[0].impact).toFixed(1)} years younger than your chronological age in 5 years.`,
+        message: `You're doing amazing! If you maintain these habits, your biological age could be ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years than your chronological age.`,
         color: "text-green-700 bg-green-50 border-green-200"
       };
     } else if (lis >= 90) {
       return {
         type: "encouragement" as const,
         title: "Solid Foundation 💪",
-        message: `Your current habits are keeping you on a healthy path. Imagine the potential! Even small improvements could help you achieve a Longevity Age ${Math.abs(projectionData[0].impact).toFixed(1)} years younger in 5 years.`,
+        message: `Your current habits are on the right track. With small improvements, you could achieve a biological age ${Math.abs(fiveYearImpact).toFixed(1)} years ${fiveYearImpact < 0 ? 'younger' : 'older'} in 5 years, and ${Math.abs(twentyYearImpact).toFixed(1)} years ${twentyYearImpact < 0 ? 'younger' : 'older'} in 20 years.`,
         color: "text-blue-700 bg-blue-50 border-blue-200"
       };
     } else {
       return {
         type: "empowerment" as const,
         title: "Great Potential Ahead 🚀",
-        message: `Your current habits are impacting your Longevity Age, but here's the great news: you have the power to change that today! Small, consistent improvements can reverse this trend and set you on a path to a healthier future.`,
+        message: `Your current path shows a ${Math.abs(fiveYearImpact).toFixed(1)}-year biological age increase in 5 years, but you have the power to reverse this! Small, consistent improvements can change this projection and set you on a path to a healthier future.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
@@ -172,6 +175,34 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
+        </div>
+
+        {/* Key Projections Summary */}
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
+          <h4 className="font-semibold text-gray-900 mb-3 text-center">Key Longevity Age Estimates</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div className="text-xs text-gray-600 mb-1">5-Year Impact</div>
+              <div className={`text-2xl font-bold ${projectionData[0].impact > 0 ? 'text-red-600' : projectionData[0].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                {projectionData[0].impact > 0 ? '+' : ''}{projectionData[0].impact.toFixed(1)} years
+              </div>
+              <div className="text-xs text-gray-500">
+                {projectionData[0].impact > 0 ? 'Older' : projectionData[0].impact < 0 ? 'Younger' : 'No change'}
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-600 mb-1">20-Year Impact</div>
+              <div className={`text-2xl font-bold ${projectionData[3].impact > 0 ? 'text-red-600' : projectionData[3].impact < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                {projectionData[3].impact > 0 ? '+' : ''}{projectionData[3].impact.toFixed(1)} years
+              </div>
+              <div className="text-xs text-gray-500">
+                {projectionData[3].impact > 0 ? 'Older' : projectionData[3].impact < 0 ? 'Younger' : 'No change'}
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 text-xs text-center text-gray-600">
+            Based on sustained LIS of {sustainedLIS.toFixed(1)} over {dataPoints} days
+          </div>
         </div>
 
         {/* Impact Summary */}
