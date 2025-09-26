@@ -287,23 +287,14 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
-                <TooltipProvider>
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger asChild>
-                      <div className="flex items-center justify-center mb-4 cursor-help transition-transform hover:scale-105">
-                        <ProgressCircle value={currentScore} size="xl">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                            <div className="text-xs text-gray-500">LIS</div>
-                          </div>
-                        </ProgressCircle>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
-                      <p className="text-sm font-medium">{getLongevityMessage()}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <div className="flex items-center justify-center mb-4 transition-transform hover:scale-105">
+                  <ProgressCircle value={currentScore} size="xl">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                      <div className="text-xs text-gray-500">LIS</div>
+                    </div>
+                  </ProgressCircle>
+                </div>
                 
                 {/* Longevity Projection Summary */}
                 {!projectionLoading && (
@@ -311,18 +302,27 @@ const Dashboard = () => {
                     <div className="text-xs text-gray-600 mb-1 text-center">5-Year Biological Age Impact</div>
                     
                     {/* Current Impact */}
-                    <div className="text-center mb-3">
-                      <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                      <div className={`text-lg font-bold ${(() => {
-                        const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-                        return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                      })()}`}>
-                        {(() => {
-                          const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-                          return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
-                        })()}
-                      </div>
-                    </div>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={200}>
+                        <TooltipTrigger asChild>
+                          <div className="text-center mb-3 cursor-help">
+                            <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                            <div className={`text-lg font-bold ${(() => {
+                              const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                              return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                            })()}`}>
+                              {(() => {
+                                const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                                return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
+                              })()}
+                            </div>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
+                          <p className="text-sm font-medium">{getLongevityMessage()}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
 
                     {/* Potential Optimal Impact */}
                     <div className="text-center border-t border-purple-200 pt-2">
