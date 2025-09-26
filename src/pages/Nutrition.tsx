@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X } from "lucide-react";
+import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,6 +36,7 @@ const Nutrition = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasPreferences, setHasPreferences] = useState(false);
+  const [weekIndex, setWeekIndex] = useState(0);
 
   // Load saved preferences on component mount
   useEffect(() => {
@@ -284,108 +285,6 @@ const Nutrition = () => {
     }
   };
 
-  const leucineRichFoods = [
-    { name: "Chicken Breast (100g)", protein: 31, leucine: 2.5, score: "Excellent" },
-    { name: "Salmon (100g)", protein: 25, leucine: 2.0, score: "Excellent" },
-    { name: "Greek Yogurt (170g)", protein: 17, leucine: 1.8, score: "Good" },
-    { name: "Eggs (2 large)", protein: 12, leucine: 1.6, score: "Good" },
-    { name: "Cottage Cheese (100g)", protein: 11, leucine: 1.4, score: "Good" },
-    { name: "Tofu (100g)", protein: 8, leucine: 0.7, score: "Fair" },
-    { name: "Quinoa (100g cooked)", protein: 4.4, leucine: 0.3, score: "Fair" }
-  ];
-
-  const fodmapFoods = {
-    low: [
-      "Chicken, Fish, Eggs", "Lactose-free dairy", "Rice, Quinoa", 
-      "Spinach, Carrots", "Strawberries, Oranges", "Almonds (small portions)"
-    ],
-    high: [
-      "Wheat, Rye, Barley", "Regular dairy", "Beans, Lentils",
-      "Onions, Garlic", "Apples, Pears", "Cashews, Pistachios"
-    ]
-  };
-
-  const mealPlans = {
-    regular: {
-      breakfast: "Greek yogurt with berries and almonds",
-      lunch: "Grilled chicken salad with quinoa",
-      dinner: "Salmon with roasted vegetables",
-      snack: "Hard-boiled eggs with carrots"
-    },
-    lowFODMAP: {
-      breakfast: "Lactose-free yogurt with strawberries",
-      lunch: "Chicken and rice bowl with spinach",
-      dinner: "Grilled fish with carrots and potatoes", 
-      snack: "Rice cakes with peanut butter"
-    }
-  };
-
-  const recipeCategories = {
-    simple: {
-      name: "Simple",
-      breakfast: [
-        { name: "Scrambled Eggs & Toast", description: "Fluffy scrambled eggs with whole grain toast and avocado" },
-        { name: "Overnight Oats", description: "Rolled oats with milk, berries, and honey" },
-        { name: "Greek Yogurt Bowl", description: "Greek yogurt with granola and fresh fruit" },
-        { name: "Protein Smoothie", description: "Banana, protein powder, spinach, and almond milk" }
-      ],
-      lunch: [
-        { name: "Grilled Chicken Salad", description: "Mixed greens with grilled chicken, cherry tomatoes, and balsamic" },
-        { name: "Tuna Wrap", description: "Whole wheat wrap with tuna, cucumber, and lettuce" },
-        { name: "Quinoa Bowl", description: "Quinoa with roasted vegetables and lean protein" },
-        { name: "Soup & Sandwich", description: "Vegetable soup with turkey and avocado sandwich" }
-      ],
-      dinner: [
-        { name: "Baked Salmon", description: "Herb-crusted salmon with steamed broccoli and sweet potato" },
-        { name: "Chicken Stir-fry", description: "Lean chicken with mixed vegetables over brown rice" },
-        { name: "Turkey Meatballs", description: "Lean turkey meatballs with marinara and zucchini noodles" },
-        { name: "Grilled Fish Tacos", description: "Grilled white fish with cabbage slaw in corn tortillas" }
-      ]
-    },
-    mediterranean: {
-      name: "Mediterranean",
-      breakfast: [
-        { name: "Greek Omelet", description: "Eggs with feta, spinach, tomatoes, and olives" },
-        { name: "Mediterranean Bowl", description: "Quinoa with cucumber, tomatoes, feta, and olive oil" },
-        { name: "Fig & Yogurt Parfait", description: "Greek yogurt with fresh figs, nuts, and honey" },
-        { name: "Shakshuka", description: "Eggs poached in spiced tomato and pepper sauce" }
-      ],
-      lunch: [
-        { name: "Greek Salad with Chicken", description: "Traditional Greek salad topped with grilled chicken" },
-        { name: "Hummus & Veggie Wrap", description: "Whole wheat wrap with hummus, vegetables, and feta" },
-        { name: "Mediterranean Quinoa Salad", description: "Quinoa with olives, cucumber, tomatoes, and herbs" },
-        { name: "Lentil Soup", description: "Mediterranean-style lentil soup with vegetables and herbs" }
-      ],
-      dinner: [
-        { name: "Herb-Crusted Lamb", description: "Grilled lamb with Mediterranean herbs and roasted vegetables" },
-        { name: "Mediterranean Sea Bass", description: "Baked sea bass with olives, tomatoes, and capers" },
-        { name: "Stuffed Bell Peppers", description: "Peppers stuffed with quinoa, herbs, and feta cheese" },
-        { name: "Chicken Souvlaki", description: "Marinated chicken skewers with tzatziki and pita" }
-      ]
-    },
-    spicy: {
-      name: "Spicy",
-      breakfast: [
-        { name: "Spicy Breakfast Burrito", description: "Scrambled eggs with jalapeños, salsa, and pepper jack cheese" },
-        { name: "Cajun Breakfast Bowl", description: "Quinoa with spicy shrimp, peppers, and hot sauce" },
-        { name: "Spicy Avocado Toast", description: "Whole grain toast with avocado, sriracha, and chili flakes" },
-        { name: "Mexican Egg Scramble", description: "Eggs with peppers, onions, and spicy Mexican seasonings" }
-      ],
-      lunch: [
-        { name: "Buffalo Chicken Salad", description: "Mixed greens with buffalo chicken, celery, and blue cheese" },
-        { name: "Spicy Thai Beef Salad", description: "Thai-style beef salad with chili lime dressing" },
-        { name: "Korean BBQ Bowl", description: "Marinated beef with kimchi over steamed rice" },
-        { name: "Cajun Shrimp Wrap", description: "Spicy Cajun shrimp with vegetables in a tortilla wrap" }
-      ],
-      dinner: [
-        { name: "Spicy Salmon Curry", description: "Salmon in coconut curry sauce with vegetables" },
-        { name: "Jalapeño Stuffed Chicken", description: "Chicken breast stuffed with jalapeños and cheese" },
-        { name: "Thai Basil Beef", description: "Ground beef with Thai basil, chili, and jasmine rice" },
-        { name: "Spicy Black Bean Tacos", description: "Black beans with chipotle peppers in corn tortillas" }
-      ]
-    }
-  };
-
   const foodLongevityBenefits = {
     "Chicken Breast": {
       benefits: ["High-quality protein for muscle maintenance", "Selenium supports immune function", "B vitamins for energy metabolism"],
@@ -552,8 +451,6 @@ const Nutrition = () => {
     }
   };
 
-  const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
-
   const printLongevityBenefits = () => {
     if (!weeklyPlan) return;
     
@@ -611,7 +508,75 @@ const Nutrition = () => {
     }
   };
 
-  const generateWeeklyPlan = () => {
+  const recipeCategories = {
+    simple: {
+      name: "Simple",
+      breakfast: [
+        { name: "Scrambled Eggs & Toast", description: "Fluffy scrambled eggs with whole grain toast and avocado" },
+        { name: "Overnight Oats", description: "Rolled oats with milk, berries, and honey" },
+        { name: "Greek Yogurt Bowl", description: "Greek yogurt with granola and fresh fruit" },
+        { name: "Protein Smoothie", description: "Banana, protein powder, spinach, and almond milk" }
+      ],
+      lunch: [
+        { name: "Grilled Chicken Salad", description: "Mixed greens with grilled chicken, cherry tomatoes, and balsamic" },
+        { name: "Tuna Wrap", description: "Whole wheat wrap with tuna, cucumber, and lettuce" },
+        { name: "Quinoa Bowl", description: "Quinoa with roasted vegetables and lean protein" },
+        { name: "Soup & Sandwich", description: "Vegetable soup with turkey and avocado sandwich" }
+      ],
+      dinner: [
+        { name: "Baked Salmon", description: "Herb-crusted salmon with steamed broccoli and sweet potato" },
+        { name: "Chicken Stir-fry", description: "Lean chicken with mixed vegetables over brown rice" },
+        { name: "Turkey Meatballs", description: "Lean turkey meatballs with marinara and zucchini noodles" },
+        { name: "Grilled Fish Tacos", description: "Grilled white fish with cabbage slaw in corn tortillas" }
+      ]
+    },
+    mediterranean: {
+      name: "Mediterranean",
+      breakfast: [
+        { name: "Greek Omelet", description: "Eggs with feta, spinach, tomatoes, and olives" },
+        { name: "Mediterranean Bowl", description: "Quinoa with cucumber, tomatoes, feta, and olive oil" },
+        { name: "Fig & Yogurt Parfait", description: "Greek yogurt with fresh figs, nuts, and honey" },
+        { name: "Shakshuka", description: "Eggs poached in spiced tomato and pepper sauce" }
+      ],
+      lunch: [
+        { name: "Greek Salad with Chicken", description: "Traditional Greek salad topped with grilled chicken" },
+        { name: "Hummus & Veggie Wrap", description: "Whole wheat wrap with hummus, vegetables, and feta" },
+        { name: "Mediterranean Quinoa Salad", description: "Quinoa with olives, cucumber, tomatoes, and herbs" },
+        { name: "Lentil Soup", description: "Mediterranean-style lentil soup with vegetables and herbs" }
+      ],
+      dinner: [
+        { name: "Herb-Crusted Lamb", description: "Grilled lamb with Mediterranean herbs and roasted vegetables" },
+        { name: "Mediterranean Sea Bass", description: "Baked sea bass with olives, tomatoes, and capers" },
+        { name: "Stuffed Bell Peppers", description: "Peppers stuffed with quinoa, herbs, and feta cheese" },
+        { name: "Chicken Souvlaki", description: "Marinated chicken skewers with tzatziki and pita" }
+      ]
+    },
+    spicy: {
+      name: "Spicy",
+      breakfast: [
+        { name: "Spicy Breakfast Burrito", description: "Scrambled eggs with jalapeños, salsa, and pepper jack cheese" },
+        { name: "Cajun Breakfast Bowl", description: "Quinoa with spicy shrimp, peppers, and hot sauce" },
+        { name: "Spicy Avocado Toast", description: "Whole grain toast with avocado, sriracha, and chili flakes" },
+        { name: "Mexican Egg Scramble", description: "Eggs with peppers, onions, and spicy Mexican seasonings" }
+      ],
+      lunch: [
+        { name: "Buffalo Chicken Salad", description: "Mixed greens with buffalo chicken, celery, and blue cheese" },
+        { name: "Spicy Thai Beef Salad", description: "Thai-style beef salad with chili lime dressing" },
+        { name: "Korean BBQ Bowl", description: "Marinated beef with kimchi over steamed rice" },
+        { name: "Cajun Shrimp Wrap", description: "Spicy Cajun shrimp with vegetables in a tortilla wrap" }
+      ],
+      dinner: [
+        { name: "Spicy Salmon Curry", description: "Salmon in coconut curry sauce with vegetables" },
+        { name: "Jalapeño Stuffed Chicken", description: "Chicken breast stuffed with jalapeños and cheese" },
+        { name: "Thai Basil Beef", description: "Ground beef with Thai basil, chili, and jasmine rice" },
+        { name: "Spicy Black Bean Tacos", description: "Black beans with chipotle peppers in corn tortillas" }
+      ]
+    }
+  };
+
+  const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
+
+  const generateWeeklyPlan = (useExistingVariety: boolean = false) => {
     if (!weight) {
       toast({
         title: "Missing information",
@@ -624,6 +589,11 @@ const Nutrition = () => {
     const macros = calculateMacros();
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     
+    // If creating new variety, increment week index
+    if (!useExistingVariety) {
+      setWeekIndex(prev => prev + 1);
+    }
+    
     // Calculate portions based on macros
     const mealsPerDay = 3; // breakfast, lunch, dinner
     const proteinPerMeal = Math.round(macros.protein / mealsPerDay);
@@ -633,9 +603,28 @@ const Nutrition = () => {
     const generateMeal = (mealType: string, dayIndex: number) => {
       let protein, carb, vegetable, fat, recipeName, recipeDescription;
       
-      // Get selected recipes for more appealing names
       const currentRecipes = recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories];
+      const currentWeekIndex = useExistingVariety ? weekIndex - 1 : weekIndex;
       
+      // Create variety by using different combinations and cooking methods
+      const cookingMethods = {
+        breakfast: {
+          eggs: ["Fluffy Scrambled Eggs", "Mediterranean Herb Omelet", "Protein-Packed Egg Bowl", "Golden Poached Eggs"],
+          yogurt: ["Greek Yogurt Parfait", "Berry Protein Bowl", "Creamy Vanilla Yogurt", "Tropical Yogurt Delight"],
+          cottage: ["Cottage Cheese Power Bowl", "Creamy Berry Cottage", "Savory Herb Cottage", "Protein-Rich Morning Bowl"]
+        },
+        lunch: {
+          chicken: ["Grilled Herb Chicken", "Mediterranean Chicken Bowl", "Lemon Pepper Chicken", "Spicy Chicken Salad"],
+          salmon: ["Pan-Seared Salmon", "Teriyaki Glazed Salmon", "Herb-Crusted Salmon", "Mediterranean Salmon Bowl"],
+          tofu: ["Crispy Sesame Tofu", "Asian-Style Tofu Bowl", "Herb-Marinated Tofu", "Spicy Sriracha Tofu"]
+        },
+        dinner: {
+          salmon: ["Honey Glazed Salmon", "Mediterranean Baked Salmon", "Asian-Style Salmon", "Lemon Herb Salmon Fillet"],
+          chicken: ["Roasted Rosemary Chicken", "Mediterranean Chicken Breast", "Garlic Herb Chicken", "Spicy Paprika Chicken"],
+          tofu: ["Ginger Soy Glazed Tofu", "Mediterranean Herb Tofu", "Spicy Asian Tofu", "Lemon Pepper Tofu"]
+        }
+      };
+
       // Meal-specific food selections with allergy/dislike filtering
       if (mealType === "breakfast") {
         // Use selected breakfast recipe if available, otherwise rotate through options
@@ -645,11 +634,8 @@ const Nutrition = () => {
             recipeName = selectedRecipe.name;
             recipeDescription = selectedRecipe.description;
           }
-        } else {
-          const dailyRecipe = currentRecipes.breakfast[dayIndex % currentRecipes.breakfast.length];
-          recipeName = dailyRecipe.name;
-          recipeDescription = dailyRecipe.description;
         }
+
         if (isLowFODMAP) {
           let proteinOptions = ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p));
           let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
@@ -660,10 +646,10 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
           if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
           vegetable = vegOptions[0];
-          fat = (dayIndex % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : "Olive Oil";
+          fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : "Olive Oil";
         } else {
           let proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"].filter(p => !isExcluded(p));
           let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
@@ -674,13 +660,41 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
           if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
           vegetable = vegOptions[0];
-          fat = (dayIndex % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : 
+          fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : 
                 (!isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
         }
+        
+        // Create specific breakfast name if not using selected recipe
+        if (!recipeName) {
+          if (protein === "Eggs") {
+            const eggStyle = cookingMethods.breakfast.eggs[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.eggs.length];
+            if (carb === "Quinoa") {
+              recipeName = `${eggStyle} with Ancient Grain Quinoa`;
+            } else {
+              recipeName = `${eggStyle} with Hearty Oats`;
+            }
+          } else if (protein === "Greek Yogurt") {
+            const yogurtStyle = cookingMethods.breakfast.yogurt[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.yogurt.length];
+            recipeName = `${yogurtStyle} with ${fat === "Almonds" ? "Crunchy Almonds" : "Fresh Berries"}`;
+          } else if (protein === "Cottage Cheese") {
+            const cottageStyle = cookingMethods.breakfast.cottage[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.cottage.length];
+            recipeName = `${cottageStyle} with ${carb === "Oats" ? "Steel-Cut Oats" : "Quinoa Crunch"}`;
+          }
+          recipeDescription = `Protein-rich breakfast featuring ${protein.toLowerCase()} with nutritious ${carb.toLowerCase()}`;
+        }
       } else if (mealType === "lunch") {
+        // Use selected lunch recipe if available
+        if (selectedLunchRecipe) {
+          const selectedRecipe = currentRecipes.lunch.find(r => r.name === selectedLunchRecipe);
+          if (selectedRecipe) {
+            recipeName = selectedRecipe.name;
+            recipeDescription = selectedRecipe.description;
+          }
+        }
+
         if (isLowFODMAP) {
           let proteinOptions = ["Chicken Breast", "Salmon"].filter(p => !isExcluded(p));
           let carbOptions = ["Brown Rice", "Quinoa"].filter(c => !isExcluded(c));
@@ -691,9 +705,9 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Sweet Potato"];
           if (vegOptions.length === 0) vegOptions = ["Broccoli"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
-          vegetable = vegOptions[dayIndex % vegOptions.length];
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
+          vegetable = vegOptions[(dayIndex + currentWeekIndex) % vegOptions.length];
           fat = "Olive Oil";
         } else {
           let proteinOptions = ["Chicken Breast", "Salmon", "Tofu"].filter(p => !isExcluded(p));
@@ -705,16 +719,25 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Oats"];
           if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
-          vegetable = vegOptions[dayIndex % vegOptions.length];
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
+          vegetable = vegOptions[(dayIndex + currentWeekIndex) % vegOptions.length];
           fat = "Olive Oil";
         }
         
-        // Default recipe name if none selected
+        // Create specific lunch name if not using selected recipe
         if (!recipeName) {
-          recipeName = currentRecipes.lunch[dayIndex % currentRecipes.lunch.length].name;
-          recipeDescription = currentRecipes.lunch[dayIndex % currentRecipes.lunch.length].description;
+          if (protein === "Chicken Breast") {
+            const chickenStyle = cookingMethods.lunch.chicken[(dayIndex + currentWeekIndex) % cookingMethods.lunch.chicken.length];
+            recipeName = `${chickenStyle} with ${carb === "Quinoa" ? "Fluffy Quinoa" : carb === "Sweet Potato" ? "Roasted Sweet Potato" : "Brown Rice Pilaf"}`;
+          } else if (protein === "Salmon") {
+            const salmonStyle = cookingMethods.lunch.salmon[(dayIndex + currentWeekIndex) % cookingMethods.lunch.salmon.length];
+            recipeName = `${salmonStyle} over ${vegetable === "Spinach" ? "Fresh Spinach" : "Steamed Broccoli"}`;
+          } else if (protein === "Tofu") {
+            const tofuStyle = cookingMethods.lunch.tofu[(dayIndex + currentWeekIndex) % cookingMethods.lunch.tofu.length];
+            recipeName = `${tofuStyle} with ${carb === "Brown Rice" ? "Jasmine Brown Rice" : "Ancient Grain Quinoa"}`;
+          }
+          recipeDescription = `Balanced midday meal with lean ${protein.toLowerCase()} and fresh vegetables`;
         }
       } else { // dinner
         // Use selected dinner recipe if available
@@ -725,6 +748,7 @@ const Nutrition = () => {
             recipeDescription = selectedRecipe.description;
           }
         }
+
         if (isLowFODMAP) {
           let proteinOptions = ["Salmon", "Chicken Breast"].filter(p => !isExcluded(p));
           let carbOptions = ["Sweet Potato", "Brown Rice"].filter(c => !isExcluded(c));
@@ -735,9 +759,9 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Quinoa"];
           if (vegOptions.length === 0) vegOptions = ["Spinach"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
-          vegetable = vegOptions[dayIndex % vegOptions.length];
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
+          vegetable = vegOptions[(dayIndex + currentWeekIndex) % vegOptions.length];
           fat = !isExcluded("Avocado") ? "Avocado" : "Olive Oil";
         } else {
           let proteinOptions = ["Salmon", "Chicken Breast"].filter(p => !isExcluded(p));
@@ -749,16 +773,25 @@ const Nutrition = () => {
           if (carbOptions.length === 0) carbOptions = ["Quinoa"];
           if (vegOptions.length === 0) vegOptions = ["Spinach"];
           
-          protein = proteinOptions[dayIndex % proteinOptions.length];
-          carb = carbOptions[dayIndex % carbOptions.length];
-          vegetable = vegOptions[dayIndex % vegOptions.length];
-          fat = (dayIndex % 2 === 0 && !isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
+          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
+          vegetable = vegOptions[(dayIndex + currentWeekIndex) % vegOptions.length];
+          fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
         }
         
-        // Default recipe name if none selected
+        // Create specific dinner name if not using selected recipe
         if (!recipeName) {
-          recipeName = currentRecipes.dinner[dayIndex % currentRecipes.dinner.length].name;
-          recipeDescription = currentRecipes.dinner[dayIndex % currentRecipes.dinner.length].description;
+          if (protein === "Salmon") {
+            const salmonStyle = cookingMethods.dinner.salmon[(dayIndex + currentWeekIndex) % cookingMethods.dinner.salmon.length];
+            recipeName = `${salmonStyle} with ${carb === "Sweet Potato" ? "Roasted Sweet Potato Wedges" : "Wild Rice Pilaf"}`;
+          } else if (protein === "Chicken Breast") {
+            const chickenStyle = cookingMethods.dinner.chicken[(dayIndex + currentWeekIndex) % cookingMethods.dinner.chicken.length];
+            recipeName = `${chickenStyle} with ${vegetable === "Broccoli" ? "Garlic Roasted Broccoli" : "Honey Glazed Carrots"}`;
+          } else if (protein === "Tofu") {
+            const tofuStyle = cookingMethods.dinner.tofu[(dayIndex + currentWeekIndex) % cookingMethods.dinner.tofu.length];
+            recipeName = `${tofuStyle} with ${carb === "Quinoa" ? "Herbed Quinoa" : "Coconut Brown Rice"}`;
+          }
+          recipeDescription = `Satisfying evening meal with premium ${protein.toLowerCase()} and seasonal vegetables`;
         }
       }
       
@@ -847,6 +880,58 @@ const Nutrition = () => {
     setWeeklyPlan(weekPlan);
     setShowWeeklyPlan(true);
   };
+
+  const leucineRichFoods = [
+    { name: "Chicken Breast (100g)", protein: 31, leucine: 2.5, score: "Excellent" },
+    { name: "Salmon (100g)", protein: 25, leucine: 2.0, score: "Excellent" },
+    { name: "Greek Yogurt (170g)", protein: 17, leucine: 1.8, score: "Good" },
+    { name: "Eggs (2 large)", protein: 12, leucine: 1.6, score: "Good" },
+    { name: "Cottage Cheese (100g)", protein: 11, leucine: 1.4, score: "Good" },
+    { name: "Tofu (100g)", protein: 8, leucine: 0.7, score: "Fair" },
+    { name: "Quinoa (100g cooked)", protein: 4.4, leucine: 0.3, score: "Fair" }
+  ];
+
+  const fodmapFoods = {
+    low: [
+      "Chicken, Fish, Eggs", "Lactose-free dairy", "Rice, Quinoa", 
+      "Spinach, Carrots", "Strawberries, Oranges", "Almonds (small portions)"
+    ],
+    high: [
+      "Wheat, Rye, Barley", "Regular dairy", "Beans, Lentils",
+      "Onions, Garlic", "Apples, Pears", "Cashews, Pistachios"
+    ]
+  };
+
+  const mealPlans = {
+    regular: {
+      breakfast: "Greek yogurt with berries and almonds",
+      lunch: "Grilled chicken salad with quinoa",
+      dinner: "Salmon with roasted vegetables",
+      snack: "Hard-boiled eggs with carrots"
+    },
+    lowFODMAP: {
+      breakfast: "Lactose-free yogurt with strawberries",
+      lunch: "Chicken and rice bowl with spinach",
+      dinner: "Grilled fish with carrots and potatoes", 
+      snack: "Rice cakes with peanut butter"
+    }
+  };
+
+  const mealPlans = {
+    regular: {
+      breakfast: "Greek yogurt with berries and almonds",
+      lunch: "Grilled chicken salad with quinoa",
+      dinner: "Salmon with roasted vegetables",
+      snack: "Hard-boiled eggs with carrots"
+    },
+    lowFODMAP: {
+      breakfast: "Lactose-free yogurt with strawberries",
+      lunch: "Chicken and rice bowl with spinach",
+      dinner: "Grilled fish with carrots and potatoes", 
+      snack: "Rice cakes with peanut butter"
+    }
+  };
+
 
   const getLeucineScoreColor = (score: string) => {
     switch (score) {
@@ -1195,7 +1280,7 @@ const Nutrition = () => {
                       <option value="athlete">Athlete (2x/day, intense)</option>
                     </select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="goal">Fitness Goal</Label>
                     <select 
@@ -1205,7 +1290,7 @@ const Nutrition = () => {
                       onChange={(e) => setGoal(e.target.value)}
                     >
                       <option value="weight-loss">Weight Loss</option>
-                      <option value="maintenance">Maintain Current Weight</option>
+                      <option value="maintenance">Maintenance</option>
                       <option value="muscle-gain">Muscle Gain</option>
                     </select>
                   </div>
@@ -1214,134 +1299,39 @@ const Nutrition = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Allergies & Dietary Restrictions</CardTitle>
-                  <CardDescription>Select any allergies or foods you want to avoid</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Your Targets
+                  </CardTitle>
+                  <CardDescription>Personalized recommendations based on your profile</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label className="text-sm font-medium mb-3 block">Common Allergies</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {commonAllergies.map((allergy) => (
-                        <div key={allergy} className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id={`allergy-${allergy}`}
-                            checked={allergies.includes(allergy)}
-                            onChange={() => toggleAllergy(allergy)}
-                            className="rounded border-gray-300"
-                          />
-                          <Label 
-                            htmlFor={`allergy-${allergy}`}
-                            className="text-sm cursor-pointer"
-                          >
-                            {allergy}
-                          </Label>
-                        </div>
-                      ))}
+                  <div className="p-4 border rounded-lg bg-primary/5">
+                    <div className="text-2xl font-bold text-primary">
+                      {proteinNeeds.min}g - {proteinNeeds.max}g
                     </div>
+                    <div className="text-sm text-muted-foreground">Daily Protein Target</div>
                   </div>
                   
-                  <div>
-                    <Label className="text-sm font-medium mb-3 block">Food Dislikes</Label>
-                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
-                      {commonDislikes.map((dislike) => (
-                        <div key={dislike} className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            id={`dislike-${dislike}`}
-                            checked={dislikes.includes(dislike)}
-                            onChange={() => toggleDislike(dislike)}
-                            className="rounded border-gray-300"
-                          />
-                          <Label 
-                            htmlFor={`dislike-${dislike}`}
-                            className="text-sm cursor-pointer"
-                          >
-                            {dislike}
-                          </Label>
-                        </div>
-                      ))}
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="p-3 border rounded">
+                      <div className="font-bold">{dailyMacros.calories}</div>
+                      <div className="text-xs text-muted-foreground">Calories</div>
+                    </div>
+                    <div className="p-3 border rounded">
+                      <div className="font-bold">{dailyMacros.carbs}g</div>
+                      <div className="text-xs text-muted-foreground">Carbs</div>
+                    </div>
+                    <div className="p-3 border rounded">
+                      <div className="font-bold">{dailyMacros.fat}g</div>
+                      <div className="text-xs text-muted-foreground">Fat</div>
                     </div>
                   </div>
-                  
-                  {(allergies.length > 0 || dislikes.length > 0) && (
-                    <div className="mt-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                      <p className="text-sm text-orange-800">
-                        <strong>Note:</strong> Your meal plans will automatically exclude selected items and provide suitable alternatives.
-                      </p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Daily Nutrition Targets</CardTitle>
-                  <CardDescription>Based on your goals and activity level</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {dailyMacros.calories > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center p-3 bg-primary/10 rounded-lg">
-                        <div className="text-2xl font-bold text-primary">{dailyMacros.calories}</div>
-                        <div className="text-xs text-muted-foreground">Calories</div>
-                      </div>
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">{dailyMacros.protein}g</div>
-                        <div className="text-xs text-muted-foreground">Protein</div>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">{dailyMacros.carbs}g</div>
-                        <div className="text-xs text-muted-foreground">Carbs</div>
-                      </div>
-                      <div className="text-center p-3 bg-orange-50 rounded-lg">
-                        <div className="text-2xl font-bold text-orange-600">{dailyMacros.fat}g</div>
-                        <div className="text-xs text-muted-foreground">Fat</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-center">
-                      Enter your details to see personalized nutrition targets
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Protein Target</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {proteinNeeds.min > 0 ? (
-                    <div className="text-center">
-                      <div className="text-4xl font-bold gradient-text mb-2">
-                        {proteinNeeds.min} - {proteinNeeds.max}g
-                      </div>
-                      <p className="text-muted-foreground mb-4">Daily protein target</p>
-                      
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="p-3 bg-muted/50 rounded-lg">
-                          <div className="font-medium">Per Meal</div>
-                          <div className="text-lg font-semibold">{Math.round(proteinNeeds.min / 3)}-{Math.round(proteinNeeds.max / 3)}g</div>
-                        </div>
-                        <div className="p-3 bg-muted/50 rounded-lg">
-                          <div className="font-medium">Leucine/Meal</div>
-                          <div className="text-lg font-semibold">2.5-3g</div>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4 p-3 bg-primary/10 rounded-lg">
-                        <p className="text-sm text-primary">
-                          <Target className="h-4 w-4 inline mr-1" />
-                          Aim for 25-40g protein per meal for optimal muscle protein synthesis
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-center">
-                      Enter your weight to calculate protein needs
-                    </p>
-                  )}
+                  <div className="text-sm text-muted-foreground">
+                    <strong>Note:</strong> These targets are calculated based on your activity level and goals. 
+                    Aim for the higher end of the protein range for optimal muscle protein synthesis.
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -1350,17 +1340,17 @@ const Nutrition = () => {
           <TabsContent value="leucine" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Leucine Content & Scoring</CardTitle>
+                <CardTitle>Leucine-Rich Foods</CardTitle>
                 <CardDescription>
                   Leucine is a key amino acid that triggers muscle protein synthesis. Aim for 2.5-3g per meal.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-3">
+                <div className="grid gap-4">
                   {leucineRichFoods.map((food, index) => (
                     <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-medium">{food.name}</h3>
+                      <div>
+                        <h3 className="font-semibold">{food.name}</h3>
                         <p className="text-sm text-muted-foreground">
                           {food.protein}g protein • {food.leucine}g leucine
                         </p>
@@ -1371,78 +1361,94 @@ const Nutrition = () => {
                     </div>
                   ))}
                 </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-900 mb-2">💡 Pro Tip</h4>
+                  <p className="text-sm text-blue-800">
+                    To maximize muscle protein synthesis, consume leucine-rich foods within 2 hours after resistance training. 
+                    Combining different protein sources can help you reach the optimal leucine threshold.
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
           
           <TabsContent value="fodmap" className="mt-6">
             <div className="space-y-6">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold">FODMAP Guide</h2>
+                  <p className="text-muted-foreground">
+                    Foods to include and avoid for digestive comfort
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="fodmap-toggle"
+                    checked={isLowFODMAP}
+                    onCheckedChange={setIsLowFODMAP}
+                  />
+                  <Label htmlFor="fodmap-toggle">Follow Low-FODMAP diet</Label>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
                 <Switch
-                  id="ibs-switch"
+                  id="ibs-toggle"
                   checked={hasIBS}
                   onCheckedChange={setHasIBS}
                 />
-                <Label htmlFor="ibs-switch">I have IBS or digestive issues</Label>
+                <Label htmlFor="ibs-toggle">I have IBS or digestive sensitivities</Label>
               </div>
-              
-              <div className="flex items-center gap-4">
-                <Switch
-                  id="fodmap-mode"
-                  checked={isLowFODMAP}
-                  onCheckedChange={setIsLowFODMAP}
-                />
-                <Label htmlFor="fodmap-mode">Follow Low-FODMAP diet</Label>
+
+              {hasIBS && (
+                <Card className="mb-6 border-orange-200 bg-orange-50">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="h-5 w-5 text-orange-600" />
+                      <p className="text-orange-800 font-medium">
+                        IBS Management: Consider working with a registered dietitian for personalised FODMAP guidance.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="border-green-200">
+                  <CardHeader>
+                    <CardTitle className="text-green-700">✓ Low FODMAP Foods</CardTitle>
+                    <CardDescription>Generally well-tolerated foods</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {fodmapFoods.low.map((food, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full" />
+                          <span className="text-sm">{food}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-red-200">
+                  <CardHeader>
+                    <CardTitle className="text-red-700">⚠️ High FODMAP Foods</CardTitle>
+                    <CardDescription>Limit or avoid during elimination phase</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {fodmapFoods.high.map((food, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full" />
+                          <span className="text-sm">{food}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
-            </div>
-
-            {hasIBS && (
-              <Card className="mb-6 border-orange-200 bg-orange-50">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-orange-600" />
-                    <p className="text-orange-800 font-medium">
-                      IBS Management: Consider working with a registered dietitian for personalised FODMAP guidance.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border-green-200">
-                <CardHeader>
-                  <CardTitle className="text-green-700">✓ Low FODMAP Foods</CardTitle>
-                  <CardDescription>Generally well-tolerated foods</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {fodmapFoods.low.map((food, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span className="text-sm">{food}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-red-200">
-                <CardHeader>
-                  <CardTitle className="text-red-700">⚠️ High FODMAP Foods</CardTitle>
-                  <CardDescription>Limit or avoid during elimination phase</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {fodmapFoods.high.map((food, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-red-500 rounded-full" />
-                        <span className="text-sm">{food}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
             </div>
           </TabsContent>
           
@@ -1575,14 +1581,14 @@ const Nutrition = () => {
                     {Object.entries(currentMealPlan).map(([meal, description]) => (
                       <div key={meal} className="p-4 border rounded-lg">
                         <h3 className="font-semibold capitalize mb-2">{meal}</h3>
-                        <p className="text-muted-foreground">{description}</p>
+                        <p className="text-muted-foreground">{description as string}</p>
                       </div>
                     ))}
                   </div>
                 </div>
                 
                 <div className="mt-6 flex gap-4">
-                  <Button onClick={generateWeeklyPlan}>
+                  <Button onClick={() => generateWeeklyPlan(false)}>
                     <Activity className="h-4 w-4 mr-2" />
                     Generate Weekly Plan
                   </Button>
@@ -1596,6 +1602,24 @@ const Nutrition = () => {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold">Your Personalized 7-Day Meal Plan</h3>
                       <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => generateWeeklyPlan(true)}
+                          className="flex items-center gap-2"
+                        >
+                          <Repeat className="h-4 w-4" />
+                          Same Plan
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => generateWeeklyPlan(false)}
+                          className="flex items-center gap-2"
+                        >
+                          <RefreshCw className="h-4 w-4" />
+                          New Variety
+                        </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1665,20 +1689,20 @@ const Nutrition = () => {
                               {['breakfast', 'lunch', 'dinner'].map((mealType) => {
                                 const meal = dayPlan[mealType];
                                 return (
-                                   <div key={mealType} className="border rounded-lg p-4">
-                                     <div className="mb-3">
-                                       <div className="flex items-center justify-between mb-2">
-                                         <div>
-                                           <h5 className="font-bold text-lg text-primary">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
-                                           {meal.recipeDescription && (
-                                             <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
-                                           )}
-                                         </div>
-                                         <div className="text-sm font-medium text-right">
-                                           {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
-                                         </div>
-                                       </div>
-                                     </div>
+                                  <div key={mealType} className="border rounded-lg p-4">
+                                    <div className="mb-3">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <div>
+                                          <h5 className="font-bold text-lg text-primary">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
+                                          {meal.recipeDescription && (
+                                            <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
+                                          )}
+                                        </div>
+                                        <div className="text-sm font-medium text-right">
+                                          {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
+                                        </div>
+                                      </div>
+                                    </div>
                                     
                                     <div className="flex flex-wrap gap-2 justify-center">
                                       {meal.foods.map((food: any, foodIndex: number) => {
