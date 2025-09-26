@@ -241,10 +241,10 @@ const Dashboard = () => {
 
   // Generate longevity impact message for tooltip
   const getLongevityMessage = () => {
-    if (!sustainedLIS || projectionLoading) return "Calculating longevity impact...";
+    if (projectionLoading) return "Calculating longevity impact...";
     
-    const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-    const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
+    const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+    const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
     const optimalFiveYear = calculateLongevityImpact(135, 5); // Optimal LIS score
     const optimalTwentyYear = calculateLongevityImpact(135, 20);
     const totalImprovementFiveYear = Math.abs(fiveYearImpact - optimalFiveYear);
@@ -318,11 +318,11 @@ const Dashboard = () => {
                               <div className="text-center cursor-help bg-white rounded p-2 border border-purple-100">
                                 <div className="text-xs text-gray-500 mb-1">Current Habits</div>
                                 <div className={`text-base font-bold ${(() => {
-                                  const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                                  const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
                                   return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
                                 })()}`}>
                                   {(() => {
-                                    const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                                    const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
                                     return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
                                   })()}
                                 </div>
@@ -345,9 +345,9 @@ const Dashboard = () => {
                           </div>
                           <div className="text-xs text-purple-600 font-medium mt-1">
                             Gap: {(() => {
-                              const currentImpact = calculateLongevityImpact(sustainedLIS, 5);
-                              const optimalImpact = calculateLongevityImpact(135, 5);
-                              const gap = Math.abs(currentImpact - optimalImpact);
+                            const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+                            const optimalImpact = calculateLongevityImpact(135, 5);
+                            const gap = Math.abs(fiveYearImpact - optimalImpact);
                               return `${gap.toFixed(1)} years`;
                             })()}
                           </div>
@@ -362,11 +362,11 @@ const Dashboard = () => {
                         <div className="text-center bg-white rounded p-2 border border-purple-100">
                           <div className="text-xs text-gray-500 mb-1">Current Habits</div>
                           <div className={`text-base font-bold ${(() => {
-                            const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
+                            const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
                             return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
                           })()}`}>
                             {(() => {
-                              const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
+                              const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
                               return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years`;
                             })()}
                           </div>
@@ -383,7 +383,7 @@ const Dashboard = () => {
                           </div>
                           <div className="text-xs text-purple-600 font-medium mt-1">
                             Gap: {(() => {
-                              const currentImpact = calculateLongevityImpact(sustainedLIS, 20);
+                              const currentImpact = calculateLongevityImpact(currentScore, 20);
                               const optimalImpact = calculateLongevityImpact(135, 20);
                               const gap = Math.abs(currentImpact - optimalImpact);
                               return `${gap.toFixed(1)} years`;
