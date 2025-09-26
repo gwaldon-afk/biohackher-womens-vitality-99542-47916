@@ -18,9 +18,29 @@ const Nutrition = () => {
   const calculateProtein = () => {
     if (!weight) return { min: 0, max: 0 };
     const weightNum = parseFloat(weight);
+    
+    // Base protein requirements vary by activity level
+    let multipliers;
+    switch (activityLevel) {
+      case "sedentary":
+        multipliers = { min: 1.4, max: 1.6 };
+        break;
+      case "moderate":
+        multipliers = { min: 1.6, max: 2.0 };
+        break;
+      case "active":
+        multipliers = { min: 2.0, max: 2.4 };
+        break;
+      case "athlete":
+        multipliers = { min: 2.4, max: 2.8 };
+        break;
+      default:
+        multipliers = { min: 1.6, max: 2.0 };
+    }
+    
     return {
-      min: Math.round(weightNum * 1.6 * 10) / 10,
-      max: Math.round(weightNum * 2.0 * 10) / 10
+      min: Math.round(weightNum * multipliers.min * 10) / 10,
+      max: Math.round(weightNum * multipliers.max * 10) / 10
     };
   };
 
