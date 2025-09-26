@@ -279,9 +279,14 @@ const SymptomAssessment = () => {
       
       setIsComplete(true);
       
-      // Navigate back to symptoms page to show summary
+      // Navigate to results page with answers as URL parameters
+      const urlParams = new URLSearchParams();
+      Object.entries(answers).forEach(([questionId, answer]) => {
+        urlParams.set(`q${questionId}`, answer);
+      });
+      
       setTimeout(() => {
-        navigate('/symptoms?completed=true');
+        navigate(`/assessment/${symptomId}/results?${urlParams.toString()}`);
       }, 1000);
     } catch (error) {
       console.error('❌ Error saving assessment:', error);
