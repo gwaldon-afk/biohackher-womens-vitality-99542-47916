@@ -304,7 +304,32 @@ const Dashboard = () => {
                 {!projectionLoading && (
                   <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
                     <div className="text-xs text-gray-600 mb-1">5-Year Biological Age Impact</div>
-                    <div className={`text-lg font-bold ${sustainedLIS >= 100 ? 'text-green-600' : sustainedLIS >= 90 ? 'text-blue-600' : 'text-red-600'}`}>
+                    <div className={`text-lg font-bold ${(() => {
+                      // Calculate 5-year impact to determine color
+                      let baseImpact = 0;
+                      if (sustainedLIS >= 60 && sustainedLIS < 70) {
+                        baseImpact = 1.5 + ((sustainedLIS - 60) / 10) * (2.5 - 1.5);
+                      } else if (sustainedLIS >= 70 && sustainedLIS < 80) {
+                        baseImpact = 0.8 + ((sustainedLIS - 70) / 10) * (1.5 - 0.8);
+                      } else if (sustainedLIS >= 80 && sustainedLIS < 90) {
+                        baseImpact = 0.2 + ((sustainedLIS - 80) / 10) * (0.8 - 0.2);
+                      } else if (sustainedLIS >= 90 && sustainedLIS <= 110) {
+                        baseImpact = -0.2 + ((sustainedLIS - 90) / 20) * (0.2 - (-0.2));
+                      } else if (sustainedLIS > 110 && sustainedLIS <= 120) {
+                        baseImpact = -0.8 + ((sustainedLIS - 110) / 10) * (-0.2 - (-0.8));
+                      } else if (sustainedLIS > 120 && sustainedLIS <= 130) {
+                        baseImpact = -1.5 + ((sustainedLIS - 120) / 10) * (-0.8 - (-1.5));
+                      } else if (sustainedLIS > 130 && sustainedLIS <= 140) {
+                        baseImpact = -2.5 + ((sustainedLIS - 130) / 10) * (-1.5 - (-2.5));
+                      } else if (sustainedLIS < 60) {
+                        baseImpact = 2.5;
+                      } else if (sustainedLIS > 140) {
+                        baseImpact = -2.5;
+                      }
+                      const fiveYearImpact = baseImpact * Math.sqrt(5 / 5);
+                      // Green for negative impact (younger), Red for positive impact (older), Gray for neutral
+                      return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                    })()}`}>
                       {(() => {
                         // Calculate 5-year impact using the same algorithm as LongevityProjection
                         let baseImpact = 0;
