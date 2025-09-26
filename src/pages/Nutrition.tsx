@@ -1473,7 +1473,7 @@ const Nutrition = () => {
                 <div className="space-y-6">
                   {/* Breakfast Recipes */}
                   <div className="border rounded-lg p-4">
-                    <h4 className="text-lg font-semibold mb-3 text-primary">🌅 Breakfast Options</h4>
+                    <h4 className="text-lg font-semibold mb-3 gradient-text">🌅 Breakfast Options</h4>
                     <div className="grid gap-3">
                       {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].breakfast.map((recipe, index) => (
                         <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
@@ -1496,7 +1496,7 @@ const Nutrition = () => {
 
                   {/* Lunch Recipes */}
                   <div className="border rounded-lg p-4">
-                    <h4 className="text-lg font-semibold mb-3 text-primary">🍽️ Lunch Options</h4>
+                    <h4 className="text-lg font-semibold mb-3 gradient-text">🍽️ Lunch Options</h4>
                     <div className="grid gap-3">
                       {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].lunch.map((recipe, index) => (
                         <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
@@ -1519,7 +1519,7 @@ const Nutrition = () => {
 
                   {/* Dinner Recipes */}
                   <div className="border rounded-lg p-4">
-                    <h4 className="text-lg font-semibold mb-3 text-primary">🌙 Dinner Options</h4>
+                    <h4 className="text-lg font-semibold mb-3 gradient-text">🌙 Dinner Options</h4>
                     <div className="grid gap-3">
                       {recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories].dinner.map((recipe, index) => (
                         <label key={index} className="flex items-start gap-3 p-3 border rounded cursor-pointer hover:bg-muted/30 transition-colors">
@@ -1663,7 +1663,7 @@ const Nutrition = () => {
                         <Card key={index} className="border-l-4 border-l-primary">
                           <CardContent className="p-6">
                             <div className="flex items-center justify-between mb-4">
-                              <h4 className="text-xl font-semibold text-primary">{dayPlan.day}</h4>
+                              <h4 className="text-xl font-semibold gradient-text">{dayPlan.day}</h4>
                               <div className="text-right text-sm">
                                 <div className="font-semibold">Daily Total:</div>
                                 <div>{dayPlan.dailyTotals.calories} cal | {dayPlan.dailyTotals.protein}p | {dayPlan.dailyTotals.carbs}c | {dayPlan.dailyTotals.fat}f</div>
@@ -1678,7 +1678,7 @@ const Nutrition = () => {
                                     <div className="mb-3">
                                       <div className="flex items-center justify-between mb-2">
                                         <div>
-                                          <h5 className="font-bold text-lg text-primary">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
+                                          <h5 className="font-bold text-xl gradient-text">{meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</h5>
                                           {meal.recipeDescription && (
                                             <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
                                           )}
@@ -1696,7 +1696,7 @@ const Nutrition = () => {
                                         return (
                                           <div key={foodIndex} className="bg-muted/30 p-2 rounded text-center min-w-[120px]">
                                             <div className="font-medium text-sm mb-1">{food.name}</div>
-                                            <div className="text-primary font-semibold text-lg">{food.amount}</div>
+                                            <div className="text-primary-dark font-bold text-lg">{food.amount}</div>
                                             <div className="text-xs text-muted-foreground">
                                               <div>{foodCalories} cal</div>
                                               <div>{foodKj} kJ</div>
