@@ -13,7 +13,6 @@ const Navigation = () => {
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/symptoms", label: "Symptoms" },
-    { href: "/faq", label: "FAQ" },
   ];
 
   const biohackingItems = [
@@ -99,6 +98,18 @@ const Navigation = () => {
             >
               Reports
             </Link>
+            
+            <Link
+              to="/faq"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                isActive("/faq")
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              FAQ
+            </Link>
           </div>
 
           {/* Desktop Actions */}
@@ -183,6 +194,19 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Reports
+              </Link>
+
+              <Link
+                to="/faq"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
+                  isActive("/faq")
+                    ? "text-primary bg-primary/10 rounded"
+                    : "text-muted-foreground"
+                )}
+                onClick={() => setIsOpen(false)}
+              >
+                FAQ
               </Link>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
