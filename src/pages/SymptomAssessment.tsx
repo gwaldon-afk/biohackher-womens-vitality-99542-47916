@@ -207,11 +207,15 @@ const SymptomAssessment = () => {
       }
 
       console.log('✅ Assessment saved successfully');
-      setIsComplete(true);
       toast({
         title: "Assessment Complete",
-        description: "Your responses have been saved and recommendations are ready."
+        description: "Your responses have been saved. View your symptom summary."
       });
+      
+      // Navigate back to symptoms page to show summary
+      setTimeout(() => {
+        navigate('/symptoms?completed=true');
+      }, 1000);
     } catch (error) {
       console.error('❌ Error saving assessment:', error);
       toast({
