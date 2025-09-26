@@ -141,6 +141,9 @@ const Index = () => {
                   className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" 
                   onClick={() => {
                     console.log(`${feature.title} card clicked`);
+                    if (feature.title === "Symptom Management") {
+                      navigate("/symptoms");
+                    }
                   }}
                 >
                   <CardHeader className="flex-shrink-0">
