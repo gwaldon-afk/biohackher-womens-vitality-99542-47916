@@ -259,7 +259,11 @@ const Dashboard = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-gray-400 mt-2">
+                <div className={`text-xs mt-2 font-semibold ${
+                  bioAgeImpact !== undefined && bioAgeImpact !== null 
+                    ? (bioAgeImpact >= 0 ? 'text-green-600' : 'text-red-600')
+                    : 'text-gray-400'
+                }`}>
                   {bioAgeImpact !== undefined && bioAgeImpact !== null ? 
                     `${bioAgeImpact >= 0 ? '+' : ''}${bioAgeImpact.toFixed(1)}` : 'N/A'}
                 </div>
