@@ -313,7 +313,11 @@ const Supplements = () => {
                                 href={(supplement as any).research} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="text-xs text-primary hover:text-primary-dark underline inline-flex items-center gap-1"
+                                className="text-xs text-primary hover:text-primary/80 underline inline-flex items-center gap-1"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  console.log('Research link clicked:', e.currentTarget.href);
+                                }}
                               >
                                 View Clinical Study →
                               </a>

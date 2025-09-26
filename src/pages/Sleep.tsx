@@ -183,12 +183,16 @@ const Sleep = () => {
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Adults sleeping 7-8 hours nightly have 15% lower mortality risk 
+                <span>Adults sleeping 7-8 hours nightly have 15% lower mortality risk{" "}
                   <a 
                     href="https://pubmed.ncbi.nlm.nih.gov/20469800/" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="ml-1 text-primary hover:text-primary-dark underline"
+                    className="text-primary hover:text-primary/80 underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Link clicked:', e.currentTarget.href);
+                    }}
                   >
                     (Research)
                   </a>
@@ -196,12 +200,16 @@ const Sleep = () => {
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Poor sleep ages immune system by 3-5 years accelerating cellular aging 
+                <span>Poor sleep ages immune system by 3-5 years accelerating cellular aging{" "}
                   <a 
                     href="https://www.pnas.org/doi/10.1073/pnas.1417490112" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="ml-1 text-primary hover:text-primary-dark underline"
+                    className="text-primary hover:text-primary/80 underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Link clicked:', e.currentTarget.href);
+                    }}
                   >
                     (Research)
                   </a>
@@ -209,12 +217,16 @@ const Sleep = () => {
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
-                <span>Quality sleep improves telomere length maintenance 
+                <span>Quality sleep improves telomere length maintenance{" "}
                   <a 
                     href="https://pubmed.ncbi.nlm.nih.gov/25425069/" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="ml-1 text-primary hover:text-primary-dark underline"
+                    className="text-primary hover:text-primary/80 underline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Link clicked:', e.currentTarget.href);
+                    }}
                   >
                     (Research)
                   </a>
