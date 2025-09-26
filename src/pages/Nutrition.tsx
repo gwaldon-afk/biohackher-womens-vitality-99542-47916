@@ -14,6 +14,8 @@ const Nutrition = () => {
   const [activityLevel, setActivityLevel] = useState("moderate");
   const [isLowFODMAP, setIsLowFODMAP] = useState(false);
   const [hasIBS, setHasIBS] = useState(false);
+  const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
+  const [showWeeklyPlan, setShowWeeklyPlan] = useState(false);
 
   const calculateProtein = () => {
     if (!weight) return { min: 0, max: 0 };
@@ -83,6 +85,76 @@ const Nutrition = () => {
   };
 
   const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
+
+  const generateWeeklyPlan = () => {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const mealVariations = {
+      regular: {
+        breakfast: [
+          "Greek yogurt with berries and almonds",
+          "Scrambled eggs with spinach and toast",
+          "Protein smoothie with banana",
+          "Oatmeal with protein powder and nuts"
+        ],
+        lunch: [
+          "Grilled chicken salad with quinoa",
+          "Turkey and avocado wrap",
+          "Lentil soup with whole grain bread",
+          "Tuna salad with mixed greens"
+        ],
+        dinner: [
+          "Salmon with roasted vegetables",
+          "Lean beef stir-fry with brown rice",
+          "Grilled chicken with sweet potato",
+          "Baked cod with quinoa pilaf"
+        ],
+        snack: [
+          "Hard-boiled eggs with carrots",
+          "Greek yogurt with nuts",
+          "Apple with almond butter",
+          "Cottage cheese with berries"
+        ]
+      },
+      lowFODMAP: {
+        breakfast: [
+          "Lactose-free yogurt with strawberries",
+          "Scrambled eggs with spinach",
+          "Rice porridge with banana",
+          "Gluten-free oats with blueberries"
+        ],
+        lunch: [
+          "Chicken and rice bowl with spinach",
+          "Turkey lettuce wraps",
+          "Quinoa salad with cucumber",
+          "Grilled fish with rice"
+        ],
+        dinner: [
+          "Grilled fish with carrots and potatoes",
+          "Chicken stir-fry with bok choy",
+          "Beef with roasted parsnips",
+          "Salmon with green beans"
+        ],
+        snack: [
+          "Rice cakes with peanut butter",
+          "Lactose-free cheese with crackers",
+          "Orange with almonds (small portion)",
+          "Carrot sticks with hummus"
+        ]
+      }
+    };
+
+    const selectedMeals = isLowFODMAP ? mealVariations.lowFODMAP : mealVariations.regular;
+    const weekPlan = days.map((day, index) => ({
+      day,
+      breakfast: selectedMeals.breakfast[index % selectedMeals.breakfast.length],
+      lunch: selectedMeals.lunch[index % selectedMeals.lunch.length],
+      dinner: selectedMeals.dinner[index % selectedMeals.dinner.length],
+      snack: selectedMeals.snack[index % selectedMeals.snack.length]
+    }));
+
+    setWeeklyPlan(weekPlan);
+    setShowWeeklyPlan(true);
+  };
 
   const getLeucineScoreColor = (score: string) => {
     switch (score) {
@@ -328,7 +400,7 @@ const Nutrition = () => {
                 </div>
                 
                 <div className="mt-6 flex gap-4">
-                  <Button>
+                  <Button onClick={generateWeeklyPlan}>
                     <Activity className="h-4 w-4 mr-2" />
                     Generate Weekly Plan
                   </Button>
@@ -336,6 +408,48 @@ const Nutrition = () => {
                     Shopping List
                   </Button>
                 </div>
+                
+                {showWeeklyPlan && weeklyPlan && (
+                  <div className="mt-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">Your 7-Day Meal Plan</h3>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setShowWeeklyPlan(false)}
+                      >
+                        Hide Plan
+                      </Button>
+                    </div>
+                    <div className="grid gap-4">
+                      {weeklyPlan.map((dayPlan: any, index: number) => (
+                        <Card key={index} className="border-l-4 border-l-primary">
+                          <CardContent className="p-4">
+                            <h4 className="font-semibold text-primary mb-3">{dayPlan.day}</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+                              <div>
+                                <span className="font-medium text-muted-foreground">Breakfast:</span>
+                                <p className="mt-1">{dayPlan.breakfast}</p>
+                              </div>
+                              <div>
+                                <span className="font-medium text-muted-foreground">Lunch:</span>
+                                <p className="mt-1">{dayPlan.lunch}</p>
+                              </div>
+                              <div>
+                                <span className="font-medium text-muted-foreground">Dinner:</span>
+                                <p className="mt-1">{dayPlan.dinner}</p>
+                              </div>
+                              <div>
+                                <span className="font-medium text-muted-foreground">Snack:</span>
+                                <p className="mt-1">{dayPlan.snack}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
