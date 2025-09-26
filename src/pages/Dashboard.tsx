@@ -306,84 +306,89 @@ const Dashboard = () => {
                 {/* Longevity Projection Summary */}
                 {!projectionLoading && (
                   <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                    <div className="text-xs text-gray-600 mb-1 text-center">5-Year Biological Age Impact</div>
-                    
-                    {/* Current Impact */}
-                    <TooltipProvider>
-                      <Tooltip delayDuration={200}>
-                        <TooltipTrigger asChild>
-                          <div className="text-center mb-3 cursor-help">
-                            <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                            <div className={`text-lg font-bold ${(() => {
-                              const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-                              return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                            })()}`}>
-                              {(() => {
-                                const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
-                                return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
-                              })()}
-                            </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* 5-Year Impact Section */}
+                      <div>
+                        <div className="text-xs text-gray-600 mb-1 text-center">5-Year Biological Age Impact</div>
+                        
+                        {/* Current Impact */}
+                        <TooltipProvider>
+                          <Tooltip delayDuration={200}>
+                            <TooltipTrigger asChild>
+                              <div className="text-center mb-3 cursor-help">
+                                <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                                <div className={`text-lg font-bold ${(() => {
+                                  const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                                  return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                                })()}`}>
+                                  {(() => {
+                                    const fiveYearImpact = calculateLongevityImpact(sustainedLIS, 5);
+                                    return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years`;
+                                  })()}
+                                </div>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
+                              <p className="text-sm font-medium">{getLongevityMessage()}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        {/* Potential Optimal Impact */}
+                        <div className="text-center border-t border-purple-200 pt-2">
+                          <div className="text-xs text-gray-500 mb-1">Potential with Optimal Habits</div>
+                          <div className="text-sm font-bold text-green-600">
+                            {(() => {
+                              const optimalImpact = calculateLongevityImpact(135, 5);
+                              return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years younger`;
+                            })()}
                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
-                          <p className="text-sm font-medium">{getLongevityMessage()}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                          <div className="text-xs text-purple-600 font-medium mt-1">
+                            Gap: {(() => {
+                              const currentImpact = calculateLongevityImpact(sustainedLIS, 5);
+                              const optimalImpact = calculateLongevityImpact(135, 5);
+                              const gap = Math.abs(currentImpact - optimalImpact);
+                              return `${gap.toFixed(1)} years opportunity`;
+                            })()}
+                          </div>
+                        </div>
+                      </div>
 
-                    {/* Potential Optimal Impact */}
-                    <div className="text-center border-t border-purple-200 pt-2">
-                      <div className="text-xs text-gray-500 mb-1">Potential with Optimal Habits</div>
-                      <div className="text-sm font-bold text-green-600">
-                        {(() => {
-                          const optimalImpact = calculateLongevityImpact(135, 5);
-                          return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years younger`;
-                        })()}
-                      </div>
-                      <div className="text-xs text-purple-600 font-medium mt-1">
-                        Gap: {(() => {
-                          const currentImpact = calculateLongevityImpact(sustainedLIS, 5);
-                          const optimalImpact = calculateLongevityImpact(135, 5);
-                          const gap = Math.abs(currentImpact - optimalImpact);
-                          return `${gap.toFixed(1)} years opportunity`;
-                        })()}
-                      </div>
-                    </div>
-                    
-                    {/* 20-Year Impact Section */}
-                    <div className="border-t border-purple-300 pt-3 mb-2">
-                      <div className="text-xs text-gray-600 mb-1 text-center">20-Year Biological Age Impact</div>
-                      
-                      {/* Current Impact */}
-                      <div className="text-center mb-3">
-                        <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                        <div className={`text-lg font-bold ${(() => {
-                          const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
-                          return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                        })()}`}>
-                          {(() => {
+                      {/* 20-Year Impact Section */}
+                      <div className="border-l border-purple-300 pl-4">
+                        <div className="text-xs text-gray-600 mb-1 text-center">20-Year Biological Age Impact</div>
+                        
+                        {/* Current Impact */}
+                        <div className="text-center mb-3">
+                          <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                          <div className={`text-lg font-bold ${(() => {
                             const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
-                            return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years`;
-                          })()}
+                            return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                          })()}`}>
+                            {(() => {
+                              const twentyYearImpact = calculateLongevityImpact(sustainedLIS, 20);
+                              return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years`;
+                            })()}
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Potential Optimal Impact */}
-                      <div className="text-center border-t border-purple-200 pt-2">
-                        <div className="text-xs text-gray-500 mb-1">Potential with Optimal Habits</div>
-                        <div className="text-sm font-bold text-green-600">
-                          {(() => {
-                            const optimalImpact = calculateLongevityImpact(135, 20);
-                            return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years younger`;
-                          })()}
-                        </div>
-                        <div className="text-xs text-purple-600 font-medium mt-1">
-                          Gap: {(() => {
-                            const currentImpact = calculateLongevityImpact(sustainedLIS, 20);
-                            const optimalImpact = calculateLongevityImpact(135, 20);
-                            const gap = Math.abs(currentImpact - optimalImpact);
-                            return `${gap.toFixed(1)} years opportunity`;
-                          })()}
+                        {/* Potential Optimal Impact */}
+                        <div className="text-center border-t border-purple-200 pt-2">
+                          <div className="text-xs text-gray-500 mb-1">Potential with Optimal Habits</div>
+                          <div className="text-sm font-bold text-green-600">
+                            {(() => {
+                              const optimalImpact = calculateLongevityImpact(135, 20);
+                              return `${optimalImpact > 0 ? '+' : ''}${optimalImpact.toFixed(1)} years younger`;
+                            })()}
+                          </div>
+                          <div className="text-xs text-purple-600 font-medium mt-1">
+                            Gap: {(() => {
+                              const currentImpact = calculateLongevityImpact(sustainedLIS, 20);
+                              const optimalImpact = calculateLongevityImpact(135, 20);
+                              const gap = Math.abs(currentImpact - optimalImpact);
+                              return `${gap.toFixed(1)} years opportunity`;
+                            })()}
+                          </div>
                         </div>
                       </div>
                     </div>
