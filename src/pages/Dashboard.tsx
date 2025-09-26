@@ -210,7 +210,9 @@ const Dashboard = () => {
   const weeklyScore = scores.reduce((sum, score) => sum + score.biological_age_impact, 0);
   const weeklyColor = weeklyScore >= 0 ? 'text-green-600' : 'text-red-600';
 
-  const currentScore = summary?.average_score || 72.5;
+  // Use today's (most recent) score instead of average for the daily inputs card
+  const todayScore = scores.length > 0 ? scores[scores.length - 1] : null;
+  const currentScore = todayScore?.longevity_impact_score || summary?.average_score || 72.5;
   const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
 
   // Calculate longevity impact for any LIS score
@@ -290,7 +292,7 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
                 <CardDescription className="text-gray-600">
-                  LIS - Daily biological age impact assessment
+                  Today's LIS - Your daily biological age impact score
                 </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
