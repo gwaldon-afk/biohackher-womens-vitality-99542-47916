@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind } from "lucide-react";
+import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind, Scale, Scissors, Heart, Calendar, Headphones, Droplets, BookOpen } from "lucide-react";
 import Navigation from "@/components/Navigation";
 
 const Symptoms = () => {
@@ -223,6 +223,195 @@ const Symptoms = () => {
           description: "Diaphragmatic breathing for 5 minutes before meals",
           evidence: "Silver",
           contraindications: ["Recent abdominal surgery"]
+        }
+      ]
+    },
+    {
+      id: "weight-changes",
+      name: "Weight Changes",
+      icon: Scale,
+      severity: "Moderate",
+      frequency: "Gradual",
+      actions: [
+        {
+          title: "Intermittent Fasting 16:8",
+          description: "16-hour fasting window with 8-hour eating period",
+          evidence: "Gold",
+          contraindications: ["Eating disorders", "Type 1 diabetes", "Pregnancy"]
+        },
+        {
+          title: "Resistance Training Protocol",
+          description: "3x/week full-body strength training to preserve muscle mass",
+          evidence: "Gold",
+          contraindications: ["Recent injuries", "Severe joint problems"]
+        },
+        {
+          title: "Protein Timing Optimization",
+          description: "30g protein within 30 minutes of waking and post-workout",
+          evidence: "Silver",
+          contraindications: ["Kidney disease", "Protein allergies"]
+        }
+      ]
+    },
+    {
+      id: "hair-thinning",
+      name: "Hair Thinning",
+      icon: Scissors,
+      severity: "Mild",
+      frequency: "Progressive",
+      actions: [
+        {
+          title: "Scalp Massage with Rosemary Oil",
+          description: "5-minute scalp massage with diluted rosemary oil daily",
+          evidence: "Silver",
+          contraindications: ["Scalp conditions", "Essential oil allergies"]
+        },
+        {
+          title: "Collagen Peptides",
+          description: "10g hydrolyzed collagen peptides daily",
+          evidence: "Bronze",
+          contraindications: ["Collagen allergies"]
+        },
+        {
+          title: "Iron and Ferritin Optimization",
+          description: "Target ferritin 50-70 ng/mL with gentle iron if needed",
+          evidence: "Gold",
+          contraindications: ["Hemochromatosis", "Iron overload"]
+        }
+      ]
+    },
+    {
+      id: "anxiety",
+      name: "Anxiety",
+      icon: Heart,
+      severity: "Variable",
+      frequency: "Daily",
+      actions: [
+        {
+          title: "GABA Support Protocol",
+          description: "L-theanine 200mg + magnesium glycinate 400mg",
+          evidence: "Silver",
+          contraindications: ["Blood pressure medications", "Sedatives"]
+        },
+        {
+          title: "Box Breathing Technique",
+          description: "4-4-4-4 breathing pattern for 10 minutes, 3x daily",
+          evidence: "Gold",
+          contraindications: ["Severe panic disorders", "COPD"]
+        },
+        {
+          title: "Cold Exposure Adaptation",
+          description: "1-2 minute cold shower to build stress resilience",
+          evidence: "Bronze",
+          contraindications: ["Heart conditions", "Raynaud's disease"]
+        }
+      ]
+    },
+    {
+      id: "irregular-periods",
+      name: "Irregular Periods",
+      icon: Calendar,
+      severity: "High",
+      frequency: "Monthly",
+      actions: [
+        {
+          title: "Seed Cycling Protocol",
+          description: "Pumpkin/flax seeds days 1-14, sesame/sunflower days 15-28",
+          evidence: "Bronze",
+          contraindications: ["Seed allergies", "Hormone-sensitive cancers"]
+        },
+        {
+          title: "Vitex (Chasteberry)",
+          description: "400mg standardized extract in morning for cycle regulation",
+          evidence: "Silver",
+          contraindications: ["Pregnancy", "Hormone medications", "IVF"]
+        },
+        {
+          title: "Stress Reduction Protocol",
+          description: "Daily meditation + adaptogenic herbs to lower cortisol",
+          evidence: "Gold",
+          contraindications: ["Autoimmune conditions"]
+        }
+      ]
+    },
+    {
+      id: "headaches",
+      name: "Headaches",
+      icon: Headphones,
+      severity: "Moderate",
+      frequency: "2-3x/week",
+      actions: [
+        {
+          title: "Magnesium Malate",
+          description: "400mg twice daily for migraine prevention",
+          evidence: "Gold",
+          contraindications: ["Kidney disease", "Heart block"]
+        },
+        {
+          title: "Hydration Optimization",
+          description: "Add electrolytes to water, drink 35ml/kg body weight daily",
+          evidence: "Silver",
+          contraindications: ["Heart failure", "Kidney disease"]
+        },
+        {
+          title: "Neck and Jaw Release",
+          description: "Daily myofascial release of trigger points",
+          evidence: "Bronze",
+          contraindications: ["Recent neck injuries", "Cervical instability"]
+        }
+      ]
+    },
+    {
+      id: "night-sweats",
+      name: "Night Sweats",
+      icon: Droplets,
+      severity: "High",
+      frequency: "Nightly",
+      actions: [
+        {
+          title: "Black Cohosh Extract",
+          description: "40mg standardized extract twice daily",
+          evidence: "Silver",
+          contraindications: ["Liver disease", "Hormone-sensitive conditions"]
+        },
+        {
+          title: "Cooling Sleep Environment",
+          description: "Room temperature 65-68°F with moisture-wicking bedding",
+          evidence: "Bronze",
+          contraindications: ["Circulation disorders"]
+        },
+        {
+          title: "Evening Primrose Oil",
+          description: "1000mg with evening meal for hormonal balance",
+          evidence: "Bronze",
+          contraindications: ["Seizure disorders", "Blood thinners"]
+        }
+      ]
+    },
+    {
+      id: "memory-issues",
+      name: "Memory Issues",
+      icon: BookOpen,
+      severity: "Mild",
+      frequency: "Daily",
+      actions: [
+        {
+          title: "Phosphatidylserine",
+          description: "100mg phosphatidylserine complex daily",
+          evidence: "Silver",
+          contraindications: ["Blood thinners", "Soy allergies"]
+        },
+        {
+          title: "Dual N-Back Training",
+          description: "15 minutes daily cognitive training app",
+          evidence: "Bronze",
+          contraindications: ["Severe cognitive impairment"]
+        },
+        {
+          title: "Alpha-GPC Supplementation",
+          description: "300mg alpha-GPC on empty stomach",
+          evidence: "Silver",
+          contraindications: ["Acetylcholine sensitivity", "TMAO concerns"]
         }
       ]
     }
