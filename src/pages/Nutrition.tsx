@@ -12,6 +12,7 @@ import Navigation from "@/components/Navigation";
 const Nutrition = () => {
   const [weight, setWeight] = useState("");
   const [activityLevel, setActivityLevel] = useState("moderate");
+  const [goal, setGoal] = useState("maintenance");
   const [isLowFODMAP, setIsLowFODMAP] = useState(false);
   const [hasIBS, setHasIBS] = useState(false);
   const [weeklyPlan, setWeeklyPlan] = useState<any>(null);
@@ -46,7 +47,88 @@ const Nutrition = () => {
     };
   };
 
+  const calculateCalories = () => {
+    if (!weight) return 0;
+    const weightNum = parseFloat(weight);
+    
+    // Base metabolic rate calculation (simplified)
+    let bmr = weightNum * 22; // Rough estimate
+    
+    // Activity multiplier
+    let activityMultiplier;
+    switch (activityLevel) {
+      case "sedentary": activityMultiplier = 1.2; break;
+      case "moderate": activityMultiplier = 1.5; break;
+      case "active": activityMultiplier = 1.7; break;
+      case "athlete": activityMultiplier = 1.9; break;
+      default: activityMultiplier = 1.5;
+    }
+    
+    let dailyCalories = bmr * activityMultiplier;
+    
+    // Goal adjustment
+    switch (goal) {
+      case "weight-loss": dailyCalories *= 0.85; break; // 15% deficit
+      case "muscle-gain": dailyCalories *= 1.15; break; // 15% surplus
+      case "maintenance": break; // No change
+      default: break;
+    }
+    
+    return Math.round(dailyCalories);
+  };
+
+  const calculateMacros = () => {
+    const calories = calculateCalories();
+    const proteinNeeds = calculateProtein();
+    
+    // Protein: 4 calories per gram
+    const proteinCalories = proteinNeeds.max * 4;
+    
+    // Fat: 25-30% of calories, 9 calories per gram
+    const fatCalories = calories * 0.275; // 27.5% average
+    const fatGrams = Math.round(fatCalories / 9);
+    
+    // Carbs: remaining calories, 4 calories per gram
+    const carbCalories = calories - proteinCalories - fatCalories;
+    const carbGrams = Math.round(carbCalories / 4);
+    
+    return {
+      calories,
+      protein: proteinNeeds.max,
+      carbs: carbGrams,
+      fat: fatGrams
+    };
+  };
+
   const proteinNeeds = calculateProtein();
+  const dailyMacros = calculateMacros();
+
+  const foodDatabase = {
+    proteins: {
+      "Chicken Breast": { protein: 31, carbs: 0, fat: 3.6, calories: 165, serving: "100g" },
+      "Salmon": { protein: 25, carbs: 0, fat: 12, calories: 208, serving: "100g" },
+      "Greek Yogurt": { protein: 10, carbs: 4, fat: 0, calories: 59, serving: "100g" },
+      "Eggs": { protein: 6, carbs: 0.6, fat: 5, calories: 78, serving: "1 large" },
+      "Tofu": { protein: 8, carbs: 2, fat: 4, calories: 76, serving: "100g" },
+      "Cottage Cheese": { protein: 11, carbs: 3.4, fat: 4.3, calories: 98, serving: "100g" }
+    },
+    carbs: {
+      "Brown Rice": { protein: 2.6, carbs: 23, fat: 0.9, calories: 111, serving: "100g cooked" },
+      "Quinoa": { protein: 4.4, carbs: 22, fat: 1.9, calories: 120, serving: "100g cooked" },
+      "Sweet Potato": { protein: 2, carbs: 20, fat: 0.1, calories: 86, serving: "100g" },
+      "Oats": { protein: 2.4, carbs: 12, fat: 1.4, calories: 68, serving: "100g cooked" }
+    },
+    vegetables: {
+      "Spinach": { protein: 2.9, carbs: 3.6, fat: 0.4, calories: 23, serving: "100g" },
+      "Broccoli": { protein: 2.8, carbs: 7, fat: 0.4, calories: 34, serving: "100g" },
+      "Carrots": { protein: 0.9, carbs: 10, fat: 0.2, calories: 41, serving: "100g" }
+    },
+    fats: {
+      "Avocado": { protein: 2, carbs: 9, fat: 15, calories: 160, serving: "100g" },
+      "Almonds": { protein: 21, carbs: 22, fat: 50, calories: 579, serving: "100g" },
+      "Olive Oil": { protein: 0, carbs: 0, fat: 14, calories: 119, serving: "1 tbsp" }
+    }
+  };
 
   const leucineRichFoods = [
     { name: "Chicken Breast (100g)", protein: 31, leucine: 2.5, score: "Excellent" },
@@ -87,70 +169,123 @@ const Nutrition = () => {
   const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
 
   const generateWeeklyPlan = () => {
+    if (!weight) {
+      alert("Please enter your weight first to generate a personalized plan.");
+      return;
+    }
+
+    const macros = calculateMacros();
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const mealVariations = {
-      regular: {
-        breakfast: [
-          "Greek yogurt with berries and almonds",
-          "Scrambled eggs with spinach and toast",
-          "Protein smoothie with banana",
-          "Oatmeal with protein powder and nuts"
-        ],
-        lunch: [
-          "Grilled chicken salad with quinoa",
-          "Turkey and avocado wrap",
-          "Lentil soup with whole grain bread",
-          "Tuna salad with mixed greens"
-        ],
-        dinner: [
-          "Salmon with roasted vegetables",
-          "Lean beef stir-fry with brown rice",
-          "Grilled chicken with sweet potato",
-          "Baked cod with quinoa pilaf"
-        ],
-        snack: [
-          "Hard-boiled eggs with carrots",
-          "Greek yogurt with nuts",
-          "Apple with almond butter",
-          "Cottage cheese with berries"
-        ]
-      },
-      lowFODMAP: {
-        breakfast: [
-          "Lactose-free yogurt with strawberries",
-          "Scrambled eggs with spinach",
-          "Rice porridge with banana",
-          "Gluten-free oats with blueberries"
-        ],
-        lunch: [
-          "Chicken and rice bowl with spinach",
-          "Turkey lettuce wraps",
-          "Quinoa salad with cucumber",
-          "Grilled fish with rice"
-        ],
-        dinner: [
-          "Grilled fish with carrots and potatoes",
-          "Chicken stir-fry with bok choy",
-          "Beef with roasted parsnips",
-          "Salmon with green beans"
-        ],
-        snack: [
-          "Rice cakes with peanut butter",
-          "Lactose-free cheese with crackers",
-          "Orange with almonds (small portion)",
-          "Carrot sticks with hummus"
-        ]
+    
+    // Calculate portions based on macros
+    const mealsPerDay = 3; // breakfast, lunch, dinner
+    const proteinPerMeal = Math.round(macros.protein / mealsPerDay);
+    const carbsPerMeal = Math.round(macros.carbs / mealsPerDay);
+    const fatPerMeal = Math.round(macros.fat / mealsPerDay);
+    
+    const generateMeal = (mealType: string, dayIndex: number) => {
+      let protein, carb, vegetable, fat;
+      
+      // Select foods based on FODMAP preference and variety
+      if (isLowFODMAP) {
+        const proteinOptions = ["Chicken Breast", "Salmon", "Eggs"];
+        const carbOptions = ["Brown Rice", "Quinoa"];
+        const vegOptions = ["Spinach", "Carrots"];
+        
+        protein = proteinOptions[dayIndex % proteinOptions.length];
+        carb = carbOptions[dayIndex % carbOptions.length];
+        vegetable = vegOptions[dayIndex % vegOptions.length];
+        fat = dayIndex % 2 === 0 ? "Olive Oil" : "Avocado";
+      } else {
+        const proteinOptions = ["Chicken Breast", "Salmon", "Greek Yogurt", "Cottage Cheese"];
+        const carbOptions = ["Brown Rice", "Quinoa", "Sweet Potato", "Oats"];
+        const vegOptions = ["Spinach", "Broccoli", "Carrots"];
+        
+        protein = proteinOptions[dayIndex % proteinOptions.length];
+        carb = carbOptions[dayIndex % carbOptions.length];
+        vegetable = vegOptions[dayIndex % vegOptions.length];
+        fat = dayIndex % 3 === 0 ? "Avocado" : dayIndex % 3 === 1 ? "Almonds" : "Olive Oil";
       }
+      
+      // Calculate portions to meet macro targets
+      const proteinFood = foodDatabase.proteins[protein as keyof typeof foodDatabase.proteins];
+      const carbFood = foodDatabase.carbs[carb as keyof typeof foodDatabase.carbs];
+      const vegFood = foodDatabase.vegetables[vegetable as keyof typeof foodDatabase.vegetables];
+      const fatFood = foodDatabase.fats[fat as keyof typeof foodDatabase.fats];
+      
+      // Calculate serving sizes to hit macro targets (simplified)
+      const proteinServing = Math.round((proteinPerMeal / proteinFood.protein) * 100);
+      const carbServing = Math.round((carbsPerMeal / carbFood.carbs) * 100);
+      const vegServing = 100; // Standard serving
+      const fatServing = fat === "Olive Oil" ? 1 : Math.round((fatPerMeal / fatFood.fat) * 100);
+      
+      // Calculate meal totals
+      const mealCalories = Math.round(
+        (proteinFood.calories * proteinServing / 100) +
+        (carbFood.calories * carbServing / 100) +
+        (vegFood.calories * vegServing / 100) +
+        (fatFood.calories * (fat === "Olive Oil" ? fatServing : fatServing / 100))
+      );
+      
+      const mealProtein = Math.round(
+        (proteinFood.protein * proteinServing / 100) +
+        (carbFood.protein * carbServing / 100) +
+        (vegFood.protein * vegServing / 100) +
+        (fatFood.protein * (fat === "Olive Oil" ? fatServing : fatServing / 100))
+      );
+      
+      const mealCarbs = Math.round(
+        (proteinFood.carbs * proteinServing / 100) +
+        (carbFood.carbs * carbServing / 100) +
+        (vegFood.carbs * vegServing / 100) +
+        (fatFood.carbs * (fat === "Olive Oil" ? fatServing : fatServing / 100))
+      );
+      
+      const mealFat = Math.round(
+        (proteinFood.fat * proteinServing / 100) +
+        (carbFood.fat * carbServing / 100) +
+        (vegFood.fat * vegServing / 100) +
+        (fatFood.fat * (fat === "Olive Oil" ? fatServing : fatServing / 100))
+      );
+      
+      return {
+        foods: [
+          { name: protein, amount: `${proteinServing}g`, nutrition: proteinFood },
+          { name: carb, amount: `${carbServing}g`, nutrition: carbFood },
+          { name: vegetable, amount: `${vegServing}g`, nutrition: vegFood },
+          { name: fat, amount: fat === "Olive Oil" ? `${fatServing} tbsp` : `${fatServing}g`, nutrition: fatFood }
+        ],
+        totals: {
+          calories: mealCalories,
+          protein: mealProtein,
+          carbs: mealCarbs,
+          fat: mealFat
+        }
+      };
     };
 
-    const selectedMeals = isLowFODMAP ? mealVariations.lowFODMAP : mealVariations.regular;
-    const weekPlan = days.map((day, index) => ({
+    const weekPlan = days.map((day, dayIndex) => ({
       day,
-      breakfast: selectedMeals.breakfast[index % selectedMeals.breakfast.length],
-      lunch: selectedMeals.lunch[index % selectedMeals.lunch.length],
-      dinner: selectedMeals.dinner[index % selectedMeals.dinner.length],
-      snack: selectedMeals.snack[index % selectedMeals.snack.length]
+      breakfast: generateMeal("breakfast", dayIndex),
+      lunch: generateMeal("lunch", dayIndex + 1),
+      dinner: generateMeal("dinner", dayIndex + 2),
+      dailyTotals: {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0
+      }
     }));
+
+    // Calculate daily totals
+    weekPlan.forEach(dayPlan => {
+      dayPlan.dailyTotals = {
+        calories: dayPlan.breakfast.totals.calories + dayPlan.lunch.totals.calories + dayPlan.dinner.totals.calories,
+        protein: dayPlan.breakfast.totals.protein + dayPlan.lunch.totals.protein + dayPlan.dinner.totals.protein,
+        carbs: dayPlan.breakfast.totals.carbs + dayPlan.lunch.totals.carbs + dayPlan.dinner.totals.carbs,
+        fat: dayPlan.breakfast.totals.fat + dayPlan.lunch.totals.fat + dayPlan.dinner.totals.fat
+      };
+    });
 
     setWeeklyPlan(weekPlan);
     setShowWeeklyPlan(true);
@@ -171,31 +306,29 @@ const Nutrition = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Nutrition & Protein</h1>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">Nutrition Optimization</h1>
           <p className="text-muted-foreground">
-            Optimise your protein intake and navigate dietary restrictions for longevity
+            Calculate your personalized protein needs and explore leucine-rich foods for optimal muscle protein synthesis
           </p>
         </div>
 
         <Tabs defaultValue="calculator" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="calculator">Protein Calculator</TabsTrigger>
-            <TabsTrigger value="leucine">Leucine Scoring</TabsTrigger>
+            <TabsTrigger value="leucine">Leucine Content</TabsTrigger>
             <TabsTrigger value="fodmap">FODMAP Guide</TabsTrigger>
-            <TabsTrigger value="meals">Meal Planning</TabsTrigger>
+            <TabsTrigger value="meals">Meal Plans</TabsTrigger>
           </TabsList>
           
           <TabsContent value="calculator" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Calculator className="h-5 w-5" />
-                    Protein Calculator
+                    Personal Details
                   </CardTitle>
-                  <CardDescription>
-                    Calculate your daily protein needs based on current research (1.6-2.0g/kg)
-                  </CardDescription>
+                  <CardDescription>Enter your information for personalized recommendations</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -217,12 +350,59 @@ const Nutrition = () => {
                       value={activityLevel}
                       onChange={(e) => setActivityLevel(e.target.value)}
                     >
-                      <option value="sedentary">Sedentary</option>
-                      <option value="moderate">Moderate Exercise</option>
-                      <option value="active">Very Active</option>
-                      <option value="athlete">Athlete</option>
+                      <option value="sedentary">Sedentary (little/no exercise)</option>
+                      <option value="moderate">Moderate (3-5 days/week)</option>
+                      <option value="active">Very Active (6-7 days/week)</option>
+                      <option value="athlete">Athlete (2x/day, intense)</option>
                     </select>
                   </div>
+                  
+                  <div>
+                    <Label htmlFor="goal">Fitness Goal</Label>
+                    <select 
+                      id="goal"
+                      className="w-full p-2 border rounded-md"
+                      value={goal}
+                      onChange={(e) => setGoal(e.target.value)}
+                    >
+                      <option value="weight-loss">Weight Loss</option>
+                      <option value="maintenance">Maintain Current Weight</option>
+                      <option value="muscle-gain">Muscle Gain</option>
+                    </select>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Daily Nutrition Targets</CardTitle>
+                  <CardDescription>Based on your goals and activity level</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {dailyMacros.calories > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center p-3 bg-primary/10 rounded-lg">
+                        <div className="text-2xl font-bold text-primary">{dailyMacros.calories}</div>
+                        <div className="text-xs text-muted-foreground">Calories</div>
+                      </div>
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-600">{dailyMacros.protein}g</div>
+                        <div className="text-xs text-muted-foreground">Protein</div>
+                      </div>
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold text-green-600">{dailyMacros.carbs}g</div>
+                        <div className="text-xs text-muted-foreground">Carbs</div>
+                      </div>
+                      <div className="text-center p-3 bg-orange-50 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-600">{dailyMacros.fat}g</div>
+                        <div className="text-xs text-muted-foreground">Fat</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-center">
+                      Enter your details to see personalized nutrition targets
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -271,7 +451,7 @@ const Nutrition = () => {
               <CardHeader>
                 <CardTitle>Leucine Content & Scoring</CardTitle>
                 <CardDescription>
-                  Leucine triggers muscle protein synthesis. Aim for 2.5-3g per meal for optimal results.
+                  Leucine is a key amino acid that triggers muscle protein synthesis. Aim for 2.5-3g per meal.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -284,41 +464,28 @@ const Nutrition = () => {
                           {food.protein}g protein • {food.leucine}g leucine
                         </p>
                       </div>
-                      <Badge 
-                        variant="outline" 
-                        className={getLeucineScoreColor(food.score)}
-                      >
+                      <Badge className={getLeucineScoreColor(food.score)}>
                         {food.score}
                       </Badge>
                     </div>
                   ))}
-                </div>
-                
-                <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-                  <h3 className="font-medium mb-2">Leucine Optimisation Tips</h3>
-                  <ul className="text-sm space-y-1 text-muted-foreground">
-                    <li>• Combine lower leucine proteins (like plant proteins) with higher ones</li>
-                    <li>• Time protein intake around workouts for enhanced muscle building</li>
-                    <li>• Spread protein evenly across meals rather than loading one meal</li>
-                    <li>• Consider leucine supplements if following plant-based diet</li>
-                  </ul>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
           
           <TabsContent value="fodmap" className="mt-6">
-            <div className="mb-6 flex items-center gap-4">
-              <div className="flex items-center space-x-2">
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
                 <Switch
-                  id="ibs-mode"
+                  id="ibs-switch"
                   checked={hasIBS}
                   onCheckedChange={setHasIBS}
                 />
-                <Label htmlFor="ibs-mode">I have IBS</Label>
+                <Label htmlFor="ibs-switch">I have IBS or digestive issues</Label>
               </div>
               
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-4">
                 <Switch
                   id="fodmap-mode"
                   checked={isLowFODMAP}
@@ -412,7 +579,7 @@ const Nutrition = () => {
                 {showWeeklyPlan && weeklyPlan && (
                   <div className="mt-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">Your 7-Day Meal Plan</h3>
+                      <h3 className="text-lg font-semibold">Your Personalized 7-Day Meal Plan</h3>
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -421,28 +588,67 @@ const Nutrition = () => {
                         Hide Plan
                       </Button>
                     </div>
-                    <div className="grid gap-4">
+                    
+                    <div className="mb-4 p-4 bg-primary/10 rounded-lg">
+                      <h4 className="font-semibold mb-2">Your Daily Targets:</h4>
+                      <div className="grid grid-cols-4 gap-4 text-sm">
+                        <div className="text-center">
+                          <div className="font-bold">{dailyMacros.calories}</div>
+                          <div className="text-muted-foreground">Calories</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold">{dailyMacros.protein}g</div>
+                          <div className="text-muted-foreground">Protein</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold">{dailyMacros.carbs}g</div>
+                          <div className="text-muted-foreground">Carbs</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold">{dailyMacros.fat}g</div>
+                          <div className="text-muted-foreground">Fat</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-6">
                       {weeklyPlan.map((dayPlan: any, index: number) => (
                         <Card key={index} className="border-l-4 border-l-primary">
-                          <CardContent className="p-4">
-                            <h4 className="font-semibold text-primary mb-3">{dayPlan.day}</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-                              <div>
-                                <span className="font-medium text-muted-foreground">Breakfast:</span>
-                                <p className="mt-1">{dayPlan.breakfast}</p>
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <h4 className="text-xl font-semibold text-primary">{dayPlan.day}</h4>
+                              <div className="text-right text-sm">
+                                <div className="font-semibold">Daily Total:</div>
+                                <div>{dayPlan.dailyTotals.calories} cal | {dayPlan.dailyTotals.protein}p | {dayPlan.dailyTotals.carbs}c | {dayPlan.dailyTotals.fat}f</div>
                               </div>
-                              <div>
-                                <span className="font-medium text-muted-foreground">Lunch:</span>
-                                <p className="mt-1">{dayPlan.lunch}</p>
-                              </div>
-                              <div>
-                                <span className="font-medium text-muted-foreground">Dinner:</span>
-                                <p className="mt-1">{dayPlan.dinner}</p>
-                              </div>
-                              <div>
-                                <span className="font-medium text-muted-foreground">Snack:</span>
-                                <p className="mt-1">{dayPlan.snack}</p>
-                              </div>
+                            </div>
+                            
+                            <div className="grid gap-4">
+                              {['breakfast', 'lunch', 'dinner'].map((mealType) => {
+                                const meal = dayPlan[mealType];
+                                return (
+                                  <div key={mealType} className="border rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-3">
+                                      <h5 className="font-medium capitalize text-lg">{mealType}</h5>
+                                      <div className="text-sm font-medium">
+                                        {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
+                                      </div>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                                      {meal.foods.map((food: any, foodIndex: number) => (
+                                        <div key={foodIndex} className="bg-muted/30 p-3 rounded">
+                                          <div className="font-medium text-sm">{food.name}</div>
+                                          <div className="text-primary font-semibold">{food.amount}</div>
+                                          <div className="text-xs text-muted-foreground mt-1">
+                                            {Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100))} cal
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           </CardContent>
                         </Card>
