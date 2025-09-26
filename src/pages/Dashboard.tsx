@@ -251,11 +251,11 @@ const Dashboard = () => {
                 <div className="text-sm text-gray-600">
                   {bioAgeImpact >= 0 ? (
                     <span className="font-semibold text-green-600">
-                      -{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                      Weekly Longevity Impact Score
                     </span>
                   ) : (
                     <span className="font-semibold text-red-600">
-                      +{Math.abs(bioAgeImpact).toFixed(1)} days biological age this week
+                      Weekly Longevity Impact Score
                     </span>
                   )}
                 </div>
