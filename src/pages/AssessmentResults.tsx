@@ -703,6 +703,50 @@ const AssessmentResults = () => {
     return variants[category as keyof typeof variants] || variants.fair;
   };
 
+  const getOptimalTargets = (symptomId: string): string[] => {
+    switch (symptomId) {
+      case 'sleep':
+        return [
+          'Fall asleep within 10-20 minutes consistently',
+          'Sleep 7-9 hours uninterrupted per night',
+          'Wake up feeling refreshed 90% of mornings',
+          'Maintain consistent sleep/wake times within 30 minutes',
+          'Achieve 20-25% deep sleep and 20-25% REM sleep'
+        ];
+      case 'hot-flashes':
+        return [
+          'Reduce episodes to less than 2 mild flashes per week',
+          'Episode intensity rated 2/10 or lower',
+          'No night-time disruptions to sleep',
+          'Episodes lasting less than 2 minutes',
+          'Complete confidence in social/work situations'
+        ];
+      case 'joint-pain':
+        return [
+          'Morning stiffness lasting less than 15 minutes',
+          'Pain levels consistently below 3/10',
+          'Full range of motion in affected joints',
+          'Ability to exercise 4-5 times per week pain-free',
+          'No activity limitations due to joint discomfort'
+        ];
+      case 'gut':
+        return [
+          'Regular, comfortable bowel movements daily',
+          'No bloating or gas after meals',
+          'Sustained energy 2-4 hours post-meal',
+          'Ability to digest all food groups comfortably',
+          'Stable digestive patterns regardless of stress'
+        ];
+      default:
+        return [
+          'Symptoms occur less than 10% of the time',
+          'Minimal impact on daily activities and quality of life',
+          'Consistent management through lifestyle strategies',
+          'High confidence in symptom control'
+        ];
+    }
+  };
+
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
       case 'high': return <AlertTriangle className="h-4 w-4 text-destructive" />;
@@ -773,12 +817,23 @@ const AssessmentResults = () => {
                 </div>
                 <div className="bg-background/80 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2 text-success">Your Improvement Potential</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mb-3">
                     {score.category === 'poor' ? 'With focused intervention, you can expect 60-80% improvement in symptoms within 8-12 weeks.' :
                      score.category === 'fair' ? 'Your symptoms are very manageable - expect 70-90% improvement within 4-8 weeks.' :
                      score.category === 'good' ? 'Fine-tuning your approach can bring you to optimal health within 2-6 weeks.' :
                      'You\'re doing great! Small optimizations can perfect your health within 2-4 weeks.'}
                   </p>
+                  <div className="bg-success/10 p-3 rounded-lg">
+                    <h5 className="text-sm font-semibold text-success mb-1">Optimal Target Goals:</h5>
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      {getOptimalTargets(symptomId!).map((target, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3 w-3 text-success" />
+                          <span>{target}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
               
