@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
@@ -1305,9 +1306,36 @@ const AssessmentResults = () => {
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'high': return <AlertTriangle className="h-4 w-4 text-destructive" />;
-      case 'medium': return <Info className="h-4 w-4 text-warning" />;
-      case 'low': return <CheckCircle2 className="h-4 w-4 text-muted-foreground" />;
+      case 'high': return (
+        <Tooltip>
+          <TooltipTrigger>
+            <AlertTriangle className="h-4 w-4 text-destructive" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>High Priority - Immediate attention recommended</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+      case 'medium': return (
+        <Tooltip>
+          <TooltipTrigger>
+            <Info className="h-4 w-4 text-warning" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Medium Priority - Important for overall health</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+      case 'low': return (
+        <Tooltip>
+          <TooltipTrigger>
+            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Low Priority - Beneficial when other priorities are addressed</p>
+          </TooltipContent>
+        </Tooltip>
+      );
     }
   };
 
@@ -1326,6 +1354,7 @@ const AssessmentResults = () => {
   }
 
   return (
+    <TooltipProvider>
     <div className="min-h-screen bg-background">
       <Navigation />
       
@@ -1834,8 +1863,9 @@ const AssessmentResults = () => {
           </p>
         </div>
       </main>
-    </div>
-  );
+     </div>
+    </TooltipProvider>
+   );
 };
 
 const generateDefaultRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
