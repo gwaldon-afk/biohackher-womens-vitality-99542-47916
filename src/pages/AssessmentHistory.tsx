@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, Calendar, Brain, Moon, Heart, Thermometer, Bone, Battery, Scale, Zap, FileText, Clock } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, Calendar, Brain, Moon, Heart, Thermometer, Bone, Battery, Scale, Zap, FileText, Clock, Trash2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
 interface SymptomAssessment {
@@ -32,10 +34,15 @@ interface TrendData {
 const AssessmentHistory = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [assessments, setAssessments] = useState<SymptomAssessment[]>([]);
   const [trendData, setTrendData] = useState<TrendData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedView, setSelectedView] = useState<'recent' | 'trends'>('recent');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
+  const filterSymptom = searchParams.get('filter');
 
   useEffect(() => {
     if (user) {
@@ -47,11 +54,16 @@ const AssessmentHistory = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('symptom_assessments')
         .select('*')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false });
+        .eq('user_id', user.id);
+
+      if (filterSymptom) {
+        query = query.eq('symptom_type', filterSymptom);
+      }
+
+      const { data, error } = await query.order('completed_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching assessments:', error);
@@ -64,6 +76,43 @@ const AssessmentHistory = () => {
       console.error('Unexpected error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteAssessment = async (assessmentId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('symptom_assessments')
+        .delete()
+        .eq('id', assessmentId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error deleting assessment:', error);
+        toast({
+          variant: "destructive",
+          title: "Error deleting assessment",
+          description: "Please try again later."
+        });
+        return;
+      }
+
+      toast({
+        title: "Assessment deleted",
+        description: "The assessment has been removed from your history."
+      });
+
+      // Refresh the assessments
+      fetchAssessments();
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error deleting assessment",
+        description: "An unexpected error occurred."
+      });
     }
   };
 
@@ -198,7 +247,10 @@ const AssessmentHistory = () => {
             </Button>
           </div>
           
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Assessment History</h1>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">
+            Assessment History
+            {filterSymptom && <span className="text-lg font-normal text-muted-foreground ml-2">- {getSymptomName(filterSymptom)}</span>}
+          </h1>
           <p className="text-muted-foreground">
             Review your completed symptom assessments and track your progress over time. 
             <span className="font-medium text-primary"> Click any assessment card to view detailed results and personalized recommendations.</span>
@@ -233,21 +285,23 @@ const AssessmentHistory = () => {
                   return (
                     <Card 
                       key={assessment.id} 
-                      className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-                      onClick={() => {
-                        // Navigate to assessment results page
-                        const params = new URLSearchParams();
-                        if (assessment.answers) {
-                          Object.entries(assessment.answers).forEach(([key, value]) => {
-                            params.append(`q${key}`, value as string);
-                          });
-                        }
-                        navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
-                      }}
+                      className="hover:shadow-md transition-shadow border-l-4 border-l-primary/20 hover:border-l-primary group"
                     >
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                          <div 
+                            className="flex items-center gap-3 cursor-pointer flex-1"
+                            onClick={() => {
+                              // Navigate to assessment results page
+                              const params = new URLSearchParams();
+                              if (assessment.answers) {
+                                Object.entries(assessment.answers).forEach(([key, value]) => {
+                                  params.append(`q${key}`, value as string);
+                                });
+                              }
+                              navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
+                            }}
+                          >
                             <SymptomIcon className="h-5 w-5 text-primary" />
                             <div>
                               <CardTitle className="text-lg">
@@ -259,19 +313,45 @@ const AssessmentHistory = () => {
                               </CardDescription>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <div className={`text-2xl font-bold ${getScoreColor(assessment.overall_score)}`}>
-                              {assessment.overall_score}
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <div className={`text-2xl font-bold ${getScoreColor(assessment.overall_score)}`}>
+                                {assessment.overall_score}
+                              </div>
+                              <Badge className={getScoreBadgeColor(assessment.score_category)}>
+                                {assessment.score_category}
+                              </Badge>
                             </div>
-                            <Badge className={getScoreBadgeColor(assessment.score_category)}>
-                              {assessment.score_category}
-                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAssessmentToDelete(assessment.id);
+                                setDeleteConfirmOpen(true);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </div>
                       </CardHeader>
                       
                       {assessment.primary_issues.length > 0 && (
-                        <CardContent className="pt-0">
+                        <CardContent 
+                          className="pt-0 cursor-pointer"
+                          onClick={() => {
+                            // Navigate to assessment results page
+                            const params = new URLSearchParams();
+                            if (assessment.answers) {
+                              Object.entries(assessment.answers).forEach(([key, value]) => {
+                                params.append(`q${key}`, value as string);
+                              });
+                            }
+                            navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
+                          }}
+                        >
                           <div className="space-y-2">
                             <p className="text-sm font-medium text-muted-foreground">Primary Concerns:</p>
                             <div className="flex flex-wrap gap-2">
@@ -292,7 +372,19 @@ const AssessmentHistory = () => {
                       )}
                       
                       {assessment.primary_issues.length === 0 && (
-                        <CardContent className="pt-0">
+                        <CardContent 
+                          className="pt-0 cursor-pointer"
+                          onClick={() => {
+                            // Navigate to assessment results page
+                            const params = new URLSearchParams();
+                            if (assessment.answers) {
+                              Object.entries(assessment.answers).forEach(([key, value]) => {
+                                params.append(`q${key}`, value as string);
+                              });
+                            }
+                            navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
+                          }}
+                        >
                           <div className="pt-2 border-t border-border">
                             <p className="text-xs text-primary font-medium flex items-center gap-1">
                               <FileText className="h-3 w-3" />
@@ -380,6 +472,33 @@ const AssessmentHistory = () => {
             </TabsContent>
           </Tabs>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Assessment</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this assessment? This action cannot be undone and will permanently remove the assessment from your history.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (assessmentToDelete) {
+                    handleDeleteAssessment(assessmentToDelete);
+                    setAssessmentToDelete(null);
+                  }
+                  setDeleteConfirmOpen(false);
+                }}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );
