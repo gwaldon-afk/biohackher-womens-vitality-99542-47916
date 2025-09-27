@@ -46,7 +46,7 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             {mainNavItems.map((item) => (
               <Link
                 key={item.href}
@@ -104,7 +104,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-3">
             <ShoppingCartIcon />
             <Link to="/upgrade">
               <Button variant="outline" size="sm" className="text-secondary border-secondary hover:bg-secondary/10">
@@ -123,7 +123,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile actions */}
-          <div className="lg:hidden flex items-center space-x-2">
+          <div className="md:hidden flex items-center space-x-2">
             <ShoppingCartIcon />
             <Button
               variant="ghost"
@@ -137,7 +137,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border">
+          <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
               {mainNavItems.map((item) => (
                 <Link
