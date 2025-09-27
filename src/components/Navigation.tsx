@@ -91,18 +91,6 @@ const Navigation = () => {
             </DropdownMenu>
 
             <Link
-              to="/reports"
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                isActive("/reports")
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}
-            >
-              Reports
-            </Link>
-            
-            <Link
               to="/faq"
               className={cn(
                 "text-sm font-medium transition-colors hover:text-primary",
@@ -188,19 +176,6 @@ const Navigation = () => {
                   ))}
                 </div>
               </div>
-
-              <Link
-                to="/reports"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
-                  isActive("/reports")
-                    ? "text-primary bg-primary/10 rounded"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                Reports
-              </Link>
 
               <Link
                 to="/faq"

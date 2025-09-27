@@ -621,6 +621,14 @@ const Dashboard = () => {
           </Button>
           <Button 
             variant="outline" 
+            className="h-20 flex-col gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+            onClick={() => navigate('/reports')}
+          >
+            <FileText className="h-5 w-5" />
+            Reports
+          </Button>
+          <Button 
+            variant="outline" 
             className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
             onClick={() => navigate('/symptoms')}
           >
@@ -630,10 +638,6 @@ const Dashboard = () => {
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Activity className="h-5 w-5" />
             Sync Wearables
-          </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Brain className="h-5 w-5" />
-            Track Habits
           </Button>
         </div>
       </main>
