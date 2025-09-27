@@ -911,12 +911,30 @@ const AssessmentResults = () => {
         {/* Recommendations */}
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="routine">Routines</TabsTrigger>
-            <TabsTrigger value="supplement">Supplements</TabsTrigger>
-            <TabsTrigger value="diet">Diet</TabsTrigger>
-            <TabsTrigger value="lifestyle">Lifestyle</TabsTrigger>
-            <TabsTrigger value="therapy">Therapy</TabsTrigger>
+            <TabsTrigger value="all" className="flex flex-col items-center p-3">
+              <span>All</span>
+              <span className="text-xs text-muted-foreground mt-1">Complete wellness approach</span>
+            </TabsTrigger>
+            <TabsTrigger value="routine" className="flex flex-col items-center p-3">
+              <span>Routines</span>
+              <span className="text-xs text-muted-foreground mt-1">Evening wind-down practices</span>
+            </TabsTrigger>
+            <TabsTrigger value="supplement" className="flex flex-col items-center p-3">
+              <span>Supplements</span>
+              <span className="text-xs text-muted-foreground mt-1">Natural sleep support options</span>
+            </TabsTrigger>
+            <TabsTrigger value="diet" className="flex flex-col items-center p-3">
+              <span>Diet</span>
+              <span className="text-xs text-muted-foreground mt-1">Foods that may promote rest</span>
+            </TabsTrigger>
+            <TabsTrigger value="lifestyle" className="flex flex-col items-center p-3">
+              <span>Lifestyle</span>
+              <span className="text-xs text-muted-foreground mt-1">Daily habits for better sleep</span>
+            </TabsTrigger>
+            <TabsTrigger value="therapy" className="flex flex-col items-center p-3">
+              <span>Therapy</span>
+              <span className="text-xs text-muted-foreground mt-1">Relaxation techniques</span>
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="all" className="mt-6">
