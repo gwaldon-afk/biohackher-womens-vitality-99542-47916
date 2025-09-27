@@ -46,13 +46,13 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-4">
             {mainNavItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
+                  "text-sm font-medium transition-colors hover:text-primary whitespace-nowrap",
                   isActive(item.href)
                     ? "text-primary"
                     : "text-muted-foreground"
@@ -65,7 +65,7 @@ const Navigation = () => {
             {/* Biohacking Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger className={cn(
-                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1",
+                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
                 isBiohackingActive()
                   ? "text-primary"
                   : "text-muted-foreground"
@@ -93,7 +93,7 @@ const Navigation = () => {
             <Link
               to="/faq"
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
+                "text-sm font-medium transition-colors hover:text-primary whitespace-nowrap",
                 isActive("/faq")
                   ? "text-primary"
                   : "text-muted-foreground"
@@ -104,11 +104,11 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
             <ShoppingCartIcon />
             <Link to="/upgrade">
-              <Button variant="outline" className="text-secondary border-secondary hover:bg-secondary/10">
-                <Crown className="h-4 w-4 mr-2" />
+              <Button variant="outline" size="sm" className="text-secondary border-secondary hover:bg-secondary/10">
+                <Crown className="h-4 w-4 mr-1" />
                 Upgrade
               </Button>
             </Link>
@@ -123,7 +123,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile actions */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="lg:hidden flex items-center space-x-2">
             <ShoppingCartIcon />
             <Button
               variant="ghost"
@@ -137,7 +137,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="lg:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
               {mainNavItems.map((item) => (
                 <Link
