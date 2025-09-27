@@ -910,30 +910,30 @@ const AssessmentResults = () => {
 
         {/* Recommendations */}
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="all" className="flex flex-col items-center p-3">
-              <span>All</span>
-              <span className="text-xs text-muted-foreground mt-1">Complete wellness approach</span>
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 gap-2 h-auto">
+            <TabsTrigger value="all" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">All</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Complete approach</span>
             </TabsTrigger>
-            <TabsTrigger value="routine" className="flex flex-col items-center p-3">
-              <span>Routines</span>
-              <span className="text-xs text-muted-foreground mt-1">Evening wind-down practices</span>
+            <TabsTrigger value="routine" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">Routines</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Wind-down practices</span>
             </TabsTrigger>
-            <TabsTrigger value="supplement" className="flex flex-col items-center p-3">
-              <span>Supplements</span>
-              <span className="text-xs text-muted-foreground mt-1">Natural sleep support options</span>
+            <TabsTrigger value="supplement" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">Supplements</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Natural support</span>
             </TabsTrigger>
-            <TabsTrigger value="diet" className="flex flex-col items-center p-3">
-              <span>Diet</span>
-              <span className="text-xs text-muted-foreground mt-1">Foods that may promote rest</span>
+            <TabsTrigger value="diet" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">Diet</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Sleep-friendly foods</span>
             </TabsTrigger>
-            <TabsTrigger value="lifestyle" className="flex flex-col items-center p-3">
-              <span>Lifestyle</span>
-              <span className="text-xs text-muted-foreground mt-1">Daily habits for better sleep</span>
+            <TabsTrigger value="lifestyle" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">Lifestyle</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Daily habits</span>
             </TabsTrigger>
-            <TabsTrigger value="therapy" className="flex flex-col items-center p-3">
-              <span>Therapy</span>
-              <span className="text-xs text-muted-foreground mt-1">Relaxation techniques</span>
+            <TabsTrigger value="therapy" className="flex flex-col items-center p-2 h-auto min-h-[60px]">
+              <span className="font-medium">Therapy</span>
+              <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Relaxation techniques</span>
             </TabsTrigger>
           </TabsList>
           
