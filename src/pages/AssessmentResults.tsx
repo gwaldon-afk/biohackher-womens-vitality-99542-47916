@@ -1551,6 +1551,118 @@ const AssessmentResults = () => {
             </RadioGroup>
           </div>
           
+          {/* Expected Results Overview */}
+          <Card className="mb-6 bg-gradient-to-r from-success/5 to-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-success" />
+                Expected Results with Full Protocol
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {symptomId === 'sleep' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Fall asleep 15-30 minutes faster</li>
+                      <li>• Experience fewer middle-of-night wakings</li>
+                      <li>• Wake up feeling more refreshed and energised</li>
+                      <li>• Sleep depth will improve, leading to better physical recovery</li>
+                      <li>• Enhanced mental clarity during the day</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation.
+                    </p>
+                  </div>
+                )}
+                
+                {symptomId === 'brain-fog' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Clearer thinking within days</li>
+                      <li>• Improved focus and concentration lasting 3-4 hours longer</li>
+                      <li>• Better memory recall and reduced mental fatigue</li>
+                      <li>• Brain fog episodes become less frequent and severe</li>
+                      <li>• Enhanced problem-solving abilities</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally experience initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks.
+                    </p>
+                  </div>
+                )}
+                
+                {symptomId === 'energy-levels' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Sustained energy levels throughout the day without afternoon crashes</li>
+                      <li>• Improved motivation and mental stamina</li>
+                      <li>• Better exercise tolerance and recovery</li>
+                      <li>• Reduced feelings of exhaustion</li>
+                      <li>• Significantly improved morning alertness</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally experience initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks.
+                    </p>
+                  </div>
+                )}
+                
+                {symptomId === 'hot-flashes' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Reduced frequency and intensity of hot flashes</li>
+                      <li>• Better temperature regulation throughout the day</li>
+                      <li>• Improved sleep quality with fewer night sweats</li>
+                      <li>• Enhanced overall comfort during daily activities</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally experience significant improvements within 4-8 weeks.
+                    </p>
+                  </div>
+                )}
+                
+                {symptomId === 'joint-pain' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Reduced joint stiffness, especially in the morning</li>
+                      <li>• Decreased pain during movement and daily activities</li>
+                      <li>• Improved mobility and range of motion</li>
+                      <li>• Less swelling or inflammation in affected joints</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks.
+                    </p>
+                  </div>
+                )}
+                
+                {symptomId === 'gut' && (
+                  <div>
+                    <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Reduced bloating and gas after meals</li>
+                      <li>• Less abdominal discomfort and cramping</li>
+                      <li>• Improved energy levels after eating</li>
+                      <li>• Better nutrient absorption leading to enhanced overall well-being</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3">
+                      <strong>Timeline:</strong> Most people generally experience digestive comfort improvements within 1-2 weeks, with better nutrient absorption noticeable in 4-6 weeks.
+                    </p>
+                  </div>
+                )}
+                
+                <div className="mt-4 p-3 bg-warning/10 rounded-lg">
+                  <p className="text-xs text-muted-foreground">
+                    <strong>Important:</strong> If symptoms persist or worsen, consult a healthcare provider. Individual results may vary based on consistency and adherence to the full protocol.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
           {/* Detailed Recommendations */}
           <div className="grid gap-4">
             {(selectedRecommendationCategory === "all" 
@@ -1632,7 +1744,7 @@ const AssessmentResults = () => {
                        
                        {rec.improvement && (
                          <div className="bg-success/5 p-3 rounded-lg mb-3">
-                           <h4 className="text-sm font-medium text-success mb-1">Expected Results</h4>
+                           <h4 className="text-sm font-medium text-success mb-1">Improvement Strategies</h4>
                            <p className="text-xs text-muted-foreground">{rec.improvement}</p>
                          </div>
                        )}
