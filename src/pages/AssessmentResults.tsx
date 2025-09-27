@@ -24,6 +24,9 @@ interface Recommendation {
   priority: 'high' | 'medium' | 'low';
   category: 'routine' | 'supplement' | 'environment' | 'lifestyle' | 'diet' | 'therapy';
   icon: any;
+  analysis?: string;
+  improvement?: string;
+  timeline?: string;
 }
 
 const AssessmentResults = () => {
@@ -472,7 +475,10 @@ const AssessmentResults = () => {
       description: "Create a consistent pre-sleep routine starting 2 hours before bed. Dim lights, avoid screens, and practice relaxation techniques.",
       priority: 'high',
       category: 'routine',
-      icon: Moon
+      icon: Moon,
+      analysis: `Based on your sleep quality rating of "${answers['1']}", establishing a consistent bedtime routine is crucial for signaling to your body that it's time to sleep. Your current sleep patterns suggest that your circadian rhythm may need reinforcement.`,
+      improvement: "Start with just 30 minutes of routine and gradually extend to 2 hours. Track your sleep onset time to measure improvement.",
+      timeline: "Expect to see improvements in sleep onset within 2-3 weeks of consistent practice"
     });
 
     if (answers['2'] === 'slow' || answers['2'] === 'very-slow') {
@@ -481,7 +487,10 @@ const AssessmentResults = () => {
         description: "Take 400-600mg of magnesium glycinate 30-60 minutes before bed to help relax muscles and support GABA production.",
         priority: 'high',
         category: 'supplement',
-        icon: Pill
+        icon: Pill,
+        analysis: `Your reported difficulty falling asleep ("${answers['2']}") indicates potential magnesium deficiency, which affects muscle relaxation and neurotransmitter balance. Magnesium glycinate is the most bioavailable form for sleep support.`,
+        improvement: "Start with 200mg and gradually increase to 400-600mg based on tolerance. Take with a small amount of food to prevent stomach upset.",
+        timeline: "Most people notice improved sleep onset within 1-2 weeks of consistent use"
       });
 
       recs.push({
@@ -489,7 +498,10 @@ const AssessmentResults = () => {
         description: "Use blue light blocking glasses 2 hours before bed and ensure your bedroom is completely dark with blackout curtains.",
         priority: 'medium',
         category: 'environment',
-        icon: Lightbulb
+        icon: Lightbulb,
+        analysis: "Blue light exposure suppresses melatonin production by up to 85%, directly impacting your ability to fall asleep quickly. Your slow sleep onset suggests circadian rhythm disruption.",
+        improvement: "Install blue light filtering apps on devices, use amber glasses after sunset, and create a dark sleep environment with blackout curtains or eye masks.",
+        timeline: "Melatonin production improvements can be seen within 3-5 days of consistent blue light management"
       });
     }
 
@@ -499,7 +511,10 @@ const AssessmentResults = () => {
         description: "Keep your bedroom temperature between 65-68°F (18-20°C) and ensure it's as quiet as possible. Consider a white noise machine.",
         priority: 'high',
         category: 'environment',
-        icon: Moon
+        icon: Moon,
+        analysis: `Your frequent night wakings ("${answers['3']}") suggest sleep architecture disruption. Temperature fluctuations and noise disturbances are primary causes of sleep fragmentation.`,
+        improvement: "Invest in a programmable thermostat, blackout curtains, and white noise machine. Track wake-ups to identify patterns and triggers.",
+        timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimization"
       });
     }
 
@@ -514,7 +529,10 @@ const AssessmentResults = () => {
       description: "Keep a portable fan nearby, dress in breathable layers, and use cooling towels or cooling pads during episodes.",
       priority: 'high',
       category: 'lifestyle',
-      icon: Thermometer
+      icon: Thermometer,
+      analysis: `Your hot flash frequency indicates hormonal fluctuations affecting your body's temperature regulation. Quick cooling strategies can reduce episode intensity by 40-60%.`,
+      improvement: "Create a cooling kit with portable fan, cooling towels, and breathable clothing. Practice deep breathing during episodes to activate parasympathetic response.",
+      timeline: "Immediate relief during episodes, with overall episode intensity reducing over 2-4 weeks of consistent management"
     });
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
@@ -523,7 +541,10 @@ const AssessmentResults = () => {
         description: "Consider 40-80mg daily of standardized black cohosh extract, which has shown effectiveness for hot flash reduction.",
         priority: 'high',
         category: 'supplement',
-        icon: Pill
+        icon: Pill,
+        analysis: `Given your severe hot flash intensity ("${answers['2']}"), research shows black cohosh can reduce frequency by 50-75% through its phytoestrogenic effects on hormone receptors.`,
+        improvement: "Start with 40mg daily and increase to 80mg if needed. Take with meals to improve absorption and reduce stomach upset.",
+        timeline: "Significant improvements typically seen within 4-8 weeks of consistent use"
       });
 
       recs.push({
@@ -556,7 +577,10 @@ const AssessmentResults = () => {
       description: "Incorporate turmeric (curcumin) 500-1000mg daily with black pepper for absorption. Add omega-3 fatty acids 2-3g daily.",
       priority: 'high',
       category: 'supplement',
-      icon: Pill
+      icon: Pill,
+      analysis: `Your joint pain pattern suggests chronic inflammation. Curcumin can reduce inflammatory markers by 40-60%, while omega-3s help resolve inflammation at the cellular level.`,
+      improvement: "Take curcumin with meals and black pepper (piperine) for 20x better absorption. Choose high-quality fish oil with EPA:DHA ratio of 2:1.",
+      timeline: "Initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks"
     });
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
@@ -598,7 +622,10 @@ const AssessmentResults = () => {
       description: "Take broad-spectrum digestive enzymes with meals to improve breakdown and absorption of nutrients.",
       priority: 'high',
       category: 'supplement',
-      icon: Pill
+      icon: Pill,
+      analysis: `Your digestive symptoms indicate potential enzyme insufficiency, which affects 30-40% of adults. Poor digestion leads to nutrient malabsorption and inflammation.`,
+      improvement: "Take enzymes 15-20 minutes before meals. Choose a formula with protease, lipase, and amylase. Start with smaller meals to reduce digestive burden.",
+      timeline: "Digestive comfort improvements within 1-2 weeks, with better nutrient absorption noticeable in 4-6 weeks"
     });
 
     if (answers['2'] === 'bloating') {
@@ -723,6 +750,58 @@ const AssessmentResults = () => {
           </div>
         </div>
 
+        {/* Personalized Analysis Summary */}
+        <Card className="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-primary" />
+              Personalized Health Analysis
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-background/80 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-primary">What Your Assessment Reveals</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Based on your responses, your {getSymptomName(symptomId!).toLowerCase()} issues show a pattern that affects 
+                    {score.category === 'poor' ? ' your daily quality of life significantly' : 
+                     score.category === 'fair' ? ' your wellbeing moderately' : 
+                     score.category === 'good' ? ' you occasionally' : ' you minimally'}. 
+                    The primary areas we've identified can be addressed through targeted interventions.
+                  </p>
+                </div>
+                <div className="bg-background/80 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-success">Your Improvement Potential</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {score.category === 'poor' ? 'With focused intervention, you can expect 60-80% improvement in symptoms within 8-12 weeks.' :
+                     score.category === 'fair' ? 'Your symptoms are very manageable - expect 70-90% improvement within 4-8 weeks.' :
+                     score.category === 'good' ? 'Fine-tuning your approach can bring you to optimal health within 2-6 weeks.' :
+                     'You\'re doing great! Small optimizations can perfect your health within 2-4 weeks.'}
+                  </p>
+                </div>
+              </div>
+              
+              {score.primaryIssues.length > 0 && (
+                <div className="bg-warning/5 border border-warning/20 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-warning">Priority Focus Areas</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Your assessment identified {score.primaryIssues.length} key area{score.primaryIssues.length > 1 ? 's' : ''} that will have the biggest impact on your health when addressed:
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {score.primaryIssues.map((issue, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4 text-warning" />
+                        <span className="text-sm">{issue}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Overall Score Card */}
         <Card className="mb-8 border-l-4 border-l-primary">
           <CardHeader>
@@ -795,14 +874,35 @@ const AssessmentResults = () => {
                         <rec.icon className="h-5 w-5 text-primary" />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-semibold">{rec.title}</h3>
-                          {getPriorityIcon(rec.priority)}
-                          <Badge variant="outline" className="text-xs">
-                            {rec.category}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{rec.description}</p>
+                         <div className="flex items-center gap-2 mb-2">
+                           <h3 className="font-semibold">{rec.title}</h3>
+                           {getPriorityIcon(rec.priority)}
+                           <Badge variant="outline" className="text-xs">
+                             {rec.category}
+                           </Badge>
+                         </div>
+                         <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
+                         
+                         {rec.analysis && (
+                           <div className="bg-primary/5 p-3 rounded-lg mb-3">
+                             <h4 className="text-sm font-medium text-primary mb-1">Personalized Analysis</h4>
+                             <p className="text-xs text-muted-foreground">{rec.analysis}</p>
+                           </div>
+                         )}
+                         
+                         {rec.improvement && (
+                           <div className="bg-success/5 p-3 rounded-lg mb-3">
+                             <h4 className="text-sm font-medium text-success mb-1">Implementation Strategy</h4>
+                             <p className="text-xs text-muted-foreground">{rec.improvement}</p>
+                           </div>
+                         )}
+                         
+                         {rec.timeline && (
+                           <div className="bg-warning/5 p-3 rounded-lg">
+                             <h4 className="text-sm font-medium text-warning mb-1">Expected Timeline</h4>
+                             <p className="text-xs text-muted-foreground">{rec.timeline}</p>
+                           </div>
+                         )}
                       </div>
                     </div>
                   </CardContent>
