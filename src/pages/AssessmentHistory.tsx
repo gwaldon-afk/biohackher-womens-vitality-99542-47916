@@ -265,7 +265,7 @@ const AssessmentHistory = () => {
               <p className="text-muted-foreground mb-4">
                 Complete your first symptom assessment to start tracking your progress.
               </p>
-              <Button onClick={() => navigate('/symptoms')}>
+              <Button onClick={() => filterSymptom ? navigate(`/assessment/${filterSymptom}`) : navigate('/symptoms')}>
                 Start Assessment
               </Button>
             </CardContent>
