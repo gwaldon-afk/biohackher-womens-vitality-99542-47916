@@ -576,7 +576,7 @@ const AssessmentResults = () => {
         { name: "L-Theanine", dosage: "200mg taken with evening routine", selected: false }
       ],
       analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.`,
-      improvement: "Start with 200mg magnesium and gradually increase to 600mg based on tolerance. Take melatonin consistently at the same time nightly. Combine with chamomile tea 30 minutes before the supplements for enhanced effect.",
+      improvement: "Consider starting with lower amounts and gradually increasing as tolerated. Take supplements consistently at the same time each evening. Some people find combining with herbal teas may enhance relaxation.",
       timeline: "Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation. If sleep symptoms persist or worsen, consult a healthcare provider."
     });
 
@@ -649,7 +649,7 @@ const AssessmentResults = () => {
           { name: "Red Clover Isoflavones", dosage: "80mg daily", selected: false }
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "Start with 40mg black cohosh daily with meals and increase to 80mg if needed. Take evening primrose oil twice daily with food. Create a cooling kit with portable fan, cooling towels, and breathable clothing for immediate episode relief.",
+        improvement: "Consider starting with lower amounts and increasing gradually as tolerated. Taking supplements with meals may help with absorption. Creating a personal comfort kit with cooling items may provide relief during episodes.",
         timeline: "Most people generally experience significant improvements within 4-8 weeks of consistent implementation. If hot flash symptoms persist or worsen, consult a healthcare provider."
       });
 
@@ -692,7 +692,7 @@ const AssessmentResults = () => {
         { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
       ],
       analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-      improvement: "Take curcumin with meals and black pepper (piperine) for 20x better absorption. Choose high-quality fish oil with EPA:DHA ratio of 2:1. Start with gentle movement like water therapy or tai chi. Apply heat therapy for 15 minutes followed by cold therapy for 10 minutes.",
+      improvement: "Consider taking supplements with meals and substances that may enhance absorption. High-quality options with appropriate ratios may be beneficial. Gentle movement and alternating temperature therapies are commonly used approaches.",
       timeline: "Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation. If joint pain symptoms persist or worsen, consult a healthcare provider."
     });
 
@@ -737,7 +737,7 @@ const AssessmentResults = () => {
       category: 'supplement',
       icon: Pill,
       analysis: `Your digestive symptoms indicate potential enzyme insufficiency, which affects 30-40% of adults. Poor digestion leads to nutrient malabsorption and inflammation.`,
-      improvement: "Take enzymes 15-20 minutes before meals. Choose a formula with protease, lipase, and amylase. Start with smaller meals to reduce digestive burden. Drink warm water with lemon 30 minutes before eating to stimulate natural digestive juices.",
+      improvement: "Consider taking digestive support before meals. Choosing comprehensive formulations may be helpful. Starting with smaller portions and staying hydrated are commonly used approaches.",
       timeline: "Most people generally experience digestive comfort improvements within 1-2 weeks, with better nutrient absorption noticeable in 4-6 weeks. If digestive symptoms persist or worsen, consult a healthcare provider."
     });
 
@@ -789,7 +789,7 @@ const AssessmentResults = () => {
           { name: "Omega-3 EPA/DHA", dosage: "2000mg daily with food", selected: false }
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "Start with 500mg Lion's Mane and increase to 1000mg daily with meals. Take B-complex in the morning with breakfast. Implement the Pomodoro Technique consistently - use apps like Forest or Focus Keeper to track sessions.",
+        improvement: "Consider starting with lower amounts and gradually increasing as tolerated. Many people find taking B-vitamins in the morning works well. Time-blocking techniques may help improve focus - various apps are available to support this approach.",
         timeline: "Most people generally experience initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation. If cognitive symptoms persist or worsen, consult a healthcare provider."
       },
       {
@@ -841,7 +841,7 @@ const AssessmentResults = () => {
           { name: "Rhodiola Rosea", dosage: "300mg in morning", selected: false }
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "Take CoQ10 with fatty meals for better absorption. Start with lower doses and increase gradually. Combine with morning light exposure using a 10,000 lux light box for 15-30 minutes. Test ferritin levels and supplement iron bisglycinate if below 50 ng/mL.",
+        improvement: "Consider taking supplements with food for better absorption. Starting with lower amounts and increasing gradually may be helpful. Morning light exposure and checking nutrient levels with a healthcare provider may be beneficial approaches.",
         timeline: "Most people generally experience initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation. If fatigue symptoms persist or worsen, consult a healthcare provider."
       },
       {
@@ -886,7 +886,7 @@ const AssessmentResults = () => {
         category: 'diet',
         icon: Heart,
         analysis: "FODMAPs are poorly absorbed carbohydrates that ferment in the gut, causing bloating in sensitive individuals. 70-80% of people see significant improvement.",
-        improvement: "Use the Monash FODMAP app for guidance. Keep a detailed food and symptom diary during elimination and reintroduction phases. Start with strict elimination for 2-4 weeks, then systematically reintroduce one FODMAP group every 3 days.",
+        improvement: "Educational resources and apps are available to guide food elimination approaches. Keeping detailed records during dietary changes may be helpful. Systematic reintroduction approaches are commonly used.",
         timeline: "Most people generally see bloating reduction within 1-2 weeks of elimination. If bloating symptoms persist or worsen, consult a healthcare provider."
       },
       {
@@ -896,7 +896,7 @@ const AssessmentResults = () => {
         category: 'supplement',
         icon: Pill,
         analysis: "Bitter compounds stimulate vagus nerve activation and increase digestive enzyme production by 25-40%, improving food breakdown and reducing gas formation.",
-        improvement: "Start with 1-2 drops in water and increase gradually. Take consistently 15 minutes before meals. Try Swedish bitters or a blend containing gentian root, dandelion, and artichoke leaf for optimal digestive stimulation.",
+        improvement: "Consider starting with small amounts and increasing gradually. Taking before meals may be helpful. Various herbal bitter formulations are available and commonly used.",
         timeline: "Most people generally notice digestive improvements within 3-7 days. If digestive symptoms persist or worsen, consult a healthcare provider."
       },
       {
@@ -1021,7 +1021,7 @@ const AssessmentResults = () => {
         category: 'supplement',
         icon: Heart,
         analysis: "L-theanine increases alpha brain waves and GABA activity, reducing anxiety by 40-60% within 30-60 minutes. Magnesium is essential for GABA receptor function.",
-        improvement: "Take L-theanine 1-2 hours before stressful situations for best results. Take magnesium glycinate before bed for sustained calm. Practice box breathing: inhale for 4 counts, hold for 4, exhale for 4, hold for 4. Use progressive muscle relaxation techniques starting from toes to head.",
+        improvement: "Consider timing supplements appropriately for your routine. Various breathing techniques and relaxation methods are commonly used. Progressive relaxation approaches may be helpful.",
         timeline: "Most people generally experience immediate calming effects with L-theanine, with sustained improvements in 2-4 weeks. If anxiety symptoms persist or worsen, consult a healthcare provider."
       },
       {
