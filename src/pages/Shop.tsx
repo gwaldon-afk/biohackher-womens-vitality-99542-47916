@@ -75,7 +75,7 @@ const Shop = () => {
       symptoms: ["sleep", "anxiety", "muscle-tension"],
       image: "/api/placeholder/300/300",
       benefits: ["Improving sleep onset", "Reducing muscle tension", "Supporting nervous system"],
-      dosage: "Suggested Use: As a dietary supplement, take 2 capsules 30-60 minutes before bed",
+      dosage: "Suggested Use: Take 2 capsules 30-60 minutes before bed",
       brand: "Pure Encapsulations",
       inStock: true,
       featured: true
@@ -91,7 +91,7 @@ const Shop = () => {
       symptoms: ["sleep", "jet-lag", "shift-work"],
       image: "/api/placeholder/300/300",
       benefits: ["Regulating circadian rhythm", "Extending sleep duration", "Reducing wake-ups"],
-      dosage: "Suggested Use: As a dietary supplement, take 1 tablet 1-2 hours before bedtime",
+      dosage: "Suggested Use: Take 1 tablet 1-2 hours before bedtime",
       brand: "Natrol",
       inStock: true
     },
@@ -106,7 +106,7 @@ const Shop = () => {
       symptoms: ["sleep", "anxiety", "stress"],
       image: "/api/placeholder/300/300",
       benefits: ["Promoting calm alertness", "Reducing stress", "Improving sleep quality"],
-      dosage: "Suggested Use: As a dietary supplement, take 1-2 capsules before bed or during stress",
+      dosage: "Suggested Use: Take 1-2 capsules before bed or during stress",
       brand: "NOW Foods",
       inStock: true
     },
@@ -124,7 +124,7 @@ const Shop = () => {
       symptoms: ["hot-flashes", "mood-swings", "night-sweats"],
       image: "/api/placeholder/300/300",
       benefits: ["Reducing hot flash frequency", "Supporting hormone balance", "Improving mood"],
-      dosage: "Suggested Use: As a dietary supplement, take 1 capsule twice daily with meals",
+      dosage: "Suggested Use: Take 1 capsule twice daily with meals",
       brand: "Gaia Herbs",
       inStock: true,
       featured: true
@@ -140,7 +140,7 @@ const Shop = () => {
       symptoms: ["hot-flashes", "bone-health", "heart-health"],
       image: "/api/placeholder/300/300",
       benefits: ["Natural estrogen support", "Supporting bone health", "Supporting cardiovascular health"],
-      dosage: "Suggested Use: As a dietary supplement, take 2 capsules daily with food",
+      dosage: "Suggested Use: Take 2 capsules daily with food",
       brand: "Nature's Way",
       inStock: true
     },
@@ -158,7 +158,7 @@ const Shop = () => {
       symptoms: ["joint-pain", "inflammation", "arthritis"],
       image: "/api/placeholder/300/300",
       benefits: ["Powerful anti-inflammatory", "Relieving joint pain", "Supporting mobility"],
-      dosage: "Suggested Use: As a dietary supplement, take 2 capsules daily with meals",
+      dosage: "Suggested Use: Take 2 capsules daily with meals",
       brand: "NatureWise",
       inStock: true,
       featured: true
@@ -174,7 +174,7 @@ const Shop = () => {
       symptoms: ["joint-pain", "inflammation", "heart-health"],
       image: "/api/placeholder/300/300",
       benefits: ["Reducing inflammation", "Supporting joint mobility", "Supporting heart health"],
-      dosage: "Suggested Use: As a dietary supplement, take 2 softgels daily with meals",
+      dosage: "Suggested Use: Take 2 softgels daily with meals",
       brand: "Nordic Naturals",
       inStock: true
     },
@@ -189,7 +189,7 @@ const Shop = () => {
       symptoms: ["joint-pain", "cartilage-health", "mobility"],
       image: "/api/placeholder/300/300",
       benefits: ["Supporting cartilage", "Improving joint flexibility", "Enhancing mobility"],
-      dosage: "Suggested Use: As a dietary supplement, take 3 tablets daily with food",
+      dosage: "Suggested Use: Take 3 tablets daily with food",
       brand: "Doctor's Best",
       inStock: true
     },
@@ -206,7 +206,7 @@ const Shop = () => {
       symptoms: ["bloating", "indigestion", "nutrient-absorption"],
       image: "/api/placeholder/300/300",
       benefits: ["Improving digestion", "Reducing bloating", "Enhancing nutrient absorption"],
-      dosage: "Suggested Use: As a dietary supplement, take 1-2 capsules with each meal",
+      dosage: "Suggested Use: Take 1-2 capsules with each meal",
       brand: "Enzymedica",
       inStock: true,
       featured: true
@@ -223,7 +223,7 @@ const Shop = () => {
       symptoms: ["gut-health", "immunity", "mood"],
       image: "/api/placeholder/300/300",
       benefits: ["Supporting digestive balance", "Supporting immune system", "Supporting mood regulation"],
-      dosage: "Suggested Use: As a dietary supplement, take 1 capsule daily with or without food",
+      dosage: "Suggested Use: Take 1 capsule daily with or without food",
       brand: "Garden of Life",
       inStock: true
     },
@@ -238,7 +238,7 @@ const Shop = () => {
       symptoms: ["constipation", "gut-health", "blood-sugar"],
       image: "/api/placeholder/300/300",
       benefits: ["Supporting regularity", "Feeding beneficial bacteria", "Supporting blood sugar balance"],
-      dosage: "Suggested Use: As a dietary supplement, mix 1 scoop in 8oz water daily",
+      dosage: "Suggested Use: Mix 1 scoop in 8oz water daily",
       brand: "Heather's Tummy Care",
       inStock: true
     },
@@ -255,7 +255,7 @@ const Shop = () => {
       symptoms: ["brain-fog", "memory", "focus"],
       image: "/api/placeholder/300/300",
       benefits: ["Supporting cognitive function", "Supporting nerve growth factor", "Enhancing mental clarity"],
-      dosage: "Suggested Use: As a dietary supplement, take 2 capsules daily with food",
+      dosage: "Suggested Use: Take 2 capsules daily with food",
       brand: "Host Defense",
       inStock: true
     },
@@ -270,7 +270,7 @@ const Shop = () => {
       symptoms: ["brain-fog", "energy", "mood"],
       image: "/api/placeholder/300/300",
       benefits: ["Supporting mental energy", "Supporting neurotransmitters", "Building stress resilience"],
-      dosage: "Suggested Use: As a dietary supplement, take 1 capsule daily with breakfast",
+      dosage: "Suggested Use: Take 1 capsule daily with breakfast",
       brand: "Thorne",
       inStock: true
     }
