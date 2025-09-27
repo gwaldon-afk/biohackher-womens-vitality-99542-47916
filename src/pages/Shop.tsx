@@ -242,6 +242,66 @@ const Shop = () => {
       brand: "Heather's Tummy Care",
       inStock: true
     },
+    {
+      id: "gut-betaine-hcl",
+      name: "Betaine HCl with Pepsin",
+      description: "Supports protein digestion and stomach acid production for optimal nutrient breakdown",
+      price: 27.99,
+      rating: 4.4,
+      reviews: 423,
+      category: "gut",
+      symptoms: ["bloating", "protein-digestion", "nutrient-absorption"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Supporting protein digestion", "Enhancing stomach acid production", "Improving nutrient breakdown"],
+      dosage: "Suggested Use: Take 1 capsule with protein-containing meals",
+      brand: "Thorne",
+      inStock: true
+    },
+    {
+      id: "gut-l-glutamine",
+      name: "L-Glutamine Powder",
+      description: "Pure L-glutamine amino acid to support intestinal lining and gut barrier function",
+      price: 29.99,
+      rating: 4.7,
+      reviews: 645,
+      category: "gut",
+      symptoms: ["gut-health", "intestinal-permeability", "recovery"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Supporting gut lining", "Enhancing intestinal barrier", "Supporting recovery"],
+      dosage: "Suggested Use: Take 5g twice daily between meals",
+      brand: "NOW Foods",
+      inStock: true
+    },
+    {
+      id: "gut-swedish-bitters",
+      name: "Swedish Bitters Complex",
+      description: "Traditional herbal blend with gentian root, dandelion, and artichoke to stimulate digestion",
+      price: 24.99,
+      rating: 4.3,
+      reviews: 287,
+      category: "gut",
+      symptoms: ["bloating", "poor-digestion", "appetite"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Stimulating digestive enzymes", "Supporting appetite", "Enhancing digestion"],
+      dosage: "Suggested Use: Take 1-2 drops in water, 15 minutes before each meal",
+      brand: "Gaia Herbs",
+      inStock: true
+    },
+    {
+      id: "gut-gentian-root",
+      name: "Gentian Root Extract",
+      description: "Pure gentian root extract to support digestive function and bile production",
+      price: 21.99,
+      rating: 4.2,
+      reviews: 198,
+      category: "gut",
+      symptoms: ["poor-digestion", "bloating", "appetite"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Supporting bile production", "Enhancing digestive function", "Stimulating appetite"],
+      dosage: "Suggested Use: Take 1 capsule 20 minutes before meals",
+      brand: "Planetary Herbals",
+      inStock: true
+    },
 
     // Brain Fog Products
     {
