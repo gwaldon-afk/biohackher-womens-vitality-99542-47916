@@ -289,9 +289,9 @@ const Dashboard = () => {
             Welcome back, <span className="gradient-text">Sarah</span>
           </h1>
           
-          <div className="flex flex-col lg:flex-row gap-8 items-start">
+          <div className="flex flex-col md:flex-row gap-8 items-start">
             {/* Daily Longevity Inputs - Left Side */}
-            <div className="lg:w-1/2">
+            <div className="md:w-1/2">
               <LISInputForm onScoreCalculated={fetchScoreHistory}>
                 <Card className="bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
                   <CardHeader>
@@ -431,7 +431,7 @@ const Dashboard = () => {
             </div>
 
             {/* Action Buttons - Right Side */}
-            <div className="lg:w-1/2">
+            <div className="md:w-1/2">
               <div className="grid grid-cols-2 gap-4">
                 <Button 
                   variant="outline" 
