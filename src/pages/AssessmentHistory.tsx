@@ -18,6 +18,7 @@ interface SymptomAssessment {
   primary_issues: string[];
   completed_at: string;
   recommendations: any;
+  answers?: any;
 }
 
 interface TrendData {
@@ -199,7 +200,8 @@ const AssessmentHistory = () => {
           
           <h1 className="text-3xl font-bold mb-2 gradient-text">Assessment History</h1>
           <p className="text-muted-foreground">
-            Review your completed symptom assessments and track your progress over time
+            Review your completed symptom assessments and track your progress over time. 
+            <span className="font-medium text-primary"> Click any assessment card to view detailed results and personalized recommendations.</span>
           </p>
         </div>
 
@@ -229,7 +231,20 @@ const AssessmentHistory = () => {
                   const SymptomIcon = getSymptomIcon(assessment.symptom_type);
                   
                   return (
-                    <Card key={assessment.id} className="hover:shadow-md transition-shadow">
+                    <Card 
+                      key={assessment.id} 
+                      className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
+                      onClick={() => {
+                        // Navigate to assessment results page
+                        const params = new URLSearchParams();
+                        if (assessment.answers) {
+                          Object.entries(assessment.answers).forEach(([key, value]) => {
+                            params.append(`q${key}`, value as string);
+                          });
+                        }
+                        navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
+                      }}
+                    >
                       <CardHeader>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -266,6 +281,23 @@ const AssessmentHistory = () => {
                                 </Badge>
                               ))}
                             </div>
+                            <div className="mt-3 pt-2 border-t border-border">
+                              <p className="text-xs text-primary font-medium flex items-center gap-1">
+                                <FileText className="h-3 w-3" />
+                                Click to view detailed results and recommendations
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      )}
+                      
+                      {assessment.primary_issues.length === 0 && (
+                        <CardContent className="pt-0">
+                          <div className="pt-2 border-t border-border">
+                            <p className="text-xs text-primary font-medium flex items-center gap-1">
+                              <FileText className="h-3 w-3" />
+                              Click to view detailed results and recommendations
+                            </p>
                           </div>
                         </CardContent>
                       )}
