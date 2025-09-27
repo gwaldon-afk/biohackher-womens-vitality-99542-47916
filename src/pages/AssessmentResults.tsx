@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart } from "lucide-react";
 import Navigation from "@/components/Navigation";
@@ -38,6 +40,7 @@ const AssessmentResults = () => {
   
   const [score, setScore] = useState<AssessmentScore | null>(null);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [selectedRecommendationCategory, setSelectedRecommendationCategory] = useState("all");
   const [isSaving, setIsSaving] = useState(false);
   
   useEffect(() => {
@@ -910,138 +913,119 @@ const AssessmentResults = () => {
 
         {/* Recommendations */}
         <div className="w-full">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-            {/* All Recommendations Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">All</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Complete approach</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <Pill className="h-6 w-6 text-primary" />
+            {getSymptomName(symptomId!)} Recommendations
+          </h2>
+          
+          {/* Radio Button Categories */}
+          <div className="mb-6">
+            <RadioGroup 
+              value={selectedRecommendationCategory} 
+              onValueChange={setSelectedRecommendationCategory}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="all" />
+                <Label htmlFor="all" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} All
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="routine" id="routine" />
+                <Label htmlFor="routine" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} Routines
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="supplement" id="supplement" />
+                <Label htmlFor="supplement" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} Supplements
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="diet" id="diet" />
+                <Label htmlFor="diet" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} Diet
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="lifestyle" id="lifestyle" />
+                <Label htmlFor="lifestyle" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} Lifestyle
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="therapy" id="therapy" />
+                <Label htmlFor="therapy" className="font-medium cursor-pointer">
+                  {getSymptomName(symptomId!)} Therapy
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+          
+          {/* Detailed Recommendations */}
+          <div className="grid gap-4">
+            {(selectedRecommendationCategory === "all" 
+              ? recommendations 
+              : recommendations.filter(rec => rec.category === selectedRecommendationCategory)
+            ).map((rec, index) => (
+              <Card key={index} className={`${rec.priority === 'high' ? 'border-l-4 border-l-destructive' : rec.priority === 'medium' ? 'border-l-4 border-l-warning' : ''}`}>
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg">
+                      <rec.icon className="h-5 w-5 text-primary" />
                     </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Routines Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">Routines</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Wind-down practices</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.filter(rec => rec.category === 'routine').map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
+                       <div className="flex items-center gap-2 mb-2">
+                         <h3 className="font-semibold">{rec.title}</h3>
+                         {getPriorityIcon(rec.priority)}
+                         <Badge variant="outline" className="text-xs">
+                           {rec.category}
+                         </Badge>
+                       </div>
+                       <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
+                       
+                       {rec.analysis && (
+                         <div className="bg-primary/5 p-3 rounded-lg mb-3">
+                           <h4 className="text-sm font-medium text-primary mb-1">Personalized Analysis</h4>
+                           <p className="text-xs text-muted-foreground">{rec.analysis}</p>
+                         </div>
+                       )}
+                       
+                       {rec.improvement && (
+                         <div className="bg-success/5 p-3 rounded-lg mb-3">
+                           <h4 className="text-sm font-medium text-success mb-1">Implementation Strategy</h4>
+                           <p className="text-xs text-muted-foreground">{rec.improvement}</p>
+                         </div>
+                       )}
+                       
+                       {rec.timeline && (
+                         <div className="bg-warning/5 p-3 rounded-lg">
+                           <h4 className="text-sm font-medium text-warning mb-1">Expected Timeline</h4>
+                           <p className="text-xs text-muted-foreground">{rec.timeline}</p>
+                         </div>
+                       )}
                     </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Supplements Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">Supplements</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Natural support</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.filter(rec => rec.category === 'supplement').map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Diet Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">Diet</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Sleep-friendly foods</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.filter(rec => rec.category === 'diet').map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Lifestyle Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">Lifestyle</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Daily habits</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.filter(rec => rec.category === 'lifestyle').map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Therapy Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex flex-col items-center p-4 h-auto min-h-[80px] bg-background hover:bg-muted">
-                  <span className="font-medium">Therapy</span>
-                  <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">Relaxation techniques</span>
-                  <ChevronDown className="h-4 w-4 mt-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border shadow-lg z-50">
-                {recommendations.filter(rec => rec.category === 'therapy').map((rec, index) => (
-                  <DropdownMenuItem key={index} className="flex items-start gap-3 p-4 hover:bg-muted">
-                    <rec.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">{rec.title}</h4>
-                      <p className="text-sm text-muted-foreground">{rec.description}</p>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {(selectedRecommendationCategory === "all" 
+              ? recommendations 
+              : recommendations.filter(rec => rec.category === selectedRecommendationCategory)
+            ).length === 0 && (
+              <div className="text-center py-8">
+                <Pill className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground">No recommendations available for this category.</p>
+              </div>
+            )}
           </div>
         </div>
 
