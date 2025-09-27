@@ -289,26 +289,11 @@ const Dashboard = () => {
             Welcome back, <span className="gradient-text">Sarah</span>
           </h1>
           
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
-            {/* History Button */}
-            <div className="order-2 lg:order-1">
-              <Button 
-                variant="outline" 
-                className="h-32 w-40 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-                onClick={() => navigate('/assessment-history')}
-              >
-                <History className="h-6 w-6" />
-                <div className="text-center">
-                  <div className="font-medium">Assessment</div>
-                  <div className="font-medium">History</div>
-                </div>
-              </Button>
-            </div>
-
-            {/* Daily Longevity Inputs - Center */}
-            <div className="order-1 lg:order-2">
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Daily Longevity Inputs - Left Side */}
+            <div className="lg:w-1/2">
               <LISInputForm onScoreCalculated={fetchScoreHistory}>
-                <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
+                <Card className="bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
                   <CardHeader>
                     <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
                     <CardDescription className="text-gray-600">
@@ -445,18 +430,55 @@ const Dashboard = () => {
               </LISInputForm>
             </div>
 
-            {/* Reports Button */}
-            <div className="order-3">
-              <Button 
-                variant="outline" 
-                className="h-32 w-40 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-                onClick={() => navigate('/reports')}
-              >
-                <FileText className="h-6 w-6" />
-                <div className="text-center">
-                  <div className="font-medium">Reports</div>
-                </div>
-              </Button>
+            {/* Action Buttons - Right Side */}
+            <div className="lg:w-1/2">
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-32 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+                  onClick={() => navigate('/assessment-history')}
+                >
+                  <History className="h-6 w-6" />
+                  <div className="text-center">
+                    <div className="font-medium">Assessment</div>
+                    <div className="font-medium">History</div>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-32 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+                  onClick={() => navigate('/reports')}
+                >
+                  <FileText className="h-6 w-6" />
+                  <div className="text-center">
+                    <div className="font-medium">Reports</div>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-32 flex-col gap-3 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
+                  onClick={() => navigate('/symptoms')}
+                >
+                  <FileText className="h-6 w-6" />
+                  <div className="text-center">
+                    <div className="font-medium">Take</div>
+                    <div className="font-medium">Assessment</div>
+                  </div>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-32 flex-col gap-3 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
+                >
+                  <Activity className="h-6 w-6" />
+                  <div className="text-center">
+                    <div className="font-medium">Sync</div>
+                    <div className="font-medium">Wearables</div>
+                  </div>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -643,21 +665,6 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Data Input Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button 
-            variant="outline" 
-            className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
-            onClick={() => navigate('/symptoms')}
-          >
-            <FileText className="h-5 w-5" />
-            Take Assessment
-          </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Activity className="h-5 w-5" />
-            Sync Wearables
-          </Button>
-        </div>
       </main>
     </div>
   );
