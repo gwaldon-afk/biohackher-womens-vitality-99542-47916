@@ -736,6 +736,18 @@ const AssessmentResults = () => {
       priority: 'high',
       category: 'supplement',
       icon: Pill,
+      supplements: [
+        {
+          name: "Full-Spectrum Digestive Enzymes",
+          dosage: "Take 1-2 capsules with each meal",
+          selected: true
+        },
+        {
+          name: "Betaine HCl with Pepsin",
+          dosage: "Take 1 capsule with protein-containing meals",
+          selected: false
+        }
+      ],
       analysis: `Your digestive symptoms indicate potential enzyme insufficiency, which affects 30-40% of adults. Poor digestion leads to nutrient malabsorption and inflammation.`,
       improvement: "General recommended approach is taking digestive enzymes 15-20 minutes before meals. Choose a formula with protease, lipase, and amylase. Start with smaller meals to reduce digestive burden. For your specific recommended dosage, consult a healthcare professional.",
       timeline: "Most people generally experience digestive comfort improvements within 1-2 weeks, with better nutrient absorption noticeable in 4-6 weeks. If digestive symptoms persist or worsen, consult a healthcare provider."
@@ -767,7 +779,24 @@ const AssessmentResults = () => {
         description: "Include probiotic-rich foods and consider a high-quality multi-strain probiotic (50+ billion CFU) to support gut-brain communication.",
         priority: 'medium',
         category: 'supplement',
-        icon: Brain
+        icon: Brain,
+        supplements: [
+          {
+            name: "50 Billion CFU Probiotic",
+            dosage: "Take 1 capsule daily with or without food",
+            selected: true
+          },
+          {
+            name: "Prebiotic Fibre Complex",
+            dosage: "Mix 1 scoop in 8oz water daily",
+            selected: false
+          },
+          {
+            name: "L-Glutamine Powder",
+            dosage: "Take 5g twice daily between meals",
+            selected: false
+          }
+        ]
       });
     }
 
@@ -895,6 +924,18 @@ const AssessmentResults = () => {
         priority: 'high',
         category: 'supplement',
         icon: Pill,
+        supplements: [
+          {
+            name: "Swedish Bitters Complex",
+            dosage: "Take 1-2 drops in water, 15 minutes before each meal",
+            selected: true
+          },
+          {
+            name: "Gentian Root Extract",
+            dosage: "Take 1 capsule 20 minutes before meals",
+            selected: false
+          }
+        ],
         analysis: "Bitter compounds stimulate vagus nerve activation and increase digestive enzyme production by 25-40%, improving food breakdown and reducing gas formation.",
         improvement: "General recommended dosages are 1-2 drops of digestive bitters in water, taken 15 minutes before each meal. Try Swedish bitters or blends containing gentian root, dandelion, and artichoke leaf. For your specific recommended dosage, consult a healthcare professional.",
         timeline: "Most people generally notice digestive improvements within 3-7 days. If digestive symptoms persist or worsen, consult a healthcare provider."
