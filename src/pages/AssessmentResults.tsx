@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -465,8 +465,28 @@ const AssessmentResults = () => {
         return generateJointPainRecommendations(score, answers);
       case 'gut':
         return generateGutRecommendations(score, answers);
+      case 'brain-fog':
+        return generateBrainFogRecommendations(score, answers);
+      case 'energy-levels':
+        return generateEnergyRecommendations(score, answers);
+      case 'bloating':
+        return generateBloatingRecommendations(score, answers);
+      case 'weight-changes':
+        return generateWeightRecommendations(score, answers);
+      case 'hair-thinning':
+        return generateHairRecommendations(score, answers);
+      case 'anxiety':
+        return generateAnxietyRecommendations(score, answers);
+      case 'irregular-periods':
+        return generatePeriodRecommendations(score, answers);
+      case 'headaches':
+        return generateHeadacheRecommendations(score, answers);
+      case 'night-sweats':
+        return generateNightSweatRecommendations(score, answers);
+      case 'memory-issues':
+        return generateMemoryRecommendations(score, answers);
       default:
-        return generateGenericRecommendations(symptomType, score);
+        return generateDefaultRecommendations(symptomType, score);
     }
   };
 
@@ -664,21 +684,452 @@ const AssessmentResults = () => {
     return recs;
   };
 
-  const generateGenericRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
+  const generateBrainFogRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Comprehensive Assessment Complete",
-        description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalized treatment options.",
-        priority: 'medium',
-        category: 'lifestyle',
-        icon: CheckCircle2
+        title: "Lion's Mane Mushroom",
+        description: "Take 1000mg of standardized Lion's Mane extract daily to support nerve growth factor and cognitive function.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Brain,
+        analysis: "Lion's Mane contains hericenones and erinacines that stimulate NGF production, improving cognitive clarity and memory formation. Studies show 30-40% improvement in cognitive function within 4-8 weeks.",
+        improvement: "Start with 500mg and increase to 1000mg daily. Take with meals for better absorption.",
+        timeline: "Initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks"
       },
       {
-        title: "Holistic Wellness Approach",
-        description: "Focus on sleep quality, stress management, regular exercise, and anti-inflammatory nutrition to support overall health.",
+        title: "Cognitive Load Management",
+        description: "Use time-blocking with 25-minute focused work sessions followed by 5-minute breaks to optimize mental performance.",
+        priority: 'high',
+        category: 'routine',
+        icon: Brain,
+        analysis: "The Pomodoro Technique reduces cognitive overload and allows the prefrontal cortex to reset, improving focus and reducing mental fatigue.",
+        improvement: "Start with 3-4 sessions daily and track your focus quality. Use apps like Forest or Focus Keeper for consistency.",
+        timeline: "Immediate improvement in task completion, with sustained focus gains within 2-3 weeks"
+      },
+      {
+        title: "B-Complex with Methylated Forms",
+        description: "Take a high-quality B-complex with methylated B12 (1000mcg) and folate (400mcg) to support brain energy metabolism.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "B vitamins are essential for neurotransmitter synthesis and mitochondrial function in brain cells. Methylated forms bypass genetic variations affecting absorption.",
+        improvement: "Take in the morning with breakfast. Look for forms containing methylcobalamin and 5-MTHF.",
+        timeline: "Energy and clarity improvements within 2-4 weeks of consistent use"
+      },
+      {
+        title: "Intermittent Fasting 16:8",
+        description: "Practice a 16-hour fasting window to stimulate BDNF production and enhance neuroplasticity.",
+        priority: 'medium',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Intermittent fasting increases BDNF by 200-400%, promoting new neural connections and improving cognitive function.",
+        improvement: "Start with 12-hour fasts and gradually extend to 16 hours. Maintain consistent eating windows.",
+        timeline: "Mental clarity improvements typically begin within 1-2 weeks"
+      }
+    ];
+  };
+
+  const generateEnergyRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Mitochondrial Support Stack",
+        description: "Take CoQ10 (200mg), PQQ (20mg), and Alpha-Lipoic Acid (300mg) daily to enhance cellular energy production.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Battery,
+        analysis: "These compounds work synergistically to improve mitochondrial efficiency and biogenesis. Studies show 25-40% improvement in energy levels within 4-6 weeks.",
+        improvement: "Take with fatty meals for better absorption. Start with lower doses and increase gradually.",
+        timeline: "Initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks"
+      },
+      {
+        title: "Circadian Light Therapy",
+        description: "Get 15-30 minutes of bright light (10,000 lux) within 30 minutes of waking to optimize circadian rhythm.",
+        priority: 'high',
+        category: 'routine',
+        icon: Lightbulb,
+        analysis: "Light exposure regulates cortisol and melatonin rhythms, directly impacting energy levels throughout the day. Proper circadian timing can increase daytime energy by 30-50%.",
+        improvement: "Use a light therapy box or get natural sunlight. Avoid bright light 3 hours before bed.",
+        timeline: "Energy pattern improvements within 3-7 days of consistent exposure"
+      },
+      {
+        title: "Iron and Ferritin Optimization",
+        description: "Test ferritin levels and aim for 50-70 ng/mL. Supplement with iron bisglycinate if deficient.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Heart,
+        analysis: "Low iron is the #1 cause of fatigue in women. Even borderline low ferritin (below 50) can cause significant energy issues.",
+        improvement: "Take iron with vitamin C, away from calcium and coffee. Monitor levels every 3 months.",
+        timeline: "Energy improvements typically seen 4-6 weeks after iron levels normalize"
+      },
+      {
+        title: "Adaptogenic Protocol",
+        description: "Use Rhodiola (300mg) in morning and Ashwagandha (600mg) in evening to support adrenal function.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Shield,
+        analysis: "Adaptogens help regulate cortisol patterns and improve stress resilience, leading to more stable energy levels throughout the day.",
+        improvement: "Cycle adaptogens: 6 weeks on, 1 week off. Start with one at a time to assess tolerance.",
+        timeline: "Stress resilience improvements in 1-2 weeks, with sustained energy gains in 3-4 weeks"
+      }
+    ];
+  };
+
+  const generateBloatingRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "FODMAP Elimination Protocol",
+        description: "Follow a low-FODMAP diet for 2-4 weeks, then systematically reintroduce foods to identify triggers.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart,
+        analysis: "FODMAPs are poorly absorbed carbohydrates that ferment in the gut, causing bloating in sensitive individuals. 70-80% of people see significant improvement.",
+        improvement: "Use the Monash FODMAP app for guidance. Keep a detailed food and symptom diary during reintroduction.",
+        timeline: "Bloating reduction typically seen within 1-2 weeks of elimination"
+      },
+      {
+        title: "Digestive Bitters Protocol",
+        description: "Take digestive bitters (gentian root, dandelion) 15 minutes before each meal to stimulate digestive enzymes.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Bitter compounds stimulate vagus nerve activation and increase digestive enzyme production by 25-40%, improving food breakdown and reducing gas formation.",
+        improvement: "Start with 1-2 drops in water and increase gradually. Take consistently before meals.",
+        timeline: "Digestive improvements often noticed within 3-7 days"
+      },
+      {
+        title: "Diaphragmatic Breathing Practice",
+        description: "Practice deep belly breathing for 5 minutes before meals to activate the parasympathetic nervous system.",
+        priority: 'medium',
+        category: 'routine',
+        icon: Heart,
+        analysis: "Proper breathing activates the 'rest and digest' mode, optimizing stomach acid and enzyme production for better digestion.",
+        improvement: "Place one hand on chest, one on belly. Focus on expanding the belly while keeping chest still.",
+        timeline: "Immediate improvements in meal comfort, with long-term digestive benefits in 2-3 weeks"
+      },
+      {
+        title: "Probiotic Rotation",
+        description: "Use different probiotic strains monthly: Lactobacillus, Bifidobacterium, and Saccharomyces boulardii.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Different probiotic strains target various aspects of gut health. Rotation prevents tolerance and maintains microbial diversity.",
+        improvement: "Start with 25-50 billion CFU and increase gradually. Take away from hot foods and antibiotics.",
+        timeline: "Gut flora improvements typically develop over 4-8 weeks"
+      }
+    ];
+  };
+
+  const generateWeightRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Intermittent Fasting 16:8",
+        description: "Implement a 16-hour fasting window with an 8-hour eating period to optimize hormone balance and metabolism.",
+        priority: 'high',
+        category: 'diet',
+        icon: Scale,
+        analysis: "IF improves insulin sensitivity by 30-40% and increases growth hormone production, promoting fat metabolism while preserving muscle mass.",
+        improvement: "Start with 12 hours and gradually extend. Eat your first meal at noon and last meal by 8 PM.",
+        timeline: "Metabolic improvements in 1-2 weeks, with visible changes in 4-6 weeks"
+      },
+      {
+        title: "Resistance Training Protocol",
+        description: "Perform full-body strength training 3x per week to maintain muscle mass and boost metabolic rate.",
+        priority: 'high',
+        category: 'therapy',
+        icon: Heart,
+        analysis: "Resistance training increases metabolic rate by 7-15% for up to 72 hours post-workout and preserves muscle during weight loss.",
+        improvement: "Focus on compound movements: squats, deadlifts, presses. Progress weight by 2.5-5% weekly.",
+        timeline: "Strength gains in 2-3 weeks, body composition changes in 6-8 weeks"
+      },
+      {
+        title: "Protein Timing Optimization",
+        description: "Consume 25-30g protein within 30 minutes of waking and after workouts to support muscle synthesis.",
+        priority: 'high',
+        category: 'diet',
+        icon: Pill,
+        analysis: "Strategic protein timing maximizes muscle protein synthesis and thermogenesis, increasing calorie burn by 8-15%.",
+        improvement: "Aim for 1.2-1.6g protein per kg body weight daily, distributed evenly across meals.",
+        timeline: "Improved satiety and energy stability within 1-2 weeks"
+      },
+      {
+        title: "Thyroid Support Protocol",
+        description: "Ensure adequate iodine, selenium, and zinc intake. Consider thyroid testing if weight loss stalls.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Shield,
+        analysis: "Thyroid function directly affects metabolic rate. Micronutrient deficiencies can reduce thyroid hormone production by 10-20%.",
+        improvement: "Include seaweed, Brazil nuts, and oysters in diet. Test TSH, T3, T4, and reverse T3.",
+        timeline: "Thyroid optimization effects seen in 6-12 weeks"
+      }
+    ];
+  };
+
+  const generateHairRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Scalp Massage with Rosemary Oil",
+        description: "Massage scalp with diluted rosemary oil (2-3 drops in carrier oil) for 5 minutes daily to stimulate circulation.",
+        priority: 'high',
+        category: 'routine',
+        icon: Scissors,
+        analysis: "Rosemary oil increases scalp circulation by 30-40% and has been shown to be as effective as 2% minoxidil for hair regrowth.",
+        improvement: "Mix with jojoba or coconut oil. Massage in circular motions and leave for 30 minutes before washing.",
+        timeline: "New hair growth typically visible after 3-4 months of consistent use"
+      },
+      {
+        title: "Iron and Ferritin Optimization",
+        description: "Target ferritin levels of 70-100 ng/mL for optimal hair growth. Supplement with iron bisglycinate if needed.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Heart,
+        analysis: "Ferritin below 70 ng/mL is associated with hair thinning in women. Optimal iron stores are essential for hair follicle health.",
+        improvement: "Take iron with vitamin C, away from calcium. Monitor levels every 3 months to avoid excess.",
+        timeline: "Hair growth improvements typically seen 3-6 months after ferritin optimization"
+      },
+      {
+        title: "Collagen Peptides",
+        description: "Take 10-15g hydrolyzed collagen peptides daily to provide amino acids for hair structure and growth.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Collagen provides glycine, proline, and hydroxyproline - key amino acids for hair keratin production and follicle health.",
+        improvement: "Take on empty stomach or with vitamin C. Choose grass-fed, marine, or bovine sources.",
+        timeline: "Hair strength improvements in 6-8 weeks, thickness gains in 3-4 months"
+      },
+      {
+        title: "DHT-Blocking Protocol",
+        description: "Use saw palmetto (320mg) and pumpkin seed oil to help block DHT, a hormone that causes hair follicle miniaturization.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Shield,
+        analysis: "DHT causes 95% of pattern hair loss. Natural DHT blockers can reduce levels by 20-30% without hormonal side effects.",
+        improvement: "Take saw palmetto with meals. Combine with topical pumpkin seed oil applications.",
+        timeline: "DHT reduction effects on hair loss visible after 3-6 months"
+      }
+    ];
+  };
+
+  const generateAnxietyRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "GABA Support Protocol",
+        description: "Take L-theanine (200mg) and magnesium glycinate (400mg) to support calming neurotransmitter function.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Heart,
+        analysis: "L-theanine increases alpha brain waves and GABA activity, reducing anxiety by 40-60% within 30-60 minutes. Magnesium is essential for GABA receptor function.",
+        improvement: "Take L-theanine 1-2 hours before stressful situations. Take magnesium before bed for sustained calm.",
+        timeline: "Immediate calming effects with L-theanine, with sustained improvements in 2-4 weeks"
+      },
+      {
+        title: "Box Breathing Technique",
+        description: "Practice 4-4-4-4 breathing (inhale 4, hold 4, exhale 4, hold 4) for 5-10 minutes, 3 times daily.",
+        priority: 'high',
+        category: 'routine',
+        icon: Heart,
+        analysis: "Box breathing activates the parasympathetic nervous system, reducing cortisol by 25-40% and lowering heart rate variability.",
+        improvement: "Use apps like Breathe or practice during daily transitions. Start with 2-minute sessions.",
+        timeline: "Immediate anxiety relief, with cumulative stress resilience building over 2-3 weeks"
+      },
+      {
+        title: "Cold Exposure Adaptation",
+        description: "Take 1-2 minute cold showers to build stress resilience and improve autonomic nervous system balance.",
+        priority: 'medium',
+        category: 'therapy',
+        icon: Thermometer,
+        analysis: "Controlled cold stress increases norepinephrine and improves stress tolerance by 20-30%. It also boosts mood-regulating neurotransmitters.",
+        improvement: "Start with 30-second cold finishes and gradually extend. Focus on controlled breathing during exposure.",
+        timeline: "Stress resilience improvements typically seen within 2-3 weeks"
+      },
+      {
+        title: "Ashwagandha KSM-66",
+        description: "Take 600mg of standardized ashwagandha extract daily to reduce cortisol and anxiety symptoms.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Shield,
+        analysis: "KSM-66 ashwagandha reduces cortisol levels by 25-30% and anxiety scores by 40-50% in clinical studies.",
+        improvement: "Take with meals to improve absorption. Cycle 6 weeks on, 1 week off.",
+        timeline: "Anxiety reduction typically begins within 1-2 weeks, with peak benefits at 4-6 weeks"
+      }
+    ];
+  };
+
+  const generatePeriodRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Seed Cycling Protocol",
+        description: "Eat pumpkin and flax seeds days 1-14, then sesame and sunflower seeds days 15-28 to support hormone balance.",
+        priority: 'high',
+        category: 'diet',
+        icon: Calendar,
+        analysis: "Seed cycling provides specific nutrients that support estrogen and progesterone production at different cycle phases, helping regulate irregular cycles.",
+        improvement: "Grind seeds fresh daily (1-2 tablespoons each). Add to smoothies, yogurt, or salads.",
+        timeline: "Cycle regulation improvements typically seen within 2-3 cycles"
+      },
+      {
+        title: "Vitex (Chasteberry)",
+        description: "Take 400mg standardized vitex extract in the morning to support progesterone production and cycle regularity.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Calendar,
+        analysis: "Vitex acts on the pituitary gland to increase LH production, leading to better progesterone levels and more regular cycles.",
+        improvement: "Take consistently for at least 3 cycles to see effects. Best taken on empty stomach in morning.",
+        timeline: "Cycle improvements typically begin within 2-3 months of consistent use"
+      },
+      {
+        title: "Stress Reduction Protocol",
+        description: "Practice daily meditation and keep cortisol levels low, as chronic stress disrupts reproductive hormones.",
+        priority: 'high',
+        category: 'routine',
+        icon: Heart,
+        analysis: "Elevated cortisol suppresses GnRH, LH, and FSH, leading to irregular cycles. Stress management can restore normal cycles in 60-80% of cases.",
+        improvement: "Aim for 10-20 minutes daily meditation. Include yoga, nature walks, or other stress-reducing activities.",
+        timeline: "Hormonal improvements typically seen within 1-2 cycles of consistent stress management"
+      },
+      {
+        title: "Inositol Supplementation",
+        description: "Take 2-4g myo-inositol daily to improve insulin sensitivity and support healthy ovulation patterns.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Inositol improves insulin sensitivity and reduces androgen levels, particularly beneficial for PCOS-related irregular cycles.",
+        improvement: "Start with 2g daily and increase to 4g if needed. Take with meals to reduce GI upset.",
+        timeline: "Ovulation improvements typically seen within 2-3 cycles"
+      }
+    ];
+  };
+
+  const generateHeadacheRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Magnesium Malate",
+        description: "Take 400-600mg magnesium malate daily for migraine prevention and tension headache relief.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Magnesium deficiency is present in 50% of migraine sufferers. Supplementation can reduce headache frequency by 40-50%.",
+        improvement: "Split dose between morning and evening. Take with food to prevent GI upset.",
+        timeline: "Headache frequency reduction typically seen within 4-6 weeks"
+      },
+      {
+        title: "Hydration Optimization",
+        description: "Drink 35ml per kg body weight daily with electrolytes to prevent dehydration-induced headaches.",
+        priority: 'high',
+        category: 'lifestyle',
+        icon: Droplets,
+        analysis: "Even mild dehydration (2-3%) can trigger headaches. Proper hydration with electrolytes prevents 60-70% of dehydration headaches.",
+        improvement: "Add a pinch of sea salt and lemon to water. Drink consistently throughout the day.",
+        timeline: "Immediate improvement in dehydration headaches, with better prevention within 1-2 weeks"
+      },
+      {
+        title: "Neck and Jaw Release",
+        description: "Perform daily myofascial release of neck, shoulders, and jaw muscles to reduce tension headaches.",
+        priority: 'medium',
+        category: 'therapy',
+        icon: Heart,
+        analysis: "Trigger points in neck and jaw muscles refer pain to the head. Regular release can reduce tension headache frequency by 50-70%.",
+        improvement: "Use tennis ball or foam roller for 5-10 minutes daily. Focus on suboccipital and SCM muscles.",
+        timeline: "Tension relief within minutes, with long-term headache reduction in 2-4 weeks"
+      },
+      {
+        title: "Riboflavin (B2) Protocol",
+        description: "Take 400mg riboflavin daily for migraine prevention, particularly effective for hormonal migraines.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Riboflavin improves mitochondrial function in brain cells. Studies show 50% reduction in migraine frequency after 3 months.",
+        improvement: "Take with food to improve absorption. May cause bright yellow urine (harmless).",
+        timeline: "Migraine prevention effects typically seen after 2-3 months of consistent use"
+      }
+    ];
+  };
+
+  const generateNightSweatRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Black Cohosh Extract",
+        description: "Take 40-80mg standardized black cohosh extract daily to reduce night sweat frequency and intensity.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Thermometer,
+        analysis: "Black cohosh has phytoestrogenic effects that can reduce night sweats by 50-75% through hormone receptor modulation.",
+        improvement: "Start with 40mg and increase if needed. Take with meals for better tolerance.",
+        timeline: "Night sweat reduction typically begins within 2-4 weeks"
+      },
+      {
+        title: "Cooling Sleep Environment",
+        description: "Keep bedroom at 65-68°F, use moisture-wicking bedding, and cooling mattress pads or fans.",
+        priority: 'high',
+        category: 'environment',
+        icon: Moon,
+        analysis: "Temperature regulation is crucial for preventing night sweats. Cooling environments can reduce episode frequency by 40-60%.",
+        improvement: "Invest in breathable bamboo or moisture-wicking sheets. Use a fan for air circulation.",
+        timeline: "Immediate improvement in sleep comfort, with reduced episodes within 1-2 weeks"
+      },
+      {
+        title: "Evening Primrose Oil",
+        description: "Take 1000-2000mg evening primrose oil with dinner to support hormone balance and reduce hot flashes.",
+        priority: 'medium',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "Evening primrose oil provides GLA (gamma-linolenic acid) which supports prostaglandin balance and can reduce vasomotor symptoms.",
+        improvement: "Take with fatty meals for better absorption. Start with lower dose and increase gradually.",
+        timeline: "Hormonal balance improvements typically seen within 4-6 weeks"
+      },
+      {
+        title: "Sage Tea Protocol",
+        description: "Drink 1-2 cups of sage tea daily, particularly in the evening, to help regulate body temperature.",
         priority: 'medium',
         category: 'lifestyle',
-        icon: Heart
+        icon: Heart,
+        analysis: "Sage contains compounds that help regulate the body's thermostat and reduce excessive sweating by 30-50%.",
+        improvement: "Steep 1-2 tsp dried sage in hot water for 10 minutes. Drink cooled or at room temperature.",
+        timeline: "Temperature regulation improvements often seen within 1-2 weeks"
+      }
+    ];
+  };
+
+  const generateMemoryRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Phosphatidylserine Complex",
+        description: "Take 100-200mg phosphatidylserine daily to support brain cell membrane health and memory formation.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Brain,
+        analysis: "Phosphatidylserine is crucial for brain cell communication and memory consolidation. Studies show 20-30% improvement in memory tests.",
+        improvement: "Take with fatty meals for better absorption. Choose soy-free versions if sensitive.",
+        timeline: "Memory improvements typically noticed within 4-6 weeks"
+      },
+      {
+        title: "Dual N-Back Training",
+        description: "Practice 15-20 minutes daily of dual n-back cognitive training to improve working memory capacity.",
+        priority: 'high',
+        category: 'routine',
+        icon: Brain,
+        analysis: "Dual n-back training increases fluid intelligence and working memory by 20-40% through neuroplasticity stimulation.",
+        improvement: "Use apps like Dual N-Back or Brain Workshop. Start with easier levels and progress gradually.",
+        timeline: "Working memory improvements typically seen within 2-4 weeks of daily practice"
+      },
+      {
+        title: "Omega-3 DHA Optimization",
+        description: "Take 1000-2000mg DHA daily to support brain structure and memory consolidation processes.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Pill,
+        analysis: "DHA comprises 30% of brain tissue and is essential for memory formation. Higher levels correlate with better cognitive performance.",
+        improvement: "Choose high-DHA fish oil or algae-based supplements. Take with meals to reduce fishy aftertaste.",
+        timeline: "Cognitive improvements typically develop over 6-12 weeks"
+      },
+      {
+        title: "Sleep Optimization Protocol",
+        description: "Prioritize 7-9 hours of quality sleep, as memory consolidation occurs primarily during deep sleep phases.",
+        priority: 'medium',
+        category: 'routine',
+        icon: Moon,
+        analysis: "Sleep deprivation reduces memory formation by 40-60%. Deep sleep is when the brain transfers information from short to long-term memory.",
+        improvement: "Maintain consistent sleep schedule, avoid screens before bed, keep room cool and dark.",
+        timeline: "Memory improvements typically seen within 1-2 weeks of better sleep"
       }
     ];
   };
@@ -1233,6 +1684,25 @@ const AssessmentResults = () => {
       </main>
     </div>
   );
+};
+
+const generateDefaultRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
+  return [
+    {
+      title: "Comprehensive Assessment Complete",
+      description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalized treatment options.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: CheckCircle2
+    },
+    {
+      title: "Holistic Wellness Approach", 
+      description: "Focus on sleep quality, stress management, regular exercise, and anti-inflammatory nutrition to support overall health.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Heart
+    }
+  ];
 };
 
 export default AssessmentResults;
