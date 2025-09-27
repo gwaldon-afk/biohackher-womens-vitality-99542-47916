@@ -105,8 +105,8 @@ const Nutrition = () => {
     "Salmon with Sweet Potato": {
       ingredients: ["1 salmon fillet (6 oz)", "1 large sweet potato, cubed", "2 cups broccoli florets", "2 tbsp olive oil", "2 cloves garlic, minced", "1 tsp dried herbs", "Salt & pepper"],
       steps: [
-        "Preheat oven to 400°F (200°C)",
-        "Cut 1 sweet potato into 1-inch cubes, toss with 1 tbsp oil",
+        "Preheat oven to 200°C",
+        "Cut 1 sweet potato into 2.5cm cubes, toss with 1 tbsp oil",
         "Roast sweet potato for 20 minutes",
         "Season 6 oz salmon with herbs, salt, and pepper",
         "Add salmon and 2 cups broccoli to pan, bake 15 minutes"
@@ -145,8 +145,8 @@ const Nutrition = () => {
     "Baked Cod with Herbs": {
       ingredients: ["1 cod fillet (6 oz)", "2 tbsp fresh herbs (parsley, dill, thyme)", "1 lemon (juiced and zested)", "2 tbsp olive oil", "2 cups seasonal vegetables (asparagus, carrots)", "Salt & pepper"],
       steps: [
-        "Preheat oven to 375°F (190°C)",
-        "Place 6 oz cod fillet on parchment-lined baking sheet",
+        "Preheat oven to 190°C",
+        "Place 170g cod fillet on parchment-lined baking sheet",
         "Drizzle with 2 tbsp olive oil and lemon juice",
         "Season with 2 tbsp fresh herbs, lemon zest, salt, and pepper",
         "Add 2 cups vegetables to pan, bake 15-20 minutes until fish flakes"
@@ -483,19 +483,19 @@ const Nutrition = () => {
       longevityScore: 7
     },
     "Brown Rice": {
-      benefits: ["Whole grain fiber supports digestive health", "B vitamins for energy", "Selenium acts as antioxidant"],
+      benefits: ["Whole grain fibre supports digestive health", "B vitamins for energy", "Selenium acts as antioxidant"],
       longevityScore: 6
     },
     "Quinoa": {
-      benefits: ["Complete protein from plants", "High in fiber and minerals", "Gluten-free whole grain"],
+      benefits: ["Complete protein from plants", "High in fibre and minerals", "Gluten-free whole grain"],
       longevityScore: 8
     },
     "Sweet Potato": {
-      benefits: ["Beta-carotene converts to vitamin A", "High fiber supports gut health", "Potassium for heart health"],
+      benefits: ["Beta-carotene converts to vitamin A", "High fibre supports gut health", "Potassium for heart health"],
       longevityScore: 8
     },
     "Oats": {
-      benefits: ["Beta-glucan lowers cholesterol", "Sustained energy release", "High in soluble fiber"],
+      benefits: ["Beta-glucan lowers cholesterol", "Sustained energy release", "High in soluble fibre"],
       longevityScore: 7
     },
     "Spinach": {
@@ -507,11 +507,11 @@ const Nutrition = () => {
       longevityScore: 9
     },
     "Carrots": {
-      benefits: ["Beta-carotene for eye health", "Fiber supports digestion", "Antioxidants fight inflammation"],
+      benefits: ["Beta-carotene for eye health", "Fibre supports digestion", "Antioxidants fight inflammation"],
       longevityScore: 7
     },
     "Avocado": {
-      benefits: ["Monounsaturated fats for heart health", "Fiber aids digestion", "Potassium regulates blood pressure"],
+      benefits: ["Monounsaturated fats for heart health", "Fibre aids digestion", "Potassium regulates blood pressure"],
       longevityScore: 8
     },
     "Almonds": {

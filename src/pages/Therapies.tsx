@@ -19,9 +19,9 @@ const Therapies = () => {
       color: "text-red-500",
       description: "660nm-850nm light for cellular energy and recovery",
       protocols: [
-        { name: "Face & Neck", duration: 10, distance: "6-12 inches" },
-        { name: "Full Body", duration: 15, distance: "18-24 inches" },
-        { name: "Targeted Area", duration: 8, distance: "6 inches" }
+        { name: "Face & Neck", duration: 10, distance: "15-30cm" },
+        { name: "Full Body", duration: 15, distance: "45-60cm" },
+        { name: "Targeted Area", duration: 8, distance: "15cm" }
       ],
       contraindications: ["Pregnancy", "Cancer treatment area", "Photosensitizing medications"],
       benefits: ["Collagen production", "Wound healing", "Reduced inflammation"],
@@ -34,9 +34,9 @@ const Therapies = () => {
       color: "text-blue-500",
       description: "Controlled cold exposure for metabolic and mental benefits",
       protocols: [
-        { name: "Cold Shower", duration: 3, temperature: "50-60°F" },
-        { name: "Ice Bath", duration: 2, temperature: "45-55°F" },
-        { name: "Cryotherapy", duration: 1, temperature: "Below 32°F" }
+        { name: "Cold Shower", duration: 3, temperature: "10-15°C" },
+        { name: "Ice Bath", duration: 2, temperature: "7-13°C" },
+        { name: "Cryotherapy", duration: 1, temperature: "Below 0°C" }
       ],
       contraindications: ["Heart conditions", "Pregnancy", "Eating disorders"],
       benefits: ["Brown fat activation", "Mood enhancement", "Immune boost"],

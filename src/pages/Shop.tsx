@@ -58,7 +58,7 @@ const Shop = () => {
     }
   }, [toast]);
 
-  // Sample products organized by symptom categories
+  // Sample products organised by symptom categories
   const products: Product[] = [
     // Sleep Products
     {
@@ -227,8 +227,8 @@ const Shop = () => {
     },
     {
       id: "gut-fiber",
-      name: "Prebiotic Fiber Complex",
-      description: "Soluble and insoluble fiber blend to support healthy digestion",
+      name: "Prebiotic Fibre Complex",
+      description: "Soluble and insoluble fibre blend to support healthy digestion",
       price: 23.99,
       rating: 4.5,
       reviews: 567,

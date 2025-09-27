@@ -470,7 +470,7 @@ const Symptoms = () => {
         },
         {
           title: "Cooling Sleep Environment",
-          description: "Room temperature 65-68°F with moisture-wicking bedding",
+          description: "Room temperature 18-20°C with moisture-wicking bedding",
           evidence: "Bronze",
           contraindications: ["Circulation disorders"]
         },

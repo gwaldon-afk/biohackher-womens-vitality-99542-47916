@@ -52,7 +52,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
   // Category definitions for help tooltips
   const categoryDefinitions = {
     hydration: "Proper hydration supports cellular function, nutrient transport, and helps reduce inflammation by maintaining optimal blood flow and toxin elimination.",
-    vegetables: "Leafy greens and colorful vegetables provide antioxidants, fiber, and phytonutrients that combat oxidative stress and reduce inflammatory markers.",
+    vegetables: "Leafy greens and colourful vegetables provide antioxidants, fibre, and phytonutrients that combat oxidative stress and reduce inflammatory markers.",
     protein: "Adequate protein intake supports muscle maintenance, immune function, and hormone production - critical for healthy aging, especially after 35.",
     fatsOmegas: "Healthy fats like omega-3s from fish, nuts, and seeds help reduce inflammation, support brain health, and improve cardiovascular function.",
     sugarProcessed: "Refined sugars and processed foods spike blood glucose, promote inflammation, and accelerate cellular aging through glycation processes.",

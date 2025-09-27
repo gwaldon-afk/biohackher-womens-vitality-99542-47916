@@ -201,7 +201,7 @@ const Supplements = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">Biohacking Supplements</h1>
           <p className="text-muted-foreground">
-            Evidence-based supplement protocols organized by the four pillars of wellness
+            Evidence-based supplement protocols organised by the four pillars of wellness
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
             <p className="text-sm text-blue-800">

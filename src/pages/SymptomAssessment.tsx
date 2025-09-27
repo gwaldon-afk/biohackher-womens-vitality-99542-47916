@@ -144,7 +144,7 @@ const assessmentQuestions = {
       question: "How would you rate your energy levels after meals?",
       type: "radio",
       options: [
-        { value: "energized", label: "Energized and comfortable" },
+        { value: "energised", label: "Energised and comfortable" },
         { value: "neutral", label: "No significant change" },
         { value: "tired", label: "Somewhat tired or sluggish" },
         { value: "exhausted", label: "Very tired or need to rest" }

@@ -50,7 +50,7 @@ const Sleep = () => {
       items: [
         { id: "dim-lights", text: "Dim lights to <50 lux 2 hours before bed", time: "2h before" },
         { id: "no-screens", text: "Stop blue light screens or use blue light blockers", time: "1h before" },
-        { id: "cool-temp", text: "Set room temperature to 65-68°F (18-20°C)", time: "1h before" },
+        { id: "cool-temp", text: "Set room temperature to 18-20°C", time: "1h before" },
         { id: "magnesium", text: "Take magnesium glycinate supplement", time: "30min before" },
         { id: "hot-bath", text: "Take warm bath or shower to drop core temperature", time: "90min before" },
         { id: "journal", text: "Write down tomorrow's priorities (brain dump)", time: "30min before" },
@@ -77,7 +77,7 @@ const Sleep = () => {
       description: "Gentle red light therapy to promote melatonin production", 
       items: [
         { id: "setup-red", text: "Set up 660nm red light device" },
-        { id: "distance", text: "Position 18-24 inches from face/body" },
+        { id: "distance", text: "Position 45-60cm from face/body" },
         { id: "duration", text: "Expose for 10-15 minutes" },
         { id: "eye-position", text: "Keep eyes closed or use eye protection" },
         { id: "breathing", text: "Practice slow, deep breathing during session" },

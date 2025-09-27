@@ -241,7 +241,7 @@ const FAQ = () => {
                     <div className="mt-3 space-y-3">
                       <div className="p-3 border border-blue-200 rounded-lg">
                         <p className="font-medium text-sm text-blue-800">1. Sleep Quality (Highest Impact)</p>
-                        <p className="text-xs text-blue-600">Consistent 7.5-9 hours, optimize deep sleep and REM phases</p>
+                        <p className="text-xs text-blue-600">Consistent 7.5-9 hours, optimise deep sleep and REM phases</p>
                       </div>
                       <div className="p-3 border border-green-200 rounded-lg">
                         <p className="font-medium text-sm text-green-800">2. Physical Activity</p>
@@ -266,7 +266,7 @@ const FAQ = () => {
                     <div className="mt-2 space-y-2 text-sm">
                       <div>• <strong>Periodization:</strong> Vary your exercise and stress patterns</div>
                       <div>• <strong>Advanced Metrics:</strong> Focus on HRV, sleep architecture, recovery markers</div>
-                      <div>• <strong>Precision Nutrition:</strong> Optimize meal timing and micronutrient profiles</div>
+                      <div>• <strong>Precision Nutrition:</strong> Optimise meal timing and micronutrient profiles</div>
                       <div>• <strong>Cognitive Challenges:</strong> Add new learning activities and mental exercises</div>
                       <div>• <strong>Social Expansion:</strong> Deepen existing relationships and build new connections</div>
                     </div>
@@ -324,7 +324,7 @@ const FAQ = () => {
         <Card className="mt-8">
           <CardContent className="text-center py-8">
             <h3 className="text-lg font-semibold mb-2">Still have questions?</h3>
-            <p className="text-gray-600 mb-4">Our support team is here to help you optimize your longevity journey.</p>
+            <p className="text-gray-600 mb-4">Our support team is here to help you optimise your longevity journey.</p>
             <div className="flex gap-4 justify-center">
               <Badge variant="outline">support@biohacker.com</Badge>
               <Badge variant="outline">Live Chat Available</Badge>

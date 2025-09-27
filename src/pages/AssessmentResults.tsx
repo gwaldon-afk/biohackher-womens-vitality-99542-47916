@@ -463,7 +463,7 @@ const AssessmentResults = () => {
       case 'neutral':
         overallScore -= 5;
         break;
-      case 'energized':
+      case 'energised':
         break;
     }
 
@@ -576,20 +576,20 @@ const AssessmentResults = () => {
         { name: "L-Theanine", dosage: "200mg taken with evening routine", selected: false }
       ],
       analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.`,
-      improvement: "You should expect to fall asleep 15-30 minutes faster, experience fewer middle-of-night wakings, and wake up feeling more refreshed and energized. Sleep depth will improve, leading to better physical recovery and mental clarity during the day.",
+      improvement: "You should expect to fall asleep 15-30 minutes faster, experience fewer middle-of-night wakings, and wake up feeling more refreshed and energised. Sleep depth will improve, leading to better physical recovery and mental clarity during the day.",
       timeline: "Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation. If sleep symptoms persist or worsen, consult a healthcare provider."
     });
 
     // Always include sleep environment optimization
     recs.push({
-      title: "Sleep Environment Optimization",
-      description: "Keep your bedroom temperature between 65-68°F (18-20°C), ensure complete darkness with blackout curtains, and minimize noise.",
+      title: "Sleep Environment Optimisation",
+      description: "Keep your bedroom temperature between 18-20°C, ensure complete darkness with blackout curtains, and minimise noise.",
       priority: 'high',
       category: 'environment',
       icon: Moon,
-      analysis: `Environmental factors significantly impact sleep quality regardless of current issues. Your "${answers['3']}" night wakings pattern suggests optimizing your sleep environment could improve sleep continuity.`,
+      analysis: `Environmental factors significantly impact sleep quality regardless of current issues. Your "${answers['3']}" night wakings pattern suggests optimising your sleep environment could improve sleep continuity.`,
       improvement: "Invest in a programmable thermostat, blackout curtains, and white noise machine. Track wake-ups to identify patterns and triggers.",
-      timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimization"
+      timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimisation"
     });
 
     // Add conditional recommendations for specific issues
@@ -665,7 +665,7 @@ const AssessmentResults = () => {
     if (answers['3'] === 'night') {
       recs.push({
         title: "Night-time Environment Setup",
-        description: "Use moisture-wicking sleepwear, cooling mattress pads, and keep room temperature cool (65-68°F).",
+        description: "Use moisture-wicking sleepwear, cooling mattress pads, and keep room temperature cool (18-20°C).",
         priority: 'high',
         category: 'environment',
         icon: Moon
@@ -753,8 +753,8 @@ const AssessmentResults = () => {
 
     if (answers['2'] === 'constipation') {
       recs.push({
-        title: "Fiber and Hydration Protocol",
-        description: "Increase soluble fiber gradually, drink 8-10 glasses of water daily, and consider magnesium oxide 400-600mg at bedtime.",
+        title: "Fibre and Hydration Protocol",
+        description: "Increase soluble fibre gradually, drink 8-10 glasses of water daily, and consider magnesium oxide 400-600mg at bedtime.",
         priority: 'high',
         category: 'lifestyle',
         icon: Heart
@@ -794,7 +794,7 @@ const AssessmentResults = () => {
       },
       {
         title: "Cognitive Load Management",
-        description: "Use time-blocking with 25-minute focused work sessions followed by 5-minute breaks to optimize mental performance.",
+        description: "Use time-blocking with 25-minute focused work sessions followed by 5-minute breaks to optimise mental performance.",
         priority: 'high',
         category: 'routine',
         icon: Brain,
@@ -846,7 +846,7 @@ const AssessmentResults = () => {
       },
       {
         title: "Circadian Light Therapy",
-        description: "Get 15-30 minutes of bright light (10,000 lux) within 30 minutes of waking to optimize circadian rhythm.",
+        description: "Get 15-30 minutes of bright light (10,000 lux) within 30 minutes of waking to optimise circadian rhythm.",
         priority: 'high',
         category: 'routine',
         icon: Lightbulb,
@@ -926,7 +926,7 @@ const AssessmentResults = () => {
     return [
       {
         title: "Intermittent Fasting 16:8",
-        description: "Implement a 16-hour fasting window with an 8-hour eating period to optimize hormone balance and metabolism.",
+        description: "Implement a 16-hour fasting window with an 8-hour eating period to optimise hormone balance and metabolism.",
         priority: 'high',
         category: 'diet',
         icon: Scale,
@@ -1161,7 +1161,7 @@ const AssessmentResults = () => {
       },
       {
         title: "Cooling Sleep Environment",
-        description: "Keep bedroom at 65-68°F, use moisture-wicking bedding, and cooling mattress pads or fans.",
+        description: "Keep bedroom at 18-20°C, use moisture-wicking bedding, and cooling mattress pads or fans.",
         priority: 'high',
         category: 'environment',
         icon: Moon,
@@ -1695,7 +1695,7 @@ const AssessmentResults = () => {
                         <h5 className="text-sm font-semibold text-warning mb-1">Common Sleep Disruptors:</h5>
                         <ul className="text-xs text-muted-foreground space-y-1">
                           <li>• Blue light exposure after sunset</li>
-                          <li>• Temperature above 68°F (20°C)</li>
+                          <li>• Temperature above 20°C</li>
                           <li>• Caffeine within 8 hours of bedtime</li>
                           <li>• Alcohol consumption (disrupts REM)</li>
                         </ul>
@@ -1704,17 +1704,17 @@ const AssessmentResults = () => {
                   </div>
                   
                   <div className="bg-background/80 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 text-primary">Circadian Rhythm Optimization</h4>
+                    <h4 className="font-semibold mb-2 text-primary">Circadian Rhythm Optimisation</h4>
                     <p className="text-sm text-muted-foreground mb-3">
-                      Your circadian rhythm is controlled by light exposure and controls melatonin production. Bright light in the morning 
-                      and darkness at night help maintain healthy sleep-wake cycles.
+                     Your circadian rhythm is controlled by light exposure and controls melatonin production. Bright light in the morning 
+                     and darkness at night help maintain healthy sleep-wake cycles.
                     </p>
                     <div className="bg-primary/5 p-3 rounded-lg">
                       <h5 className="text-sm font-semibold text-primary mb-1">Evidence-Based Sleep Hygiene:</h5>
                       <ul className="text-xs text-muted-foreground space-y-1">
                         <li>• Get 10-15 minutes of morning sunlight within 1 hour of waking</li>
-                        <li>• Maintain consistent sleep/wake times (±30 minutes)</li>
-                        <li>• Keep bedroom temperature between 65-68°F (18-20°C)</li>
+                         <li>• Maintain consistent sleep/wake times (±30 minutes)</li>
+                         <li>• Keep bedroom temperature between 18-20°C</li>
                         <li>• Use blackout curtains or eye mask for complete darkness</li>
                         <li>• Stop eating 3 hours before bedtime</li>
                       </ul>
@@ -1799,7 +1799,7 @@ const AssessmentResults = () => {
                       <div className="bg-success/10 p-3 rounded-lg">
                         <h5 className="text-sm font-semibold text-success mb-1">Microbiome Support:</h5>
                         <ul className="text-xs text-muted-foreground space-y-1">
-                          <li>• Diverse fiber sources (20-30g daily)</li>
+                          <li>• Diverse fibre sources (20-30g daily)</li>
                           <li>• Fermented foods (kefir, kimchi, sauerkraut)</li>
                           <li>• Multi-strain probiotics (50+ billion CFU)</li>
                           <li>• Prebiotic foods (garlic, onions, chicory)</li>
