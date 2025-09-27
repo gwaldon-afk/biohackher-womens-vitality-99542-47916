@@ -577,7 +577,7 @@ const AssessmentResults = () => {
       ],
       analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.`,
       improvement: "Expected results when following the complete sleep optimization protocol including supplements, routine, and environment changes.",
-      timeline: "Initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation"
+      timeline: "Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation. If sleep symptoms persist or worsen, consult a healthcare provider."
     });
 
     // Always include sleep environment optimization
@@ -650,7 +650,7 @@ const AssessmentResults = () => {
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
         improvement: "Expected hot flash reduction when following the complete hormonal balance protocol including supplements, cooling techniques, and lifestyle modifications.",
-        timeline: "Significant improvements typically seen within 4-8 weeks of consistent implementation"
+        timeline: "Most people generally experience significant improvements within 4-8 weeks of consistent implementation. If hot flash symptoms persist or worsen, consult a healthcare provider."
       });
 
       recs.push({
@@ -693,7 +693,7 @@ const AssessmentResults = () => {
       ],
       analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
       improvement: "Expected pain reduction when following the complete joint health protocol including supplements, movement therapy, and anti-inflammatory nutrition.",
-      timeline: "Initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation"
+      timeline: "Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation. If joint pain symptoms persist or worsen, consult a healthcare provider."
     });
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
@@ -790,7 +790,7 @@ const AssessmentResults = () => {
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
         improvement: "Expected cognitive improvements when following the complete brain optimization protocol including supplements, routine, and lifestyle changes.",
-        timeline: "Initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation"
+        timeline: "Most people generally experience initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation. If cognitive symptoms persist or worsen, consult a healthcare provider."
       },
       {
         title: "Cognitive Load Management",
@@ -842,7 +842,7 @@ const AssessmentResults = () => {
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
         improvement: "Expected energy improvements when following the complete vitality protocol including supplements, light therapy, and lifestyle optimization.",
-        timeline: "Initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation"
+        timeline: "Most people generally experience initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation. If fatigue symptoms persist or worsen, consult a healthcare provider."
       },
       {
         title: "Circadian Light Therapy",
