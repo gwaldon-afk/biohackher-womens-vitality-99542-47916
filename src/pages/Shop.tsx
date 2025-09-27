@@ -384,7 +384,7 @@ const Shop = () => {
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold text-success">Key Benefits:</h4>
+          <h4 className="text-sm font-semibold text-success">May Support:</h4>
           <div className="flex flex-wrap gap-1">
             {product.benefits.slice(0, 3).map((benefit, index) => (
               <Badge key={index} variant="outline" className="text-xs">
