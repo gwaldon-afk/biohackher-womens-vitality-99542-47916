@@ -14,7 +14,6 @@ const Navigation = () => {
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "My Data" },
     { href: "/symptoms", label: "Symptoms" },
-    { href: "/shop", label: "Shop" },
   ];
 
   const biohackingItems = [
@@ -89,6 +88,18 @@ const Navigation = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <Link
+              to="/shop"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary whitespace-nowrap",
+                isActive("/shop")
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              Shop
+            </Link>
 
             <Link
               to="/faq"
@@ -176,6 +187,19 @@ const Navigation = () => {
                   ))}
                 </div>
               </div>
+
+              <Link
+                to="/shop"
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
+                  isActive("/shop")
+                    ? "text-primary bg-primary/10 rounded"
+                    : "text-muted-foreground"
+                )}
+                onClick={() => setIsOpen(false)}
+              >
+                Shop
+              </Link>
 
               <Link
                 to="/faq"
