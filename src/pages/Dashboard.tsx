@@ -3,8 +3,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils, History, FileText } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { useNavigate } from "react-router-dom";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine, Scatter, LabelList } from 'recharts';
 import { useEffect, useState } from "react";
@@ -37,6 +38,7 @@ interface ScoreSummary {
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [scores, setScores] = useState<DailyScore[]>([]);
   const [summary, setSummary] = useState<ScoreSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -609,9 +611,21 @@ const Dashboard = () => {
 
         {/* Data Input Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Heart className="h-5 w-5" />
-            Log Daily Mood
+          <Button 
+            variant="outline" 
+            className="h-20 flex-col gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+            onClick={() => navigate('/assessment-history')}
+          >
+            <History className="h-5 w-5" />
+            Assessment History
+          </Button>
+          <Button 
+            variant="outline" 
+            className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
+            onClick={() => navigate('/symptoms')}
+          >
+            <FileText className="h-5 w-5" />
+            Take Assessment
           </Button>
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Activity className="h-5 w-5" />
@@ -620,10 +634,6 @@ const Dashboard = () => {
           <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
             <Brain className="h-5 w-5" />
             Track Habits
-          </Button>
-          <Button variant="outline" className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50">
-            <Users className="h-5 w-5" />
-            Journal Entry
           </Button>
         </div>
       </main>
