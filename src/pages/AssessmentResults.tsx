@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -1044,6 +1044,182 @@ const AssessmentResults = () => {
             </DropdownMenu>
           </div>
         </div>
+
+        {/* Educational Knowledge Section */}
+        <Card className="mb-8 bg-gradient-to-r from-secondary/5 to-primary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              Understanding Your {getSymptomName(symptomId!)}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Knowledge Content Based on Symptom Type */}
+              {symptomId === 'sleep' && (
+                <div className="space-y-4">
+                  <div className="bg-background/80 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-primary">Sleep Science Fundamentals</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Quality sleep occurs in 90-120 minute cycles, alternating between light sleep, deep sleep, and REM sleep. 
+                      Deep sleep (20-25% of total) is crucial for physical recovery and immune function, while REM sleep (20-25%) 
+                      consolidates memories and supports emotional regulation.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-success/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-success mb-1">Optimal Sleep Architecture:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• 10-20 minutes to fall asleep</li>
+                          <li>• 20-25% deep sleep (stages 3-4)</li>
+                          <li>• 20-25% REM sleep</li>
+                          <li>• Less than 5% awake time</li>
+                        </ul>
+                      </div>
+                      <div className="bg-warning/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-warning mb-1">Common Sleep Disruptors:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Blue light exposure after sunset</li>
+                          <li>• Temperature above 68°F (20°C)</li>
+                          <li>• Caffeine within 8 hours of bedtime</li>
+                          <li>• Alcohol consumption (disrupts REM)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-background/80 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-primary">Circadian Rhythm Optimization</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Your circadian rhythm is controlled by light exposure and controls melatonin production. Bright light in the morning 
+                      and darkness at night help maintain healthy sleep-wake cycles.
+                    </p>
+                    <div className="bg-primary/5 p-3 rounded-lg">
+                      <h5 className="text-sm font-semibold text-primary mb-1">Evidence-Based Sleep Hygiene:</h5>
+                      <ul className="text-xs text-muted-foreground space-y-1">
+                        <li>• Get 10-15 minutes of morning sunlight within 1 hour of waking</li>
+                        <li>• Maintain consistent sleep/wake times (±30 minutes)</li>
+                        <li>• Keep bedroom temperature between 65-68°F (18-20°C)</li>
+                        <li>• Use blackout curtains or eye mask for complete darkness</li>
+                        <li>• Stop eating 3 hours before bedtime</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {symptomId === 'hot-flashes' && (
+                <div className="space-y-4">
+                  <div className="bg-background/80 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-primary">Hormone Changes & Hot Flashes</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Hot flashes occur when declining estrogen levels affect the hypothalamus, your body's temperature control center. 
+                      This triggers sudden dilation of blood vessels, causing the characteristic warmth, sweating, and flushing.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-success/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-success mb-1">Natural Estrogen Support:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Phytoestrogens (soy, flax, legumes)</li>
+                          <li>• Black cohosh (40-80mg daily)</li>
+                          <li>• Red clover isoflavones</li>
+                          <li>• Evening primrose oil</li>
+                        </ul>
+                      </div>
+                      <div className="bg-warning/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-warning mb-1">Common Triggers to Avoid:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Spicy foods and hot beverages</li>
+                          <li>• Alcohol and caffeine</li>
+                          <li>• Stress and tight clothing</li>
+                          <li>• Hot environments and saunas</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {symptomId === 'joint-pain' && (
+                <div className="space-y-4">
+                  <div className="bg-background/80 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-primary">Joint Health & Inflammation</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Joint pain often results from chronic low-grade inflammation that breaks down cartilage and synovial fluid. 
+                      Hormonal changes during perimenopause can increase inflammatory markers like IL-6 and TNF-alpha.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-success/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-success mb-1">Anti-Inflammatory Protocol:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Curcumin 500-1000mg with bioperine</li>
+                          <li>• Omega-3 fatty acids 2-3g daily</li>
+                          <li>• Tart cherry juice (natural COX-2 inhibitor)</li>
+                          <li>• Boswellia serrata extract</li>
+                        </ul>
+                      </div>
+                      <div className="bg-warning/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-warning mb-1">Pro-Inflammatory Foods:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Processed foods and trans fats</li>
+                          <li>• Refined sugars and carbohydrates</li>
+                          <li>• Vegetable oils (corn, soy, sunflower)</li>
+                          <li>• Excessive omega-6 fatty acids</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {symptomId === 'gut' && (
+                <div className="space-y-4">
+                  <div className="bg-background/80 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-primary">Gut Health & Microbiome</h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Your gut microbiome contains 100 trillion bacteria that influence digestion, immunity, and even mood through 
+                      the gut-brain axis. Hormonal changes can disrupt this delicate ecosystem, leading to digestive symptoms.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-success/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-success mb-1">Microbiome Support:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Diverse fiber sources (20-30g daily)</li>
+                          <li>• Fermented foods (kefir, kimchi, sauerkraut)</li>
+                          <li>• Multi-strain probiotics (50+ billion CFU)</li>
+                          <li>• Prebiotic foods (garlic, onions, chicory)</li>
+                        </ul>
+                      </div>
+                      <div className="bg-warning/10 p-3 rounded-lg">
+                        <h5 className="text-sm font-semibold text-warning mb-1">Gut Disruptors:</h5>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li>• Artificial sweeteners and emulsifiers</li>
+                          <li>• Chronic stress and poor sleep</li>
+                          <li>• Antibiotics and NSAIDs</li>
+                          <li>• Ultra-processed foods</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-primary/5 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2 text-primary">Evidence-Based Lifestyle Medicine</h4>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Research shows that 80% of chronic health conditions can be prevented or improved through lifestyle interventions. 
+                  The key is implementing evidence-based strategies consistently over time.
+                </p>
+                <Button 
+                  onClick={() => navigate('/shop')}
+                  className="bg-primary hover:bg-primary-dark text-primary-foreground"
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Shop Evidence-Based Solutions
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="mt-8 text-center space-y-4">

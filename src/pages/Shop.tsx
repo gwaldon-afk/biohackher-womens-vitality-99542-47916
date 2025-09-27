@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Product {
   id: string;
@@ -28,8 +30,33 @@ interface Product {
 
 const Shop = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isProcessingPayment, setIsProcessingPayment] = useState<string | null>(null);
+
+  // Check for payment status in URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    
+    if (paymentStatus === 'success') {
+      toast({
+        title: "Payment Successful!",
+        description: "Your order has been processed. You should receive a confirmation email shortly.",
+      });
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (paymentStatus === 'cancelled') {
+      toast({
+        variant: "destructive",
+        title: "Payment Cancelled",
+        description: "Your payment was cancelled. You can try again anytime.",
+      });
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [toast]);
 
   // Sample products organized by symptom categories
   const products: Product[] = [
@@ -273,12 +300,44 @@ const Shop = () => {
     });
   };
 
-  const handleBuyNow = (product: Product) => {
-    toast({
-      title: "Redirecting to Checkout",
-      description: `Processing purchase for ${product.name}...`,
-    });
-    // Here you would integrate with Stripe checkout
+  const handleBuyNow = async (product: Product) => {
+    if (isProcessingPayment) return;
+    
+    setIsProcessingPayment(product.id);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          productId: product.name,
+          priceAmount: product.price
+        },
+        headers: user ? {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        } : {}
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        // Open Stripe Checkout in a new tab
+        window.open(data.url, '_blank');
+        toast({
+          title: "Redirecting to Payment",
+          description: "A new tab has opened for secure payment processing.",
+        });
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      toast({
+        variant: "destructive",
+        title: "Payment Error",
+        description: error.message || "Failed to process payment. Please try again.",
+      });
+    } finally {
+      setIsProcessingPayment(null);
+    }
   };
 
   const ProductCard = ({ product }: { product: Product }) => (
@@ -360,10 +419,10 @@ const Shop = () => {
             <Button 
               size="sm"
               onClick={() => handleBuyNow(product)}
-              disabled={!product.inStock}
+              disabled={!product.inStock || isProcessingPayment === product.id}
             >
               <DollarSign className="h-4 w-4 mr-1" />
-              Buy Now
+              {isProcessingPayment === product.id ? "Processing..." : "Buy Now"}
             </Button>
           </div>
         </div>
