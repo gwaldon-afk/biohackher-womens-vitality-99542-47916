@@ -1,0 +1,487 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import { useToast } from "@/hooks/use-toast";
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  reviews: number;
+  category: string;
+  symptoms: string[];
+  image: string;
+  benefits: string[];
+  dosage: string;
+  brand: string;
+  inStock: boolean;
+  featured?: boolean;
+}
+
+const Shop = () => {
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  // Sample products organized by symptom categories
+  const products: Product[] = [
+    // Sleep Products
+    {
+      id: "sleep-mag-glycinate",
+      name: "Magnesium Glycinate 400mg",
+      description: "High-absorption magnesium for deep, restorative sleep and muscle relaxation",
+      price: 24.99,
+      originalPrice: 29.99,
+      rating: 4.8,
+      reviews: 1247,
+      category: "sleep",
+      symptoms: ["sleep", "anxiety", "muscle-tension"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Improves sleep onset", "Reduces muscle tension", "Supports nervous system"],
+      dosage: "Take 2 capsules 30-60 minutes before bed",
+      brand: "Pure Encapsulations",
+      inStock: true,
+      featured: true
+    },
+    {
+      id: "sleep-melatonin",
+      name: "Slow-Release Melatonin 3mg",
+      description: "Extended-release melatonin for sustained sleep throughout the night",
+      price: 19.99,
+      rating: 4.6,
+      reviews: 892,
+      category: "sleep",
+      symptoms: ["sleep", "jet-lag", "shift-work"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Regulates circadian rhythm", "Extends sleep duration", "Reduces wake-ups"],
+      dosage: "Take 1 tablet 1-2 hours before bedtime",
+      brand: "Natrol",
+      inStock: true
+    },
+    {
+      id: "sleep-theanine",
+      name: "L-Theanine 200mg",
+      description: "Amino acid that promotes relaxation without drowsiness",
+      price: 22.99,
+      rating: 4.7,
+      reviews: 634,
+      category: "sleep",
+      symptoms: ["sleep", "anxiety", "stress"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Promotes calm alertness", "Reduces stress", "Improves sleep quality"],
+      dosage: "Take 1-2 capsules before bed or during stress",
+      brand: "NOW Foods",
+      inStock: true
+    },
+
+    // Hot Flashes Products
+    {
+      id: "hf-black-cohosh",
+      name: "Black Cohosh Extract 80mg",
+      description: "Standardized extract to help manage menopausal symptoms naturally",
+      price: 27.99,
+      originalPrice: 32.99,
+      rating: 4.5,
+      reviews: 543,
+      category: "hot-flashes",
+      symptoms: ["hot-flashes", "mood-swings", "night-sweats"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Reduces hot flash frequency", "Supports hormone balance", "Improves mood"],
+      dosage: "Take 1 capsule twice daily with meals",
+      brand: "Gaia Herbs",
+      inStock: true,
+      featured: true
+    },
+    {
+      id: "hf-red-clover",
+      name: "Red Clover Isoflavones",
+      description: "Natural phytoestrogens to support hormonal balance during menopause",
+      price: 21.99,
+      rating: 4.3,
+      reviews: 287,
+      category: "hot-flashes",
+      symptoms: ["hot-flashes", "bone-health", "heart-health"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Natural estrogen support", "Bone health", "Cardiovascular support"],
+      dosage: "Take 2 capsules daily with food",
+      brand: "Nature's Way",
+      inStock: true
+    },
+
+    // Joint Pain Products
+    {
+      id: "jp-turmeric-curcumin",
+      name: "Turmeric Curcumin with Bioperine",
+      description: "High-potency curcumin with black pepper extract for maximum absorption",
+      price: 29.99,
+      originalPrice: 39.99,
+      rating: 4.9,
+      reviews: 1856,
+      category: "joint-pain",
+      symptoms: ["joint-pain", "inflammation", "arthritis"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Powerful anti-inflammatory", "Joint pain relief", "Mobility support"],
+      dosage: "Take 2 capsules daily with meals",
+      brand: "NatureWise",
+      inStock: true,
+      featured: true
+    },
+    {
+      id: "jp-omega-3",
+      name: "Ultra-Pure Omega-3 Fish Oil",
+      description: "High-potency EPA/DHA for inflammation reduction and joint health",
+      price: 34.99,
+      rating: 4.7,
+      reviews: 723,
+      category: "joint-pain",
+      symptoms: ["joint-pain", "inflammation", "heart-health"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Reduces inflammation", "Supports joint mobility", "Heart health"],
+      dosage: "Take 2 softgels daily with meals",
+      brand: "Nordic Naturals",
+      inStock: true
+    },
+    {
+      id: "jp-glucosamine",
+      name: "Glucosamine Chondroitin MSM",
+      description: "Triple-action formula for comprehensive joint support and cartilage health",
+      price: 26.99,
+      rating: 4.4,
+      reviews: 456,
+      category: "joint-pain",
+      symptoms: ["joint-pain", "cartilage-health", "mobility"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Cartilage support", "Joint flexibility", "Mobility enhancement"],
+      dosage: "Take 3 tablets daily with food",
+      brand: "Doctor's Best",
+      inStock: true
+    },
+
+    // Gut Health Products
+    {
+      id: "gut-digestive-enzymes",
+      name: "Full-Spectrum Digestive Enzymes",
+      description: "Comprehensive enzyme blend to support optimal digestion and nutrient absorption",
+      price: 31.99,
+      rating: 4.8,
+      reviews: 934,
+      category: "gut",
+      symptoms: ["bloating", "indigestion", "nutrient-absorption"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Improves digestion", "Reduces bloating", "Enhanced nutrient absorption"],
+      dosage: "Take 1-2 capsules with each meal",
+      brand: "Enzymedica",
+      inStock: true,
+      featured: true
+    },
+    {
+      id: "gut-probiotics",
+      name: "50 Billion CFU Probiotic",
+      description: "Multi-strain probiotic for digestive health and immune support",
+      price: 39.99,
+      originalPrice: 49.99,
+      rating: 4.6,
+      reviews: 1123,
+      category: "gut",
+      symptoms: ["gut-health", "immunity", "mood"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Digestive balance", "Immune support", "Mood regulation"],
+      dosage: "Take 1 capsule daily with or without food",
+      brand: "Garden of Life",
+      inStock: true
+    },
+    {
+      id: "gut-fiber",
+      name: "Prebiotic Fiber Complex",
+      description: "Soluble and insoluble fiber blend to support healthy digestion",
+      price: 23.99,
+      rating: 4.5,
+      reviews: 567,
+      category: "gut",
+      symptoms: ["constipation", "gut-health", "blood-sugar"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Regularity support", "Feeds beneficial bacteria", "Blood sugar balance"],
+      dosage: "Mix 1 scoop in 8oz water daily",
+      brand: "Heather's Tummy Care",
+      inStock: true
+    },
+
+    // Brain Fog Products
+    {
+      id: "bf-lions-mane",
+      name: "Lion's Mane Mushroom Extract",
+      description: "Organic mushroom extract to support cognitive function and nerve health",
+      price: 28.99,
+      rating: 4.7,
+      reviews: 445,
+      category: "brain-fog",
+      symptoms: ["brain-fog", "memory", "focus"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Cognitive support", "Nerve growth factor", "Mental clarity"],
+      dosage: "Take 2 capsules daily with food",
+      brand: "Host Defense",
+      inStock: true
+    },
+    {
+      id: "bf-b-complex",
+      name: "Active B-Complex",
+      description: "Methylated B vitamins for energy production and brain function",
+      price: 25.99,
+      rating: 4.8,
+      reviews: 692,
+      category: "brain-fog",
+      symptoms: ["brain-fog", "energy", "mood"],
+      image: "/api/placeholder/300/300",
+      benefits: ["Mental energy", "Neurotransmitter support", "Stress resilience"],
+      dosage: "Take 1 capsule daily with breakfast",
+      brand: "Thorne",
+      inStock: true
+    }
+  ];
+
+  const categories = [
+    { id: "all", name: "All Products", icon: ShoppingCart },
+    { id: "sleep", name: "Sleep Support", icon: Moon },
+    { id: "hot-flashes", name: "Hormone Balance", icon: Thermometer },
+    { id: "joint-pain", name: "Joint Health", icon: Heart },
+    { id: "gut", name: "Digestive Health", icon: Pill },
+    { id: "brain-fog", name: "Cognitive Support", icon: Brain }
+  ];
+
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         product.symptoms.some(symptom => symptom.includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const featuredProducts = products.filter(product => product.featured);
+
+  const handleAddToCart = (product: Product) => {
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
+
+  const handleBuyNow = (product: Product) => {
+    toast({
+      title: "Redirecting to Checkout",
+      description: `Processing purchase for ${product.name}...`,
+    });
+    // Here you would integrate with Stripe checkout
+  };
+
+  const ProductCard = ({ product }: { product: Product }) => (
+    <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary/20 hover:border-l-primary">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start mb-2">
+          <Badge variant="outline" className="text-xs">
+            {categories.find(cat => cat.id === product.category)?.name}
+          </Badge>
+          {product.featured && (
+            <Badge className="bg-warning/10 text-warning border-warning/20">
+              Featured
+            </Badge>
+          )}
+        </div>
+        <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+          {product.name}
+        </CardTitle>
+        <CardDescription className="text-sm line-clamp-3">
+          {product.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star 
+                key={i} 
+                className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-warning fill-warning' : 'text-muted-foreground'}`} 
+              />
+            ))}
+          </div>
+          <span className="text-sm text-muted-foreground">
+            {product.rating} ({product.reviews} reviews)
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-success">Key Benefits:</h4>
+          <div className="flex flex-wrap gap-1">
+            {product.benefits.slice(0, 3).map((benefit, index) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {benefit}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-muted/30 p-3 rounded-lg">
+          <p className="text-sm text-muted-foreground">
+            <strong>Dosage:</strong> {product.dosage}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1">
+            <strong>Brand:</strong> {product.brand}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-primary">
+              ${product.price}
+            </span>
+            {product.originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                ${product.originalPrice}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => handleAddToCart(product)}
+              disabled={!product.inStock}
+            >
+              <ShoppingCart className="h-4 w-4 mr-1" />
+              Add
+            </Button>
+            <Button 
+              size="sm"
+              onClick={() => handleBuyNow(product)}
+              disabled={!product.inStock}
+            >
+              <DollarSign className="h-4 w-4 mr-1" />
+              Buy Now
+            </Button>
+          </div>
+        </div>
+
+        {!product.inStock && (
+          <div className="text-center text-sm text-destructive font-medium">
+            Out of Stock
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4 gradient-text">
+            Wellness Shop
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Evidence-based supplements and products to support your health journey. 
+            Each product is carefully selected based on scientific research and quality standards.
+          </p>
+        </div>
+
+        {/* Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search products, symptoms, or ingredients..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <Button variant="outline" className="sm:w-auto">
+            <Filter className="h-4 w-4 mr-2" />
+            Filters
+          </Button>
+        </div>
+
+        {/* Featured Products */}
+        {featuredProducts.length > 0 && selectedCategory === "all" && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Star className="h-6 w-6 text-warning" />
+              Featured Products
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Category Tabs */}
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-8">
+            {categories.map((category) => (
+              <TabsTrigger key={category.id} value={category.id} className="flex flex-col items-center p-3">
+                <category.icon className="h-4 w-4 mb-1" />
+                <span className="text-xs">{category.name}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {categories.map((category) => (
+            <TabsContent key={category.id} value={category.id}>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">
+                  {category.name}
+                </h2>
+                <p className="text-muted-foreground">
+                  {category.id === "all" && "Browse our complete selection of wellness products"}
+                  {category.id === "sleep" && "Natural supplements to improve sleep quality and duration"}
+                  {category.id === "hot-flashes" && "Hormone-balancing products for menopausal comfort"}
+                  {category.id === "joint-pain" && "Anti-inflammatory supplements for joint health and mobility"}
+                  {category.id === "gut" && "Digestive support for optimal gut health and comfort"}
+                  {category.id === "brain-fog" && "Cognitive enhancers for mental clarity and focus"}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {filteredProducts.length === 0 && (
+                <div className="text-center py-12">
+                  <ShoppingCart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No products found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search terms or browse other categories.
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+          ))}
+        </Tabs>
+
+        {/* Disclaimer */}
+        <div className="mt-12 bg-muted/30 p-6 rounded-lg text-center">
+          <p className="text-sm text-muted-foreground">
+            <strong>Important:</strong> These statements have not been evaluated by the FDA. 
+            These products are not intended to diagnose, treat, cure, or prevent any disease. 
+            Consult with a healthcare professional before starting any new supplement regimen, 
+            especially if you have medical conditions or take medications.
+          </p>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Shop;

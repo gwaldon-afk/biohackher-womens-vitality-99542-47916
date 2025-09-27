@@ -23,6 +23,7 @@ import Reports from "./pages/Reports";
 import Upgrade from "./pages/Upgrade";
 import Settings from "./pages/Settings";
 import FAQ from "./pages/FAQ";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/shop" element={<Shop />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, User, Settings, Crown, ChevronDown } from "lucide-react";
+import { Menu, X, Activity, User, Settings, Crown, ChevronDown, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ const Navigation = () => {
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/symptoms", label: "Symptoms" },
+    { href: "/shop", label: "Shop" },
   ];
 
   const biohackingItems = [
