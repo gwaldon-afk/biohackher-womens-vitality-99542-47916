@@ -493,51 +493,65 @@ const AssessmentResults = () => {
   const generateSleepRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     const recs: Recommendation[] = [];
 
+    // Always include core sleep recommendations
     recs.push({
       title: "Evening Wind-Down Routine",
       description: "Create a consistent pre-sleep routine starting 2 hours before bed. Dim lights, avoid screens, and practice relaxation techniques.",
       priority: 'high',
       category: 'routine',
       icon: Moon,
-      analysis: `Based on your sleep quality rating of "${answers['1']}", establishing a consistent bedtime routine is crucial for signaling to your body that it's time to sleep. Your current sleep patterns suggest that your circadian rhythm may need reinforcement.`,
+      analysis: `Based on your sleep quality rating of "${answers['1']}", establishing a consistent bedtime routine is crucial for signaling to your body that it's time to sleep. Your current sleep patterns suggest that your circadian rhythm may benefit from reinforcement.`,
       improvement: "Start with just 30 minutes of routine and gradually extend to 2 hours. Track your sleep onset time to measure improvement.",
       timeline: "Expect to see improvements in sleep onset within 2-3 weeks of consistent practice"
     });
 
+    // Always include magnesium supplement (most people benefit)
+    recs.push({
+      title: "Magnesium Glycinate Supplement",
+      description: "Take 400-600mg of magnesium glycinate 30-60 minutes before bed to help relax muscles and support GABA production.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Pill,
+      analysis: `Magnesium deficiency affects 50-60% of adults and directly impacts sleep quality. Even with "${answers['2']}" fall asleep time, magnesium glycinate can improve sleep depth and reduce night wakings.`,
+      improvement: "Start with 200mg and gradually increase to 400-600mg based on tolerance. Take with a small amount of food to prevent stomach upset.",
+      timeline: "Most people notice improved sleep depth within 1-2 weeks of consistent use"
+    });
+
+    // Always include sleep environment optimization
+    recs.push({
+      title: "Sleep Environment Optimization",
+      description: "Keep your bedroom temperature between 65-68°F (18-20°C), ensure complete darkness with blackout curtains, and minimize noise.",
+      priority: 'high',
+      category: 'environment',
+      icon: Moon,
+      analysis: `Environmental factors significantly impact sleep quality regardless of current issues. Your "${answers['3']}" night wakings pattern suggests optimizing your sleep environment could improve sleep continuity.`,
+      improvement: "Invest in a programmable thermostat, blackout curtains, and white noise machine. Track wake-ups to identify patterns and triggers.",
+      timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimization"
+    });
+
+    // Add conditional recommendations for specific issues
     if (answers['2'] === 'slow' || answers['2'] === 'very-slow') {
       recs.push({
-        title: "Magnesium Glycinate Supplement",
-        description: "Take 400-600mg of magnesium glycinate 30-60 minutes before bed to help relax muscles and support GABA production.",
-        priority: 'high',
-        category: 'supplement',
-        icon: Pill,
-        analysis: `Your reported difficulty falling asleep ("${answers['2']}") indicates potential magnesium deficiency, which affects muscle relaxation and neurotransmitter balance. Magnesium glycinate is the most bioavailable form for sleep support.`,
-        improvement: "Start with 200mg and gradually increase to 400-600mg based on tolerance. Take with a small amount of food to prevent stomach upset.",
-        timeline: "Most people notice improved sleep onset within 1-2 weeks of consistent use"
-      });
-
-      recs.push({
         title: "Blue Light Management",
-        description: "Use blue light blocking glasses 2 hours before bed and ensure your bedroom is completely dark with blackout curtains.",
+        description: "Use blue light blocking glasses 2 hours before bed and ensure all screens are off 1 hour before sleep.",
         priority: 'medium',
         category: 'environment',
         icon: Lightbulb,
-        analysis: "Blue light exposure suppresses melatonin production by up to 85%, directly impacting your ability to fall asleep quickly. Your slow sleep onset suggests circadian rhythm disruption.",
-        improvement: "Install blue light filtering apps on devices, use amber glasses after sunset, and create a dark sleep environment with blackout curtains or eye masks.",
+        analysis: "Blue light exposure suppresses melatonin production by up to 85%, directly impacting your ability to fall asleep quickly.",
+        improvement: "Install blue light filtering apps on devices, use amber glasses after sunset, and create a dark sleep environment.",
         timeline: "Melatonin production improvements can be seen within 3-5 days of consistent blue light management"
       });
-    }
-
-    if (answers['3'] === 'often' || answers['3'] === 'frequently') {
+    } else {
+      // For normal/quick sleepers, focus on sleep maintenance
       recs.push({
-        title: "Sleep Environment Optimization",
-        description: "Keep your bedroom temperature between 65-68°F (18-20°C) and ensure it's as quiet as possible. Consider a white noise machine.",
-        priority: 'high',
-        category: 'environment',
-        icon: Moon,
-        analysis: `Your frequent night wakings ("${answers['3']}") suggest sleep architecture disruption. Temperature fluctuations and noise disturbances are primary causes of sleep fragmentation.`,
-        improvement: "Invest in a programmable thermostat, blackout curtains, and white noise machine. Track wake-ups to identify patterns and triggers.",
-        timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimization"
+        title: "Sleep Consistency Protocol",
+        description: "Maintain the same bedtime and wake time within 30 minutes, even on weekends, to strengthen your circadian rhythm.",
+        priority: 'medium',
+        category: 'routine',
+        icon: Calendar,
+        analysis: "Consistent sleep timing reinforces your natural circadian rhythm and can improve overall sleep quality by 20-30%.",
+        improvement: "Set phone reminders for bedtime and wake time. Track your energy levels to find your optimal sleep schedule.",
+        timeline: "Circadian rhythm improvements typically develop within 2-3 weeks of consistent timing"
       });
     }
 
