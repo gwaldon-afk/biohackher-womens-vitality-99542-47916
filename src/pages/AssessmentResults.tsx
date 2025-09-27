@@ -565,17 +565,17 @@ const AssessmentResults = () => {
     // Always include magnesium supplement (most people benefit)
     recs.push({
       title: "Sleep Support Supplements",
-      description: "Evidence-based supplements to support your sleep quality and natural circadian rhythm regulation.",
+      description: "Supplements that may assist in addressing sleep quality issues and supporting natural circadian rhythm regulation.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      personalizedAssessment: `Based on your sleep quality assessment, these supplements can support better sleep depth and reduce the time it takes to fall asleep.`,
+      personalizedAssessment: `Based on your sleep quality assessment, these supplements may assist in supporting better sleep depth and reducing the time it takes to fall asleep.`,
       supplements: [
         { name: "Magnesium Glycinate", dosage: "400-600mg taken 30-60 minutes before bed", selected: true },
         { name: "Melatonin (Extended Release)", dosage: "0.5-1mg taken 30 minutes before desired sleep time", selected: true },
         { name: "L-Theanine", dosage: "200mg taken with evening routine", selected: false }
       ],
-      analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.`,
+      analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.`,
       improvement: "Start with 200mg magnesium and gradually increase to 600mg based on tolerance. Take melatonin consistently at the same time nightly. Combine with chamomile tea 30 minutes before the supplements for enhanced effect.",
       timeline: "Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation. If sleep symptoms persist or worsen, consult a healthcare provider."
     });
@@ -637,18 +637,18 @@ const AssessmentResults = () => {
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
       recs.push({
-        title: "Hot Flash Relief Supplements",
-        description: "Research-backed supplements that help regulate body temperature and support hormonal balance during hot flash episodes.",
+        title: "Hormonal Balance Support Supplements",
+        description: "Supplements that may assist in addressing hot flash episodes and supporting natural hormonal balance.",
         priority: 'high',
         category: 'supplement',
         icon: Pill,
-        personalizedAssessment: `Your severe hot flash intensity assessment suggests potential benefits from natural hormone-balancing supplements.`,
+        personalizedAssessment: `Your severe hot flash intensity assessment suggests these supplements may assist in supporting natural hormonal balance.`,
         supplements: [
           { name: "Black Cohosh Extract", dosage: "40-80mg daily with meals", selected: true },
           { name: "Evening Primrose Oil", dosage: "1000mg twice daily", selected: true },
           { name: "Red Clover Isoflavones", dosage: "80mg daily", selected: false }
         ],
-        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
         improvement: "Start with 40mg black cohosh daily with meals and increase to 80mg if needed. Take evening primrose oil twice daily with food. Create a cooling kit with portable fan, cooling towels, and breathable clothing for immediate episode relief.",
         timeline: "Most people generally experience significant improvements within 4-8 weeks of consistent implementation. If hot flash symptoms persist or worsen, consult a healthcare provider."
       });
@@ -680,18 +680,18 @@ const AssessmentResults = () => {
 
     recs.push({
       title: "Joint Support Supplements",
-      description: "Anti-inflammatory supplements that target joint pain and support long-term joint health and mobility.",
+      description: "Supplements that may assist in addressing joint discomfort and supporting long-term joint health and mobility.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      personalizedAssessment: "Your joint pain assessment indicates potential benefits from natural anti-inflammatory supplements to reduce pain and improve mobility.",
+      personalizedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
       supplements: [
         { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", selected: true },
         { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", selected: true },
         { name: "Glucosamine Sulfate", dosage: "1500mg daily", selected: false },
         { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
       ],
-      analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+      analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
       improvement: "Take curcumin with meals and black pepper (piperine) for 20x better absorption. Choose high-quality fish oil with EPA:DHA ratio of 2:1. Start with gentle movement like water therapy or tai chi. Apply heat therapy for 15 minutes followed by cold therapy for 10 minutes.",
       timeline: "Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation. If joint pain symptoms persist or worsen, consult a healthcare provider."
     });
@@ -777,18 +777,18 @@ const AssessmentResults = () => {
   const generateBrainFogRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Cognitive Enhancement Supplements",
-        description: "Research-backed supplements that support brain function, memory, and mental clarity.",
+        title: "Cognitive Support Supplements",
+        description: "Supplements that may assist in addressing brain fog and supporting cognitive function and mental clarity.",
         priority: 'high',
         category: 'supplement',
         icon: Brain,
-        personalizedAssessment: "Your brain fog assessment indicates potential benefits from cognitive support supplements to enhance mental clarity and focus.",
+        personalizedAssessment: "Your brain fog assessment indicates these supplements may assist in supporting cognitive function and mental clarity.",
         supplements: [
           { name: "Lion's Mane Mushroom Extract", dosage: "1000mg daily with meals", selected: true },
           { name: "B-Complex (Methylated Forms)", dosage: "1 capsule daily in the morning", selected: true },
           { name: "Omega-3 EPA/DHA", dosage: "2000mg daily with food", selected: false }
         ],
-        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
         improvement: "Start with 500mg Lion's Mane and increase to 1000mg daily with meals. Take B-complex in the morning with breakfast. Implement the Pomodoro Technique consistently - use apps like Forest or Focus Keeper to track sessions.",
         timeline: "Most people generally experience initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation. If cognitive symptoms persist or worsen, consult a healthcare provider."
       },
@@ -829,18 +829,18 @@ const AssessmentResults = () => {
     return [
       {
         title: "Energy Support Supplements",
-        description: "Evidence-based supplements that support cellular energy production and combat fatigue.",
+        description: "Supplements that may assist in addressing fatigue and supporting cellular energy production.",
         priority: 'high',
         category: 'supplement',
         icon: Battery,
-        personalizedAssessment: "Your energy assessment suggests potential benefits from mitochondrial support to enhance cellular energy production and reduce fatigue.",
+        personalizedAssessment: "Your energy assessment suggests these supplements may assist in supporting cellular energy production and addressing fatigue.",
         supplements: [
           { name: "CoQ10 (Ubiquinol)", dosage: "200mg daily with fatty meal", selected: true },
           { name: "Iron Bisglycinate", dosage: "25mg daily (if deficient)", selected: true },
           { name: "B12 (Methylcobalamin)", dosage: "1000mcg daily", selected: false },
           { name: "Rhodiola Rosea", dosage: "300mg in morning", selected: false }
         ],
-        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
         improvement: "Take CoQ10 with fatty meals for better absorption. Start with lower doses and increase gradually. Combine with morning light exposure using a 10,000 lux light box for 15-30 minutes. Test ferritin levels and supplement iron bisglycinate if below 50 ng/mL.",
         timeline: "Most people generally experience initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation. If fatigue symptoms persist or worsen, consult a healthcare provider."
       },
