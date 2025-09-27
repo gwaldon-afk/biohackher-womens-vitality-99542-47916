@@ -284,147 +284,181 @@ const Dashboard = () => {
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section - Longevity Impact Score */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-gray-900">
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold mb-8 text-gray-900 text-center">
             Welcome back, <span className="gradient-text">Sarah</span>
           </h1>
           
-          <LISInputForm onScoreCalculated={fetchScoreHistory}>
-            <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
-                <CardDescription className="text-gray-600">
-                  Today's LIS - Your daily biological age impact score
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="flex items-center justify-center mb-4 transition-transform hover:scale-105">
-                  <ProgressCircle value={currentScore} size="xl">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                      <div className="text-xs text-gray-500">LIS</div>
-                    </div>
-                  </ProgressCircle>
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-6">
+            {/* History Button */}
+            <div className="order-2 lg:order-1">
+              <Button 
+                variant="outline" 
+                className="h-32 w-40 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+                onClick={() => navigate('/assessment-history')}
+              >
+                <History className="h-6 w-6" />
+                <div className="text-center">
+                  <div className="font-medium">Assessment</div>
+                  <div className="font-medium">History</div>
                 </div>
-                
-                {/* Longevity Projection Summary */}
-                {!projectionLoading && (
-                  <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* 5-Year Impact Section */}
-                      <div className="space-y-3">
-                        <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">5-Year Impact</div>
-                        
-                        {/* Current Impact */}
-                        <TooltipProvider>
-                          <Tooltip delayDuration={200}>
-                            <TooltipTrigger asChild>
-                              <div className="text-center cursor-help bg-white rounded p-2 border border-purple-100">
-                                <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                                <div className={`text-base font-bold ${(() => {
-                                  const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                  return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                                })()}`}>
-                                  {(() => {
-                                    const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                    return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} yr ${fiveYearImpact > 0 ? 'Older' : 'Younger'}`;
-                                  })()}
-                                </div>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
-                              <p className="text-sm font-medium">{getLongevityMessage()}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+              </Button>
+            </div>
 
-                        {/* Potential Optimal Impact */}
-                        <div className="text-center bg-white rounded p-2 border border-purple-100">
-                          <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
-                          <div className="text-base font-bold text-green-600">
-                            {(() => {
-                              const optimalImpact = calculateLongevityImpact(135, 5);
-                              return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
-                            })()}
-                          </div>
-                          <div className="text-xs text-purple-600 font-medium mt-1">
-                            Gap: {(() => {
-                              const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                              const optimalImpact = calculateLongevityImpact(135, 5);
-                              const gap = Math.abs(fiveYearImpact - optimalImpact);
-                              return `${gap.toFixed(1)} yr opportunity`;
-                            })()}
-                          </div>
+            {/* Daily Longevity Inputs - Center */}
+            <div className="order-1 lg:order-2">
+              <LISInputForm onScoreCalculated={fetchScoreHistory}>
+                <Card className="max-w-md mx-auto bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Today's LIS - Your daily biological age impact score
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <div className="flex items-center justify-center mb-4 transition-transform hover:scale-105">
+                      <ProgressCircle value={currentScore} size="xl">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
+                          <div className="text-xs text-gray-500">LIS</div>
                         </div>
-                      </div>
-
-                      {/* 20-Year Impact Section */}
-                      <div className="space-y-3 border-l border-purple-300 pl-4">
-                        <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">20-Year Impact</div>
-                        
-                        {/* Current Impact */}
-                        <div className="text-center bg-white rounded p-2 border border-purple-100">
-                          <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                          <div className={`text-base font-bold ${(() => {
-                            const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-                            return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                          })()}`}>
-                            {(() => {
-                              const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-                              return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} yr ${twentyYearImpact > 0 ? 'Older' : 'Younger'}`;
-                            })()}
-                          </div>
-                        </div>
-
-                        {/* Potential Optimal Impact */}
-                        <div className="text-center bg-white rounded p-2 border border-purple-100">
-                          <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
-                          <div className="text-base font-bold text-green-600">
-                            {(() => {
-                              const optimalImpact = calculateLongevityImpact(135, 20);
-                              return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
-                            })()}
-                          </div>
-                          <div className="text-xs text-purple-600 font-medium mt-1">
-                            Gap: {(() => {
-                              const currentImpact = calculateLongevityImpact(currentScore, 20);
-                              const optimalImpact = calculateLongevityImpact(135, 20);
-                              const gap = Math.abs(currentImpact - optimalImpact);
-                              return `${gap.toFixed(1)} yr opportunity`;
-                            })()}
-                          </div>
-                        </div>
-                      </div>
+                      </ProgressCircle>
                     </div>
                     
-                    <div className="text-xs text-gray-500 text-center mt-2">
-                      Based on {dataPoints}-day trend
+                    {/* Longevity Projection Summary */}
+                    {!projectionLoading && (
+                      <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                        <div className="grid grid-cols-2 gap-4">
+                          {/* 5-Year Impact Section */}
+                          <div className="space-y-3">
+                            <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">5-Year Impact</div>
+                            
+                            {/* Current Impact */}
+                            <TooltipProvider>
+                              <Tooltip delayDuration={200}>
+                                <TooltipTrigger asChild>
+                                  <div className="text-center cursor-help bg-white rounded p-2 border border-purple-100">
+                                    <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                                    <div className={`text-base font-bold ${(() => {
+                                      const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+                                      return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                                    })()}`}>
+                                      {(() => {
+                                        const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+                                        return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} yr ${fiveYearImpact > 0 ? 'Older' : 'Younger'}`;
+                                      })()}
+                                    </div>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
+                                  <p className="text-sm font-medium">{getLongevityMessage()}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            {/* Potential Optimal Impact */}
+                            <div className="text-center bg-white rounded p-2 border border-purple-100">
+                              <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
+                              <div className="text-base font-bold text-green-600">
+                                {(() => {
+                                  const optimalImpact = calculateLongevityImpact(135, 5);
+                                  return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
+                                })()}
+                              </div>
+                              <div className="text-xs text-purple-600 font-medium mt-1">
+                                Gap: {(() => {
+                                  const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
+                                  const optimalImpact = calculateLongevityImpact(135, 5);
+                                  const gap = Math.abs(fiveYearImpact - optimalImpact);
+                                  return `${gap.toFixed(1)} yr opportunity`;
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* 20-Year Impact Section */}
+                          <div className="space-y-3 border-l border-purple-300 pl-4">
+                            <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">20-Year Impact</div>
+                            
+                            {/* Current Impact */}
+                            <div className="text-center bg-white rounded p-2 border border-purple-100">
+                              <div className="text-xs text-gray-500 mb-1">Current Habits</div>
+                              <div className={`text-base font-bold ${(() => {
+                                const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
+                                return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
+                              })()}`}>
+                                {(() => {
+                                  const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
+                                  return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} yr ${twentyYearImpact > 0 ? 'Older' : 'Younger'}`;
+                                })()}
+                              </div>
+                            </div>
+
+                            {/* Potential Optimal Impact */}
+                            <div className="text-center bg-white rounded p-2 border border-purple-100">
+                              <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
+                              <div className="text-base font-bold text-green-600">
+                                {(() => {
+                                  const optimalImpact = calculateLongevityImpact(135, 20);
+                                  return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
+                                })()}
+                              </div>
+                              <div className="text-xs text-purple-600 font-medium mt-1">
+                                Gap: {(() => {
+                                  const currentImpact = calculateLongevityImpact(currentScore, 20);
+                                  const optimalImpact = calculateLongevityImpact(135, 20);
+                                  const gap = Math.abs(currentImpact - optimalImpact);
+                                  return `${gap.toFixed(1)} yr opportunity`;
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-xs text-gray-500 text-center mt-2">
+                          Based on {dataPoints}-day trend
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="text-sm text-gray-600">
+                      {bioAgeImpact >= 0 ? (
+                        <span className="font-semibold text-green-600">
+                          Weekly Longevity Impact Score
+                        </span>
+                      ) : (
+                        <span className="font-semibold text-red-600">
+                          Weekly Longevity Impact Score
+                        </span>
+                      )}
                     </div>
-                  </div>
-                )}
-                
-                <div className="text-sm text-gray-600">
-                  {bioAgeImpact >= 0 ? (
-                    <span className="font-semibold text-green-600">
-                      Weekly Longevity Impact Score
-                    </span>
-                  ) : (
-                    <span className="font-semibold text-red-600">
-                      Weekly Longevity Impact Score
-                    </span>
-                  )}
+                    <div className={`text-xs mt-2 font-semibold ${
+                      bioAgeImpact !== undefined && bioAgeImpact !== null 
+                        ? (bioAgeImpact >= 0 ? 'text-green-600' : 'text-red-600')
+                        : 'text-gray-400'
+                    }`}>
+                      {bioAgeImpact !== undefined && bioAgeImpact !== null ? 
+                        `${bioAgeImpact >= 0 ? '+' : ''}${bioAgeImpact.toFixed(1)}` : 'N/A'}
+                    </div>
+                  </CardContent>
+                </Card>
+              </LISInputForm>
+            </div>
+
+            {/* Reports Button */}
+            <div className="order-3">
+              <Button 
+                variant="outline" 
+                className="h-32 w-40 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
+                onClick={() => navigate('/reports')}
+              >
+                <FileText className="h-6 w-6" />
+                <div className="text-center">
+                  <div className="font-medium">Reports</div>
                 </div>
-                <div className={`text-xs mt-2 font-semibold ${
-                  bioAgeImpact !== undefined && bioAgeImpact !== null 
-                    ? (bioAgeImpact >= 0 ? 'text-green-600' : 'text-red-600')
-                    : 'text-gray-400'
-                }`}>
-                  {bioAgeImpact !== undefined && bioAgeImpact !== null ? 
-                    `${bioAgeImpact >= 0 ? '+' : ''}${bioAgeImpact.toFixed(1)}` : 'N/A'}
-                </div>
-              </CardContent>
-            </Card>
-          </LISInputForm>
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* LIS Chart Section */}
@@ -610,23 +644,7 @@ const Dashboard = () => {
         </div>
 
         {/* Data Input Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Button 
-            variant="outline" 
-            className="h-20 flex-col gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-            onClick={() => navigate('/assessment-history')}
-          >
-            <History className="h-5 w-5" />
-            Assessment History
-          </Button>
-          <Button 
-            variant="outline" 
-            className="h-20 flex-col gap-2 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-            onClick={() => navigate('/reports')}
-          >
-            <FileText className="h-5 w-5" />
-            Reports
-          </Button>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Button 
             variant="outline" 
             className="h-20 flex-col gap-2 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
