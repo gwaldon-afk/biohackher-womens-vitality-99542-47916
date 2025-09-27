@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets } from "lucide-react";
 import Navigation from "@/components/Navigation";
@@ -20,6 +21,12 @@ interface AssessmentScore {
   detailScores?: Record<string, number>;
 }
 
+interface SupplementInfo {
+  name: string;
+  dosage: string;
+  selected: boolean;
+}
+
 interface Recommendation {
   title: string;
   description: string;
@@ -29,6 +36,8 @@ interface Recommendation {
   analysis?: string;
   improvement?: string;
   timeline?: string;
+  supplements?: SupplementInfo[];
+  personalizedAssessment?: string;
 }
 
 const AssessmentResults = () => {
@@ -42,6 +51,44 @@ const AssessmentResults = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [selectedRecommendationCategory, setSelectedRecommendationCategory] = useState("all");
   const [isSaving, setIsSaving] = useState(false);
+  const [supplementSelections, setSupplementSelections] = useState<Record<number, SupplementInfo[]>>({});
+
+  const handleSupplementToggle = (recIndex: number, suppIndex: number) => {
+    setSupplementSelections(prev => {
+      const updated = { ...prev };
+      if (!updated[recIndex]) {
+        updated[recIndex] = [...(recommendations[recIndex]?.supplements || [])];
+      }
+      updated[recIndex][suppIndex].selected = !updated[recIndex][suppIndex].selected;
+      return updated;
+    });
+  };
+
+  const handleAddAllToCart = (recIndex: number) => {
+    const supplements = supplementSelections[recIndex] || recommendations[recIndex]?.supplements || [];
+    const selectedSupplements = supplements.filter(s => s.selected);
+    
+    if (selectedSupplements.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No supplements selected",
+        description: "Please select at least one supplement to add to cart."
+      });
+      return;
+    }
+
+    toast({
+      title: "Added to Cart",
+      description: `${selectedSupplements.length} supplement(s) added to your cart.`
+    });
+    
+    // Here you would typically integrate with your e-commerce system
+    console.log('Adding to cart:', selectedSupplements);
+  };
+
+  const getCurrentSupplements = (recIndex: number): SupplementInfo[] => {
+    return supplementSelections[recIndex] || recommendations[recIndex]?.supplements || [];
+  };
   
   useEffect(() => {
     const answers: Record<string, string> = {};
@@ -58,6 +105,15 @@ const AssessmentResults = () => {
       
       setScore(calculatedScore);
       setRecommendations(personalizedRecommendations);
+      
+      // Initialize supplement selections
+      const initialSelections: Record<number, SupplementInfo[]> = {};
+      personalizedRecommendations.forEach((rec, index) => {
+        if (rec.category === 'supplement' && rec.supplements) {
+          initialSelections[index] = [...rec.supplements];
+        }
+      });
+      setSupplementSelections(initialSelections);
       
       // Save assessment to database
       saveAssessment(answers, calculatedScore, personalizedRecommendations);
@@ -507,14 +563,20 @@ const AssessmentResults = () => {
 
     // Always include magnesium supplement (most people benefit)
     recs.push({
-      title: "Magnesium Glycinate Supplement",
-      description: "Take 400-600mg of magnesium glycinate 30-60 minutes before bed to help relax muscles and support GABA production.",
+      title: "Sleep Support Supplements",
+      description: "Evidence-based supplements to support your sleep quality and natural circadian rhythm regulation.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      analysis: `Magnesium deficiency affects 50-60% of adults and directly impacts sleep quality. Even with "${answers['2']}" fall asleep time, magnesium glycinate can improve sleep depth and reduce night wakings.`,
-      improvement: "Start with 200mg and gradually increase to 400-600mg based on tolerance. Take with a small amount of food to prevent stomach upset.",
-      timeline: "Most people notice improved sleep depth within 1-2 weeks of consistent use"
+      personalizedAssessment: `Based on your sleep quality assessment, these supplements can support better sleep depth and reduce the time it takes to fall asleep.`,
+      supplements: [
+        { name: "Magnesium Glycinate", dosage: "400-600mg taken 30-60 minutes before bed", selected: true },
+        { name: "Melatonin (Extended Release)", dosage: "0.5-1mg taken 30 minutes before desired sleep time", selected: true },
+        { name: "L-Theanine", dosage: "200mg taken with evening routine", selected: false }
+      ],
+      analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.`,
+      improvement: "Expected results when following the complete sleep optimization protocol including supplements, routine, and environment changes.",
+      timeline: "Initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation"
     });
 
     // Always include sleep environment optimization
@@ -574,14 +636,20 @@ const AssessmentResults = () => {
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
       recs.push({
-        title: "Black Cohosh Supplement",
-        description: "Consider 40-80mg daily of standardized black cohosh extract, which has shown effectiveness for hot flash reduction.",
+        title: "Hot Flash Relief Supplements",
+        description: "Research-backed supplements that help regulate body temperature and support hormonal balance during hot flash episodes.",
         priority: 'high',
         category: 'supplement',
         icon: Pill,
-        analysis: `Given your severe hot flash intensity ("${answers['2']}"), research shows black cohosh can reduce frequency by 50-75% through its phytoestrogenic effects on hormone receptors.`,
-        improvement: "Start with 40mg daily and increase to 80mg if needed. Take with meals to improve absorption and reduce stomach upset.",
-        timeline: "Significant improvements typically seen within 4-8 weeks of consistent use"
+        personalizedAssessment: `Your severe hot flash intensity assessment suggests potential benefits from natural hormone-balancing supplements.`,
+        supplements: [
+          { name: "Black Cohosh Extract", dosage: "40-80mg daily with meals", selected: true },
+          { name: "Evening Primrose Oil", dosage: "1000mg twice daily", selected: true },
+          { name: "Red Clover Isoflavones", dosage: "80mg daily", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        improvement: "Expected hot flash reduction when following the complete hormonal balance protocol including supplements, cooling techniques, and lifestyle modifications.",
+        timeline: "Significant improvements typically seen within 4-8 weeks of consistent implementation"
       });
 
       recs.push({
@@ -610,14 +678,21 @@ const AssessmentResults = () => {
     const recs: Recommendation[] = [];
 
     recs.push({
-      title: "Anti-Inflammatory Protocol",
-      description: "Incorporate turmeric (curcumin) 500-1000mg daily with black pepper for absorption. Add omega-3 fatty acids 2-3g daily.",
+      title: "Joint Support Supplements",
+      description: "Anti-inflammatory supplements that target joint pain and support long-term joint health and mobility.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      analysis: `Your joint pain pattern suggests chronic inflammation. Curcumin can reduce inflammatory markers by 40-60%, while omega-3s help resolve inflammation at the cellular level.`,
-      improvement: "Take curcumin with meals and black pepper (piperine) for 20x better absorption. Choose high-quality fish oil with EPA:DHA ratio of 2:1.",
-      timeline: "Initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks"
+      personalizedAssessment: "Your joint pain assessment indicates potential benefits from natural anti-inflammatory supplements to reduce pain and improve mobility.",
+      supplements: [
+        { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", selected: true },
+        { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", selected: true },
+        { name: "Glucosamine Sulfate", dosage: "1500mg daily", selected: false },
+        { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
+      ],
+      analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+      improvement: "Expected pain reduction when following the complete joint health protocol including supplements, movement therapy, and anti-inflammatory nutrition.",
+      timeline: "Initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation"
     });
 
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
@@ -701,14 +776,20 @@ const AssessmentResults = () => {
   const generateBrainFogRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Lion's Mane Mushroom",
-        description: "Take 1000mg of standardized Lion's Mane extract daily to support nerve growth factor and cognitive function.",
+        title: "Cognitive Enhancement Supplements",
+        description: "Research-backed supplements that support brain function, memory, and mental clarity.",
         priority: 'high',
         category: 'supplement',
         icon: Brain,
-        analysis: "Lion's Mane contains hericenones and erinacines that stimulate NGF production, improving cognitive clarity and memory formation. Studies show 30-40% improvement in cognitive function within 4-8 weeks.",
-        improvement: "Start with 500mg and increase to 1000mg daily. Take with meals for better absorption.",
-        timeline: "Initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks"
+        personalizedAssessment: "Your brain fog assessment indicates potential benefits from cognitive support supplements to enhance mental clarity and focus.",
+        supplements: [
+          { name: "Lion's Mane Mushroom Extract", dosage: "1000mg daily with meals", selected: true },
+          { name: "B-Complex (Methylated Forms)", dosage: "1 capsule daily in the morning", selected: true },
+          { name: "Omega-3 EPA/DHA", dosage: "2000mg daily with food", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        improvement: "Expected cognitive improvements when following the complete brain optimization protocol including supplements, routine, and lifestyle changes.",
+        timeline: "Initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation"
       },
       {
         title: "Cognitive Load Management",
@@ -746,14 +827,21 @@ const AssessmentResults = () => {
   const generateEnergyRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Mitochondrial Support Stack",
-        description: "Take CoQ10 (200mg), PQQ (20mg), and Alpha-Lipoic Acid (300mg) daily to enhance cellular energy production.",
+        title: "Energy Support Supplements",
+        description: "Evidence-based supplements that support cellular energy production and combat fatigue.",
         priority: 'high',
         category: 'supplement',
         icon: Battery,
-        analysis: "These compounds work synergistically to improve mitochondrial efficiency and biogenesis. Studies show 25-40% improvement in energy levels within 4-6 weeks.",
-        improvement: "Take with fatty meals for better absorption. Start with lower doses and increase gradually.",
-        timeline: "Initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks"
+        personalizedAssessment: "Your energy assessment suggests potential benefits from mitochondrial support to enhance cellular energy production and reduce fatigue.",
+        supplements: [
+          { name: "CoQ10 (Ubiquinol)", dosage: "200mg daily with fatty meal", selected: true },
+          { name: "Iron Bisglycinate", dosage: "25mg daily (if deficient)", selected: true },
+          { name: "B12 (Methylcobalamin)", dosage: "1000mcg daily", selected: false },
+          { name: "Rhodiola Rosea", dosage: "300mg in morning", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.",
+        improvement: "Expected energy improvements when following the complete vitality protocol including supplements, light therapy, and lifestyle optimization.",
+        timeline: "Initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation"
       },
       {
         title: "Circadian Light Therapy",
@@ -1456,23 +1544,73 @@ const AssessmentResults = () => {
                        </div>
                        <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
                        
+                       {/* Personalized Assessment for Supplement Recommendations */}
+                       {rec.personalizedAssessment && (
+                         <div className="bg-secondary/10 p-3 rounded-lg mb-3">
+                           <h4 className="text-sm font-medium text-secondary-foreground mb-1">Personalized Assessment</h4>
+                           <p className="text-xs text-muted-foreground">{rec.personalizedAssessment}</p>
+                         </div>
+                       )}
+
+                       {/* Supplement Selection for Supplement Category */}
+                       {rec.category === 'supplement' && rec.supplements && (
+                         <div className="space-y-4 mb-4">
+                           <div className="bg-background/80 p-4 rounded-lg border">
+                             <h4 className="text-sm font-medium mb-3">Recommended Supplements</h4>
+                             <div className="space-y-2">
+                               {getCurrentSupplements(index).map((supplement, suppIndex) => (
+                                 <div key={suppIndex} className="flex items-start space-x-3 p-2 rounded border">
+                                   <Checkbox
+                                     checked={supplement.selected}
+                                     onCheckedChange={() => handleSupplementToggle(index, suppIndex)}
+                                     className="mt-1"
+                                   />
+                                   <div className="flex-1">
+                                     <div className="font-medium text-sm">{supplement.name}</div>
+                                     <div className="text-xs text-muted-foreground">Dosage: {supplement.dosage}</div>
+                                   </div>
+                                 </div>
+                               ))}
+                             </div>
+                             
+                             <div className="mt-4 p-3 bg-warning/10 rounded-lg">
+                               <div className="flex items-start space-x-2">
+                                 <AlertTriangle className="h-4 w-4 text-warning mt-0.5 flex-shrink-0" />
+                                 <div className="text-xs text-muted-foreground">
+                                   <strong>Professional Health Advisory:</strong> Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications.
+                                 </div>
+                               </div>
+                             </div>
+
+                             <Button 
+                               onClick={() => handleAddAllToCart(index)}
+                               className="w-full mt-4"
+                               variant="outline"
+                             >
+                               <ShoppingCart className="h-4 w-4 mr-2" />
+                               Add Selected to Cart ({getCurrentSupplements(index).filter(s => s.selected).length})
+                             </Button>
+                           </div>
+                         </div>
+                       )}
+                       
                        {rec.analysis && (
                          <div className="bg-primary/5 p-3 rounded-lg mb-3">
-                           <h4 className="text-sm font-medium text-primary mb-1">Personalized Analysis</h4>
+                           <h4 className="text-sm font-medium text-primary mb-1">Professional Health Advisory</h4>
                            <p className="text-xs text-muted-foreground">{rec.analysis}</p>
                          </div>
                        )}
                        
                        {rec.improvement && (
                          <div className="bg-success/5 p-3 rounded-lg mb-3">
-                           <h4 className="text-sm font-medium text-success mb-1">Implementation Strategy</h4>
+                           <h4 className="text-sm font-medium text-success mb-1">Expected Results</h4>
                            <p className="text-xs text-muted-foreground">{rec.improvement}</p>
                          </div>
                        )}
                        
                        {rec.timeline && (
                          <div className="bg-warning/5 p-3 rounded-lg">
-                           <h4 className="text-sm font-medium text-warning mb-1">Expected Timeline</h4>
+                           <h4 className="text-sm font-medium text-warning mb-1">Timeline with Full Protocol</h4>
                            <p className="text-xs text-muted-foreground">{rec.timeline}</p>
                          </div>
                        )}
