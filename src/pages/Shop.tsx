@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -31,6 +32,7 @@ interface Product {
 const Shop = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { addToCart, setIsCartOpen } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isProcessingPayment, setIsProcessingPayment] = useState<string | null>(null);
@@ -294,9 +296,15 @@ const Shop = () => {
   const featuredProducts = products.filter(product => product.featured);
 
   const handleAddToCart = (product: Product) => {
+    addToCart(product);
     toast({
       title: "Added to Cart",
       description: `${product.name} has been added to your cart.`,
+      action: (
+        <Button variant="outline" size="sm" onClick={() => setIsCartOpen(true)}>
+          View Cart
+        </Button>
+      )
     });
   };
 
