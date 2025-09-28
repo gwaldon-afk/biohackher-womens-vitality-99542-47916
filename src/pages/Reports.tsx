@@ -324,37 +324,183 @@ Report ID: BH-${Date.now()}
 
                   {/* Individual Symptom Details */}
                   {symptomAssessments.length > 0 && (
-                    <div className="space-y-3">
+                    <div className="space-y-6">
                       <h3 className="text-lg font-semibold mb-4">Individual Symptom Assessment Summary</h3>
-                      {symptomAssessments.map((assessment) => (
-                        <div key={assessment.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-3 h-3 rounded-full ${
-                              assessment.score_category === 'excellent' ? 'bg-green-500' :
-                              assessment.score_category === 'good' ? 'bg-blue-500' :
-                              assessment.score_category === 'fair' ? 'bg-amber-500' :
-                              'bg-red-500'
-                            }`}></div>
-                            <div>
-                              <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
-                              <div className="text-sm text-muted-foreground">
-                                Assessed {format(new Date(assessment.completed_at), 'dd/MM/yyyy')}
+                      <div className="space-y-3">
+                        {symptomAssessments.map((assessment) => (
+                          <div key={assessment.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-3 h-3 rounded-full ${
+                                assessment.score_category === 'excellent' ? 'bg-green-500' :
+                                assessment.score_category === 'good' ? 'bg-blue-500' :
+                                assessment.score_category === 'fair' ? 'bg-amber-500' :
+                                'bg-red-500'
+                              }`}></div>
+                              <div>
+                                <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  Assessed {format(new Date(assessment.completed_at), 'dd/MM/yyyy')}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <Badge variant="outline" className={`${
+                                assessment.score_category === 'excellent' ? 'border-green-500 text-green-600' :
+                                assessment.score_category === 'good' ? 'border-blue-500 text-blue-600' :
+                                assessment.score_category === 'fair' ? 'border-amber-500 text-amber-600' :
+                                'border-red-500 text-red-600'
+                              }`}>
+                                {assessment.score_category}
+                              </Badge>
+                              <div className="text-sm font-medium">{Math.round(assessment.overall_score)}/100</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Comprehensive Aggregated Analysis */}
+                  {symptomAssessments.length > 0 && (
+                    <div className="space-y-6">
+                      <h3 className="text-lg font-semibold mb-4">Comprehensive Health Analysis</h3>
+                      
+                      {/* Key Findings */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-base">Key Health Findings</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {getOverallSymptomAnalysis().breakdown.excellent > 0 && (
+                            <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                              <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                              <div>
+                                <div className="font-medium text-green-800">Strengths Identified</div>
+                                <div className="text-sm text-green-700">
+                                  {getOverallSymptomAnalysis().breakdown.excellent} area{getOverallSymptomAnalysis().breakdown.excellent > 1 ? 's' : ''} performing excellently - 
+                                  {symptomAssessments.filter(a => a.score_category === 'excellent').map(a => getSymptomName(a.symptom_type)).join(', ')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {getOverallSymptomAnalysis().breakdown.poor > 0 && (
+                            <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                              <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
+                              <div>
+                                <div className="font-medium text-red-800">Priority Areas</div>
+                                <div className="text-sm text-red-700">
+                                  {getOverallSymptomAnalysis().breakdown.poor} area{getOverallSymptomAnalysis().breakdown.poor > 1 ? 's' : ''} requiring immediate attention - 
+                                  {symptomAssessments.filter(a => a.score_category === 'poor').map(a => getSymptomName(a.symptom_type)).join(', ')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {getOverallSymptomAnalysis().breakdown.fair > 0 && (
+                            <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
+                              <div>
+                                <div className="font-medium text-amber-800">Improvement Opportunities</div>
+                                <div className="text-sm text-amber-700">
+                                  {getOverallSymptomAnalysis().breakdown.fair} area{getOverallSymptomAnalysis().breakdown.fair > 1 ? 's' : ''} with moderate concern - 
+                                  {symptomAssessments.filter(a => a.score_category === 'fair').map(a => getSymptomName(a.symptom_type)).join(', ')}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+
+                      {/* Comprehensive Recommendations */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-base">Personalized Health Recommendations</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {getOverallSymptomAnalysis().breakdown.poor > 0 && (
+                            <div className="space-y-3">
+                              <h4 className="font-medium text-red-800">Immediate Action Required</h4>
+                              {symptomAssessments.filter(a => a.score_category === 'poor').map((assessment, index) => (
+                                <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-200">
+                                  <div className="font-medium text-sm">{getSymptomName(assessment.symptom_type)}</div>
+                                  <div className="text-sm text-red-700 mt-1">
+                                    Consider scheduling consultation for comprehensive evaluation and targeted intervention plan.
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {getOverallSymptomAnalysis().breakdown.fair > 0 && (
+                            <div className="space-y-3">
+                              <h4 className="font-medium text-amber-800">Targeted Improvements</h4>
+                              {symptomAssessments.filter(a => a.score_category === 'fair').map((assessment, index) => (
+                                <div key={index} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                                  <div className="font-medium text-sm">{getSymptomName(assessment.symptom_type)}</div>
+                                  <div className="text-sm text-amber-700 mt-1">
+                                    Focus on lifestyle modifications and monitor progress closely for optimal improvement.
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          
+                          {getOverallSymptomAnalysis().breakdown.excellent + getOverallSymptomAnalysis().breakdown.good > 0 && (
+                            <div className="space-y-3">
+                              <h4 className="font-medium text-green-800">Maintain Success</h4>
+                              <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div className="text-sm text-green-700">
+                                  Continue current strategies for {symptomAssessments.filter(a => a.score_category === 'excellent' || a.score_category === 'good').map(a => getSymptomName(a.symptom_type)).join(', ')}. 
+                                  These areas are performing well and should be maintained through consistent health practices.
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* General Wellness Recommendations */}
+                          <div className="space-y-3 pt-4 border-t">
+                            <h4 className="font-medium">General Wellness Strategy</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <div className="font-medium text-sm text-blue-800">Holistic Approach</div>
+                                <div className="text-sm text-blue-700 mt-1">
+                                  Address interconnected symptoms through integrated lifestyle, nutrition, and stress management.
+                                </div>
+                              </div>
+                              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                <div className="font-medium text-sm text-purple-800">Regular Monitoring</div>
+                                <div className="text-sm text-purple-700 mt-1">
+                                  Continue regular assessments to track progress and adjust interventions as needed.
+                                </div>
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <Badge variant="outline" className={`${
-                              assessment.score_category === 'excellent' ? 'border-green-500 text-green-600' :
-                              assessment.score_category === 'good' ? 'border-blue-500 text-blue-600' :
-                              assessment.score_category === 'fair' ? 'border-amber-500 text-amber-600' :
-                              'border-red-500 text-red-600'
-                            }`}>
-                              {assessment.score_category}
-                            </Badge>
-                            <div className="text-sm font-medium">{Math.round(assessment.overall_score)}/100</div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Next Steps */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-base">Recommended Next Steps</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                              <div className="h-2 w-2 bg-primary rounded-full"></div>
+                              <span className="text-sm">Schedule follow-up assessments in 4-6 weeks to track progress</span>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                              <div className="h-2 w-2 bg-secondary rounded-full"></div>
+                              <span className="text-sm">Focus on highest priority symptoms first for maximum impact</span>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                              <div className="h-2 w-2 bg-accent rounded-full"></div>
+                              <span className="text-sm">Consider professional consultation for persistent poor-scoring areas</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        </CardContent>
+                      </Card>
                     </div>
                   )}
                 </div>
