@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
+import { detectUserLocale, updateUserLocale, getUserLocale } from '@/services/localeService';
 
 interface Profile {
   id: string;
@@ -10,6 +12,11 @@ interface Profile {
   email: string | null;
   created_at: string;
   updated_at: string;
+  country: string;
+  language: string;
+  currency: string;
+  measurement_system: string;
+  timezone: string;
 }
 
 interface AuthContextType {
@@ -42,6 +49,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { i18n } = useTranslation();
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -57,6 +65,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       setProfile(data);
+      
+      // Set i18n language based on user's locale preference
+      if (data?.language && i18n.language !== data.language) {
+        i18n.changeLanguage(data.language);
+      }
+      
+      // Detect and update locale for new users if not set
+      if (!data?.country || !data?.language) {
+        const detectedLocale = await detectUserLocale();
+        await updateUserLocale(userId, detectedLocale);
+        
+        // Refetch profile to get updated locale data
+        setTimeout(() => fetchProfile(userId), 100);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
     }

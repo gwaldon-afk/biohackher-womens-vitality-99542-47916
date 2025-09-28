@@ -4,11 +4,14 @@ import { Menu, X, Activity, User, Settings, Crown, ChevronDown, ShoppingBag } fr
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
+import { LocaleSelector } from "@/components/LocaleSelector";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   const mainNavItems = [
     { href: "/", label: "Home" },
@@ -132,11 +135,12 @@ const Navigation = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
+            <LocaleSelector />
             <ShoppingCartIcon />
             <Link to="/upgrade">
               <Button variant="outline" size="sm" className="text-secondary border-secondary hover:bg-secondary/10">
                 <Crown className="h-4 w-4 mr-1" />
-                Upgrade
+                {t('navigation.upgrade')}
               </Button>
             </Link>
             <Link to="/settings">

@@ -221,26 +221,41 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country: string | null
           created_at: string
+          currency: string | null
           email: string | null
           id: string
+          language: string | null
+          measurement_system: string | null
           preferred_name: string
+          timezone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          country?: string | null
           created_at?: string
+          currency?: string | null
           email?: string | null
           id?: string
+          language?: string | null
+          measurement_system?: string | null
           preferred_name: string
+          timezone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          country?: string | null
           created_at?: string
+          currency?: string | null
           email?: string | null
           id?: string
+          language?: string | null
+          measurement_system?: string | null
           preferred_name?: string
+          timezone?: string | null
           updated_at?: string
           user_id?: string
         }

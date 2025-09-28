@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTranslation } from "react-i18next";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -22,6 +23,7 @@ const Pillars = () => {
   const { addToCart } = useCart();
   const { completions, loading } = useAssessmentCompletions();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   // Check for pillar parameter in URL and auto-select
   React.useEffect(() => {
@@ -34,7 +36,7 @@ const Pillars = () => {
 
   const pillars = {
     brain: {
-      title: "Brain",
+      title: t('pillars.brain'),
       subtitle: "Get on top of brain fog and sharpen your mind",
       image: brainPillar,
       icon: Brain,
@@ -111,7 +113,7 @@ const Pillars = () => {
       }
     },
     body: {
-      title: "Body",
+      title: t('pillars.body'),
       subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
       image: bodyPillar,
       icon: Activity,
@@ -189,7 +191,7 @@ const Pillars = () => {
       }
     },
     balance: {
-      title: "Balance",
+      title: t('pillars.balance'),
       subtitle: "Achieve inner calm and peace",
       image: balancePillar,
       icon: Zap,
@@ -266,7 +268,7 @@ const Pillars = () => {
       }
     },
     beauty: {
-      title: "Beauty",
+      title: t('pillars.beauty'),
       subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
       image: beautyPillar,
       icon: Sparkles,
@@ -731,10 +733,10 @@ const Pillars = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 gradient-text">
-              The Four Pillars of Biohacking
+              {t('pillars.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Empowering women to beat ageing through biohacking. Discover personalised protocols across Brain, Body, Balance, and Beauty.
+              {t('pillars.subtitle')}
             </p>
           </div>
         </div>

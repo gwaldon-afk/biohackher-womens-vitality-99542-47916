@@ -1,0 +1,71 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue", 
+    "back": "Back",
+    "next": "Next",
+    "complete": "Complete",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "preferredName": "Preferred Name",
+    "forgotPassword": "Forgot Password?",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "checkEmail": "Check your email",
+    "confirmationSent": "We've sent you a confirmation link to complete your registration."
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "pillars": "4 Pillars",
+    "symptoms": "Symptoms",
+    "therapies": "Therapies",
+    "supplements": "Supplements",
+    "sleep": "Sleep", 
+    "nutrition": "Nutrition",
+    "coaching": "Coaching",
+    "reports": "Reports",
+    "shop": "Shop",
+    "faq": "FAQ",
+    "upgrade": "Upgrade"
+  },
+  "health": {
+    "gp": "GP",
+    "chemist": "Chemist",
+    "paracetamol": "Paracetamol",
+    "temperature": {
+      "sleep": "18-20°C",
+      "coldExposure": "10-15°C",
+      "sauna": "79-100°C",
+      "cryotherapy": "-129 to -157°C"
+    }
+  },
+  "measurements": {
+    "weight": "kg",
+    "height": "cm",
+    "temperature": "°C"
+  },
+  "currency": {
+    "symbol": "$",
+    "code": "AUD"
+  },
+  "pillars": {
+    "title": "Your Health Pillars", 
+    "subtitle": "Complete personalised assessments to optimise your health journey",
+    "beauty": "Beauty & Aesthetics",
+    "body": "Body Composition",
+    "brain": "Brain & Cognitive Health",
+    "balance": "Hormonal Balance"
+  }
+}
