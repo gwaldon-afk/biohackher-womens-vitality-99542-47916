@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets, Target, Activity, Sparkles } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets, Target, Activity, Sparkles, TestTube } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -604,7 +604,7 @@ const AssessmentResults = () => {
       timeline: "Expect to see improvements in sleep onset within 2-3 weeks of consistent practice"
     });
 
-    // Always include magnesium supplement (most people benefit)
+    // Always include sleep support supplements
     recs.push({
       title: "Sleep Support Supplements",
       description: "Supplements that may assist in addressing sleep quality issues and supporting natural circadian rhythm regulation.",
@@ -634,31 +634,41 @@ const AssessmentResults = () => {
       timeline: "Sleep continuity improvements typically occur within 1-2 weeks of environmental optimisation"
     });
 
-    // Add conditional recommendations for specific issues
-    if (answers['2'] === 'slow' || answers['2'] === 'very-slow') {
-      recs.push({
-        title: "Blue Light Management",
-        description: "Use blue light blocking glasses 2 hours before bed and ensure all screens are off 1 hour before sleep.",
-        priority: 'medium',
-        category: 'environment',
-        icon: Lightbulb,
-        analysis: "Blue light exposure suppresses melatonin production by up to 85%, directly impacting your ability to fall asleep quickly.",
-        improvement: "Install blue light filtering apps on devices, use amber glasses after sunset, and create a dark sleep environment.",
-        timeline: "Melatonin production improvements can be seen within 3-5 days of consistent blue light management"
-      });
-    } else {
-      // For normal/quick sleepers, focus on sleep maintenance
-      recs.push({
-        title: "Sleep Consistency Protocol",
-        description: "Maintain the same bedtime and wake time within 30 minutes, even on weekends, to strengthen your circadian rhythm.",
-        priority: 'medium',
-        category: 'routine',
-        icon: Calendar,
-        analysis: "Consistent sleep timing reinforces your natural circadian rhythm and can improve overall sleep quality by 20-30%.",
-        improvement: "Set phone reminders for bedtime and wake time. Track your energy levels to find your optimal sleep schedule.",
-        timeline: "Circadian rhythm improvements typically develop within 2-3 weeks of consistent timing"
-      });
-    }
+    // Always include sleep-supporting nutrition
+    recs.push({
+      title: "Sleep-Supporting Nutrition",
+      description: "Avoid caffeine after 2pm, limit alcohol, and include tryptophan-rich foods like turkey, eggs, and cherries in evening meals.",
+      priority: 'medium',
+      category: 'diet',
+      icon: Heart,
+      analysis: "Dietary choices significantly impact sleep quality. Caffeine has a 6-hour half-life and can disrupt sleep even when consumed early afternoon.",
+      improvement: "Stop caffeine by 2pm, limit alcohol to 1 drink with dinner, include magnesium-rich foods like leafy greens and nuts.",
+      timeline: "Sleep quality improvements typically seen within 1-2 weeks of dietary adjustments"
+    });
+
+    // Always include sleep therapy option
+    recs.push({
+      title: "Cognitive Behavioral Therapy for Insomnia (CBT-I)",
+      description: "Consider professional CBT-I if sleep issues persist despite other interventions - most effective long-term treatment.",
+      priority: 'low',
+      category: 'therapy',
+      icon: Brain,
+      analysis: "CBT-I is the gold standard treatment for chronic insomnia, with 70-80% success rate and lasting results without medication dependency.",
+      improvement: "Seek qualified CBT-I therapist or use evidence-based apps like Sleep Reset or CBT-I Coach.",
+      timeline: "Sleep improvements typically seen within 4-6 weeks of CBT-I treatment"
+    });
+
+    // Always include sleep lifestyle factors
+    recs.push({
+      title: "Sleep-Supportive Lifestyle",
+      description: "Maintain regular exercise timing, manage stress levels, and prioritize consistent sleep schedule even on weekends.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Activity,
+      analysis: "Lifestyle factors like exercise timing, stress management, and schedule consistency significantly impact sleep quality and duration.",
+      improvement: "Exercise earlier in day, finish workouts 4+ hours before bed, maintain consistent bedtime within 30 minutes daily.",
+      timeline: "Sleep pattern improvements typically develop within 2-3 weeks of lifestyle consistency"
+    });
 
     return recs;
   };
@@ -818,75 +828,83 @@ const AssessmentResults = () => {
   const generateGutRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     const recs: Recommendation[] = [];
 
+    // Always include digestive enzyme support
     recs.push({
       title: "Digestive Enzyme Support",
       description: "Take broad-spectrum digestive enzymes with meals to improve breakdown and absorption of nutrients.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
+      personalisedAssessment: "Your digestive assessment suggests enzyme support may help improve nutrient breakdown and absorption.",
       supplements: [
-        {
-          name: "Full-Spectrum Digestive Enzymes",
-          dosage: "Take 1-2 capsules with each meal",
-          selected: true
-        },
-        {
-          name: "Betaine HCl with Pepsin",
-          dosage: "Take 1 capsule with protein-containing meals",
-          selected: false
-        }
+        { name: "Full-Spectrum Digestive Enzymes", dosage: "Take 1-2 capsules with each meal", selected: true },
+        { name: "Betaine HCl with Pepsin", dosage: "Take 1 capsule with protein-containing meals", selected: false },
+        { name: "Probiotics Multi-Strain", dosage: "25-50 billion CFU daily", selected: false }
       ],
       analysis: `Your digestive symptoms indicate potential enzyme insufficiency, which affects 30-40% of adults. Poor digestion leads to nutrient malabsorption and inflammation.`,
       improvement: "General recommended approach is taking digestive enzymes 15-20 minutes before meals. Choose a formula with protease, lipase, and amylase. Start with smaller meals to reduce digestive burden. For your specific recommended dosage, consult a healthcare professional.",
       timeline: "Most people generally experience digestive comfort improvements within 1-2 weeks, with better nutrient absorption noticeable in 4-6 weeks. If digestive symptoms persist or worsen, consult a healthcare provider."
     });
 
-    if (answers['2'] === 'bloating') {
-      recs.push({
-        title: "FODMAP Elimination Protocol",
-        description: "Try a low-FODMAP diet for 2-4 weeks to identify trigger foods, then systematically reintroduce to find your tolerance levels.",
-        priority: 'high',
-        category: 'diet',
-        icon: Heart
-      });
-    }
+    // Always include gut-healing routine
+    recs.push({
+      title: "Daily Gut Health Routine",
+      description: "Practice mindful eating, proper chewing (20-30 chews per bite), and stress reduction before meals.",
+      priority: 'high',
+      category: 'routine',
+      icon: Heart,
+      analysis: "Mindful eating and proper chewing improve digestion by 25-40% and reduce digestive stress. Stress significantly impairs digestive function.",
+      improvement: "Eat in calm environment, chew thoroughly, practice gratitude before meals, avoid eating when stressed.",
+      timeline: "Immediate improvements in digestive comfort with mindful eating practices"
+    });
 
-    if (answers['2'] === 'constipation') {
-      recs.push({
-        title: "Fibre and Hydration Protocol",
-        description: "Increase soluble fibre gradually, drink 8-10 glasses of water daily, and consider magnesium oxide 400-600mg at bedtime.",
-        priority: 'high',
-        category: 'lifestyle',
-        icon: Heart
-      });
-    }
+    // Always include gut-friendly environment
+    recs.push({
+      title: "Digestive-Friendly Environment",
+      description: "Create calm, comfortable eating spaces free from stress, distractions, and negative emotions.",
+      priority: 'medium',
+      category: 'environment',
+      icon: Calendar,
+      analysis: "Eating environment significantly impacts digestion through nervous system activation. Calm environments improve digestive efficiency.",
+      improvement: "Eat at designated table, remove electronic devices, use soft lighting, play calming music during meals.",
+      timeline: "Immediate improvement in digestion when eating in calm environment"
+    });
 
-    if (answers['3'] === 'exhausted' || answers['3'] === 'tired') {
-      recs.push({
-        title: "Gut-Brain Axis Support",
-        description: "Include probiotic-rich foods and consider a high-quality multi-strain probiotic (50+ billion CFU) to support gut-brain communication.",
-        priority: 'medium',
-        category: 'supplement',
-        icon: Brain,
-        supplements: [
-          {
-            name: "50 Billion CFU Probiotic",
-            dosage: "Take 1 capsule daily with or without food",
-            selected: true
-          },
-          {
-            name: "Prebiotic Fibre Complex",
-            dosage: "Mix 1 scoop in 8oz water daily",
-            selected: false
-          },
-          {
-            name: "L-Glutamine Powder",
-            dosage: "Take 5g twice daily between meals",
-            selected: false
-          }
-        ]
-      });
-    }
+    // Always include gut-healing nutrition
+    recs.push({
+      title: "Gut-Healing Nutrition Protocol",
+      description: "Focus on anti-inflammatory foods, bone broth, fermented foods, and elimination of processed foods and sugar.",
+      priority: 'high',
+      category: 'diet',
+      icon: Heart,
+      analysis: "Gut-healing nutrition reduces intestinal inflammation and supports beneficial bacteria growth. Processed foods increase gut permeability.",
+      improvement: "Include bone broth daily, fermented foods like kefir and sauerkraut, eliminate gluten and dairy temporarily if sensitive.",
+      timeline: "Gut healing typically begins within 2-4 weeks of anti-inflammatory nutrition"
+    });
+
+    // Always include gut therapy option
+    recs.push({
+      title: "Functional Gut Testing",
+      description: "Consider comprehensive stool analysis and SIBO breath test to identify specific gut imbalances.",
+      priority: 'low',
+      category: 'therapy',
+      icon: TestTube,
+      analysis: "Professional gut testing can identify specific bacterial imbalances, parasites, or digestive insufficiencies.",
+      improvement: "Work with functional medicine practitioner for comprehensive gut analysis and targeted treatment.",
+      timeline: "Testing provides immediate insights, with targeted treatment benefits over 6-12 weeks"
+    });
+
+    // Always include gut-supporting lifestyle
+    recs.push({
+      title: "Gut-Supporting Lifestyle",
+      description: "Manage stress levels, maintain regular meal timing, and incorporate gentle movement to support digestive health.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Activity,
+      analysis: "Lifestyle factors like stress, meal timing, and physical activity significantly impact gut health and digestive function.",
+      improvement: "Practice stress reduction techniques, eat at consistent times, take gentle walks after meals, prioritize quality sleep.",
+      timeline: "Digestive improvements typically develop within 2-4 weeks of lifestyle optimization"
+    });
 
     return recs;
   };
@@ -906,11 +924,11 @@ const AssessmentResults = () => {
           { name: "Omega-3 EPA/DHA", dosage: "2000mg daily with food", selected: false }
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "General recommended dosages are 500-1000mg Lion's Mane daily with meals and B-complex in the morning with breakfast. Implement time-blocking techniques using apps like Forest or Focus Keeper for consistency. For your specific recommended dosage, consult a healthcare professional.",
+        improvement: "General recommended dosages are 500-1000mg Lion's Mane daily with meals and B-complex in the morning with breakfast. For your specific recommended dosage, consult a healthcare professional.",
         timeline: "Most people generally experience initial mental clarity improvements in 1-2 weeks, with significant cognitive enhancement after 4-6 weeks of consistent implementation. If cognitive symptoms persist or worsen, consult a healthcare provider."
       },
       {
-        title: "Cognitive Load Management",
+        title: "Cognitive Load Management Routine",
         description: "Use time-blocking with 25-minute focused work sessions followed by 5-minute breaks to optimise mental performance.",
         priority: 'high',
         category: 'routine',
@@ -920,24 +938,44 @@ const AssessmentResults = () => {
         timeline: "Immediate improvement in task completion, with sustained focus gains within 2-3 weeks"
       },
       {
-        title: "B-Complex with Methylated Forms",
-        description: "Take a high-quality B-complex with methylated B12 (1000mcg) and folate (400mcg) to support brain energy metabolism.",
+        title: "Cognitive-Friendly Environment",
+        description: "Create distraction-free workspaces with optimal lighting, temperature (20-22°C), and minimal visual clutter.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill,
-        analysis: "B vitamins are essential for neurotransmitter synthesis and mitochondrial function in brain cells. Methylated forms bypass genetic variations affecting absorption.",
-        improvement: "Take in the morning with breakfast. Look for forms containing methylcobalamin and 5-MTHF.",
-        timeline: "Energy and clarity improvements within 2-4 weeks of consistent use"
+        category: 'environment',
+        icon: Lightbulb,
+        analysis: "Environmental factors significantly impact cognitive performance. Optimized spaces can improve focus and mental clarity by 25-40%.",
+        improvement: "Use natural light when possible, maintain comfortable temperature, remove visual distractions, add plants for air quality.",
+        timeline: "Immediate focus improvements in optimized environment"
       },
       {
-        title: "Intermittent Fasting 16:8",
-        description: "Practice a 16-hour fasting window to stimulate BDNF production and enhance neuroplasticity.",
+        title: "Brain-Healthy Mediterranean Diet",
+        description: "Focus on omega-3 rich foods, leafy greens, berries, and nuts while avoiding processed foods and excess sugar.",
         priority: 'medium',
         category: 'diet',
         icon: Heart,
-        analysis: "Intermittent fasting increases BDNF by 200-400%, promoting new neural connections and improving cognitive function.",
-        improvement: "Start with 12-hour fasts and gradually extend to 16 hours. Maintain consistent eating windows.",
-        timeline: "Mental clarity improvements typically begin within 1-2 weeks"
+        analysis: "Mediterranean diet patterns reduce cognitive decline risk by 35% and support neurotransmitter production for optimal brain function.",
+        improvement: "Include blueberries and walnuts daily, eat fatty fish 2-3 times weekly, use extra virgin olive oil, limit refined carbohydrates.",
+        timeline: "Mental clarity improvements typically begin within 1-2 weeks, with sustained cognitive benefits over 4-8 weeks"
+      },
+      {
+        title: "Neurofeedback Training",
+        description: "Consider EEG neurofeedback sessions to train optimal brainwave patterns for focus and mental clarity.",
+        priority: 'low',
+        category: 'therapy',
+        icon: Brain,
+        analysis: "Neurofeedback training can improve attention and reduce brain fog by training specific brainwave patterns associated with clear thinking.",
+        improvement: "Seek qualified neurofeedback practitioner for assessment and personalized training protocol.",
+        timeline: "Cognitive improvements typically seen after 8-15 sessions over 4-8 weeks"
+      },
+      {
+        title: "Cognitive Lifestyle Optimization",
+        description: "Maintain regular sleep schedule, manage stress levels, and incorporate daily mental challenges to support brain health.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Calendar,
+        analysis: "Consistent lifestyle patterns support optimal brain function through proper circadian rhythm and stress hormone regulation.",
+        improvement: "Prioritize 7-9 hours sleep, practice stress management, engage in learning activities, limit multitasking.",
+        timeline: "Cognitive improvements typically develop within 2-4 weeks of consistent lifestyle optimization"
       }
     ];
   };
@@ -958,38 +996,58 @@ const AssessmentResults = () => {
           { name: "Rhodiola Rosea", dosage: "300mg in morning", selected: false }
         ],
         analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "General recommended dosages are 200mg CoQ10 with fatty meals and 25mg iron bisglycinate daily (if deficient). Combine with 15-30 minutes of 10,000 lux light exposure in the morning. For your specific recommended dosage, consult a healthcare professional.",
+        improvement: "General recommended dosages are 200mg CoQ10 with fatty meals and 25mg iron bisglycinate daily (if deficient). For your specific recommended dosage, consult a healthcare professional.",
         timeline: "Most people generally experience initial energy improvements in 1-2 weeks, with peak benefits at 4-6 weeks of consistent implementation. If fatigue symptoms persist or worsen, consult a healthcare provider."
       },
       {
-        title: "Circadian Light Therapy",
-        description: "Get 15-30 minutes of bright light (10,000 lux) within 30 minutes of waking to optimise circadian rhythm.",
+        title: "Circadian Energy Routine",
+        description: "Get 15-30 minutes of bright light within 30 minutes of waking and maintain consistent sleep-wake times.",
         priority: 'high',
         category: 'routine',
         icon: Lightbulb,
         analysis: "Light exposure regulates cortisol and melatonin rhythms, directly impacting energy levels throughout the day. Proper circadian timing can increase daytime energy by 30-50%.",
-        improvement: "Use a light therapy box or get natural sunlight. Avoid bright light 3 hours before bed.",
+        improvement: "Use a light therapy box or get natural sunlight. Avoid bright light 3 hours before bed. Maintain consistent bedtimes.",
         timeline: "Energy pattern improvements within 3-7 days of consistent exposure"
       },
       {
-        title: "Iron and Ferritin Optimization",
-        description: "Test ferritin levels and aim for 50-70 ng/mL. Supplement with iron bisglycinate if deficient.",
-        priority: 'high',
-        category: 'supplement',
-        icon: Heart,
-        analysis: "Low iron is the #1 cause of fatigue in women. Even borderline low ferritin (below 50) can cause significant energy issues.",
-        improvement: "Take iron with vitamin C, away from calcium and coffee. Monitor levels every 3 months.",
-        timeline: "Energy improvements typically seen 4-6 weeks after iron levels normalize"
+        title: "Energy-Optimized Environment",
+        description: "Create bright, well-ventilated workspaces with plants and maintain comfortable temperature (20-22°C) for optimal alertness.",
+        priority: 'medium',
+        category: 'environment',
+        icon: Calendar,
+        analysis: "Environmental factors significantly impact energy levels. Proper lighting, air quality, and temperature can improve alertness by 20-30%.",
+        improvement: "Maximize natural light, add air-purifying plants, ensure good ventilation, use full-spectrum bulbs in darker areas.",
+        timeline: "Immediate alertness improvements in optimized environment"
       },
       {
-        title: "Adaptogenic Protocol",
-        description: "Use Rhodiola (300mg) in morning and Ashwagandha (600mg) in evening to support adrenal function.",
+        title: "Energy-Supporting Nutrition",
+        description: "Focus on stable blood sugar with balanced meals, complex carbohydrates, and regular meal timing.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Blood sugar fluctuations are a major cause of energy crashes. Stable nutrition patterns can maintain consistent energy levels throughout the day.",
+        improvement: "Eat protein with each meal, choose complex carbs, avoid sugar crashes, maintain regular meal times, stay hydrated.",
+        timeline: "Energy stability improvements typically seen within 1-2 weeks"
+      },
+      {
+        title: "IV Nutrient Therapy",
+        description: "Consider IV therapy with B vitamins, vitamin C, and minerals for rapid nutrient replenishment when severely fatigued.",
+        priority: 'low',
+        category: 'therapy',
+        icon: Heart,
+        analysis: "IV therapy bypasses digestive absorption issues and can provide rapid nutrient replenishment for severe fatigue cases.",
+        improvement: "Consult with qualified healthcare provider specializing in IV therapy for personalized nutrient protocols.",
+        timeline: "Immediate energy boost with IV therapy, sustained benefits with regular treatments"
+      },
+      {
+        title: "Energy-Conscious Lifestyle",
+        description: "Integrate regular movement, stress management, and energy-supporting daily habits for sustainable vitality.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Shield,
-        analysis: "Adaptogens help regulate cortisol patterns and improve stress resilience, leading to more stable energy levels throughout the day.",
-        improvement: "Cycle adaptogens: 6 weeks on, 1 week off. Start with one at a time to assess tolerance.",
-        timeline: "Stress resilience improvements in 1-2 weeks, with sustained energy gains in 3-4 weeks"
+        category: 'lifestyle',
+        icon: Activity,
+        analysis: "Lifestyle factors like regular exercise, stress management, and consistent routines significantly impact energy levels and fatigue resistance.",
+        improvement: "Include 30 minutes daily movement, practice stress reduction techniques, maintain work-rest balance, prioritize recovery.",
+        timeline: "Sustained energy improvements typically develop over 2-4 weeks of lifestyle optimization"
       }
     ];
   };
@@ -1069,44 +1127,71 @@ const AssessmentResults = () => {
   const generateWeightRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Intermittent Fasting 16:8",
-        description: "Implement a 16-hour fasting window with an 8-hour eating period to optimise hormone balance and metabolism.",
+        title: "Metabolic Support Supplements",
+        description: "Supplements to support healthy metabolism, thyroid function, and weight management goals.",
         priority: 'high',
-        category: 'diet',
+        category: 'supplement',
         icon: Scale,
-        analysis: "IF improves insulin sensitivity by 30-40% and increases growth hormone production, promoting fat metabolism while preserving muscle mass.",
-        improvement: "Start with 12 hours and gradually extend. Eat your first meal at noon and last meal by 8 PM.",
-        timeline: "Metabolic improvements in 1-2 weeks, with visible changes in 4-6 weeks"
+        personalisedAssessment: "Your weight management assessment suggests these supplements may support healthy metabolism and weight goals.",
+        supplements: [
+          { name: "Green Tea Extract (EGCG)", dosage: "400-600mg daily", selected: true },
+          { name: "Chromium Picolinate", dosage: "200-400mcg daily", selected: true },
+          { name: "CLA (Conjugated Linoleic Acid)", dosage: "1000-3000mg daily", selected: false },
+          { name: "L-Carnitine", dosage: "2000-3000mg daily", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
+        improvement: "Take green tea extract between meals, chromium with meals to support blood sugar stability. For your specific recommended dosage, consult a healthcare professional.",
+        timeline: "Metabolic support benefits typically seen within 2-4 weeks of consistent supplementation"
       },
       {
-        title: "Resistance Training Protocol",
-        description: "Perform full-body strength training 3x per week to maintain muscle mass and boost metabolic rate.",
+        title: "Structured Eating Routine",
+        description: "Implement consistent meal timing with intermittent fasting (16:8) and mindful eating practices.",
+        priority: 'high',
+        category: 'routine',
+        icon: Calendar,
+        analysis: "Structured eating patterns improve insulin sensitivity by 30-40% and help regulate hunger hormones for better appetite control.",
+        improvement: "Start with 12-hour fasting window and gradually extend. Plan and prep meals in advance, eat slowly and mindfully.",
+        timeline: "Appetite regulation improvements within 1-2 weeks, metabolic benefits in 2-4 weeks"
+      },
+      {
+        title: "Weight-Loss Supportive Environment",
+        description: "Organize kitchen and dining spaces to support healthy choices and remove tempting processed foods.",
+        priority: 'medium',
+        category: 'environment',
+        icon: Heart,
+        analysis: "Environmental cues significantly impact food choices. Optimized food environment can improve healthy eating by 40-60%.",
+        improvement: "Stock healthy snacks at eye level, remove processed foods, use smaller plates, create designated eating areas.",
+        timeline: "Immediate improvement in food choices with environmental optimization"
+      },
+      {
+        title: "Anti-Inflammatory Weight Loss Diet",
+        description: "Focus on whole foods, lean proteins, and nutrient-dense options while creating a sustainable caloric deficit.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Sustainable weight loss requires a moderate caloric deficit (300-500 calories) with nutrient-dense foods to maintain metabolic health.",
+        improvement: "Fill half your plate with vegetables, include protein with each meal, choose complex carbohydrates, stay hydrated.",
+        timeline: "Sustainable weight loss of 0.5-1kg per week with proper nutrition approach"
+      },
+      {
+        title: "Resistance Training Program",
+        description: "Perform full-body strength training 3x per week to maintain muscle mass and boost metabolic rate during weight loss.",
         priority: 'high',
         category: 'therapy',
-        icon: Heart,
+        icon: Activity,
         analysis: "Resistance training increases metabolic rate by 7-15% for up to 72 hours post-workout and preserves muscle during weight loss.",
         improvement: "Focus on compound movements: squats, deadlifts, presses. Progress weight by 2.5-5% weekly.",
         timeline: "Strength gains in 2-3 weeks, body composition changes in 6-8 weeks"
       },
       {
-        title: "Protein Timing Optimization",
-        description: "Consume 25-30g protein within 30 minutes of waking and after workouts to support muscle synthesis.",
-        priority: 'high',
-        category: 'diet',
-        icon: Pill,
-        analysis: "Strategic protein timing maximizes muscle protein synthesis and thermogenesis, increasing calorie burn by 8-15%.",
-        improvement: "Aim for 1.2-1.6g protein per kg body weight daily, distributed evenly across meals.",
-        timeline: "Improved satiety and energy stability within 1-2 weeks"
-      },
-      {
-        title: "Thyroid Support Protocol",
-        description: "Ensure adequate iodine, selenium, and zinc intake. Consider thyroid testing if weight loss stalls.",
+        title: "Healthy Weight Lifestyle",
+        description: "Integrate stress management, adequate sleep, and sustainable habits that support long-term weight maintenance.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Shield,
-        analysis: "Thyroid function directly affects metabolic rate. Micronutrient deficiencies can reduce thyroid hormone production by 10-20%.",
-        improvement: "Include seaweed, Brazil nuts, and oysters in diet. Test TSH, T3, T4, and reverse T3.",
-        timeline: "Thyroid optimization effects seen in 6-12 weeks"
+        category: 'lifestyle',
+        icon: Heart,
+        analysis: "Lifestyle factors like sleep quality, stress levels, and daily habits significantly impact weight management success and maintenance.",
+        improvement: "Prioritize 7-9 hours sleep, manage stress levels, build sustainable habits, focus on progress not perfection.",
+        timeline: "Lifestyle-supported weight management benefits develop over 4-8 weeks"
       }
     ];
   };
@@ -1114,44 +1199,71 @@ const AssessmentResults = () => {
   const generateHairRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Scalp Massage with Rosemary Oil",
-        description: "Massage scalp with diluted rosemary oil (2-3 drops in carrier oil) for 5 minutes daily to stimulate circulation.",
+        title: "Hair Growth Support Supplements",
+        description: "Targeted supplements to support hair follicle health, growth, and thickness from within.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Scissors,
+        personalisedAssessment: "Your hair assessment suggests these supplements may support healthy hair growth and strength.",
+        supplements: [
+          { name: "Biotin", dosage: "2500-5000mcg daily", selected: true },
+          { name: "Iron Bisglycinate", dosage: "25mg daily (if deficient)", selected: true },
+          { name: "Collagen Peptides", dosage: "10-15g daily", selected: false },
+          { name: "Saw Palmetto", dosage: "320mg daily", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
+        improvement: "Take biotin with meals, iron on empty stomach with vitamin C. Test ferritin levels to guide iron supplementation. For your specific recommended dosage, consult a healthcare professional.",
+        timeline: "Hair strength improvements typically seen in 6-8 weeks, with thickness and growth changes in 3-4 months"
+      },
+      {
+        title: "Daily Scalp Care Routine",
+        description: "Massage scalp with rosemary oil and perform gentle scalp exercises to stimulate blood flow and hair growth.",
         priority: 'high',
         category: 'routine',
-        icon: Scissors,
-        analysis: "Rosemary oil increases scalp circulation by 30-40% and has been shown to be as effective as 2% minoxidil for hair regrowth.",
-        improvement: "Mix with jojoba or coconut oil. Massage in circular motions and leave for 30 minutes before washing.",
-        timeline: "New hair growth typically visible after 3-4 months of consistent use"
-      },
-      {
-        title: "Iron and Ferritin Optimization",
-        description: "Target ferritin levels of 70-100 ng/mL for optimal hair growth. Supplement with iron bisglycinate if needed.",
-        priority: 'high',
-        category: 'supplement',
         icon: Heart,
-        analysis: "Ferritin below 70 ng/mL is associated with hair thinning in women. Optimal iron stores are essential for hair follicle health.",
-        improvement: "Take iron with vitamin C, away from calcium. Monitor levels every 3 months to avoid excess.",
-        timeline: "Hair growth improvements typically seen 3-6 months after ferritin optimization"
+        analysis: "Scalp massage increases blood circulation by 30-40% and has been shown to be as effective as 2% minoxidil for hair regrowth.",
+        improvement: "Mix 2-3 drops rosemary oil with carrier oil. Massage in circular motions for 5 minutes daily, leave for 30 minutes before washing.",
+        timeline: "Improved scalp health within 2-4 weeks, new hair growth typically visible after 3-4 months of consistent use"
       },
       {
-        title: "Collagen Peptides",
-        description: "Take 10-15g hydrolyzed collagen peptides daily to provide amino acids for hair structure and growth.",
+        title: "Hair-Healthy Environment",
+        description: "Optimize hair care environment with proper tools, gentle products, and protective styling techniques.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill,
-        analysis: "Collagen provides glycine, proline, and hydroxyproline - key amino acids for hair keratin production and follicle health.",
-        improvement: "Take on empty stomach or with vitamin C. Choose grass-fed, marine, or bovine sources.",
-        timeline: "Hair strength improvements in 6-8 weeks, thickness gains in 3-4 months"
-      },
-      {
-        title: "DHT-Blocking Protocol",
-        description: "Use saw palmetto (320mg) and pumpkin seed oil to help block DHT, a hormone that causes hair follicle miniaturization.",
-        priority: 'medium',
-        category: 'supplement',
+        category: 'environment',
         icon: Shield,
-        analysis: "DHT causes 95% of pattern hair loss. Natural DHT blockers can reduce levels by 20-30% without hormonal side effects.",
-        improvement: "Take saw palmetto with meals. Combine with topical pumpkin seed oil applications.",
-        timeline: "DHT reduction effects on hair loss visible after 3-6 months"
+        analysis: "Environmental factors like heat styling, harsh chemicals, and mechanical damage significantly impact hair health and growth.",
+        improvement: "Use silk pillowcases, wide-tooth combs, heat protectants, sulfate-free shampoos, and minimize heat styling.",
+        timeline: "Reduced hair breakage immediately with gentle care practices"
+      },
+      {
+        title: "Hair-Nourishing Nutrition",
+        description: "Focus on protein-rich foods, iron sources, and hair-supporting nutrients for optimal follicle function.",
+        priority: 'high',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Hair follicles require adequate protein, iron, and specific nutrients for healthy growth. Nutritional deficiencies directly impact hair quality.",
+        improvement: "Include lean proteins at each meal, iron-rich foods like spinach and lean meat, zinc from pumpkin seeds, omega-3s from fish.",
+        timeline: "Nutritional improvements in hair health typically seen within 2-3 months"
+      },
+      {
+        title: "Scalp Rejuvenation Therapy",
+        description: "Consider professional treatments like microneedling, LED therapy, or PRP for advanced hair restoration.",
+        priority: 'low',
+        category: 'therapy',
+        icon: Sparkles,
+        analysis: "Professional scalp therapies can stimulate dormant hair follicles and improve growth factors for enhanced hair regeneration.",
+        improvement: "Consult with dermatologist or trichologist for assessment and appropriate treatment recommendations.",
+        timeline: "Professional treatments typically show results after 3-6 months of consistent sessions"
+      },
+      {
+        title: "Hair-Supportive Lifestyle",
+        description: "Manage stress levels, ensure adequate sleep, and avoid habits that damage hair health.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Calendar,
+        analysis: "Stress hormones and poor sleep significantly impact hair growth cycles. Lifestyle optimization supports healthy hair growth patterns.",
+        improvement: "Practice stress management techniques, maintain 7-9 hours sleep, avoid tight hairstyles, gentle hair handling.",
+        timeline: "Stress reduction benefits on hair health typically seen within 2-3 months"
       }
     ];
   };
@@ -1231,44 +1343,71 @@ const AssessmentResults = () => {
   const generatePeriodRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Seed Cycling Protocol",
+        title: "Hormone Balance Supplements",
+        description: "Natural supplements to support healthy menstrual cycles and hormone balance.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Calendar,
+        personalisedAssessment: "Your menstrual health assessment suggests these supplements may support natural hormone balance and cycle regularity.",
+        supplements: [
+          { name: "Vitex (Chasteberry)", dosage: "400mg daily in morning", selected: true },
+          { name: "Evening Primrose Oil", dosage: "1000mg daily", selected: true },
+          { name: "Myo-Inositol", dosage: "2-4g daily", selected: false },
+          { name: "Magnesium Bisglycinate", dosage: "300-400mg daily", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
+        improvement: "Take vitex consistently in the morning on empty stomach. Evening primrose oil with meals. For your specific recommended dosage, consult a healthcare professional.",
+        timeline: "Cycle regulation improvements typically seen within 2-3 cycles of consistent supplementation"
+      },
+      {
+        title: "Cycle Tracking Routine",
+        description: "Track basal body temperature, cervical mucus, and symptoms daily to understand your unique cycle patterns.",
+        priority: 'high',
+        category: 'routine',
+        icon: Target,
+        analysis: "Cycle awareness helps identify patterns and optimize timing for treatments and lifestyle modifications for better hormonal health.",
+        improvement: "Use apps like Natural Cycles or track manually. Take temperature same time daily, note physical and emotional symptoms.",
+        timeline: "Pattern recognition typically develops within 2-3 cycles of consistent tracking"
+      },
+      {
+        title: "Seed Cycling Nutrition Protocol",
         description: "Eat pumpkin and flax seeds days 1-14, then sesame and sunflower seeds days 15-28 to support hormone balance.",
         priority: 'high',
         category: 'diet',
-        icon: Calendar,
-        analysis: "Seed cycling provides specific nutrients that support estrogen and progesterone production at different cycle phases, helping regulate irregular cycles.",
-        improvement: "Grind seeds fresh daily (1-2 tablespoons each). Add to smoothies, yogurt, or salads.",
-        timeline: "Cycle regulation improvements typically seen within 2-3 cycles"
-      },
-      {
-        title: "Vitex (Chasteberry)",
-        description: "Take 400mg standardized vitex extract in the morning to support progesterone production and cycle regularity.",
-        priority: 'high',
-        category: 'supplement',
-        icon: Calendar,
-        analysis: "Vitex acts on the pituitary gland to increase LH production, leading to better progesterone levels and more regular cycles.",
-        improvement: "Take consistently for at least 3 cycles to see effects. Best taken on empty stomach in morning.",
-        timeline: "Cycle improvements typically begin within 2-3 months of consistent use"
-      },
-      {
-        title: "Stress Reduction Protocol",
-        description: "Practice daily meditation and keep cortisol levels low, as chronic stress disrupts reproductive hormones.",
-        priority: 'high',
-        category: 'routine',
         icon: Heart,
-        analysis: "Elevated cortisol suppresses GnRH, LH, and FSH, leading to irregular cycles. Stress management can restore normal cycles in 60-80% of cases.",
-        improvement: "Aim for 10-20 minutes daily meditation. Include yoga, nature walks, or other stress-reducing activities.",
-        timeline: "Hormonal improvements typically seen within 1-2 cycles of consistent stress management"
+        analysis: "Seed cycling provides specific nutrients that support estrogen and progesterone production at different cycle phases, helping regulate irregular cycles.",
+        improvement: "Grind seeds fresh daily (1-2 tablespoons each). Add to smoothies, yogurt, or salads for optimal nutrient absorption.",
+        timeline: "Hormone balance improvements typically seen within 2-3 cycles"
       },
       {
-        title: "Inositol Supplementation",
-        description: "Take 2-4g myo-inositol daily to improve insulin sensitivity and support healthy ovulation patterns.",
+        title: "Hormone-Supportive Environment",
+        description: "Minimize endocrine disruptors in personal care products, household cleaners, and food storage containers.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill,
-        analysis: "Inositol improves insulin sensitivity and reduces androgen levels, particularly beneficial for PCOS-related irregular cycles.",
-        improvement: "Start with 2g daily and increase to 4g if needed. Take with meals to reduce GI upset.",
-        timeline: "Ovulation improvements typically seen within 2-3 cycles"
+        category: 'environment',
+        icon: Shield,
+        analysis: "Environmental toxins and endocrine disruptors can significantly impact hormone balance and cycle regularity.",
+        improvement: "Use glass food storage, natural personal care products, avoid plastic heating, choose organic when possible.",
+        timeline: "Reduced toxic load benefits typically seen within 1-2 cycles"
+      },
+      {
+        title: "Hormone Therapy Evaluation",
+        description: "Consider comprehensive hormone testing and bioidentical hormone therapy if natural approaches are insufficient.",
+        priority: 'low',
+        category: 'therapy',
+        icon: TestTube,
+        analysis: "Professional hormone evaluation can identify specific imbalances requiring targeted medical intervention.",
+        improvement: "Consult with reproductive endocrinologist or hormone specialist for comprehensive assessment and treatment options.",
+        timeline: "Professional evaluation provides immediate insights, with treatment benefits over 2-6 months"
+      },
+      {
+        title: "Cycle-Supportive Lifestyle",
+        description: "Align lifestyle activities with cycle phases: more intense exercise during follicular phase, rest during luteal phase.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Activity,
+        analysis: "Cycle syncing optimizes energy and reduces PMS symptoms by working with natural hormonal fluctuations rather than against them.",
+        improvement: "Plan challenging activities during follicular phase, prioritize self-care during luteal phase, adjust exercise intensity based on energy.",
+        timeline: "Energy and mood improvements typically noticed within 1-2 cycles of cycle-aware living"
       }
     ];
   };
@@ -1276,44 +1415,71 @@ const AssessmentResults = () => {
   const generateHeadacheRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     return [
       {
-        title: "Magnesium Malate",
-        description: "Take 400-600mg magnesium malate daily for migraine prevention and tension headache relief.",
+        title: "Headache Prevention Supplements",
+        description: "Evidence-based supplements for migraine and tension headache prevention and management.",
         priority: 'high',
         category: 'supplement',
         icon: Pill,
-        analysis: "Magnesium deficiency is present in 50% of migraine sufferers. Supplementation can reduce headache frequency by 40-50%.",
-        improvement: "Split dose between morning and evening. Take with food to prevent GI upset.",
-        timeline: "Headache frequency reduction typically seen within 4-6 weeks"
+        personalisedAssessment: "Your headache assessment suggests these supplements may help prevent and manage headache episodes.",
+        supplements: [
+          { name: "Magnesium Malate", dosage: "400-600mg daily", selected: true },
+          { name: "Riboflavin (B2)", dosage: "400mg daily", selected: true },
+          { name: "CoQ10", dosage: "100-300mg daily", selected: false },
+          { name: "Butterbur Extract", dosage: "75mg twice daily", selected: false }
+        ],
+        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
+        improvement: "Split magnesium dose between morning and evening. Take riboflavin with meals. For your specific recommended dosage, consult a healthcare professional.",
+        timeline: "Headache frequency reduction typically seen within 4-6 weeks of consistent supplementation"
       },
       {
-        title: "Hydration Optimization",
-        description: "Drink 35ml per kg body weight daily with electrolytes to prevent dehydration-induced headaches.",
+        title: "Daily Headache Prevention Routine",
+        description: "Regular hydration schedule, neck stretches, and stress management practices to prevent headache triggers.",
         priority: 'high',
-        category: 'lifestyle',
+        category: 'routine',
         icon: Droplets,
-        analysis: "Even mild dehydration (2-3%) can trigger headaches. Proper hydration with electrolytes prevents 60-70% of dehydration headaches.",
-        improvement: "Add a pinch of sea salt and lemon to water. Drink consistently throughout the day.",
-        timeline: "Immediate improvement in dehydration headaches, with better prevention within 1-2 weeks"
+        analysis: "Consistent daily practices can prevent 60-70% of tension headaches and reduce migraine frequency significantly.",
+        improvement: "Drink water every 2 hours, perform neck stretches hourly during desk work, practice daily stress reduction.",
+        timeline: "Immediate improvements in headache prevention with consistent routine"
       },
       {
-        title: "Neck and Jaw Release",
-        description: "Perform daily myofascial release of neck, shoulders, and jaw muscles to reduce tension headaches.",
+        title: "Headache-Free Environment",
+        description: "Optimize lighting, reduce screen glare, maintain comfortable temperature, and minimize strong scents or noise.",
+        priority: 'medium',
+        category: 'environment',
+        icon: Lightbulb,
+        analysis: "Environmental triggers account for 40-60% of headaches. Optimized environment can significantly reduce headache frequency.",
+        improvement: "Use anti-glare screens, adjust monitor height, ensure adequate lighting, maintain comfortable room temperature.",
+        timeline: "Immediate reduction in environment-triggered headaches"
+      },
+      {
+        title: "Anti-Inflammatory Headache Diet",
+        description: "Focus on magnesium-rich foods, omega-3s, and eliminate common food triggers like MSG, artificial sweeteners, and processed foods.",
+        priority: 'medium',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Dietary triggers cause 20-30% of headaches. Anti-inflammatory nutrition can reduce headache frequency and intensity.",
+        improvement: "Include leafy greens, nuts, fatty fish daily. Keep food diary to identify personal triggers. Stay consistently hydrated.",
+        timeline: "Dietary improvements in headache frequency typically seen within 2-4 weeks"
+      },
+      {
+        title: "Manual Therapy Treatment",
+        description: "Consider massage therapy, chiropractic care, or physical therapy for cervical spine and muscle tension issues.",
         priority: 'medium',
         category: 'therapy',
         icon: Heart,
-        analysis: "Trigger points in neck and jaw muscles refer pain to the head. Regular release can reduce tension headache frequency by 50-70%.",
-        improvement: "Use tennis ball or foam roller for 5-10 minutes daily. Focus on suboccipital and SCM muscles.",
-        timeline: "Tension relief within minutes, with long-term headache reduction in 2-4 weeks"
+        analysis: "Manual therapy can address structural causes of tension headaches and improve cervical spine function.",
+        improvement: "Seek qualified practitioner for assessment of neck alignment, muscle tension, and trigger point treatment.",
+        timeline: "Manual therapy benefits typically seen within 2-4 treatment sessions"
       },
       {
-        title: "Riboflavin (B2) Protocol",
-        description: "Take 400mg riboflavin daily for migraine prevention, particularly effective for hormonal migraines.",
+        title: "Headache-Preventive Lifestyle",
+        description: "Maintain consistent sleep schedule, regular meals, stress management, and identify personal headache patterns.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill,
-        analysis: "Riboflavin improves mitochondrial function in brain cells. Studies show 50% reduction in migraine frequency after 3 months.",
-        improvement: "Take with food to improve absorption. May cause bright yellow urine (harmless).",
-        timeline: "Migraine prevention effects typically seen after 2-3 months of consistent use"
+        category: 'lifestyle',
+        icon: Calendar,
+        analysis: "Lifestyle consistency prevents headache triggers and builds resilience against stress-induced episodes.",
+        improvement: "Keep headache diary, maintain regular sleep-wake times, eat at consistent intervals, manage stress proactively.",
+        timeline: "Lifestyle-supported headache reduction typically develops over 4-6 weeks"
       }
     ];
   };
