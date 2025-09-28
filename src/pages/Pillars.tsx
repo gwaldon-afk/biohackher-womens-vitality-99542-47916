@@ -77,16 +77,20 @@ const Pillars = () => {
           "IV therapy for cognitive enhancement"
         ]
       },
-      supplements: [
-        "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
-        "Magnesium glycinate (200-400mg before bed)", 
-        "B-complex vitamins for neurotransmitter support",
-        "Lion's Mane mushroom (500-1000mg)",
-        "Rhodiola rosea for stress adaptation",
-        "Phosphatidylserine for memory",
-        "Alpha-GPC for acetylcholine support",
-        "Creatine monohydrate (3-5g daily)"
-      ],
+      supplements: {
+        training: [
+          "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
+          "B-complex vitamins for neurotransmitter support",
+          "Magnesium glycinate (200-400mg before bed)",
+          "Creatine monohydrate (3-5g daily for brain energy)"
+        ],
+        therapy: [
+          "Lion's Mane mushroom (500-1000mg professionally dosed)",
+          "Rhodiola rosea for stress adaptation (clinical grade)",
+          "Phosphatidylserine for memory (IV or high-dose)",
+          "Alpha-GPC for acetylcholine support (therapeutic doses)"
+        ]
+      },
       content: {
         overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
         keyAreas: ["Cognitive Enhancement", "Memory Optimization", "Focus & Concentration", "Neuroprotection", "Mental Clarity"]
@@ -144,16 +148,20 @@ const Pillars = () => {
           "Hormone optimization therapy"
         ]
       },
-      supplements: [
-        "Whey or plant protein (20-40g post-workout)",
-        "Creatine monohydrate (3-5g daily)",
-        "Collagen peptides (10-20g for joints)",
-        "Vitamin D3 + K2 (2000-4000 IU D3)",
-        "Magnesium (glycinate or citrate, 200-400mg)",
-        "Omega-3 fish oil (1-3g EPA/DHA)",
-        "Electrolyte replacement (sodium, potassium)",
-        "CoQ10 for mitochondrial support (100-200mg)"
-      ],
+      supplements: {
+        training: [
+          "Whey or plant protein (20-40g post-workout)",
+          "Creatine monohydrate (3-5g daily)",
+          "Electrolyte replacement (sodium, potassium)",
+          "Vitamin D3 + K2 (2000-4000 IU D3)"
+        ],
+        therapy: [
+          "Collagen peptides (10-20g for joints - clinical grade)",
+          "Magnesium (glycinate or citrate, 200-400mg therapeutic)",
+          "Omega-3 fish oil (1-3g EPA/DHA pharmaceutical grade)",
+          "CoQ10 for mitochondrial support (100-200mg professional)"
+        ]
+      },
       content: {
         overview: "Maintain peak physical performance and combat aging with cutting-edge body optimization techniques. From strength training to metabolic enhancement.",
         keyAreas: ["Strength & Mobility", "Metabolic Health", "Recovery Optimization", "Body Composition", "Physical Resilience"]
@@ -211,16 +219,20 @@ const Pillars = () => {
           "Energy healing and reiki sessions"
         ]
       },
-      supplements: [
-        "Ashwagandha (300-600mg for cortisol regulation)",
-        "Magnesium glycinate (200-400mg for relaxation)",
-        "GABA (500-750mg for nervous system support)",
-        "L-theanine (200mg for calm focus)",
-        "Rhodiola rosea (200-400mg for stress adaptation)",
-        "Phosphatidylserine (100mg for cortisol management)",
-        "B-complex for neurotransmitter support",
-        "Omega-3s for inflammation reduction"
-      ],
+      supplements: {
+        training: [
+          "Magnesium glycinate (200-400mg for relaxation)",
+          "B-complex for neurotransmitter support",
+          "L-theanine (200mg for calm focus)",
+          "GABA (500-750mg for nervous system support)"
+        ],
+        therapy: [
+          "Ashwagandha (300-600mg for cortisol regulation - clinical)",
+          "Rhodiola rosea (200-400mg for stress adaptation - therapeutic)",
+          "Phosphatidylserine (100mg for cortisol management - professional)",
+          "Omega-3s for inflammation reduction (pharmaceutical grade)"
+        ]
+      },
       content: {
         overview: "Find your equilibrium through stress management, hormonal optimization, and mindfulness practices. Create lasting balance in your daily life.",
         keyAreas: ["Stress Management", "Hormonal Balance", "Emotional Regulation", "Mindfulness", "Life Balance"]
@@ -278,16 +290,20 @@ const Pillars = () => {
           "Platelet-rich plasma (PRP) treatments"
         ]
       },
-      supplements: [
-        "Collagen peptides (10-20g daily, types I & III)",
-        "Vitamin C (1000mg for collagen synthesis)",
-        "Hyaluronic acid (100-200mg for hydration)",
-        "Biotin & zinc for hair/nail health",
-        "Astaxanthin (4-8mg for UV protection)",
-        "Marine omega-3s for skin inflammation",
-        "NAD+ precursors for cellular repair",
-        "Resveratrol for antioxidant protection"
-      ],
+      supplements: {
+        training: [
+          "Vitamin C (1000mg for collagen synthesis)",
+          "Biotin & zinc for hair/nail health",
+          "Marine omega-3s for skin inflammation",
+          "Hyaluronic acid (100-200mg for hydration)"
+        ],
+        therapy: [
+          "Collagen peptides (10-20g daily, types I & III - clinical)",
+          "Astaxanthin (4-8mg for UV protection - therapeutic)",
+          "NAD+ precursors for cellular repair (professional grade)",
+          "Resveratrol for antioxidant protection (high-potency)"
+        ]
+      },
       content: {
         overview: "Achieve radiant beauty from within using advanced anti-aging protocols, skincare innovations, and holistic beauty practices.",
         keyAreas: ["Skin Health", "Anti-Aging", "Cellular Regeneration", "Beauty Nutrition", "Aesthetic Optimization"]
@@ -593,21 +609,49 @@ const Pillars = () => {
                         </Button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-4">
-                        <Card>
-                          <CardContent className="pt-6">
-                            <p className="text-sm text-muted-foreground mb-4">
-                              Evidence-based supplements with recommended dosages
-                            </p>
-                            <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                                  {supplement}
-                                </li>
-                              ))}
-                            </ul>
-                          </CardContent>
-                        </Card>
+                        <div className="space-y-4">
+                          {/* Training Supplements */}
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-lg flex items-center gap-2">
+                                <Activity className="h-5 w-5 text-green-500" />
+                                Training Supplements
+                              </CardTitle>
+                              <CardDescription>Self-administered supplements for daily optimization</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <ul className="space-y-2">
+                                {pillars[selectedPillar as keyof typeof pillars].supplements.training.map((supplement, index) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    {supplement}
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+                          
+                          {/* Therapy Supplements */}
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-lg flex items-center gap-2">
+                                <TestTube className="h-5 w-5 text-blue-500" />
+                                Therapeutic Supplements
+                              </CardTitle>
+                              <CardDescription>Professional-grade supplements requiring guidance</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <ul className="space-y-2">
+                                {pillars[selectedPillar as keyof typeof pillars].supplements.therapy.map((supplement, index) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    {supplement}
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+                        </div>
                       </CollapsibleContent>
                     </Collapsible>
                   </div>
