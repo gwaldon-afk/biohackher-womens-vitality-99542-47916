@@ -139,6 +139,93 @@ const Dashboard = () => {
     }
   };
 
+  const getPersonalizedAssessmentStatements = () => {
+    if (recentAssessments.length === 0) return {
+      primaryStatement: "Your health journey is just beginning. Complete your first symptom assessment to unlock personalized insights and recommendations tailored specifically to your wellness goals.",
+      secondaryStatements: [],
+      actionStatement: "Take your first assessment to discover your unique health profile and receive targeted guidance for optimal wellbeing."
+    };
+
+    const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
+    const poorSymptoms = recentAssessments.filter(a => a.score_category === 'poor');
+    const fairSymptoms = recentAssessments.filter(a => a.score_category === 'fair');
+    const goodSymptoms = recentAssessments.filter(a => a.score_category === 'good');
+    const excellentSymptoms = recentAssessments.filter(a => a.score_category === 'excellent');
+
+    // Extract common primary issues for pattern analysis
+    const allPrimaryIssues = recentAssessments.flatMap(a => a.primary_issues || []);
+    const issueFrequency = allPrimaryIssues.reduce((acc: Record<string, number>, issue: string) => {
+      acc[issue] = (acc[issue] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const commonIssues = Object.entries(issueFrequency)
+      .filter(([_, count]) => count > 1)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 2);
+
+    let primaryStatement = "";
+    let secondaryStatements: string[] = [];
+    let actionStatement = "";
+
+    // Generate primary assessment statement
+    if (avgScore >= 80) {
+      primaryStatement = `Your health profile demonstrates exceptional symptom management across ${recentAssessments.length} key areas, with an overall wellness score of ${Math.round(avgScore)}/100. This places you in the top tier of health optimization, indicating that your current lifestyle and health strategies are highly effective.`;
+      
+      if (excellentSymptoms.length > 0) {
+        secondaryStatements.push(`Your ${excellentSymptoms.map(a => getSymptomName(a.symptom_type)).join(', ')} management is exemplary, serving as a strong foundation for your overall wellness.`);
+      }
+      
+      actionStatement = "Continue your successful health practices and consider sharing your strategies with others. Focus on maintaining these excellent results through consistent routines.";
+    } else if (avgScore >= 65) {
+      primaryStatement = `Your health profile shows strong overall wellness with a score of ${Math.round(avgScore)}/100 across ${recentAssessments.length} assessed areas. You have ${excellentSymptoms.length + goodSymptoms.length} areas performing well, indicating effective health management strategies in place.`;
+      
+      if (poorSymptoms.length + fairSymptoms.length > 0) {
+        const concerningAreas = [...poorSymptoms, ...fairSymptoms].map(a => getSymptomName(a.symptom_type));
+        secondaryStatements.push(`While your foundation is solid, ${concerningAreas.join(', ')} ${concerningAreas.length === 1 ? 'requires' : 'require'} targeted attention to optimize your overall wellbeing.`);
+      }
+      
+      if (commonIssues.length > 0) {
+        secondaryStatements.push(`Analysis reveals that ${commonIssues[0][0]} appears as a common factor across multiple symptoms, suggesting this may be a key leverage point for improvement.`);
+      }
+      
+      actionStatement = `Focus on addressing ${poorSymptoms.length + fairSymptoms.length} area${poorSymptoms.length + fairSymptoms.length > 1 ? 's' : ''} while maintaining your current successful strategies.`;
+    } else if (avgScore >= 50) {
+      primaryStatement = `Your health profile presents a mixed picture with a wellness score of ${Math.round(avgScore)}/100, indicating both areas of strength and opportunities for significant improvement across ${recentAssessments.length} assessed domains.`;
+      
+      if (excellentSymptoms.length + goodSymptoms.length > 0) {
+        secondaryStatements.push(`Your success in managing ${[...excellentSymptoms, ...goodSymptoms].map(a => getSymptomName(a.symptom_type)).join(', ')} demonstrates your capability for effective health management.`);
+      }
+      
+      if (poorSymptoms.length > 0) {
+        secondaryStatements.push(`${poorSymptoms.map(a => getSymptomName(a.symptom_type)).join(', ')} ${poorSymptoms.length === 1 ? 'shows' : 'show'} significant concern and should be your primary focus areas for health intervention.`);
+      }
+      
+      if (commonIssues.length > 0) {
+        secondaryStatements.push(`Notably, ${commonIssues[0][0]} emerges as a recurring theme across ${commonIssues[0][1]} different symptoms, suggesting addressing this root cause could create meaningful improvements across multiple areas.`);
+      }
+      
+      actionStatement = `Prioritize addressing the ${poorSymptoms.length} most concerning area${poorSymptoms.length > 1 ? 's' : ''} while building upon your existing strengths.`;
+    } else {
+      primaryStatement = `Your current health profile indicates significant challenges across multiple symptom areas, with a wellness score of ${Math.round(avgScore)}/100. This suggests that comprehensive health intervention and professional guidance may be beneficial for optimal outcomes.`;
+      
+      if (poorSymptoms.length > 0) {
+        secondaryStatements.push(`${poorSymptoms.map(a => getSymptomName(a.symptom_type)).join(', ')} ${poorSymptoms.length === 1 ? 'requires' : 'require'} immediate attention and may benefit from professional medical evaluation.`);
+      }
+      
+      if (excellentSymptoms.length + goodSymptoms.length > 0) {
+        secondaryStatements.push(`However, your success with ${[...excellentSymptoms, ...goodSymptoms].map(a => getSymptomName(a.symptom_type)).join(', ')} shows that positive change is achievable with the right approach.`);
+      }
+      
+      if (commonIssues.length > 0) {
+        secondaryStatements.push(`The recurring presence of ${commonIssues[0][0]} across multiple symptoms suggests this may be a critical root cause that, when addressed, could lead to significant overall improvement.`);
+      }
+      
+      actionStatement = `Consider comprehensive medical evaluation and focus on systematic intervention for the ${poorSymptoms.length + fairSymptoms.length} areas requiring attention.`;
+    }
+
+    return { primaryStatement, secondaryStatements, actionStatement };
+  };
+
   const getOverallHealthStatus = () => {
     if (recentAssessments.length === 0) return { 
       status: 'No Data', 
@@ -148,25 +235,11 @@ const Dashboard = () => {
     };
     
     const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
-    const poorCount = recentAssessments.filter(a => a.score_category === 'poor').length;
-    const fairCount = recentAssessments.filter(a => a.score_category === 'fair').length;
-    const goodCount = recentAssessments.filter(a => a.score_category === 'good').length;
-    const excellentCount = recentAssessments.filter(a => a.score_category === 'excellent').length;
     
-    let assessment = '';
-    if (avgScore >= 80) {
-      assessment = `Outstanding health profile across ${recentAssessments.length} areas. You're in the top tier for symptom management.`;
-      return { status: 'Excellent', color: 'text-green-600', score: Math.round(avgScore), assessment };
-    } else if (avgScore >= 65) {
-      assessment = `Good overall health with ${excellentCount + goodCount} areas performing well. ${poorCount + fairCount > 0 ? `Focus needed in ${poorCount + fairCount} area${poorCount + fairCount > 1 ? 's' : ''}.` : ''}`;
-      return { status: 'Good', color: 'text-blue-600', score: Math.round(avgScore), assessment };
-    } else if (avgScore >= 50) {
-      assessment = `Mixed health profile. ${excellentCount + goodCount} areas are stable, but ${poorCount + fairCount} need attention for optimal wellbeing.`;
-      return { status: 'Fair', color: 'text-amber-600', score: Math.round(avgScore), assessment };
-    } else {
-      assessment = `Multiple areas need immediate attention. ${poorCount} critical areas identified. Focused intervention recommended.`;
-      return { status: 'Needs Attention', color: 'text-red-600', score: Math.round(avgScore), assessment };
-    }
+    if (avgScore >= 80) return { status: 'Excellent', color: 'text-green-600', score: Math.round(avgScore), assessment: '' };
+    if (avgScore >= 65) return { status: 'Good', color: 'text-blue-600', score: Math.round(avgScore), assessment: '' };
+    if (avgScore >= 50) return { status: 'Fair', color: 'text-amber-600', score: Math.round(avgScore), assessment: '' };
+    return { status: 'Needs Attention', color: 'text-red-600', score: Math.round(avgScore), assessment: '' };
   };
 
   const getPriorityRecommendations = () => {
@@ -264,125 +337,102 @@ const Dashboard = () => {
           <p className="text-muted-foreground">Your personalised health dashboard</p>
         </div>
 
-        {/* Quick Summary Card */}
+        {/* Personalized Health Assessment */}
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="cursor-help">
-                        <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
-                          <div className="text-center">
-                            <div className="text-xl font-bold">{data.currentScore}</div>
-                            <div className="text-xs text-muted-foreground">LIS Score</div>
-                          </div>
-                        </ProgressCircle>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs p-3">
-                      <p className="text-sm font-medium mb-2">Longevity Impact Score (LIS)</p>
-                      <p className="text-xs">
-                        LIS measures your daily habits' impact on biological aging. 
-                        Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
-                        and below 60 may accelerate aging. Based on sleep, nutrition, 
-                        activity, stress, social connections, and cognitive engagement.
+            <div className="space-y-6">
+              {/* Primary Assessment Statement */}
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-primary mb-4">Your Personalized Health Assessment</h2>
+                <p className="text-base text-muted-foreground leading-relaxed mb-4">
+                  {getPersonalizedAssessmentStatements().primaryStatement}
+                </p>
+              </div>
+
+              {/* Secondary Assessment Insights */}
+              {getPersonalizedAssessmentStatements().secondaryStatements.length > 0 && (
+                <div className="space-y-3">
+                  {getPersonalizedAssessmentStatements().secondaryStatements.map((statement, index) => (
+                    <div key={index} className="flex items-start gap-3 p-4 bg-background/80 rounded-lg border border-primary/10">
+                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {statement}
                       </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                
-                {/* LIS Analysis */}
-                <div className="space-y-4 flex-1">
-                  <div className="text-lg font-bold text-gray-900">Longevity Impact Score (LIS) Analysis</div>
-                  <div className="text-sm text-muted-foreground">
-                    {data.currentScore >= 80 ? (
-                      <span className="text-green-600 font-medium">
-                        You're crushing it! Top 15% globally - your habits could add 5-10 healthy years.
-                      </span>
-                    ) : data.currentScore >= 60 ? (
-                      <span className="text-blue-600 font-medium">
-                        You're doing okay, but there's untapped potential here. 65% score similarly - ready to stand out?
-                      </span>
-                    ) : (
-                      <span className="text-amber-600 font-medium">
-                        Your current path could cost you 3-7 years vs. healthier peers. Time to pivot?
-                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Action Statement */}
+              <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
+                <div className="flex items-start gap-3">
+                  <TrendingUp className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-primary mb-2">Recommended Focus</h3>
+                    <p className="text-sm text-primary/80 leading-relaxed">
+                      {getPersonalizedAssessmentStatements().actionStatement}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Health Score and Actions */}
+              <div className="flex items-center justify-between pt-4 border-t border-primary/10">
+                <div className="flex items-center gap-6">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="cursor-help">
+                          <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
+                            <div className="text-center">
+                              <div className="text-xl font-bold">{data.currentScore}</div>
+                              <div className="text-xs text-muted-foreground">LIS Score</div>
+                            </div>
+                          </ProgressCircle>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3">
+                        <p className="text-sm font-medium mb-2">Longevity Impact Score (LIS)</p>
+                        <p className="text-xs">
+                          LIS measures your daily habits impact on biological aging. 
+                          Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
+                          and below 60 may accelerate aging.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <div className="space-y-2">
+                    <div className={`text-2xl font-bold ${getOverallHealthStatus().color}`}>
+                      {getOverallHealthStatus().status}
+                    </div>
+                    {getOverallHealthStatus().score > 0 && (
+                      <div className="text-sm text-muted-foreground">
+                        Overall Score: {getOverallHealthStatus().score}/100
+                      </div>
                     )}
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    onClick={() => navigate('/symptoms')}
+                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    size="sm"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Update Assessment
+                  </Button>
                   
-                  {/* 3-column layout */}
-                  <div className="grid grid-cols-3 gap-4 items-center">
-                    {/* Left column - Assessment info */}
-                    <div className="space-y-2">
-                      <div className="text-sm text-muted-foreground">
-                        Last assessment: {data.lastAssessment}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Total assessments: {data.totalAssessments}
-                      </div>
-                    </div>
-                    
-                    {/* Middle column - Assessment buttons */}
-                    <div className="flex flex-col justify-center gap-3">
-                      <Button 
-                        onClick={() => navigate('/symptoms')}
-                        className="bg-primary text-primary-foreground border border-primary hover:bg-primary-dark"
-                        variant="outline"
-                        size="sm"
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        <div className="text-center leading-tight">
-                          <div>Complete Today's LIS</div>
-                        </div>
-                        <ChevronRight className="h-4 w-4 ml-2" />
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => navigate('/assessment-history?from=dashboard')}
-                        className="bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary-dark"
-                        variant="outline"
-                        size="sm"
-                      >
-                        <History className="h-4 w-4 mr-2" />
-                        <div className="text-center leading-tight">
-                          <div>View Past LIS</div>
-                          <div>Assessments</div>
-                        </div>
-                        <ChevronRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </div>
-                    
-                    {/* Right column - Status info */}
-                    <div className="space-y-4">
-                      {/* Weekly Trend */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Weekly Trend:</span>
-                        {data.weeklyTrend === 'up' ? (
-                          <div className="flex items-center gap-1 text-green-600">
-                            <TrendingUp className="h-4 w-4" />
-                            <span className="text-sm font-medium">Improving</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1 text-amber-600">
-                            <TrendingDown className="h-4 w-4" />
-                            <span className="text-sm font-medium">Needs attention</span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Health Status */}
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-primary mb-1">
-                          {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Health Status
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <Button 
+                    onClick={() => navigate('/reports')}
+                    variant="outline"
+                    className="border-primary/20 text-primary hover:bg-primary/5"
+                    size="sm"
+                  >
+                    <History className="h-4 w-4 mr-2" />
+                    View Full Analysis
+                  </Button>
                 </div>
               </div>
             </div>
