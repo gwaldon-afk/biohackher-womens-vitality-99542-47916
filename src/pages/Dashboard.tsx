@@ -119,7 +119,7 @@ const Dashboard = () => {
                 </TooltipProvider>
                 
                 {/* LIS Analysis */}
-                <div className="space-y-2 flex-1">
+                <div className="space-y-4 flex-1">
                   <div className="text-lg font-bold text-gray-900">Longevity Impact Score (LIS) Analysis</div>
                   <div className="text-sm text-muted-foreground">
                     {data.currentScore >= 80 ? (
@@ -137,57 +137,63 @@ const Dashboard = () => {
                     )}
                   </div>
                   
-                  <div className="text-sm text-muted-foreground">
-                    Last assessment: {data.lastAssessment}
-                  </div>
-                  
-                  {/* Assessment Button */}
-                  <div className="mt-3 mb-3">
-                    <Button 
-                      onClick={() => navigate('/symptoms')}
-                      className="bg-primary text-primary-foreground border border-primary hover:bg-primary-dark"
-                      variant="outline"
-                      size="sm"
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      <div className="text-center leading-tight">
-                        <div>Take Today's Daily</div>
-                        <div>Longevity Assessment</div>
+                  {/* 3-column layout */}
+                  <div className="grid grid-cols-3 gap-4 items-center">
+                    {/* Left column - Assessment info */}
+                    <div className="space-y-2">
+                      <div className="text-sm text-muted-foreground">
+                        Last assessment: {data.lastAssessment}
                       </div>
-                      <ChevronRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </div>
-                  
-                  <div className="text-sm text-muted-foreground">
-                    Total assessments: {data.totalAssessments}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-col items-end gap-4">
-                {/* Weekly Trend - moved to right */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Weekly Trend:</span>
-                  {data.weeklyTrend === 'up' ? (
-                    <div className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="h-4 w-4" />
-                      <span className="text-sm font-medium">Improving</span>
+                      <div className="text-sm text-muted-foreground">
+                        Total assessments: {data.totalAssessments}
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-1 text-amber-600">
-                      <TrendingDown className="h-4 w-4" />
-                      <span className="text-sm font-medium">Needs attention</span>
+                    
+                    {/* Middle column - Button */}
+                    <div className="flex justify-center">
+                      <Button 
+                        onClick={() => navigate('/symptoms')}
+                        className="bg-primary text-primary-foreground border border-primary hover:bg-primary-dark"
+                        variant="outline"
+                        size="sm"
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
+                        <div className="text-center leading-tight">
+                          <div>Take Today's Daily</div>
+                          <div>Longevity Assessment</div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 ml-2" />
+                      </Button>
                     </div>
-                  )}
-                </div>
-                
-                {/* Health Status */}
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Health Status
+                    
+                    {/* Right column - Status info */}
+                    <div className="space-y-4">
+                      {/* Weekly Trend */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Weekly Trend:</span>
+                        {data.weeklyTrend === 'up' ? (
+                          <div className="flex items-center gap-1 text-green-600">
+                            <TrendingUp className="h-4 w-4" />
+                            <span className="text-sm font-medium">Improving</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-amber-600">
+                            <TrendingDown className="h-4 w-4" />
+                            <span className="text-sm font-medium">Needs attention</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Health Status */}
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary mb-1">
+                          {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Health Status
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
