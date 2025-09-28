@@ -961,46 +961,61 @@ const AssessmentResults = () => {
         timeline: "Most people generally see bloating reduction within 1-2 weeks of elimination. If bloating symptoms persist or worsen, consult a healthcare provider."
       },
       {
-        title: "Digestive Bitters Protocol",
-        description: "Take digestive bitters (gentian root, dandelion) 15 minutes before each meal to stimulate digestive enzymes.",
+        title: "Digestive Support Supplements",
+        description: "Targeted supplements to improve digestion and reduce gas formation that leads to bloating.",
         priority: 'high',
         category: 'supplement',
         icon: Pill,
+        personalisedAssessment: "Your bloating assessment suggests these supplements may help improve digestion and reduce symptoms.",
         supplements: [
-          {
-            name: "Swedish Bitters Complex",
-            dosage: "Take 1-2 drops in water, 15 minutes before each meal",
-            selected: true
-          },
-          {
-            name: "Gentian Root Extract",
-            dosage: "Take 1 capsule 20 minutes before meals",
-            selected: false
-          }
+          { name: "Digestive Enzymes Complex", dosage: "1-2 capsules before each meal", selected: true },
+          { name: "Simethicone", dosage: "40-80mg after meals as needed", selected: true },
+          { name: "Peppermint Oil Capsules", dosage: "0.2ml enteric-coated, 3x daily", selected: false },
+          { name: "Probiotics Multi-Strain", dosage: "25-50 billion CFU daily", selected: false }
         ],
-        analysis: "Bitter compounds stimulate vagus nerve activation and increase digestive enzyme production by 25-40%, improving food breakdown and reducing gas formation.",
-        improvement: "General recommended dosages are 1-2 drops of digestive bitters in water, taken 15 minutes before each meal. Try Swedish bitters or blends containing gentian root, dandelion, and artichoke leaf. For your specific recommended dosage, consult a healthcare professional.",
-        timeline: "Most people generally notice digestive improvements within 3-7 days. If digestive symptoms persist or worsen, consult a healthcare provider."
+        analysis: "Digestive enzymes break down foods more efficiently, while simethicone helps break up gas bubbles. Peppermint oil relaxes intestinal muscles.",
+        improvement: "Take digestive enzymes 15-20 minutes before meals. Use simethicone after meals when bloating occurs.",
+        timeline: "Most people notice digestive improvements within 3-7 days of consistent use"
       },
       {
-        title: "Diaphragmatic Breathing Practice",
-        description: "Practice deep belly breathing for 5 minutes before meals to activate the parasympathetic nervous system.",
-        priority: 'medium',
+        title: "Mindful Eating Routine",
+        description: "Practice slow, conscious eating with proper chewing, portion control, and stress-free meal environments.",
+        priority: 'high',
         category: 'routine',
         icon: Heart,
-        analysis: "Proper breathing activates the 'rest and digest' mode, optimising stomach acid and enzyme production for better digestion.",
-        improvement: "Place one hand on chest, one on belly. Focus on expanding the belly while keeping chest still.",
-        timeline: "Immediate improvements in meal comfort, with long-term digestive benefits in 2-3 weeks"
+        analysis: "Eating too quickly impairs digestion and increases air swallowing, leading to bloating. Mindful eating improves digestive efficiency.",
+        improvement: "Chew each bite 20-30 times, put fork down between bites, eat without distractions, stop when 80% full.",
+        timeline: "Immediate improvements in meal comfort, with long-term digestive benefits in 1-2 weeks"
       },
       {
-        title: "Probiotic Rotation",
-        description: "Use different probiotic strains monthly: Lactobacillus, Bifidobacterium, and Saccharomyces boulardii.",
+        title: "Stress-Free Dining Environment",
+        description: "Create calm, relaxed eating spaces free from screens, work, and stressful conversations.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Pill,
-        analysis: "Different probiotic strains target various aspects of gut health. Rotation prevents tolerance and maintains microbial diversity.",
-        improvement: "Start with 25-50 billion CFU and increase gradually. Take away from hot foods and antibiotics.",
-        timeline: "Gut flora improvements typically develop over 4-8 weeks"
+        category: 'environment',
+        icon: Moon,
+        analysis: "Stress significantly impairs digestion by reducing stomach acid and enzyme production. Calm environment activates parasympathetic nervous system.",
+        improvement: "Eat at designated table, remove electronic devices, use soft lighting, play calming music.",
+        timeline: "Immediate improvement in digestion when eating in calm environment"
+      },
+      {
+        title: "Abdominal Massage Therapy",
+        description: "Gentle clockwise abdominal massage to stimulate digestion and help move trapped gas through the intestines.",
+        priority: 'medium',
+        category: 'therapy',
+        icon: Heart,
+        analysis: "Abdominal massage stimulates peristalsis and helps move gas through the digestive tract, reducing bloating by 30-50%.",
+        improvement: "Massage in clockwise circular motions for 5-10 minutes after meals or when bloated.",
+        timeline: "Immediate gas relief during massage, with improved digestion over 1-2 weeks"
+      },
+      {
+        title: "Active Digestion Lifestyle",
+        description: "Incorporate gentle movement after meals and maintain regular meal timing to support optimal digestive function.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Activity,
+        analysis: "Light post-meal activity aids digestion and gas movement. Regular meal timing helps train digestive rhythms.",
+        improvement: "Take 10-15 minute gentle walks after meals, eat at consistent times daily, avoid lying down immediately after eating.",
+        timeline: "Digestive rhythm improvements typically develop within 1-2 weeks"
       }
     ];
   };
@@ -1099,43 +1114,70 @@ const AssessmentResults = () => {
     return [
       {
         title: "GABA Support Protocol",
-        description: "Take L-theanine (200mg) and magnesium glycinate (400mg) to support calming neurotransmitter function.",
+        description: "Natural supplements to support calming neurotransmitter function and reduce anxiety symptoms.",
         priority: 'high',
         category: 'supplement',
         icon: Heart,
+        personalisedAssessment: "Your anxiety assessment indicates these supplements may help support natural calm and stress resilience.",
+        supplements: [
+          { name: "L-Theanine", dosage: "200mg 1-2 times daily", selected: true },
+          { name: "Magnesium Glycinate", dosage: "400mg before bed", selected: true },
+          { name: "GABA Complex", dosage: "500-750mg as needed", selected: false },
+          { name: "Ashwagandha KSM-66", dosage: "300-600mg daily", selected: false }
+        ],
         analysis: "L-theanine increases alpha brain waves and GABA activity, reducing anxiety by 40-60% within 30-60 minutes. Magnesium is essential for GABA receptor function.",
-        improvement: "General recommended approach is taking L-theanine 1-2 hours before stressful situations and magnesium glycinate before bed. Practice box breathing: inhale for 4 counts, hold for 4, exhale for 4, hold for 4. Use progressive muscle relaxation from toes to head. For your specific recommended dosage, consult a healthcare professional.",
+        improvement: "General recommended approach is taking L-theanine 1-2 hours before stressful situations and magnesium glycinate before bed. For your specific recommended dosage, consult a healthcare professional.",
         timeline: "Most people generally experience immediate calming effects with L-theanine, with sustained improvements in 2-4 weeks. If anxiety symptoms persist or worsen, consult a healthcare provider."
       },
       {
-        title: "Box Breathing Technique",
-        description: "Practice 4-4-4-4 breathing (inhale 4, hold 4, exhale 4, hold 4) for 5-10 minutes, 3 times daily.",
+        title: "Daily Anxiety Management Routine",
+        description: "Structured daily practices including breathwork, mindfulness, and progressive muscle relaxation.",
         priority: 'high',
         category: 'routine',
         icon: Heart,
-        analysis: "Box breathing activates the parasympathetic nervous system, reducing cortisol by 25-40% and lowering heart rate variability.",
-        improvement: "Use apps like Breathe or practice during daily transitions. Start with 2-minute sessions.",
-        timeline: "Immediate anxiety relief, with cumulative stress resilience building over 2-3 weeks"
+        analysis: "Consistent anxiety management practices retrain the nervous system and build long-term resilience to stress triggers.",
+        improvement: "Start with 5-10 minutes daily: box breathing (4-4-4-4 pattern), body scan meditation, or progressive muscle relaxation.",
+        timeline: "Immediate anxiety relief during practice, with cumulative stress resilience building over 2-3 weeks"
       },
       {
-        title: "Cold Exposure Adaptation",
-        description: "Take 1-2 minute cold showers to build stress resilience and improve autonomic nervous system balance.",
+        title: "Calming Environment Design",
+        description: "Create peaceful spaces with soft lighting, comfortable temperature (20-22°C), and nature elements.",
+        priority: 'medium',
+        category: 'environment',
+        icon: Moon,
+        analysis: "Environmental factors significantly impact anxiety levels. Calming spaces can reduce cortisol by 15-25%.",
+        improvement: "Use warm lighting, add plants, minimize clutter, create designated relaxation spaces with comfortable seating.",
+        timeline: "Immediate calming effects in optimized environment"
+      },
+      {
+        title: "Anti-Anxiety Nutrition Protocol",
+        description: "Focus on blood sugar stability with regular meals, omega-3 rich foods, and magnesium-rich vegetables.",
+        priority: 'medium',
+        category: 'diet',
+        icon: Heart,
+        analysis: "Blood sugar fluctuations trigger anxiety symptoms. Stable nutrition reduces anxiety episodes by 20-30%.",
+        improvement: "Eat protein with each meal, include leafy greens daily, consume omega-3 fish 2-3 times weekly, limit caffeine and sugar.",
+        timeline: "Blood sugar stability and mood improvements typically seen within 1-2 weeks"
+      },
+      {
+        title: "Cognitive Behavioral Therapy",
+        description: "Professional therapy to identify and reframe anxiety-triggering thought patterns.",
         priority: 'medium',
         category: 'therapy',
-        icon: Thermometer,
-        analysis: "Controlled cold stress increases norepinephrine and improves stress tolerance by 20-30%. It also boosts mood-regulating neurotransmitters.",
-        improvement: "Start with 30-second cold finishes and gradually extend. Focus on controlled breathing during exposure.",
-        timeline: "Stress resilience improvements typically seen within 2-3 weeks"
+        icon: Brain,
+        analysis: "CBT is highly effective for anxiety, with 60-80% of people seeing significant improvement in 8-12 sessions.",
+        improvement: "Seek qualified CBT therapist, practice thought challenging techniques, use anxiety tracking apps.",
+        timeline: "Initial coping improvements within 2-4 sessions, with significant anxiety reduction in 8-12 weeks"
       },
       {
-        title: "Ashwagandha KSM-66",
-        description: "Take 600mg of standardized ashwagandha extract daily to reduce cortisol and anxiety symptoms.",
+        title: "Stress-Resilient Lifestyle",
+        description: "Integrate regular exercise, consistent sleep schedule, and social connections to build anxiety resilience.",
         priority: 'medium',
-        category: 'supplement',
-        icon: Shield,
-        analysis: "KSM-66 ashwagandha reduces cortisol levels by 25-30% and anxiety scores by 40-50% in clinical studies.",
-        improvement: "Take with meals to improve absorption. Cycle 6 weeks on, 1 week off.",
-        timeline: "Anxiety reduction typically begins within 1-2 weeks, with peak benefits at 4-6 weeks"
+        category: 'lifestyle',
+        icon: Activity,
+        analysis: "Lifestyle factors significantly impact anxiety resilience. Regular exercise reduces anxiety by 20-30% through endorphin release.",
+        improvement: "Aim for 150 minutes moderate exercise weekly, maintain 7-9 hour sleep schedule, prioritize social connections.",
+        timeline: "Exercise benefits immediate, with cumulative anxiety reduction over 4-6 weeks"
       }
     ];
   };
@@ -2063,64 +2105,145 @@ const AssessmentResults = () => {
    );
 };
 
-const generateMemoryFocusRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
-  return [
-    {
-      title: "Cognitive Enhancement Protocol",
-      description: "Supplements and techniques to enhance memory, focus, and cognitive performance.",
-      priority: 'high',
-      category: 'supplement',
-      icon: Brain,
-      personalisedAssessment: "Your memory and focus assessment indicates these strategies may help improve cognitive function.",
-      supplements: [
-        { name: "Alpha-GPC", dosage: "300mg daily", selected: true },
-        { name: "Bacopa Monnieri", dosage: "300-600mg daily", selected: true },
-        { name: "Rhodiola Rosea", dosage: "200-400mg daily", selected: false }
-      ],
-      analysis: "Alpha-GPC increases acetylcholine production, while Bacopa supports memory consolidation and stress resilience.",
-      improvement: "Take Alpha-GPC with breakfast and Bacopa with dinner for optimal absorption.",
-      timeline: "Memory improvements typically begin within 2-4 weeks of consistent use"
-    },
-    {
-      title: "Focus Training Sessions",
-      description: "Daily 20-minute focused attention exercises using meditation or brain training apps.",
-      priority: 'high',
-      category: 'routine',
-      icon: Target,
-      analysis: "Regular attention training strengthens prefrontal cortex function and improves working memory capacity.",
-      improvement: "Use apps like Lumosity or practice mindfulness meditation daily.",
-      timeline: "Focus improvements visible within 2-3 weeks of consistent practice"
-    }
-  ];
-};
+  const generateMemoryFocusRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+    return [
+      {
+        title: "Cognitive Enhancement Protocol",
+        description: "Supplements and techniques to enhance memory, focus, and cognitive performance.",
+        priority: 'high',
+        category: 'supplement',
+        icon: Brain,
+        personalisedAssessment: "Your memory and focus assessment indicates these strategies may help improve cognitive function.",
+        supplements: [
+          { name: "Alpha-GPC", dosage: "300mg daily", selected: true },
+          { name: "Bacopa Monnieri", dosage: "300-600mg daily", selected: true },
+          { name: "Rhodiola Rosea", dosage: "200-400mg daily", selected: false }
+        ],
+        analysis: "Alpha-GPC increases acetylcholine production, while Bacopa supports memory consolidation and stress resilience.",
+        improvement: "Take Alpha-GPC with breakfast and Bacopa with dinner for optimal absorption.",
+        timeline: "Memory improvements typically begin within 2-4 weeks of consistent use"
+      },
+      {
+        title: "Focus Training Sessions",
+        description: "Daily 20-minute focused attention exercises using meditation or brain training apps.",
+        priority: 'high',
+        category: 'routine',
+        icon: Target,
+        analysis: "Regular attention training strengthens prefrontal cortex function and improves working memory capacity.",
+        improvement: "Use apps like Lumosity or practice mindfulness meditation daily.",
+        timeline: "Focus improvements visible within 2-3 weeks of consistent practice"
+      },
+      {
+        title: "Optimal Study Environment",
+        description: "Create a distraction-free workspace with proper lighting, temperature control (20-22°C), and noise management.",
+        priority: 'medium',
+        category: 'environment',
+        icon: Lightbulb,
+        analysis: "Environmental factors significantly impact cognitive performance. Optimal conditions can improve focus by 25-40%.",
+        improvement: "Use natural light when possible, eliminate visual clutter, and maintain comfortable temperature.",
+        timeline: "Immediate focus improvements in optimized environment"
+      },
+      {
+        title: "Mediterranean MIND Diet",
+        description: "Follow brain-healthy nutrition emphasizing leafy greens, berries, nuts, fish, and olive oil while limiting processed foods.",
+        priority: 'medium',
+        category: 'diet',
+        icon: Heart,
+        analysis: "MIND diet reduces cognitive decline risk by 35% and supports neurotransmitter production for optimal brain function.",
+        improvement: "Include blueberries and walnuts daily, eat fish 2-3 times weekly, use extra virgin olive oil.",
+        timeline: "Cognitive benefits typically develop over 4-8 weeks"
+      },
+      {
+        title: "Neurofeedback Training",
+        description: "Consider EEG neurofeedback sessions to train specific brainwave patterns associated with focus and attention.",
+        priority: 'low',
+        category: 'therapy',
+        icon: Brain,
+        analysis: "Neurofeedback can improve attention and working memory by training optimal brainwave patterns.",
+        improvement: "Seek qualified practitioner for assessment and personalized protocol.",
+        timeline: "Improvements typically seen after 10-20 sessions"
+      },
+      {
+        title: "Circadian Rhythm Optimization",
+        description: "Maintain consistent sleep-wake cycles and get morning sunlight exposure to support optimal brain function.",
+        priority: 'medium',
+        category: 'lifestyle',
+        icon: Calendar,
+        analysis: "Proper circadian rhythm supports memory consolidation and cognitive performance through optimal hormone timing.",
+        improvement: "Get 15-30 minutes morning sunlight, avoid screens 1 hour before bed, maintain consistent sleep schedule.",
+        timeline: "Sleep and cognitive improvements within 1-2 weeks"
+      }
+    ];
+  };
 
 const generateMobilityRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
   return [
     {
-      title: "Mobility Enhancement Program",
-      description: "Comprehensive approach to improve strength, flexibility, and movement quality.",
+      title: "Daily Mobility Routine",
+      description: "Comprehensive 15-20 minute daily routine focusing on dynamic stretches, joint mobility, and movement quality.",
       priority: 'high',
       category: 'routine',
       icon: Activity,
-      analysis: "Regular mobility work prevents joint stiffness and maintains functional movement patterns.",
-      improvement: "Perform dynamic warm-ups before exercise and static stretches afterward.",
-      timeline: "Mobility improvements typically seen within 2-4 weeks"
+      analysis: "Regular mobility work prevents joint stiffness and maintains functional movement patterns throughout life.",
+      improvement: "Perform dynamic warm-ups before exercise and static stretches afterward. Focus on problem areas daily.",
+      timeline: "Mobility improvements typically seen within 2-4 weeks of consistent practice"
     },
     {
       title: "Joint Support Supplements",
-      description: "Targeted supplements to support joint health and reduce inflammation.",
+      description: "Targeted supplements to support joint health, reduce inflammation, and enhance recovery.",
       priority: 'medium',
       category: 'supplement',
       icon: Pill,
-      personalisedAssessment: "Your mobility assessment suggests these supplements may support joint health.",
+      personalisedAssessment: "Your mobility assessment suggests these supplements may support joint health and recovery.",
       supplements: [
         { name: "Glucosamine + Chondroitin", dosage: "1500mg + 1200mg daily", selected: true },
-        { name: "Curcumin", dosage: "500mg daily with black pepper", selected: true },
-        { name: "Omega-3 EPA/DHA", dosage: "2000mg daily", selected: false }
+        { name: "Curcumin with Bioperine", dosage: "500mg daily with meals", selected: true },
+        { name: "Omega-3 EPA/DHA", dosage: "2000mg daily", selected: false },
+        { name: "Collagen Peptides", dosage: "10-20g daily", selected: false }
       ],
-      analysis: "These compounds support cartilage health and reduce joint inflammation.",
-      improvement: "Take with meals to improve absorption and reduce stomach upset.",
-      timeline: "Joint comfort improvements typically seen within 4-8 weeks"
+      analysis: "These compounds support cartilage health, reduce joint inflammation, and provide building blocks for connective tissue.",
+      improvement: "Take with meals to improve absorption and reduce stomach upset. Consistency is key for joint health.",
+      timeline: "Joint comfort improvements typically seen within 4-8 weeks of consistent supplementation"
+    },
+    {
+      title: "Movement-Friendly Environment",
+      description: "Set up your living and work spaces to encourage regular movement and proper ergonomics.",
+      priority: 'medium',
+      category: 'environment',
+      icon: Calendar,
+      analysis: "Environmental design significantly impacts movement patterns and joint health throughout the day.",
+      improvement: "Use standing desk, take walking meetings, keep exercise equipment visible, optimize workspace ergonomics.",
+      timeline: "Immediate postural improvements, with long-term joint health benefits over months"
+    },
+    {
+      title: "Anti-Inflammatory Nutrition",
+      description: "Focus on foods that reduce inflammation and support joint health: fatty fish, leafy greens, berries, and turmeric.",
+      priority: 'medium',
+      category: 'diet',
+      icon: Heart,
+      analysis: "Anti-inflammatory nutrition reduces systemic inflammation by 20-40% and supports optimal joint function.",
+      improvement: "Include fatty fish 2-3 times weekly, daily leafy greens, colorful berries, and turmeric with black pepper.",
+      timeline: "Inflammatory marker improvements typically seen within 2-4 weeks"
+    },
+    {
+      title: "Physical Therapy Assessment",
+      description: "Consider professional movement assessment to identify imbalances and develop targeted corrective strategies.",
+      priority: 'low',
+      category: 'therapy',
+      icon: Heart,
+      analysis: "Professional assessment can identify movement compensations and muscle imbalances affecting mobility.",
+      improvement: "Seek qualified physiotherapist for comprehensive movement screen and personalized exercise prescription.",
+      timeline: "Assessment provides immediate insights, with corrective benefits over 6-12 weeks"
+    },
+    {
+      title: "Active Lifestyle Integration",
+      description: "Incorporate movement into daily activities: take stairs, park farther away, use active transportation when possible.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Activity,
+      analysis: "Lifestyle-integrated movement maintains joint health and prevents age-related mobility decline.",
+      improvement: "Start with small changes: 2-minute hourly movement breaks, walking meetings, active hobbies.",
+      timeline: "Energy and mobility improvements typically noticed within 1-2 weeks"
     }
   ];
 };
