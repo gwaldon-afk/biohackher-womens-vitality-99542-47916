@@ -31,10 +31,10 @@ const Dashboard = () => {
   const primaryActions = [
     {
       title: "View My Data",
-      subtitle: "Assessment History & Reports",
+      subtitle: "Assessment History & Reports", 
       icon: History,
       variant: "default" as const,
-      onClick: () => navigate('/assessment-history'),
+      onClick: () => navigate('/symptoms?from=dashboard'),
       className: "bg-primary text-primary-foreground hover:bg-primary/90"
     },
     {

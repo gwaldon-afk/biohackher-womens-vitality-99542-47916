@@ -42,7 +42,15 @@ const AssessmentHistory = () => {
   const [selectedView, setSelectedView] = useState<'recent' | 'trends'>('recent');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
+  
+  // Check where user came from for proper back navigation
+  const referrer = searchParams.get('from') || 'dashboard';
   const filterSymptom = searchParams.get('filter');
+  
+  // Instead of showing assessment history, redirect to symptoms page for better layout
+  useEffect(() => {
+    navigate('/symptoms?from=dashboard');
+  }, [navigate]);
 
   useEffect(() => {
     if (user) {
