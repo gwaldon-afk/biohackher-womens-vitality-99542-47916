@@ -136,15 +136,15 @@ const Dashboard = () => {
                   <div className="text-sm text-muted-foreground">
                     {data.currentScore >= 80 ? (
                       <span className="text-green-600 font-medium">
-                        You're in the top 15% - your habits may extend biological age by 5-10 years.
+                        You're crushing it! Top 15% globally - your habits could add 5-10 healthy years.
                       </span>
                     ) : data.currentScore >= 60 ? (
                       <span className="text-blue-600 font-medium">
-                        Average range - neutral impact on aging. 65% of people score similarly.
+                        You're doing okay, but there's untapped potential here. 65% score similarly - ready to stand out?
                       </span>
                     ) : (
                       <span className="text-amber-600 font-medium">
-                        Below average - current habits may accelerate aging by 3-7 years vs. peers.
+                        Your current path could cost you 3-7 years vs. healthier peers. Time to pivot?
                       </span>
                     )}
                   </div>
