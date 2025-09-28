@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube } from "lucide-react";
+import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useToast } from "@/hooks/use-toast";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -14,7 +15,16 @@ import balancePillar from "@/assets/balance-pillar.png";
 
 const Pillars = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
+
+  // Mock user assessment data - in real app this would come from user profile
+  const userAssessments = {
+    brain: { completed: false, lastTaken: null },
+    body: { completed: true, lastTaken: "2024-01-15" },
+    balance: { completed: false, lastTaken: null },
+    beauty: { completed: true, lastTaken: "2024-01-10" }
+  };
 
   const pillars = {
     brain: {
@@ -37,23 +47,36 @@ const Pillars = () => {
           questions: 10
         }
       ],
-      biohacks: [
-        // Cognitive Enhancement
-        "Learning new languages (increases neuroplasticity)",
-        "Playing musical instruments (enhances working memory)",
-        "Social engagement & meaningful relationships",
-        "Reading fiction (improves empathy and cognitive flexibility)",
-        "Meditation & mindfulness practices (8-12 minutes daily)",
-        "Cold exposure therapy (2-11 minutes, 50-59°F)",
-        "Intermittent fasting (14-16 hour windows)",
-        "Blue light blocking 2 hours before sleep",
-        "Morning sunlight exposure (10-30 minutes)",
-        "Dual N-back cognitive training games",
-        "Breathwork (4-7-8 breathing, box breathing)",
-        "Quality sleep (7-9 hours, consistent schedule)",
-        "Regular aerobic exercise (Zone 2 cardio)",
-        "Limiting multi-tasking to improve focus"
-      ],
+      biohacks: {
+        training: [
+          "Learning new languages (increases neuroplasticity by 30%)",
+          "Playing musical instruments (enhances working memory)",
+          "Dual N-back cognitive training games (2-3x/week)",
+          "Speed reading practice (doubles reading efficiency)",
+          "Memory palace technique for information retention",
+          "Social engagement & meaningful relationships",
+          "Reading fiction (improves empathy and cognitive flexibility)",
+          "Meditation & mindfulness practices (8-12 minutes daily)",
+          "Breathwork training (4-7-8 breathing, box breathing)",
+          "Cold exposure training (2-11 minutes, 50-59°F)",
+          "Morning sunlight exposure protocol (10-30 minutes)",
+          "Quality sleep optimization (7-9 hours, consistent schedule)",
+          "Regular aerobic exercise (Zone 2 cardio for BDNF)",
+          "Intermittent fasting (14-16 hour windows)"
+        ],
+        therapy: [
+          "Neurofeedback training sessions",
+          "Transcranial direct current stimulation (tDCS)",
+          "Cognitive behavioral therapy (CBT)",
+          "Hyperbaric oxygen therapy (HBOT)",
+          "Red light therapy for mitochondrial function",
+          "Flotation tank sessions for deep relaxation",
+          "Binaural beats therapy (40Hz gamma waves)",
+          "Professional sleep optimization coaching",
+          "Brain mapping and assessment",
+          "IV therapy for cognitive enhancement"
+        ]
+      },
       supplements: [
         "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
         "Magnesium glycinate (200-400mg before bed)", 
@@ -63,16 +86,6 @@ const Pillars = () => {
         "Phosphatidylserine for memory",
         "Alpha-GPC for acetylcholine support",
         "Creatine monohydrate (3-5g daily)"
-      ],
-      therapies: [
-        "Neurofeedback training protocols",
-        "Transcranial direct current stimulation (tDCS)",
-        "Cognitive behavioral therapy (CBT)",
-        "Hyperbaric oxygen therapy",
-        "Red light therapy for mitochondrial function",
-        "Flotation tank sessions for deep relaxation",
-        "Binaural beats for focus (40Hz gamma waves)",
-        "Sleep optimization coaching"
       ],
       content: {
         overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
@@ -99,23 +112,38 @@ const Pillars = () => {
           questions: 12
         }
       ],
-      biohacks: [
-        // Physical Performance & Longevity
-        "Zone 2 cardio training (180-heart rate in BPM)",
-        "Strength training 3-4x/week (compound movements)",
-        "Mobility work & dynamic stretching daily",
-        "Heat exposure: Sauna 4x/week (174-212°F, 20 min)",
-        "Cold plunge therapy (50-59°F, 2-11 minutes)",
-        "Protein timing: 25-40g within 2 hours post-workout",
-        "Morning movement routine (5-10 minutes)",
-        "Walking 8,000-10,000 steps daily",
-        "Proper hydration with electrolytes",
-        "Recovery tracking (HRV, sleep quality)",
-        "Resistance band exercises for activation",
-        "Functional movement patterns",
-        "Progressive overload in training",
-        "Active recovery days (yoga, walking)"
-      ],
+      biohacks: {
+        training: [
+          "Zone 2 cardio training (180-age in BPM, 45-60 min)",
+          "Strength training 3-4x/week (compound movements)",
+          "High-intensity interval training (HIIT 2x/week)",
+          "Mobility work & dynamic stretching (daily 15 min)",
+          "Functional movement patterns training",
+          "Progressive overload resistance training",
+          "Plyometric exercises for power development",
+          "Balance and proprioception training",
+          "Walking 8,000-10,000 steps daily",
+          "Morning movement routine (5-10 minutes)",
+          "Active recovery protocols (yoga, swimming)",
+          "Breathwork training for performance",
+          "Movement quality assessment and correction",
+          "Sport-specific skill development"
+        ],
+        therapy: [
+          "Heat therapy: Sauna 4x/week (174-212°F, 20 min)",
+          "Cold plunge therapy (50-59°F, 2-11 minutes)",
+          "Deep tissue massage (weekly/bi-weekly)",
+          "Cryotherapy sessions for recovery",
+          "Compression therapy for circulation",
+          "PEMF (Pulsed Electromagnetic Field) therapy",
+          "Infrared sauna for muscle recovery",
+          "Physical therapy movement assessment",
+          "Myofascial release techniques",
+          "Recovery monitoring (HRV, sleep tracking)",
+          "IV hydration and nutrient therapy",
+          "Hormone optimization therapy"
+        ]
+      },
       supplements: [
         "Whey or plant protein (20-40g post-workout)",
         "Creatine monohydrate (3-5g daily)",
@@ -125,16 +153,6 @@ const Pillars = () => {
         "Omega-3 fish oil (1-3g EPA/DHA)",
         "Electrolyte replacement (sodium, potassium)",
         "CoQ10 for mitochondrial support (100-200mg)"
-      ],
-      therapies: [
-        "Physical therapy movement assessment",
-        "Deep tissue massage (weekly/bi-weekly)",
-        "Cryotherapy sessions",
-        "Compression therapy for recovery",
-        "PEMF (Pulsed Electromagnetic Field) therapy",
-        "Infrared sauna sessions",
-        "Myofascial release techniques",
-        "Functional movement screening"
       ],
       content: {
         overview: "Maintain peak physical performance and combat aging with cutting-edge body optimization techniques. From strength training to metabolic enhancement.",
@@ -161,23 +179,38 @@ const Pillars = () => {
           questions: 11
         }
       ],
-      biohacks: [
-        // Stress Management & Hormonal Optimization
-        "Cortisol regulation through morning sunlight (10-30 min)",
-        "Stress-reducing breathwork (4-7-8, box breathing)",
-        "Adaptogenic herb protocols (ashwagandha, rhodiola)",
-        "Hormonal cycle tracking & optimization",
-        "Sleep hygiene for hormone production",
-        "Magnesium for nervous system support",
-        "Regular meal timing (avoid late-night eating)",
-        "Social connection & community building",
-        "Yoga & gentle movement practices",
-        "Journaling for emotional regulation",
-        "Forest bathing & nature therapy",
-        "Limiting caffeine after 2 PM",
-        "Digital detox periods",
-        "Gratitude practice (3 things daily)"
-      ],
+      biohacks: {
+        training: [
+          "Morning sunlight exposure (10-30 min for cortisol regulation)",
+          "Stress-reducing breathwork training (4-7-8, box breathing)",
+          "Meditation & mindfulness practice (10-20 min daily)",
+          "Hormonal cycle tracking & optimization",
+          "Sleep hygiene protocol implementation",
+          "Yoga & gentle movement practices",
+          "Journaling for emotional regulation",
+          "Gratitude practice (3 things daily)",
+          "Social connection & community building",
+          "Forest bathing & nature therapy sessions",
+          "Digital detox training periods",
+          "Mindful eating practices",
+          "Stress response training techniques",
+          "Emotional regulation skill building"
+        ],
+        therapy: [
+          "Hormone testing & optimization protocols",
+          "Stress management counseling & CBT",
+          "Acupuncture for nervous system balance",
+          "Professional massage therapy",
+          "HRV training for autonomic balance",
+          "Light therapy for circadian rhythm support",
+          "Guided meditation & mindfulness training",
+          "Biofeedback therapy sessions",
+          "Adaptogenic herb protocol guidance",
+          "Sleep therapy and optimization",
+          "Nutritional therapy for mood balance",
+          "Energy healing and reiki sessions"
+        ]
+      },
       supplements: [
         "Ashwagandha (300-600mg for cortisol regulation)",
         "Magnesium glycinate (200-400mg for relaxation)",
@@ -187,16 +220,6 @@ const Pillars = () => {
         "Phosphatidylserine (100mg for cortisol management)",
         "B-complex for neurotransmitter support",
         "Omega-3s for inflammation reduction"
-      ],
-      therapies: [
-        "Hormone testing & optimization protocols",
-        "Stress management counseling & CBT",
-        "Acupuncture for nervous system balance",
-        "Massage therapy for stress reduction",
-        "Yoga therapy & mindful movement",
-        "HRV training for autonomic balance",
-        "Light therapy for circadian rhythm support",
-        "Meditation & mindfulness training"
       ],
       content: {
         overview: "Find your equilibrium through stress management, hormonal optimization, and mindfulness practices. Create lasting balance in your daily life.",
@@ -223,23 +246,38 @@ const Pillars = () => {
           questions: 13
         }
       ],
-      biohacks: [
-        // Evidence-Based Beauty & Anti-Aging
-        "Red light therapy (660-850nm, 10-20 min daily)",
-        "Facial massage & lymphatic drainage",
-        "Collagen synthesis optimization through Vitamin C",
-        "UV protection with broad-spectrum SPF 30+",
-        "Retinol/retinoid usage (start 2-3x/week)",
-        "Hydration optimization (half body weight in oz)",
-        "Sleep on silk pillowcases for skin/hair health",
-        "Facial exercises for muscle tone",
-        "Antioxidant-rich diet (berries, leafy greens)",
-        "Limiting sugar intake (glycation damages collagen)",
-        "Cold water face rinses for circulation",
-        "Dry brushing for lymphatic circulation",
-        "Stress management (cortisol ages skin)",
-        "Regular exercise for increased blood flow"
-      ],
+      biohacks: {
+        training: [
+          "Daily skincare routine with active ingredients",
+          "Facial massage & lymphatic drainage (5 min daily)",
+          "Collagen-boosting nutrition protocols",
+          "UV protection with broad-spectrum SPF 30+",
+          "Hydration optimization (half body weight in oz)",
+          "Sleep on silk pillowcases for skin/hair health",
+          "Facial exercises for muscle tone (gua sha)",
+          "Antioxidant-rich diet implementation",
+          "Sugar reduction for collagen protection",
+          "Cold water face rinses for circulation",
+          "Dry brushing for lymphatic circulation",
+          "Stress management for skin health",
+          "Regular exercise for blood flow",
+          "Beauty sleep optimization (7-9 hours)"
+        ],
+        therapy: [
+          "Professional LED red light therapy (660-850nm)",
+          "Microneedling for collagen induction",
+          "Chemical peels (glycolic, lactic acid)",
+          "Professional dermatological treatments",
+          "Lymphatic drainage massage therapy",
+          "Aesthetic consultation & treatment planning",
+          "Nutrition counseling for skin health",
+          "Hormone optimization for anti-aging",
+          "IV therapy for beauty enhancement",
+          "Professional skincare treatments",
+          "Laser therapy for skin rejuvenation",
+          "Platelet-rich plasma (PRP) treatments"
+        ]
+      },
       supplements: [
         "Collagen peptides (10-20g daily, types I & III)",
         "Vitamin C (1000mg for collagen synthesis)",
@@ -249,16 +287,6 @@ const Pillars = () => {
         "Marine omega-3s for skin inflammation",
         "NAD+ precursors for cellular repair",
         "Resveratrol for antioxidant protection"
-      ],
-      therapies: [
-        "Professional LED light therapy treatments",
-        "Microneedling for collagen induction",
-        "Chemical peels (glycolic, lactic acid)",
-        "Dermatological skin analysis & treatment",
-        "Professional lymphatic drainage massage",
-        "Aesthetic consultations for personalized care",
-        "Nutrition counseling for skin health",
-        "Hormone optimization for skin aging"
       ],
       content: {
         overview: "Achieve radiant beauty from within using advanced anti-aging protocols, skincare innovations, and holistic beauty practices.",
@@ -301,6 +329,31 @@ const Pillars = () => {
   const handleAssessmentStart = (pillarKey: string, assessmentTitle: string) => {
     // Navigate to a specialized assessment based on pillar and type
     navigate(`/assessment/${pillarKey}-${assessmentTitle.toLowerCase().replace(/\s+/g, '-')}`);
+  };
+
+  const getMandatoryAssessments = (pillarKey: string) => {
+    return pillars[pillarKey as keyof typeof pillars].symptomAssessments.map(assessment => ({
+      ...assessment,
+      pillar: pillarKey,
+      completed: userAssessments[pillarKey as keyof typeof userAssessments]?.completed || false
+    }));
+  };
+
+  const handle7DayPlan = (pillarKey: string) => {
+    const mandatoryAssessments = getMandatoryAssessments(pillarKey);
+    const incompleteAssessments = mandatoryAssessments.filter(assessment => !assessment.completed);
+    
+    if (incompleteAssessments.length > 0) {
+      toast({
+        title: "Complete Required Assessments",
+        description: `You need to complete ${incompleteAssessments.length} assessment(s) before accessing your personalized 7-day plan.`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Navigate to 7-day plan page with pillar context
+    navigate(`/7-day-plan/${pillarKey}`);
   };
 
   return (
@@ -379,45 +432,102 @@ const Pillars = () => {
                     </div>
                   </div>
 
-                  {/* Symptom Assessments */}
-                  <div>
-                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5" />
-                      Related Symptom Assessments
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {pillars[selectedPillar as keyof typeof pillars].symptomAssessments.map((assessment, index) => (
-                        <Card key={index} className="hover:shadow-md transition-shadow">
-                          <CardHeader>
-                            <CardTitle className="text-lg">{assessment.title}</CardTitle>
-                            <CardDescription>{assessment.description}</CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="flex justify-between items-center mb-4">
-                              <Badge variant="outline">{assessment.duration}</Badge>
-                              <Badge variant="outline">{assessment.questions} questions</Badge>
+                   {/* Symptom Assessments & 7-Day Plan */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Target className="h-5 w-5" />
+                        Required Assessments for Personalized Plan
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {pillars[selectedPillar as keyof typeof pillars].symptomAssessments.map((assessment, index) => {
+                          const isCompleted = userAssessments[selectedPillar as keyof typeof userAssessments]?.completed;
+                          return (
+                            <Card key={index} className="hover:shadow-md transition-shadow">
+                              <CardHeader>
+                                <CardTitle className="text-lg flex items-center gap-2">
+                                  {isCompleted ? (
+                                    <CheckCircle className="h-5 w-5 text-green-500" />
+                                  ) : (
+                                    <AlertTriangle className="h-5 w-5 text-orange-500" />
+                                  )}
+                                  {assessment.title}
+                                </CardTitle>
+                                <CardDescription>{assessment.description}</CardDescription>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="flex justify-between items-center mb-4">
+                                  <Badge variant="outline">{assessment.duration}</Badge>
+                                  <Badge variant="outline">{assessment.questions} questions</Badge>
+                                  {isCompleted && (
+                                    <Badge variant="default" className="bg-green-100 text-green-800">
+                                      Completed
+                                    </Badge>
+                                  )}
+                                </div>
+                                <Button 
+                                  onClick={() => handleAssessmentStart(selectedPillar, assessment.title)}
+                                  className="w-full"
+                                  variant={isCompleted ? "outline" : "default"}
+                                >
+                                  {isCompleted ? "Retake Assessment" : "Start Assessment"}
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* 7-Day Plan Section */}
+                    <div>
+                      <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+                        <CardHeader>
+                          <CardTitle className="text-2xl flex items-center gap-2">
+                            <Calendar className="h-6 w-6" />
+                            Get Your Personalized 7-Day {pillars[selectedPillar as keyof typeof pillars].title} Plan
+                          </CardTitle>
+                          <CardDescription>
+                            Based on your LIS (Longevity Impact Score) and assessment results, get a tailored 7-day protocol designed specifically for your {pillars[selectedPillar as keyof typeof pillars].title.toLowerCase()} optimization goals.
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <CheckCircle className="h-4 w-4" />
+                              Daily personalized recommendations
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <CheckCircle className="h-4 w-4" />
+                              Progress tracking and adjustments
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <CheckCircle className="h-4 w-4" />
+                              Evidence-based protocols
                             </div>
                             <Button 
-                              onClick={() => handleAssessmentStart(selectedPillar, assessment.title)}
+                              onClick={() => handle7DayPlan(selectedPillar)}
                               className="w-full"
+                              size="lg"
                             >
-                              Start Assessment
+                              <Calendar className="h-4 w-4 mr-2" />
+                              Get My 7-Day Plan
                             </Button>
-                          </CardContent>
-                        </Card>
-                      ))}
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
 
                   {/* Expandable Sections */}
                   <div className="space-y-4">
-                    {/* Biohacks Section */}
+                    {/* Training Section */}
                     <Collapsible>
                       <CollapsibleTrigger asChild>
                         <Button variant="outline" className="w-full justify-between">
                           <span className="flex items-center gap-2">
-                            <Lightbulb className="h-4 w-4" />
-                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Biohacks
+                            <Activity className="h-4 w-4" />
+                            {pillars[selectedPillar as keyof typeof pillars].title} Training Protocols
                           </span>
                           <ChevronDown className="h-4 w-4" />
                         </Button>
@@ -425,11 +535,44 @@ const Pillars = () => {
                       <CollapsibleContent className="mt-4">
                         <Card>
                           <CardContent className="pt-6">
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Evidence-based training protocols you can implement yourself
+                            </p>
                             <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].biohacks.map((biohack, index) => (
+                              {pillars[selectedPillar as keyof typeof pillars].biohacks.training.map((training, index) => (
                                 <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                                  {biohack}
+                                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                  {training}
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </CollapsibleContent>
+                    </Collapsible>
+
+                    {/* Therapy Section */}
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="flex items-center gap-2">
+                            <TestTube className="h-4 w-4" />
+                            {pillars[selectedPillar as keyof typeof pillars].title} Therapies
+                          </span>
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-4">
+                        <Card>
+                          <CardContent className="pt-6">
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Professional therapies and advanced treatments
+                            </p>
+                            <ul className="space-y-2">
+                              {pillars[selectedPillar as keyof typeof pillars].biohacks.therapy.map((therapy, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                  {therapy}
                                 </li>
                               ))}
                             </ul>
@@ -444,7 +587,7 @@ const Pillars = () => {
                         <Button variant="outline" className="w-full justify-between">
                           <span className="flex items-center gap-2">
                             <Pill className="h-4 w-4" />
-                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Supplements
+                            {pillars[selectedPillar as keyof typeof pillars].title} Supplements
                           </span>
                           <ChevronDown className="h-4 w-4" />
                         </Button>
@@ -452,38 +595,14 @@ const Pillars = () => {
                       <CollapsibleContent className="mt-4">
                         <Card>
                           <CardContent className="pt-6">
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Evidence-based supplements with recommended dosages
+                            </p>
                             <ul className="space-y-2">
                               {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => (
                                 <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                                   {supplement}
-                                </li>
-                              ))}
-                            </ul>
-                          </CardContent>
-                        </Card>
-                      </CollapsibleContent>
-                    </Collapsible>
-
-                    {/* Therapies Section */}
-                    <Collapsible>
-                      <CollapsibleTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between">
-                          <span className="flex items-center gap-2">
-                            <TestTube className="h-4 w-4" />
-                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Therapies
-                          </span>
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-4">
-                        <Card>
-                          <CardContent className="pt-6">
-                            <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].therapies.map((therapy, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                                  {therapy}
                                 </li>
                               ))}
                             </ul>
