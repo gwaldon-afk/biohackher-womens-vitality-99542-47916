@@ -161,15 +161,16 @@ const Dashboard = () => {
       });
     }
 
-    if (recentAssessments.some(a => a.score_category === 'poor' || a.score_category === 'fair')) {
-      const poorAssessments = recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair');
+    // Add recommendations for ALL poor/fair assessments
+    const poorAssessments = recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair');
+    poorAssessments.forEach(assessment => {
       recommendations.push({
-        title: `Address ${getSymptomName(poorAssessments[0].symptom_type)}`,
+        title: `Address ${getSymptomName(assessment.symptom_type)}`,
         description: "Your recent assessment shows this area needs attention",
-        action: () => navigate(`/assessment/${poorAssessments[0].symptom_type}/results`),
+        action: () => navigate(`/assessment/${assessment.symptom_type}/results`),
         priority: 'high'
       });
-    }
+    });
 
     if (recentAssessments.length > 0) {
       recommendations.push({
@@ -180,7 +181,7 @@ const Dashboard = () => {
       });
     }
 
-    return recommendations.slice(0, 3);
+    return recommendations.slice(0, 5); // Increased limit to show more priority items
   };
   const primaryActions = [
     {
