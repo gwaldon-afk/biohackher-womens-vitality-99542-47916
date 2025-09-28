@@ -438,6 +438,14 @@ const Symptoms = () => {
           <h2 className="text-2xl font-semibold mb-6">
             {user && assessedSymptoms.length > 0 ? "Available Assessments" : "Symptom Assessments"}
           </h2>
+          
+          {/* Debug info - remove this later */}
+          <div className="bg-yellow-100 border border-yellow-300 rounded p-2 mb-4 text-sm">
+            <p>Debug: Available symptoms count: {availableSymptoms.length}</p>
+            <p>Debug: User logged in: {user ? 'Yes' : 'No'}</p>
+            <p>Debug: User symptoms count: {userSymptoms.length}</p>
+          </div>
+          
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {availableSymptoms.map((symptom) => (
               <div key={symptom.id} className="flex flex-col items-center">
@@ -470,6 +478,16 @@ const Symptoms = () => {
               </div>
             ))}
           </div>
+          
+          {/* Fallback if no symptoms */}
+          {availableSymptoms.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No available assessments found.</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                This might be because all assessments have been completed or there's a loading issue.
+              </p>
+            </div>
+          )}
         </div>
       </main>
 
