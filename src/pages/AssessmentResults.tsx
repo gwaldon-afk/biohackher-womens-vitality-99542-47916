@@ -2225,14 +2225,77 @@ const generateDefaultRecommendations = (symptomType: string, score: AssessmentSc
       description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalised treatment options.",
       priority: 'medium',
       category: 'lifestyle',
-      icon: CheckCircle2
+      icon: CheckCircle2,
+      analysis: "Complete health assessments provide valuable insights for developing targeted wellness strategies.",
+      improvement: "Schedule follow-up consultations to track progress and adjust recommendations as needed.",
+      timeline: "Ongoing monitoring and adjustment for optimal results"
+    },
+    {
+      title: "Morning Routine Optimization", 
+      description: "Establish a consistent morning routine with sunlight exposure, hydration, and mindful movement to set a positive tone for the day.",
+      priority: 'high',
+      category: 'routine',
+      icon: Calendar,
+      analysis: "Morning routines regulate circadian rhythms and improve overall well-being by 30-40% through consistent habit formation.",
+      improvement: "Start with 15 minutes of sunlight exposure, 16-20oz of water, and 5 minutes of stretching or breathing exercises.",
+      timeline: "Energy and mood improvements typically seen within 1-2 weeks"
+    },
+    {
+      title: "Essential Wellness Supplements", 
+      description: "Core supplement protocol to support overall health, energy, and immune function based on common nutritional gaps.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Pill,
+      personalisedAssessment: "General wellness supplement protocol to address common nutritional deficiencies and support optimal health.",
+      supplements: [
+        { name: "Vitamin D3 with K2", dosage: "2000-4000 IU daily with fats", selected: true },
+        { name: "Omega-3 Fish Oil", dosage: "1000-2000mg EPA/DHA daily", selected: true },
+        { name: "Magnesium Glycinate", dosage: "200-400mg in the evening", selected: false },
+        { name: "B-Complex (Methylated)", dosage: "1 capsule with breakfast", selected: false }
+      ],
+      analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
+      improvement: "Start with vitamin D3 and omega-3s, then add magnesium and B-complex based on individual needs. Take with meals for better absorption.",
+      timeline: "Most people experience energy and immune improvements within 2-4 weeks of consistent supplementation"
+    },
+    {
+      title: "Sleep Environment Optimization",
+      description: "Create an optimal sleep environment with temperature control (18-20°C), blackout conditions, and noise management.",
+      priority: 'high',
+      category: 'environment',
+      icon: Moon,
+      analysis: "Sleep environment directly impacts sleep quality and recovery. Optimal conditions can improve sleep efficiency by 15-25%.",
+      improvement: "Invest in blackout curtains, programmable thermostat, and white noise machine. Remove electronic devices from bedroom.",
+      timeline: "Sleep quality improvements typically noticed within 3-7 days"
+    },
+    {
+      title: "Anti-Inflammatory Nutrition Protocol",
+      description: "Focus on whole foods, reduce processed sugar and inflammatory oils, and incorporate antioxidant-rich foods daily.",
+      priority: 'high',
+      category: 'diet',
+      icon: Heart,
+      analysis: "Anti-inflammatory nutrition reduces systemic inflammation by 20-40% and supports optimal cellular function across all body systems.",
+      improvement: "Eliminate processed foods, focus on vegetables, lean proteins, and healthy fats. Aim for 7-9 servings of colorful vegetables daily.",
+      timeline: "Energy and inflammatory marker improvements typically seen within 2-4 weeks"
+    },
+    {
+      title: "Stress Management & Recovery",
+      description: "Implement daily stress reduction techniques including breathwork, meditation, or gentle movement to support nervous system balance.",
+      priority: 'medium',
+      category: 'therapy',
+      icon: Heart,
+      analysis: "Regular stress management practices reduce cortisol levels by 25-50% and improve overall health resilience.",
+      improvement: "Start with 5-10 minutes daily of deep breathing, progressive muscle relaxation, or guided meditation.",
+      timeline: "Stress reduction and improved mood typically noticed within 1-2 weeks"
     },
     {
       title: "Holistic Wellness Approach", 
-      description: "Focus on sleep quality, stress management, regular exercise, and anti-inflammatory nutrition to support overall health.",
+      description: "Integrate sleep quality, stress management, regular movement, and mindful nutrition to support comprehensive health optimization.",
       priority: 'medium',
       category: 'lifestyle',
-      icon: Heart
+      icon: Sparkles,
+      analysis: "Comprehensive wellness approaches addressing multiple health pillars simultaneously create synergistic effects and sustainable results.",
+      improvement: "Focus on consistency rather than perfection. Track 2-3 key metrics to monitor progress and maintain motivation.",
+      timeline: "Comprehensive health improvements typically develop over 4-12 weeks of consistent implementation"
     }
   ];
 };
