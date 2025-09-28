@@ -13,7 +13,7 @@ const Navigation = () => {
   const mainNavItems = [
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "My Data" },
-    { href: "/symptoms", label: "Symptoms" },
+    { href: "/symptoms", label: "Symptom Assessment" },
   ];
 
   const biohackingItems = [
