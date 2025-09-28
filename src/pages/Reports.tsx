@@ -963,7 +963,7 @@ Generated on: ${new Date().toLocaleDateString()}
                             <div className="mt-4 pt-4 border-t">
                               <div className="flex items-center justify-between text-sm text-muted-foreground">
                                 <span>Input Method: {entry.input_mode || 'manual'}</span>
-                                <span>Updated: {format(new Date(entry.updated_at), 'HH:mm on dd/MM/yyyy')}</span>
+                                <span>Updated: {format(new Date(entry.updated_at), "HH:mm 'on' dd/MM/yyyy")}</span>
                               </div>
                             </div>
                           </AccordionContent>
