@@ -492,10 +492,13 @@ Report ID: BH-${Date.now()}
                         Overall Score: {getOverallSymptomAnalysis().score}/100
                       </div>
                     )}
-                    <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                      {getOverallSymptomAnalysis().analysis}
-                    </p>
-                  </div>
+                  {/* Overall Status */}
+                  <div className="text-center p-6 bg-muted/30 rounded-lg">
+                    <div className={`text-3xl font-bold mb-2 ${
+                      getOverallSymptomAnalysis().status === 'Excellent' ? 'text-green-600' :
+                      getOverallSymptomAnalysis().status === 'Good' ? 'text-blue-600' :
+                      getOverallSymptomAnalysis().status === 'Fair' ? 'text-amber-600' :
+                      'text-red-600'
                     }`}>
                       {getOverallSymptomAnalysis().status}
                     </div>
@@ -710,11 +713,12 @@ Report ID: BH-${Date.now()}
                           </Card>
                         </div>
                       )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
         <Tabs defaultValue="assessment" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
