@@ -78,7 +78,7 @@ const Pillars = () => {
         therapy: {
           beginner: [
             "Professional sleep optimization coaching",
-            "Cognitive behavioral therapy (CBT)",
+            "Cognitive behavioural therapy (CBT)",
             "Guided meditation & mindfulness training"
           ],
           intermediate: [
@@ -106,7 +106,7 @@ const Pillars = () => {
         "Creatine monohydrate (3-5g daily)"
       ],
       content: {
-        overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
+        overview: "Optimise your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalised strategies to enhance memory, focus, and mental clarity.",
         keyAreas: ["Cognitive Enhancement", "Memory Optimization", "Focus & Concentration", "Neuroprotection", "Mental Clarity"]
       }
     },
@@ -356,9 +356,9 @@ const Pillars = () => {
     "Reading fiction (improves empathy and cognitive flexibility)": "Read diverse fiction genres for 30+ minutes daily. Focus on character-driven narratives and different cultural perspectives to enhance emotional intelligence.",
     "Meditation & mindfulness practices (8-12 minutes daily)": "Start with guided meditations using apps like Headspace or Insight Timer. Focus on breath awareness, body scans, or loving-kindness meditation. Consistency matters more than duration.",
     "Breathwork training (4-7-8 breathing, box breathing)": "4-7-8: Inhale for 4, hold for 7, exhale for 8. Box breathing: 4-4-4-4 pattern. Practice 5-10 rounds, 2-3 times daily for stress reduction and focus enhancement.",
-    "Cold exposure training (2-11 minutes, 50-59°F)": "Start with 30-second cold showers, gradually increase duration. Work up to 2-11 minutes in 50-59°F water. End hot showers with cold, or use ice baths for advanced practitioners.",
+    "Cold exposure training (2-11 minutes, 10-15°C)": "Start with 30-second cold showers, gradually increase duration. Work up to 2-11 minutes in 10-15°C water. End hot showers with cold, or use ice baths for advanced practitioners.",
     "Morning sunlight exposure protocol (10-30 minutes)": "Get outside within 30-60 minutes of waking. Face east if possible, no sunglasses needed. 10 minutes on bright days, 30 minutes on overcast days to regulate circadian rhythm.",
-    "Quality sleep optimization (7-9 hours, consistent schedule)": "Maintain consistent sleep/wake times, keep bedroom cool (65-68°F), dark, and quiet. No screens 1 hour before bed, use blackout curtains or eye masks.",
+    "Quality sleep optimisation (7-9 hours, consistent schedule)": "Maintain consistent sleep/wake times, keep bedroom cool (18-20°C), dark, and quiet. No screens 1 hour before bed, use blackout curtains or eye masks.",
     "Regular aerobic exercise (Zone 2 cardio for BDNF)": "Exercise at 60-70% max heart rate where you can still hold a conversation. 45-60 minutes, 2-3 times per week to boost brain-derived neurotrophic factor.",
     "Intermittent fasting (14-16 hour windows)": "Start with 12-hour overnight fast, gradually extend to 14-16 hours. Example: eat between 12pm-8pm, fast from 8pm-12pm next day. Stay hydrated during fasting periods.",
 
@@ -403,7 +403,7 @@ const Pillars = () => {
     "Sleep on silk pillowcases for skin/hair health": "Silk creates less friction than cotton, reducing hair breakage and skin irritation. Keep pillowcases clean and replace weekly. Also consider silk sleep masks.",
     "Facial exercises for muscle tone (gua sha)": "Use gua sha tool with facial oil for 5-10 minutes daily. Apply gentle pressure, work from center outward. Promotes circulation and may help with facial muscle tone.",
     "Antioxidant-rich diet implementation": "Include colorful fruits and vegetables, green tea, dark chocolate, nuts, and seeds. Antioxidants protect against free radical damage and support skin health from within.",
-    "Sugar reduction for collagen protection": "Limit added sugars and refined carbohydrates which cause glycation, damaging collagen fibers. Focus on whole foods and stable blood sugar levels.",
+    "Sugar reduction for collagen protection": "Limit added sugars and refined carbohydrates which cause glycation, damaging collagen fibres. Focus on whole foods and stable blood sugar levels.",
     "Cold water face rinses for circulation": "End daily face washing with cool water rinse. Helps tighten pores temporarily and stimulates circulation. Can also use ice cubes wrapped in cloth for 1-2 minutes.",
     "Dry brushing for lymphatic circulation": "Use natural bristle brush on dry skin before showering. Brush toward heart in long strokes. Supports lymphatic drainage and may improve skin texture.",
     "Stress management for skin health": "Chronic stress increases cortisol, which breaks down collagen and can trigger skin issues. Practice stress-reduction techniques for better skin from the inside out.",
@@ -415,7 +415,7 @@ const Pillars = () => {
     // Brain Therapies
     "Neurofeedback training sessions": "Non-invasive brain training using real-time monitoring of brain activity to improve focus, reduce anxiety, and optimize brain function. Sensors measure brainwaves while you perform tasks.",
     "Transcranial direct current stimulation (tDCS)": "Gentle electrical stimulation applied to specific brain areas to enhance cognitive performance and mood. Uses very low electrical current to stimulate neuronal activity.",
-    "Cognitive behavioral therapy (CBT)": "Evidence-based therapy that helps identify and change negative thought patterns and behaviors. Particularly effective for anxiety, depression, and stress management.",
+    "Cognitive behavioural therapy (CBT)": "Evidence-based therapy that helps identify and change negative thought patterns and behaviours. Particularly effective for anxiety, depression, and stress management.",
     "Hyperbaric oxygen therapy (HBOT)": "Breathing pure oxygen in a pressurized chamber to increase oxygen delivery to tissues and promote healing. May support brain function and recovery from injury.",
     "Red light therapy for mitochondrial function": "Low-level laser therapy using specific wavelengths (660-850nm) to stimulate cellular energy production and reduce inflammation in brain tissue.",
     "Flotation tank sessions for deep relaxation": "Floating in saltwater in a sensory-deprivation environment. Promotes deep relaxation, reduces stress hormones, and may enhance creativity and problem-solving.",
@@ -425,10 +425,10 @@ const Pillars = () => {
     "IV therapy for cognitive enhancement": "Intravenous delivery of nutrients like B-vitamins, magnesium, and antioxidants to support brain function. Should only be done by qualified medical professionals.",
 
     // Body Therapies
-    "Heat therapy: Sauna 4x/week (174-212°F, 20 min)": "Regular sauna use promotes heat shock proteins, improves cardiovascular health, and aids recovery. Start with shorter sessions and lower temperatures, build tolerance gradually.",
-    "Cold plunge therapy (50-59°F, 2-11 minutes)": "Cold water immersion therapy to reduce inflammation, boost metabolism, and improve recovery. Always have supervision and exit if experiencing adverse reactions.",
+    "Heat therapy: Sauna 4x/week (79-100°C, 20 min)": "Regular sauna use promotes heat shock proteins, improves cardiovascular health, and aids recovery. Start with shorter sessions and lower temperatures, build tolerance gradually.",
+    "Cold plunge therapy (10-15°C, 2-11 minutes)": "Cold water immersion therapy to reduce inflammation, boost metabolism, and improve recovery. Always have supervision and exit if experiencing adverse reactions.",
     "Deep tissue massage (weekly/bi-weekly)": "Therapeutic massage targeting deeper muscle layers to release tension, improve circulation, and aid recovery. Work with licensed massage therapists for best results.",
-    "Cryotherapy sessions for recovery": "Whole-body exposure to extremely cold temperatures (-200 to -250°F) for 2-4 minutes. Reduces inflammation and may speed recovery, but requires proper facility and supervision.",
+    "Cryotherapy sessions for recovery": "Whole-body exposure to extremely cold temperatures (-129 to -157°C) for 2-4 minutes. Reduces inflammation and may speed recovery, but requires proper facility and supervision.",
     "Compression therapy for circulation": "Use of pneumatic compression devices to improve blood flow and lymphatic drainage. Particularly helpful for recovery and reducing swelling in legs.",
     "PEMF (Pulsed Electromagnetic Field) therapy": "Low-frequency electromagnetic fields applied to the body to reduce inflammation and promote cellular repair. Used for pain management and recovery enhancement.",
     "Infrared sauna for muscle recovery": "Uses infrared light to heat the body directly rather than heating air. May penetrate deeper than traditional saunas and provide similar benefits at lower temperatures.",
@@ -667,7 +667,7 @@ const Pillars = () => {
       icon: UserRound,
       color: "from-orange-500 to-amber-600",
       route: "/coaching",
-      description: "Get personalized coaching tailored to your unique biohacking goals and health data."
+      description: "Get personalised coaching tailored to your unique biohacking goals and health data."
     },
     {
       title: "Supplements",
@@ -734,7 +734,7 @@ const Pillars = () => {
               The Four Pillars of Biohacking
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Empowering women to beat ageing through biohacking. Discover personalized protocols across Brain, Body, Balance, and Beauty.
+              Empowering women to beat ageing through biohacking. Discover personalised protocols across Brain, Body, Balance, and Beauty.
             </p>
           </div>
         </div>
@@ -861,7 +861,7 @@ const Pillars = () => {
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <CheckCircle className="h-4 w-4" />
-                              Daily personalized recommendations
+                              Daily personalised recommendations
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <CheckCircle className="h-4 w-4" />

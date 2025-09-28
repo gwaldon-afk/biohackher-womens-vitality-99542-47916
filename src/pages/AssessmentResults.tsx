@@ -38,7 +38,7 @@ interface Recommendation {
   improvement?: string;
   timeline?: string;
   supplements?: SupplementInfo[];
-  personalizedAssessment?: string;
+  personalisedAssessment?: string;
 }
 
 const AssessmentResults = () => {
@@ -102,14 +102,14 @@ const AssessmentResults = () => {
     
     if (symptomId && Object.keys(answers).length > 0) {
       const calculatedScore = calculateScore(symptomId, answers);
-      const personalizedRecommendations = generateRecommendations(symptomId, calculatedScore, answers);
+      const personalisedRecommendations = generateRecommendations(symptomId, calculatedScore, answers);
       
       setScore(calculatedScore);
-      setRecommendations(personalizedRecommendations);
+      setRecommendations(personalisedRecommendations);
       
       // Initialize supplement selections
       const initialSelections: Record<number, SupplementInfo[]> = {};
-      personalizedRecommendations.forEach((rec, index) => {
+      personalisedRecommendations.forEach((rec, index) => {
         if (rec.category === 'supplement' && rec.supplements) {
           initialSelections[index] = [...rec.supplements];
         }
@@ -117,14 +117,14 @@ const AssessmentResults = () => {
       setSupplementSelections(initialSelections);
       
       // Save assessment to database
-      saveAssessment(answers, calculatedScore, personalizedRecommendations);
+      saveAssessment(answers, calculatedScore, personalisedRecommendations);
     }
   }, [symptomId, searchParams]);
 
   const saveAssessment = async (
     answers: Record<string, string>, 
     calculatedScore: AssessmentScore, 
-    personalizedRecommendations: Recommendation[]
+    personalisedRecommendations: Recommendation[]
   ) => {
     if (!user || !symptomId || isSaving) return;
     
@@ -141,7 +141,7 @@ const AssessmentResults = () => {
         score_category: calculatedScore.category,
         primary_issues: calculatedScore.primaryIssues,
         detail_scores: calculatedScore.detailScores || {},
-        recommendations: personalizedRecommendations.map(rec => ({
+        recommendations: personalisedRecommendations.map(rec => ({
           title: rec.title,
           description: rec.description,
           priority: rec.priority,
@@ -611,7 +611,7 @@ const AssessmentResults = () => {
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      personalizedAssessment: `Based on your sleep quality assessment, these supplements may assist in supporting better sleep depth and reducing the time it takes to fall asleep.`,
+      personalisedAssessment: `Based on your sleep quality assessment, these supplements may assist in supporting better sleep depth and reducing the time it takes to fall asleep.`,
       supplements: [
         { name: "Magnesium Glycinate", dosage: "400-600mg taken 30-60 minutes before bed", selected: true },
         { name: "Melatonin (Extended Release)", dosage: "0.5-1mg taken 30 minutes before desired sleep time", selected: true },
@@ -684,7 +684,7 @@ const AssessmentResults = () => {
         priority: 'high',
         category: 'supplement',
         icon: Pill,
-        personalizedAssessment: `Your severe hot flash intensity assessment suggests these supplements may assist in supporting natural hormonal balance.`,
+        personalisedAssessment: `Your severe hot flash intensity assessment suggests these supplements may assist in supporting natural hormonal balance.`,
         supplements: [
           { name: "Black Cohosh Extract", dosage: "40-80mg daily with meals", selected: true },
           { name: "Evening Primrose Oil", dosage: "1000mg twice daily", selected: true },
@@ -726,7 +726,7 @@ const AssessmentResults = () => {
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      personalizedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
+      personalisedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
       supplements: [
         { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", selected: true },
         { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", selected: true },
@@ -853,7 +853,7 @@ const AssessmentResults = () => {
         priority: 'high',
         category: 'supplement',
         icon: Brain,
-        personalizedAssessment: "Your brain fog assessment indicates these supplements may assist in supporting cognitive function and mental clarity.",
+        personalisedAssessment: "Your brain fog assessment indicates these supplements may assist in supporting cognitive function and mental clarity.",
         supplements: [
           { name: "Lion's Mane Mushroom Extract", dosage: "1000mg daily with meals", selected: true },
           { name: "B-Complex (Methylated Forms)", dosage: "1 capsule daily in the morning", selected: true },
@@ -904,7 +904,7 @@ const AssessmentResults = () => {
         priority: 'high',
         category: 'supplement',
         icon: Battery,
-        personalizedAssessment: "Your energy assessment suggests these supplements may assist in supporting cellular energy production and addressing fatigue.",
+        personalisedAssessment: "Your energy assessment suggests these supplements may assist in supporting cellular energy production and addressing fatigue.",
         supplements: [
           { name: "CoQ10 (Ubiquinol)", dosage: "200mg daily with fatty meal", selected: true },
           { name: "Iron Bisglycinate", dosage: "25mg daily (if deficient)", selected: true },
@@ -988,7 +988,7 @@ const AssessmentResults = () => {
         priority: 'medium',
         category: 'routine',
         icon: Heart,
-        analysis: "Proper breathing activates the 'rest and digest' mode, optimizing stomach acid and enzyme production for better digestion.",
+        analysis: "Proper breathing activates the 'rest and digest' mode, optimising stomach acid and enzyme production for better digestion.",
         improvement: "Place one hand on chest, one on belly. Focus on expanding the belly while keeping chest still.",
         timeline: "Immediate improvements in meal comfort, with long-term digestive benefits in 2-3 weeks"
       },
@@ -1429,7 +1429,7 @@ const AssessmentResults = () => {
         <main className="container mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Loading Assessment Results...</h1>
-            <p className="text-muted-foreground">Analyzing your responses and generating personalized recommendations.</p>
+            <p className="text-muted-foreground">Analysing your responses and generating personalised recommendations.</p>
           </div>
         </main>
       </div>
@@ -1457,17 +1457,17 @@ const AssessmentResults = () => {
               {getSymptomName(symptomId!)} Assessment Results
             </h1>
             <p className="text-muted-foreground">
-              Personalized recommendations based on your assessment
+              Personalised recommendations based on your assessment
             </p>
           </div>
         </div>
 
-        {/* Personalized Analysis Summary */}
+        {/* Personalised Analysis Summary */}
         <Card className="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-primary" />
-              Personalized Health Analysis
+              Personalised Health Analysis
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -1768,13 +1768,13 @@ const AssessmentResults = () => {
                        </div>
                        <p className="text-sm text-muted-foreground mb-3">{rec.description}</p>
                        
-                       {/* Personalized Assessment for Supplement Recommendations */}
-                       {rec.personalizedAssessment && (
-                         <div className="bg-secondary/10 p-3 rounded-lg mb-3">
-                           <h4 className="text-sm font-medium text-secondary-foreground mb-1">Personalized Assessment</h4>
-                           <p className="text-xs text-muted-foreground">{rec.personalizedAssessment}</p>
-                         </div>
-                       )}
+                        {/* Personalised Assessment for Supplement Recommendations */}
+                        {rec.personalisedAssessment && (
+                          <div className="bg-secondary/10 p-3 rounded-lg mb-3">
+                            <h4 className="text-sm font-medium text-secondary-foreground mb-1">Personalised Assessment</h4>
+                            <p className="text-xs text-muted-foreground">{rec.personalisedAssessment}</p>
+                          </div>
+                        )}
 
                        {/* Supplement Selection for Supplement Category */}
                        {rec.category === 'supplement' && rec.supplements && (
@@ -2054,7 +2054,7 @@ const AssessmentResults = () => {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Remember: These recommendations are for educational purposes only. Consult with a healthcare professional for personalized medical advice.
+            Remember: These recommendations are for educational purposes only. Consult with a healthcare professional for personalised medical advice.
           </p>
         </div>
       </main>
@@ -2071,7 +2071,7 @@ const generateMemoryFocusRecommendations = (score: AssessmentScore, answers: Rec
       priority: 'high',
       category: 'supplement',
       icon: Brain,
-      personalizedAssessment: "Your memory and focus assessment indicates these strategies may help improve cognitive function.",
+      personalisedAssessment: "Your memory and focus assessment indicates these strategies may help improve cognitive function.",
       supplements: [
         { name: "Alpha-GPC", dosage: "300mg daily", selected: true },
         { name: "Bacopa Monnieri", dosage: "300-600mg daily", selected: true },
@@ -2112,7 +2112,7 @@ const generateMobilityRecommendations = (score: AssessmentScore, answers: Record
       priority: 'medium',
       category: 'supplement',
       icon: Pill,
-      personalizedAssessment: "Your mobility assessment suggests these supplements may support joint health.",
+      personalisedAssessment: "Your mobility assessment suggests these supplements may support joint health.",
       supplements: [
         { name: "Glucosamine + Chondroitin", dosage: "1500mg + 1200mg daily", selected: true },
         { name: "Curcumin", dosage: "500mg daily with black pepper", selected: true },
@@ -2133,7 +2133,7 @@ const generateHormonalRecommendations = (score: AssessmentScore, answers: Record
       priority: 'high',
       category: 'supplement',
       icon: Heart,
-      personalizedAssessment: "Your hormonal assessment indicates these supplements may help balance hormones naturally.",
+      personalisedAssessment: "Your hormonal assessment indicates these supplements may help balance hormones naturally.",
       supplements: [
         { name: "Vitex (Chasteberry)", dosage: "400mg daily in morning", selected: true },
         { name: "DIM (Diindolylmethane)", dosage: "200mg daily", selected: true },
@@ -2164,7 +2164,7 @@ const generateSkinHealthRecommendations = (score: AssessmentScore, answers: Reco
       priority: 'high',
       category: 'supplement',
       icon: Sparkles,
-      personalizedAssessment: "Your skin health assessment suggests these supplements may improve skin appearance and health.",
+      personalisedAssessment: "Your skin health assessment suggests these supplements may improve skin appearance and health.",
       supplements: [
         { name: "Collagen Peptides", dosage: "10g daily", selected: true },
         { name: "Vitamin C", dosage: "1000mg daily", selected: true },
@@ -2195,7 +2195,7 @@ const generateHairNailRecommendations = (score: AssessmentScore, answers: Record
       priority: 'high',
       category: 'supplement',
       icon: Sparkles,
-      personalizedAssessment: "Your hair and nail assessment indicates these supplements may improve strength and growth.",
+      personalisedAssessment: "Your hair and nail assessment indicates these supplements may improve strength and growth.",
       supplements: [
         { name: "Biotin", dosage: "5000mcg daily", selected: true },
         { name: "Silica", dosage: "10mg daily", selected: true },
@@ -2222,7 +2222,7 @@ const generateDefaultRecommendations = (symptomType: string, score: AssessmentSc
   return [
     {
       title: "Comprehensive Assessment Complete",
-      description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalized treatment options.",
+      description: "Your symptom assessment has been recorded. Consider consulting with a healthcare professional for personalised treatment options.",
       priority: 'medium',
       category: 'lifestyle',
       icon: CheckCircle2

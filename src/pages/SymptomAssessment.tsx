@@ -1245,7 +1245,7 @@ const SymptomAssessment = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Your responses have been analyzed and personalized recommendations are being prepared.
+                Your responses have been analysed and personalised recommendations are being prepared.
               </p>
               <div className="flex gap-4 justify-center">
                 <Button onClick={() => navigate('/symptoms')}>
@@ -1280,7 +1280,7 @@ const SymptomAssessment = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">{getSymptomName(symptomId)} Assessment</h1>
             <p className="text-muted-foreground">
-              Please answer all questions to get your personalized recommendations
+              Please answer all questions to get your personalised recommendations
             </p>
           </div>
         </div>

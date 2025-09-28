@@ -86,7 +86,7 @@ const Auth = () => {
               Biohack<em className="italic">her</em>
             </h1>
             <p className="text-muted-foreground mt-2">
-              Start your personalized longevity journey
+              Start your personalised longevity journey
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@ const Auth = () => {
                 <div className="text-center mb-4">
                   <CardTitle className="text-xl">Join Biohackher</CardTitle>
                   <CardDescription>
-                    Create your account to start optimizing your health
+                    Create your account to start optimising your health
                   </CardDescription>
                 </div>
 

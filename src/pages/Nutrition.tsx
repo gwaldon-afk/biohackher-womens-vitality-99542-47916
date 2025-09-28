@@ -656,7 +656,7 @@ const Nutrition = () => {
           </head>
           <body>
             <h1>Longevity Benefits of Your 7-Day Meal Plan</h1>
-            <p>The foods in your personalized meal plan offer numerous health and longevity benefits:</p>
+            <p>The foods in your personalised meal plan offer numerous health and longevity benefits:</p>
             ${Array.from(uniqueFoods).map(foodName => {
               const benefits = foodLongevityBenefits[foodName as keyof typeof foodLongevityBenefits];
               if (!benefits) return '';
@@ -1107,7 +1107,7 @@ const Nutrition = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">Nutrition Optimization</h1>
           <p className="text-muted-foreground">
-            Calculate your personalized protein needs and explore leucine-rich foods for optimal muscle protein synthesis
+            Calculate your personalised protein needs and explore leucine-rich foods for optimal muscle protein synthesis
           </p>
         </div>
 
@@ -1409,7 +1409,7 @@ const Nutrition = () => {
                     <Calculator className="h-5 w-5" />
                     Personal Details
                   </CardTitle>
-                  <CardDescription>Enter your information for personalized recommendations</CardDescription>
+                  <CardDescription>Enter your information for personalised recommendations</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -1460,7 +1460,7 @@ const Nutrition = () => {
                     <Target className="h-5 w-5" />
                     Your Targets
                   </CardTitle>
-                  <CardDescription>Personalized recommendations based on your profile</CardDescription>
+                  <CardDescription>Personalised recommendations based on your profile</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="p-4 border rounded-lg bg-primary/5">
@@ -1757,7 +1757,7 @@ const Nutrition = () => {
                 {showWeeklyPlan && weeklyPlan && (
                   <div className="mt-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">Your Personalized 7-Day Meal Plan</h3>
+                      <h3 className="text-lg font-semibold">Your Personalised 7-Day Meal Plan</h3>
                       <div className="flex gap-2">
                         <Button 
                           variant="outline" 

@@ -302,7 +302,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               Update Your Longevity Impact Score
             </DialogTitle>
             <DialogDescription>
-              Input your daily metrics to calculate your personalized LIS score
+              Input your daily metrics to calculate your personalised LIS score
             </DialogDescription>
           </DialogHeader>
 

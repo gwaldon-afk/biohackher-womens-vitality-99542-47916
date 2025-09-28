@@ -86,7 +86,7 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold mb-2">
             Welcome back, <span className="text-primary">Sarah</span>
           </h1>
-          <p className="text-muted-foreground">Your personalized health dashboard</p>
+          <p className="text-muted-foreground">Your personalised health dashboard</p>
         </div>
 
         {/* Quick Summary Card */}

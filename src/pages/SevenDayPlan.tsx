@@ -281,7 +281,7 @@ const SevenDayPlan = () => {
               id: "brain-7-1",
               name: "Sleep Optimization Protocol",
               duration: "60 mins",
-              description: "Quality sleep optimization: consistent schedule, cool room (65-68°F), no screens 1 hour before bed, blackout curtains. Critical for memory consolidation.",
+              description: "Quality sleep optimisation: consistent schedule, cool room (18-20°C), no screens 1 hour before bed, blackout curtains. Critical for memory consolidation.",
               type: "recovery" as const,
               difficulty: "easy" as const
             },
@@ -856,7 +856,7 @@ const SevenDayPlan = () => {
               id: "beauty-3-2",
               name: "Sugar Reduction for Collagen Protection",
               duration: "All day",
-              description: "Limit added sugars and refined carbohydrates which cause glycation, damaging collagen fibers. Focus on whole foods and stable blood sugar.",
+              description: "Limit added sugars and refined carbohydrates which cause glycation, damaging collagen fibres. Focus on whole foods and stable blood sugar.",
               type: "nutrition" as const,
               difficulty: "hard" as const
             },

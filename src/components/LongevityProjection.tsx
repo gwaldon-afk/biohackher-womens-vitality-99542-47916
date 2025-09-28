@@ -144,7 +144,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
             {sustainedLIS >= 100 ? (
               "Your current habits don't just add years to your life - they add life to your years! You're likely experiencing better energy, cognitive function, emotional wellbeing, and physical vitality that compound over time."
             ) : (
-              "Optimizing your longevity habits will enhance not just lifespan but healthspan - meaning more years of vitality, mental clarity, physical strength, and overall life satisfaction. The goal is vibrant, high-quality years."
+              "Optimising your longevity habits will enhance not just lifespan but healthspan - meaning more years of vitality, mental clarity, physical strength, and overall life satisfaction. The goal is vibrant, high-quality years."
             )}
           </AlertDescription>
         </Alert>

@@ -175,7 +175,7 @@ const FAQ = () => {
                     </ul>
                     <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <p className="text-sm font-medium text-yellow-800">Disclaimer:</p>
-                      <p className="text-xs text-yellow-700">These projections are estimates for educational purposes and should not replace medical advice. Consult healthcare providers for personalized health guidance.</p>
+                      <p className="text-xs text-yellow-700">These projections are estimates for educational purposes and should not replace medical advice. Consult healthcare providers for personalised health guidance.</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>

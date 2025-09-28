@@ -633,9 +633,9 @@ const Sleep = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Sleep Optimization for Longevity</h1>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">Sleep Optimisation for Longevity</h1>
           <p className="text-muted-foreground">
-            Evidence-based approach to optimizing sleep for maximum lifespan and healthspan
+            Evidence-based approach to optimising sleep for maximum lifespan and healthspan
           </p>
         </div>
 
