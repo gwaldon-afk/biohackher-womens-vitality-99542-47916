@@ -25,6 +25,7 @@ interface AssessmentScore {
 interface SupplementInfo {
   name: string;
   dosage: string;
+  price?: string;
   selected: boolean;
 }
 
@@ -613,8 +614,8 @@ const AssessmentResults = () => {
       icon: Pill,
       personalisedAssessment: `Based on your sleep quality assessment, these supplements may assist in supporting better sleep depth and reducing the time it takes to fall asleep.`,
       supplements: [
-        { name: "Magnesium Glycinate", dosage: "400-600mg taken 30-60 minutes before bed", selected: true },
-        { name: "Melatonin (Extended Release)", dosage: "0.5-1mg taken 30 minutes before desired sleep time", selected: true },
+        { name: "Magnesium Glycinate", dosage: "400-600mg taken 30-60 minutes before bed", price: "£19.99", selected: true },
+        { name: "Melatonin (Extended Release)", dosage: "0.5-1mg taken 30 minutes before desired sleep time", price: "£12.99", selected: true },
         { name: "L-Theanine", dosage: "200mg taken with evening routine", selected: false }
       ],
       analysis: `**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.`,
@@ -739,7 +740,7 @@ const AssessmentResults = () => {
       icon: Pill,
       personalisedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
       supplements: [
-        { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", selected: true },
+        { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", price: "£27.99", selected: true },
         { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", selected: true },
         { name: "Glucosamine Sulfate", dosage: "1500mg daily", selected: false },
         { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
@@ -990,7 +991,7 @@ const AssessmentResults = () => {
         icon: Battery,
         personalisedAssessment: "Your energy assessment suggests these supplements may assist in supporting cellular energy production and addressing fatigue.",
         supplements: [
-          { name: "CoQ10 (Ubiquinol)", dosage: "200mg daily with fatty meal", selected: true },
+          { name: "CoQ10 (Ubiquinol)", dosage: "200mg daily with fatty meal", price: "£39.99", selected: true },
           { name: "Iron Bisglycinate", dosage: "25mg daily (if deficient)", selected: true },
           { name: "B12 (Methylcobalamin)", dosage: "1000mcg daily", selected: false },
           { name: "Rhodiola Rosea", dosage: "300mg in morning", selected: false }
@@ -2043,10 +2044,13 @@ const AssessmentResults = () => {
                                      onCheckedChange={() => handleSupplementToggle(index, suppIndex)}
                                      className="mt-1"
                                    />
-                                   <div className="flex-1">
-                                     <div className="font-medium text-sm">{supplement.name}</div>
-                                     <div className="text-xs text-muted-foreground">General Recommended Dosage: {supplement.dosage}</div>
-                                   </div>
+                                     <div className="flex-1">
+                                       <div className="flex items-center justify-between">
+                                         <div className="font-medium text-sm">{supplement.name}</div>
+                                         {supplement.price && <div className="font-semibold text-sm text-primary">{supplement.price}</div>}
+                                       </div>
+                                       <div className="text-xs text-muted-foreground">General Recommended Dosage: {supplement.dosage}</div>
+                                     </div>
                                  </div>
                                ))}
                              </div>
@@ -2408,10 +2412,10 @@ const generateMobilityRecommendations = (score: AssessmentScore, answers: Record
       icon: Pill,
       personalisedAssessment: "Your mobility assessment suggests these supplements may support joint health and recovery.",
       supplements: [
-        { name: "Glucosamine + Chondroitin", dosage: "1500mg + 1200mg daily", selected: true },
-        { name: "Curcumin with Bioperine", dosage: "500mg daily with meals", selected: true },
-        { name: "Omega-3 EPA/DHA", dosage: "2000mg daily", selected: false },
-        { name: "Collagen Peptides", dosage: "10-20g daily", selected: false }
+        { name: "Glucosamine + Chondroitin", dosage: "1500mg + 1200mg daily", price: "£29.99", selected: true },
+        { name: "Curcumin with Bioperine", dosage: "500mg daily with meals", price: "£27.99", selected: true },
+        { name: "Omega-3 EPA/DHA", dosage: "2000mg daily", price: "£24.99", selected: false },
+        { name: "Collagen Peptides", dosage: "10-20g daily", price: "£34.99", selected: false }
       ],
       analysis: "These compounds support cartilage health, reduce joint inflammation, and provide building blocks for connective tissue.",
       improvement: "Take with meals to improve absorption and reduce stomach upset. Consistency is key for joint health.",
@@ -2470,9 +2474,9 @@ const generateHormonalRecommendations = (score: AssessmentScore, answers: Record
       icon: Heart,
       personalisedAssessment: "Your hormonal assessment indicates these supplements may help balance hormones naturally.",
       supplements: [
-        { name: "Vitex (Chasteberry)", dosage: "400mg daily in morning", selected: true },
-        { name: "DIM (Diindolylmethane)", dosage: "200mg daily", selected: true },
-        { name: "Magnesium Glycinate", dosage: "400mg before bed", selected: false }
+        { name: "Vitex (Chasteberry)", dosage: "400mg daily in morning", price: "£26.99", selected: true },
+        { name: "DIM (Diindolylmethane)", dosage: "200mg daily", price: "£33.99", selected: true },
+        { name: "Magnesium Glycinate", dosage: "400mg before bed", price: "£19.99", selected: false }
       ],
       analysis: "Vitex supports progesterone production while DIM helps with estrogen metabolism.",
       improvement: "Take Vitex on empty stomach for best results, DIM with fatty meals.",
@@ -2501,9 +2505,9 @@ const generateSkinHealthRecommendations = (score: AssessmentScore, answers: Reco
       icon: Sparkles,
       personalisedAssessment: "Your skin health assessment suggests these supplements may improve skin appearance and health.",
       supplements: [
-        { name: "Collagen Peptides", dosage: "10g daily", selected: true },
-        { name: "Vitamin C", dosage: "1000mg daily", selected: true },
-        { name: "Hyaluronic Acid", dosage: "120mg daily", selected: false }
+        { name: "Collagen Peptides", dosage: "10g daily", price: "£34.99", selected: true },
+        { name: "Vitamin C", dosage: "1000mg daily", price: "£11.99", selected: true },
+        { name: "Hyaluronic Acid", dosage: "120mg daily", price: "£24.99", selected: false }
       ],
       analysis: "Collagen provides building blocks for skin structure while Vitamin C supports collagen synthesis.",
       improvement: "Take collagen with Vitamin C for enhanced absorption.",
@@ -2532,9 +2536,9 @@ const generateHairNailRecommendations = (score: AssessmentScore, answers: Record
       icon: Sparkles,
       personalisedAssessment: "Your hair and nail assessment indicates these supplements may improve strength and growth.",
       supplements: [
-        { name: "Biotin", dosage: "5000mcg daily", selected: true },
-        { name: "Silica", dosage: "10mg daily", selected: true },
-        { name: "Iron Bisglycinate", dosage: "18mg daily with Vitamin C", selected: false }
+        { name: "Biotin", dosage: "5000mcg daily", price: "£14.99", selected: true },
+        { name: "Silica", dosage: "10mg daily", price: "£17.99", selected: true },
+        { name: "Iron Bisglycinate", dosage: "18mg daily with Vitamin C", price: "£16.99", selected: false }
       ],
       analysis: "Biotin supports keratin production while silica strengthens hair and nail structure.",
       improvement: "Take biotin with meals, iron separate from calcium sources.",
@@ -2583,10 +2587,10 @@ const generateDefaultRecommendations = (symptomType: string, score: AssessmentSc
       icon: Pill,
       personalisedAssessment: "General wellness supplement protocol to address common nutritional deficiencies and support optimal health.",
       supplements: [
-        { name: "Vitamin D3 with K2", dosage: "2000-4000 IU daily with fats", selected: true },
-        { name: "Omega-3 Fish Oil", dosage: "1000-2000mg EPA/DHA daily", selected: true },
-        { name: "Magnesium Glycinate", dosage: "200-400mg in the evening", selected: false },
-        { name: "B-Complex (Methylated)", dosage: "1 capsule with breakfast", selected: false }
+        { name: "Vitamin D3 with K2", dosage: "2000-4000 IU daily with fats", price: "£17.99", selected: true },
+        { name: "Omega-3 Fish Oil", dosage: "1000-2000mg EPA/DHA daily", price: "£24.99", selected: true },
+        { name: "Magnesium Glycinate", dosage: "200-400mg in the evening", price: "£19.99", selected: false },
+        { name: "B-Complex (Methylated)", dosage: "1 capsule with breakfast", price: "£18.99", selected: false }
       ],
       analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
       improvement: "Start with vitamin D3 and omega-3s, then add magnesium and B-complex based on individual needs. Take with meals for better absorption.",
