@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets, Target, Activity, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -554,8 +554,13 @@ const AssessmentResults = () => {
       case 'brain-fog':
       case 'brain-brain-fog-assessment':
         return generateBrainFogRecommendations(score, answers);
+      case 'brain-memory-&-focus-analysis':
+        return generateMemoryFocusRecommendations(score, answers);
       case 'energy-levels':
+      case 'body-energy-&-fatigue-assessment':
         return generateEnergyRecommendations(score, answers);
+      case 'body-mobility-&-strength-analysis':
+        return generateMobilityRecommendations(score, answers);
       case 'bloating':
         return generateBloatingRecommendations(score, answers);
       case 'weight-changes':
@@ -563,7 +568,10 @@ const AssessmentResults = () => {
       case 'hair-thinning':
         return generateHairRecommendations(score, answers);
       case 'anxiety':
+      case 'balance-stress-&-anxiety-assessment':
         return generateAnxietyRecommendations(score, answers);
+      case 'balance-hormonal-balance-evaluation':
+        return generateHormonalRecommendations(score, answers);
       case 'irregular-periods':
         return generatePeriodRecommendations(score, answers);
       case 'headaches':
@@ -572,6 +580,10 @@ const AssessmentResults = () => {
         return generateNightSweatRecommendations(score, answers);
       case 'memory-issues':
         return generateMemoryRecommendations(score, answers);
+      case 'beauty-skin-health-assessment':
+        return generateSkinHealthRecommendations(score, answers);
+      case 'beauty-hair-&-nail-analysis':
+        return generateHairNailRecommendations(score, answers);
       default:
         return generateDefaultRecommendations(symptomType, score);
     }
@@ -2049,6 +2061,161 @@ const AssessmentResults = () => {
      </div>
     </TooltipProvider>
    );
+};
+
+const generateMemoryFocusRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  return [
+    {
+      title: "Cognitive Enhancement Protocol",
+      description: "Supplements and techniques to enhance memory, focus, and cognitive performance.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Brain,
+      personalizedAssessment: "Your memory and focus assessment indicates these strategies may help improve cognitive function.",
+      supplements: [
+        { name: "Alpha-GPC", dosage: "300mg daily", selected: true },
+        { name: "Bacopa Monnieri", dosage: "300-600mg daily", selected: true },
+        { name: "Rhodiola Rosea", dosage: "200-400mg daily", selected: false }
+      ],
+      analysis: "Alpha-GPC increases acetylcholine production, while Bacopa supports memory consolidation and stress resilience.",
+      improvement: "Take Alpha-GPC with breakfast and Bacopa with dinner for optimal absorption.",
+      timeline: "Memory improvements typically begin within 2-4 weeks of consistent use"
+    },
+    {
+      title: "Focus Training Sessions",
+      description: "Daily 20-minute focused attention exercises using meditation or brain training apps.",
+      priority: 'high',
+      category: 'routine',
+      icon: Target,
+      analysis: "Regular attention training strengthens prefrontal cortex function and improves working memory capacity.",
+      improvement: "Use apps like Lumosity or practice mindfulness meditation daily.",
+      timeline: "Focus improvements visible within 2-3 weeks of consistent practice"
+    }
+  ];
+};
+
+const generateMobilityRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  return [
+    {
+      title: "Mobility Enhancement Program",
+      description: "Comprehensive approach to improve strength, flexibility, and movement quality.",
+      priority: 'high',
+      category: 'routine',
+      icon: Activity,
+      analysis: "Regular mobility work prevents joint stiffness and maintains functional movement patterns.",
+      improvement: "Perform dynamic warm-ups before exercise and static stretches afterward.",
+      timeline: "Mobility improvements typically seen within 2-4 weeks"
+    },
+    {
+      title: "Joint Support Supplements",
+      description: "Targeted supplements to support joint health and reduce inflammation.",
+      priority: 'medium',
+      category: 'supplement',
+      icon: Pill,
+      personalizedAssessment: "Your mobility assessment suggests these supplements may support joint health.",
+      supplements: [
+        { name: "Glucosamine + Chondroitin", dosage: "1500mg + 1200mg daily", selected: true },
+        { name: "Curcumin", dosage: "500mg daily with black pepper", selected: true },
+        { name: "Omega-3 EPA/DHA", dosage: "2000mg daily", selected: false }
+      ],
+      analysis: "These compounds support cartilage health and reduce joint inflammation.",
+      improvement: "Take with meals to improve absorption and reduce stomach upset.",
+      timeline: "Joint comfort improvements typically seen within 4-8 weeks"
+    }
+  ];
+};
+
+const generateHormonalRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  return [
+    {
+      title: "Hormone Balance Protocol",
+      description: "Natural approaches to support hormonal balance and reduce symptoms.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Heart,
+      personalizedAssessment: "Your hormonal assessment indicates these supplements may help balance hormones naturally.",
+      supplements: [
+        { name: "Vitex (Chasteberry)", dosage: "400mg daily in morning", selected: true },
+        { name: "DIM (Diindolylmethane)", dosage: "200mg daily", selected: true },
+        { name: "Magnesium Glycinate", dosage: "400mg before bed", selected: false }
+      ],
+      analysis: "Vitex supports progesterone production while DIM helps with estrogen metabolism.",
+      improvement: "Take Vitex on empty stomach for best results, DIM with fatty meals.",
+      timeline: "Hormonal improvements typically seen within 1-3 months"
+    },
+    {
+      title: "Circadian Rhythm Optimization",
+      description: "Regulate sleep-wake cycles to support natural hormone production.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Moon,
+      analysis: "Consistent sleep patterns are crucial for optimal hormone production and balance.",
+      improvement: "Go to bed and wake up at the same time daily, get morning sunlight exposure.",
+      timeline: "Sleep quality improvements within 1-2 weeks, hormonal benefits within 4-6 weeks"
+    }
+  ];
+};
+
+const generateSkinHealthRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  return [
+    {
+      title: "Skin Health Enhancement",
+      description: "Comprehensive approach to improve skin health from inside and out.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Sparkles,
+      personalizedAssessment: "Your skin health assessment suggests these supplements may improve skin appearance and health.",
+      supplements: [
+        { name: "Collagen Peptides", dosage: "10g daily", selected: true },
+        { name: "Vitamin C", dosage: "1000mg daily", selected: true },
+        { name: "Hyaluronic Acid", dosage: "120mg daily", selected: false }
+      ],
+      analysis: "Collagen provides building blocks for skin structure while Vitamin C supports collagen synthesis.",
+      improvement: "Take collagen with Vitamin C for enhanced absorption.",
+      timeline: "Skin improvements typically visible within 4-8 weeks"
+    },
+    {
+      title: "Hydration Protocol",
+      description: "Optimal hydration strategy for healthy, glowing skin.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Droplets,
+      analysis: "Proper hydration is essential for skin elasticity and cellular function.",
+      improvement: "Drink 8-10 glasses of water daily, add electrolytes if exercising.",
+      timeline: "Skin hydration improvements visible within 1-2 weeks"
+    }
+  ];
+};
+
+const generateHairNailRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  return [
+    {
+      title: "Hair & Nail Strengthening Protocol",
+      description: "Targeted nutrients to support healthy hair growth and strong nails.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Sparkles,
+      personalizedAssessment: "Your hair and nail assessment indicates these supplements may improve strength and growth.",
+      supplements: [
+        { name: "Biotin", dosage: "5000mcg daily", selected: true },
+        { name: "Silica", dosage: "10mg daily", selected: true },
+        { name: "Iron Bisglycinate", dosage: "18mg daily with Vitamin C", selected: false }
+      ],
+      analysis: "Biotin supports keratin production while silica strengthens hair and nail structure.",
+      improvement: "Take biotin with meals, iron separate from calcium sources.",
+      timeline: "Hair and nail improvements typically visible within 6-12 weeks"
+    },
+    {
+      title: "Scalp Health Routine",
+      description: "Daily practices to promote healthy hair growth from the roots.",
+      priority: 'medium',
+      category: 'routine',
+      icon: Heart,
+      analysis: "Healthy scalp circulation and care promotes optimal hair growth conditions.",
+      improvement: "Gentle scalp massage daily, use sulfate-free products.",
+      timeline: "Scalp health improvements within 2-4 weeks"
+    }
+  ];
 };
 
 const generateDefaultRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
