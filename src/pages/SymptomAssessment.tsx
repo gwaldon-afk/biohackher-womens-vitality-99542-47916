@@ -166,6 +166,310 @@ const assessmentQuestions = {
         { value: "poor", label: "Poor (1-3/10)" }
       ]
     }
+  ],
+  
+  // Brain Pillar Assessments
+  "brain-brain-fog-assessment": [
+    {
+      id: 1,
+      question: "How often do you experience mental fog or difficulty concentrating?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely (less than once a week)" },
+        { value: "weekly", label: "Weekly (1-3 times per week)" },
+        { value: "daily", label: "Daily" },
+        { value: "frequent", label: "Multiple times daily" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate your memory performance?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - sharp and reliable" },
+        { value: "good", label: "Good - occasional lapses" },
+        { value: "fair", label: "Fair - frequent memory issues" },
+        { value: "poor", label: "Poor - significant memory problems" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How is your ability to focus on complex tasks?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - can focus for hours" },
+        { value: "good", label: "Good - can focus for 30-60 minutes" },
+        { value: "fair", label: "Fair - can focus for 15-30 minutes" },
+        { value: "poor", label: "Poor - difficulty focusing for more than 15 minutes" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How often do you experience mental fatigue?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely" },
+        { value: "sometimes", label: "Sometimes - after demanding tasks" },
+        { value: "often", label: "Often - daily mental fatigue" },
+        { value: "constant", label: "Constantly - chronic mental exhaustion" }
+  ],
+  
+  // Body Pillar Assessments
+  "body-energy-&-fatigue-assessment": [
+    {
+      id: 1,
+      question: "How would you rate your overall energy levels?",
+      type: "radio",
+      options: [
+        { value: "high", label: "High - feel energetic most of the day" },
+        { value: "moderate", label: "Moderate - have decent energy" },
+        { value: "low", label: "Low - often feel tired" },
+        { value: "depleted", label: "Depleted - constantly exhausted" }
+      ]
+    },
+    {
+      id: 2,
+      question: "When do you typically experience energy crashes?",
+      type: "radio",
+      options: [
+        { value: "none", label: "No significant crashes" },
+        { value: "afternoon", label: "Afternoon (2-4 PM)" },
+        { value: "evening", label: "Early evening (5-7 PM)" },
+        { value: "multiple", label: "Multiple times throughout the day" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How is your energy after physical exercise?",
+      type: "radio",
+      options: [
+        { value: "energized", label: "Energized and refreshed" },
+        { value: "normal", label: "Normal recovery" },
+        { value: "tired", label: "More tired than expected" },
+        { value: "exhausted", label: "Completely exhausted" }
+      ]
+    }
+  ],
+  
+  "body-mobility-&-strength-analysis": [
+    {
+      id: 1,
+      question: "How would you rate your overall physical strength?",
+      type: "radio",
+      options: [
+        { value: "strong", label: "Strong - feel physically capable" },
+        { value: "moderate", label: "Moderate - adequate strength" },
+        { value: "weak", label: "Weak - struggle with physical tasks" },
+        { value: "very-weak", label: "Very weak - difficulty with daily activities" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How is your flexibility and range of motion?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - very flexible" },
+        { value: "good", label: "Good - reasonably flexible" },
+        { value: "stiff", label: "Stiff - limited flexibility" },
+        { value: "very-stiff", label: "Very stiff - restricted movement" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How often do you experience muscle or joint stiffness?",
+      type: "radio",
+      options: [
+        { value: "never", label: "Never or rarely" },
+        { value: "sometimes", label: "Sometimes after activity" },
+        { value: "often", label: "Often, especially in the morning" },
+        { value: "constant", label: "Constantly stiff" }
+      ]
+    }
+  ],
+  
+  // Balance Pillar Assessments
+  "balance-stress-&-anxiety-assessment": [
+    {
+      id: 1,
+      question: "How often do you feel overwhelmed by stress?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely - manage stress well" },
+        { value: "sometimes", label: "Sometimes - during busy periods" },
+        { value: "often", label: "Often - stress is a regular issue" },
+        { value: "constant", label: "Constantly - feel chronically stressed" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate your anxiety levels?",
+      type: "radio",
+      options: [
+        { value: "low", label: "Low - rarely feel anxious" },
+        { value: "mild", label: "Mild - occasional anxiety" },
+        { value: "moderate", label: "Moderate - regular anxiety episodes" },
+        { value: "severe", label: "Severe - anxiety significantly impacts daily life" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How well do you sleep when stressed?",
+      type: "radio",
+      options: [
+        { value: "normal", label: "Sleep normally despite stress" },
+        { value: "slightly-affected", label: "Slightly affected sleep" },
+        { value: "poor", label: "Poor sleep when stressed" },
+        { value: "insomnia", label: "Stress causes insomnia" }
+      ]
+    }
+  ],
+  
+  "balance-hormonal-balance-evaluation": [
+    {
+      id: 1,
+      question: "How regular are your menstrual cycles? (if applicable)",
+      type: "radio",
+      options: [
+        { value: "regular", label: "Regular and predictable" },
+        { value: "somewhat-irregular", label: "Somewhat irregular" },
+        { value: "very-irregular", label: "Very irregular or unpredictable" },
+        { value: "not-applicable", label: "Not applicable / post-menopause" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How stable is your mood throughout the day?",
+      type: "radio",
+      options: [
+        { value: "stable", label: "Very stable mood" },
+        { value: "minor-fluctuations", label: "Minor mood fluctuations" },
+        { value: "moderate-swings", label: "Moderate mood swings" },
+        { value: "severe-swings", label: "Severe mood swings" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How is your libido/sexual desire?",
+      type: "radio",
+      options: [
+        { value: "normal", label: "Normal and healthy" },
+        { value: "somewhat-low", label: "Somewhat lower than desired" },
+        { value: "low", label: "Low libido" },
+        { value: "very-low", label: "Very low or absent libido" }
+      ]
+    }
+  ],
+  
+  // Beauty Pillar Assessments
+  "beauty-skin-health-assessment": [
+    {
+      id: 1,
+      question: "How would you describe your current skin condition?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - clear, smooth, and radiant" },
+        { value: "good", label: "Good - generally healthy with minor issues" },
+        { value: "fair", label: "Fair - some concerns like dryness or breakouts" },
+        { value: "poor", label: "Poor - multiple skin issues" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What is your primary skin concern?",
+      type: "radio",
+      options: [
+        { value: "aging", label: "Signs of aging (wrinkles, fine lines)" },
+        { value: "acne", label: "Acne or breakouts" },
+        { value: "dryness", label: "Dryness or dehydration" },
+        { value: "pigmentation", label: "Dark spots or uneven pigmentation" },
+        { value: "sensitivity", label: "Sensitivity or irritation" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How consistent is your skincare routine?",
+      type: "radio",
+      options: [
+        { value: "very-consistent", label: "Very consistent - daily routine" },
+        { value: "mostly-consistent", label: "Mostly consistent with occasional lapses" },
+        { value: "inconsistent", label: "Inconsistent - sporadic routine" },
+        { value: "minimal", label: "Minimal or no routine" }
+      ]
+    }
+  ],
+  
+  "beauty-beauty-&-aging-analysis": [
+    {
+      id: 1,
+      question: "How satisfied are you with your current appearance?",
+      type: "radio",
+      options: [
+        { value: "very-satisfied", label: "Very satisfied" },
+        { value: "mostly-satisfied", label: "Mostly satisfied with minor concerns" },
+        { value: "somewhat-dissatisfied", label: "Somewhat dissatisfied" },
+        { value: "very-dissatisfied", label: "Very dissatisfied" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What aging concerns you most?",
+      type: "radio",
+      options: [
+        { value: "facial-aging", label: "Facial aging (wrinkles, sagging)" },
+        { value: "hair-changes", label: "Hair thinning or graying" },
+        { value: "body-changes", label: "Body shape or skin texture changes" },
+        { value: "energy-appearance", label: "Looking tired or lacking vitality" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How important is anti-aging prevention to you?",
+      type: "radio",
+      options: [
+        { value: "very-important", label: "Very important - actively prevent aging" },
+        { value: "important", label: "Important - some preventive measures" },
+        { value: "somewhat-important", label: "Somewhat important" },
+        { value: "not-important", label: "Not a current priority" }
+      ]
+    }
+  ]
+    }
+  ],
+  
+  "brain-memory-&-focus-analysis": [
+    {
+      id: 1,
+      question: "How would you rate your working memory (ability to hold information temporarily)?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - can easily juggle multiple pieces of information" },
+        { value: "good", label: "Good - generally manage well" },
+        { value: "fair", label: "Fair - sometimes struggle with multiple tasks" },
+        { value: "poor", label: "Poor - difficulty holding information in mind" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How is your ability to learn new information?",
+      type: "radio",
+      options: [
+        { value: "fast", label: "Fast learner - pick up new concepts quickly" },
+        { value: "normal", label: "Normal pace - learn at average speed" },
+        { value: "slow", label: "Slow learner - need extra time and repetition" },
+        { value: "difficulty", label: "Significant difficulty learning new things" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How often do you experience 'tip of the tongue' moments?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely" },
+        { value: "weekly", label: "Weekly" },
+        { value: "daily", label: "Daily" },
+        { value: "frequent", label: "Multiple times daily" }
+      ]
+    }
   ]
 };
 
@@ -314,7 +618,20 @@ const SymptomAssessment = () => {
       "irregular-periods": "Irregular Periods",
       "headaches": "Headaches",
       "night-sweats": "Night Sweats",
-      "memory-issues": "Memory Issues"
+      "memory-issues": "Memory Issues",
+      "gut": "Gut Health",
+      // Brain Pillar Assessments
+      "brain-brain-fog-assessment": "Brain Fog Assessment",
+      "brain-memory-&-focus-analysis": "Memory & Focus Analysis",
+      // Body Pillar Assessments
+      "body-energy-&-fatigue-assessment": "Energy & Fatigue Assessment",
+      "body-mobility-&-strength-analysis": "Mobility & Strength Analysis",
+      // Balance Pillar Assessments
+      "balance-stress-&-anxiety-assessment": "Stress & Anxiety Assessment",
+      "balance-hormonal-balance-evaluation": "Hormonal Balance Evaluation",
+      // Beauty Pillar Assessments
+      "beauty-skin-health-assessment": "Skin Health Assessment",
+      "beauty-beauty-&-aging-analysis": "Beauty & Aging Analysis"
     };
     return nameMap[id] || id;
   };
