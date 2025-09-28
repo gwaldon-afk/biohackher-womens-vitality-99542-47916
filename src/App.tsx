@@ -30,7 +30,9 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  console.log("App component rendering...");
+  return (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CartProvider>
@@ -66,6 +68,7 @@ const App = () => (
       </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
