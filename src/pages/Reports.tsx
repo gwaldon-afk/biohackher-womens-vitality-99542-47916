@@ -719,8 +719,9 @@ Generated on: ${new Date().toLocaleDateString()}
           )}
 
         <Tabs defaultValue="assessment" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="assessment">Symptom Assessment</TabsTrigger>
+            <TabsTrigger value="summary">Summary List</TabsTrigger>
             <TabsTrigger value="historical">Historical Data</TabsTrigger>
           </TabsList>
           
@@ -763,6 +764,242 @@ Generated on: ${new Date().toLocaleDateString()}
                       </div>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="summary" className="space-y-6">
+            {/* Summary Symptom List for Health Professionals */}
+            <Card className="print:shadow-none print:border-0">
+              <CardHeader className="text-center border-b print:border-b-2 print:border-black">
+                <CardTitle className="text-2xl font-bold text-primary print:text-black">
+                  Summary Symptom List
+                </CardTitle>
+                <CardDescription className="text-base print:text-black">
+                  Comprehensive health profile for medical consultation
+                </CardDescription>
+                <div className="flex justify-between items-center text-sm text-muted-foreground print:text-black mt-4">
+                  <span>Generated: {format(new Date(), "dd 'on' MMMM yyyy 'at' HH:mm")}</span>
+                  <span>Total Assessments: {symptomAssessments.length}</span>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="p-8 print:p-6">
+                {/* Overall Health Status */}
+                <div className="mb-8 p-6 bg-primary/5 rounded-lg border print:bg-transparent print:border-2 print:border-black">
+                  <h3 className="text-xl font-bold text-primary print:text-black mb-4">Overall Health Status</h3>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <div className="text-3xl font-bold text-primary print:text-black">
+                        {getOverallSymptomAnalysis().score}/100
+                      </div>
+                      <div className="text-lg font-semibold text-muted-foreground print:text-black">
+                        {getOverallSymptomAnalysis().status}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="text-green-600 print:text-black">
+                          <div className="font-bold">{getOverallSymptomAnalysis().breakdown.excellent}</div>
+                          <div>Excellent</div>
+                        </div>
+                        <div className="text-blue-600 print:text-black">
+                          <div className="font-bold">{getOverallSymptomAnalysis().breakdown.good}</div>
+                          <div>Good</div>
+                        </div>
+                        <div className="text-amber-600 print:text-black">
+                          <div className="font-bold">{getOverallSymptomAnalysis().breakdown.fair}</div>
+                          <div>Fair</div>
+                        </div>
+                        <div className="text-red-600 print:text-black">
+                          <div className="font-bold">{getOverallSymptomAnalysis().breakdown.poor}</div>
+                          <div>Needs Attention</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed Symptom Breakdown */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-primary print:text-black mb-6">Detailed Symptom Assessment</h3>
+                  <div className="space-y-6">
+                    {symptomAssessments.map((assessment, index) => (
+                      <div key={assessment.id} className="border rounded-lg p-6 print:border-2 print:border-black">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h4 className="text-lg font-semibold text-primary print:text-black">
+                              {index + 1}. {getSymptomName(assessment.symptom_type)}
+                            </h4>
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="text-2xl font-bold print:text-black">
+                                {assessment.overall_score}/100
+                              </span>
+                              <Badge 
+                                variant={assessment.score_category === 'excellent' ? 'default' : 
+                                        assessment.score_category === 'good' ? 'secondary' : 
+                                        assessment.score_category === 'fair' ? 'outline' : 'destructive'}
+                                className="print:bg-transparent print:border-2 print:border-black print:text-black"
+                              >
+                                {assessment.score_category === 'excellent' ? 'Excellent' :
+                                 assessment.score_category === 'good' ? 'Good' :
+                                 assessment.score_category === 'fair' ? 'Fair' : 'Needs Attention'}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="text-right text-sm text-muted-foreground print:text-black">
+                            Assessed: {format(new Date(assessment.completed_at), 'dd/MM/yyyy')}
+                          </div>
+                        </div>
+
+                        {/* Primary Issues */}
+                        {assessment.primary_issues && assessment.primary_issues.length > 0 && (
+                          <div className="mb-4">
+                            <h5 className="font-semibold text-primary print:text-black mb-2">Primary Issues:</h5>
+                            <div className="flex flex-wrap gap-2">
+                              {assessment.primary_issues.map((issue: string, issueIndex: number) => (
+                                <span 
+                                  key={issueIndex}
+                                  className="px-3 py-1 bg-muted rounded-full text-sm print:bg-transparent print:border print:border-black"
+                                >
+                                  {issue.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Detailed Scores */}
+                        {assessment.detail_scores && Object.keys(assessment.detail_scores).length > 0 && (
+                          <div className="mb-4">
+                            <h5 className="font-semibold text-primary print:text-black mb-2">Sub-scores:</h5>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                              {Object.entries(assessment.detail_scores).map(([key, value]) => (
+                                <div key={key} className="text-sm">
+                                  <span className="text-muted-foreground print:text-black">
+                                    {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
+                                  </span>
+                                  <span className="font-semibold ml-2 print:text-black">{String(value)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Key Recommendations */}
+                        {assessment.recommendations && (
+                          <div>
+                            <h5 className="font-semibold text-primary print:text-black mb-2">Key Recommendations:</h5>
+                            <div className="space-y-2 text-sm">
+                              {(() => {
+                                if (Array.isArray(assessment.recommendations)) {
+                                  return assessment.recommendations.slice(0, 3).map((rec: string, recIndex: number) => (
+                                    <div key={recIndex} className="flex items-start gap-2">
+                                      <div className="h-1.5 w-1.5 bg-primary print:bg-black rounded-full mt-2 shrink-0"></div>
+                                      <span className="print:text-black">{rec}</span>
+                                    </div>
+                                  ));
+                                } else if (typeof assessment.recommendations === 'object') {
+                                  const allRecs = Object.values(assessment.recommendations).flat() as string[];
+                                  return allRecs.slice(0, 3).map((rec: string, recIndex: number) => (
+                                    <div key={recIndex} className="flex items-start gap-2">
+                                      <div className="h-1.5 w-1.5 bg-primary print:bg-black rounded-full mt-2 shrink-0"></div>
+                                      <span className="print:text-black">{rec}</span>
+                                    </div>
+                                  ));
+                                }
+                                return null;
+                              })()}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Common Patterns */}
+                {getPersonalizedInsights().patterns.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-xl font-bold text-primary print:text-black mb-4">Cross-Symptom Patterns</h3>
+                    <div className="space-y-3">
+                      {getPersonalizedInsights().patterns.slice(0, 3).map((pattern, index) => (
+                        <div key={index} className="flex items-center gap-4 p-4 bg-background/80 rounded border print:bg-transparent print:border-2 print:border-black">
+                          <div className="h-8 w-8 bg-primary/10 print:bg-transparent print:border print:border-black rounded-full flex items-center justify-center">
+                            <span className="text-sm font-bold text-primary print:text-black">{pattern.count}</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-sm print:text-black">
+                              {pattern.issue.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </div>
+                            <div className="text-xs text-muted-foreground print:text-black">
+                              Present in: {pattern.affectedSymptoms.join(', ')}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Clinical Notes Section */}
+                <div className="mb-8 p-6 border-2 border-dashed border-muted print:border-black">
+                  <h3 className="text-xl font-bold text-primary print:text-black mb-4">Clinical Notes</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <span className="font-semibold print:text-black">Patient Summary: </span>
+                      <span className="print:text-black">{getPersonalizedAssessmentStatements().primaryStatement}</span>
+                    </div>
+                    <div className="min-h-[100px] border-b border-dashed border-muted print:border-black">
+                      <span className="font-semibold print:text-black">Additional Notes:</span>
+                      <div className="text-sm text-muted-foreground print:text-black italic mt-2">
+                        (Space for healthcare provider notes)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Print Actions */}
+                <div className="flex justify-center gap-4 print:hidden">
+                  <Button 
+                    onClick={() => window.print()}
+                    className="primary-gradient"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Print Summary
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      const content = document.querySelector('[data-summary-content]')?.innerHTML;
+                      if (content) {
+                        const blob = new Blob([`
+                          <html>
+                            <head>
+                              <title>Summary Symptom List</title>
+                              <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                .summary-content { max-width: 800px; margin: 0 auto; }
+                              </style>
+                            </head>
+                            <body>
+                              <div class="summary-content">${content}</div>
+                            </body>
+                          </html>
+                        `], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `symptom-summary-${format(new Date(), 'yyyy-MM-dd')}.html`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }
+                    }}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download HTML
+                  </Button>
                 </div>
               </CardContent>
             </Card>
