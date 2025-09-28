@@ -175,8 +175,8 @@ const Reports = () => {
       return acc;
     }, {} as Record<string, number>);
     const commonIssues = Object.entries(issueFrequency)
-      .filter(([_, count]) => count > 1)
-      .sort(([,a], [,b]) => b - a)
+      .filter(([_, count]: [string, number]) => count > 1)
+      .sort(([,a]: [string, number], [,b]: [string, number]) => b - a)
       .slice(0, 2);
 
     let primaryStatement = "";
@@ -857,9 +857,10 @@ Generated on: ${new Date().toLocaleDateString()}
            </div>
          </div>
          </TabsContent>
-       </Tabs>
-     </main>
-   </div>
+        </Tabs>
+        </div>
+      </main>
+    </div>
  );
 };
 
