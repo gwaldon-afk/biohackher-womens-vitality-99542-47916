@@ -1,670 +1,219 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ProgressCircle } from "@/components/ui/progress-circle";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { TrendingUp, TrendingDown, Activity, Heart, Moon, Brain, Users, Utensils, History, FileText } from "lucide-react";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, ReferenceLine, Scatter, LabelList } from 'recharts';
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import LISInputForm from "@/components/LISInputForm";
-import LongevityProjection from "@/components/LongevityProjection";
-import { useLongevityProjection } from "@/hooks/useLongevityProjection";
 
-interface DailyScore {
-  date: string;
-  longevity_impact_score: number;
-  biological_age_impact: number;
-  color_code: 'green' | 'red';
-  moving_average: number;
-  sleep_score: number;
-  stress_score: number;
-  physical_activity_score: number;
-  nutrition_score: number;
-  social_connections_score: number;
-  cognitive_engagement_score: number;
-}
-
-interface ScoreSummary {
-  total_days: number;
-  average_score: number;
-  total_biological_age_impact: number;
-  green_days: number;
-  red_days: number;
+interface DashboardData {
+  currentScore: number;
+  weeklyTrend: 'up' | 'down' | 'stable';
+  lastAssessment: string;
+  totalAssessments: number;
 }
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [scores, setScores] = useState<DailyScore[]>([]);
-  const [summary, setSummary] = useState<ScoreSummary | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<DashboardData>({
+    currentScore: 72.5,
+    weeklyTrend: 'up',
+    lastAssessment: '3 days ago',
+    totalAssessments: 8
+  });
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { sustainedLIS, dataPoints, isLoading: projectionLoading } = useLongevityProjection();
 
-  useEffect(() => {
-    fetchScoreHistory();
-  }, []);
-
-  const fetchScoreHistory = async () => {
-    try {
-      // Mock user ID - in real app would come from auth
-      const mockUserId = "123e4567-e89b-12d3-a456-426614174000";
-      
-      const response = await supabase.functions.invoke('score-history', {
-        body: {
-          user_id: mockUserId,
-          days: 7
-        }
-      });
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      const { scores: fetchedScores, summary: fetchedSummary } = response.data;
-      
-      // Generate mock data if no scores exist
-      if (fetchedScores.length === 0) {
-        const mockScores = generateMockScores();
-        setScores(mockScores);
-        
-        // Calculate summary from actual mock data
-        const avgScore = mockScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / mockScores.length;
-        const totalBioAge = mockScores.reduce((sum, s) => sum + s.biological_age_impact, 0);
-        const greenDays = mockScores.filter(s => s.biological_age_impact > 0).length;
-        const redDays = mockScores.filter(s => s.biological_age_impact < 0).length;
-        
-        setSummary({
-          total_days: mockScores.length,
-          average_score: parseFloat(avgScore.toFixed(2)),
-          total_biological_age_impact: parseFloat(totalBioAge.toFixed(2)),
-          green_days: greenDays,
-          red_days: redDays
-        });
-      } else {
-        setScores(fetchedScores);
-        setSummary(fetchedSummary);
-      }
-    } catch (error) {
-      console.error('Error fetching scores:', error);
-      // Show mock data on error
-      const mockScores = generateMockScores();
-      setScores(mockScores);
-      
-      // Calculate summary from actual mock data
-      const avgScore = mockScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / mockScores.length;
-      const totalBioAge = mockScores.reduce((sum, s) => sum + s.biological_age_impact, 0);
-      const greenDays = mockScores.filter(s => s.biological_age_impact > 0).length;
-      const redDays = mockScores.filter(s => s.biological_age_impact < 0).length;
-      
-      setSummary({
-        total_days: mockScores.length,
-        average_score: parseFloat(avgScore.toFixed(2)),
-        total_biological_age_impact: parseFloat(totalBioAge.toFixed(2)),
-        green_days: greenDays,
-        red_days: redDays
-      });
-      
-      toast({
-        title: "Demo Mode",
-        description: "Showing sample data. Connect your wearables to see real scores.",
-        variant: "default"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generateMockScores = (): DailyScore[] => {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const possibleValues = [-2, -1, 1, 2]; // Removed 0 - every day has some impact
-    
-    return days.map((day, index) => {
-      // Generate discrete scores on a 4-point scale (-2, -1, +1, +2)
-      const biologicalImpact = possibleValues[Math.floor(Math.random() * possibleValues.length)];
-      const score = 50 + (biologicalImpact * 12.5); // Convert to 0-100 scale for display
-      
-      return {
-        date: day,
-        longevity_impact_score: parseFloat(score.toFixed(1)),
-        biological_age_impact: biologicalImpact,
-        color_code: biologicalImpact > 0 ? 'green' : 'red' as 'green' | 'red',
-        moving_average: 0, // Will be calculated below
-        sleep_score: 65 + Math.random() * 25,
-        stress_score: 55 + Math.random() * 30,
-        physical_activity_score: 60 + Math.random() * 30,
-        nutrition_score: 50 + Math.random() * 35,
-        social_connections_score: 45 + Math.random() * 40,
-        cognitive_engagement_score: 55 + Math.random() * 25
-      };
-    }).map((score, index, array) => {
-      // Calculate cumulative moving average up to this point
-      const scoresUpToNow = array.slice(0, index + 1);
-      const cumulativeSum = scoresUpToNow.reduce((sum, s) => sum + s.biological_age_impact, 0);
-      const movingAverage = cumulativeSum / (index + 1);
-      
-      return {
-        ...score,
-        moving_average: parseFloat(movingAverage.toFixed(2))
-      };
-    });
-  };
-
-  // Current day's pillar scores for display
-  const currentDayScores = scores.length > 0 ? scores[scores.length - 1] : null;
-  
-  const pillarMetrics = [
-    { 
-      name: "Sleep Quality", 
-      value: currentDayScores?.sleep_score || 78, 
-      trend: "up", 
-      icon: Moon, 
-      color: "text-blue-500",
-      weight: "25%" 
+  // Primary action buttons with clear hierarchy
+  const primaryActions = [
+    {
+      title: "View My Data",
+      subtitle: "Assessment History & Reports",
+      icon: History,
+      variant: "default" as const,
+      onClick: () => navigate('/assessment-history'),
+      className: "bg-primary text-primary-foreground hover:bg-primary/90"
     },
-    { 
-      name: "Stress Management", 
-      value: currentDayScores?.stress_score || 65, 
-      trend: "up", 
-      icon: Heart, 
-      color: "text-red-500",
-      weight: "20%" 
+    {
+      title: "Take Assessment",
+      subtitle: "Complete your wellness check",
+      icon: FileText,
+      variant: "outline" as const,
+      onClick: () => navigate('/symptoms'),
+      className: "border-primary/20 text-primary hover:bg-primary/5"
     },
-    { 
-      name: "Physical Activity", 
-      value: currentDayScores?.physical_activity_score || 82, 
-      trend: "up", 
-      icon: Activity, 
-      color: "text-green-500",
-      weight: "15%" 
+    {
+      title: "Sync Wearables",
+      subtitle: "Update health data",
+      icon: Activity,
+      variant: "outline" as const,
+      onClick: () => handleSyncWearables(),
+      className: "border-muted-foreground/20 hover:bg-muted/50"
     },
-    { 
-      name: "Nutrition", 
-      value: currentDayScores?.nutrition_score || 72, 
-      trend: "down", 
-      icon: Utensils, 
-      color: "text-orange-500",
-      weight: "15%" 
-    },
-    { 
-      name: "Social Connections", 
-      value: currentDayScores?.social_connections_score || 68, 
-      trend: "up", 
-      icon: Users, 
-      color: "text-purple-500",
-      weight: "15%" 
-    },
-    { 
-      name: "Cognitive Engagement", 
-      value: currentDayScores?.cognitive_engagement_score || 74, 
-      trend: "up", 
-      icon: Brain, 
-      color: "text-pink-500",
-      weight: "10%" 
+    {
+      title: "Settings",
+      subtitle: "Account & preferences",
+      icon: Settings,
+      variant: "ghost" as const,
+      onClick: () => navigate('/settings'),
+      className: "hover:bg-muted/50"
     }
   ];
 
-  // Calculate weekly cumulative score - sum of daily biological age impact scores  
-  const weeklyScore = scores.reduce((sum, score) => sum + score.biological_age_impact, 0);
-  const weeklyColor = weeklyScore >= 0 ? 'text-green-600' : 'text-red-600';
-
-  // Use today's (most recent) score instead of average for the daily inputs card
-  const todayScore = scores.length > 0 ? scores[scores.length - 1] : null;
-  const currentScore = todayScore?.longevity_impact_score || summary?.average_score || 72.5;
-  const bioAgeImpact = summary?.total_biological_age_impact || weeklyScore;
-
-  // Calculate longevity impact for any LIS score
-  const calculateLongevityImpact = (lis: number, years: number = 5): number => {
-    let baseImpact = 0;
-    if (lis >= 60 && lis < 70) {
-      baseImpact = 1.5 + ((lis - 60) / 10) * (2.5 - 1.5);
-    } else if (lis >= 70 && lis < 80) {
-      baseImpact = 0.8 + ((lis - 70) / 10) * (1.5 - 0.8);
-    } else if (lis >= 80 && lis < 90) {
-      baseImpact = 0.2 + ((lis - 80) / 10) * (0.8 - 0.2);
-    } else if (lis >= 90 && lis <= 110) {
-      baseImpact = -0.2 + ((lis - 90) / 20) * (0.2 - (-0.2));
-    } else if (lis > 110 && lis <= 120) {
-      baseImpact = -0.8 + ((lis - 110) / 10) * (-0.2 - (-0.8));
-    } else if (lis > 120 && lis <= 130) {
-      baseImpact = -1.5 + ((lis - 120) / 10) * (-0.8 - (-1.5));
-    } else if (lis > 130 && lis <= 140) {
-      baseImpact = -2.5 + ((lis - 130) / 10) * (-1.5 - (-2.5));
-    } else if (lis < 60) {
-      baseImpact = 2.5;
-    } else if (lis > 140) {
-      baseImpact = -2.5;
-    }
-    const scaleFactor = Math.sqrt(years / 5);
-    return baseImpact * scaleFactor;
-  };
-
-  // Generate longevity impact message for tooltip
-  const getLongevityMessage = () => {
-    if (projectionLoading) return "Calculating longevity impact...";
-    
-    const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-    const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-    const optimalFiveYear = calculateLongevityImpact(135, 5); // Optimal LIS score
-    const optimalTwentyYear = calculateLongevityImpact(135, 20);
-    const totalImprovementFiveYear = Math.abs(fiveYearImpact - optimalFiveYear);
-    const totalImprovementTwentyYear = Math.abs(twentyYearImpact - optimalTwentyYear);
-    
-    // Generate detailed message based on current impact
-    if (fiveYearImpact > 0) {
-      // Current path ages you faster
-      return `Your current habits show negative impact: your biological age will be ${fiveYearImpact.toFixed(1)} years older in 5 years and ${twentyYearImpact.toFixed(1)} years older in 20 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years - total improvements of ${totalImprovementFiveYear.toFixed(1)} and ${totalImprovementTwentyYear.toFixed(1)} years respectively! Priority: sleep quality, physical activity, stress management, and nutrition.`;
-    } else if (fiveYearImpact < 0) {
-      // Current path makes you younger
-      return `Excellent! Your current habits show positive impact: your biological age will be ${Math.abs(fiveYearImpact).toFixed(1)} years younger in 5 years and ${Math.abs(twentyYearImpact).toFixed(1)} years younger in 20 years. With optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years, additional improvements of ${Math.abs(optimalFiveYear - Math.abs(fiveYearImpact)).toFixed(1)} and ${Math.abs(optimalTwentyYear - Math.abs(twentyYearImpact)).toFixed(1)} years respectively! Priority: maintain current habits and optimise sleep quality, physical activity, stress management, and nutrition.`;
-    } else {
-      // Minimal impact
-      return `Your current habits show minimal ${fiveYearImpact < 0 ? 'negative' : 'positive'} impact (${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} years in 5 years, ${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} years in 20 years). But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger in 5 years and ${Math.abs(optimalTwentyYear).toFixed(1)} years younger in 20 years! Priority: sleep quality, physical activity, stress management, and nutrition.`;
-    }
-  };
-
-  const chartConfig = {
-    biological_age_impact: {
-      label: "Daily LIS Score",
-      color: "hsl(var(--primary))",
-    },
-    moving_average: {
-      label: "Cumulative Average",
-      color: "#8884d8",
-    },
+  const handleSyncWearables = () => {
+    setLoading(true);
+    // Simulate sync process
+    setTimeout(() => {
+      setLoading(false);
+      toast({
+        title: "Sync Complete",
+        description: "Health data updated successfully",
+      });
+    }, 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8">
-        {/* Hero Section - Longevity Impact Score */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-8 text-gray-900 text-center">
-            Welcome back, <span className="gradient-text">Sarah</span>
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Welcome Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome back, <span className="text-primary">Sarah</span>
           </h1>
-          
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            {/* Daily Longevity Inputs - Left Side */}
-            <div className="md:w-1/2">
-              <LISInputForm onScoreCalculated={fetchScoreHistory}>
-                <Card className="bg-white shadow-lg border border-gray-200 cursor-pointer hover:shadow-xl transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg text-gray-900">Daily Longevity Inputs</CardTitle>
-                    <CardDescription className="text-gray-600">
-                      Today's LIS - Your daily biological age impact score
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <div className="flex items-center justify-center mb-4 transition-transform hover:scale-105">
-                      <ProgressCircle value={currentScore} size="xl">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-gray-900">{currentScore.toFixed(1)}</div>
-                          <div className="text-xs text-gray-500">LIS</div>
-                        </div>
-                      </ProgressCircle>
-                    </div>
-                    
-                    {/* Longevity Projection Summary */}
-                    {!projectionLoading && (
-                      <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                        <div className="grid grid-cols-2 gap-4">
-                          {/* 5-Year Impact Section */}
-                          <div className="space-y-3">
-                            <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">5-Year Impact</div>
-                            
-                            {/* Current Impact */}
-                            <TooltipProvider>
-                              <Tooltip delayDuration={200}>
-                                <TooltipTrigger asChild>
-                                  <div className="text-center cursor-help bg-white rounded p-2 border border-purple-100">
-                                    <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                                    <div className={`text-base font-bold ${(() => {
-                                      const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                      return fiveYearImpact < 0 ? 'text-green-600' : fiveYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                                    })()}`}>
-                                      {(() => {
-                                        const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                        return `${fiveYearImpact > 0 ? '+' : ''}${fiveYearImpact.toFixed(1)} yr ${fiveYearImpact > 0 ? 'Older' : 'Younger'}`;
-                                      })()}
-                                    </div>
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs p-3 bg-white border shadow-lg">
-                                  <p className="text-sm font-medium">{getLongevityMessage()}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-
-                            {/* Potential Optimal Impact */}
-                            <div className="text-center bg-white rounded p-2 border border-purple-100">
-                              <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
-                              <div className="text-base font-bold text-green-600">
-                                {(() => {
-                                  const optimalImpact = calculateLongevityImpact(135, 5);
-                                  return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
-                                })()}
-                              </div>
-                              <div className="text-xs text-purple-600 font-medium mt-1">
-                                Gap: {(() => {
-                                  const fiveYearImpact = calculateLongevityImpact(currentScore, 5);
-                                  const optimalImpact = calculateLongevityImpact(135, 5);
-                                  const gap = Math.abs(fiveYearImpact - optimalImpact);
-                                  return `${gap.toFixed(1)} yr opportunity`;
-                                })()}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* 20-Year Impact Section */}
-                          <div className="space-y-3 border-l border-purple-300 pl-4">
-                            <div className="text-xs text-gray-600 font-semibold text-center border-b border-purple-200 pb-1">20-Year Impact</div>
-                            
-                            {/* Current Impact */}
-                            <div className="text-center bg-white rounded p-2 border border-purple-100">
-                              <div className="text-xs text-gray-500 mb-1">Current Habits</div>
-                              <div className={`text-base font-bold ${(() => {
-                                const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-                                return twentyYearImpact < 0 ? 'text-green-600' : twentyYearImpact > 0 ? 'text-red-600' : 'text-gray-600';
-                              })()}`}>
-                                {(() => {
-                                  const twentyYearImpact = calculateLongevityImpact(currentScore, 20);
-                                  return `${twentyYearImpact > 0 ? '+' : ''}${twentyYearImpact.toFixed(1)} yr ${twentyYearImpact > 0 ? 'Older' : 'Younger'}`;
-                                })()}
-                              </div>
-                            </div>
-
-                            {/* Potential Optimal Impact */}
-                            <div className="text-center bg-white rounded p-2 border border-purple-100">
-                              <div className="text-xs text-gray-500 mb-1">Optimal Habits</div>
-                              <div className="text-base font-bold text-green-600">
-                                {(() => {
-                                  const optimalImpact = calculateLongevityImpact(135, 20);
-                                  return `${Math.abs(optimalImpact).toFixed(1)} yr Younger`;
-                                })()}
-                              </div>
-                              <div className="text-xs text-purple-600 font-medium mt-1">
-                                Gap: {(() => {
-                                  const currentImpact = calculateLongevityImpact(currentScore, 20);
-                                  const optimalImpact = calculateLongevityImpact(135, 20);
-                                  const gap = Math.abs(currentImpact - optimalImpact);
-                                  return `${gap.toFixed(1)} yr opportunity`;
-                                })()}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="text-xs text-gray-500 text-center mt-2">
-                          Based on {dataPoints}-day trend
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="text-sm text-gray-600">
-                      {bioAgeImpact >= 0 ? (
-                        <span className="font-semibold text-green-600">
-                          Weekly Longevity Impact Score
-                        </span>
-                      ) : (
-                        <span className="font-semibold text-red-600">
-                          Weekly Longevity Impact Score
-                        </span>
-                      )}
-                    </div>
-                    <div className={`text-xs mt-2 font-semibold ${
-                      bioAgeImpact !== undefined && bioAgeImpact !== null 
-                        ? (bioAgeImpact >= 0 ? 'text-green-600' : 'text-red-600')
-                        : 'text-gray-400'
-                    }`}>
-                      {bioAgeImpact !== undefined && bioAgeImpact !== null ? 
-                        `${bioAgeImpact >= 0 ? '+' : ''}${bioAgeImpact.toFixed(1)}` : 'N/A'}
-                    </div>
-                  </CardContent>
-                </Card>
-              </LISInputForm>
-            </div>
-
-            {/* Action Buttons - Right Side */}
-            <div className="md:w-1/2">
-              <div className="grid grid-cols-2 gap-4">
-                <Button 
-                  variant="outline" 
-                  className="h-32 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-                  onClick={() => navigate('/assessment-history')}
-                >
-                  <History className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="font-medium">Assessment</div>
-                    <div className="font-medium">History</div>
-                  </div>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-32 flex-col gap-3 bg-primary/5 text-primary border-primary/20 hover:bg-primary/10"
-                  onClick={() => navigate('/reports')}
-                >
-                  <FileText className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="font-medium">Reports</div>
-                  </div>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-32 flex-col gap-3 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
-                  onClick={() => navigate('/symptoms')}
-                >
-                  <FileText className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="font-medium">Complete</div>
-                    <div className="font-medium">Assessment</div>
-                  </div>
-                </Button>
-                
-                <Button 
-                  variant="outline" 
-                  className="h-32 flex-col gap-3 bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
-                >
-                  <Activity className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="font-medium">Sync</div>
-                    <div className="font-medium">Wearables</div>
-                  </div>
-                </Button>
-              </div>
-            </div>
-          </div>
+          <p className="text-muted-foreground">Your personalized health dashboard</p>
         </div>
 
-        {/* LIS Chart Section */}
-        <Card className="mb-8 bg-white shadow-sm border border-gray-200">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-gray-900">
-              📊 Weekly Longevity Impact Scores
-            </CardTitle>
-            <CardDescription>
-              Daily scores with 7-day moving average trend line
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={scores} margin={{ top: 50, right: 30, left: 20, bottom: 45 }}>
-                  <CartesianGrid strokeDasharray="2 2" stroke="#e5e7eb" strokeOpacity={0.5} />
-                  <XAxis 
-                    dataKey="date" 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6b7280', dy: 20 }}
-                  />
-                  <YAxis 
-                    domain={[0, 150]} 
-                    tickCount={6} 
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fontSize: 12, fill: '#6b7280' }}
-                    label={{ value: 'LIS Score', angle: -90, position: 'insideLeft' }}
-                  />
-                  <ReferenceLine y={90} stroke="#10b981" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
-                  <ReferenceLine y={70} stroke="#f59e0b" strokeWidth={1} strokeDasharray="3 3" strokeOpacity={0.7} />
-                  <Bar 
-                    dataKey="longevity_impact_score" 
-                    name="Daily LIS Score"
-                    maxBarSize={1}
-                    radius={[0, 0, 0, 0]}
-                  >
-                    {scores.map((entry, index) => (
-                      <Cell key={`bar-cell-${index}`} fill={entry.longevity_impact_score > 90 ? '#10b981' : entry.longevity_impact_score > 70 ? '#f59e0b' : '#f87171'} />
-                    ))}
-                    <LabelList
-                      dataKey="longevity_impact_score"
-                      position="top"
-                      offset={18}
-                      style={{ fontSize: '10px', fill: '#374151', fontWeight: '500' }}
-                      formatter={(value: number) => value.toFixed(0)}
-                    />
-                  </Bar>
-                  <Line 
-                    type="monotone" 
-                    dataKey="moving_average" 
-                    stroke="#6366f1" 
-                    strokeWidth={2.5}
-                    dot={{ fill: '#6366f1', r: 4, strokeWidth: 2, stroke: '#ffffff' }}
-                    activeDot={{ r: 6, strokeWidth: 2, stroke: '#ffffff' }}
-                    name="Cumulative Average"
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-            <div className="flex justify-between items-center mt-4">
-              <div className="flex justify-center gap-6 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span>Good Scores (90+) ({scores.filter(s => s.longevity_impact_score >= 90).length} days)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                  <span>Moderate Scores (70-89) ({scores.filter(s => s.longevity_impact_score >= 70 && s.longevity_impact_score < 90).length} days)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-red-500 rounded"></div>
-                  <span>Low Scores (&lt;70) ({scores.filter(s => s.longevity_impact_score < 70).length} days)</span>
+        {/* Quick Summary Card */}
+        <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
+                  <div className="text-center">
+                    <div className="text-xl font-bold">{data.currentScore}</div>
+                    <div className="text-xs text-muted-foreground">LIS Score</div>
+                  </div>
+                </ProgressCircle>
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">Weekly Trend:</span>
+                    {data.weeklyTrend === 'up' ? (
+                      <div className="flex items-center gap-1 text-green-600">
+                        <TrendingUp className="h-4 w-4" />
+                        <span className="text-sm font-medium">Improving</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-amber-600">
+                        <TrendingDown className="h-4 w-4" />
+                        <span className="text-sm font-medium">Needs attention</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground">
+                    Last assessment: {data.lastAssessment}
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground">
+                    Total assessments: {data.totalAssessments}
+                  </div>
                 </div>
               </div>
+              
               <div className="text-right">
-                <div className="text-sm text-gray-500">Weekly Longevity Score</div>
-                <div className={`text-lg font-bold ${weeklyColor}`}>
-                  {weeklyScore >= 0 ? '+' : ''}{weeklyScore.toFixed(2)}
+                <div className="text-2xl font-bold text-primary mb-1">
+                  {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Health Status
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Longevity Age Projection */}
-        {!projectionLoading && (
-          <div className="mb-8">
-            <LongevityProjection 
-              sustainedLIS={currentScore}
-              dataPoints={dataPoints}
-            />
-          </div>
-        )}
-
-        {/* Longevity Pillars Grid */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Six Longevity Pillars</h2>
-            {!projectionLoading && (
-              <div className="text-sm text-gray-600">
-                Sustained LIS: <span className="font-semibold">{currentScore.toFixed(1)}</span>
-                <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                  currentScore >= 110 ? 'bg-green-100 text-green-700' : 
-                  currentScore >= 90 ? 'bg-blue-100 text-blue-700' : 
-                  'bg-amber-100 text-amber-700'
-                }`}>
-                  {currentScore >= 110 ? 'Excellent' : currentScore >= 90 ? 'Good' : 'Needs Focus'}
-                </span>
+        {/* Primary Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {primaryActions.map((action, index) => (
+            <Button
+              key={action.title}
+              variant={action.variant}
+              onClick={action.onClick}
+              disabled={action.title === 'Sync Wearables' && loading}
+              className={`h-24 p-6 flex items-center gap-4 justify-start text-left ${action.className}`}
+            >
+              <action.icon className="h-6 w-6 shrink-0" />
+              <div className="flex-1">
+                <div className="font-semibold text-base">{action.title}</div>
+                <div className="text-sm opacity-80">{action.subtitle}</div>
               </div>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pillarMetrics.map((metric) => (
-              <Card key={metric.name} className="bg-white shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <metric.icon className={`h-5 w-5 ${metric.color}`} />
-                      <div>
-                        <h3 className="font-medium text-gray-900">{metric.name}</h3>
-                        <p className="text-xs text-gray-500">Weight: {metric.weight}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {metric.trend === "up" ? (
-                        <TrendingUp className="h-4 w-4 text-green-500" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 text-red-500" />
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <ProgressCircle value={metric.value} size="md">
-                      <span className="text-[10px] font-semibold text-gray-900">{Math.round(metric.value)}</span>
-                    </ProgressCircle>
-                    
-                    <div className="text-right">
-                      <div className="text-xs text-gray-500">Longevity Impact</div>
-                      <div className={`text-sm font-medium ${metric.value >= 80 ? 'text-green-600' : metric.value >= 60 ? 'text-blue-600' : 'text-red-600'}`}>
-                        {metric.value >= 80 ? 'Positive' : metric.value >= 60 ? 'Neutral' : 'Negative'}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {metric.trend === "up" ? "+" : "-"}{(Math.random() * 0.3).toFixed(1)}y impact
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          {/* Pillar Improvement Suggestions */}
-          {!projectionLoading && currentScore < 110 && (
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">💡 Longevity Optimization Tips</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-800">
-                <div>
-                  <strong>Sleep Quality:</strong> Aim for 7-8 hours with consistent bedtime
-                </div>
-                <div>
-                  <strong>Physical Activity:</strong> 150+ minutes moderate exercise weekly
-                </div>
-                <div>
-                  <strong>Stress Management:</strong> Daily meditation or mindfulness practice
-                </div>
-                <div>
-                  <strong>Nutrition:</strong> Mediterranean diet with antioxidant-rich foods
-                </div>
-                <div>
-                  <strong>Social Connections:</strong> Regular meaningful social interactions
-                </div>
-                <div>
-                  <strong>Cognitive Engagement:</strong> Learning new skills and mental challenges
-                </div>
-              </div>
-            </div>
-          )}
+            </Button>
+          ))}
         </div>
 
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Card className="text-center p-4">
+            <div className="text-2xl font-bold text-primary mb-1">8</div>
+            <div className="text-xs text-muted-foreground">Assessments</div>
+          </Card>
+          
+          <Card className="text-center p-4">
+            <div className="text-2xl font-bold text-green-600 mb-1">5</div>
+            <div className="text-xs text-muted-foreground">Good Days</div>
+          </Card>
+          
+          <Card className="text-center p-4">
+            <div className="text-2xl font-bold text-amber-600 mb-1">2</div>
+            <div className="text-xs text-muted-foreground">Focus Areas</div>
+          </Card>
+          
+          <Card className="text-center p-4">
+            <div className="text-2xl font-bold text-blue-600 mb-1">72%</div>
+            <div className="text-xs text-muted-foreground">Avg Score</div>
+          </Card>
+        </div>
+
+        {/* Next Steps */}
+        <Card className="bg-muted/30">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Recommended Next Steps</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+              <div className="h-2 w-2 bg-primary rounded-full"></div>
+              <span className="text-sm">Complete your weekly assessment to maintain tracking</span>
+            </div>
+            
+            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+              <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
+              <span className="text-sm">Review your sleep quality patterns in Reports</span>
+            </div>
+            
+            <div className="flex items-center gap-3 p-3 bg-background rounded border">
+              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+              <span className="text-sm">Sync your fitness tracker for more accurate data</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Access Links */}
+        <div className="mt-8 flex flex-wrap gap-4 justify-center">
+          <Button variant="link" onClick={() => navigate('/reports')} className="text-sm">
+            View Detailed Reports →
+          </Button>
+          <Button variant="link" onClick={() => navigate('/nutrition')} className="text-sm">
+            Nutrition Guidance →
+          </Button>
+          <Button variant="link" onClick={() => navigate('/sleep')} className="text-sm">
+            Sleep Optimization →
+          </Button>
+        </div>
       </main>
     </div>
   );
