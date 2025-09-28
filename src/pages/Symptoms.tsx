@@ -58,28 +58,6 @@ const Symptoms = () => {
     }
   };
 
-  const loadAssessmentHistory = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('symptom_assessments')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false });
-
-      if (error) throw error;
-      setAssessmentHistory(data || []);
-    } catch (error) {
-      console.error('Error loading assessment history:', error);
-      toast({
-        variant: "destructive",
-        title: "Error loading assessment history",
-        description: "Please try again later."
-      });
-    }
-  };
-
   const saveUserSymptom = async (symptomId: string, isActive: boolean, severity: string = 'Mild', frequency: string = 'Occasional', notes: string = '') => {
     if (!user) return;
 
@@ -237,303 +215,6 @@ const Symptoms = () => {
           contraindications: ["Pancreatic conditions"]
         }
       ]
-    },
-    {
-      id: "joint-pain",
-      name: "Joint Pain",
-      icon: Bone,
-      severity: "Moderate",
-      frequency: "Daily",
-      actions: [
-        {
-          title: "Curcumin Supplementation",
-          description: "500mg curcumin with black pepper extract twice daily",
-          evidence: "Gold",
-          contraindications: ["Blood thinners", "Gallstones", "Pregnancy"]
-        },
-        {
-          title: "Cold-Heat Contrast Therapy",
-          description: "Alternate between cold and heat therapy for 15 minutes each",
-          evidence: "Silver",
-          contraindications: ["Circulation disorders", "Neuropathy"]
-        },
-        {
-          title: "Omega-3 Loading Protocol",
-          description: "4g high-EPA fish oil daily for inflammation reduction",
-          evidence: "Gold",
-          contraindications: ["Blood thinners", "Fish allergies"]
-        }
-      ]
-    },
-    {
-      id: "brain-fog",
-      name: "Brain Fog",
-      icon: Zap,
-      severity: "Moderate",
-      frequency: "4-5x/week",
-      actions: [
-        {
-          title: "Lion's Mane Mushroom",
-          description: "1000mg standardized extract daily for cognitive support",
-          evidence: "Silver",
-          contraindications: ["Mushroom allergies", "Autoimmune conditions"]
-        },
-        {
-          title: "Cognitive Load Balancing",
-          description: "Time-blocking with 25-minute focused work sessions",
-          evidence: "Bronze",
-          contraindications: ["ADHD without proper management"]
-        },
-        {
-          title: "B-Complex Optimization",
-          description: "High-potency B-complex with methylated B12 and folate",
-          evidence: "Gold",
-          contraindications: ["B12 sensitivity", "Kidney disease"]
-        }
-      ]
-    },
-    {
-      id: "energy-levels",
-      name: "Low Energy",
-      icon: Battery,
-      severity: "High",
-      frequency: "Daily",
-      actions: [
-        {
-          title: "Mitochondrial Support Stack",
-          description: "CoQ10 200mg + PQQ 20mg + Magnesium daily",
-          evidence: "Silver",
-          contraindications: ["Blood pressure medications", "Diabetes medications"]
-        },
-        {
-          title: "Circadian Light Therapy",
-          description: "10,000 lux light therapy for 30 minutes upon waking",
-          evidence: "Gold",
-          contraindications: ["Bipolar disorder", "Eye conditions"]
-        },
-        {
-          title: "Adaptogenic Protocol",
-          description: "Rhodiola 300mg + Ashwagandha 600mg in morning",
-          evidence: "Silver",
-          contraindications: ["Autoimmune conditions", "Nightshade allergies"]
-        }
-      ]
-    },
-    {
-      id: "bloating",
-      name: "Bloating",
-      icon: Wind,
-      severity: "Mild",
-      frequency: "After meals",
-      actions: [
-        {
-          title: "FODMAP Elimination",
-          description: "2-week low-FODMAP protocol followed by systematic reintroduction",
-          evidence: "Gold",
-          contraindications: ["Eating disorders", "Severe malnutrition"]
-        },
-        {
-          title: "Digestive Bitters Protocol",
-          description: "Bitter herbs tincture 15 minutes before each meal",
-          evidence: "Bronze",
-          contraindications: ["Gallstones", "Acid reflux"]
-        },
-        {
-          title: "Abdominal Breathing Practice",
-          description: "Diaphragmatic breathing for 5 minutes before meals",
-          evidence: "Silver",
-          contraindications: ["Recent abdominal surgery"]
-        }
-      ]
-    },
-    {
-      id: "weight-changes",
-      name: "Weight Changes",
-      icon: Scale,
-      severity: "Moderate",
-      frequency: "Gradual",
-      actions: [
-        {
-          title: "Intermittent Fasting 16:8",
-          description: "16-hour fasting window with 8-hour eating period",
-          evidence: "Gold",
-          contraindications: ["Eating disorders", "Type 1 diabetes", "Pregnancy"]
-        },
-        {
-          title: "Resistance Training Protocol",
-          description: "3x/week full-body strength training to preserve muscle mass",
-          evidence: "Gold",
-          contraindications: ["Recent injuries", "Severe joint problems"]
-        },
-        {
-          title: "Protein Timing Optimization",
-          description: "30g protein within 30 minutes of waking and post-workout",
-          evidence: "Silver",
-          contraindications: ["Kidney disease", "Protein allergies"]
-        }
-      ]
-    },
-    {
-      id: "hair-thinning",
-      name: "Hair Thinning",
-      icon: Scissors,
-      severity: "Mild",
-      frequency: "Progressive",
-      actions: [
-        {
-          title: "Scalp Massage with Rosemary Oil",
-          description: "5-minute scalp massage with diluted rosemary oil daily",
-          evidence: "Silver",
-          contraindications: ["Scalp conditions", "Essential oil allergies"]
-        },
-        {
-          title: "Collagen Peptides",
-          description: "10g hydrolyzed collagen peptides daily",
-          evidence: "Bronze",
-          contraindications: ["Collagen allergies"]
-        },
-        {
-          title: "Iron and Ferritin Optimization",
-          description: "Target ferritin 50-70 ng/mL with gentle iron if needed",
-          evidence: "Gold",
-          contraindications: ["Hemochromatosis", "Iron overload"]
-        }
-      ]
-    },
-    {
-      id: "anxiety",
-      name: "Anxiety",
-      icon: Heart,
-      severity: "Variable",
-      frequency: "Daily",
-      actions: [
-        {
-          title: "GABA Support Protocol",
-          description: "L-theanine 200mg + magnesium glycinate 400mg",
-          evidence: "Silver",
-          contraindications: ["Blood pressure medications", "Sedatives"]
-        },
-        {
-          title: "Box Breathing Technique",
-          description: "4-4-4-4 breathing pattern for 10 minutes, 3x daily",
-          evidence: "Gold",
-          contraindications: ["Severe panic disorders", "COPD"]
-        },
-        {
-          title: "Cold Exposure Adaptation",
-          description: "1-2 minute cold shower to build stress resilience",
-          evidence: "Bronze",
-          contraindications: ["Heart conditions", "Raynaud's disease"]
-        }
-      ]
-    },
-    {
-      id: "irregular-periods",
-      name: "Irregular Periods",
-      icon: Calendar,
-      severity: "High",
-      frequency: "Monthly",
-      actions: [
-        {
-          title: "Seed Cycling Protocol",
-          description: "Pumpkin/flax seeds days 1-14, sesame/sunflower days 15-28",
-          evidence: "Bronze",
-          contraindications: ["Seed allergies", "Hormone-sensitive cancers"]
-        },
-        {
-          title: "Vitex (Chasteberry)",
-          description: "400mg standardized extract in morning for cycle regulation",
-          evidence: "Silver",
-          contraindications: ["Pregnancy", "Hormone medications", "IVF"]
-        },
-        {
-          title: "Stress Reduction Protocol",
-          description: "Daily meditation + adaptogenic herbs to lower cortisol",
-          evidence: "Gold",
-          contraindications: ["Autoimmune conditions"]
-        }
-      ]
-    },
-    {
-      id: "headaches",
-      name: "Headaches",
-      icon: Headphones,
-      severity: "Moderate",
-      frequency: "2-3x/week",
-      actions: [
-        {
-          title: "Magnesium Malate",
-          description: "400mg twice daily for migraine prevention",
-          evidence: "Gold",
-          contraindications: ["Kidney disease", "Heart block"]
-        },
-        {
-          title: "Hydration Optimization",
-          description: "Add electrolytes to water, drink 35ml/kg body weight daily",
-          evidence: "Silver",
-          contraindications: ["Heart failure", "Kidney disease"]
-        },
-        {
-          title: "Neck and Jaw Release",
-          description: "Daily myofascial release of trigger points",
-          evidence: "Bronze",
-          contraindications: ["Recent neck injuries", "Cervical instability"]
-        }
-      ]
-    },
-    {
-      id: "night-sweats",
-      name: "Night Sweats",
-      icon: Droplets,
-      severity: "High",
-      frequency: "Nightly",
-      actions: [
-        {
-          title: "Black Cohosh Extract",
-          description: "40mg standardized extract twice daily",
-          evidence: "Silver",
-          contraindications: ["Liver disease", "Hormone-sensitive conditions"]
-        },
-        {
-          title: "Cooling Sleep Environment",
-          description: "Room temperature 18-20°C with moisture-wicking bedding",
-          evidence: "Bronze",
-          contraindications: ["Circulation disorders"]
-        },
-        {
-          title: "Evening Primrose Oil",
-          description: "1000mg with evening meal for hormonal balance",
-          evidence: "Bronze",
-          contraindications: ["Seizure disorders", "Blood thinners"]
-        }
-      ]
-    },
-    {
-      id: "memory-issues",
-      name: "Memory Issues",
-      icon: BookOpen,
-      severity: "Mild",
-      frequency: "Daily",
-      actions: [
-        {
-          title: "Phosphatidylserine",
-          description: "100mg phosphatidylserine complex daily",
-          evidence: "Silver",
-          contraindications: ["Blood thinners", "Soy allergies"]
-        },
-        {
-          title: "Dual N-Back Training",
-          description: "15 minutes daily cognitive training app",
-          evidence: "Bronze",
-          contraindications: ["Severe cognitive impairment"]
-        },
-        {
-          title: "Alpha-GPC Supplementation",
-          description: "300mg alpha-GPC on empty stomach",
-          evidence: "Silver",
-          contraindications: ["Acetylcholine sensitivity", "TMAO concerns"]
-        }
-      ]
     }
   ];
 
@@ -584,230 +265,26 @@ const Symptoms = () => {
     return userSymptom?.is_active || false;
   };
 
-  const getEvidenceBadgeClass = (evidence: string) => {
-    switch (evidence) {
-      case "Gold": return "evidence-gold";
-      case "Silver": return "evidence-silver"; 
-      case "Bronze": return "evidence-bronze";
-      default: return "evidence-bronze";
-    }
+  // Toggle symptom tracking
+  const toggleSymptom = async (symptomId: string, isActive: boolean) => {
+    await saveUserSymptom(symptomId, isActive);
   };
 
-  // Filter and sort assessment history
-  const getFilteredAssessments = () => {
-    let filtered = assessmentHistory;
-    
-    if (filterSymptom !== 'all') {
-      filtered = filtered.filter(assessment => assessment.symptom_type === filterSymptom);
-    }
-    
-    return filtered.sort((a, b) => {
-      const dateA = new Date(a.completed_at).getTime();
-      const dateB = new Date(b.completed_at).getTime();
-      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-    });
-  };
-
-  const getSymptomName = (id: string) => {
-    const nameMap: Record<string, string> = {
-      "hot-flashes": "Hot Flashes",
-      "sleep": "Sleep Issues", 
-      "joint-pain": "Joint Pain",
-      "brain-fog": "Brain Fog",
-      "energy-levels": "Low Energy",
-      "bloating": "Bloating",
-      "weight-changes": "Weight Changes", 
-      "hair-thinning": "Hair Thinning",
-      "anxiety": "Anxiety",
-      "irregular-periods": "Irregular Periods",
-      "headaches": "Headaches",
-      "night-sweats": "Night Sweats",
-      "memory-issues": "Memory Issues",
-      "gut": "Gut Health"
-    };
-    return nameMap[id] || id;
-  };
-
-  const getSymptomIcon = (symptomType: string) => {
-    const iconMap: Record<string, any> = {
-      "sleep": Moon,
-      "brain-fog": Brain,
-      "memory-issues": Brain,
-      "hot-flashes": Thermometer,
-      "night-sweats": Thermometer,
-      "joint-pain": Bone,
-      "energy-levels": Battery,
-      "weight-changes": Scale,
-      "anxiety": Heart,
-      "gut": UtensilsCrossed,
-      "bloating": Wind
-    };
-    return iconMap[symptomType] || FileText;
-  };
-
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600"; 
-    if (score >= 40) return "text-orange-600";
-    return "text-red-600";
-  };
-
-  const getScoreBadgeColor = (category: string) => {
-    switch (category) {
-      case 'excellent': return "bg-green-100 text-green-800";
-      case 'good': return "bg-blue-100 text-blue-800";
-      case 'fair': return "bg-yellow-100 text-yellow-800";
-      case 'poor': return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  // History Content Component
-  const HistoryContent = ({ assessments, symptoms, onViewAssessment }: {
-    assessments: any[];
-    symptoms: any[];
-    onViewAssessment: (assessment: any) => void;
-  }) => {
-    if (assessments.length === 0) {
-      return (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Assessments Found</h3>
-            <p className="text-muted-foreground mb-4">
-              {filterSymptom !== 'all' 
-                ? `No assessments found for ${getSymptomName(filterSymptom)}.`
-                : 'You haven\'t completed any assessments yet.'
-              }
-            </p>
-            <Button onClick={() => navigate('/symptoms')}>
-              Complete Your First Assessment
-            </Button>
-          </CardContent>
-        </Card>
-      );
-    }
-
+  if (loading) {
     return (
-      <div className="space-y-4">
-        {assessments.map((assessment) => {
-          const SymptomIcon = getSymptomIcon(assessment.symptom_type);
-          
-          return (
-            <Card 
-              key={assessment.id} 
-              className="hover:shadow-md transition-shadow border-l-4 border-l-primary/20 hover:border-l-primary cursor-pointer"
-              onClick={() => onViewAssessment(assessment)}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <SymptomIcon className="h-5 w-5 text-primary" />
-                    <div>
-                      <CardTitle className="text-lg">
-                        {getSymptomName(assessment.symptom_type)}
-                      </CardTitle>
-                      <CardDescription>
-                        {new Date(assessment.completed_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </CardDescription>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`text-2xl font-bold ${getScoreColor(assessment.overall_score)}`}>
-                      {assessment.overall_score}
-                    </div>
-                    <Badge className={getScoreBadgeColor(assessment.score_category)}>
-                      {assessment.score_category}
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              
-              {assessment.primary_issues && assessment.primary_issues.length > 0 && (
-                <CardContent className="pt-0">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">Primary Concerns:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {assessment.primary_issues.map((issue: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {issue}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          );
-        })}
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading symptoms...</p>
+            </div>
+          </div>
+        </main>
       </div>
     );
-  };
-
-  const generateGPChecklist = () => {
-    const checklist = `
-GP CONSULTATION CHECKLIST - ${currentSymptom?.name.toUpperCase()}
-
-Patient: _________________ Date: _________________
-
-CURRENT SYMPTOMS:
-□ ${currentSymptom?.name} - Severity: ${currentSymptom?.severity}, Frequency: ${currentSymptom?.frequency}
-□ Duration: _________________ 
-□ Triggers identified: _________________
-□ Impact on daily life: _________________
-
-CURRENT INTERVENTIONS (Patient is trying):
-${currentSymptom?.actions.map(action => `□ ${action.title} - ${action.evidence} evidence level`).join('\n')}
-
-ASSESSMENT NEEDED:
-□ Hormone levels (FSH, LH, Estradiol, Testosterone)
-□ Thyroid function (TSH, T3, T4)
-□ Vitamin D, B12, Iron studies
-□ Cardiovascular risk assessment
-□ Bone density screening (if appropriate)
-
-DISCUSSION POINTS:
-□ HRT suitability and options
-□ Evidence-based natural approaches
-□ Safety of current interventions
-□ Contraindications review
-□ Follow-up timeline
-
-NOTES:
-_________________________________
-_________________________________
-_________________________________
-
-Generated by Biohackher - Women's Longevity Coach
-    `;
-    
-    // Create printable version
-    const printWindow = window.open('', '_blank');
-    printWindow?.document.write(`
-      <html>
-        <head>
-          <title>GP Checklist - ${currentSymptom?.name}</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-            h1 { color: #2c5f5d; margin-bottom: 20px; }
-            .checkbox { margin: 5px 0; }
-            .section { margin: 20px 0; }
-          </style>
-        </head>
-        <body>
-          <pre>${checklist}</pre>
-        </body>
-      </html>
-    `);
-    printWindow?.document.close();
-    printWindow?.print();
-  };
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -832,66 +309,29 @@ Generated by Biohackher - Women's Longevity Coach
           
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2 gradient-text">
-                {viewMode === 'history' ? 'Assessment History' : 'Symptom Assessment'}
-              </h1>
+              <h1 className="text-3xl font-bold mb-2 gradient-text">Symptom Assessment</h1>
               <p className="text-muted-foreground">
-                {viewMode === 'history' 
-                  ? 'Review your completed assessments and track progress over time'
-                  : (referrer === 'dashboard' ? 'View your completed assessments and track progress over time' : 'Select a symptom to begin your personalized assessment')
-                }
+                Select a symptom to begin your personalized assessment
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {viewMode === 'history' ? (
-                // History view controls
-                <>
-                  <Select value={filterSymptom} onValueChange={setFilterSymptom}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Filter by symptom" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Symptoms</SelectItem>
-                      {symptoms.map((symptom) => (
-                        <SelectItem key={symptom.id} value={symptom.id}>
-                          {symptom.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select value={sortOrder} onValueChange={(value: 'newest' | 'oldest') => setSortOrder(value)}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="newest">Newest First</SelectItem>
-                      <SelectItem value="oldest">Oldest First</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </>
-              ) : (
-                // Assessment view controls
-                <>
-                  <Button
-                    onClick={() => navigate('/assessment-history')}
-                    variant="outline"
-                    className="flex items-center gap-2"
-                  >
-                    <History className="h-4 w-4" />
-                    View History
-                  </Button>
-                  {user && (
-                    <Button
-                      variant={isCustomizing ? "default" : "outline"}
-                      onClick={() => setIsCustomizing(!isCustomizing)}
-                      className="flex items-center gap-2"
-                    >
-                      <Settings className="h-4 w-4" />
-                      {isCustomizing ? "Done" : "Customize"}
-                    </Button>
-                  )}
-                </>
+              <Button
+                onClick={() => navigate('/assessment-history')}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <History className="h-4 w-4" />
+                View History
+              </Button>
+              {user && (
+                <Button
+                  variant={isCustomizing ? "default" : "outline"}
+                  onClick={() => setIsCustomizing(!isCustomizing)}
+                  className="flex items-center gap-2"
+                >
+                  <Settings className="h-4 w-4" />
+                  {isCustomizing ? "Done" : "Customize"}
+                </Button>
               )}
             </div>
           </div>
@@ -904,50 +344,6 @@ Generated by Biohackher - Women's Longevity Coach
           </div>
         </div>
 
-        {/* History View Content */}
-        {viewMode === 'history' && (
-          <div className="mb-8">
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Loading assessment history...</p>
-                </div>
-              </div>
-            ) : (
-              <HistoryContent 
-                assessments={getFilteredAssessments()} 
-                symptoms={symptoms}
-                onViewAssessment={(assessment) => {
-                  const params = new URLSearchParams();
-                  if (assessment.answers) {
-                    Object.entries(assessment.answers).forEach(([key, value]) => {
-                      params.append(`q${key}`, value as string);
-                    });
-                  }
-                  navigate(`/assessment/${assessment.symptom_type}/results?${params.toString()}`);
-                }}
-              />
-            )}
-          </div>
-        )}
-
-        {/* Regular Assessment View Content */}
-        {viewMode !== 'history' && (
-          <>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-              <p className="text-sm text-blue-800">
-                <strong>📚 Educational Information:</strong> This content presents commonly used complementary treatments and approaches. 
-                It is for educational purposes only and does not constitute medical advice. 
-                Always consult with qualified healthcare professionals for personalized guidance.
-              </p>
-            </div>
-          </>
-        )}
-
-        {/* Regular Assessment View Content - Customization Panel and Symptom Selection */}
-        {viewMode !== 'history' && (
-          <>
         {/* Customization Panel */}
         {isCustomizing && user && (
           <div className="mb-8">
@@ -958,76 +354,33 @@ Generated by Biohackher - Women's Longevity Coach
                   Customize Your Symptoms
                 </CardTitle>
                 <CardDescription>
-                  Select the symptoms you're experiencing and adjust their severity and frequency
+                  Add or remove symptoms from your profile to customize your tracking.
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {symptoms.map((symptom) => {
-                    const userSymptom = getUserSymptomData(symptom.id);
-                    const isActive = isSymptomActive(symptom.id);
+                    const isTracked = isSymptomActive(symptom.id);
                     
                     return (
-                      <Card key={symptom.id} className={`${isActive ? 'border-primary' : ''}`}>
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <symptom.icon className="h-4 w-4" />
-                              <span className="font-medium text-sm">{symptom.name}</span>
-                            </div>
-                            <Switch
-                              checked={isActive}
-                              onCheckedChange={(checked) => 
-                                saveUserSymptom(symptom.id, checked, userSymptom?.severity || 'Mild', userSymptom?.frequency || 'Occasional', userSymptom?.notes || '')
-                              }
-                            />
+                      <Card 
+                        key={symptom.id} 
+                        className={`p-4 cursor-pointer transition-colors ${
+                          isTracked 
+                            ? 'bg-primary/10 border-primary/20 hover:bg-primary/20' 
+                            : 'hover:bg-muted/50'
+                        }`}
+                        onClick={() => toggleSymptom(symptom.id, !isTracked)}
+                      >
+                        <div className="flex flex-col items-center text-center gap-2">
+                          <symptom.icon className={`h-6 w-6 ${isTracked ? 'text-primary' : 'text-muted-foreground'}`} />
+                          <span className={`text-sm font-medium ${isTracked ? 'text-primary' : 'text-muted-foreground'}`}>
+                            {symptom.name}
+                          </span>
+                          <div className="text-xs text-muted-foreground">
+                            {isTracked ? 'Tracking' : 'Click to track'}
                           </div>
-                          
-                          {isActive && (
-                            <div className="space-y-3">
-                              <div>
-                                <Label className="text-xs">Severity</Label>
-                                <Select 
-                                  value={userSymptom?.severity || 'Mild'}
-                                  onValueChange={(value) => 
-                                    saveUserSymptom(symptom.id, true, value, userSymptom?.frequency || 'Occasional', userSymptom?.notes || '')
-                                  }
-                                >
-                                  <SelectTrigger className="h-8">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Mild">Mild</SelectItem>
-                                    <SelectItem value="Moderate">Moderate</SelectItem>
-                                    <SelectItem value="High">High</SelectItem>
-                                    <SelectItem value="Severe">Severe</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              
-                              <div>
-                                <Label className="text-xs">Frequency</Label>
-                                <Select 
-                                  value={userSymptom?.frequency || 'Occasional'}
-                                  onValueChange={(value) => 
-                                    saveUserSymptom(symptom.id, true, userSymptom?.severity || 'Mild', value, userSymptom?.notes || '')
-                                  }
-                                >
-                                  <SelectTrigger className="h-8">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="Rare">Rare</SelectItem>
-                                    <SelectItem value="Occasional">Occasional</SelectItem>
-                                    <SelectItem value="Weekly">Weekly</SelectItem>
-                                    <SelectItem value="Daily">Daily</SelectItem>
-                                    <SelectItem value="Multiple times daily">Multiple times daily</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </div>
-                          )}
-                        </CardContent>
+                        </div>
                       </Card>
                     );
                   })}
@@ -1050,21 +403,27 @@ Generated by Biohackher - Women's Longevity Coach
                     <input
                       type="radio"
                       id={`assessed-${symptom.id}`}
-                      name="assessed-symptom"
+                      name="selected-symptom"
                       value={symptom.id}
+                      checked={selectedSymptom === symptom.id}
+                      onChange={() => handleSymptomSelect(symptom.id)}
                       className="sr-only"
                     />
                     <label
                       htmlFor={`assessed-${symptom.id}`}
-                      className="cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full max-w-[140px] border-primary bg-primary/10 hover:bg-primary/20"
-                      onClick={() => handleSymptomSelect(symptom.id)}
+                      className={`w-full max-w-[120px] p-4 rounded-lg border-2 cursor-pointer transition-all text-center ${
+                        selectedSymptom === symptom.id
+                          ? 'border-primary bg-primary/10 shadow-lg scale-105'
+                          : 'border-gray-200 hover:border-primary/50 hover:shadow-md'
+                      }`}
                     >
-                      <symptom.icon className="h-8 w-8 mb-3 text-primary" />
-                      <span className="text-sm font-medium text-center leading-tight text-foreground mb-2">
-                        {symptom.name}
-                      </span>
-                      <Badge variant="default" className="text-xs">
-                        View
+                      <symptom.icon className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <div className="text-sm font-medium mb-1">{symptom.name}</div>
+                      <div className="text-xs text-muted-foreground mb-2">
+                        {userSymptom?.severity} • {userSymptom?.frequency}
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        Active
                       </Badge>
                     </label>
                   </div>
@@ -1074,59 +433,43 @@ Generated by Biohackher - Women's Longevity Coach
           </div>
         )}
 
-        {/* Available Symptoms Assessment Section */}
+        {/* Available Symptoms Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-center mb-6">
-            Available Symptom Assessments
+          <h2 className="text-2xl font-semibold mb-6">
+            {user && assessedSymptoms.length > 0 ? "Available Assessments" : "Symptom Assessments"}
           </h2>
-          
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {availableSymptoms.map((symptom) => {
-              return (
-                <div key={symptom.id} className="flex flex-col items-center">
-                  <input
-                    type="radio"
-                    id={symptom.id}
-                    name="symptom"
-                    value={symptom.id}
-                    checked={selectedSymptom === symptom.id}
-                    onChange={() => setSelectedSymptom(symptom.id)}
-                    className="sr-only"
-                  />
-                  <label
-                    htmlFor={symptom.id}
-                    className={`cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full max-w-[140px] ${
-                      selectedSymptom === symptom.id
-                        ? 'border-primary bg-primary/20 shadow-lg'
-                        : 'border-primary bg-primary/10 hover:bg-primary/20'
-                    }`}
-                    onClick={() => handleSymptomSelect(symptom.id)}
-                  >
-                    <symptom.icon className="h-8 w-8 mb-3 text-primary" />
-                    <span className="text-sm font-medium text-center leading-tight mb-2 text-foreground">
-                      {symptom.name}
-                    </span>
-                    <Badge variant="default" className="text-xs">
-                      Assess
-                    </Badge>
-                  </label>
-                </div>
-              );
-            })}
+            {availableSymptoms.map((symptom) => (
+              <div key={symptom.id} className="flex flex-col items-center">
+                <input
+                  type="radio"
+                  id={symptom.id}
+                  name="selected-symptom"
+                  value={symptom.id}
+                  checked={selectedSymptom === symptom.id}
+                  onChange={() => handleSymptomSelect(symptom.id)}
+                  className="sr-only"
+                />
+                <label
+                  htmlFor={symptom.id}
+                  className={`w-full max-w-[120px] p-4 rounded-lg border-2 cursor-pointer transition-all text-center ${
+                    selectedSymptom === symptom.id
+                      ? 'border-primary bg-primary/10 shadow-lg scale-105'
+                      : 'border-gray-200 hover:border-primary/50 hover:shadow-md'
+                  }`}
+                >
+                  <symptom.icon className="h-8 w-8 mx-auto mb-2 text-primary" />
+                  <div className="text-sm font-medium mb-1">{symptom.name}</div>
+                  <div className="text-xs text-muted-foreground mb-2">
+                    {symptom.severity} • {symptom.frequency}
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    Start Assessment
+                  </Badge>
+                </label>
+              </div>
+            ))}
           </div>
-          
-          {user && availableSymptoms.length === 0 && !isCustomizing && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">All available symptoms have been assessed</p>
-              <Button
-                onClick={() => setIsCustomizing(true)}
-                className="flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Manage Symptoms
-              </Button>
-            </div>
-          )}
         </div>
       </main>
 
