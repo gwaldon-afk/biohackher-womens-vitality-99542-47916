@@ -21,6 +21,15 @@ const Pillars = () => {
   const { addToCart } = useCart();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
 
+  // Check for pillar parameter in URL and auto-select
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pillarParam = urlParams.get('pillar');
+    if (pillarParam && pillars[pillarParam as keyof typeof pillars]) {
+      setSelectedPillar(pillarParam);
+    }
+  }, []);
+
   // Mock user assessment data - in real app this would come from user profile
   const userAssessments = {
     brain: { completed: false, lastTaken: null },

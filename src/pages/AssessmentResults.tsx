@@ -186,6 +186,23 @@ const AssessmentResults = () => {
     return nameMap[id] || id;
   };
 
+  const isPillarAssessment = symptomId?.includes('-');
+  const pillarName = isPillarAssessment ? symptomId?.split('-')[0] : null;
+  
+  const getBackRoute = () => {
+    if (isPillarAssessment && pillarName) {
+      return `/pillars?pillar=${pillarName}`;
+    }
+    return '/symptoms';
+  };
+
+  const getBackText = () => {
+    if (isPillarAssessment && pillarName) {
+      return `Back to ${pillarName.charAt(0).toUpperCase() + pillarName.slice(1)} Pillar`;
+    }
+    return 'Back to Symptoms';
+  };
+
   const calculateScore = (symptomType: string, answers: Record<string, string>): AssessmentScore => {
     switch (symptomType) {
       case 'sleep':
@@ -1403,11 +1420,11 @@ const AssessmentResults = () => {
         <div className="mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/symptoms')}
+            onClick={() => navigate(getBackRoute())}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Symptoms
+            {getBackText()}
           </Button>
           
           <div className="text-center mb-8">
@@ -2006,9 +2023,9 @@ const AssessmentResults = () => {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => navigate('/symptoms')}
+              onClick={() => navigate(getBackRoute())}
             >
-              View All Symptoms
+              {getBackText()}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">

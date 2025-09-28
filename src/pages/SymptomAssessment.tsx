@@ -636,6 +636,23 @@ const SymptomAssessment = () => {
     return nameMap[id] || id;
   };
 
+  const isPillarAssessment = symptomId?.includes('-');
+  const pillarName = isPillarAssessment ? symptomId?.split('-')[0] : null;
+  
+  const getBackRoute = () => {
+    if (isPillarAssessment && pillarName) {
+      return `/pillars?pillar=${pillarName}`;
+    }
+    return '/symptoms';
+  };
+
+  const getBackText = () => {
+    if (isPillarAssessment && pillarName) {
+      return `Back to ${pillarName.charAt(0).toUpperCase() + pillarName.slice(1)} Pillar`;
+    }
+    return 'Back to Symptoms';
+  };
+
   if (!symptomId || questions.length === 0) {
     return (
       <div className="min-h-screen bg-background">
@@ -646,9 +663,9 @@ const SymptomAssessment = () => {
             <p className="text-muted-foreground mb-6">
               This symptom assessment is not yet available.
             </p>
-            <Button onClick={() => navigate('/symptoms')}>
+            <Button onClick={() => navigate(getBackRoute())}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Symptoms
+              {getBackText()}
             </Button>
           </div>
         </main>
@@ -696,11 +713,11 @@ const SymptomAssessment = () => {
         <div className="mb-6">
           <Button 
             variant="ghost" 
-            onClick={() => navigate('/symptoms')}
+            onClick={() => navigate(getBackRoute())}
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Symptoms
+            {getBackText()}
           </Button>
           
           <div className="text-center mb-8">
