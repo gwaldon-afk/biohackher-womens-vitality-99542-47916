@@ -437,7 +437,7 @@ const Sleep = () => {
           <Tabs defaultValue="routines" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="routines">Sleep Routines</TabsTrigger>
-              <TabsTrigger value="supplements">Sleep Support</TabsTrigger>
+              <TabsTrigger value="supplements">Sleep Supplements</TabsTrigger>
               <TabsTrigger value="tracking">Sleep Metrics</TabsTrigger>
             </TabsList>
             
