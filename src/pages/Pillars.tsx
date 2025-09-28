@@ -38,22 +38,41 @@ const Pillars = () => {
         }
       ],
       biohacks: [
-        "Cold exposure therapy for cognitive enhancement",
-        "Intermittent fasting for brain optimization",
-        "Red light therapy for neural function",
-        "Breathwork techniques for mental clarity"
+        // Cognitive Enhancement
+        "Learning new languages (increases neuroplasticity)",
+        "Playing musical instruments (enhances working memory)",
+        "Social engagement & meaningful relationships",
+        "Reading fiction (improves empathy and cognitive flexibility)",
+        "Meditation & mindfulness practices (8-12 minutes daily)",
+        "Cold exposure therapy (2-11 minutes, 50-59°F)",
+        "Intermittent fasting (14-16 hour windows)",
+        "Blue light blocking 2 hours before sleep",
+        "Morning sunlight exposure (10-30 minutes)",
+        "Dual N-back cognitive training games",
+        "Breathwork (4-7-8 breathing, box breathing)",
+        "Quality sleep (7-9 hours, consistent schedule)",
+        "Regular aerobic exercise (Zone 2 cardio)",
+        "Limiting multi-tasking to improve focus"
       ],
       supplements: [
-        "Nootropic stacks for cognitive enhancement",
-        "Omega-3 fatty acids for brain health",
-        "Magnesium for neurotransmitter support",
-        "B-complex vitamins for mental energy"
+        "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
+        "Magnesium glycinate (200-400mg before bed)", 
+        "B-complex vitamins for neurotransmitter support",
+        "Lion's Mane mushroom (500-1000mg)",
+        "Rhodiola rosea for stress adaptation",
+        "Phosphatidylserine for memory",
+        "Alpha-GPC for acetylcholine support",
+        "Creatine monohydrate (3-5g daily)"
       ],
       therapies: [
-        "Neurofeedback training",
-        "Cognitive behavioral therapy",
-        "Meditation and mindfulness practices",
-        "Sleep optimization protocols"
+        "Neurofeedback training protocols",
+        "Transcranial direct current stimulation (tDCS)",
+        "Cognitive behavioral therapy (CBT)",
+        "Hyperbaric oxygen therapy",
+        "Red light therapy for mitochondrial function",
+        "Flotation tank sessions for deep relaxation",
+        "Binaural beats for focus (40Hz gamma waves)",
+        "Sleep optimization coaching"
       ],
       content: {
         overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
@@ -81,22 +100,41 @@ const Pillars = () => {
         }
       ],
       biohacks: [
-        "High-intensity interval training protocols",
-        "Strength training for longevity",
-        "Movement optimization techniques",
-        "Recovery and regeneration protocols"
+        // Physical Performance & Longevity
+        "Zone 2 cardio training (180-heart rate in BPM)",
+        "Strength training 3-4x/week (compound movements)",
+        "Mobility work & dynamic stretching daily",
+        "Heat exposure: Sauna 4x/week (174-212°F, 20 min)",
+        "Cold plunge therapy (50-59°F, 2-11 minutes)",
+        "Protein timing: 25-40g within 2 hours post-workout",
+        "Morning movement routine (5-10 minutes)",
+        "Walking 8,000-10,000 steps daily",
+        "Proper hydration with electrolytes",
+        "Recovery tracking (HRV, sleep quality)",
+        "Resistance band exercises for activation",
+        "Functional movement patterns",
+        "Progressive overload in training",
+        "Active recovery days (yoga, walking)"
       ],
       supplements: [
-        "Protein powders for muscle maintenance",
-        "Creatine for strength and power",
-        "Collagen for joint health",
-        "Electrolytes for hydration optimization"
+        "Whey or plant protein (20-40g post-workout)",
+        "Creatine monohydrate (3-5g daily)",
+        "Collagen peptides (10-20g for joints)",
+        "Vitamin D3 + K2 (2000-4000 IU D3)",
+        "Magnesium (glycinate or citrate, 200-400mg)",
+        "Omega-3 fish oil (1-3g EPA/DHA)",
+        "Electrolyte replacement (sodium, potassium)",
+        "CoQ10 for mitochondrial support (100-200mg)"
       ],
       therapies: [
-        "Physical therapy and movement screening",
-        "Massage and soft tissue work",
-        "Cryotherapy and heat therapy",
-        "Functional movement assessment"
+        "Physical therapy movement assessment",
+        "Deep tissue massage (weekly/bi-weekly)",
+        "Cryotherapy sessions",
+        "Compression therapy for recovery",
+        "PEMF (Pulsed Electromagnetic Field) therapy",
+        "Infrared sauna sessions",
+        "Myofascial release techniques",
+        "Functional movement screening"
       ],
       content: {
         overview: "Maintain peak physical performance and combat aging with cutting-edge body optimization techniques. From strength training to metabolic enhancement.",
@@ -124,22 +162,41 @@ const Pillars = () => {
         }
       ],
       biohacks: [
-        "Meditation and mindfulness practices",
-        "Stress reduction breathing techniques",
-        "Hormonal optimization protocols",
-        "Circadian rhythm regulation"
+        // Stress Management & Hormonal Optimization
+        "Cortisol regulation through morning sunlight (10-30 min)",
+        "Stress-reducing breathwork (4-7-8, box breathing)",
+        "Adaptogenic herb protocols (ashwagandha, rhodiola)",
+        "Hormonal cycle tracking & optimization",
+        "Sleep hygiene for hormone production",
+        "Magnesium for nervous system support",
+        "Regular meal timing (avoid late-night eating)",
+        "Social connection & community building",
+        "Yoga & gentle movement practices",
+        "Journaling for emotional regulation",
+        "Forest bathing & nature therapy",
+        "Limiting caffeine after 2 PM",
+        "Digital detox periods",
+        "Gratitude practice (3 things daily)"
       ],
       supplements: [
-        "Adaptogenic herbs for stress management",
-        "Magnesium for relaxation and sleep",
-        "Ashwagandha for cortisol regulation",
-        "GABA for nervous system support"
+        "Ashwagandha (300-600mg for cortisol regulation)",
+        "Magnesium glycinate (200-400mg for relaxation)",
+        "GABA (500-750mg for nervous system support)",
+        "L-theanine (200mg for calm focus)",
+        "Rhodiola rosea (200-400mg for stress adaptation)",
+        "Phosphatidylserine (100mg for cortisol management)",
+        "B-complex for neurotransmitter support",
+        "Omega-3s for inflammation reduction"
       ],
       therapies: [
-        "Hormone replacement therapy consultation",
-        "Stress management counseling",
-        "Acupuncture for balance",
-        "Yoga and movement therapy"
+        "Hormone testing & optimization protocols",
+        "Stress management counseling & CBT",
+        "Acupuncture for nervous system balance",
+        "Massage therapy for stress reduction",
+        "Yoga therapy & mindful movement",
+        "HRV training for autonomic balance",
+        "Light therapy for circadian rhythm support",
+        "Meditation & mindfulness training"
       ],
       content: {
         overview: "Find your equilibrium through stress management, hormonal optimization, and mindfulness practices. Create lasting balance in your daily life.",
@@ -167,22 +224,41 @@ const Pillars = () => {
         }
       ],
       biohacks: [
-        "Red light therapy for skin rejuvenation",
-        "Facial massage and lymphatic drainage",
-        "Collagen synthesis optimization",
-        "UV protection and antioxidant protocols"
+        // Evidence-Based Beauty & Anti-Aging
+        "Red light therapy (660-850nm, 10-20 min daily)",
+        "Facial massage & lymphatic drainage",
+        "Collagen synthesis optimization through Vitamin C",
+        "UV protection with broad-spectrum SPF 30+",
+        "Retinol/retinoid usage (start 2-3x/week)",
+        "Hydration optimization (half body weight in oz)",
+        "Sleep on silk pillowcases for skin/hair health",
+        "Facial exercises for muscle tone",
+        "Antioxidant-rich diet (berries, leafy greens)",
+        "Limiting sugar intake (glycation damages collagen)",
+        "Cold water face rinses for circulation",
+        "Dry brushing for lymphatic circulation",
+        "Stress management (cortisol ages skin)",
+        "Regular exercise for increased blood flow"
       ],
       supplements: [
-        "Collagen peptides for skin elasticity",
-        "Vitamin C for antioxidant protection",
-        "Hyaluronic acid for hydration",
-        "Biotin and zinc for hair and nails"
+        "Collagen peptides (10-20g daily, types I & III)",
+        "Vitamin C (1000mg for collagen synthesis)",
+        "Hyaluronic acid (100-200mg for hydration)",
+        "Biotin & zinc for hair/nail health",
+        "Astaxanthin (4-8mg for UV protection)",
+        "Marine omega-3s for skin inflammation",
+        "NAD+ precursors for cellular repair",
+        "Resveratrol for antioxidant protection"
       ],
       therapies: [
-        "Professional skincare treatments",
-        "Dermatological consultations",
-        "Aesthetic procedures guidance",
-        "Nutrition counseling for beauty"
+        "Professional LED light therapy treatments",
+        "Microneedling for collagen induction",
+        "Chemical peels (glycolic, lactic acid)",
+        "Dermatological skin analysis & treatment",
+        "Professional lymphatic drainage massage",
+        "Aesthetic consultations for personalized care",
+        "Nutrition counseling for skin health",
+        "Hormone optimization for skin aging"
       ],
       content: {
         overview: "Achieve radiant beauty from within using advanced anti-aging protocols, skincare innovations, and holistic beauty practices.",
