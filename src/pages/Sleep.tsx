@@ -604,6 +604,16 @@ const Sleep = () => {
                     <p className="text-sm text-muted-foreground">18% of total sleep</p>
                   </CardContent>
                 </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">REM Sleep</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold mb-2">1h 54m</div>
+                    <p className="text-sm text-muted-foreground">25% of total sleep</p>
+                  </CardContent>
+                </Card>
               </div>
             </TabsContent>
           </Tabs>
