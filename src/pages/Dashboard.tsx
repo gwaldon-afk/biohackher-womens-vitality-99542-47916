@@ -463,7 +463,7 @@ const Dashboard = () => {
                 >
                   <FileText className="h-6 w-6" />
                   <div className="text-center">
-                    <div className="font-medium">Take</div>
+                    <div className="font-medium">Complete</div>
                     <div className="font-medium">Assessment</div>
                   </div>
                 </Button>
