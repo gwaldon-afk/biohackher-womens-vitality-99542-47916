@@ -720,6 +720,7 @@ const AssessmentResults = () => {
   const generateJointPainRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     const recs: Recommendation[] = [];
 
+    // Always include core joint pain recommendations
     recs.push({
       title: "Joint Support Supplements",
       description: "Supplements that may assist in addressing joint discomfort and supporting long-term joint health and mobility.",
@@ -734,35 +735,80 @@ const AssessmentResults = () => {
         { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
       ],
       analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-      improvement: "General recommended dosages are 500-1000mg curcumin with black pepper (bioperine) and 2-3g omega-3 fish oil daily with meals. Choose high-quality fish oil with EPA:DHA ratio of 2:1. Apply heat therapy for 15 minutes followed by cold therapy for 10 minutes. For your specific recommended dosage, consult a healthcare professional.",
+      improvement: "General recommended dosages are 500-1000mg curcumin with black pepper (bioperine) and 2-3g omega-3 fish oil daily with meals. Choose high-quality fish oil with EPA:DHA ratio of 2:1. For your specific recommended dosage, consult a healthcare professional.",
       timeline: "Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation. If joint pain symptoms persist or worsen, consult a healthcare provider."
     });
 
+    // Always include movement routine
+    recs.push({
+      title: "Daily Joint Mobility Routine",
+      description: "Gentle daily exercises focusing on range of motion, flexibility, and low-impact strengthening to maintain joint health.",
+      priority: 'high',
+      category: 'routine',
+      icon: Activity,
+      analysis: "Regular, gentle movement prevents joint stiffness and maintains synovial fluid production, which lubricates joints naturally.",
+      improvement: "Start with 10-15 minutes daily of gentle stretching, range of motion exercises, and light strengthening. Progress gradually.",
+      timeline: "Joint mobility improvements typically seen within 1-2 weeks of consistent practice"
+    });
+
+    // Always include ergonomic environment
+    recs.push({
+      title: "Joint-Friendly Environment Setup",
+      description: "Optimize your living and work spaces to reduce joint stress with proper ergonomics and supportive surfaces.",
+      priority: 'medium',
+      category: 'environment',
+      icon: Calendar,
+      analysis: "Poor ergonomics and unsupportive surfaces increase joint stress throughout the day, contributing to pain and stiffness.",
+      improvement: "Use ergonomic chairs, supportive mattresses, proper desk height, and cushioned mats for standing activities.",
+      timeline: "Immediate comfort improvements with proper ergonomics"
+    });
+
+    // Always include anti-inflammatory diet
+    recs.push({
+      title: "Anti-Inflammatory Nutrition Protocol",
+      description: "Eliminate inflammatory foods and focus on joint-supporting nutrients like omega-3s, antioxidants, and collagen-building foods.",
+      priority: 'high',
+      category: 'diet',
+      icon: Heart,
+      analysis: "Anti-inflammatory nutrition reduces systemic inflammation by 20-40% and provides nutrients essential for cartilage health.",
+      improvement: "Eliminate processed foods, sugar, and trans fats. Include fatty fish, leafy greens, berries, and turmeric daily.",
+      timeline: "Inflammatory marker improvements typically seen within 2-4 weeks"
+    });
+
+    // Always include lifestyle modifications
+    recs.push({
+      title: "Joint-Protective Lifestyle",
+      description: "Integrate weight management, stress reduction, and activity modification to support long-term joint health.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Heart,
+      analysis: "Excess weight increases joint stress exponentially. Every 1kg of weight loss reduces knee pressure by 4kg during walking.",
+      improvement: "Maintain healthy weight, practice stress management, alternate between sitting and standing, use proper body mechanics.",
+      timeline: "Joint relief from weight management typically seen within 4-8 weeks"
+    });
+
+    // Conditional severe pain recommendations
     if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
       recs.push({
-        title: "Gentle Movement Therapy",
-        description: "Start with low-impact exercises like water therapy, tai chi, or gentle yoga to maintain joint mobility without strain.",
+        title: "Professional Physical Therapy",
+        description: "Work with a qualified physiotherapist for targeted treatment including manual therapy, exercise prescription, and pain management.",
         priority: 'high',
         category: 'therapy',
-        icon: Heart
+        icon: Heart,
+        analysis: "Professional assessment and treatment can identify underlying causes and provide targeted interventions for severe joint pain.",
+        improvement: "Seek physiotherapist specializing in your specific joint condition for comprehensive assessment and treatment plan.",
+        timeline: "Professional assessment provides immediate insights, with treatment benefits over 4-8 weeks"
       });
 
       recs.push({
-        title: "Heat and Cold Therapy",
-        description: "Alternate between warm compresses (15 min) and cold therapy (10 min) to reduce inflammation and pain.",
+        title: "Heat and Cold Therapy Protocol",
+        description: "Alternate between warm compresses (15 min) and cold therapy (10 min) to reduce inflammation and manage pain effectively.",
         priority: 'medium',
         category: 'therapy',
-        icon: Thermometer
-      });
-    }
-
-    if (answers['1'] === 'multiple') {
-      recs.push({
-        title: "Systemic Anti-Inflammatory Diet",
-        description: "Eliminate processed foods, sugar, and inflammatory oils. Focus on Mediterranean diet rich in antioxidants and omega-3s.",
-        priority: 'high',
-        category: 'diet',
-        icon: Heart
+        icon: Thermometer,
+        analysis: "Heat increases blood flow and relaxes muscles, while cold reduces inflammation and numbs pain. Alternating maximizes benefits.",
+        improvement: "Use moist heat before activity, ice after activity or during flares. Never apply directly to skin.",
+        timeline: "Immediate pain relief during application, with cumulative benefits over days"
       });
     }
 
