@@ -555,7 +555,7 @@ const Sleep = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">Dosage</p>
+                          <p className="text-muted-foreground">Generally Recommended Dosage</p>
                           <p className="font-medium">{supplement.dosage}</p>
                         </div>
                         <div>
