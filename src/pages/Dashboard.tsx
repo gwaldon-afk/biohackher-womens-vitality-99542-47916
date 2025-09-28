@@ -141,15 +141,11 @@ const Dashboard = () => {
                     Last assessment: {data.lastAssessment}
                   </div>
                   
-                  <div className="text-sm text-muted-foreground">
-                    Total assessments: {data.totalAssessments}
-                  </div>
-                  
                   {/* Assessment Button */}
-                  <div className="mt-4">
+                  <div className="mt-3 mb-3">
                     <Button 
                       onClick={() => navigate('/symptoms')}
-                      className="bg-orange-300 text-orange-900 border border-orange-400 hover:bg-orange-400 hover:text-orange-950"
+                      className="bg-primary text-primary-foreground border border-primary hover:bg-primary-dark"
                       variant="outline"
                       size="sm"
                     >
@@ -160,6 +156,10 @@ const Dashboard = () => {
                       </div>
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
+                  </div>
+                  
+                  <div className="text-sm text-muted-foreground">
+                    Total assessments: {data.totalAssessments}
                   </div>
                 </div>
               </div>
