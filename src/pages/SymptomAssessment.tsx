@@ -57,11 +57,11 @@ const assessmentQuestions = {
   "sleep": [
     {
       id: 1,
-      question: "How would you describe your sleep quality?",
+      question: "How would you describe your overall sleep quality?",
       type: "radio",
       options: [
-        { value: "excellent", label: "Excellent - I sleep well most nights" },
-        { value: "good", label: "Good - occasional sleep issues" },
+        { value: "excellent", label: "Excellent - consistently restorative sleep" },
+        { value: "good", label: "Good - generally sleep well with minor issues" },
         { value: "fair", label: "Fair - frequent sleep disruptions" },
         { value: "poor", label: "Poor - chronic sleep problems" }
       ]
@@ -87,6 +87,57 @@ const assessmentQuestions = {
         { value: "often", label: "Often - 3-4 times per night" },
         { value: "frequently", label: "Frequently - 5+ times per night" }
       ]
+    },
+    {
+      id: 4,
+      question: "How many hours of sleep do you typically get per night?",
+      type: "radio",
+      options: [
+        { value: "less-than-5", label: "Less than 5 hours" },
+        { value: "5-6", label: "5-6 hours" },
+        { value: "6-7", label: "6-7 hours" },
+        { value: "7-8", label: "7-8 hours" },
+        { value: "8-plus", label: "8+ hours" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How do you feel when you wake up in the morning?",
+      type: "radio",
+      options: [
+        { value: "refreshed", label: "Refreshed and energized" },
+        { value: "okay", label: "Okay but need some time to wake up" },
+        { value: "groggy", label: "Groggy and tired" },
+        { value: "exhausted", label: "Exhausted despite sleeping" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What is your typical bedtime routine consistency?",
+      type: "radio",
+      options: [
+        { value: "very-consistent", label: "Very consistent - same routine nightly" },
+        { value: "mostly-consistent", label: "Mostly consistent with occasional variation" },
+        { value: "somewhat-consistent", label: "Somewhat consistent but often varies" },
+        { value: "inconsistent", label: "Inconsistent or no set routine" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How would you rate your sleep environment?",
+      type: "radio",
+      options: [
+        { value: "optimal", label: "Optimal - dark, quiet, cool, comfortable" },
+        { value: "good", label: "Good - minor environmental issues" },
+        { value: "fair", label: "Fair - some disruptive factors" },
+        { value: "poor", label: "Poor - multiple environmental challenges" }
+      ]
+    },
+    {
+      id: 8,
+      question: "What factors most commonly disrupt your sleep?",
+      type: "textarea",
+      placeholder: "Describe any factors that affect your sleep (stress, noise, temperature, hormones, etc.)"
     }
   ],
   "joint-pain": [
@@ -98,12 +149,14 @@ const assessmentQuestions = {
         { value: "hands", label: "Hands and fingers" },
         { value: "knees", label: "Knees" },
         { value: "hips", label: "Hips" },
-        { value: "multiple", label: "Multiple joints" }
+        { value: "shoulders", label: "Shoulders" },
+        { value: "multiple", label: "Multiple joints" },
+        { value: "spine", label: "Spine/back" }
       ]
     },
     {
       id: 2,
-      question: "How would you rate your pain on average?",
+      question: "How would you rate your pain on average (1-10 scale)?",
       type: "radio",
       options: [
         { value: "mild", label: "Mild (1-3/10)" },
@@ -111,6 +164,46 @@ const assessmentQuestions = {
         { value: "severe", label: "Severe (7-8/10)" },
         { value: "extreme", label: "Extreme (9-10/10)" }
       ]
+    },
+    {
+      id: 3,
+      question: "When is your joint pain typically worse?",
+      type: "radio",
+      options: [
+        { value: "morning", label: "Morning stiffness upon waking" },
+        { value: "evening", label: "Evening after daily activities" },
+        { value: "weather", label: "During weather changes" },
+        { value: "activity", label: "During or after physical activity" },
+        { value: "constant", label: "Constant throughout the day" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How does joint pain affect your daily activities?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal impact - can do everything normally" },
+        { value: "some", label: "Some limitation with certain activities" },
+        { value: "significant", label: "Significant limitation - avoid some activities" },
+        { value: "severe", label: "Severe limitation - affects most activities" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How long have you been experiencing joint pain?",
+      type: "radio",
+      options: [
+        { value: "recent", label: "Less than 3 months" },
+        { value: "months", label: "3-12 months" },
+        { value: "1-2years", label: "1-2 years" },
+        { value: "chronic", label: "More than 2 years" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What helps reduce your joint pain?",
+      type: "textarea",
+      placeholder: "Describe treatments, activities, or lifestyle factors that help reduce your joint pain..."
     }
   ],
   
@@ -308,36 +401,88 @@ const assessmentQuestions = {
   "body-energy-&-fatigue-assessment": [
     {
       id: 1,
-      question: "How would you rate your overall energy levels?",
+      question: "How would you rate your overall energy levels throughout the day?",
       type: "radio",
       options: [
-        { value: "high", label: "High - feel energetic most of the day" },
-        { value: "moderate", label: "Moderate - have decent energy" },
-        { value: "low", label: "Low - often feel tired" },
-        { value: "depleted", label: "Depleted - constantly exhausted" }
+        { value: "high", label: "High - feel energetic and vibrant most of the day" },
+        { value: "moderate", label: "Moderate - have decent energy with some ups and downs" },
+        { value: "low", label: "Low - often feel tired and lacking energy" },
+        { value: "depleted", label: "Depleted - constantly exhausted and drained" }
       ]
     },
     {
       id: 2,
-      question: "When do you typically experience energy crashes?",
+      question: "When do you typically experience energy crashes or dips?",
       type: "radio",
       options: [
-        { value: "none", label: "No significant crashes" },
-        { value: "afternoon", label: "Afternoon (2-4 PM)" },
-        { value: "evening", label: "Early evening (5-7 PM)" },
-        { value: "multiple", label: "Multiple times throughout the day" }
+        { value: "none", label: "No significant crashes - energy stays consistent" },
+        { value: "afternoon", label: "Afternoon crash (2-4 PM)" },
+        { value: "evening", label: "Early evening crash (5-7 PM)" },
+        { value: "multiple", label: "Multiple crashes throughout the day" },
+        { value: "morning", label: "Low energy in the morning" }
       ]
     },
     {
       id: 3,
-      question: "How is your energy after physical exercise?",
+      question: "How is your energy after physical exercise or activity?",
       type: "radio",
       options: [
-        { value: "energized", label: "Energized and refreshed" },
-        { value: "normal", label: "Normal recovery" },
-        { value: "tired", label: "More tired than expected" },
-        { value: "exhausted", label: "Completely exhausted" }
+        { value: "energized", label: "Energized and refreshed - exercise boosts my energy" },
+        { value: "normal", label: "Normal recovery - feel good after appropriate rest" },
+        { value: "tired", label: "More tired than expected for the activity level" },
+        { value: "exhausted", label: "Completely exhausted - takes long time to recover" }
       ]
+    },
+    {
+      id: 4,
+      question: "How would you describe your morning energy when you wake up?",
+      type: "radio",
+      options: [
+        { value: "refreshed", label: "Refreshed and ready to start the day" },
+        { value: "okay", label: "Okay but need time to fully wake up" },
+        { value: "groggy", label: "Groggy and tired despite adequate sleep" },
+        { value: "exhausted", label: "Exhausted even after a full night's sleep" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How does your energy change throughout your menstrual cycle?",
+      type: "radio",
+      options: [
+        { value: "no-change", label: "No noticeable change or not applicable" },
+        { value: "some-variation", label: "Some variation - slightly lower during certain phases" },
+        { value: "significant", label: "Significant changes - energy dips dramatically" },
+        { value: "severe", label: "Severe changes - debilitating fatigue during cycle" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What time of day do you feel most energetic?",
+      type: "radio",
+      options: [
+        { value: "morning", label: "Morning (6 AM - 12 PM)" },
+        { value: "afternoon", label: "Afternoon (12 PM - 6 PM)" },
+        { value: "evening", label: "Evening (6 PM - 10 PM)" },
+        { value: "varies", label: "Varies day to day" },
+        { value: "never", label: "Never feel truly energetic" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How long does it take you to recover from physical or mental exertion?",
+      type: "radio",
+      options: [
+        { value: "quick", label: "Quick recovery - within hours" },
+        { value: "normal", label: "Normal recovery - by the next day" },
+        { value: "slow", label: "Slow recovery - takes 2-3 days" },
+        { value: "very-slow", label: "Very slow - takes a week or more" }
+      ]
+    },
+    {
+      id: 8,
+      question: "What factors do you notice affect your energy levels most?",
+      type: "textarea",
+      placeholder: "Describe factors like sleep, diet, stress, hormones, weather, etc. that impact your energy..."
     }
   ],
   
@@ -381,60 +526,101 @@ const assessmentQuestions = {
   "balance-stress-&-anxiety-assessment": [
     {
       id: 1,
-      question: "How often do you feel overwhelmed by stress?",
+      question: "How often do you feel overwhelmed by stress in your daily life?",
       type: "radio",
       options: [
-        { value: "rare", label: "Rarely - manage stress well" },
-        { value: "sometimes", label: "Sometimes - during busy periods" },
-        { value: "often", label: "Often - stress is a regular issue" },
-        { value: "constant", label: "Constantly - feel chronically stressed" }
+        { value: "rare", label: "Rarely - manage stress well most of the time" },
+        { value: "sometimes", label: "Sometimes - during particularly busy or challenging periods" },
+        { value: "often", label: "Often - stress is a regular issue I deal with" },
+        { value: "constant", label: "Constantly - feel chronically stressed and overwhelmed" }
       ]
     },
     {
       id: 2,
-      question: "How would you rate your anxiety levels?",
+      question: "How would you rate your overall anxiety levels?",
       type: "radio",
       options: [
-        { value: "low", label: "Low - rarely feel anxious" },
-        { value: "mild", label: "Mild - occasional anxiety" },
-        { value: "moderate", label: "Moderate - regular anxiety episodes" },
-        { value: "severe", label: "Severe - anxiety significantly impacts daily life" }
+        { value: "low", label: "Low - rarely feel anxious or worried" },
+        { value: "mild", label: "Mild - occasional anxiety that's manageable" },
+        { value: "moderate", label: "Moderate - regular anxiety episodes that interfere with life" },
+        { value: "severe", label: "Severe - anxiety significantly impacts my daily functioning" }
       ]
     },
     {
       id: 3,
-      question: "How well do you sleep when stressed?",
+      question: "How well do you sleep when you're stressed or anxious?",
       type: "radio",
       options: [
-        { value: "normal", label: "Sleep normally despite stress" },
-        { value: "slightly-affected", label: "Slightly affected sleep" },
-        { value: "poor", label: "Poor sleep when stressed" },
-        { value: "insomnia", label: "Stress causes insomnia" }
+        { value: "normal", label: "Sleep normally despite stress - good coping mechanism" },
+        { value: "slightly-affected", label: "Slightly affected - takes longer to fall asleep" },
+        { value: "poor", label: "Poor sleep - frequent waking or restless sleep" },
+        { value: "insomnia", label: "Stress causes significant insomnia or sleep disruption" }
       ]
+    },
+    {
+      id: 4,
+      question: "What physical symptoms do you experience when stressed or anxious?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal physical symptoms" },
+        { value: "some", label: "Some symptoms (tension, headaches, stomach upset)" },
+        { value: "many", label: "Multiple symptoms (racing heart, sweating, muscle tension)" },
+        { value: "severe", label: "Severe symptoms (panic attacks, chest pain, breathing issues)" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How effectively do you feel you cope with stress?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - have effective strategies and bounce back quickly" },
+        { value: "good", label: "Good - generally manage well with some effort" },
+        { value: "fair", label: "Fair - struggle sometimes but get by" },
+        { value: "poor", label: "Poor - often feel overwhelmed and unable to cope effectively" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What are your primary sources of stress currently?",
+      type: "radio",
+      options: [
+        { value: "work", label: "Work or career pressures" },
+        { value: "relationships", label: "Relationships or family dynamics" },
+        { value: "health", label: "Health concerns or symptoms" },
+        { value: "finances", label: "Financial pressures or security" },
+        { value: "multiple", label: "Multiple areas creating stress" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How do you currently manage stress and anxiety?",
+      type: "textarea",
+      placeholder: "Describe your current stress management techniques, coping strategies, or support systems..."
     }
   ],
-  
+
   "balance-hormonal-balance-evaluation": [
     {
       id: 1,
       question: "How regular are your menstrual cycles? (if applicable)",
       type: "radio",
       options: [
-        { value: "regular", label: "Regular and predictable" },
-        { value: "somewhat-irregular", label: "Somewhat irregular" },
-        { value: "very-irregular", label: "Very irregular or unpredictable" },
+        { value: "regular", label: "Regular and predictable (21-35 day cycles)" },
+        { value: "somewhat-irregular", label: "Somewhat irregular but generally predictable" },
+        { value: "very-irregular", label: "Very irregular or unpredictable cycles" },
+        { value: "absent", label: "Absent or very infrequent periods" },
         { value: "not-applicable", label: "Not applicable / post-menopause" }
       ]
     },
     {
       id: 2,
-      question: "How stable is your mood throughout the day?",
+      question: "How stable is your mood throughout the day and month?",
       type: "radio",
       options: [
-        { value: "stable", label: "Very stable mood" },
-        { value: "minor-fluctuations", label: "Minor mood fluctuations" },
-        { value: "moderate-swings", label: "Moderate mood swings" },
-        { value: "severe-swings", label: "Severe mood swings" }
+        { value: "very-stable", label: "Very stable - consistent mood most of the time" },
+        { value: "minor-fluctuations", label: "Minor mood fluctuations - generally stable" },
+        { value: "moderate-swings", label: "Moderate mood swings - noticeable changes" },
+        { value: "severe-swings", label: "Severe mood swings - significant emotional ups and downs" }
       ]
     },
     {
@@ -442,11 +628,74 @@ const assessmentQuestions = {
       question: "How is your libido/sexual desire?",
       type: "radio",
       options: [
-        { value: "normal", label: "Normal and healthy" },
-        { value: "somewhat-low", label: "Somewhat lower than desired" },
-        { value: "low", label: "Low libido" },
+        { value: "normal", label: "Normal and healthy for my age" },
+        { value: "somewhat-low", label: "Somewhat lower than I'd like" },
+        { value: "low", label: "Low libido - rarely interested" },
         { value: "very-low", label: "Very low or absent libido" }
       ]
+    },
+    {
+      id: 4,
+      question: "How do you experience PMS or pre-menstrual symptoms?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal or no symptoms" },
+        { value: "mild", label: "Mild symptoms that don't interfere much" },
+        { value: "moderate", label: "Moderate symptoms that affect daily life" },
+        { value: "severe", label: "Severe symptoms that significantly disrupt life" },
+        { value: "not-applicable", label: "Not applicable" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How is your energy in relation to your menstrual cycle?",
+      type: "radio",
+      options: [
+        { value: "consistent", label: "Consistent energy throughout my cycle" },
+        { value: "minor-changes", label: "Minor changes - slightly lower at certain times" },
+        { value: "significant-dips", label: "Significant energy dips during certain phases" },
+        { value: "severe-fatigue", label: "Severe fatigue that impacts functioning" },
+        { value: "not-applicable", label: "Not applicable" }
+      ]
+    },
+    {
+      id: 6,
+      question: "How would you describe your sleep quality in relation to hormones?",
+      type: "radio",
+      options: [
+        { value: "unaffected", label: "Sleep quality unaffected by hormonal changes" },
+        { value: "slightly-affected", label: "Slightly affected during certain times of month" },
+        { value: "moderately-affected", label: "Moderately affected - noticeable sleep disruption" },
+        { value: "severely-affected", label: "Severely affected - significant sleep problems" }
+      ]
+    },
+    {
+      id: 7,
+      question: "Have you experienced significant weight changes that seem hormone-related?",
+      type: "radio",
+      options: [
+        { value: "no-change", label: "No significant hormone-related weight changes" },
+        { value: "minor-fluctuations", label: "Minor weight fluctuations with cycles" },
+        { value: "moderate-changes", label: "Moderate weight changes - 5-15 lbs" },
+        { value: "significant-changes", label: "Significant weight changes - 15+ lbs" }
+      ]
+    },
+    {
+      id: 8,
+      question: "How do you experience temperature regulation (hot/cold sensitivity)?",
+      type: "radio",
+      options: [
+        { value: "normal", label: "Normal temperature regulation" },
+        { value: "slightly-sensitive", label: "Slightly more sensitive to temperature changes" },
+        { value: "hot-flashes", label: "Experience hot flashes or sudden temperature changes" },
+        { value: "severe-dysregulation", label: "Severe temperature regulation problems" }
+      ]
+    },
+    {
+      id: 9,
+      question: "What hormonal symptoms concern you most currently?",
+      type: "textarea",
+      placeholder: "Describe your most concerning hormonal symptoms or patterns..."
     }
   ],
   
@@ -557,6 +806,204 @@ const assessmentQuestions = {
         { value: "daily", label: "Daily" },
         { value: "frequent", label: "Multiple times daily" }
       ]
+    },
+    {
+      id: 4,
+      question: "How is your ability to concentrate for extended periods?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - can focus for hours without breaks" },
+        { value: "good", label: "Good - can focus for 45-90 minutes" },
+        { value: "fair", label: "Fair - can focus for 20-45 minutes" },
+        { value: "poor", label: "Poor - difficulty focusing for more than 20 minutes" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How is your short-term memory for daily tasks?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - rarely forget what I need to do" },
+        { value: "good", label: "Good - occasional minor lapses" },
+        { value: "fair", label: "Fair - frequently need reminders or lists" },
+        { value: "poor", label: "Poor - constantly forgetting tasks and appointments" }
+      ]
+    },
+    {
+      id: 6,
+      question: "How well do you remember names and faces?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - easily remember people I meet" },
+        { value: "good", label: "Good - remember with some effort" },
+        { value: "fair", label: "Fair - struggle with names but remember faces" },
+        { value: "poor", label: "Poor - difficulty with both names and faces" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How has your memory changed over the past few years?",
+      type: "radio",
+      options: [
+        { value: "improved", label: "Improved or stayed the same" },
+        { value: "slight-decline", label: "Slight decline but manageable" },
+        { value: "noticeable-decline", label: "Noticeable decline that concerns me" },
+        { value: "significant-decline", label: "Significant decline affecting daily life" }
+      ]
+    }
+  ],
+
+  // Individual Symptom Assessments
+  "brain-fog": [
+    {
+      id: 1,
+      question: "How often do you experience mental fog or difficulty thinking clearly?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely - only when very tired or stressed" },
+        { value: "weekly", label: "Weekly - a few times per week" },
+        { value: "daily", label: "Daily - most days I experience some brain fog" },
+        { value: "constant", label: "Constantly - persistent mental cloudiness" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How severely does brain fog impact your daily functioning?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal impact - barely noticeable" },
+        { value: "mild", label: "Mild impact - slightly slower thinking" },
+        { value: "moderate", label: "Moderate impact - affects work or daily tasks" },
+        { value: "severe", label: "Severe impact - significantly impairs function" }
+      ]
+    },
+    {
+      id: 3,
+      question: "When do you typically experience brain fog most?",
+      type: "radio",
+      options: [
+        { value: "morning", label: "Morning - difficulty getting mentally started" },
+        { value: "afternoon", label: "Afternoon - post-lunch mental dip" },
+        { value: "evening", label: "Evening - mental fatigue sets in" },
+        { value: "variable", label: "Variable - no consistent pattern" }
+      ]
+    },
+    {
+      id: 4,
+      question: "What symptoms accompany your brain fog?",
+      type: "radio",
+      options: [
+        { value: "concentration", label: "Difficulty concentrating and focusing" },
+        { value: "memory", label: "Memory problems and forgetfulness" },
+        { value: "words", label: "Difficulty finding words or expressing thoughts" },
+        { value: "all", label: "All of the above symptoms" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What seems to trigger or worsen your brain fog?",
+      type: "textarea",
+      placeholder: "Describe factors like stress, hormones, diet, sleep, medications, or other triggers..."
+    }
+  ],
+
+  "energy-levels": [
+    {
+      id: 1,
+      question: "How would you describe your overall energy levels?",
+      type: "radio",
+      options: [
+        { value: "high", label: "High - feel energetic most of the time" },
+        { value: "moderate", label: "Moderate - adequate energy with some fluctuation" },
+        { value: "low", label: "Low - frequently feel tired and low energy" },
+        { value: "depleted", label: "Severely depleted - constantly exhausted" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How has your energy changed over the past year?",
+      type: "radio",
+      options: [
+        { value: "improved", label: "Improved - energy levels have gotten better" },
+        { value: "same", label: "About the same - no significant change" },
+        { value: "declined", label: "Declined - less energy than before" },
+        { value: "severely-declined", label: "Severely declined - major drop in energy" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How do you feel upon waking in the morning?",
+      type: "radio",
+      options: [
+        { value: "refreshed", label: "Refreshed and ready for the day" },
+        { value: "okay", label: "Okay but need time to fully wake up" },
+        { value: "tired", label: "Tired despite adequate sleep" },
+        { value: "exhausted", label: "Exhausted even after full night's sleep" }
+      ]
+    },
+    {
+      id: 4,
+      question: "When during the day do you typically have the most energy?",
+      type: "radio",
+      options: [
+        { value: "morning", label: "Morning hours (6 AM - 12 PM)" },
+        { value: "afternoon", label: "Afternoon (12 PM - 6 PM)" },
+        { value: "evening", label: "Evening (6 PM - 10 PM)" },
+        { value: "never", label: "Never feel like I have good energy" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How does physical activity affect your energy?",
+      type: "radio",
+      options: [
+        { value: "boosts", label: "Boosts my energy - I feel more energetic after" },
+        { value: "neutral", label: "Neutral - normal recovery without energy boost" },
+        { value: "drains", label: "Drains me - takes longer to recover than expected" },
+        { value: "depletes", label: "Severely depletes me - exhausted for days" }
+      ]
+    }
+  ],
+
+  "anxiety": [
+    {
+      id: 1,
+      question: "How often do you experience anxiety or worry?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely - only in very stressful situations" },
+        { value: "sometimes", label: "Sometimes - a few times per week" },
+        { value: "often", label: "Often - most days I feel anxious" },
+        { value: "constant", label: "Constantly - persistent anxiety throughout day" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate the intensity of your anxiety?",
+      type: "radio",
+      options: [
+        { value: "mild", label: "Mild - manageable worry or unease" },
+        { value: "moderate", label: "Moderate - noticeable anxiety that affects functioning" },
+        { value: "severe", label: "Severe - intense anxiety that disrupts daily life" },
+        { value: "panic", label: "Panic level - overwhelming fear or panic attacks" }
+      ]
+    },
+    {
+      id: 3,
+      question: "What physical symptoms accompany your anxiety?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal - mostly mental worry" },
+        { value: "some", label: "Some physical symptoms (tension, butterflies)" },
+        { value: "many", label: "Many symptoms (racing heart, sweating, trembling)" },
+        { value: "severe", label: "Severe symptoms (chest pain, difficulty breathing)" }
+      ]
+    },
+    {
+      id: 4,
+      question: "What situations or thoughts trigger your anxiety most?",
+      type: "textarea",
+      placeholder: "Describe your main anxiety triggers, situations, or thought patterns..."
     }
   ]
 };
