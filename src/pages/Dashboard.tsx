@@ -62,16 +62,24 @@ const Dashboard = () => {
     
     setLoadingSymptoms(true);
     try {
-      // Fetch recent symptom assessments
+      // Fetch recent symptom assessments - one per symptom type for variety
       const { data: assessments, error: assessmentError } = await supabase
         .from('symptom_assessments')
         .select('*')
         .eq('user_id', user.id)
-        .order('completed_at', { ascending: false })
-        .limit(5);
+        .order('completed_at', { ascending: false });
 
       if (assessmentError) throw assessmentError;
-      setRecentAssessments(assessments || []);
+      
+      // Get unique assessments by symptom type (most recent for each type)
+      const uniqueAssessments = assessments?.reduce((acc: SymptomAssessment[], current) => {
+        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []).slice(0, 5) || [];
+      
+      setRecentAssessments(uniqueAssessments);
 
       // Fetch active symptoms
       const { data: symptoms, error: symptomsError } = await supabase
