@@ -12,6 +12,7 @@ const Navigation = () => {
 
   const mainNavItems = [
     { href: "/", label: "Home" },
+    { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: "My Data" },
     { href: "/symptoms", label: "Symptom Assessment" },
   ];

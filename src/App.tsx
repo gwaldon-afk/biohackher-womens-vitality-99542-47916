@@ -25,6 +25,7 @@ import Upgrade from "./pages/Upgrade";
 import Settings from "./pages/Settings";
 import FAQ from "./pages/FAQ";
 import Shop from "./pages/Shop";
+import Pillars from "./pages/Pillars";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/pillars" element={<Pillars />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
