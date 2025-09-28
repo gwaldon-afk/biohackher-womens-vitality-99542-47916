@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-image.jpg";
+// Placeholder for hero image - will be replaced with actual asset later
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -92,11 +92,9 @@ const Index = () => {
               </div>
               
               <div className="relative">
-                <img 
-                  src={heroImage} 
-                  alt="Wellness and mindfulness hero image" 
-                  className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
-                />
+                <div className="rounded-lg shadow-2xl w-full max-w-md mx-auto h-64 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                  <p className="text-muted-foreground text-center">Hero Image Placeholder</p>
+                </div>
               </div>
             </div>
           </div>
