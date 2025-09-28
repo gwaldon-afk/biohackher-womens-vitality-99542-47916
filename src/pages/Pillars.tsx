@@ -9,7 +9,6 @@ import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Ta
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -669,21 +668,16 @@ const Pillars = () => {
                                 <li key={index} className="flex items-center gap-2">
                                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                   {protocolDetails[training as keyof typeof protocolDetails] ? (
-                                    <Dialog>
-                                      <DialogTrigger asChild>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
                                         <button className="text-left hover:text-primary underline decoration-dotted">
                                           {training}
                                         </button>
-                                      </DialogTrigger>
-                                      <DialogContent>
-                                        <DialogHeader>
-                                          <DialogTitle>{training}</DialogTitle>
-                                          <DialogDescription>
-                                            {protocolDetails[training as keyof typeof protocolDetails]}
-                                          </DialogDescription>
-                                        </DialogHeader>
-                                      </DialogContent>
-                                    </Dialog>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="max-w-sm">
+                                        <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   ) : (
                                     <span>{training}</span>
                                   )}
