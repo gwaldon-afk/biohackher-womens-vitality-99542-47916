@@ -999,37 +999,6 @@ const Pillars = () => {
             </div>
           )}
 
-          {/* Specialized Sections */}
-          <div className="space-y-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold mb-4">Specialized Biohacking Areas</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Dive deeper into specialized areas with expert guidance, evidence-based protocols, and advanced therapies.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {specializedSections.map((section, index) => (
-                <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(section.route)}>
-                  <CardHeader className="text-center">
-                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${section.color} flex items-center justify-center`}>
-                      <section.icon className="h-8 w-8 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">{section.title}</CardTitle>
-                    <CardDescription>{section.subtitle}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {section.description}
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Explore {section.title}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
     </div>
