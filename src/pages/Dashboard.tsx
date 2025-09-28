@@ -1,12 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight } from "lucide-react";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
 interface DashboardData {
@@ -16,8 +18,27 @@ interface DashboardData {
   totalAssessments: number;
 }
 
+interface SymptomAssessment {
+  id: string;
+  symptom_type: string;
+  overall_score: number;
+  score_category: string;
+  completed_at: string;
+  primary_issues: string[];
+}
+
+interface UserSymptom {
+  id: string;
+  symptom_id: string;
+  severity: string;
+  frequency: string;
+  is_active: boolean;
+}
+
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [data, setData] = useState<DashboardData>({
     currentScore: 72.5,
     weeklyTrend: 'up',
@@ -25,9 +46,134 @@ const Dashboard = () => {
     totalAssessments: 8
   });
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [recentAssessments, setRecentAssessments] = useState<SymptomAssessment[]>([]);
+  const [activeSymptoms, setActiveSymptoms] = useState<UserSymptom[]>([]);
+  const [loadingSymptoms, setLoadingSymptoms] = useState(false);
 
-  // Primary action buttons with clear hierarchy
+  // Fetch user's symptoms and assessments
+  useEffect(() => {
+    if (user) {
+      fetchSymptomData();
+    }
+  }, [user]);
+
+  const fetchSymptomData = async () => {
+    if (!user) return;
+    
+    setLoadingSymptoms(true);
+    try {
+      // Fetch recent symptom assessments
+      const { data: assessments, error: assessmentError } = await supabase
+        .from('symptom_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false })
+        .limit(5);
+
+      if (assessmentError) throw assessmentError;
+      setRecentAssessments(assessments || []);
+
+      // Fetch active symptoms
+      const { data: symptoms, error: symptomsError } = await supabase
+        .from('user_symptoms')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
+
+      if (symptomsError) throw symptomsError;
+      setActiveSymptoms(symptoms || []);
+    } catch (error) {
+      console.error('Error fetching symptom data:', error);
+    } finally {
+      setLoadingSymptoms(false);
+    }
+  };
+
+  const getSymptomIcon = (symptomId: string) => {
+    const iconMap: Record<string, any> = {
+      'brain-fog': Brain,
+      'energy': Zap,
+      'joint-pain': Bone,
+      'sleep': Moon,
+      'gut': Heart,
+      'anxiety': AlertTriangle
+    };
+    return iconMap[symptomId] || Heart;
+  };
+
+  const getSymptomName = (symptomId: string) => {
+    const nameMap: Record<string, string> = {
+      'brain-fog': 'Brain Fog',
+      'energy': 'Energy & Fatigue',
+      'joint-pain': 'Joint Pain',
+      'sleep': 'Sleep Quality',
+      'gut': 'Digestive Health',
+      'hot-flashes': 'Hot Flashes',
+      'memory-focus': 'Memory & Focus',
+      'mobility': 'Mobility',
+      'bloating': 'Bloating',
+      'anxiety': 'Anxiety',
+      'weight': 'Weight Management',
+      'hair': 'Hair Health',
+      'headache': 'Headaches'
+    };
+    return nameMap[symptomId] || symptomId;
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'excellent': return 'text-green-600 border-green-200 bg-green-50';
+      case 'good': return 'text-blue-600 border-blue-200 bg-blue-50';
+      case 'fair': return 'text-amber-600 border-amber-200 bg-amber-50';
+      case 'poor': return 'text-red-600 border-red-200 bg-red-50';
+      default: return 'text-gray-600 border-gray-200 bg-gray-50';
+    }
+  };
+
+  const getOverallHealthStatus = () => {
+    if (recentAssessments.length === 0) return { status: 'No Data', color: 'text-gray-600' };
+    
+    const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
+    
+    if (avgScore >= 80) return { status: 'Excellent', color: 'text-green-600' };
+    if (avgScore >= 65) return { status: 'Good', color: 'text-blue-600' };
+    if (avgScore >= 50) return { status: 'Fair', color: 'text-amber-600' };
+    return { status: 'Needs Attention', color: 'text-red-600' };
+  };
+
+  const getPriorityRecommendations = () => {
+    const recommendations = [];
+    
+    if (activeSymptoms.length === 0) {
+      recommendations.push({
+        title: "Start Your Health Assessment",
+        description: "Take your first symptom assessment to get personalized recommendations",
+        action: () => navigate('/symptoms'),
+        priority: 'high'
+      });
+    }
+
+    if (recentAssessments.some(a => a.score_category === 'poor' || a.score_category === 'fair')) {
+      const poorAssessments = recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair');
+      recommendations.push({
+        title: `Address ${getSymptomName(poorAssessments[0].symptom_type)}`,
+        description: "Your recent assessment shows this area needs attention",
+        action: () => navigate(`/assessment/${poorAssessments[0].symptom_type}/results`),
+        priority: 'high'
+      });
+    }
+
+    if (recentAssessments.length > 0) {
+      recommendations.push({
+        title: "View Complete Health Profile",
+        description: "See all your assessments and detailed recommendations",
+        action: () => navigate('/reports'),
+        priority: 'medium'
+      });
+    }
+
+    return recommendations.slice(0, 3);
+  };
   const primaryActions = [
     {
       title: "View My Data",
@@ -214,7 +360,144 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Primary Actions Grid */}
+        {/* My Health Profile Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Symptoms Overview */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  My Symptoms Overview
+                </CardTitle>
+                <CardDescription>Track your health across all areas</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingSymptoms ? (
+                  <div className="text-center py-8 text-muted-foreground">Loading symptoms...</div>
+                ) : recentAssessments.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentAssessments.map((assessment) => {
+                      const Icon = getSymptomIcon(assessment.symptom_type);
+                      return (
+                        <div key={assessment.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
+                             onClick={() => navigate(`/assessment/${assessment.symptom_type}/results`)}>
+                          <div className="flex items-center gap-3">
+                            <div className="bg-primary/10 p-2 rounded-lg">
+                              <Icon className="h-4 w-4 text-primary" />
+                            </div>
+                            <div>
+                              <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {new Date(assessment.completed_at).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className={getCategoryColor(assessment.score_category)}>
+                              {assessment.score_category}
+                            </Badge>
+                            <div className="text-sm font-medium">{assessment.overall_score}/100</div>
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground mb-4">No symptom assessments yet</p>
+                    <Button onClick={() => navigate('/symptoms')}>
+                      Take Your First Assessment
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Health Status & Quick Actions */}
+          <div className="space-y-6">
+            {/* Overall Health Status */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Health Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center space-y-4">
+                  <div className={`text-2xl font-bold ${getOverallHealthStatus().color}`}>
+                    {getOverallHealthStatus().status}
+                  </div>
+                  {recentAssessments.length > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      Based on {recentAssessments.length} recent assessment{recentAssessments.length !== 1 ? 's' : ''}
+                    </div>
+                  )}
+                  <div className="pt-4 space-y-2">
+                    <Button 
+                      onClick={() => navigate('/symptoms')} 
+                      className="w-full" 
+                      size="sm"
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      New Assessment
+                    </Button>
+                    <Button 
+                      onClick={() => navigate('/reports')} 
+                      variant="outline" 
+                      className="w-full" 
+                      size="sm"
+                    >
+                      <History className="h-4 w-4 mr-2" />
+                      View Reports
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Active Symptoms Count */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary mb-1">
+                    {activeSymptoms.length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Active Symptoms Tracked
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Priority Recommendations */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-primary" />
+              Priority Recommendations
+            </CardTitle>
+            <CardDescription>Based on your recent assessments</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {getPriorityRecommendations().map((rec, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-background rounded border hover:bg-muted/50 cursor-pointer"
+                     onClick={rec.action}>
+                  <div className={`h-2 w-2 rounded-full ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
+                  <div className="flex-1">
+                    <div className="font-medium text-sm">{rec.title}</div>
+                    <div className="text-xs text-muted-foreground">{rec.description}</div>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {primaryActions.map((action, index) => (
             <Button
