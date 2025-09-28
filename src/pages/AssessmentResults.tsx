@@ -1568,7 +1568,7 @@ const AssessmentResults = () => {
         <div className="w-full">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             <Pill className="h-6 w-6 text-primary" />
-            {symptomId === 'brain-brain-fog-assessment' ? 'Brain Brain-fog Assessment Recommendations' : `${getSymptomName(symptomId!)} Recommendations`}
+            {symptomId === 'brain-brain-fog-assessment' ? 'Brain Fog Assessment Recommendations' : `${getSymptomName(symptomId!)} Recommendations`}
           </h2>
           
           {/* Radio Button Categories */}
