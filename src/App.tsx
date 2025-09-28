@@ -15,15 +15,21 @@ console.log("=== FULL APP LOADING ===");
 const HomePage = () => (
   <div className="min-h-screen bg-background">
     <Navigation />
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-6">
-        <span className="text-foreground">Biohack</span>
-        <span className="text-primary italic">her</span>
-        <sup className="text-sm font-normal ml-1">®</sup>
-      </h1>
-      <p className="text-xl mb-8 text-muted-foreground">
-        Live well longer. Empowering women to beat ageing through biohacking.
-      </p>
+    <div className="container mx-auto px-4 py-16" style={{ backgroundColor: '#f0f0f0', minHeight: '500px' }}>
+      <div style={{ padding: '20px', backgroundColor: 'white', border: '2px solid #000' }}>
+        <h1 className="text-4xl font-bold mb-6" style={{ color: 'black' }}>
+          <span className="text-foreground">Biohack</span>
+          <span className="text-primary italic">her</span>
+          <sup className="text-sm font-normal ml-1">®</sup>
+        </h1>
+        <p className="text-xl mb-8 text-muted-foreground" style={{ color: 'black' }}>
+          Live well longer. Empowering women to beat ageing through biohacking.
+        </p>
+        <div style={{ backgroundColor: '#e0e0e0', padding: '10px', marginTop: '20px' }}>
+          <h2 style={{ color: 'black' }}>HOME PAGE CONTENT IS HERE</h2>
+          <p style={{ color: 'black' }}>This is the main homepage content area.</p>
+        </div>
+      </div>
     </div>
   </div>
 );
@@ -49,8 +55,14 @@ const DashboardPage = () => (
 const SymptomsPage = () => (
   <div className="min-h-screen bg-background">
     <Navigation />
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold">Symptom Assessment</h1>
+    <div className="container mx-auto px-4 py-16" style={{ backgroundColor: '#f0f0f0', minHeight: '500px' }}>
+      <div style={{ padding: '20px', backgroundColor: 'white', border: '2px solid #000' }}>
+        <h1 className="text-3xl font-bold" style={{ color: 'black' }}>Symptom Assessment</h1>
+        <div style={{ backgroundColor: '#e0e0e0', padding: '10px', marginTop: '20px' }}>
+          <h2 style={{ color: 'black' }}>SYMPTOMS PAGE CONTENT IS HERE</h2>
+          <p style={{ color: 'black' }}>This is the symptoms assessment page.</p>
+        </div>
+      </div>
     </div>
   </div>
 );
