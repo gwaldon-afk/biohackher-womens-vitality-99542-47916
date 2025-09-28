@@ -77,6 +77,84 @@ const Reports = () => {
     return nameMap[symptomId] || symptomId;
   };
 
+  const getPersonalizedInsights = () => {
+    if (symptomAssessments.length === 0) return { 
+      patterns: [], 
+      aggregatedRecommendations: { lifestyle: [], nutrition: [], medical: [], other: [] }, 
+      keyInsights: [] 
+    };
+
+    // Extract all primary issues across symptoms
+    const allPrimaryIssues = symptomAssessments.flatMap(a => a.primary_issues || []);
+    const issueFrequency = allPrimaryIssues.reduce((acc: Record<string, number>, issue: string) => {
+      acc[issue] = (acc[issue] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Find common patterns (issues appearing in multiple symptoms)
+    const patterns = Object.entries(issueFrequency)
+      .filter(([_, count]) => (count as number) > 1)
+      .map(([issue, count]) => ({ issue, count: count as number, affectedSymptoms: symptomAssessments.filter(a => a.primary_issues?.includes(issue)).map(a => getSymptomName(a.symptom_type)) }))
+      .sort((a, b) => b.count - a.count);
+
+    // Aggregate recommendations from all assessments
+    const allRecommendations = symptomAssessments.flatMap(a => {
+      if (!a.recommendations) return [];
+      
+      // Handle both object and array formats
+      if (Array.isArray(a.recommendations)) {
+        return a.recommendations;
+      } else if (typeof a.recommendations === 'object') {
+        return Object.values(a.recommendations).flat();
+      }
+      return [];
+    });
+
+    // Categorize recommendations
+    const recommendationCategories = {
+      lifestyle: allRecommendations.filter(r => typeof r === 'string' && (r.toLowerCase().includes('sleep') || r.toLowerCase().includes('exercise') || r.toLowerCase().includes('stress') || r.toLowerCase().includes('routine'))),
+      nutrition: allRecommendations.filter(r => typeof r === 'string' && (r.toLowerCase().includes('diet') || r.toLowerCase().includes('nutrition') || r.toLowerCase().includes('food') || r.toLowerCase().includes('supplement'))),
+      medical: allRecommendations.filter(r => typeof r === 'string' && (r.toLowerCase().includes('doctor') || r.toLowerCase().includes('specialist') || r.toLowerCase().includes('medical') || r.toLowerCase().includes('medication'))),
+      other: allRecommendations.filter(r => typeof r === 'string' && !r.toLowerCase().match(/(sleep|exercise|stress|routine|diet|nutrition|food|supplement|doctor|specialist|medical|medication)/))
+    };
+
+    // Generate key insights based on actual data
+    const keyInsights = [];
+    
+    if (patterns.length > 0) {
+      keyInsights.push({
+        type: 'pattern',
+        title: 'Common Root Causes Identified',
+        insight: `${patterns[0].issue} appears across ${patterns[0].count} different symptoms (${patterns[0].affectedSymptoms.join(', ')}), suggesting this may be a key area to address.`
+      });
+    }
+
+    const poorSymptoms = symptomAssessments.filter(a => a.score_category === 'poor');
+    const excellentSymptoms = symptomAssessments.filter(a => a.score_category === 'excellent');
+    
+    if (poorSymptoms.length > 0 && excellentSymptoms.length > 0) {
+      keyInsights.push({
+        type: 'contrast',
+        title: 'Health Variation Analysis',
+        insight: `While ${excellentSymptoms.map(a => getSymptomName(a.symptom_type)).join(' and ')} are well-managed, ${poorSymptoms.map(a => getSymptomName(a.symptom_type)).join(' and ')} need focused attention.`
+      });
+    }
+
+    if (recommendationCategories.lifestyle.length > recommendationCategories.medical.length) {
+      keyInsights.push({
+        type: 'approach',
+        title: 'Treatment Approach',
+        insight: 'Your assessments suggest lifestyle interventions may be more beneficial than medical treatments for your current symptom profile.'
+      });
+    }
+
+    return { 
+      patterns, 
+      aggregatedRecommendations: recommendationCategories, 
+      keyInsights 
+    };
+  };
+
   const getOverallSymptomAnalysis = () => {
     if (symptomAssessments.length === 0) return {
       status: 'No Data',
@@ -360,149 +438,139 @@ Report ID: BH-${Date.now()}
                     </div>
                   )}
 
-                  {/* Comprehensive Aggregated Analysis */}
-                  {symptomAssessments.length > 0 && (
-                    <div className="space-y-6">
-                      <h3 className="text-lg font-semibold mb-4">Comprehensive Health Analysis</h3>
-                      
-                      {/* Key Findings */}
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-base">Key Health Findings</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {getOverallSymptomAnalysis().breakdown.excellent > 0 && (
-                            <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                              <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                              <div>
-                                <div className="font-medium text-green-800">Strengths Identified</div>
-                                <div className="text-sm text-green-700">
-                                  {getOverallSymptomAnalysis().breakdown.excellent} area{getOverallSymptomAnalysis().breakdown.excellent > 1 ? 's' : ''} performing excellently - 
-                                  {symptomAssessments.filter(a => a.score_category === 'excellent').map(a => getSymptomName(a.symptom_type)).join(', ')}
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                      {/* Comprehensive Aggregated Analysis */}
+                      {symptomAssessments.length > 0 && (
+                        <div className="space-y-6">
+                          <h3 className="text-lg font-semibold mb-4">Personalized Health Insights</h3>
                           
-                          {getOverallSymptomAnalysis().breakdown.poor > 0 && (
-                            <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg border border-red-200">
-                              <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" />
-                              <div>
-                                <div className="font-medium text-red-800">Priority Areas</div>
-                                <div className="text-sm text-red-700">
-                                  {getOverallSymptomAnalysis().breakdown.poor} area{getOverallSymptomAnalysis().breakdown.poor > 1 ? 's' : ''} requiring immediate attention - 
-                                  {symptomAssessments.filter(a => a.score_category === 'poor').map(a => getSymptomName(a.symptom_type)).join(', ')}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {getOverallSymptomAnalysis().breakdown.fair > 0 && (
-                            <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                              <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
-                              <div>
-                                <div className="font-medium text-amber-800">Improvement Opportunities</div>
-                                <div className="text-sm text-amber-700">
-                                  {getOverallSymptomAnalysis().breakdown.fair} area{getOverallSymptomAnalysis().breakdown.fair > 1 ? 's' : ''} with moderate concern - 
-                                  {symptomAssessments.filter(a => a.score_category === 'fair').map(a => getSymptomName(a.symptom_type)).join(', ')}
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-
-                      {/* Comprehensive Recommendations */}
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-base">Personalized Health Recommendations</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {getOverallSymptomAnalysis().breakdown.poor > 0 && (
-                            <div className="space-y-3">
-                              <h4 className="font-medium text-red-800">Immediate Action Required</h4>
-                              {symptomAssessments.filter(a => a.score_category === 'poor').map((assessment, index) => (
-                                <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-200">
-                                  <div className="font-medium text-sm">{getSymptomName(assessment.symptom_type)}</div>
-                                  <div className="text-sm text-red-700 mt-1">
-                                    Consider scheduling consultation for comprehensive evaluation and targeted intervention plan.
+                          {/* Data-Driven Key Insights */}
+                          {getPersonalizedInsights().keyInsights.length > 0 && (
+                            <Card>
+                              <CardHeader>
+                                <CardTitle className="text-base">Key Findings from Your Assessments</CardTitle>
+                              </CardHeader>
+                              <CardContent className="space-y-4">
+                                {getPersonalizedInsights().keyInsights.map((insight, index) => (
+                                  <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5" />
+                                    <div>
+                                      <div className="font-medium text-blue-800">{insight.title}</div>
+                                      <div className="text-sm text-blue-700">{insight.insight}</div>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
-                            </div>
+                                ))}
+                              </CardContent>
+                            </Card>
                           )}
-                          
-                          {getOverallSymptomAnalysis().breakdown.fair > 0 && (
-                            <div className="space-y-3">
-                              <h4 className="font-medium text-amber-800">Targeted Improvements</h4>
-                              {symptomAssessments.filter(a => a.score_category === 'fair').map((assessment, index) => (
-                                <div key={index} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                                  <div className="font-medium text-sm">{getSymptomName(assessment.symptom_type)}</div>
-                                  <div className="text-sm text-amber-700 mt-1">
-                                    Focus on lifestyle modifications and monitor progress closely for optimal improvement.
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          
-                          {getOverallSymptomAnalysis().breakdown.excellent + getOverallSymptomAnalysis().breakdown.good > 0 && (
-                            <div className="space-y-3">
-                              <h4 className="font-medium text-green-800">Maintain Success</h4>
-                              <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                                <div className="text-sm text-green-700">
-                                  Continue current strategies for {symptomAssessments.filter(a => a.score_category === 'excellent' || a.score_category === 'good').map(a => getSymptomName(a.symptom_type)).join(', ')}. 
-                                  These areas are performing well and should be maintained through consistent health practices.
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {/* General Wellness Recommendations */}
-                          <div className="space-y-3 pt-4 border-t">
-                            <h4 className="font-medium">General Wellness Strategy</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <div className="font-medium text-sm text-blue-800">Holistic Approach</div>
-                                <div className="text-sm text-blue-700 mt-1">
-                                  Address interconnected symptoms through integrated lifestyle, nutrition, and stress management.
-                                </div>
-                              </div>
-                              <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                                <div className="font-medium text-sm text-purple-800">Regular Monitoring</div>
-                                <div className="text-sm text-purple-700 mt-1">
-                                  Continue regular assessments to track progress and adjust interventions as needed.
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
 
-                      {/* Next Steps */}
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="text-base">Recommended Next Steps</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-                              <div className="h-2 w-2 bg-primary rounded-full"></div>
-                              <span className="text-sm">Schedule follow-up assessments in 4-6 weeks to track progress</span>
-                            </div>
-                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-                              <div className="h-2 w-2 bg-secondary rounded-full"></div>
-                              <span className="text-sm">Focus on highest priority symptoms first for maximum impact</span>
-                            </div>
-                            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-                              <div className="h-2 w-2 bg-accent rounded-full"></div>
-                              <span className="text-sm">Consider professional consultation for persistent poor-scoring areas</span>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
+                          {/* Common Root Cause Patterns */}
+                          {getPersonalizedInsights().patterns.length > 0 && (
+                            <Card>
+                              <CardHeader>
+                                <CardTitle className="text-base">Identified Health Patterns</CardTitle>
+                              </CardHeader>
+                              <CardContent className="space-y-3">
+                                {getPersonalizedInsights().patterns.map((pattern, index) => (
+                                  <div key={index} className="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                                    <div className="font-medium text-amber-800 mb-1">
+                                      Root Cause: {pattern.issue}
+                                    </div>
+                                    <div className="text-sm text-amber-700">
+                                      Affects {pattern.count} symptoms: {pattern.affectedSymptoms.join(', ')}
+                                    </div>
+                                    <div className="text-xs text-amber-600 mt-2">
+                                      Addressing this underlying issue could improve multiple symptoms simultaneously.
+                                    </div>
+                                  </div>
+                                ))}
+                              </CardContent>
+                            </Card>
+                          )}
+
+                          {/* Aggregated Recommendations from Assessments */}
+                          {Object.values(getPersonalizedInsights().aggregatedRecommendations).flat().length > 0 && (
+                            <Card>
+                              <CardHeader>
+                                <CardTitle className="text-base">Consolidated Recommendations</CardTitle>
+                                <CardDescription>From your individual symptom assessments</CardDescription>
+                              </CardHeader>
+                              <CardContent className="space-y-4">
+                                {getPersonalizedInsights().aggregatedRecommendations.lifestyle.length > 0 && (
+                                  <div>
+                                    <h4 className="font-medium text-green-800 mb-2">Lifestyle Interventions</h4>
+                                    <div className="space-y-2">
+                                      {getPersonalizedInsights().aggregatedRecommendations.lifestyle.slice(0, 3).map((rec: any, index: number) => (
+                                        <div key={index} className="text-sm text-green-700 p-2 bg-green-50 rounded border border-green-200">
+                                          • {rec}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {getPersonalizedInsights().aggregatedRecommendations.nutrition.length > 0 && (
+                                  <div>
+                                    <h4 className="font-medium text-orange-800 mb-2">Nutritional Approaches</h4>
+                                    <div className="space-y-2">
+                                      {getPersonalizedInsights().aggregatedRecommendations.nutrition.slice(0, 3).map((rec: any, index: number) => (
+                                        <div key={index} className="text-sm text-orange-700 p-2 bg-orange-50 rounded border border-orange-200">
+                                          • {rec}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {getPersonalizedInsights().aggregatedRecommendations.medical.length > 0 && (
+                                  <div>
+                                    <h4 className="font-medium text-red-800 mb-2">Medical Considerations</h4>
+                                    <div className="space-y-2">
+                                      {getPersonalizedInsights().aggregatedRecommendations.medical.slice(0, 3).map((rec: any, index: number) => (
+                                        <div key={index} className="text-sm text-red-700 p-2 bg-red-50 rounded border border-red-200">
+                                          • {rec}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+                          )}
+
+                          {/* Priority Action Plan */}
+                          <Card>
+                            <CardHeader>
+                              <CardTitle className="text-base">Prioritized Action Plan</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-3">
+                                {getPersonalizedInsights().patterns.length > 0 && (
+                                  <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                                    <div className="h-2 w-2 bg-red-500 rounded-full"></div>
+                                    <span className="text-sm">
+                                      <strong>Priority 1:</strong> Address {getPersonalizedInsights().patterns[0].issue} - impacts {getPersonalizedInsights().patterns[0].count} symptoms
+                                    </span>
+                                  </div>
+                                )}
+                                {symptomAssessments.filter(a => a.score_category === 'poor').length > 0 && (
+                                  <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                                    <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
+                                    <span className="text-sm">
+                                      <strong>Priority 2:</strong> Focus on {symptomAssessments.filter(a => a.score_category === 'poor').map(a => getSymptomName(a.symptom_type)).join(', ')}
+                                    </span>
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-3 p-3 bg-background rounded border">
+                                  <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                                  <span className="text-sm">
+                                    <strong>Priority 3:</strong> Reassess in 4-6 weeks to track improvement progress
+                                  </span>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      )}
                 </div>
               )}
             </CardContent>
