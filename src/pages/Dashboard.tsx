@@ -80,18 +80,6 @@ const Dashboard = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Daily LIS Quick Access */}
-        <div className="mb-6">
-          <Button 
-            onClick={() => navigate('/symptoms')}
-            className="w-full md:w-auto bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20"
-            variant="outline"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Take Today's Daily Longevity Assessment
-            <ChevronRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
 
         {/* Welcome Header */}
         <div className="text-center mb-8">
@@ -132,7 +120,7 @@ const Dashboard = () => {
                 
                 {/* LIS Analysis */}
                 <div className="space-y-2 flex-1">
-                  <div className="text-sm font-medium text-gray-900">LIS Analysis</div>
+                  <div className="text-lg font-bold text-gray-900">Longevity Impact Score (LIS) Analysis</div>
                   <div className="text-sm text-muted-foreground">
                     {data.currentScore >= 80 ? (
                       <span className="text-green-600 font-medium">
@@ -155,6 +143,23 @@ const Dashboard = () => {
                   
                   <div className="text-sm text-muted-foreground">
                     Total assessments: {data.totalAssessments}
+                  </div>
+                  
+                  {/* Assessment Button */}
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => navigate('/symptoms')}
+                      className="bg-orange-300 text-orange-900 border border-orange-400 hover:bg-orange-400 hover:text-orange-950"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      <div className="text-center leading-tight">
+                        <div>Take Today's Daily</div>
+                        <div>Longevity Assessment</div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 ml-2" />
+                    </Button>
                   </div>
                 </div>
               </div>
