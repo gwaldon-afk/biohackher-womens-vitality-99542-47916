@@ -12,27 +12,39 @@ import "./index.css";
 console.log("=== FULL APP LOADING ===");
 
 // Simple placeholder components for now
-const HomePage = () => (
-  <div className="min-h-screen bg-background">
-    <Navigation />
-    <div className="container mx-auto px-4 py-16" style={{ backgroundColor: '#f0f0f0', minHeight: '500px' }}>
-      <div style={{ padding: '20px', backgroundColor: 'white', border: '2px solid #000' }}>
-        <h1 className="text-4xl font-bold mb-6" style={{ color: 'black' }}>
-          <span className="text-foreground">Biohack</span>
-          <span className="text-primary italic">her</span>
-          <sup className="text-sm font-normal ml-1">®</sup>
-        </h1>
-        <p className="text-xl mb-8 text-muted-foreground" style={{ color: 'black' }}>
-          Live well longer. Empowering women to beat ageing through biohacking.
-        </p>
-        <div style={{ backgroundColor: '#e0e0e0', padding: '10px', marginTop: '20px' }}>
-          <h2 style={{ color: 'black' }}>HOME PAGE CONTENT IS HERE</h2>
-          <p style={{ color: 'black' }}>This is the main homepage content area.</p>
-        </div>
-      </div>
+const HomePage = () => {
+  console.log("HomePage rendering...");
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: 'red', 
+      padding: '20px',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1000
+    }}>
+      <h1 style={{ 
+        fontSize: '3rem', 
+        color: 'white', 
+        backgroundColor: 'black', 
+        padding: '20px',
+        margin: '20px 0'
+      }}>
+        BIOHACKHER HOMEPAGE
+      </h1>
+      <p style={{ 
+        fontSize: '1.5rem', 
+        color: 'white',
+        backgroundColor: 'blue',
+        padding: '10px'
+      }}>
+        This should be very visible!
+      </p>
     </div>
-  </div>
-);
+  );
+};
 
 const AuthPage = () => (
   <div className="min-h-screen bg-background">
@@ -52,20 +64,39 @@ const DashboardPage = () => (
   </div>
 );
 
-const SymptomsPage = () => (
-  <div className="min-h-screen bg-background">
-    <Navigation />
-    <div className="container mx-auto px-4 py-16" style={{ backgroundColor: '#f0f0f0', minHeight: '500px' }}>
-      <div style={{ padding: '20px', backgroundColor: 'white', border: '2px solid #000' }}>
-        <h1 className="text-3xl font-bold" style={{ color: 'black' }}>Symptom Assessment</h1>
-        <div style={{ backgroundColor: '#e0e0e0', padding: '10px', marginTop: '20px' }}>
-          <h2 style={{ color: 'black' }}>SYMPTOMS PAGE CONTENT IS HERE</h2>
-          <p style={{ color: 'black' }}>This is the symptoms assessment page.</p>
-        </div>
-      </div>
+const SymptomsPage = () => {
+  console.log("SymptomsPage rendering...");
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: 'green', 
+      padding: '20px',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1000
+    }}>
+      <h1 style={{ 
+        fontSize: '3rem', 
+        color: 'white', 
+        backgroundColor: 'black', 
+        padding: '20px',
+        margin: '20px 0'
+      }}>
+        SYMPTOMS PAGE
+      </h1>
+      <p style={{ 
+        fontSize: '1.5rem', 
+        color: 'white',
+        backgroundColor: 'purple',
+        padding: '10px'
+      }}>
+        Symptoms content should be here!
+      </p>
     </div>
-  </div>
-);
+  );
+};
 
 const ShopPage = () => (
   <div className="min-h-screen bg-background">
