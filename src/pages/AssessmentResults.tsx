@@ -181,7 +181,19 @@ const AssessmentResults = () => {
       "headaches": "Headaches",
       "night-sweats": "Night Sweats",
       "memory-issues": "Memory Issues",
-      "gut": "Gut Health"
+      "gut": "Gut Health",
+      // Brain Pillar Assessments
+      "brain-brain-fog-assessment": "Brain Fog Assessment",
+      "brain-memory-&-focus-analysis": "Memory & Focus Analysis",
+      // Body Pillar Assessments
+      "body-energy-&-fatigue-assessment": "Energy & Fatigue Assessment",
+      "body-mobility-&-strength-analysis": "Mobility & Strength Analysis",
+      // Balance Pillar Assessments
+      "balance-stress-&-anxiety-assessment": "Stress & Anxiety Assessment",
+      "balance-hormonal-balance-evaluation": "Hormonal Balance Evaluation",
+      // Beauty Pillar Assessments
+      "beauty-skin-health-assessment": "Skin Health Assessment",
+      "beauty-hair-&-nail-analysis": "Hair & Nail Analysis"
     };
     return nameMap[id] || id;
   };
@@ -1556,7 +1568,7 @@ const AssessmentResults = () => {
         <div className="w-full">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             <Pill className="h-6 w-6 text-primary" />
-            {symptomId?.includes('brain-fog') ? 'Brain Brain-fog Assessment Recommendations' : `${getSymptomName(symptomId!)} Recommendations`}
+            {symptomId === 'brain-brain-fog-assessment' ? 'Brain Brain-fog Assessment Recommendations' : `${getSymptomName(symptomId!)} Recommendations`}
           </h2>
           
           {/* Radio Button Categories */}
