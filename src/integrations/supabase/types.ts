@@ -335,6 +335,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_assessment_completions: {
+        Row: {
+          assessment_id: string
+          completed_at: string
+          created_at: string
+          id: string
+          pillar: string | null
+          score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessment_id: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          pillar?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          pillar?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_symptoms: {
         Row: {
           created_at: string

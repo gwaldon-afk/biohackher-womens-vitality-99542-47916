@@ -1090,8 +1090,11 @@ const SymptomAssessment = () => {
     try {
       console.log('📤 Saving to database...', answers);
       
+      // Determine pillar from assessment ID
+      const pillar = symptomId.includes('-') ? symptomId.split('-')[0] : null;
+      
       // Save assessment results to database with proper conflict resolution
-      const { error } = await supabase
+      const { error: symptomError } = await supabase
         .from('user_symptoms')
         .upsert({
           user_id: user.id,
@@ -1105,9 +1108,28 @@ const SymptomAssessment = () => {
           onConflict: 'user_id,symptom_id'
         });
 
-      if (error) {
-        console.error('❌ Database error:', error);
-        throw error;
+      if (symptomError) {
+        console.error('❌ Database error (symptoms):', symptomError);
+        throw symptomError;
+      }
+
+      // Record assessment completion
+      const { error: completionError } = await supabase
+        .from('user_assessment_completions')
+        .upsert({
+          user_id: user.id,
+          assessment_id: symptomId,
+          pillar: pillar,
+          score: 75, // This would be calculated based on answers
+          completed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,assessment_id'
+        });
+
+      if (completionError) {
+        console.error('❌ Database error (completions):', completionError);
+        throw completionError;
       }
 
       console.log('✅ Assessment saved successfully');

@@ -9,6 +9,7 @@ import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Ta
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
+import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
@@ -19,6 +20,7 @@ const Pillars = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const { completions, loading } = useAssessmentCompletions();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
 
   // Check for pillar parameter in URL and auto-select
@@ -29,14 +31,6 @@ const Pillars = () => {
       setSelectedPillar(pillarParam);
     }
   }, []);
-
-  // Mock user assessment data - in real app this would come from user profile
-  const userAssessments = {
-    brain: { completed: false, lastTaken: null },
-    body: { completed: true, lastTaken: "2024-01-15" },
-    balance: { completed: false, lastTaken: null },
-    beauty: { completed: true, lastTaken: "2024-01-10" }
-  };
 
   const pillars = {
     brain: {
@@ -706,7 +700,7 @@ const Pillars = () => {
     return pillars[pillarKey as keyof typeof pillars].symptomAssessments.map(assessment => ({
       ...assessment,
       pillar: pillarKey,
-      completed: userAssessments[pillarKey as keyof typeof userAssessments]?.completed || false
+      completed: completions[pillarKey as keyof typeof completions]?.completed || false
     }));
   };
 
@@ -812,9 +806,9 @@ const Pillars = () => {
                         Required Assessments for Personalized Plan
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {pillars[selectedPillar as keyof typeof pillars].symptomAssessments.map((assessment, index) => {
-                          const isCompleted = userAssessments[selectedPillar as keyof typeof userAssessments]?.completed;
-                          return (
+                         {pillars[selectedPillar as keyof typeof pillars].symptomAssessments.map((assessment, index) => {
+                           const isCompleted = completions[selectedPillar as keyof typeof completions]?.completed;
+                           return (
                             <Card key={index} className="hover:shadow-md transition-shadow">
                               <CardHeader>
                                 <CardTitle className="text-lg flex items-center gap-2">
