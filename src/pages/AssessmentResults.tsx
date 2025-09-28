@@ -1569,42 +1569,42 @@ const AssessmentResults = () => {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="all" id="all" />
                 <Label htmlFor="all" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} All
+                  All
                 </Label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="routine" id="routine" />
                 <Label htmlFor="routine" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} Routines
+                  Routines
                 </Label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="supplement" id="supplement" />
                 <Label htmlFor="supplement" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} Supplements
+                  Supplements
                 </Label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="diet" id="diet" />
                 <Label htmlFor="diet" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} Diet
+                  Diet
                 </Label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="lifestyle" id="lifestyle" />
                 <Label htmlFor="lifestyle" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} Lifestyle
+                  Lifestyle
                 </Label>
               </div>
               
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="therapy" id="therapy" />
                 <Label htmlFor="therapy" className="font-medium cursor-pointer">
-                  {getSymptomName(symptomId!)} Therapy
+                  Therapy
                 </Label>
               </div>
             </RadioGroup>
