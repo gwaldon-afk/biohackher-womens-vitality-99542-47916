@@ -69,7 +69,10 @@ const Navigation = () => {
                   ? "text-primary"
                   : "text-muted-foreground"
               )}>
-                Biohacking Toolkit
+                <div className="text-center leading-tight">
+                  <div>Biohacking</div>
+                  <div>Toolkit</div>
+                </div>
                 <ChevronDown className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="bg-background border border-border">
@@ -168,7 +171,10 @@ const Navigation = () => {
               
               {/* Biohacking Section in Mobile */}
               <div className="px-2 py-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Biohacking Toolkit</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  <div>Biohacking</div>
+                  <div>Toolkit</div>
+                </p>
                 <div className="flex flex-col space-y-2 ml-2">
                   {biohackingItems.map((item) => (
                     <Link
