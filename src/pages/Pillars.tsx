@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
+import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube, Calendar, AlertTriangle, CheckCircle, ShoppingCart } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/hooks/useCart";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
@@ -17,6 +18,7 @@ import balancePillar from "@/assets/balance-pillar.png";
 const Pillars = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addToCart } = useCart();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
 
   // Mock user assessment data - in real app this would come from user profile
@@ -419,6 +421,199 @@ const Pillars = () => {
     "Platelet-rich plasma (PRP) treatments": "Use of patient's own platelet-rich plasma to stimulate collagen production and tissue regeneration. Also known as 'vampire facials' when used for facial rejuvenation."
   };
 
+  // Supplement details and product data
+  const supplementDetails = {
+    // Brain Supplements
+    "Omega-3 fatty acids (EPA/DHA 1-3g daily)": {
+      description: "Essential fatty acids that support brain health, reduce inflammation, and improve cognitive function. EPA and DHA are crucial for neurotransmitter production.",
+      benefits: "Improves memory, reduces brain fog, supports mood stability",
+      dosage: "1-3g daily with meals",
+      price: 29.99,
+      id: "omega-3-brain"
+    },
+    "Magnesium glycinate (200-400mg before bed)": {
+      description: "Highly bioavailable form of magnesium that supports nervous system function, sleep quality, and stress reduction.",
+      benefits: "Better sleep, reduced anxiety, improved focus",
+      dosage: "200-400mg before bedtime",
+      price: 24.99,
+      id: "magnesium-glycinate"
+    },
+    "B-complex vitamins for neurotransmitter support": {
+      description: "Essential B vitamins that support energy production, neurotransmitter synthesis, and overall brain function.",
+      benefits: "Increased energy, better mood, enhanced cognitive function",
+      dosage: "1 capsule daily with breakfast",
+      price: 19.99,
+      id: "b-complex-brain"
+    },
+    "Lion's Mane mushroom (500-1000mg)": {
+      description: "Medicinal mushroom that supports nerve growth factor and cognitive function. Contains compounds that may promote neuroplasticity.",
+      benefits: "Enhanced memory, improved focus, neuroprotection",
+      dosage: "500-1000mg daily",
+      price: 34.99,
+      id: "lions-mane"
+    },
+    "Rhodiola rosea for stress adaptation": {
+      description: "Adaptogenic herb that helps the body manage stress while supporting cognitive performance and energy levels.",
+      benefits: "Reduced fatigue, better stress resilience, improved mental clarity",
+      dosage: "200-400mg in the morning",
+      price: 27.99,
+      id: "rhodiola-brain"
+    },
+    "Phosphatidylserine for memory": {
+      description: "Phospholipid that supports brain cell membrane integrity and is crucial for memory formation and recall.",
+      benefits: "Enhanced memory, improved learning, better cognitive aging",
+      dosage: "100mg daily",
+      price: 32.99,
+      id: "phosphatidylserine"
+    },
+    "Alpha-GPC for acetylcholine support": {
+      description: "Choline compound that crosses the blood-brain barrier to support acetylcholine production, crucial for memory and learning.",
+      benefits: "Improved memory, enhanced focus, better learning capacity",
+      dosage: "300-600mg daily",
+      price: 39.99,
+      id: "alpha-gpc"
+    },
+    "Creatine monohydrate (3-5g daily)": {
+      description: "Well-researched compound that supports brain energy metabolism and may enhance cognitive performance, especially under stress.",
+      benefits: "Increased mental energy, better cognitive performance, neuroprotection",
+      dosage: "3-5g daily",
+      price: 22.99,
+      id: "creatine-brain"
+    },
+
+    // Body Supplements
+    "Whey or plant protein (20-40g post-workout)": {
+      description: "High-quality protein for muscle recovery and growth. Choose whey for fast absorption or plant-based for dietary preferences.",
+      benefits: "Muscle recovery, lean mass maintenance, satiety",
+      dosage: "20-40g within 2 hours post-workout",
+      price: 49.99,
+      id: "protein-powder"
+    },
+    "Collagen peptides (10-20g for joints)": {
+      description: "Bioactive collagen peptides that support joint health, skin elasticity, and connective tissue repair.",
+      benefits: "Joint support, skin health, improved recovery",
+      dosage: "10-20g daily, preferably on empty stomach",
+      price: 35.99,
+      id: "collagen-peptides"
+    },
+    "Vitamin D3 + K2 (2000-4000 IU D3)": {
+      description: "Essential vitamin D3 combined with K2 for optimal calcium metabolism and bone health support.",
+      benefits: "Bone health, immune function, hormone support",
+      dosage: "2000-4000 IU D3 with 100mcg K2 daily",
+      price: 26.99,
+      id: "vitamin-d3-k2"
+    },
+    "Electrolyte replacement (sodium, potassium)": {
+      description: "Balanced electrolyte formula to support hydration, muscle function, and recovery during training.",
+      benefits: "Better hydration, reduced cramping, improved performance",
+      dosage: "During and after workouts as needed",
+      price: 18.99,
+      id: "electrolytes"
+    },
+    "CoQ10 for mitochondrial support (100-200mg)": {
+      description: "Coenzyme Q10 supports cellular energy production and acts as a powerful antioxidant for heart and muscle health.",
+      benefits: "Increased energy, antioxidant protection, heart health",
+      dosage: "100-200mg with meals",
+      price: 41.99,
+      id: "coq10"
+    },
+
+    // Balance Supplements
+    "Ashwagandha (300-600mg for cortisol regulation)": {
+      description: "Adaptogenic herb that helps regulate cortisol levels and supports the body's response to stress.",
+      benefits: "Reduced stress, better sleep, improved mood",
+      dosage: "300-600mg daily, preferably with meals",
+      price: 28.99,
+      id: "ashwagandha"
+    },
+    "GABA (500-750mg for nervous system support)": {
+      description: "Gamma-aminobutyric acid, the brain's primary inhibitory neurotransmitter, supports relaxation and calm.",
+      benefits: "Reduced anxiety, better relaxation, improved sleep onset",
+      dosage: "500-750mg before bed",
+      price: 21.99,
+      id: "gaba"
+    },
+    "L-theanine (200mg for calm focus)": {
+      description: "Amino acid found in green tea that promotes relaxation without drowsiness and enhances focus.",
+      benefits: "Calm alertness, reduced anxiety, improved focus",
+      dosage: "200mg daily, can be taken with or without caffeine",
+      price: 23.99,
+      id: "l-theanine"
+    },
+
+    // Beauty Supplements
+    "Hyaluronic acid (100-200mg for hydration)": {
+      description: "Molecule that can hold up to 1000 times its weight in water, supporting skin hydration from within.",
+      benefits: "Improved skin hydration, reduced fine lines, plumper skin",
+      dosage: "100-200mg daily",
+      price: 31.99,
+      id: "hyaluronic-acid"
+    },
+    "Vitamin C (1000mg for collagen synthesis)": {
+      description: "Essential vitamin for collagen production, antioxidant protection, and immune system support.",
+      benefits: "Collagen support, antioxidant protection, immune health",
+      dosage: "1000mg daily with meals",
+      price: 16.99,
+      id: "vitamin-c"
+    },
+    "Biotin & zinc for hair/nail health": {
+      description: "Essential nutrients for keratin production, supporting healthy hair growth and strong nails.",
+      benefits: "Stronger hair and nails, improved growth, better texture",
+      dosage: "1 capsule daily",
+      price: 19.99,
+      id: "biotin-zinc"
+    },
+    "Astaxanthin (4-8mg for UV protection)": {
+      description: "Powerful antioxidant carotenoid that provides natural UV protection and supports skin health.",
+      benefits: "UV protection, reduced skin aging, antioxidant support",
+      dosage: "4-8mg daily with fats for absorption",
+      price: 33.99,
+      id: "astaxanthin"
+    },
+    "Marine omega-3s for skin inflammation": {
+      description: "Marine-sourced omega-3 fatty acids that support skin health by reducing inflammation and promoting barrier function.",
+      benefits: "Reduced skin inflammation, improved barrier function, healthy glow",
+      dosage: "1-2g daily with meals",
+      price: 36.99,
+      id: "marine-omega-3"
+    },
+    "NAD+ precursors for cellular repair": {
+      description: "Precursors that support NAD+ production, crucial for cellular energy and DNA repair processes.",
+      benefits: "Enhanced cellular repair, anti-aging support, increased energy",
+      dosage: "250-500mg daily",
+      price: 59.99,
+      id: "nad-precursors"
+    },
+    "Resveratrol for antioxidant protection": {
+      description: "Powerful polyphenol antioxidant found in red wine and grapes, supports cardiovascular and cellular health.",
+      benefits: "Antioxidant protection, anti-aging support, cardiovascular health",
+      dosage: "250-500mg daily",
+      price: 37.99,
+      id: "resveratrol"
+    }
+  };
+
+  const handleAddToCart = (supplement: string) => {
+    const details = supplementDetails[supplement as keyof typeof supplementDetails];
+    if (details) {
+      const product = {
+        id: details.id,
+        name: supplement.split(' (')[0], // Remove dosage from name
+        price: details.price,
+        image: '/placeholder-supplement.jpg',
+        brand: 'BiohackHer',
+        dosage: details.dosage,
+        description: details.description
+      };
+      
+      addToCart(product);
+      toast({
+        title: "Added to Cart",
+        description: `${product.name} has been added to your cart.`,
+      });
+    }
+  };
+
   const specializedSections = [
     {
       title: "Coaching",
@@ -749,14 +944,51 @@ const Pillars = () => {
                             <p className="text-sm text-muted-foreground mb-4">
                               Evidence-based supplements with recommended dosages
                             </p>
-                            <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                                  {supplement}
-                                </li>
-                              ))}
-                            </ul>
+                            <div className="space-y-3">
+                              {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => {
+                                const details = supplementDetails[supplement as keyof typeof supplementDetails];
+                                return (
+                                  <div key={index} className="flex items-center justify-between gap-3 p-3 border rounded-lg hover:shadow-sm transition-shadow">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
+                                      {details ? (
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <button className="text-left hover:text-primary underline decoration-dotted text-sm">
+                                              {supplement}
+                                            </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="max-w-xs">
+                                            <div className="space-y-2">
+                                              <p className="font-medium">{details.description}</p>
+                                              <p className="text-sm"><strong>Benefits:</strong> {details.benefits}</p>
+                                              <p className="text-sm"><strong>Dosage:</strong> {details.dosage}</p>
+                                              <p className="text-sm font-medium text-primary">${details.price}</p>
+                                            </div>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      ) : (
+                                        <span className="text-sm">{supplement}</span>
+                                      )}
+                                    </div>
+                                    {details && (
+                                      <div className="flex items-center gap-2 flex-shrink-0">
+                                        <span className="text-sm font-medium text-primary">${details.price}</span>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handleAddToCart(supplement)}
+                                          className="h-8 px-3"
+                                        >
+                                          <ShoppingCart className="h-3 w-3 mr-1" />
+                                          Add
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </CardContent>
                         </Card>
                       </CollapsibleContent>
