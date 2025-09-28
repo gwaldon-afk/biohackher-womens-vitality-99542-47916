@@ -63,6 +63,11 @@ const Navigation = () => {
                     <div>Symptom</div>
                     <div>Assessment</div>
                   </div>
+                ) : item.label === "Pillars" ? (
+                  <div className="text-center leading-tight">
+                    <div>BiohackHer</div>
+                    <div>Pillars</div>
+                  </div>
                 ) : (
                   item.label
                 )}
@@ -177,6 +182,11 @@ const Navigation = () => {
                     <div className="text-center leading-tight">
                       <div>Symptom</div>
                       <div>Assessment</div>
+                    </div>
+                  ) : item.label === "Pillars" ? (
+                    <div className="text-center leading-tight">
+                      <div>BiohackHer</div>
+                      <div>Pillars</div>
                     </div>
                   ) : (
                     item.label
