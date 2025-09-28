@@ -28,14 +28,14 @@ const Reports = () => {
   }, []);
 
   const fetchSymptomAssessments = async () => {
-    if (!user) {
-      // Generate demo symptom assessments for comprehensive analysis
-      generateDemoSymptomAssessments();
-      return;
-    }
-    
     setLoadingSymptoms(true);
     try {
+      if (!user) {
+        // Generate demo symptom assessments for comprehensive analysis
+        generateDemoSymptomAssessments();
+        return;
+      }
+
       // Fetch all symptom assessments for comprehensive analysis
       const { data: assessments, error } = await supabase
         .from('symptom_assessments')
@@ -52,10 +52,18 @@ const Reports = () => {
         }
         return acc;
       }, []) || [];
-      
+
+      // If no real data, show demo data for comprehensive analysis
+      if (uniqueAssessments.length === 0) {
+        generateDemoSymptomAssessments();
+        return;
+      }
+
       setSymptomAssessments(uniqueAssessments);
     } catch (error) {
       console.error('Error fetching symptom assessments:', error);
+      // Fallback to demo data on error
+      generateDemoSymptomAssessments();
     } finally {
       setLoadingSymptoms(false);
     }
@@ -373,6 +381,12 @@ const Reports = () => {
         .limit(30);
 
       if (error) throw error;
+
+      // If no real data, show demo data for comprehensive analysis
+      if (!data || data.length === 0) {
+        generateDemoData();
+        return;
+      }
 
       setHistoricalData(data || []);
     } catch (error) {
