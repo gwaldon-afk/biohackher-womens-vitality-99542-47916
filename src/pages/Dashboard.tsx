@@ -88,7 +88,7 @@ const Dashboard = () => {
             variant="outline"
           >
             <FileText className="h-4 w-4 mr-2" />
-            Complete Today's LIS Assessment
+            Take Today's Daily Longevity Assessment
             <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
