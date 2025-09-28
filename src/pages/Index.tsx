@@ -1,3 +1,4 @@
+import heroImage from "@/assets/hero-image.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +11,9 @@ const Index = () => {
   const navigate = useNavigate();
   
   const handleScoreCalculated = () => {
+    // Callback when LIS score is calculated
     console.log("LIS score calculated from homepage");
   };
-  
   const features = [
     {
       icon: Activity,
@@ -56,7 +57,7 @@ const Index = () => {
           <div className="container mx-auto px-4 py-16 lg:py-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left z-20 relative">
-                <h1 className="text-4xl lg:text-6xl font-bold mb-6 text-white">
+                <h1 className="text-4xl lg:text-6xl font-albra font-bold mb-6 text-white">
                   <span className="text-foreground">Biohack</span>
                   <span className="text-white italic">her</span>
                   <sup className="text-sm font-normal ml-1">®</sup>
@@ -69,7 +70,10 @@ const Index = () => {
                   <Button 
                     size="lg" 
                     className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
-                    onClick={() => navigate("/auth")}
+                    onClick={() => {
+                      console.log("Map my journey clicked");
+                      navigate("/auth");
+                    }}
                   >
                     Map my journey
                   </Button>
@@ -77,7 +81,10 @@ const Index = () => {
                     size="lg" 
                     variant="outline" 
                     className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto"
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => {
+                      console.log("View Dashboard clicked");
+                      navigate("/dashboard");
+                    }}
                   >
                     View Dashboard
                   </Button>
@@ -85,9 +92,11 @@ const Index = () => {
               </div>
               
               <div className="relative">
-                <div className="rounded-lg shadow-2xl w-full max-w-md mx-auto h-64 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                  <p className="text-muted-foreground text-center">Hero Image Placeholder</p>
-                </div>
+                <img 
+                  src={heroImage} 
+                  alt="Wellness and mindfulness hero image" 
+                  className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
+                />
               </div>
             </div>
           </div>
@@ -131,6 +140,7 @@ const Index = () => {
                   key={index} 
                   className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" 
                   onClick={() => {
+                    console.log(`${feature.title} card clicked`);
                     if (feature.title === "Symptom Management") {
                       navigate("/symptoms");
                     } else if (feature.title === "Sleep Optimisation") {
@@ -168,7 +178,10 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="primary-gradient relative z-40 pointer-events-auto"
-                onClick={() => navigate("/auth")}
+                onClick={() => {
+                  console.log("Get Started Free clicked");
+                  navigate("/auth");
+                }}
               >
                 Get Started Free
               </Button>
@@ -176,7 +189,10 @@ const Index = () => {
                 size="lg" 
                 variant="outline" 
                 className="relative z-40 pointer-events-auto"
-                onClick={() => navigate("/upgrade")}
+                onClick={() => {
+                  console.log("View Premium Plans clicked");
+                  navigate("/upgrade");
+                }}
               >
                 View Premium Plans
               </Button>
