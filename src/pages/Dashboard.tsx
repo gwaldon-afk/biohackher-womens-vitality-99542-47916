@@ -37,7 +37,7 @@ const Dashboard = () => {
       className: "bg-primary text-primary-foreground hover:bg-primary/90"
     },
     {
-      title: "Take Assessment",
+      title: "Take Symptom Assessment",
       subtitle: "Complete your wellness check",
       icon: FileText,
       variant: "outline" as const,
