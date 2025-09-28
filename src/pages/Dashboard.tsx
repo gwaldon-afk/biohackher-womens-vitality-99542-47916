@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProgressCircle } from "@/components/ui/progress-circle";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -79,6 +80,19 @@ const Dashboard = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Daily LIS Quick Access */}
+        <div className="mb-6">
+          <Button 
+            onClick={() => navigate('/symptoms')}
+            className="w-full md:w-auto bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20"
+            variant="outline"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Complete Today's LIS Assessment
+            <ChevronRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
+
         {/* Welcome Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">
@@ -92,26 +106,46 @@ const Dashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-6">
-                <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
-                  <div className="text-center">
-                    <div className="text-xl font-bold">{data.currentScore}</div>
-                    <div className="text-xs text-muted-foreground">LIS Score</div>
-                  </div>
-                </ProgressCircle>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="cursor-help">
+                        <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
+                          <div className="text-center">
+                            <div className="text-xl font-bold">{data.currentScore}</div>
+                            <div className="text-xs text-muted-foreground">LIS Score</div>
+                          </div>
+                        </ProgressCircle>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs p-3">
+                      <p className="text-sm font-medium mb-2">Longevity Impact Score (LIS)</p>
+                      <p className="text-xs">
+                        LIS measures your daily habits' impact on biological aging. 
+                        Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
+                        and below 60 may accelerate aging. Based on sleep, nutrition, 
+                        activity, stress, social connections, and cognitive engagement.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">Weekly Trend:</span>
-                    {data.weeklyTrend === 'up' ? (
-                      <div className="flex items-center gap-1 text-green-600">
-                        <TrendingUp className="h-4 w-4" />
-                        <span className="text-sm font-medium">Improving</span>
-                      </div>
+                {/* LIS Analysis */}
+                <div className="space-y-2 flex-1">
+                  <div className="text-sm font-medium text-gray-900">LIS Analysis</div>
+                  <div className="text-sm text-muted-foreground">
+                    {data.currentScore >= 80 ? (
+                      <span className="text-green-600 font-medium">
+                        🎯 Excellent! Your habits are supporting healthy aging and longevity.
+                      </span>
+                    ) : data.currentScore >= 60 ? (
+                      <span className="text-blue-600 font-medium">
+                        👍 Good foundation. Small improvements could enhance your longevity impact.
+                      </span>
                     ) : (
-                      <div className="flex items-center gap-1 text-amber-600">
-                        <TrendingDown className="h-4 w-4" />
-                        <span className="text-sm font-medium">Needs attention</span>
-                      </div>
+                      <span className="text-amber-600 font-medium">
+                        ⚠️ Focus needed. Your current habits may accelerate aging processes.
+                      </span>
                     )}
                   </div>
                   
@@ -125,12 +159,31 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="text-right">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
+              <div className="flex flex-col items-end gap-4">
+                {/* Weekly Trend - moved to right */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Weekly Trend:</span>
+                  {data.weeklyTrend === 'up' ? (
+                    <div className="flex items-center gap-1 text-green-600">
+                      <TrendingUp className="h-4 w-4" />
+                      <span className="text-sm font-medium">Improving</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <TrendingDown className="h-4 w-4" />
+                      <span className="text-sm font-medium">Needs attention</span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  Health Status
+                
+                {/* Health Status */}
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-primary mb-1">
+                    {data.currentScore >= 80 ? 'Great!' : data.currentScore >= 60 ? 'Good' : 'Focus'}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Health Status
+                  </div>
                 </div>
               </div>
             </div>
