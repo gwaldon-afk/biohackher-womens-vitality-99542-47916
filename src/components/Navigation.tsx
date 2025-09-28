@@ -17,6 +17,7 @@ const Navigation = () => {
     { href: "/", label: "Home" },
     { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: "My Data" },
+    { href: "/reports", label: "Reports" },
     { href: "/symptoms", label: "Symptom Assessment" },
   ];
 
