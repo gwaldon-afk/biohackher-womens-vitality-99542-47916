@@ -312,6 +312,27 @@ const Sleep = () => {
                 </a>
               </div>
             </div>
+            
+            <div className="border rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Moon className="h-4 w-4 text-primary" />
+                <h4 className="font-semibold">REM Sleep & Memory Consolidation</h4>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">
+                REM sleep is crucial for memory consolidation, emotional processing, and brain plasticity. Disrupted REM sleep accelerates cognitive decline and reduces neuroplasticity.
+              </p>
+              <div className="flex gap-2">
+                <Badge variant="outline" className="text-xs">Nature Neuroscience</Badge>
+                <a 
+                  href="https://www.nature.com/articles/s41593-019-0493-1" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:text-primary-dark underline"
+                >
+                  Read Study →
+                </a>
+              </div>
+            </div>
           </div>
           
           <div className="bg-muted/30 p-4 rounded-lg">
