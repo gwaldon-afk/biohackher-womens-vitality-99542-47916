@@ -520,12 +520,12 @@ const Symptoms = () => {
   // Split symptoms into assessed and available
   const assessedSymptoms = user ? symptoms.filter(symptom => {
     const userSymptom = userSymptoms.find(us => us.symptom_id === symptom.id);
-    return userSymptom?.is_active;
+    return userSymptom?.is_active === true;
   }) : [];
   
   const availableSymptoms = user ? symptoms.filter(symptom => {
     const userSymptom = userSymptoms.find(us => us.symptom_id === symptom.id);
-    return !userSymptom?.is_active;
+    return !userSymptom || userSymptom.is_active !== true;
   }) : symptoms;
 
   // Get user symptom data for a specific symptom
