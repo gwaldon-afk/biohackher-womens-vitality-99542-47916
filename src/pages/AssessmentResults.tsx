@@ -2078,7 +2078,7 @@ const AssessmentResults = () => {
                        
                        {rec.analysis && (
                          <div className="bg-primary/5 p-3 rounded-lg mb-3">
-                           <h4 className="text-sm font-medium text-primary mb-1">Important Health Information</h4>
+                           <h4 className="text-sm font-medium text-primary mb-1">Relevant Research Findings</h4>
                            <p className="text-xs text-muted-foreground">{rec.analysis}</p>
                          </div>
                        )}
