@@ -338,21 +338,33 @@ const Reports = () => {
       poor: symptomAssessments.filter(a => a.score_category === 'poor').length
     };
 
+    // Extract common patterns across assessments
+    const allPrimaryIssues = symptomAssessments.flatMap(a => a.primary_issues || []);
+    const commonPatterns = allPrimaryIssues.reduce((acc: Record<string, number>, issue: string) => {
+      acc[issue] = (acc[issue] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Get average LIS from historical data for integrated analysis
+    const avgLIS = historicalData.length > 0 
+      ? historicalData.reduce((sum, d) => sum + d.longevity_impact_score, 0) / historicalData.length
+      : 95; // Demo LIS average
+
     let status = '';
     let analysis = '';
     
     if (avgScore >= 80) {
       status = 'Excellent';
-      analysis = `Outstanding symptom management across ${symptomAssessments.length} health areas. You're in the top tier for overall wellness with ${breakdown.excellent + breakdown.good} areas performing well.`;
+      analysis = `Outstanding symptom management across ${symptomAssessments.length} health areas with an average score of ${Math.round(avgScore)}/100. Your Longevity Impact Score averaging ${Math.round(avgLIS)} indicates strong alignment between your daily habits and long-term health outcomes. This combination suggests you're successfully implementing sustainable health strategies that support both immediate symptom relief and longevity optimization.`;
     } else if (avgScore >= 65) {
       status = 'Good';
-      analysis = `Strong overall health profile with ${breakdown.excellent + breakdown.good} areas performing well. ${breakdown.fair + breakdown.poor > 0 ? `Targeted improvement in ${breakdown.fair + breakdown.poor} area${breakdown.fair + breakdown.poor > 1 ? 's' : ''} could optimize your wellness further.` : ''}`;
+      analysis = `Strong overall health profile with ${breakdown.excellent + breakdown.good} areas performing well and an average symptom score of ${Math.round(avgScore)}/100. Your LIS trending around ${Math.round(avgLIS)} demonstrates good foundational health practices. ${breakdown.fair + breakdown.poor > 0 ? `The ${breakdown.fair + breakdown.poor} area${breakdown.fair + breakdown.poor > 1 ? 's' : ''} requiring attention present opportunities to further optimize your wellness trajectory and enhance your longevity potential.` : 'Your consistent performance across multiple health domains positions you well for sustained wellness.'}`;
     } else if (avgScore >= 50) {
       status = 'Fair';
-      analysis = `Mixed symptom profile with opportunities for improvement. ${breakdown.excellent + breakdown.good} areas are stable, while ${breakdown.fair + breakdown.poor} areas need focused attention for optimal health.`;
+      analysis = `Mixed health profile requiring strategic intervention. With ${symptomAssessments.length} assessments averaging ${Math.round(avgScore)}/100 and your LIS at ${Math.round(avgLIS)}, there's significant potential for improvement. ${breakdown.fair + breakdown.poor} areas need focused attention, particularly around ${Object.keys(commonPatterns)[0] || 'key symptoms'}. Your ${breakdown.excellent + breakdown.good} stable areas provide a foundation to build upon - addressing the concerning symptoms systematically could create meaningful improvements in both immediate wellbeing and long-term health outcomes.`;
     } else {
       status = 'Needs Attention';
-      analysis = `Multiple symptom areas require immediate intervention. ${breakdown.poor} critical areas and ${breakdown.fair} moderate areas identified. Comprehensive health strategy recommended.`;
+      analysis = `Comprehensive health intervention recommended. Multiple symptom areas scoring below optimal levels (average ${Math.round(avgScore)}/100) combined with variable LIS patterns suggest underlying systemic issues requiring immediate attention. ${breakdown.poor} critical areas and ${breakdown.fair} moderate areas identified. The recurring pattern of ${Object.keys(commonPatterns)[0] || 'multiple symptoms'} across assessments indicates potential root causes that, when addressed, could create cascading improvements across your entire health profile.`;
     }
 
     return { status, score: Math.round(avgScore), analysis, breakdown };
