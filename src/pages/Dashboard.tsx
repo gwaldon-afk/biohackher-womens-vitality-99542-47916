@@ -112,6 +112,7 @@ const Dashboard = () => {
   const getSymptomName = (symptomId: string) => {
     const nameMap: Record<string, string> = {
       'brain-fog': 'Brain Fog',
+      'brain-brain-fog-assessment': 'Brain Fog',
       'energy': 'Energy & Fatigue',
       'joint-pain': 'Joint Pain',
       'sleep': 'Sleep Quality',
