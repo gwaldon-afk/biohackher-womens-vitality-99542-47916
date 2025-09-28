@@ -212,6 +212,96 @@ const assessmentQuestions = {
         { value: "sometimes", label: "Sometimes - after demanding tasks" },
         { value: "often", label: "Often - daily mental fatigue" },
         { value: "constant", label: "Constantly - chronic mental exhaustion" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How is your word recall and finding the right words when speaking?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - words come easily" },
+        { value: "good", label: "Good - occasional word searching" },
+        { value: "fair", label: "Fair - frequent word-finding difficulties" },
+        { value: "poor", label: "Poor - often struggle to find words" }
+      ]
+    },
+    {
+      id: 6,
+      question: "How well do you process new information?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - quickly grasp new concepts" },
+        { value: "good", label: "Good - understand with some effort" },
+        { value: "fair", label: "Fair - need extra time to process" },
+        { value: "poor", label: "Poor - significant difficulty processing information" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How is your attention to detail and accuracy?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - rarely make errors" },
+        { value: "good", label: "Good - occasional minor mistakes" },
+        { value: "fair", label: "Fair - frequent errors requiring double-checking" },
+        { value: "poor", label: "Poor - many errors and oversights" }
+      ]
+    },
+    {
+      id: 8,
+      question: "How well do you multitask or switch between activities?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - easily juggle multiple tasks" },
+        { value: "good", label: "Good - can handle 2-3 tasks at once" },
+        { value: "fair", label: "Fair - prefer focusing on one thing at a time" },
+        { value: "poor", label: "Poor - get overwhelmed by multiple demands" }
+      ]
+    },
+    {
+      id: 9,
+      question: "How is your working memory (holding information temporarily)?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - easily remember instructions and details" },
+        { value: "good", label: "Good - remember most things with effort" },
+        { value: "fair", label: "Fair - need to write things down frequently" },
+        { value: "poor", label: "Poor - forget instructions quickly" }
+      ]
+    },
+    {
+      id: 10,
+      question: "How often do you feel mentally 'cloudy' or unclear?",
+      type: "radio",
+      options: [
+        { value: "never", label: "Never - always feel mentally clear" },
+        { value: "rarely", label: "Rarely - only when very tired" },
+        { value: "sometimes", label: "Sometimes - a few times per week" },
+        { value: "frequently", label: "Frequently - most days" }
+      ]
+    },
+    {
+      id: 11,
+      question: "How well do you organize and plan activities?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - very organized and systematic" },
+        { value: "good", label: "Good - generally well-organized" },
+        { value: "fair", label: "Fair - sometimes struggle with organization" },
+        { value: "poor", label: "Poor - frequently disorganized and scattered" }
+      ]
+    },
+    {
+      id: 12,
+      question: "How is your mental clarity first thing in the morning?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - wake up mentally sharp" },
+        { value: "good", label: "Good - clear within 30 minutes" },
+        { value: "fair", label: "Fair - takes 1-2 hours to feel clear" },
+        { value: "poor", label: "Poor - feel foggy most of the morning" }
+      ]
+    }
   ],
   
   // Body Pillar Assessments
@@ -431,8 +521,6 @@ const assessmentQuestions = {
         { value: "somewhat-important", label: "Somewhat important" },
         { value: "not-important", label: "Not a current priority" }
       ]
-    }
-  ]
     }
   ],
   
