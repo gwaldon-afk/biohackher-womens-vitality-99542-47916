@@ -145,6 +145,12 @@ const Index = () => {
                       navigate("/symptoms");
                     } else if (feature.title === "Sleep Optimisation") {
                       navigate("/sleep");
+                    } else if (feature.title === "Cycle-Aware Coaching") {
+                      navigate("/coaching");
+                    } else if (feature.title === "Biohacking Therapies") {
+                      navigate("/therapies");
+                    } else if (feature.title === "Progress Reports") {
+                      navigate("/reports");
                     }
                   }}
                 >
