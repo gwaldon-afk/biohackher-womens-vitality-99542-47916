@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -77,20 +79,16 @@ const Pillars = () => {
           "IV therapy for cognitive enhancement"
         ]
       },
-      supplements: {
-        training: [
-          "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
-          "B-complex vitamins for neurotransmitter support",
-          "Magnesium glycinate (200-400mg before bed)",
-          "Creatine monohydrate (3-5g daily for brain energy)"
-        ],
-        therapy: [
-          "Lion's Mane mushroom (500-1000mg professionally dosed)",
-          "Rhodiola rosea for stress adaptation (clinical grade)",
-          "Phosphatidylserine for memory (IV or high-dose)",
-          "Alpha-GPC for acetylcholine support (therapeutic doses)"
-        ]
-      },
+      supplements: [
+        "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
+        "Magnesium glycinate (200-400mg before bed)", 
+        "B-complex vitamins for neurotransmitter support",
+        "Lion's Mane mushroom (500-1000mg)",
+        "Rhodiola rosea for stress adaptation",
+        "Phosphatidylserine for memory",
+        "Alpha-GPC for acetylcholine support",
+        "Creatine monohydrate (3-5g daily)"
+      ],
       content: {
         overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
         keyAreas: ["Cognitive Enhancement", "Memory Optimization", "Focus & Concentration", "Neuroprotection", "Mental Clarity"]
@@ -148,20 +146,16 @@ const Pillars = () => {
           "Hormone optimization therapy"
         ]
       },
-      supplements: {
-        training: [
-          "Whey or plant protein (20-40g post-workout)",
-          "Creatine monohydrate (3-5g daily)",
-          "Electrolyte replacement (sodium, potassium)",
-          "Vitamin D3 + K2 (2000-4000 IU D3)"
-        ],
-        therapy: [
-          "Collagen peptides (10-20g for joints - clinical grade)",
-          "Magnesium (glycinate or citrate, 200-400mg therapeutic)",
-          "Omega-3 fish oil (1-3g EPA/DHA pharmaceutical grade)",
-          "CoQ10 for mitochondrial support (100-200mg professional)"
-        ]
-      },
+      supplements: [
+        "Whey or plant protein (20-40g post-workout)",
+        "Creatine monohydrate (3-5g daily)",
+        "Collagen peptides (10-20g for joints)",
+        "Vitamin D3 + K2 (2000-4000 IU D3)",
+        "Magnesium (glycinate or citrate, 200-400mg)",
+        "Omega-3 fish oil (1-3g EPA/DHA)",
+        "Electrolyte replacement (sodium, potassium)",
+        "CoQ10 for mitochondrial support (100-200mg)"
+      ],
       content: {
         overview: "Maintain peak physical performance and combat aging with cutting-edge body optimization techniques. From strength training to metabolic enhancement.",
         keyAreas: ["Strength & Mobility", "Metabolic Health", "Recovery Optimization", "Body Composition", "Physical Resilience"]
@@ -219,20 +213,16 @@ const Pillars = () => {
           "Energy healing and reiki sessions"
         ]
       },
-      supplements: {
-        training: [
-          "Magnesium glycinate (200-400mg for relaxation)",
-          "B-complex for neurotransmitter support",
-          "L-theanine (200mg for calm focus)",
-          "GABA (500-750mg for nervous system support)"
-        ],
-        therapy: [
-          "Ashwagandha (300-600mg for cortisol regulation - clinical)",
-          "Rhodiola rosea (200-400mg for stress adaptation - therapeutic)",
-          "Phosphatidylserine (100mg for cortisol management - professional)",
-          "Omega-3s for inflammation reduction (pharmaceutical grade)"
-        ]
-      },
+      supplements: [
+        "Ashwagandha (300-600mg for cortisol regulation)",
+        "Magnesium glycinate (200-400mg for relaxation)",
+        "GABA (500-750mg for nervous system support)",
+        "L-theanine (200mg for calm focus)",
+        "Rhodiola rosea (200-400mg for stress adaptation)",
+        "Phosphatidylserine (100mg for cortisol management)",
+        "B-complex for neurotransmitter support",
+        "Omega-3s for inflammation reduction"
+      ],
       content: {
         overview: "Find your equilibrium through stress management, hormonal optimization, and mindfulness practices. Create lasting balance in your daily life.",
         keyAreas: ["Stress Management", "Hormonal Balance", "Emotional Regulation", "Mindfulness", "Life Balance"]
@@ -290,25 +280,38 @@ const Pillars = () => {
           "Platelet-rich plasma (PRP) treatments"
         ]
       },
-      supplements: {
-        training: [
-          "Vitamin C (1000mg for collagen synthesis)",
-          "Biotin & zinc for hair/nail health",
-          "Marine omega-3s for skin inflammation",
-          "Hyaluronic acid (100-200mg for hydration)"
-        ],
-        therapy: [
-          "Collagen peptides (10-20g daily, types I & III - clinical)",
-          "Astaxanthin (4-8mg for UV protection - therapeutic)",
-          "NAD+ precursors for cellular repair (professional grade)",
-          "Resveratrol for antioxidant protection (high-potency)"
-        ]
-      },
+      supplements: [
+        "Collagen peptides (10-20g daily, types I & III)",
+        "Vitamin C (1000mg for collagen synthesis)",
+        "Hyaluronic acid (100-200mg for hydration)",
+        "Biotin & zinc for hair/nail health",
+        "Astaxanthin (4-8mg for UV protection)",
+        "Marine omega-3s for skin inflammation",
+        "NAD+ precursors for cellular repair",
+        "Resveratrol for antioxidant protection"
+      ],
       content: {
         overview: "Achieve radiant beauty from within using advanced anti-aging protocols, skincare innovations, and holistic beauty practices.",
         keyAreas: ["Skin Health", "Anti-Aging", "Cellular Regeneration", "Beauty Nutrition", "Aesthetic Optimization"]
       }
     }
+  };
+
+  // Protocol and therapy details for explanations
+  const protocolDetails = {
+    "Learning new languages (increases neuroplasticity by 30%)": "Start with 15-30 minutes daily using apps like Duolingo or Babbel. Focus on consistent daily practice rather than long sessions. Neuroplasticity benefits appear within 4-6 weeks.",
+    "Zone 2 cardio training (180-age in BPM, 45-60 min)": "Exercise at an intensity where you can still hold a conversation. Use heart rate monitor to stay in zone. Builds mitochondria and improves fat oxidation.",
+    "Morning sunlight exposure (10-30 min for cortisol regulation)": "Get outside within 30-60 minutes of waking. No sunglasses needed. Helps set circadian rhythm and optimizes cortisol levels throughout the day.",
+    "Daily skincare routine with active ingredients": "Cleanse, apply vitamin C serum (morning), retinol (evening 2-3x/week), moisturize, and SPF daily. Start retinol slowly to build tolerance."
+  };
+
+  const therapyExplanations = {
+    "Neurofeedback training sessions": "Non-invasive brain training using real-time monitoring of brain activity to improve focus, reduce anxiety, and optimize brain function.",
+    "Transcranial direct current stimulation (tDCS)": "Gentle electrical stimulation applied to specific brain areas to enhance cognitive performance and mood.",
+    "Hyperbaric oxygen therapy (HBOT)": "Breathing pure oxygen in a pressurized chamber to increase oxygen delivery to tissues and promote healing.",
+    "PEMF (Pulsed Electromagnetic Field) therapy": "Low-frequency electromagnetic fields applied to the body to reduce inflammation and promote cellular repair.",
+    "HRV training for autonomic balance": "Heart rate variability training using breathing techniques and biofeedback to improve stress resilience and recovery.",
+    "Microneedling for collagen induction": "Minimally invasive treatment using tiny needles to stimulate natural collagen production and improve skin texture."
   };
 
   const specializedSections = [
@@ -373,6 +376,7 @@ const Pillars = () => {
   };
 
   return (
+    <TooltipProvider>
     <div className="min-h-screen bg-background">
       <Navigation />
       
@@ -558,7 +562,25 @@ const Pillars = () => {
                               {pillars[selectedPillar as keyof typeof pillars].biohacks.training.map((training, index) => (
                                 <li key={index} className="flex items-center gap-2">
                                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                  {training}
+                                  {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                    <Dialog>
+                                      <DialogTrigger asChild>
+                                        <button className="text-left hover:text-primary underline decoration-dotted">
+                                          {training}
+                                        </button>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>{training}</DialogTitle>
+                                          <DialogDescription>
+                                            {protocolDetails[training as keyof typeof protocolDetails]}
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                      </DialogContent>
+                                    </Dialog>
+                                  ) : (
+                                    <span>{training}</span>
+                                  )}
                                 </li>
                               ))}
                             </ul>
@@ -588,7 +610,20 @@ const Pillars = () => {
                               {pillars[selectedPillar as keyof typeof pillars].biohacks.therapy.map((therapy, index) => (
                                 <li key={index} className="flex items-center gap-2">
                                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                  {therapy}
+                                  {therapyExplanations[therapy as keyof typeof therapyExplanations] ? (
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button className="text-left hover:text-primary underline decoration-dotted">
+                                          {therapy}
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="max-w-sm">
+                                        <p>{therapyExplanations[therapy as keyof typeof therapyExplanations]}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  ) : (
+                                    <span>{therapy}</span>
+                                  )}
                                 </li>
                               ))}
                             </ul>
@@ -609,49 +644,21 @@ const Pillars = () => {
                         </Button>
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-4">
-                        <div className="space-y-4">
-                          {/* Training Supplements */}
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-lg flex items-center gap-2">
-                                <Activity className="h-5 w-5 text-green-500" />
-                                Training Supplements
-                              </CardTitle>
-                              <CardDescription>Self-administered supplements for daily optimization</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <ul className="space-y-2">
-                                {pillars[selectedPillar as keyof typeof pillars].supplements.training.map((supplement, index) => (
-                                  <li key={index} className="flex items-center gap-2">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    {supplement}
-                                  </li>
-                                ))}
-                              </ul>
-                            </CardContent>
-                          </Card>
-                          
-                          {/* Therapy Supplements */}
-                          <Card>
-                            <CardHeader>
-                              <CardTitle className="text-lg flex items-center gap-2">
-                                <TestTube className="h-5 w-5 text-blue-500" />
-                                Therapeutic Supplements
-                              </CardTitle>
-                              <CardDescription>Professional-grade supplements requiring guidance</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <ul className="space-y-2">
-                                {pillars[selectedPillar as keyof typeof pillars].supplements.therapy.map((supplement, index) => (
-                                  <li key={index} className="flex items-center gap-2">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                    {supplement}
-                                  </li>
-                                ))}
-                              </ul>
-                            </CardContent>
-                          </Card>
-                        </div>
+                        <Card>
+                          <CardContent className="pt-6">
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Evidence-based supplements with recommended dosages
+                            </p>
+                            <ul className="space-y-2">
+                              {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  {supplement}
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
                       </CollapsibleContent>
                     </Collapsible>
                   </div>
@@ -694,6 +701,7 @@ const Pillars = () => {
         </div>
       </section>
     </div>
+    </TooltipProvider>
   );
 };
 
