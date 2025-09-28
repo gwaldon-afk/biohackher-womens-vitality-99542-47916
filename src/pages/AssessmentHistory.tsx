@@ -46,11 +46,6 @@ const AssessmentHistory = () => {
   // Check where user came from for proper back navigation
   const referrer = searchParams.get('from') || 'dashboard';
   const filterSymptom = searchParams.get('filter');
-  
-  // Instead of showing assessment history, redirect to symptoms page for better layout
-  useEffect(() => {
-    navigate('/symptoms?from=dashboard');
-  }, [navigate]);
 
   useEffect(() => {
     if (user) {
@@ -247,11 +242,11 @@ const AssessmentHistory = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate('/symptoms')}
+              onClick={() => navigate(referrer === 'symptoms' ? '/symptoms' : '/dashboard')}
               className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Symptoms
+              Back to {referrer === 'symptoms' ? 'Symptoms' : 'Dashboard'}
             </Button>
           </div>
           

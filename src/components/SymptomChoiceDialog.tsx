@@ -29,7 +29,7 @@ const SymptomChoiceDialog = ({
 
   const handleViewHistory = () => {
     onOpenChange(false);
-    navigate(`/symptoms?from=symptoms&filter=${symptomId}`);
+    navigate(`/assessment-history?filter=${symptomId}&from=symptoms`);
   };
 
   return (
@@ -74,8 +74,8 @@ const SymptomChoiceDialog = ({
                   <History className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">View Assessment History</h3>
-                  <p className="text-sm text-muted-foreground">Review previous assessments and trends</p>
+                  <h3 className="font-semibold">View Previous Assessments</h3>
+                  <p className="text-sm text-muted-foreground">See your completed assessments and track progress</p>
                 </div>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground" />
