@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity } from "lucide-react";
+import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, ChevronDown, Target, Lightbulb, TestTube } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -22,19 +23,37 @@ const Pillars = () => {
       image: brainPillar,
       icon: Brain,
       color: "from-purple-500 to-indigo-600",
-      assessments: [
+      symptomAssessments: [
         {
-          title: "Cognitive Function Assessment",
-          description: "Evaluate memory, focus, and mental clarity",
+          title: "Brain Fog Assessment",
+          description: "Evaluate mental clarity and cognitive function",
           duration: "5 minutes",
           questions: 12
         },
         {
-          title: "Brain Fog Analysis",
-          description: "Identify factors contributing to mental fatigue",
-          duration: "3 minutes",
-          questions: 8
+          title: "Memory & Focus Analysis",
+          description: "Assess concentration and memory performance",
+          duration: "4 minutes",
+          questions: 10
         }
+      ],
+      biohacks: [
+        "Cold exposure therapy for cognitive enhancement",
+        "Intermittent fasting for brain optimization",
+        "Red light therapy for neural function",
+        "Breathwork techniques for mental clarity"
+      ],
+      supplements: [
+        "Nootropic stacks for cognitive enhancement",
+        "Omega-3 fatty acids for brain health",
+        "Magnesium for neurotransmitter support",
+        "B-complex vitamins for mental energy"
+      ],
+      therapies: [
+        "Neurofeedback training",
+        "Cognitive behavioral therapy",
+        "Meditation and mindfulness practices",
+        "Sleep optimization protocols"
       ],
       content: {
         overview: "Optimize your cognitive function with evidence-based brain health protocols. From nootropics to neurofeedback, discover personalized strategies to enhance memory, focus, and mental clarity.",
@@ -47,19 +66,37 @@ const Pillars = () => {
       image: bodyPillar,
       icon: Activity,
       color: "from-green-500 to-emerald-600",
-      assessments: [
+      symptomAssessments: [
         {
-          title: "Physical Vitality Assessment",
-          description: "Assess strength, mobility, and energy levels",
-          duration: "7 minutes",
-          questions: 15
+          title: "Energy & Fatigue Assessment",
+          description: "Evaluate physical energy levels and fatigue patterns",
+          duration: "6 minutes",
+          questions: 14
         },
         {
-          title: "Metabolic Health Check",
-          description: "Evaluate metabolic markers and body composition",
-          duration: "4 minutes",
-          questions: 10
+          title: "Mobility & Strength Analysis",
+          description: "Assess physical function and movement quality",
+          duration: "5 minutes",
+          questions: 12
         }
+      ],
+      biohacks: [
+        "High-intensity interval training protocols",
+        "Strength training for longevity",
+        "Movement optimization techniques",
+        "Recovery and regeneration protocols"
+      ],
+      supplements: [
+        "Protein powders for muscle maintenance",
+        "Creatine for strength and power",
+        "Collagen for joint health",
+        "Electrolytes for hydration optimization"
+      ],
+      therapies: [
+        "Physical therapy and movement screening",
+        "Massage and soft tissue work",
+        "Cryotherapy and heat therapy",
+        "Functional movement assessment"
       ],
       content: {
         overview: "Maintain peak physical performance and combat aging with cutting-edge body optimization techniques. From strength training to metabolic enhancement.",
@@ -72,19 +109,37 @@ const Pillars = () => {
       image: balancePillar,
       icon: Zap,
       color: "from-blue-500 to-cyan-600",
-      assessments: [
+      symptomAssessments: [
         {
-          title: "Stress & Resilience Assessment",
-          description: "Measure stress levels and coping mechanisms",
+          title: "Stress & Anxiety Assessment",
+          description: "Evaluate stress levels and emotional balance",
           duration: "6 minutes",
           questions: 14
         },
         {
           title: "Hormonal Balance Evaluation",
-          description: "Assess hormonal health and balance indicators",
+          description: "Assess hormonal health and mood stability",
           duration: "5 minutes",
           questions: 11
         }
+      ],
+      biohacks: [
+        "Meditation and mindfulness practices",
+        "Stress reduction breathing techniques",
+        "Hormonal optimization protocols",
+        "Circadian rhythm regulation"
+      ],
+      supplements: [
+        "Adaptogenic herbs for stress management",
+        "Magnesium for relaxation and sleep",
+        "Ashwagandha for cortisol regulation",
+        "GABA for nervous system support"
+      ],
+      therapies: [
+        "Hormone replacement therapy consultation",
+        "Stress management counseling",
+        "Acupuncture for balance",
+        "Yoga and movement therapy"
       ],
       content: {
         overview: "Find your equilibrium through stress management, hormonal optimization, and mindfulness practices. Create lasting balance in your daily life.",
@@ -97,7 +152,7 @@ const Pillars = () => {
       image: beautyPillar,
       icon: Sparkles,
       color: "from-pink-500 to-rose-600",
-      assessments: [
+      symptomAssessments: [
         {
           title: "Skin Health Assessment",
           description: "Evaluate skin condition and aging markers",
@@ -105,11 +160,29 @@ const Pillars = () => {
           questions: 9
         },
         {
-          title: "Beauty Protocol Optimizer",
-          description: "Personalized beauty and anti-aging recommendations",
+          title: "Beauty & Aging Analysis",
+          description: "Assess aesthetic concerns and anti-aging needs",
           duration: "6 minutes",
           questions: 13
         }
+      ],
+      biohacks: [
+        "Red light therapy for skin rejuvenation",
+        "Facial massage and lymphatic drainage",
+        "Collagen synthesis optimization",
+        "UV protection and antioxidant protocols"
+      ],
+      supplements: [
+        "Collagen peptides for skin elasticity",
+        "Vitamin C for antioxidant protection",
+        "Hyaluronic acid for hydration",
+        "Biotin and zinc for hair and nails"
+      ],
+      therapies: [
+        "Professional skincare treatments",
+        "Dermatological consultations",
+        "Aesthetic procedures guidance",
+        "Nutrition counseling for beauty"
       ],
       content: {
         overview: "Achieve radiant beauty from within using advanced anti-aging protocols, skincare innovations, and holistic beauty practices.",
@@ -211,57 +284,138 @@ const Pillars = () => {
                 <CardHeader>
                   <CardTitle className="text-3xl flex items-center gap-3">
                     {React.createElement(pillars[selectedPillar as keyof typeof pillars].icon, { className: "h-8 w-8" })}
-                    {pillars[selectedPillar as keyof typeof pillars].title} Deep Dive
+                    {pillars[selectedPillar as keyof typeof pillars].title} Overview
                   </CardTitle>
                   <CardDescription className="text-lg">
                     {pillars[selectedPillar as keyof typeof pillars].content.overview}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="overview" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="overview">Overview</TabsTrigger>
-                      <TabsTrigger value="assessments">Personalized Assessments</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="overview" className="space-y-6">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-4">Key Focus Areas</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {pillars[selectedPillar as keyof typeof pillars].content.keyAreas.map((area, index) => (
-                            <Badge key={index} variant="secondary">
-                              {area}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </TabsContent>
-                    
-                    <TabsContent value="assessments" className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {pillars[selectedPillar as keyof typeof pillars].assessments.map((assessment, index) => (
-                          <Card key={index} className="hover:shadow-md transition-shadow">
-                            <CardHeader>
-                              <CardTitle className="text-lg">{assessment.title}</CardTitle>
-                              <CardDescription>{assessment.description}</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="flex justify-between items-center mb-4">
-                                <Badge variant="outline">{assessment.duration}</Badge>
-                                <Badge variant="outline">{assessment.questions} questions</Badge>
-                              </div>
-                              <Button 
-                                onClick={() => handleAssessmentStart(selectedPillar, assessment.title)}
-                                className="w-full"
-                              >
-                                Start Assessment
-                              </Button>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                <CardContent className="space-y-8">
+                  {/* Key Focus Areas */}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Key Focus Areas</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {pillars[selectedPillar as keyof typeof pillars].content.keyAreas.map((area, index) => (
+                        <Badge key={index} variant="secondary">
+                          {area}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Symptom Assessments */}
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      Related Symptom Assessments
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {pillars[selectedPillar as keyof typeof pillars].symptomAssessments.map((assessment, index) => (
+                        <Card key={index} className="hover:shadow-md transition-shadow">
+                          <CardHeader>
+                            <CardTitle className="text-lg">{assessment.title}</CardTitle>
+                            <CardDescription>{assessment.description}</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex justify-between items-center mb-4">
+                              <Badge variant="outline">{assessment.duration}</Badge>
+                              <Badge variant="outline">{assessment.questions} questions</Badge>
+                            </div>
+                            <Button 
+                              onClick={() => handleAssessmentStart(selectedPillar, assessment.title)}
+                              className="w-full"
+                            >
+                              Start Assessment
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Expandable Sections */}
+                  <div className="space-y-4">
+                    {/* Biohacks Section */}
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4" />
+                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Biohacks
+                          </span>
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-4">
+                        <Card>
+                          <CardContent className="pt-6">
+                            <ul className="space-y-2">
+                              {pillars[selectedPillar as keyof typeof pillars].biohacks.map((biohack, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                  {biohack}
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </CollapsibleContent>
+                    </Collapsible>
+
+                    {/* Supplements Section */}
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="flex items-center gap-2">
+                            <Pill className="h-4 w-4" />
+                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Supplements
+                          </span>
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-4">
+                        <Card>
+                          <CardContent className="pt-6">
+                            <ul className="space-y-2">
+                              {pillars[selectedPillar as keyof typeof pillars].supplements.map((supplement, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                  {supplement}
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </CollapsibleContent>
+                    </Collapsible>
+
+                    {/* Therapies Section */}
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="flex items-center gap-2">
+                            <TestTube className="h-4 w-4" />
+                            Explore {pillars[selectedPillar as keyof typeof pillars].title} Therapies
+                          </span>
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-4">
+                        <Card>
+                          <CardContent className="pt-6">
+                            <ul className="space-y-2">
+                              {pillars[selectedPillar as keyof typeof pillars].therapies.map((therapy, index) => (
+                                <li key={index} className="flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                  {therapy}
+                                </li>
+                              ))}
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </div>
                 </CardContent>
               </Card>
             </div>
