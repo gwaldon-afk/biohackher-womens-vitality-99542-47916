@@ -28,7 +28,11 @@ const Reports = () => {
   }, []);
 
   const fetchSymptomAssessments = async () => {
-    if (!user) return;
+    if (!user) {
+      // Generate demo symptom assessments for comprehensive analysis
+      generateDemoSymptomAssessments();
+      return;
+    }
     
     setLoadingSymptoms(true);
     try {
@@ -55,6 +59,74 @@ const Reports = () => {
     } finally {
       setLoadingSymptoms(false);
     }
+  };
+
+  const generateDemoSymptomAssessments = () => {
+    const demoAssessments = [
+      {
+        id: 'demo-sleep',
+        user_id: 'demo-user',
+        symptom_type: 'sleep',
+        overall_score: 72,
+        score_category: 'fair',
+        primary_issues: ['difficulty_falling_asleep', 'frequent_waking'],
+        recommendations: {
+          immediate: ['Establish consistent bedtime routine', 'Limit screen time before bed'],
+          lifestyle: ['Create optimal sleep environment', 'Consider magnesium supplementation'],
+          professional: ['Sleep study if issues persist']
+        },
+        completed_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        detail_scores: {
+          sleep_quality: 65,
+          sleep_duration: 70,
+          sleep_consistency: 75,
+          daytime_energy: 80
+        }
+      },
+      {
+        id: 'demo-stress',
+        user_id: 'demo-user',
+        symptom_type: 'stress',
+        overall_score: 58,
+        score_category: 'needs_attention',
+        primary_issues: ['work_pressure', 'anxiety', 'tension'],
+        recommendations: {
+          immediate: ['Daily meditation practice', 'Deep breathing exercises'],
+          lifestyle: ['Regular exercise routine', 'Stress management techniques'],
+          professional: ['Consider counseling support']
+        },
+        completed_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        detail_scores: {
+          emotional_regulation: 55,
+          physical_tension: 60,
+          mental_clarity: 65,
+          resilience: 52
+        }
+      },
+      {
+        id: 'demo-energy',
+        user_id: 'demo-user',
+        symptom_type: 'energy',
+        overall_score: 78,
+        score_category: 'good',
+        primary_issues: ['afternoon_crash'],
+        recommendations: {
+          immediate: ['Optimize meal timing', 'Stay hydrated'],
+          lifestyle: ['Balanced nutrition', 'Regular movement breaks'],
+          professional: ['Nutrient status testing']
+        },
+        completed_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        detail_scores: {
+          morning_energy: 85,
+          afternoon_energy: 65,
+          evening_energy: 80,
+          sustained_energy: 72
+        }
+      }
+    ];
+    
+    setSymptomAssessments(demoAssessments);
+    setLoadingSymptoms(false);
   };
 
   const getSymptomName = (symptomId: string) => {
@@ -287,11 +359,8 @@ const Reports = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to view your reports.",
-          variant: "destructive"
-        });
+        // Generate demo data for comprehensive analysis
+        generateDemoData();
         setLoading(false);
         return;
       }
@@ -316,6 +385,43 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateDemoData = () => {
+    // Generate realistic demo data for the past 30 days
+    const demoData = [];
+    const today = new Date();
+    
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      demoData.push({
+        id: `demo-${i}`,
+        user_id: 'demo-user',
+        date: date.toISOString().split('T')[0],
+        longevity_impact_score: 85 + Math.random() * 30, // 85-115 range
+        biological_age_impact: -0.5 + (Math.random() * 2), // -0.5 to 1.5
+        steps: 8000 + Math.random() * 4000,
+        sleep_score: 70 + Math.random() * 30,
+        stress_score: 20 + Math.random() * 60,
+        nutrition_score: 75 + Math.random() * 25,
+        physical_activity_score: 80 + Math.random() * 20,
+        social_connections_score: 70 + Math.random() * 30,
+        cognitive_engagement_score: 85 + Math.random() * 15,
+        color_code: Math.random() > 0.7 ? 'red' : Math.random() > 0.4 ? 'yellow' : 'green',
+        total_sleep_hours: 6.5 + Math.random() * 2,
+        deep_sleep_hours: 1.2 + Math.random() * 0.8,
+        rem_hours: 1.5 + Math.random() * 0.7,
+        hrv: 25 + Math.random() * 40,
+        self_reported_stress: 1 + Math.random() * 8,
+        active_minutes: 45 + Math.random() * 75,
+        created_at: date.toISOString(),
+        updated_at: date.toISOString()
+      });
+    }
+    
+    setHistoricalData(demoData);
   };
 
   const sampleMetrics = {
