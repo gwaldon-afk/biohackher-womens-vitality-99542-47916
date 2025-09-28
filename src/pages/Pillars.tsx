@@ -60,34 +60,46 @@ const Pillars = () => {
         }
       ],
       biohacks: {
-        training: [
-          "Learning new languages (increases neuroplasticity by 30%)",
-          "Playing musical instruments (enhances working memory)",
-          "Dual N-back cognitive training games (2-3x/week)",
-          "Speed reading practice (doubles reading efficiency)",
-          "Memory palace technique for information retention",
-          "Social engagement & meaningful relationships",
-          "Reading fiction (improves empathy and cognitive flexibility)",
-          "Meditation & mindfulness practices (8-12 minutes daily)",
-          "Breathwork training (4-7-8 breathing, box breathing)",
-          "Cold exposure training (2-11 minutes, 50-59°F)",
-          "Morning sunlight exposure protocol (10-30 minutes)",
-          "Quality sleep optimization (7-9 hours, consistent schedule)",
-          "Regular aerobic exercise (Zone 2 cardio for BDNF)",
-          "Intermittent fasting (14-16 hour windows)"
-        ],
-        therapy: [
-          "Neurofeedback training sessions",
-          "Transcranial direct current stimulation (tDCS)",
-          "Cognitive behavioral therapy (CBT)",
-          "Hyperbaric oxygen therapy (HBOT)",
-          "Red light therapy for mitochondrial function",
-          "Flotation tank sessions for deep relaxation",
-          "Binaural beats therapy (40Hz gamma waves)",
-          "Professional sleep optimization coaching",
-          "Brain mapping and assessment",
-          "IV therapy for cognitive enhancement"
-        ]
+        training: {
+          beginner: [
+            "Morning sunlight exposure protocol (10-30 minutes)",
+            "Quality sleep optimization (7-9 hours, consistent schedule)",
+            "Meditation & mindfulness practices (8-12 minutes daily)",
+            "Reading fiction (improves empathy and cognitive flexibility)"
+          ],
+          intermediate: [
+            "Learning new languages (increases neuroplasticity by 30%)",
+            "Speed reading practice (doubles reading efficiency)",
+            "Memory palace technique for information retention",
+            "Regular aerobic exercise (Zone 2 cardio for BDNF)",
+            "Intermittent fasting (14-16 hour windows)"
+          ],
+          advanced: [
+            "Dual N-back cognitive training games (2-3x/week)",
+            "Playing musical instruments (enhances working memory)",
+            "Cold exposure training (2-11 minutes, 50-59°F)",
+            "Breathwork training (4-7-8 breathing, box breathing)"
+          ]
+        },
+        therapy: {
+          beginner: [
+            "Professional sleep optimization coaching",
+            "Cognitive behavioral therapy (CBT)",
+            "Guided meditation & mindfulness training"
+          ],
+          intermediate: [
+            "Neurofeedback training sessions",
+            "Red light therapy for mitochondrial function",
+            "Flotation tank sessions for deep relaxation",
+            "Hyperbaric oxygen therapy (HBOT)"
+          ],
+          advanced: [
+            "Transcranial direct current stimulation (tDCS)",
+            "Binaural beats therapy (40Hz gamma waves)",
+            "IV therapy for cognitive enhancement",
+            "Brain mapping and assessment"
+          ]
+        }
       },
       supplements: [
         "Omega-3 fatty acids (EPA/DHA 1-3g daily)",
@@ -125,36 +137,47 @@ const Pillars = () => {
         }
       ],
       biohacks: {
-        training: [
-          "Zone 2 cardio training (180-age in BPM, 45-60 min)",
-          "Strength training 3-4x/week (compound movements)",
-          "High-intensity interval training (HIIT 2x/week)",
-          "Mobility work & dynamic stretching (daily 15 min)",
-          "Functional movement patterns training",
-          "Progressive overload resistance training",
-          "Plyometric exercises for power development",
-          "Balance and proprioception training",
-          "Walking 8,000-10,000 steps daily",
-          "Morning movement routine (5-10 minutes)",
-          "Active recovery protocols (yoga, swimming)",
-          "Breathwork training for performance",
-          "Movement quality assessment and correction",
-          "Sport-specific skill development"
-        ],
-        therapy: [
-          "Heat therapy: Sauna 4x/week (174-212°F, 20 min)",
-          "Cold plunge therapy (50-59°F, 2-11 minutes)",
-          "Deep tissue massage (weekly/bi-weekly)",
-          "Cryotherapy sessions for recovery",
-          "Compression therapy for circulation",
-          "PEMF (Pulsed Electromagnetic Field) therapy",
-          "Infrared sauna for muscle recovery",
-          "Physical therapy movement assessment",
-          "Myofascial release techniques",
-          "Recovery monitoring (HRV, sleep tracking)",
-          "IV hydration and nutrient therapy",
-          "Hormone optimization therapy"
-        ]
+        training: {
+          beginner: [
+            "Walking 8,000-10,000 steps daily",
+            "Morning movement routine (5-10 minutes)", 
+            "Mobility work & dynamic stretching (daily 15 min)",
+            "Functional movement patterns training"
+          ],
+          intermediate: [
+            "Zone 2 cardio training (180-age in BPM, 45-60 min)",
+            "Strength training 3-4x/week (compound movements)",
+            "Progressive overload resistance training",
+            "Active recovery protocols (yoga, swimming)",
+            "Breathwork training for performance"
+          ],
+          advanced: [
+            "High-intensity interval training (HIIT 2x/week)",
+            "Plyometric exercises for power development",
+            "Balance and proprioception training",
+            "Movement quality assessment and correction"
+          ]
+        },
+        therapy: {
+          beginner: [
+            "Deep tissue massage (weekly/bi-weekly)",
+            "Recovery monitoring (HRV, sleep tracking)",
+            "Myofascial release techniques"
+          ],
+          intermediate: [
+            "Heat therapy: Sauna 4x/week (174-212°F, 20 min)",
+            "Infrared sauna for muscle recovery",
+            "Physical therapy movement assessment",
+            "Compression therapy for circulation"
+          ],
+          advanced: [
+            "Cold plunge therapy (50-59°F, 2-11 minutes)",
+            "Cryotherapy sessions for recovery",
+            "PEMF (Pulsed Electromagnetic Field) therapy",
+            "IV hydration and nutrient therapy",
+            "Hormone optimization therapy"
+          ]
+        }
       },
       supplements: [
         "Whey or plant protein (20-40g post-workout)",
@@ -192,36 +215,46 @@ const Pillars = () => {
         }
       ],
       biohacks: {
-        training: [
-          "Morning sunlight exposure (10-30 min for cortisol regulation)",
-          "Stress-reducing breathwork training (4-7-8, box breathing)",
-          "Meditation & mindfulness practice (10-20 min daily)",
-          "Hormonal cycle tracking & optimization",
-          "Sleep hygiene protocol implementation",
-          "Yoga & gentle movement practices",
-          "Journaling for emotional regulation",
-          "Gratitude practice (3 things daily)",
-          "Social connection & community building",
-          "Forest bathing & nature therapy sessions",
-          "Digital detox training periods",
-          "Mindful eating practices",
-          "Stress response training techniques",
-          "Emotional regulation skill building"
-        ],
-        therapy: [
-          "Hormone testing & optimization protocols",
-          "Stress management counseling & CBT",
-          "Acupuncture for nervous system balance",
-          "Professional massage therapy",
-          "HRV training for autonomic balance",
-          "Light therapy for circadian rhythm support",
-          "Guided meditation & mindfulness training",
-          "Biofeedback therapy sessions",
-          "Adaptogenic herb protocol guidance",
-          "Sleep therapy and optimization",
-          "Nutritional therapy for mood balance",
-          "Energy healing and reiki sessions"
-        ]
+        training: {
+          beginner: [
+            "Morning sunlight exposure (10-30 min for cortisol regulation)",
+            "Sleep hygiene protocol implementation", 
+            "Gratitude practice (3 things daily)",
+            "Mindful eating practices"
+          ],
+          intermediate: [
+            "Stress-reducing breathwork training (4-7-8, box breathing)",
+            "Meditation & mindfulness practice (10-20 min daily)",
+            "Yoga & gentle movement practices",
+            "Journaling for emotional regulation",
+            "Digital detox training periods"
+          ],
+          advanced: [
+            "Hormonal cycle tracking & optimization",
+            "Forest bathing & nature therapy sessions",
+            "Stress response training techniques",
+            "Emotional regulation skill building"
+          ]
+        },
+        therapy: {
+          beginner: [
+            "Professional massage therapy",
+            "Guided meditation & mindfulness training",
+            "Sleep therapy and optimization"
+          ],
+          intermediate: [
+            "Stress management counseling & CBT",
+            "HRV training for autonomic balance",
+            "Light therapy for circadian rhythm support",
+            "Acupuncture for nervous system balance"
+          ],
+          advanced: [
+            "Hormone testing & optimization protocols",
+            "Biofeedback therapy sessions",
+            "Adaptogenic herb protocol guidance",
+            "Nutritional therapy for mood balance"
+          ]
+        }
       },
       supplements: [
         "Ashwagandha (300-600mg for cortisol regulation)",
@@ -259,36 +292,46 @@ const Pillars = () => {
         }
       ],
       biohacks: {
-        training: [
-          "Daily skincare routine with active ingredients",
-          "Facial massage & lymphatic drainage (5 min daily)",
-          "Collagen-boosting nutrition protocols",
-          "UV protection with broad-spectrum SPF 30+",
-          "Hydration optimization (half body weight in oz)",
-          "Sleep on silk pillowcases for skin/hair health",
-          "Facial exercises for muscle tone (gua sha)",
-          "Antioxidant-rich diet implementation",
-          "Sugar reduction for collagen protection",
-          "Cold water face rinses for circulation",
-          "Dry brushing for lymphatic circulation",
-          "Stress management for skin health",
-          "Regular exercise for blood flow",
-          "Beauty sleep optimization (7-9 hours)"
-        ],
-        therapy: [
-          "Professional LED red light therapy (660-850nm)",
-          "Microneedling for collagen induction",
-          "Chemical peels (glycolic, lactic acid)",
-          "Professional dermatological treatments",
-          "Lymphatic drainage massage therapy",
-          "Aesthetic consultation & treatment planning",
-          "Nutrition counseling for skin health",
-          "Hormone optimization for anti-aging",
-          "IV therapy for beauty enhancement",
-          "Professional skincare treatments",
-          "Laser therapy for skin rejuvenation",
-          "Platelet-rich plasma (PRP) treatments"
-        ]
+        training: {
+          beginner: [
+            "UV protection with broad-spectrum SPF 30+",
+            "Hydration optimization (half body weight in oz)",
+            "Beauty sleep optimization (7-9 hours)",
+            "Daily skincare routine with active ingredients"
+          ],
+          intermediate: [
+            "Facial massage & lymphatic drainage (5 min daily)",
+            "Collagen-boosting nutrition protocols",
+            "Antioxidant-rich diet implementation",
+            "Sugar reduction for collagen protection",
+            "Regular exercise for blood flow"
+          ],
+          advanced: [
+            "Facial exercises for muscle tone (gua sha)",
+            "Cold water face rinses for circulation",
+            "Dry brushing for lymphatic circulation",
+            "Stress management for skin health"
+          ]
+        },
+        therapy: {
+          beginner: [
+            "Professional dermatological treatments",
+            "Nutrition counseling for skin health",
+            "Aesthetic consultation & treatment planning"
+          ],
+          intermediate: [
+            "Professional LED red light therapy (660-850nm)",
+            "Chemical peels (glycolic, lactic acid)",
+            "Lymphatic drainage massage therapy",
+            "Hormone optimization for anti-aging"
+          ],
+          advanced: [
+            "Microneedling for collagen induction",
+            "IV therapy for beauty enhancement",
+            "Laser therapy for skin rejuvenation",
+            "Platelet-rich plasma (PRP) treatments"
+          ]
+        }
       },
       supplements: [
         "Collagen peptides (10-20g daily, types I & III)",
@@ -867,27 +910,93 @@ const Pillars = () => {
                             <p className="text-sm text-muted-foreground mb-4">
                               Evidence-based training protocols you can implement yourself
                             </p>
-                            <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].biohacks.training.map((training, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                  {protocolDetails[training as keyof typeof protocolDetails] ? (
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button className="text-left hover:text-primary underline decoration-dotted">
-                                          {training}
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent className="max-w-sm">
-                                        <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  ) : (
-                                    <span>{training}</span>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
+                            
+                            {/* Beginner Level */}
+                            <div className="mb-6">
+                              <h4 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                Beginner (Start Here)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).beginner.map((training: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {training}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{training}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Intermediate Level */}
+                            <div className="mb-6">
+                              <h4 className="font-semibold text-yellow-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                Intermediate (6+ Weeks Experience)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).intermediate.map((training: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                    {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {training}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{training}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Advanced Level */}
+                            <div className="mb-4">
+                              <h4 className="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                Advanced (3+ Months Experience)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).advanced.map((training: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {training}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{training}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </CardContent>
                         </Card>
                       </CollapsibleContent>
@@ -910,27 +1019,93 @@ const Pillars = () => {
                             <p className="text-sm text-muted-foreground mb-4">
                               Professional therapies and advanced treatments
                             </p>
-                            <ul className="space-y-2">
-                              {pillars[selectedPillar as keyof typeof pillars].biohacks.therapy.map((therapy, index) => (
-                                <li key={index} className="flex items-center gap-2">
-                                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                  {therapyExplanations[therapy as keyof typeof therapyExplanations] ? (
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button className="text-left hover:text-primary underline decoration-dotted">
-                                          {therapy}
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent className="max-w-sm">
-                                        <p>{therapyExplanations[therapy as keyof typeof therapyExplanations]}</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  ) : (
-                                    <span>{therapy}</span>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
+                            
+                            {/* Beginner Level */}
+                            <div className="mb-6">
+                              <h4 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                Beginner (Accessible & Affordable)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.therapy as any).beginner.map((therapy: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    {therapyExplanations[therapy as keyof typeof therapyExplanations] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {therapy}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{therapyExplanations[therapy as keyof typeof therapyExplanations]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{therapy}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Intermediate Level */}
+                            <div className="mb-6">
+                              <h4 className="font-semibold text-yellow-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                Intermediate (Moderate Investment)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.therapy as any).intermediate.map((therapy: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                    {therapyExplanations[therapy as keyof typeof therapyExplanations] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {therapy}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{therapyExplanations[therapy as keyof typeof therapyExplanations]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{therapy}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Advanced Level */}
+                            <div className="mb-4">
+                              <h4 className="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                Advanced (High Investment)
+                              </h4>
+                              <ul className="space-y-2 ml-5">
+                                {(pillars[selectedPillar as keyof typeof pillars].biohacks.therapy as any).advanced.map((therapy: string, index: number) => (
+                                  <li key={index} className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                    {therapyExplanations[therapy as keyof typeof therapyExplanations] ? (
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <button className="text-left hover:text-primary underline decoration-dotted">
+                                            {therapy}
+                                          </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="max-w-md">
+                                          <p>{therapyExplanations[therapy as keyof typeof therapyExplanations]}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ) : (
+                                      <span>{therapy}</span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </CardContent>
                         </Card>
                       </CollapsibleContent>
