@@ -140,14 +140,33 @@ const Dashboard = () => {
   };
 
   const getOverallHealthStatus = () => {
-    if (recentAssessments.length === 0) return { status: 'No Data', color: 'text-gray-600' };
+    if (recentAssessments.length === 0) return { 
+      status: 'No Data', 
+      color: 'text-gray-600',
+      score: 0,
+      assessment: 'Complete your first symptom assessment to get your health profile.'
+    };
     
     const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
+    const poorCount = recentAssessments.filter(a => a.score_category === 'poor').length;
+    const fairCount = recentAssessments.filter(a => a.score_category === 'fair').length;
+    const goodCount = recentAssessments.filter(a => a.score_category === 'good').length;
+    const excellentCount = recentAssessments.filter(a => a.score_category === 'excellent').length;
     
-    if (avgScore >= 80) return { status: 'Excellent', color: 'text-green-600' };
-    if (avgScore >= 65) return { status: 'Good', color: 'text-blue-600' };
-    if (avgScore >= 50) return { status: 'Fair', color: 'text-amber-600' };
-    return { status: 'Needs Attention', color: 'text-red-600' };
+    let assessment = '';
+    if (avgScore >= 80) {
+      assessment = `Outstanding health profile across ${recentAssessments.length} areas. You're in the top tier for symptom management.`;
+      return { status: 'Excellent', color: 'text-green-600', score: Math.round(avgScore), assessment };
+    } else if (avgScore >= 65) {
+      assessment = `Good overall health with ${excellentCount + goodCount} areas performing well. ${poorCount + fairCount > 0 ? `Focus needed in ${poorCount + fairCount} area${poorCount + fairCount > 1 ? 's' : ''}.` : ''}`;
+      return { status: 'Good', color: 'text-blue-600', score: Math.round(avgScore), assessment };
+    } else if (avgScore >= 50) {
+      assessment = `Mixed health profile. ${excellentCount + goodCount} areas are stable, but ${poorCount + fairCount} need attention for optimal wellbeing.`;
+      return { status: 'Fair', color: 'text-amber-600', score: Math.round(avgScore), assessment };
+    } else {
+      assessment = `Multiple areas need immediate attention. ${poorCount} critical areas identified. Focused intervention recommended.`;
+      return { status: 'Needs Attention', color: 'text-red-600', score: Math.round(avgScore), assessment };
+    }
   };
 
   const getPriorityRecommendations = () => {
@@ -432,37 +451,73 @@ const Dashboard = () => {
             {/* Overall Health Status */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Health Status</CardTitle>
+                <CardTitle className="text-lg">Consolidated Health Assessment</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center space-y-4">
-                  <div className={`text-2xl font-bold ${getOverallHealthStatus().color}`}>
-                    {getOverallHealthStatus().status}
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <div className={`text-3xl font-bold ${getOverallHealthStatus().color} mb-2`}>
+                      {getOverallHealthStatus().status}
+                    </div>
+                    {getOverallHealthStatus().score > 0 && (
+                      <div className="text-lg font-semibold text-muted-foreground mb-3">
+                        Overall Score: {getOverallHealthStatus().score}/100
+                      </div>
+                    )}
+                    <div className="text-sm text-muted-foreground leading-relaxed">
+                      {getOverallHealthStatus().assessment}
+                    </div>
                   </div>
+                  
                   {recentAssessments.length > 0 && (
-                    <div className="text-sm text-muted-foreground">
-                      Based on {recentAssessments.length} recent assessment{recentAssessments.length !== 1 ? 's' : ''}
+                    <div className="pt-4 border-t">
+                      <div className="text-xs text-muted-foreground text-center mb-3">
+                        Based on {recentAssessments.length} symptom assessment{recentAssessments.length !== 1 ? 's' : ''}
+                      </div>
+                      <div className="flex justify-center gap-4 text-xs">
+                        {recentAssessments.filter(a => a.score_category === 'excellent').length > 0 && (
+                          <span className="text-green-600">
+                            {recentAssessments.filter(a => a.score_category === 'excellent').length} Excellent
+                          </span>
+                        )}
+                        {recentAssessments.filter(a => a.score_category === 'good').length > 0 && (
+                          <span className="text-blue-600">
+                            {recentAssessments.filter(a => a.score_category === 'good').length} Good
+                          </span>
+                        )}
+                        {recentAssessments.filter(a => a.score_category === 'fair').length > 0 && (
+                          <span className="text-amber-600">
+                            {recentAssessments.filter(a => a.score_category === 'fair').length} Fair
+                          </span>
+                        )}
+                        {recentAssessments.filter(a => a.score_category === 'poor').length > 0 && (
+                          <span className="text-red-600">
+                            {recentAssessments.filter(a => a.score_category === 'poor').length} Poor
+                          </span>
+                        )}
+                      </div>
                     </div>
                   )}
-                  <div className="pt-4 space-y-2">
-                    <Button 
-                      onClick={() => navigate('/symptoms')} 
-                      className="w-full" 
-                      size="sm"
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      New Assessment
-                    </Button>
-                    <Button 
-                      onClick={() => navigate('/reports')} 
-                      variant="outline" 
-                      className="w-full" 
-                      size="sm"
-                    >
-                      <History className="h-4 w-4 mr-2" />
-                      View Reports
-                    </Button>
-                  </div>
+                </div>
+                
+                <div className="pt-4 space-y-2">
+                  <Button 
+                    onClick={() => navigate('/symptoms')} 
+                    className="w-full" 
+                    size="sm"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    New Assessment
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/reports')} 
+                    variant="outline" 
+                    className="w-full" 
+                    size="sm"
+                  >
+                    <History className="h-4 w-4 mr-2" />
+                    Detailed Analysis
+                  </Button>
                 </div>
               </CardContent>
             </Card>
