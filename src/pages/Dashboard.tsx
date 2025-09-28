@@ -149,8 +149,8 @@ const Dashboard = () => {
                       </div>
                     </div>
                     
-                    {/* Middle column - Button */}
-                    <div className="flex justify-center">
+                    {/* Middle column - Assessment buttons */}
+                    <div className="flex flex-col justify-center gap-3">
                       <Button 
                         onClick={() => navigate('/symptoms')}
                         className="bg-primary text-primary-foreground border border-primary hover:bg-primary-dark"
@@ -159,8 +159,21 @@ const Dashboard = () => {
                       >
                         <FileText className="h-4 w-4 mr-2" />
                         <div className="text-center leading-tight">
-                          <div>Take Today's Daily</div>
-                          <div>Longevity Assessment</div>
+                          <div>Complete Today's LIS</div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 ml-2" />
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => navigate('/assessment-history?from=dashboard')}
+                        className="bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary-dark"
+                        variant="outline"
+                        size="sm"
+                      >
+                        <History className="h-4 w-4 mr-2" />
+                        <div className="text-center leading-tight">
+                          <div>View Past LIS</div>
+                          <div>Assessments</div>
                         </div>
                         <ChevronRight className="h-4 w-4 ml-2" />
                       </Button>
