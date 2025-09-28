@@ -57,7 +57,14 @@ const Navigation = () => {
                     : "text-muted-foreground"
                 )}
               >
-                {item.label}
+                {item.label === "Symptom Assessment" ? (
+                  <div className="text-center leading-tight">
+                    <div>Symptom</div>
+                    <div>Assessment</div>
+                  </div>
+                ) : (
+                  item.label
+                )}
               </Link>
             ))}
             
@@ -165,7 +172,14 @@ const Navigation = () => {
                   )}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.label}
+                  {item.label === "Symptom Assessment" ? (
+                    <div className="text-center leading-tight">
+                      <div>Symptom</div>
+                      <div>Assessment</div>
+                    </div>
+                  ) : (
+                    item.label
+                  )}
                 </Link>
               ))}
               
