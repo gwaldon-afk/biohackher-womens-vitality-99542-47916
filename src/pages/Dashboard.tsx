@@ -195,7 +195,7 @@ const Dashboard = () => {
     if (recentAssessments.length > 0) {
       recommendations.push({
         title: "View Complete Health Profile",
-        description: "See all your assessments and detailed recommendations",
+        description: "See detailed aggregated analysis and comprehensive recommendations",
         action: () => navigate('/reports'),
         priority: 'medium'
       });

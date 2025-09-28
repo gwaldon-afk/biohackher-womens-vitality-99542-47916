@@ -5,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileText, Download, TrendingUp, Crown, Lock, Activity, Heart, Moon, Brain, Users, Utensils } from "lucide-react";
+import { FileText, Download, TrendingUp, Crown, Lock, Activity, Heart, Moon, Brain, Users, Utensils, CheckCircle2, AlertTriangle, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
 
 const Reports = () => {
@@ -16,7 +17,101 @@ const Reports = () => {
   const [reportType, setReportType] = useState("30-day");
   const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [symptomAssessments, setSymptomAssessments] = useState<any[]>([]);
+  const [loadingSymptoms, setLoadingSymptoms] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    fetchHistoricalData();
+    fetchSymptomAssessments();
+  }, []);
+
+  const fetchSymptomAssessments = async () => {
+    if (!user) return;
+    
+    setLoadingSymptoms(true);
+    try {
+      // Fetch all symptom assessments for comprehensive analysis
+      const { data: assessments, error } = await supabase
+        .from('symptom_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Get unique assessments by symptom type (most recent for each type)
+      const uniqueAssessments = assessments?.reduce((acc: any[], current) => {
+        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []) || [];
+      
+      setSymptomAssessments(uniqueAssessments);
+    } catch (error) {
+      console.error('Error fetching symptom assessments:', error);
+    } finally {
+      setLoadingSymptoms(false);
+    }
+  };
+
+  const getSymptomName = (symptomId: string) => {
+    const nameMap: Record<string, string> = {
+      'brain-fog': 'Brain Fog',
+      'brain-brain-fog-assessment': 'Brain Fog',
+      'energy': 'Energy & Fatigue',
+      'joint-pain': 'Joint Pain',
+      'sleep': 'Sleep Quality',
+      'gut': 'Digestive Health',
+      'hot-flashes': 'Hot Flashes',
+      'memory-focus': 'Memory & Focus',
+      'mobility': 'Mobility',
+      'bloating': 'Bloating',
+      'anxiety': 'Anxiety',
+      'weight': 'Weight Management',
+      'hair': 'Hair Health',
+      'headache': 'Headaches'
+    };
+    return nameMap[symptomId] || symptomId;
+  };
+
+  const getOverallSymptomAnalysis = () => {
+    if (symptomAssessments.length === 0) return {
+      status: 'No Data',
+      score: 0,
+      analysis: 'Complete symptom assessments to get your comprehensive health profile.',
+      breakdown: { excellent: 0, good: 0, fair: 0, poor: 0 }
+    };
+
+    const avgScore = symptomAssessments.reduce((sum, a) => sum + a.overall_score, 0) / symptomAssessments.length;
+    const breakdown = {
+      excellent: symptomAssessments.filter(a => a.score_category === 'excellent').length,
+      good: symptomAssessments.filter(a => a.score_category === 'good').length,
+      fair: symptomAssessments.filter(a => a.score_category === 'fair').length,
+      poor: symptomAssessments.filter(a => a.score_category === 'poor').length
+    };
+
+    let status = '';
+    let analysis = '';
+    
+    if (avgScore >= 80) {
+      status = 'Excellent';
+      analysis = `Outstanding symptom management across ${symptomAssessments.length} health areas. You're in the top tier for overall wellness with ${breakdown.excellent + breakdown.good} areas performing well.`;
+    } else if (avgScore >= 65) {
+      status = 'Good';
+      analysis = `Strong overall health profile with ${breakdown.excellent + breakdown.good} areas performing well. ${breakdown.fair + breakdown.poor > 0 ? `Targeted improvement in ${breakdown.fair + breakdown.poor} area${breakdown.fair + breakdown.poor > 1 ? 's' : ''} could optimize your wellness further.` : ''}`;
+    } else if (avgScore >= 50) {
+      status = 'Fair';
+      analysis = `Mixed symptom profile with opportunities for improvement. ${breakdown.excellent + breakdown.good} areas are stable, while ${breakdown.fair + breakdown.poor} areas need focused attention for optimal health.`;
+    } else {
+      status = 'Needs Attention';
+      analysis = `Multiple symptom areas require immediate intervention. ${breakdown.poor} critical areas and ${breakdown.fair} moderate areas identified. Comprehensive health strategy recommended.`;
+    }
+
+    return { status, score: Math.round(avgScore), analysis, breakdown };
+  };
 
   useEffect(() => {
     fetchHistoricalData();
@@ -156,79 +251,199 @@ Report ID: BH-${Date.now()}
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Progress Reports</h1>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">Comprehensive Health Profile</h1>
           <p className="text-muted-foreground">
-            Comprehensive analysis of your biohacking journey and longevity metrics
+            Complete analysis of your symptom assessments and longevity metrics
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Report Configuration */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Generate Report</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Report Type</label>
-                  <select 
-                    value={reportType}
-                    onChange={(e) => setReportType(e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="30-day">30-Day Report</option>
-                    <option value="90-day">90-Day Comprehensive</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Report Date</label>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    className="rounded-md border"
-                  />
-                </div>
-                
-                <Button 
-                  onClick={generateReport}
-                  className="w-full primary-gradient"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Generate PDF Report
-                </Button>
-              </CardContent>
-            </Card>
+        {/* Comprehensive Symptom Assessment Overview */}
+        <div className="mb-8">
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+                Aggregated Symptom Assessment
+              </CardTitle>
+              <CardDescription>Comprehensive analysis across all your health areas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingSymptoms ? (
+                <div className="text-center py-8 text-muted-foreground">Loading comprehensive assessment...</div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Overall Status */}
+                  <div className="text-center p-6 bg-muted/30 rounded-lg">
+                    <div className={`text-3xl font-bold mb-2 ${
+                      getOverallSymptomAnalysis().status === 'Excellent' ? 'text-green-600' :
+                      getOverallSymptomAnalysis().status === 'Good' ? 'text-blue-600' :
+                      getOverallSymptomAnalysis().status === 'Fair' ? 'text-amber-600' :
+                      'text-red-600'
+                    }`}>
+                      {getOverallSymptomAnalysis().status}
+                    </div>
+                    {getOverallSymptomAnalysis().score > 0 && (
+                      <div className="text-xl font-semibold text-muted-foreground mb-4">
+                        Overall Score: {getOverallSymptomAnalysis().score}/100
+                      </div>
+                    )}
+                    <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                      {getOverallSymptomAnalysis().analysis}
+                    </p>
+                  </div>
 
-            {/* Premium Features */}
-            <Card className="border-secondary/20 bg-secondary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-secondary">
-                  <Crown className="h-5 w-5" />
-                  Premium Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Detailed biomarker analysis</span>
-                  <Lock className="h-4 w-4 text-muted-foreground" />
+                  {/* Symptom Breakdown */}
+                  {symptomAssessments.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {getOverallSymptomAnalysis().breakdown.excellent > 0 && (
+                        <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="text-2xl font-bold text-green-600">{getOverallSymptomAnalysis().breakdown.excellent}</div>
+                          <div className="text-sm text-green-700">Excellent Areas</div>
+                        </div>
+                      )}
+                      {getOverallSymptomAnalysis().breakdown.good > 0 && (
+                        <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="text-2xl font-bold text-blue-600">{getOverallSymptomAnalysis().breakdown.good}</div>
+                          <div className="text-sm text-blue-700">Good Areas</div>
+                        </div>
+                      )}
+                      {getOverallSymptomAnalysis().breakdown.fair > 0 && (
+                        <div className="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
+                          <div className="text-2xl font-bold text-amber-600">{getOverallSymptomAnalysis().breakdown.fair}</div>
+                          <div className="text-sm text-amber-700">Fair Areas</div>
+                        </div>
+                      )}
+                      {getOverallSymptomAnalysis().breakdown.poor > 0 && (
+                        <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                          <div className="text-2xl font-bold text-red-600">{getOverallSymptomAnalysis().breakdown.poor}</div>
+                          <div className="text-sm text-red-700">Areas Needing Attention</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Individual Symptom Details */}
+                  {symptomAssessments.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold mb-4">Individual Symptom Assessment Summary</h3>
+                      {symptomAssessments.map((assessment) => (
+                        <div key={assessment.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${
+                              assessment.score_category === 'excellent' ? 'bg-green-500' :
+                              assessment.score_category === 'good' ? 'bg-blue-500' :
+                              assessment.score_category === 'fair' ? 'bg-amber-500' :
+                              'bg-red-500'
+                            }`}></div>
+                            <div>
+                              <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
+                              <div className="text-sm text-muted-foreground">
+                                Assessed {format(new Date(assessment.completed_at), 'dd/MM/yyyy')}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <Badge variant="outline" className={`${
+                              assessment.score_category === 'excellent' ? 'border-green-500 text-green-600' :
+                              assessment.score_category === 'good' ? 'border-blue-500 text-blue-600' :
+                              assessment.score_category === 'fair' ? 'border-amber-500 text-amber-600' :
+                              'border-red-500 text-red-600'
+                            }`}>
+                              {assessment.score_category}
+                            </Badge>
+                            <div className="text-sm font-medium">{Math.round(assessment.overall_score)}/100</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Physician-ready summaries</span>
-                  <Lock className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Trend predictions</span>
-                  <Lock className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <Button variant="outline" className="w-full mt-4">
-                  Upgrade for Premium Reports
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="assessment" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="assessment">Symptom Assessment</TabsTrigger>
+            <TabsTrigger value="historical">Historical Data</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="assessment" className="space-y-6">
+            {/* Symptom assessment content is already displayed above */}
+            <div className="text-center text-muted-foreground">
+              <p>Your comprehensive symptom assessment is displayed above.</p>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="historical" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Report Configuration */}
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Generate Report</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Report Type</label>
+                      <select 
+                        value={reportType}
+                        onChange={(e) => setReportType(e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="30-day">30-Day Report</option>
+                        <option value="90-day">90-Day Comprehensive</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Report Date</label>
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className="rounded-md border"
+                      />
+                    </div>
+                    
+                    <Button 
+                      onClick={generateReport}
+                      className="w-full primary-gradient"
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      Generate PDF Report
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Premium Features */}
+                <Card className="border-secondary/20 bg-secondary/5">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-secondary">
+                      <Crown className="h-5 w-5" />
+                      Premium Reports
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Detailed biomarker analysis</span>
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Physician-ready summaries</span>
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Trend predictions</span>
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <Button variant="outline" className="w-full mt-4">
+                      Upgrade for Premium Reports
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
 
           {/* Historical Data Display */}
           <div className="lg:col-span-2">
@@ -372,15 +587,17 @@ Report ID: BH-${Date.now()}
                               </div>
                             </div>
                           </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                         </AccordionItem>
+                       ))}
+                     </Accordion>
+                   </div>
+                 )}
+               </CardContent>
+             </Card>
+           </div>
+         </div>
+            </TabsContent>
+          </Tabs>
       </main>
     </div>
   );
