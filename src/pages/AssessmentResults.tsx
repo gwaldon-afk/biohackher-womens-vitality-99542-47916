@@ -741,9 +741,9 @@ const AssessmentResults = () => {
       personalisedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
       supplements: [
         { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", price: "£27.99", selected: true },
-        { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", selected: true },
-        { name: "Glucosamine Sulfate", dosage: "1500mg daily", selected: false },
-        { name: "Boswellia Extract", dosage: "400mg twice daily", selected: false }
+        { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", price: "£24.99", selected: true },
+        { name: "Glucosamine Sulfate", dosage: "1500mg daily", price: "£26.99", selected: false },
+        { name: "Boswellia Extract", dosage: "400mg twice daily", price: "£29.99", selected: false }
       ],
       analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
       improvement: "General recommended dosages are 500-1000mg curcumin with black pepper (bioperine) and 2-3g omega-3 fish oil daily with meals. Choose high-quality fish oil with EPA:DHA ratio of 2:1. For your specific recommended dosage, consult a healthcare professional.",
