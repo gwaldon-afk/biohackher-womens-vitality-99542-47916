@@ -12,7 +12,6 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Symptoms from "./pages/Symptoms";
-import SymptomsHistory from "./pages/SymptomsHistory";
 import SymptomAssessment from "./pages/SymptomAssessment";
 import AssessmentResults from "./pages/AssessmentResults";
 import AssessmentHistory from "./pages/AssessmentHistory";
@@ -44,7 +43,6 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/symptoms" element={<Symptoms />} />
-            <Route path="/symptoms-history" element={<SymptomsHistory />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />

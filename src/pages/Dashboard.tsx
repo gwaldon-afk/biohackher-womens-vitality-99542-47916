@@ -165,7 +165,7 @@ const Dashboard = () => {
                       </Button>
                       
                       <Button 
-                        onClick={() => navigate('/symptoms-history?from=dashboard')}
+                        onClick={() => navigate('/assessment-history?from=dashboard')}
                         className="bg-secondary text-secondary-foreground border border-secondary hover:bg-secondary-dark"
                         variant="outline"
                         size="sm"
