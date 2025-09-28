@@ -29,7 +29,7 @@ const SymptomChoiceDialog = ({
 
   const handleViewHistory = () => {
     onOpenChange(false);
-    navigate(`/assessment-history?filter=${symptomId}`);
+    navigate(`/symptoms?from=symptoms&filter=${symptomId}`);
   };
 
   return (
