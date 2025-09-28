@@ -540,6 +540,7 @@ const AssessmentResults = () => {
       case 'gut':
         return generateGutRecommendations(score, answers);
       case 'brain-fog':
+      case 'brain-brain-fog-assessment':
         return generateBrainFogRecommendations(score, answers);
       case 'energy-levels':
         return generateEnergyRecommendations(score, answers);
