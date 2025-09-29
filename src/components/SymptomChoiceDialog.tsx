@@ -27,9 +27,9 @@ const SymptomChoiceDialog = ({
     navigate(`/assessment/${symptomId}`);
   };
 
-  const handleViewHistory = () => {
+  const handleViewDetailedAnalysis = () => {
     onOpenChange(false);
-    navigate(`/assessment-history?filter=${symptomId}&from=symptoms`);
+    navigate(`/assessment/${symptomId}/results`);
   };
 
   return (
@@ -66,7 +66,7 @@ const SymptomChoiceDialog = ({
 
           <Card 
             className="p-4 cursor-pointer hover:bg-accent transition-colors border-2 hover:border-primary"
-            onClick={handleViewHistory}
+            onClick={handleViewDetailedAnalysis}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -74,8 +74,8 @@ const SymptomChoiceDialog = ({
                   <History className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">View Previous Assessments</h3>
-                  <p className="text-sm text-muted-foreground">See your completed assessments and track progress</p>
+                  <h3 className="font-semibold">View Detailed Analysis</h3>
+                  <p className="text-sm text-muted-foreground">See comprehensive insights and recommendations</p>
                 </div>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground" />
