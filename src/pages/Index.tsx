@@ -109,6 +109,45 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Longevity Introduction Section */}
+      <section className="py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-8">
+              Understanding <span className="gradient-text">Longevity</span>: Your Path to Living Well Longer
+            </h2>
+            <div className="space-y-6 text-lg text-muted-foreground">
+              <p>
+                Longevity isn't just about adding years to your life—it's about adding <strong>life to your years</strong>. 
+                Our mission of "Live Well Longer" centers on optimizing your <em>healthspan</em>, the period of life 
+                spent in good health, free from chronic disease and age-related decline.
+              </p>
+              <p>
+                True longevity means maintaining vitality, cognitive function, and physical wellness as you age. 
+                It's about feeling energized at 50, thriving at 60, and remaining independent and vibrant well into your later years.
+              </p>
+              <p>
+                This is where <strong>biohacking becomes essential</strong>. By understanding and optimizing your body's 
+                biological processes—from hormone balance and sleep cycles to cellular health and metabolic function—you 
+                can take control of how you age. Biohacking provides the tools and knowledge to work <em>with</em> your 
+                body's natural systems, not against them.
+              </p>
+              <div className="bg-muted/30 rounded-lg p-6 mt-8">
+                <p className="mb-4">
+                  <strong>Meet Azr Alagic, Founder & Longevity Expert</strong>
+                </p>
+                <p>
+                  With over a decade of experience in women's hormonal health and longevity research, Azr founded 
+                  BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
+                  after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
+                  interventions designed specifically for women's unique physiological needs throughout all life stages.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Common Questions Section */}
       <section className="py-16 lg:py-20 bg-muted/20">
         <div className="container mx-auto px-4">
