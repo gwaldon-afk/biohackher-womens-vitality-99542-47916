@@ -366,6 +366,223 @@ const Reports = () => {
                 </Card>
               )}
 
+              {/* Comprehensive Analysis Report */}
+              {selectedReport === 'comprehensive-analysis' && (
+                <Card>
+                  <CardHeader className="text-center border-b">
+                    <CardTitle className="text-2xl font-bold text-primary">Comprehensive Health Analysis</CardTitle>
+                    <CardDescription className="text-base">
+                      In-depth analysis combining all assessments with personalized insights
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="text-center p-6 bg-primary/5 rounded-lg">
+                          <div className="text-2xl font-bold text-primary mb-2">
+                            {getOverallSymptomAnalysis().score}/100
+                          </div>
+                          <div className="text-sm text-muted-foreground">Overall Health Score</div>
+                        </div>
+                        <div className="text-center p-6 bg-secondary/5 rounded-lg">
+                          <div className="text-2xl font-bold text-secondary mb-2">
+                            {symptomAssessments.length}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Areas Assessed</div>
+                        </div>
+                        <div className="text-center p-6 bg-accent/5 rounded-lg">
+                          <div className="text-2xl font-bold text-accent mb-2">
+                            {getOverallSymptomAnalysis().breakdown.excellent + getOverallSymptomAnalysis().breakdown.good}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Positive Areas</div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-semibold text-primary">Health Pattern Analysis</h3>
+                        {symptomAssessments.map((assessment) => (
+                          <div key={assessment.id} className="border rounded-lg p-6">
+                            <div className="flex justify-between items-start mb-4">
+                              <div>
+                                <h4 className="text-lg font-semibold">{getSymptomName(assessment.symptom_type)}</h4>
+                                <div className="flex items-center gap-3 mt-2">
+                                  <span className="text-xl font-bold">{assessment.overall_score}/100</span>
+                                  <Badge variant="outline">{assessment.score_category}</Badge>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="space-y-3">
+                              <div>
+                                <h5 className="font-medium mb-2">Key Recommendations:</h5>
+                                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                                  {assessment.recommendations?.immediate?.map((rec: string, idx: number) => (
+                                    <li key={idx}>{rec}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-center gap-4">
+                        <Button onClick={() => window.print()}>
+                          <FileText className="h-4 w-4 mr-2" />
+                          Print Analysis
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Lifestyle Recommendations Report */}
+              {selectedReport === 'lifestyle-recommendations' && (
+                <Card>
+                  <CardHeader className="text-center border-b">
+                    <CardTitle className="text-2xl font-bold text-primary">Personalized Action Plan</CardTitle>
+                    <CardDescription className="text-base">
+                      Customized recommendations and actionable steps based on your assessments
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-semibold text-primary flex items-center gap-2">
+                            <CheckCircle2 className="h-5 w-5" />
+                            Immediate Actions
+                          </h3>
+                          <div className="space-y-3">
+                            {symptomAssessments.flatMap(a => a.recommendations?.immediate || []).slice(0, 5).map((rec: string, idx: number) => (
+                              <div key={idx} className="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                                <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <span className="text-sm">{rec}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <h3 className="text-lg font-semibold text-secondary flex items-center gap-2">
+                            <Activity className="h-5 w-5" />
+                            Lifestyle Changes
+                          </h3>
+                          <div className="space-y-3">
+                            {symptomAssessments.flatMap(a => a.recommendations?.lifestyle || []).slice(0, 5).map((rec: string, idx: number) => (
+                              <div key={idx} className="flex items-start gap-3 p-3 bg-secondary/5 rounded-lg">
+                                <Activity className="h-4 w-4 text-secondary mt-0.5 flex-shrink-0" />
+                                <span className="text-sm">{rec}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t pt-6">
+                        <h3 className="text-lg font-semibold text-accent mb-4 flex items-center gap-2">
+                          <Users className="h-5 w-5" />
+                          Professional Consultations
+                        </h3>
+                        <div className="space-y-3">
+                          {symptomAssessments.flatMap(a => a.recommendations?.professional || []).map((rec: string, idx: number) => (
+                            <div key={idx} className="flex items-start gap-3 p-3 bg-accent/5 rounded-lg">
+                              <Users className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                              <span className="text-sm">{rec}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-center gap-4">
+                        <Button onClick={() => window.print()}>
+                          <FileText className="h-4 w-4 mr-2" />
+                          Print Action Plan
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Weekly Wellness Dashboard */}
+              {selectedReport === 'wellness-dashboard' && (
+                <Card>
+                  <CardHeader className="text-center border-b">
+                    <CardTitle className="text-2xl font-bold text-primary">Weekly Wellness Dashboard</CardTitle>
+                    <CardDescription className="text-base">
+                      Quick overview of your current health status and weekly highlights
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="space-y-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="text-center p-4 bg-primary/10 rounded-lg">
+                          <Heart className="h-8 w-8 text-primary mx-auto mb-2" />
+                          <div className="text-xl font-bold text-primary">
+                            {getOverallSymptomAnalysis().score}/100
+                          </div>
+                          <div className="text-xs text-muted-foreground">Health Score</div>
+                        </div>
+                        <div className="text-center p-4 bg-secondary/10 rounded-lg">
+                          <Brain className="h-8 w-8 text-secondary mx-auto mb-2" />
+                          <div className="text-xl font-bold text-secondary">
+                            {symptomAssessments.length}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Tracked Areas</div>
+                        </div>
+                        <div className="text-center p-4 bg-accent/10 rounded-lg">
+                          <TrendingUp className="h-8 w-8 text-accent mx-auto mb-2" />
+                          <div className="text-xl font-bold text-accent">7</div>
+                          <div className="text-xs text-muted-foreground">Days Active</div>
+                        </div>
+                        <div className="text-center p-4 bg-green-100 rounded-lg">
+                          <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                          <div className="text-xl font-bold text-green-600">
+                            {getOverallSymptomAnalysis().breakdown.excellent + getOverallSymptomAnalysis().breakdown.good}
+                          </div>
+                          <div className="text-xs text-muted-foreground">Good Areas</div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold text-primary mb-4">This Week's Highlights</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="p-4 border rounded-lg">
+                            <h4 className="font-medium mb-2 flex items-center gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600" />
+                              Areas of Improvement
+                            </h4>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              {symptomAssessments.filter(a => a.score_category === 'excellent' || a.score_category === 'good').map(a => (
+                                <li key={a.id}>• {getSymptomName(a.symptom_type)} ({a.overall_score}/100)</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="p-4 border rounded-lg">
+                            <h4 className="font-medium mb-2 flex items-center gap-2">
+                              <TrendingUp className="h-4 w-4 text-primary" />
+                              Focus Areas
+                            </h4>
+                            <ul className="text-sm text-muted-foreground space-y-1">
+                              {symptomAssessments.filter(a => a.score_category === 'fair' || a.score_category === 'poor').map(a => (
+                                <li key={a.id}>• {getSymptomName(a.symptom_type)} needs attention</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-center gap-4">
+                        <Button onClick={() => window.print()}>
+                          <FileText className="h-4 w-4 mr-2" />
+                          Print Dashboard
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Premium Report Placeholder */}
               {(['progress-tracking', 'medical-consultation'].includes(selectedReport || '')) && (
                 <Card className="border-secondary/20 bg-secondary/5">
