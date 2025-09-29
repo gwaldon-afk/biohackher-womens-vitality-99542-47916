@@ -858,45 +858,244 @@ const Reports = () => {
 
                             {/* Key Metrics Table */}
                             <div className="border rounded-lg overflow-hidden">
+                              <h4 className="text-lg font-bold p-4 bg-muted border-b">Comprehensive Health Metrics Overview</h4>
                               <table className="w-full">
                                 <thead className="bg-muted">
                                   <tr>
-                                    <th className="text-left p-3 text-sm font-semibold">Metric</th>
+                                    <th className="text-left p-3 text-sm font-semibold">Metric Category</th>
+                                    <th className="text-left p-3 text-sm font-semibold">Specific Metric</th>
                                     <th className="text-center p-3 text-sm font-semibold">30-Day Average</th>
                                     <th className="text-center p-3 text-sm font-semibold">Latest Value</th>
+                                    <th className="text-center p-3 text-sm font-semibold">Status</th>
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y">
-                                  <tr>
-                                    <td className="p-3 text-sm">Sleep Duration</td>
+                                  {/* Sleep Metrics */}
+                                  <tr className="bg-green-50/50 dark:bg-green-950/10">
+                                    <td rowSpan={4} className="p-3 text-sm font-semibold border-r">Sleep & Recovery</td>
+                                    <td className="p-3 text-sm">Total Sleep Duration</td>
                                     <td className="p-3 text-sm text-center font-medium">
                                       {(lisData.reduce((sum, d) => sum + (d.total_sleep_hours || 0), 0) / lisData.filter(d => d.total_sleep_hours).length).toFixed(1)}h
                                     </td>
                                     <td className="p-3 text-sm text-center">{lisData[0]?.total_sleep_hours?.toFixed(1) || 'N/A'}h</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.total_sleep_hours >= 7 ? '✓ Optimal' : '⚠ Below target'}
+                                    </td>
                                   </tr>
-                                  <tr>
+                                  <tr className="bg-green-50/50 dark:bg-green-950/10">
+                                    <td className="p-3 text-sm">Deep Sleep</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {(lisData.reduce((sum, d) => sum + (d.deep_sleep_hours || 0), 0) / lisData.filter(d => d.deep_sleep_hours).length).toFixed(1)}h
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.deep_sleep_hours?.toFixed(1) || 'N/A'}h</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.deep_sleep_hours >= 1.5 ? '✓ Good' : '⚠ Low'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-green-50/50 dark:bg-green-950/10">
+                                    <td className="p-3 text-sm">REM Sleep</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {(lisData.reduce((sum, d) => sum + (d.rem_hours || 0), 0) / lisData.filter(d => d.rem_hours).length).toFixed(1)}h
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.rem_hours?.toFixed(1) || 'N/A'}h</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.rem_hours >= 1.5 ? '✓ Good' : '⚠ Low'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-green-50/50 dark:bg-green-950/10">
+                                    <td className="p-3 text-sm">Sleep Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.sleep_score || 0), 0) / lisData.filter(d => d.sleep_score).length) || 'N/A'}/100
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.sleep_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.sleep_score >= 80 ? '✓ Excellent' : lisData[0]?.sleep_score >= 60 ? '○ Fair' : '⚠ Poor'}
+                                    </td>
+                                  </tr>
+
+                                  {/* Physical Activity Metrics */}
+                                  <tr className="bg-blue-50/50 dark:bg-blue-950/10">
+                                    <td rowSpan={4} className="p-3 text-sm font-semibold border-r">Physical Activity</td>
                                     <td className="p-3 text-sm">Daily Steps</td>
                                     <td className="p-3 text-sm text-center font-medium">
                                       {Math.round(lisData.reduce((sum, d) => sum + (d.steps || 0), 0) / lisData.filter(d => d.steps).length).toLocaleString()}
                                     </td>
                                     <td className="p-3 text-sm text-center">{lisData[0]?.steps?.toLocaleString() || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.steps >= 10000 ? '✓ Excellent' : lisData[0]?.steps >= 7000 ? '○ Good' : '⚠ Below target'}
+                                    </td>
                                   </tr>
-                                  <tr>
+                                  <tr className="bg-blue-50/50 dark:bg-blue-950/10">
+                                    <td className="p-3 text-sm">Active Minutes</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.active_minutes || 0), 0) / lisData.filter(d => d.active_minutes).length)}min
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.active_minutes || 'N/A'}min</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.active_minutes >= 30 ? '✓ Target met' : '⚠ Below target'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-blue-50/50 dark:bg-blue-950/10">
+                                    <td className="p-3 text-sm">Activity Intensity</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {(lisData.reduce((sum, d) => sum + (d.activity_intensity || 0), 0) / lisData.filter(d => d.activity_intensity).length).toFixed(1)}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.activity_intensity?.toFixed(1) || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">○ Tracked</td>
+                                  </tr>
+                                  <tr className="bg-blue-50/50 dark:bg-blue-950/10">
+                                    <td className="p-3 text-sm">Physical Activity Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.physical_activity_score || 0), 0) / lisData.filter(d => d.physical_activity_score).length) || 'N/A'}/100
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.physical_activity_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.physical_activity_score >= 80 ? '✓ Excellent' : lisData[0]?.physical_activity_score >= 60 ? '○ Fair' : '⚠ Poor'}
+                                    </td>
+                                  </tr>
+
+                                  {/* Cardiovascular & Stress Metrics */}
+                                  <tr className="bg-red-50/50 dark:bg-red-950/10">
+                                    <td rowSpan={3} className="p-3 text-sm font-semibold border-r">Cardiovascular & Stress</td>
                                     <td className="p-3 text-sm">Heart Rate Variability (HRV)</td>
                                     <td className="p-3 text-sm text-center font-medium">
-                                      {Math.round(lisData.reduce((sum, d) => sum + (d.hrv || 0), 0) / lisData.filter(d => d.hrv).length) || 'N/A'}
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.hrv || 0), 0) / lisData.filter(d => d.hrv).length) || 'N/A'}ms
                                     </td>
-                                    <td className="p-3 text-sm text-center">{lisData[0]?.hrv || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.hrv || 'N/A'}ms</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.hrv >= 50 ? '✓ Good' : '⚠ Low'}
+                                    </td>
                                   </tr>
-                                  <tr>
+                                  <tr className="bg-red-50/50 dark:bg-red-950/10">
                                     <td className="p-3 text-sm">Stress Score</td>
                                     <td className="p-3 text-sm text-center font-medium">
-                                      {Math.round(lisData.reduce((sum, d) => sum + (d.stress_score || 0), 0) / lisData.filter(d => d.stress_score).length) || 'N/A'}
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.stress_score || 0), 0) / lisData.filter(d => d.stress_score).length) || 'N/A'}/100
                                     </td>
-                                    <td className="p-3 text-sm text-center">{lisData[0]?.stress_score || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.stress_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.stress_score <= 30 ? '✓ Low' : lisData[0]?.stress_score <= 60 ? '○ Moderate' : '⚠ High'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-red-50/50 dark:bg-red-950/10">
+                                    <td className="p-3 text-sm">Self-Reported Stress</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.self_reported_stress || 0), 0) / lisData.filter(d => d.self_reported_stress).length) || 'N/A'}/10
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.self_reported_stress || 'N/A'}/10</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.self_reported_stress <= 3 ? '✓ Low' : lisData[0]?.self_reported_stress <= 6 ? '○ Moderate' : '⚠ High'}
+                                    </td>
+                                  </tr>
+
+                                  {/* Nutrition Metrics */}
+                                  <tr className="bg-pink-50/50 dark:bg-pink-950/10">
+                                    <td rowSpan={3} className="p-3 text-sm font-semibold border-r">Nutrition</td>
+                                    <td className="p-3 text-sm">Meal Quality</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {(lisData.reduce((sum, d) => sum + (d.meal_quality || 0), 0) / lisData.filter(d => d.meal_quality).length).toFixed(1)}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.meal_quality?.toFixed(1) || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">○ Tracked</td>
+                                  </tr>
+                                  <tr className="bg-pink-50/50 dark:bg-pink-950/10">
+                                    <td className="p-3 text-sm">Nutritional Grade</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {lisData[0]?.nutritional_grade || 'Not graded'}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.nutritional_grade || 'N/A'}</td>
+                                    <td className="p-3 text-sm text-center">○ Tracked</td>
+                                  </tr>
+                                  <tr className="bg-pink-50/50 dark:bg-pink-950/10">
+                                    <td className="p-3 text-sm">Nutrition Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.nutrition_score || 0), 0) / lisData.filter(d => d.nutrition_score).length) || 'N/A'}/100
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.nutrition_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.nutrition_score >= 80 ? '✓ Excellent' : lisData[0]?.nutrition_score >= 60 ? '○ Fair' : '⚠ Poor'}
+                                    </td>
+                                  </tr>
+
+                                  {/* Cognitive & Social Metrics */}
+                                  <tr className="bg-purple-50/50 dark:bg-purple-950/10">
+                                    <td rowSpan={4} className="p-3 text-sm font-semibold border-r">Cognitive & Social</td>
+                                    <td className="p-3 text-sm">Learning Minutes</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.learning_minutes || 0), 0) / lisData.filter(d => d.learning_minutes).length)}min
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.learning_minutes || 'N/A'}min</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.learning_minutes >= 30 ? '✓ Active' : '○ Tracked'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-purple-50/50 dark:bg-purple-950/10">
+                                    <td className="p-3 text-sm">Cognitive Engagement Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.cognitive_engagement_score || 0), 0) / lisData.filter(d => d.cognitive_engagement_score).length) || 'N/A'}/100
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.cognitive_engagement_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.cognitive_engagement_score >= 80 ? '✓ High' : '○ Moderate'}
+                                    </td>
+                                  </tr>
+                                  <tr className="bg-purple-50/50 dark:bg-purple-950/10">
+                                    <td className="p-3 text-sm">Social Time</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.social_time_minutes || 0), 0) / lisData.filter(d => d.social_time_minutes).length)}min
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.social_time_minutes || 'N/A'}min</td>
+                                    <td className="p-3 text-sm text-center">○ Tracked</td>
+                                  </tr>
+                                  <tr className="bg-purple-50/50 dark:bg-purple-950/10">
+                                    <td className="p-3 text-sm">Social Connections Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.social_connections_score || 0), 0) / lisData.filter(d => d.social_connections_score).length) || 'N/A'}/100
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.social_connections_score || 'N/A'}/100</td>
+                                    <td className="p-3 text-sm text-center">○ Tracked</td>
+                                  </tr>
+
+                                  {/* Meditation & Mindfulness */}
+                                  <tr className="bg-yellow-50/50 dark:bg-yellow-950/10">
+                                    <td className="p-3 text-sm font-semibold border-r">Mindfulness</td>
+                                    <td className="p-3 text-sm">Meditation Minutes</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.meditation_minutes || 0), 0) / lisData.filter(d => d.meditation_minutes).length)}min
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.meditation_minutes || 'N/A'}min</td>
+                                    <td className="p-3 text-sm text-center">
+                                      {lisData[0]?.meditation_minutes >= 10 ? '✓ Active' : '○ Tracked'}
+                                    </td>
                                   </tr>
                                 </tbody>
                               </table>
+                            </div>
+
+                            {/* LIS Trend Analysis */}
+                            <div className="border rounded-lg p-6 bg-gradient-to-br from-primary/5 to-secondary/5">
+                              <h4 className="text-lg font-bold mb-4">Longevity Impact Score (LIS) Trend Analysis</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                                <div className="text-center">
+                                  <div className="text-sm text-muted-foreground mb-1">30-Day Average</div>
+                                  <div className="text-3xl font-bold text-primary">
+                                    {Math.round(lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length)}
+                                  </div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-sm text-muted-foreground mb-1">Trend Direction</div>
+                                  <div className="text-2xl font-bold text-secondary">
+                                    {lisData[0]?.longevity_impact_score > lisData[lisData.length - 1]?.longevity_impact_score ? '↑ Improving' : '↓ Declining'}
+                                  </div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-sm text-muted-foreground mb-1">Days Tracked</div>
+                                  <div className="text-3xl font-bold text-accent">{lisData.length}</div>
+                                </div>
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                <strong>Clinical Note:</strong> LIS above 100 indicates positive longevity impact. Scores below 100 suggest areas requiring intervention.
+                                Current trend shows {lisData[0]?.longevity_impact_score >= 100 ? 'positive health behaviors' : 'need for lifestyle modifications'}.
+                              </div>
                             </div>
                           </div>
                         </div>
