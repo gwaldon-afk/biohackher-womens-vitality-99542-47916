@@ -113,7 +113,7 @@ const Index = () => {
                   <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
                 </p>
                 <p>
-                  With over a decade of experience in women's hormonal health and longevity research, Azr founded 
+                  With over a decade of experience in women's hormonal health and longevity research, Azra founded 
                   BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
                   after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
                   interventions designed specifically for women's unique physiological needs throughout all life stages.
