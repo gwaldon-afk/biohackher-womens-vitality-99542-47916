@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +19,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState<string>("");
   const handleScoreCalculated = () => {
     // Callback when LIS score is calculated
     console.log("LIS score calculated from homepage");
@@ -172,47 +175,103 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="space-y-6 text-lg text-muted-foreground">
-              <p>
-                Longevity isn't just about adding years to your life—it's about adding <strong>life to your years</strong>. 
-                Our mission of "Live Well Longer" centers on optimizing your <em>healthspan</em>, the period of life 
-                spent in good health, free from chronic disease and age-related decline.
+            <div className="mb-12">
+              <RadioGroup value={selectedTopic} onValueChange={setSelectedTopic} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="healthspan" id="healthspan" />
+                  <Label htmlFor="healthspan" className="cursor-pointer font-medium">Health Span V Life Span</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="biohacking" id="biohacking" />
+                  <Label htmlFor="biohacking" className="cursor-pointer font-medium">What is Biohacking</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="women-focused" id="women-focused" />
+                  <Label htmlFor="women-focused" className="cursor-pointer font-medium">Women Focused</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="research-gap" id="research-gap" />
+                  <Label htmlFor="research-gap" className="cursor-pointer font-medium">The Women Research Gap</Label>
+                </div>
+              </RadioGroup>
+
+              {selectedTopic && (
+                <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground">
+                  {selectedTopic === 'healthspan' && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-foreground">Health Span vs Life Span</h3>
+                      <p>
+                        Longevity isn't just about adding years to your life—it's about adding <strong>life to your years</strong>. 
+                        Our mission of "Live Well Longer" centers on optimizing your <em>healthspan</em>, the period of life 
+                        spent in good health, free from chronic disease and age-related decline.
+                      </p>
+                      <p>
+                        True longevity means maintaining vitality, cognitive function, and physical wellness as you age. 
+                        It's about feeling energized at 50, thriving at 60, and remaining independent and vibrant well into your later years.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {selectedTopic === 'biohacking' && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-foreground">What is Biohacking</h3>
+                      <p>
+                        This is where <strong>biohacking becomes essential</strong>. By understanding and optimizing your body's 
+                        biological processes—from hormone balance and sleep cycles to cellular health and metabolic function—you 
+                        can take control of how you age.
+                      </p>
+                      <p>
+                        Biohacking provides the tools and knowledge to work <em>with</em> your 
+                        body's natural systems, not against them. It's about using science-backed strategies to optimize 
+                        your health and performance at the cellular level.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {selectedTopic === 'women-focused' && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-foreground">Women Focused Approach</h3>
+                      <p>
+                        <strong>BiohackHer recognizes that women's biology isn't just "small men"</strong>—we have unique needs 
+                        throughout our cycles, pregnancies, perimenopause, and beyond. Women's longevity strategies must account 
+                        for estrogen fluctuations, different stress responses, and varying nutritional needs.
+                      </p>
+                      <p>
+                        That's why we've dedicated our research and protocols specifically to women's physiology, creating a new field of 
+                        women-centered longevity science that addresses your unique hormonal and metabolic needs.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {selectedTopic === 'research-gap' && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-semibold text-foreground">The Women Research Gap</h3>
+                      <p>
+                        There's a significant gap in longevity research. Traditionally, longevity and biohacking research has been 
+                        overwhelmingly male-dominated—with studies primarily conducted on male subjects and protocols designed for 
+                        male physiology.
+                      </p>
+                      <p>
+                        In fact, until 1993, women were largely excluded from clinical trials, and even today, 
+                        only about 38% of participants in medical research are women. This creates a dangerous knowledge gap when 
+                        women's hormonal cycles, metabolism, and aging processes differ significantly from men's.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-muted/30 rounded-lg p-6 mt-8">
+              <p className="mb-4">
+                <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
               </p>
               <p>
-                True longevity means maintaining vitality, cognitive function, and physical wellness as you age. 
-                It's about feeling energized at 50, thriving at 60, and remaining independent and vibrant well into your later years.
+                With over a decade of experience in women's hormonal health and longevity research, Azra founded 
+                BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
+                after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
+                interventions designed specifically for women's unique physiological needs throughout all life stages.
               </p>
-              <p>
-                This is where <strong>biohacking becomes essential</strong>. By understanding and optimizing your body's 
-                biological processes—from hormone balance and sleep cycles to cellular health and metabolic function—you 
-                can take control of how you age. Biohacking provides the tools and knowledge to work <em>with</em> your 
-                body's natural systems, not against them.
-              </p>
-              <p>
-                However, there's a significant gap in this field. Traditionally, longevity and biohacking research has been 
-                overwhelmingly male-dominated—with studies primarily conducted on male subjects and protocols designed for 
-                male physiology. In fact, until 1993, women were largely excluded from clinical trials, and even today, 
-                only about 38% of participants in medical research are women. This creates a dangerous knowledge gap when 
-                women's hormonal cycles, metabolism, and aging processes differ significantly from men's.
-              </p>
-              <p>
-                <strong>BiohackHer recognizes that women's biology isn't just "small men"</strong>—we have unique needs 
-                throughout our cycles, pregnancies, perimenopause, and beyond. Women's longevity strategies must account 
-                for estrogen fluctuations, different stress responses, and varying nutritional needs. That's why we've 
-                dedicated our research and protocols specifically to women's physiology, creating a new field of 
-                women-centered longevity science.
-              </p>
-              <div className="bg-muted/30 rounded-lg p-6 mt-8">
-                <p className="mb-4">
-                  <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
-                </p>
-                <p>
-                  With over a decade of experience in women's hormonal health and longevity research, Azra founded 
-                  BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
-                  after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
-                  interventions designed specifically for women's unique physiological needs throughout all life stages.
-                </p>
-              </div>
             </div>
           </div>
         </div>
