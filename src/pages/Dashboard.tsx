@@ -422,78 +422,81 @@ const Dashboard = () => {
         </Card>
 
         {/* My Health Profile Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Symptoms Overview */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+        <div className="mb-8">
+          {/* Symptoms Overview - Full Width */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <Activity className="h-5 w-5 text-primary" />
-                  My Symptoms Overview
-                </CardTitle>
-                <CardDescription>Track your health across all areas</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loadingSymptoms ? (
-                  <div className="text-center py-8 text-muted-foreground">Loading symptoms...</div>
-                ) : recentAssessments.length > 0 ? (
-                  <div className="space-y-4">
-                    {recentAssessments.map((assessment) => {
-                      const Icon = getSymptomIcon(assessment.symptom_type);
-                      return (
-                        <div key={assessment.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
-                             onClick={() => navigate(`/assessment/${assessment.symptom_type}/results`)}>
-                          <div className="flex items-center gap-3">
-                            <div className="bg-primary/10 p-2 rounded-lg">
-                              <Icon className="h-4 w-4 text-primary" />
-                            </div>
-                            <div>
-                              <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {new Date(assessment.completed_at).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className={getCategoryColor(assessment.score_category)}>
-                              {assessment.score_category}
-                            </Badge>
-                            <div className="text-sm font-medium">{assessment.overall_score}/100</div>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                    <p className="text-muted-foreground mb-4">No symptom assessments yet</p>
-                    <Button onClick={() => navigate('/symptoms')}>
-                      Take Your First Assessment
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Health Status & Quick Actions */}
-          <div className="space-y-6">
-            {/* Active Symptoms Count */}
-            <Card>
-              <CardContent className="p-4">
+                  <CardTitle>My Symptoms Overview</CardTitle>
+                </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
+                  <div className="text-2xl font-bold text-primary">
                     {activeSymptoms.length}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Active Symptoms Tracked
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+              <CardDescription>Track your health across all areas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingSymptoms ? (
+                <div className="text-center py-8 text-muted-foreground">Loading symptoms...</div>
+              ) : recentAssessments.length > 0 ? (
+                <div className="space-y-4">
+                  {recentAssessments.map((assessment) => {
+                    const Icon = getSymptomIcon(assessment.symptom_type);
+                    const getSymptomInsight = (category: string, score: number) => {
+                      if (category === 'excellent') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} management is exemplary and well-optimized.`;
+                      if (category === 'good') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} shows positive management with room for fine-tuning.`;
+                      if (category === 'fair') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} needs focused attention for improvement.`;
+                      return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} requires immediate intervention and support.`;
+                    };
+                    
+                    return (
+                      <div key={assessment.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
+                           onClick={() => navigate(`/assessment/${assessment.symptom_type}/results`)}>
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="bg-primary/10 p-2 rounded-lg">
+                            <Icon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {new Date(assessment.completed_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                          <div className="flex-1 px-4">
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {getSymptomInsight(assessment.score_category, assessment.overall_score)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className={getCategoryColor(assessment.score_category)}>
+                            {assessment.score_category}
+                          </Badge>
+                          <div className="text-sm font-medium">{assessment.overall_score}/100</div>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-muted-foreground mb-4">No symptom assessments yet</p>
+                  <Button onClick={() => navigate('/symptoms')}>
+                    Take Your First Assessment
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Priority Recommendations */}
