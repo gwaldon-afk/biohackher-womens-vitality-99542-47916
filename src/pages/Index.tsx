@@ -176,24 +176,26 @@ const Index = () => {
             </div>
 
             <div className="mb-12">
-              <RadioGroup value={selectedTopic} onValueChange={setSelectedTopic} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="healthspan" id="healthspan" />
-                  <Label htmlFor="healthspan" className="cursor-pointer font-medium">Health Span V Life Span</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="biohacking" id="biohacking" />
-                  <Label htmlFor="biohacking" className="cursor-pointer font-medium">What is Biohacking</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="women-focused" id="women-focused" />
-                  <Label htmlFor="women-focused" className="cursor-pointer font-medium">Women Focused</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="research-gap" id="research-gap" />
-                  <Label htmlFor="research-gap" className="cursor-pointer font-medium">The Women Research Gap</Label>
-                </div>
-              </RadioGroup>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {[
+                  { id: "healthspan", label: "Health Span V Life Span" },
+                  { id: "biohacking", label: "What is Biohacking" },
+                  { id: "women-focused", label: "Women Focused" },
+                  { id: "research-gap", label: "The Women Research Gap" }
+                ].map((topic) => (
+                  <button
+                    key={topic.id}
+                    onClick={() => setSelectedTopic(selectedTopic === topic.id ? "" : topic.id)}
+                    className={`p-4 rounded-lg border-2 transition-all duration-300 text-center font-medium ${
+                      selectedTopic === topic.id
+                        ? "bg-primary border-primary text-primary-foreground shadow-lg"
+                        : "bg-background border-muted hover:border-primary hover:bg-primary/10"
+                    }`}
+                  >
+                    {topic.label}
+                  </button>
+                ))}
+              </div>
 
               {selectedTopic && (
                 <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground">
