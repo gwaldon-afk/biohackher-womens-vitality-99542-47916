@@ -96,15 +96,19 @@ const Index = () => {
             <h2 className="text-3xl lg:text-4xl font-bold mb-8">
               Understanding <span className="gradient-text">Longevity</span>: Your Path to Living Well Longer
             </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-center">
+              Our <span className="gradient-text">Biohacking Pillars</span>
+            </h2>
+
             {/* Four Pillars Section */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
                 {
                   title: "Brain",
                   subtitle: "Get on top of brain fog and sharpen your mind",
                   image: brainPillar,
                   icon: Brain,
-                  color: "from-purple-500 to-indigo-600",
+                  color: "from-primary to-primary-light",
                   path: "/pillars?pillar=brain"
                 },
                 {
@@ -112,7 +116,7 @@ const Index = () => {
                   subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
                   image: bodyPillar,
                   icon: Activity,
-                  color: "from-green-500 to-emerald-600",
+                  color: "from-primary-dark to-primary",
                   path: "/pillars?pillar=body"
                 },
                 {
@@ -120,7 +124,7 @@ const Index = () => {
                   subtitle: "Achieve inner calm and peace",
                   image: balancePillar,
                   icon: Zap,
-                  color: "from-blue-500 to-cyan-600",
+                  color: "from-secondary to-secondary-light",
                   path: "/pillars?pillar=balance"
                 },
                 {
@@ -128,7 +132,7 @@ const Index = () => {
                   subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
                   image: beautyPillar,
                   icon: Sparkles,
-                  color: "from-pink-500 to-rose-600",
+                  color: "from-secondary-dark to-secondary",
                   path: "/pillars?pillar=beauty"
                 }
               ].map((pillar, index) => (
@@ -158,6 +162,14 @@ const Index = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+
+            <div className="max-w-3xl mx-auto text-center mb-12">
+              <p className="text-lg text-muted-foreground">
+                Our comprehensive approach addresses the four foundational areas of women's longevity. 
+                Each pillar represents a critical component of your health journey, from cognitive optimization 
+                to physical vitality, emotional balance, and aesthetic wellness—all designed specifically for women's unique physiological needs.
+              </p>
             </div>
 
             <div className="space-y-6 text-lg text-muted-foreground">
