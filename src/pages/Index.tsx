@@ -186,10 +186,10 @@ const Index = () => {
                   <button
                     key={topic.id}
                     onClick={() => setSelectedTopic(selectedTopic === topic.id ? "" : topic.id)}
-                    className={`p-4 rounded-lg border-2 transition-all duration-300 text-center font-medium ${
+                    className={`p-4 rounded-lg border-4 transition-all duration-300 text-center font-medium ${
                       selectedTopic === topic.id
                         ? "bg-primary border-primary text-primary-foreground shadow-lg"
-                        : "bg-background border-muted hover:border-primary hover:bg-primary/10"
+                        : "bg-background border-primary hover:border-primary hover:bg-primary/10"
                     }`}
                   >
                     {topic.label}
