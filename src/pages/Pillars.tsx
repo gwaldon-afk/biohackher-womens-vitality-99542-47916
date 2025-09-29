@@ -23,6 +23,7 @@ const Pillars = () => {
   const { addToCart } = useCart();
   const { completions, loading } = useAssessmentCompletions();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const { t } = useTranslation();
 
   // Check for pillar parameter in URL and auto-select
@@ -887,8 +888,387 @@ const Pillars = () => {
                     </div>
                   </div>
 
-                  {/* Expandable Sections */}
-                  <div className="space-y-4">
+                  {/* Horizontal Section Buttons */}
+                  <div className="space-y-6">
+                    {/* Button Row */}
+                    <div className="flex gap-4 justify-center">
+                      <Button 
+                        variant={selectedSection === "training" ? "default" : "outline"} 
+                        onClick={() => setSelectedSection(selectedSection === "training" ? null : "training")}
+                        className="flex-1 max-w-xs"
+                      >
+                        <Activity className="h-4 w-4 mr-2" />
+                        Training
+                      </Button>
+                      <Button 
+                        variant={selectedSection === "therapy" ? "default" : "outline"} 
+                        onClick={() => setSelectedSection(selectedSection === "therapy" ? null : "therapy")}
+                        className="flex-1 max-w-xs"
+                      >
+                        <TestTube className="h-4 w-4 mr-2" />
+                        Therapies
+                      </Button>
+                      <Button 
+                        variant={selectedSection === "supplements" ? "default" : "outline"} 
+                        onClick={() => setSelectedSection(selectedSection === "supplements" ? null : "supplements")}
+                        className="flex-1 max-w-xs"
+                      >
+                        <Pill className="h-4 w-4 mr-2" />
+                        Supplements
+                      </Button>
+                    </div>
+
+                    {/* Content Display with Close Button */}
+                    {selectedSection && (
+                      <Card className="relative">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedSection(null)}
+                          className="absolute top-4 right-4 z-10"
+                        >
+                          ×
+                        </Button>
+                        <CardContent className="pt-6">
+                          {selectedSection === "training" && (
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-4">
+                                Evidence-based training protocols you can implement yourself
+                              </p>
+                              
+                              {/* Beginner Level */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  Beginner (Start Here)
+                                </h4>
+                                <ul className="space-y-2 ml-5">
+                                  {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).beginner.map((training: string, index: number) => (
+                                    <li key={index} className="flex items-center gap-2">
+                                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                      {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <button className="text-left hover:text-primary underline decoration-dotted">
+                                              {training}
+                                            </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="max-w-md">
+                                            <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      ) : (
+                                        <span>{training}</span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Intermediate Level */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-yellow-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                  Intermediate (6+ Weeks Experience)
+                                </h4>
+                                <ul className="space-y-2 ml-5">
+                                  {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).intermediate.map((training: string, index: number) => (
+                                    <li key={index} className="flex items-center gap-2">
+                                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                      {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <button className="text-left hover:text-primary underline decoration-dotted">
+                                              {training}
+                                            </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="max-w-md">
+                                            <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      ) : (
+                                        <span>{training}</span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Advanced Level */}
+                              <div>
+                                <h4 className="font-semibold text-red-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                  Advanced (3+ Months Experience)
+                                </h4>
+                                <ul className="space-y-2 ml-5">
+                                  {(pillars[selectedPillar as keyof typeof pillars].biohacks.training as any).advanced.map((training: string, index: number) => (
+                                    <li key={index} className="flex items-center gap-2">
+                                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                                      {protocolDetails[training as keyof typeof protocolDetails] ? (
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <button className="text-left hover:text-primary underline decoration-dotted">
+                                              {training}
+                                            </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="max-w-md">
+                                            <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      ) : (
+                                        <span>{training}</span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          )}
+
+                          {selectedSection === "therapy" && (
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-4">
+                                Professional therapies and advanced treatments
+                              </p>
+                              
+                              {/* Gold Tier */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-yellow-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                  Gold Tier (Highest Impact)
+                                </h4>
+                                <ul className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.gold.map((therapy: string, index: number) => (
+                                    <li key={index} className="flex items-start gap-3">
+                                      <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        {protocolDetails[therapy as keyof typeof protocolDetails] ? (
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <button className="text-left hover:text-primary underline decoration-dotted">
+                                                <span className="font-medium">{therapy}</span>
+                                              </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-md">
+                                              <p>{protocolDetails[therapy as keyof typeof protocolDetails]}</p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        ) : (
+                                          <span className="font-medium">{therapy}</span>
+                                        )}
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Silver Tier */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-gray-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                                  Silver Tier (Moderate Impact)
+                                </h4>
+                                <ul className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.silver.map((therapy: string, index: number) => (
+                                    <li key={index} className="flex items-start gap-3">
+                                      <div className="w-2 h-2 bg-gray-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        {protocolDetails[therapy as keyof typeof protocolDetails] ? (
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <button className="text-left hover:text-primary underline decoration-dotted">
+                                                <span className="font-medium">{therapy}</span>
+                                              </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-md">
+                                              <p>{protocolDetails[therapy as keyof typeof protocolDetails]}</p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        ) : (
+                                          <span className="font-medium">{therapy}</span>
+                                        )}
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Bronze Tier */}
+                              <div>
+                                <h4 className="font-semibold text-orange-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                  Bronze Tier (Supportive)
+                                </h4>
+                                <ul className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.bronze.map((therapy: string, index: number) => (
+                                    <li key={index} className="flex items-start gap-3">
+                                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        {protocolDetails[therapy as keyof typeof protocolDetails] ? (
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <button className="text-left hover:text-primary underline decoration-dotted">
+                                                <span className="font-medium">{therapy}</span>
+                                              </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent className="max-w-md">
+                                              <p>{protocolDetails[therapy as keyof typeof protocolDetails]}</p>
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        ) : (
+                                          <span className="font-medium">{therapy}</span>
+                                        )}
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          )}
+
+                          {selectedSection === "supplements" && (
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-4">
+                                Evidence-based supplements with recommended dosages
+                              </p>
+                              
+                              {/* Essential Supplements */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-green-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                  Essential (Start Here)
+                                </h4>
+                                <div className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.essential.map((supplement: any, index: number) => (
+                                    <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <h5 className="font-medium text-green-800">{supplement.name}</h5>
+                                            <p className="text-sm text-green-700">{supplement.dosage}</p>
+                                            <p className="text-xs text-green-600 mt-1">{supplement.timing}</p>
+                                          </div>
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="border-green-300 text-green-700 hover:bg-green-100"
+                                            onClick={() => {
+                                              addToCart({
+                                                id: supplement.name.toLowerCase().replace(/\s+/g, '-'),
+                                                name: supplement.name,
+                                                price: 29.99,
+                                                image: "/placeholder.svg"
+                                              });
+                                              toast({
+                                                title: "Added to cart",
+                                                description: `${supplement.name} has been added to your cart.`,
+                                              });
+                                            }}
+                                          >
+                                            <ShoppingCart className="h-3 w-3 mr-1" />
+                                            Add
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Beneficial Supplements */}
+                              <div className="mb-6">
+                                <h4 className="font-semibold text-blue-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                  Beneficial (Add After 4 Weeks)
+                                </h4>
+                                <div className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.beneficial.map((supplement: any, index: number) => (
+                                    <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <h5 className="font-medium text-blue-800">{supplement.name}</h5>
+                                            <p className="text-sm text-blue-700">{supplement.dosage}</p>
+                                            <p className="text-xs text-blue-600 mt-1">{supplement.timing}</p>
+                                          </div>
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                                            onClick={() => {
+                                              addToCart({
+                                                id: supplement.name.toLowerCase().replace(/\s+/g, '-'),
+                                                name: supplement.name,
+                                                price: 34.99,
+                                                image: "/placeholder.svg"
+                                              });
+                                              toast({
+                                                title: "Added to cart",
+                                                description: `${supplement.name} has been added to your cart.`,
+                                              });
+                                            }}
+                                          >
+                                            <ShoppingCart className="h-3 w-3 mr-1" />
+                                            Add
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Optional Supplements */}
+                              <div>
+                                <h4 className="font-semibold text-purple-600 mb-3 flex items-center gap-2">
+                                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                  Optional (Advanced Users)
+                                </h4>
+                                <div className="space-y-3 ml-5">
+                                  {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.optional.map((supplement: any, index: number) => (
+                                    <div key={index} className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
+                                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                      <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <h5 className="font-medium text-purple-800">{supplement.name}</h5>
+                                            <p className="text-sm text-purple-700">{supplement.dosage}</p>
+                                            <p className="text-xs text-purple-600 mt-1">{supplement.timing}</p>
+                                          </div>
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="border-purple-300 text-purple-700 hover:bg-purple-100"
+                                            onClick={() => {
+                                              addToCart({
+                                                id: supplement.name.toLowerCase().replace(/\s+/g, '-'),
+                                                name: supplement.name,
+                                                price: 39.99,
+                                                image: "/placeholder.svg"
+                                              });
+                                              toast({
+                                                title: "Added to cart",
+                                                description: `${supplement.name} has been added to your cart.`,
+                                              });
+                                            }}
+                                          >
+                                            <ShoppingCart className="h-3 w-3 mr-1" />
+                                            Add
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
                     {/* Training Section */}
                     <Collapsible>
                       <CollapsibleTrigger asChild>
