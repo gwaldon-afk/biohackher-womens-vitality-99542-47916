@@ -344,11 +344,11 @@ const Index = () => {
             planning: "Get a personalized anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
             action: "Access our curated collection of anti-aging therapies, track your biological age markers, implement proven longevity protocols, and connect with practitioners who specialize in age optimization for women.",
             navigateTo: "/therapies"
-          }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer p-4 bg-white border-l-4 border-l-primary" onClick={() => {
+          }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer px-4 py-2 bg-white border-l-4 border-l-primary" onClick={() => {
             setSelectedQuestion(item);
             setIsModalOpen(true);
           }}>
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-2">
                   <item.icon className="h-6 w-6 text-primary mb-2" />
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-semibold leading-tight">
@@ -360,7 +360,7 @@ const Index = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0">
+                <CardContent className="pt-0 pb-2">
                   <p className="text-muted-foreground text-sm">{item.answer}</p>
                 </CardContent>
               </Card>)}
