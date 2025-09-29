@@ -196,9 +196,22 @@ const Reports = () => {
     const nameMap: Record<string, string> = {
       'joint-pain': 'Joint Pain',
       'sleep': 'Sleep Quality',
-      'energy': 'Energy & Fatigue'
+      'energy': 'Energy & Fatigue',
+      'brain-fog': 'Brain Fog',
+      'brain-brain-fog-assessment': 'Brain Fog',
+      'cognitive-function': 'Cognitive Function',
+      'memory': 'Memory Issues',
+      'mood': 'Mood & Mental Health',
+      'anxiety': 'Anxiety',
+      'depression': 'Depression',
+      'stress': 'Stress Management',
+      'digestion': 'Digestive Health',
+      'skin': 'Skin Health',
+      'weight': 'Weight Management',
+      'pain': 'Pain Management',
+      'hormones': 'Hormonal Health'
     };
-    return nameMap[symptomId] || symptomId;
+    return nameMap[symptomId] || symptomId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   const getOverallSymptomAnalysis = () => {
@@ -734,11 +747,17 @@ const Reports = () => {
                                   <div className="mb-4 ml-8">
                                     <h5 className="text-sm font-semibold text-muted-foreground mb-2">Primary Concerns:</h5>
                                     <div className="flex flex-wrap gap-2">
-                                      {assessment.primary_issues.map((issue: string, idx: number) => (
-                                        <Badge key={idx} variant="outline" className="text-xs">
-                                          {issue.replace(/_/g, ' ')}
-                                        </Badge>
-                                      ))}
+                                      {assessment.primary_issues
+                                        .filter((issue: string) => 
+                                          issue && 
+                                          !issue.toLowerCase().includes('assessment') && 
+                                          !issue.toLowerCase().includes('completed')
+                                        )
+                                        .map((issue: string, idx: number) => (
+                                          <Badge key={idx} variant="outline" className="text-xs">
+                                            {issue.replace(/_/g, ' ')}
+                                          </Badge>
+                                        ))}
                                     </div>
                                   </div>
                                 )}
