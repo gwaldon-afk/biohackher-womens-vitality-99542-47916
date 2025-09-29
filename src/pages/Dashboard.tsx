@@ -388,8 +388,18 @@ const Dashboard = () => {
 
                 <div className="flex flex-col gap-3">
                   <Button 
-                    onClick={() => navigate('/symptoms')}
+                    onClick={() => navigate('/reports?view=comprehensive')}
                     className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    size="sm"
+                  >
+                    <History className="h-4 w-4 mr-2" />
+                    View Full Analysis
+                  </Button>
+
+                  <Button 
+                    onClick={() => navigate('/symptoms')}
+                    variant="outline"
+                    className="border-primary/20 text-primary hover:bg-primary/5"
                     size="sm"
                   >
                     <FileText className="h-4 w-4 mr-2" />
@@ -404,16 +414,6 @@ const Dashboard = () => {
                   >
                     <Activity className="h-4 w-4 mr-2" />
                     New Assessment
-                  </Button>
-                  
-                  <Button 
-                    onClick={() => navigate('/reports')}
-                    variant="outline"
-                    className="border-primary/20 text-primary hover:bg-primary/5"
-                    size="sm"
-                  >
-                    <History className="h-4 w-4 mr-2" />
-                    View Full Analysis
                   </Button>
                 </div>
               </div>
