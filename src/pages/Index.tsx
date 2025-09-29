@@ -298,7 +298,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
             {[{
             question: "Why is my metabolism slowing down after 35?",
             answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimize your metabolic health.",
@@ -344,22 +344,22 @@ const Index = () => {
             planning: "Get a personalized anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
             action: "Access our curated collection of anti-aging therapies, track your biological age markers, implement proven longevity protocols, and connect with practitioners who specialize in age optimization for women.",
             navigateTo: "/therapies"
-          }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer p-6 bg-white border-l-4 border-l-primary" onClick={() => {
+          }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer p-4 bg-white border-l-4 border-l-primary" onClick={() => {
             setSelectedQuestion(item);
             setIsModalOpen(true);
           }}>
-                <CardHeader className="pb-4">
-                  <item.icon className="h-8 w-8 text-primary mb-3" />
-                  <CardTitle className="text-lg font-semibold leading-tight">
+                <CardHeader className="pb-3">
+                  <item.icon className="h-6 w-6 text-primary mb-2" />
+                  <CardTitle className="text-base font-semibold leading-tight">
                     "{item.question}"
                   </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-muted-foreground mb-4">{item.answer}</p>
-                  <div className="flex items-center text-primary font-medium text-sm">
+                  <div className="flex items-center text-primary font-medium text-sm mt-2">
                     <CheckCircle className="h-4 w-4 mr-2" />
                     Get Your Answer →
                   </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground text-sm">{item.answer}</p>
                 </CardContent>
               </Card>)}
           </div>
