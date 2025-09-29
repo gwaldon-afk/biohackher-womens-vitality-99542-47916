@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
@@ -198,7 +198,14 @@ const Index = () => {
               </div>
 
               {selectedTopic && (
-                <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground">
+                <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground relative">
+                  <button
+                    onClick={() => setSelectedTopic("")}
+                    className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted/50 transition-colors"
+                    aria-label="Close"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
                   {selectedTopic === 'healthspan' && (
                     <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">Health Span vs Life Span</h3>
