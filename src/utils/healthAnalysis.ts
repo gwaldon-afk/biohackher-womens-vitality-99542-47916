@@ -54,16 +54,17 @@ export const getOverallHealthAnalysis = (symptomAssessments: SymptomAssessment[]
   let analysis = '';
   const totalPositive = breakdown.excellent + breakdown.good;
   const totalConcerning = breakdown.fair + breakdown.poor;
+  const domainNames = symptomAssessments.map(a => getSymptomName(a.symptom_type)).join(', ');
 
   if (avgScore >= 80) {
-    analysis = `Your comprehensive health analysis reveals exceptional wellness management across ${symptomAssessments.length} key health areas, with an outstanding overall score of ${Math.round(avgScore)}/100. This places you in the optimal health category, with ${totalPositive} areas performing excellently.`;
+    analysis = `Your comprehensive health analysis reveals exceptional wellness management across ${domainNames}, with an outstanding overall score of ${Math.round(avgScore)}/100. This places you in the optimal health category, with ${totalPositive} areas performing excellently.`;
   } else if (avgScore >= 65) {
-    analysis = `Your health profile demonstrates strong overall wellness with a score of ${Math.round(avgScore)}/100 across ${symptomAssessments.length} assessed areas. You have ${totalPositive} areas performing well, indicating effective health management strategies are in place.`;
+    analysis = `Your health profile demonstrates strong overall wellness with a score of ${Math.round(avgScore)}/100 across ${domainNames}. You have ${totalPositive} areas performing well, indicating effective health management strategies are in place.`;
     if (totalConcerning > 0) {
       analysis += ` However, ${totalConcerning} area${totalConcerning > 1 ? 's require' : ' requires'} focused attention to optimize your overall wellbeing.`;
     }
   } else if (avgScore >= 50) {
-    analysis = `Your comprehensive health analysis shows a mixed wellness profile with a score of ${Math.round(avgScore)}/100, indicating both areas of strength and significant opportunities for improvement across ${symptomAssessments.length} assessed domains.`;
+    analysis = `Your comprehensive health analysis shows a mixed wellness profile with a score of ${Math.round(avgScore)}/100, indicating both areas of strength and significant opportunities for improvement across ${domainNames}.`;
     if (totalPositive > 0) {
       analysis += ` Your success in ${totalPositive} area${totalPositive > 1 ? 's' : ''} demonstrates your capability for effective health management.`;
     }
@@ -71,7 +72,7 @@ export const getOverallHealthAnalysis = (symptomAssessments: SymptomAssessment[]
       analysis += ` ${breakdown.poor} area${breakdown.poor > 1 ? 's show' : ' shows'} significant concern and should be your primary focus.`;
     }
   } else {
-    analysis = `Your current health analysis indicates significant challenges across multiple areas, with an overall score of ${Math.round(avgScore)}/100. This comprehensive assessment suggests that targeted health intervention and professional guidance would be highly beneficial.`;
+    analysis = `Your current health analysis indicates significant challenges across ${domainNames}, with an overall score of ${Math.round(avgScore)}/100. This comprehensive assessment suggests that targeted health intervention and professional guidance would be highly beneficial.`;
     if (totalPositive > 0) {
       analysis += ` However, your success in ${totalPositive} area${totalPositive > 1 ? 's' : ''} shows that positive change is achievable with the right approach.`;
     }
