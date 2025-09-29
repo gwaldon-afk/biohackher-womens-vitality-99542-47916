@@ -349,11 +349,13 @@ const Index = () => {
             setIsModalOpen(true);
           }}>
                 <CardHeader className="pb-2">
-                  <item.icon className="h-6 w-6 text-primary mb-2" />
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-semibold leading-tight">
-                      "{item.question}"
-                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <item.icon className="h-5 w-5 text-primary flex-shrink-0" />
+                      <CardTitle className="text-base font-semibold leading-tight">
+                        "{item.question}"
+                      </CardTitle>
+                    </div>
                     <div className="flex items-center text-primary font-medium text-sm ml-2">
                       <CheckCircle className="h-4 w-4 mr-1" />
                       Answer →
