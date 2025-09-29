@@ -355,7 +355,7 @@ const Index = () => {
                   </CardTitle>
                   <div className="flex items-center text-primary font-medium text-sm mt-2">
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    Get Your Answer →
+                    Answer →
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
