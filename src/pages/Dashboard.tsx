@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { getOverallHealthAnalysis, getSymptomName, getTopRecommendations } from "@/utils/healthAnalysis";
 
 interface DashboardData {
   currentScore: number;
@@ -107,26 +108,6 @@ const Dashboard = () => {
       'anxiety': AlertTriangle
     };
     return iconMap[symptomId] || Heart;
-  };
-
-  const getSymptomName = (symptomId: string) => {
-    const nameMap: Record<string, string> = {
-      'brain-fog': 'Brain Fog',
-      'brain-brain-fog-assessment': 'Brain Fog',
-      'energy': 'Energy & Fatigue',
-      'joint-pain': 'Joint Pain',
-      'sleep': 'Sleep Quality',
-      'gut': 'Digestive Health',
-      'hot-flashes': 'Hot Flashes',
-      'memory-focus': 'Memory & Focus',
-      'mobility': 'Mobility',
-      'bloating': 'Bloating',
-      'anxiety': 'Anxiety',
-      'weight': 'Weight Management',
-      'hair': 'Hair Health',
-      'headache': 'Headaches'
-    };
-    return nameMap[symptomId] || symptomId;
   };
 
   const getCategoryColor = (category: string) => {
@@ -341,40 +322,31 @@ const Dashboard = () => {
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
           <CardContent className="p-6">
             <div className="space-y-6">
-              {/* Primary Assessment Statement */}
+              {/* Comprehensive Health Analysis */}
               <div className="text-center">
-                <h2 className="text-xl font-bold text-primary mb-4">Your Personalized Health Assessment</h2>
+                <h2 className="text-xl font-bold text-primary mb-4">Your Comprehensive Health Analysis</h2>
                 <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                  {getPersonalizedAssessmentStatements().primaryStatement}
+                  {getOverallHealthAnalysis(recentAssessments).analysis}
                 </p>
               </div>
 
-              {/* Secondary Assessment Insights */}
-              {getPersonalizedAssessmentStatements().secondaryStatements.length > 0 && (
+              {/* Top Recommendations */}
+              {recentAssessments.length > 0 && (
                 <div className="space-y-3">
-                  {getPersonalizedAssessmentStatements().secondaryStatements.map((statement, index) => (
+                  <h3 className="font-semibold text-primary">Priority Recommendations</h3>
+                  {getTopRecommendations(recentAssessments).map((rec, index) => (
                     <div key={index} className="flex items-start gap-3 p-4 bg-background/80 rounded-lg border border-primary/10">
-                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {statement}
-                      </p>
+                      <div className={`h-2 w-2 rounded-full mt-2 ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
+                      <div>
+                        <p className="text-sm font-medium text-primary">{rec.area}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {rec.recommendation}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
-
-              {/* Action Statement */}
-              <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-                <div className="flex items-start gap-3">
-                  <TrendingUp className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <h3 className="font-semibold text-primary mb-2">Recommended Focus</h3>
-                    <p className="text-sm text-primary/80 leading-relaxed">
-                      {getPersonalizedAssessmentStatements().actionStatement}
-                    </p>
-                  </div>
-                </div>
-              </div>
 
               {/* Health Score and Actions */}
               <div className="flex items-center justify-between pt-4 border-t border-primary/10">
@@ -403,12 +375,12 @@ const Dashboard = () => {
                   </TooltipProvider>
                   
                   <div className="space-y-2">
-                    <div className={`text-2xl font-bold ${getOverallHealthStatus().color}`}>
-                      {getOverallHealthStatus().status}
+                    <div className={`text-2xl font-bold ${getOverallHealthAnalysis(recentAssessments).status === 'Excellent' ? 'text-green-600' : getOverallHealthAnalysis(recentAssessments).status === 'Good' ? 'text-blue-600' : getOverallHealthAnalysis(recentAssessments).status === 'Fair' ? 'text-amber-600' : 'text-red-600'}`}>
+                      {getOverallHealthAnalysis(recentAssessments).status}
                     </div>
-                    {getOverallHealthStatus().score > 0 && (
+                    {getOverallHealthAnalysis(recentAssessments).score > 0 && (
                       <div className="text-sm text-muted-foreground">
-                        Overall Score: {getOverallHealthStatus().score}/100
+                        Overall Score: {getOverallHealthAnalysis(recentAssessments).score}/100
                       </div>
                     )}
                   </div>
