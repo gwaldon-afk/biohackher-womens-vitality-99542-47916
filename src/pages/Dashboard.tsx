@@ -395,6 +395,16 @@ const Dashboard = () => {
                     <FileText className="h-4 w-4 mr-2" />
                     Update Assessment
                   </Button>
+
+                  <Button 
+                    onClick={() => navigate('/symptoms')}
+                    variant="outline"
+                    className="border-primary/20 text-primary hover:bg-primary/5"
+                    size="sm"
+                  >
+                    <Activity className="h-4 w-4 mr-2" />
+                    New Assessment
+                  </Button>
                   
                   <Button 
                     onClick={() => navigate('/reports')}
