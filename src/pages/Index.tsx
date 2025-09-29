@@ -78,7 +78,7 @@ const Index = () => {
                     className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
                     onClick={() => {
                       console.log("Get my answers clicked");
-                      navigate("/auth");
+                      navigate("/symptoms");
                     }}
                   >
                     Get My Answers Now
