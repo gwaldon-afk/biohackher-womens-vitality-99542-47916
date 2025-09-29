@@ -2,7 +2,7 @@ import heroImage from "@/assets/hero-image.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
@@ -58,24 +58,25 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left z-20 relative">
                 <h1 className="text-4xl lg:text-6xl font-albra font-bold mb-6 text-white">
-                  <span className="text-foreground">Biohack</span>
-                  <span className="text-white italic">her</span>
-                  <sup className="text-sm font-normal ml-1">®</sup>
+                  Finally understand what's happening to your body after 35
                 </h1>
-                <p className="text-xl lg:text-2xl mb-8 text-white/90">
-                  Live well longer.<br />
-                  Empowering women to beat ageing through biohacking.
+                <p className="text-xl lg:text-2xl mb-6 text-white/90">
+                  Stop guessing. Start knowing. Get science-backed answers to the changes you're experiencing.
                 </p>
+                <div className="flex items-center gap-2 mb-8 justify-center lg:justify-start">
+                  <Users className="h-5 w-5 text-white/80" />
+                  <span className="text-white/80">Join 10,000+ women who found their answers</span>
+                </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
                   <Button 
                     size="lg" 
                     className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
                     onClick={() => {
-                      console.log("Map my journey clicked");
+                      console.log("Get my answers clicked");
                       navigate("/auth");
                     }}
                   >
-                    Map my journey
+                    Get My Answers Now
                   </Button>
                   <Button 
                     size="lg" 
@@ -99,6 +100,75 @@ const Index = () => {
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Common Questions Section */}
+      <section className="py-16 lg:py-20 bg-muted/20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+              Sound Familiar? You're Not Alone.
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              These are the questions thousands of women ask us. Get evidence-based answers, not generic advice.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {[
+              {
+                question: "Why is my metabolism slowing down after 35?",
+                answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimize your metabolic health.",
+                icon: Flame,
+                action: () => navigate("/pillars")
+              },
+              {
+                question: "How do I prepare for perimenopause naturally?",
+                answer: "Get personalized hormone-balancing protocols based on your unique symptoms and lifestyle.",
+                icon: Heart,
+                action: () => navigate("/symptoms")
+              },
+              {
+                question: "Why am I always tired despite sleeping 8 hours?",
+                answer: "Sleep quality matters more than quantity. Discover what's disrupting your rest and how to fix it.",
+                icon: Moon,
+                action: () => navigate("/sleep")
+              },
+              {
+                question: "Is this brain fog normal or should I be worried?",
+                answer: "Cognitive changes are real but treatable. Learn evidence-based strategies to clear mental fog.",
+                icon: Brain,
+                action: () => navigate("/symptoms")
+              },
+              {
+                question: "What actually works to slow down aging?",
+                answer: "Cut through the noise with proven biohacking protocols tailored for women's unique needs.",
+                icon: Zap,
+                action: () => navigate("/therapies")
+              }
+            ].map((item, index) => (
+              <Card 
+                key={index}
+                className="card-elevated hover:shadow-lg transition-all cursor-pointer p-6 bg-white border-l-4 border-l-primary"
+                onClick={item.action}
+              >
+                <CardHeader className="pb-4">
+                  <item.icon className="h-8 w-8 text-primary mb-3" />
+                  <CardTitle className="text-lg font-semibold leading-tight">
+                    "{item.question}"
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-muted-foreground mb-4">{item.answer}</p>
+                  <div className="flex items-center text-primary font-medium text-sm">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Get Your Answer →
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -175,21 +245,21 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-6">
-              Ready to <span className="gradient-text">Biohack Your Age</span>?
+              Stop Wondering. Start <span className="gradient-text">Knowing</span>.
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of women who are taking control of their aging process with evidence-based protocols.
+              Get personalized, science-backed answers to what's happening in your body. No more guesswork.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
               <Button 
                 size="lg" 
                 className="primary-gradient relative z-40 pointer-events-auto"
                 onClick={() => {
-                  console.log("Get Started Free clicked");
+                  console.log("Get My Personalized Plan clicked");
                   navigate("/auth");
                 }}
               >
-                Get Started Free
+                Get My Personalized Plan
               </Button>
               <Button 
                 size="lg" 
