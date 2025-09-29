@@ -1,10 +1,14 @@
 import heroImage from "@/assets/hero-image.jpg";
+import beautyPillar from "@/assets/beauty-pillar.png";
+import brainPillar from "@/assets/brain-pillar.png";
+import bodyPillar from "@/assets/body-pillar.png";
+import balancePillar from "@/assets/balance-pillar.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
@@ -92,6 +96,70 @@ const Index = () => {
             <h2 className="text-3xl lg:text-4xl font-bold mb-8">
               Understanding <span className="gradient-text">Longevity</span>: Your Path to Living Well Longer
             </h2>
+            {/* Four Pillars Section */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+              {[
+                {
+                  title: "Brain",
+                  subtitle: "Get on top of brain fog and sharpen your mind",
+                  image: brainPillar,
+                  icon: Brain,
+                  color: "from-purple-500 to-indigo-600",
+                  path: "/pillars?pillar=brain"
+                },
+                {
+                  title: "Body",
+                  subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
+                  image: bodyPillar,
+                  icon: Activity,
+                  color: "from-green-500 to-emerald-600",
+                  path: "/pillars?pillar=body"
+                },
+                {
+                  title: "Balance",
+                  subtitle: "Achieve inner calm and peace",
+                  image: balancePillar,
+                  icon: Zap,
+                  color: "from-blue-500 to-cyan-600",
+                  path: "/pillars?pillar=balance"
+                },
+                {
+                  title: "Beauty",
+                  subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
+                  image: beautyPillar,
+                  icon: Sparkles,
+                  color: "from-pink-500 to-rose-600",
+                  path: "/pillars?pillar=beauty"
+                }
+              ].map((pillar, index) => (
+                <Card 
+                  key={index} 
+                  className="card-elevated hover:shadow-lg transition-all cursor-pointer overflow-hidden group"
+                  onClick={() => navigate(pillar.path)}
+                >
+                  <div className="relative">
+                    <img 
+                      src={pillar.image} 
+                      alt={`${pillar.title} pillar`} 
+                      className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
+                    <div className="absolute top-3 left-3">
+                      <pillar.icon className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg font-bold">{pillar.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <CardDescription className="text-sm line-clamp-2">
+                      {pillar.subtitle}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
             <div className="space-y-6 text-lg text-muted-foreground">
               <p>
                 Longevity isn't just about adding years to your life—it's about adding <strong>life to your years</strong>. 
