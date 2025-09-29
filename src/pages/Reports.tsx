@@ -56,7 +56,7 @@ const Reports = () => {
       description: 'Complete medical-grade report with lab integration and specialist notes',
       icon: FileText,
       category: 'Medical',
-      isPremium: true,
+      isPremium: false,
       estimatedTime: '4 min',
       purpose: 'Comprehensive package for specialist appointments'
     },
