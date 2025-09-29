@@ -13,6 +13,8 @@ const Reports = () => {
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
   const [symptomAssessments, setSymptomAssessments] = useState<any[]>([]);
   const [loadingSymptoms, setLoadingSymptoms] = useState(true);
+  const [lisData, setLisData] = useState<any[]>([]);
+  const [loadingLis, setLoadingLis] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -92,7 +94,39 @@ const Reports = () => {
 
   useEffect(() => {
     fetchSymptomAssessments();
+    fetchLisData();
   }, []);
+
+  const fetchLisData = async () => {
+    setLoadingLis(true);
+    try {
+      if (!user) {
+        setLisData([]);
+        setLoadingLis(false);
+        return;
+      }
+
+      // Fetch last 30 days of LIS data
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const { data, error } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+
+      setLisData(data || []);
+    } catch (error) {
+      console.error('Error fetching LIS data:', error);
+      setLisData([]);
+    } finally {
+      setLoadingLis(false);
+    }
+  };
 
   const fetchSymptomAssessments = async () => {
     setLoadingSymptoms(true);
@@ -372,57 +406,155 @@ const Reports = () => {
                   <CardHeader className="text-center border-b">
                     <CardTitle className="text-2xl font-bold text-primary">Comprehensive Health Analysis</CardTitle>
                     <CardDescription className="text-base">
-                      In-depth analysis combining all assessments with personalized insights
+                      Combining symptom assessments and daily health tracking for complete insights
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-8">
                     <div className="space-y-8">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Overview Stats */}
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div className="text-center p-6 bg-primary/5 rounded-lg">
                           <div className="text-2xl font-bold text-primary mb-2">
                             {getOverallSymptomAnalysis().score}/100
                           </div>
-                          <div className="text-sm text-muted-foreground">Overall Health Score</div>
+                          <div className="text-sm text-muted-foreground">Symptom Score</div>
                         </div>
                         <div className="text-center p-6 bg-secondary/5 rounded-lg">
                           <div className="text-2xl font-bold text-secondary mb-2">
-                            {symptomAssessments.length}
+                            {lisData.length > 0 ? Math.round(lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length) : 'N/A'}
                           </div>
-                          <div className="text-sm text-muted-foreground">Areas Assessed</div>
+                          <div className="text-sm text-muted-foreground">Avg LIS (30d)</div>
                         </div>
                         <div className="text-center p-6 bg-accent/5 rounded-lg">
                           <div className="text-2xl font-bold text-accent mb-2">
-                            {getOverallSymptomAnalysis().breakdown.excellent + getOverallSymptomAnalysis().breakdown.good}
+                            {symptomAssessments.length}
                           </div>
-                          <div className="text-sm text-muted-foreground">Positive Areas</div>
+                          <div className="text-sm text-muted-foreground">Assessments</div>
+                        </div>
+                        <div className="text-center p-6 bg-green-500/5 rounded-lg">
+                          <div className="text-2xl font-bold text-green-600 mb-2">
+                            {lisData.length}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Days Tracked</div>
                         </div>
                       </div>
 
-                      <div className="space-y-6">
-                        <h3 className="text-xl font-semibold text-primary">Health Pattern Analysis</h3>
-                        {symptomAssessments.map((assessment) => (
-                          <div key={assessment.id} className="border rounded-lg p-6">
-                            <div className="flex justify-between items-start mb-4">
-                              <div>
-                                <h4 className="text-lg font-semibold">{getSymptomName(assessment.symptom_type)}</h4>
-                                <div className="flex items-center gap-3 mt-2">
-                                  <span className="text-xl font-bold">{assessment.overall_score}/100</span>
-                                  <Badge variant="outline">{assessment.score_category}</Badge>
-                                </div>
+                      {/* LIS Pillar Analysis */}
+                      {lisData.length > 0 && (
+                        <div className="space-y-4">
+                          <h3 className="text-xl font-semibold text-primary">Daily Health Tracking (Pillar Scores)</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="border rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Brain className="h-5 w-5 text-purple-500" />
+                                <h4 className="font-semibold">Brain</h4>
                               </div>
+                              <div className="text-2xl font-bold text-purple-500">
+                                {Math.round(lisData.reduce((sum, d) => sum + (d.cognitive_engagement_score || 0), 0) / lisData.filter(d => d.cognitive_engagement_score).length) || 'N/A'}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">Cognitive engagement</p>
                             </div>
-                            <div className="space-y-3">
+                            <div className="border rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Activity className="h-5 w-5 text-blue-500" />
+                                <h4 className="font-semibold">Body</h4>
+                              </div>
+                              <div className="text-2xl font-bold text-blue-500">
+                                {Math.round(lisData.reduce((sum, d) => sum + (d.physical_activity_score || 0), 0) / lisData.filter(d => d.physical_activity_score).length) || 'N/A'}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">Physical activity</p>
+                            </div>
+                            <div className="border rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Heart className="h-5 w-5 text-green-500" />
+                                <h4 className="font-semibold">Balance</h4>
+                              </div>
+                              <div className="text-2xl font-bold text-green-500">
+                                {Math.round(lisData.reduce((sum, d) => sum + (d.sleep_score || 0), 0) / lisData.filter(d => d.sleep_score).length) || 'N/A'}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">Sleep & stress</p>
+                            </div>
+                            <div className="border rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Users className="h-5 w-5 text-pink-500" />
+                                <h4 className="font-semibold">Beauty</h4>
+                              </div>
+                              <div className="text-2xl font-bold text-pink-500">
+                                {Math.round(lisData.reduce((sum, d) => sum + (d.nutrition_score || 0), 0) / lisData.filter(d => d.nutrition_score).length) || 'N/A'}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">Nutrition & wellness</p>
+                            </div>
+                          </div>
+                          
+                          {/* Biological Age Impact */}
+                          <div className="border rounded-lg p-6 bg-gradient-to-r from-primary/5 to-secondary/5">
+                            <div className="flex items-center justify-between">
                               <div>
-                                <h5 className="font-medium mb-2">Key Recommendations:</h5>
-                                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                                  {assessment.recommendations?.immediate?.map((rec: string, idx: number) => (
-                                    <li key={idx}>{rec}</li>
-                                  ))}
-                                </ul>
+                                <h4 className="text-lg font-semibold mb-1">Biological Age Impact</h4>
+                                <p className="text-sm text-muted-foreground">Based on your daily health habits</p>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-3xl font-bold text-primary">
+                                  {lisData[0]?.biological_age_impact > 0 ? '+' : ''}{lisData[0]?.biological_age_impact?.toFixed(1) || 'N/A'}
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">years</p>
                               </div>
                             </div>
                           </div>
-                        ))}
+                        </div>
+                      )}
+
+                      {/* Symptom Assessment Analysis */}
+                      {symptomAssessments.length > 0 && (
+                        <div className="space-y-6">
+                          <h3 className="text-xl font-semibold text-primary">Symptom Assessment Analysis</h3>
+                          {symptomAssessments.map((assessment) => (
+                            <div key={assessment.id} className="border rounded-lg p-6">
+                              <div className="flex justify-between items-start mb-4">
+                                <div>
+                                  <h4 className="text-lg font-semibold">{getSymptomName(assessment.symptom_type)}</h4>
+                                  <div className="flex items-center gap-3 mt-2">
+                                    <span className="text-xl font-bold">{assessment.overall_score}/100</span>
+                                    <Badge variant="outline">{assessment.score_category}</Badge>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="space-y-3">
+                                <div>
+                                  <h5 className="font-medium mb-2">Key Recommendations:</h5>
+                                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                                    {assessment.recommendations?.immediate?.map((rec: string, idx: number) => (
+                                      <li key={idx}>{rec}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Comprehensive Summary */}
+                      <div className="border-t pt-6">
+                        <h3 className="text-xl font-semibold text-primary mb-4">Comprehensive Health Summary</h3>
+                        <div className="prose max-w-none">
+                          <p className="text-muted-foreground">
+                            {lisData.length > 0 && symptomAssessments.length > 0 ? (
+                              <>Your health analysis combines {lisData.length} days of daily health tracking with {symptomAssessments.length} symptom assessment{symptomAssessments.length > 1 ? 's' : ''}. 
+                              Your average Longevity Impact Score of {Math.round(lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length)} 
+                              {lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length >= 100 ? ' indicates positive health habits' : ' suggests areas for improvement'}. 
+                              Combined with your symptom assessment score of {getOverallSymptomAnalysis().score}/100, this provides a comprehensive view of your current health status and trajectory.</>
+                            ) : lisData.length > 0 ? (
+                              <>You have {lisData.length} days of daily health tracking data with an average LIS of {Math.round(lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length)}. 
+                              Complete symptom assessments to get a more comprehensive health analysis.</>
+                            ) : symptomAssessments.length > 0 ? (
+                              <>You have completed {symptomAssessments.length} symptom assessment{symptomAssessments.length > 1 ? 's' : ''} with an overall score of {getOverallSymptomAnalysis().score}/100. 
+                              Start tracking daily health metrics to see your complete health picture.</>
+                            ) : (
+                              <>Complete symptom assessments and track daily health metrics to see your comprehensive health analysis here.</>
+                            )}
+                          </p>
+                        </div>
                       </div>
 
                       <div className="flex justify-center gap-4">
