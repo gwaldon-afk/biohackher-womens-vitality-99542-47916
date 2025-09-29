@@ -137,7 +137,7 @@ const AssessmentResults = () => {
         .eq('symptom_type', symptomId)
         .order('completed_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error loading assessment:', error);
