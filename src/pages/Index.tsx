@@ -376,11 +376,11 @@ const Index = () => {
                   <Button 
                     onClick={() => {
                       setIsModalOpen(false);
-                      navigate(selectedQuestion.navigateTo);
+                      navigate("/symptoms");
                     }}
                     className="flex-1"
                   >
-                    Start Your Assessment
+                    Start Your Assessments
                   </Button>
                   <Button 
                     variant="outline" 
