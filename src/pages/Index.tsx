@@ -350,12 +350,14 @@ const Index = () => {
           }}>
                 <CardHeader className="pb-3">
                   <item.icon className="h-6 w-6 text-primary mb-2" />
-                  <CardTitle className="text-base font-semibold leading-tight">
-                    "{item.question}"
-                  </CardTitle>
-                  <div className="flex items-center text-primary font-medium text-sm mt-2">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    Answer →
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base font-semibold leading-tight">
+                      "{item.question}"
+                    </CardTitle>
+                    <div className="flex items-center text-primary font-medium text-sm ml-2">
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Answer →
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
