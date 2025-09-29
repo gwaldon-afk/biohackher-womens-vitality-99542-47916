@@ -294,7 +294,7 @@ const Index = () => {
               Sound Familiar? You're Not Alone.
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              These are the questions thousands of women ask us. Get evidence-based answers, not generic advice.
+              These are the questions thousands of women ask. Get evidence-based answers, not generic advice.
             </p>
           </div>
           
