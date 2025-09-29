@@ -735,8 +735,8 @@ const Pillars = () => {
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 gradient-text">
               {t('pillars.title')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {t('pillars.subtitle')}
+            <p className="text-lg text-primary font-medium max-w-3xl mx-auto">
+              Understanding your health through four essential pillars gives you a complete picture of your wellbeing. Each pillar addresses a key area that impacts how you look, feel, and function every day. Take targeted assessments to uncover personalized insights and create your roadmap to optimal health.
             </p>
           </div>
         </div>
