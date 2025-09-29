@@ -264,7 +264,10 @@ const Pillars = () => {
                   className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
                     selectedPillar === key ? "ring-2 ring-primary" : ""
                   }`}
-                  onClick={() => setSelectedPillar(key)}
+                  onClick={() => {
+                    setSelectedPillar(key);
+                    setSelectedSection(null); // Reset dropdown sections when switching pillars
+                  }}
                 >
                   <CardHeader className="text-center">
                     <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
