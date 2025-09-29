@@ -108,6 +108,20 @@ const Index = () => {
                 can take control of how you age. Biohacking provides the tools and knowledge to work <em>with</em> your 
                 body's natural systems, not against them.
               </p>
+              <p>
+                However, there's a significant gap in this field. Traditionally, longevity and biohacking research has been 
+                overwhelmingly male-dominated—with studies primarily conducted on male subjects and protocols designed for 
+                male physiology. In fact, until 1993, women were largely excluded from clinical trials, and even today, 
+                only about 38% of participants in medical research are women. This creates a dangerous knowledge gap when 
+                women's hormonal cycles, metabolism, and aging processes differ significantly from men's.
+              </p>
+              <p>
+                <strong>BiohackHer recognizes that women's biology isn't just "small men"</strong>—we have unique needs 
+                throughout our cycles, pregnancies, perimenopause, and beyond. Women's longevity strategies must account 
+                for estrogen fluctuations, different stress responses, and varying nutritional needs. That's why we've 
+                dedicated our research and protocols specifically to women's physiology, creating a new field of 
+                women-centered longevity science.
+              </p>
               <div className="bg-muted/30 rounded-lg p-6 mt-8">
                 <p className="mb-4">
                   <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
