@@ -315,7 +315,9 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold mb-2">
             Welcome back, <span className="text-primary">Sarah</span>
           </h1>
-          <p className="text-muted-foreground">Your personalised health dashboard</p>
+          <p className="text-lg text-primary font-medium">
+            Your central hub for tracking your health journey. Monitor your progress, discover personalized recommendations, and take action on insights tailored specifically for your body. Everything you need to feel your best is right here.
+          </p>
         </div>
 
         {/* Personalized Health Assessment */}
