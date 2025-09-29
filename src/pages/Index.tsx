@@ -9,51 +9,40 @@ import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
 import { useState } from "react";
-
 const Index = () => {
   const navigate = useNavigate();
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
   const handleScoreCalculated = () => {
     // Callback when LIS score is calculated
     console.log("LIS score calculated from homepage");
   };
-  const features = [
-    {
-      icon: Activity,
-      title: "Daily Longevity Inputs",
-      description: "Track your biological age with our proprietary algorithm based on sleep, HRV, and lifestyle metrics."
-    },
-    {
-      icon: Thermometer,
-      title: "Symptom Management",
-      description: "Evidence-based interventions for hot flashes, sleep issues, and mood changes with Gold/Silver/Bronze ratings."
-    },
-    {
-      icon: Heart,
-      title: "Cycle-Aware Coaching",
-      description: "Personalised training and nutrition recommendations that adapt to your hormonal stage and cycle phase."
-    },
-    {
-      icon: Moon,
-      title: "Sleep Optimisation",
-      description: "Comprehensive sleep routines, red light protocols, and circadian rhythm management."
-    },
-    {
-      icon: Zap,
-      title: "Biohacking Therapies",
-      description: "Guided protocols for red light therapy, cold exposure, and HRV breathwork with built-in timers."
-    },
-    {
-      icon: TrendingUp,
-      title: "Progress Reports",
-      description: "30 and 90-day comprehensive reports with physician-ready summaries and trend analysis."
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const features = [{
+    icon: Activity,
+    title: "Daily Longevity Inputs",
+    description: "Track your biological age with our proprietary algorithm based on sleep, HRV, and lifestyle metrics."
+  }, {
+    icon: Thermometer,
+    title: "Symptom Management",
+    description: "Evidence-based interventions for hot flashes, sleep issues, and mood changes with Gold/Silver/Bronze ratings."
+  }, {
+    icon: Heart,
+    title: "Cycle-Aware Coaching",
+    description: "Personalised training and nutrition recommendations that adapt to your hormonal stage and cycle phase."
+  }, {
+    icon: Moon,
+    title: "Sleep Optimisation",
+    description: "Comprehensive sleep routines, red light protocols, and circadian rhythm management."
+  }, {
+    icon: Zap,
+    title: "Biohacking Therapies",
+    description: "Guided protocols for red light therapy, cold exposure, and HRV breathwork with built-in timers."
+  }, {
+    icon: TrendingUp,
+    title: "Progress Reports",
+    description: "30 and 90-day comprehensive reports with physician-ready summaries and trend analysis."
+  }];
+  return <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
@@ -73,36 +62,23 @@ const Index = () => {
                   <span className="text-white/80">Join 10,000+ women who found their answers</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
-                  <Button 
-                    size="lg" 
-                    className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
-                    onClick={() => {
-                      console.log("Get my answers clicked");
-                      navigate("/symptoms");
-                    }}
-                  >
+                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
+                  console.log("Get my answers clicked");
+                  navigate("/symptoms");
+                }}>
                     Get My Answers Now
                   </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto"
-                    onClick={() => {
-                      console.log("View Dashboard clicked");
-                      navigate("/dashboard");
-                    }}
-                  >
+                  <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
+                  console.log("View Dashboard clicked");
+                  navigate("/dashboard");
+                }}>
                     View Dashboard
                   </Button>
                 </div>
               </div>
               
               <div className="relative">
-                <img 
-                  src={heroImage} 
-                  alt="Wellness and mindfulness hero image" 
-                  className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
-                />
+                <img src={heroImage} alt="Wellness and mindfulness hero image" className="rounded-lg shadow-2xl w-full max-w-md mx-auto" />
               </div>
             </div>
           </div>
@@ -134,7 +110,7 @@ const Index = () => {
               </p>
               <div className="bg-muted/30 rounded-lg p-6 mt-8">
                 <p className="mb-4">
-                  <strong>Meet Azr Alagic, Founder & Longevity Expert</strong>
+                  <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
                 </p>
                 <p>
                   With over a decade of experience in women's hormonal health and longevity research, Azr founded 
@@ -161,66 +137,55 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {[
-              {
-                question: "Why is my metabolism slowing down after 35?",
-                answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimize your metabolic health.",
-                icon: Flame,
-                detailedAnswer: "After 35, several physiological changes impact your metabolism: declining estrogen affects insulin sensitivity, muscle mass decreases by 3-8% per decade, and your basal metabolic rate naturally slows. Additionally, lifestyle factors like stress and sleep quality become more impactful.",
-                assessment: "Take our comprehensive Body Composition pillar assessment to understand your unique metabolic profile, including muscle mass, fat distribution, and hormonal influences on your metabolism.",
-                planning: "Based on your results, we'll create a personalized plan that may include targeted nutrition protocols, strength training recommendations, and hormone optimization strategies tailored to your life stage.",
-                action: "Start with our metabolic health tracker, implement evidence-based meal timing strategies, and access our library of metabolism-boosting protocols designed specifically for women over 35.",
-                navigateTo: "/pillars"
-              },
-              {
-                question: "How do I prepare for perimenopause naturally?",
-                answer: "Get personalized hormone-balancing protocols based on your unique symptoms and lifestyle.",
-                icon: Heart,
-                detailedAnswer: "Perimenopause can begin 8-10 years before menopause, with symptoms like irregular periods, mood changes, sleep disturbances, and weight gain. Natural preparation focuses on supporting your body's hormonal transition through targeted nutrition, lifestyle modifications, and stress management.",
-                assessment: "Complete our Hormonal Balance assessment and symptom tracker to identify your current stage and primary concerns. Our comprehensive evaluation covers sleep patterns, stress levels, cycle changes, and physical symptoms.",
-                planning: "Receive a personalized perimenopause preparation plan including hormone-supporting foods, targeted supplements, exercise recommendations, and stress management techniques based on your specific symptoms and lifestyle.",
-                action: "Access our perimenopause toolkit with daily tracking features, evidence-based protocols for symptom management, and connection to healthcare providers who specialize in women's hormonal health.",
-                navigateTo: "/symptoms"
-              },
-              {
-                question: "Why am I always tired despite sleeping 8 hours?",
-                answer: "Sleep quality matters more than quantity. Discover what's disrupting your rest and how to fix it.",
-                icon: Moon,
-                detailedAnswer: "Quality sleep involves proper sleep architecture, including adequate deep sleep and REM phases. Factors like hormonal fluctuations, stress, room temperature, light exposure, and evening routines significantly impact sleep quality even when duration seems sufficient.",
-                assessment: "Use our comprehensive sleep assessment to analyze your sleep environment, bedtime routines, stress levels, and potential disruptors. Track your sleep patterns and energy levels to identify specific issues.",
-                planning: "Get a personalized sleep optimization plan that addresses your specific sleep disruptors, including room environment modifications, bedtime routine adjustments, and targeted interventions for your sleep stage.",
-                action: "Implement our evidence-based sleep protocols, access guided sleep meditations, track your improvements with our sleep diary, and learn advanced biohacking techniques for optimal rest and recovery.",
-                navigateTo: "/sleep"
-              },
-              {
-                question: "Is this brain fog normal or should I be worried?",
-                answer: "Cognitive changes are real but treatable. Learn evidence-based strategies to clear mental fog.",
-                icon: Brain,
-                detailedAnswer: "Brain fog—characterized by difficulty concentrating, memory issues, and mental fatigue—is common during hormonal transitions but shouldn't be dismissed as 'normal aging.' It's often related to hormonal fluctuations, inflammation, stress, sleep quality, and nutritional deficiencies.",
-                assessment: "Take our Brain & Cognitive Health assessment to evaluate your cognitive symptoms, identify potential triggers, and understand how factors like stress, sleep, and nutrition might be affecting your mental clarity.",
-                planning: "Receive targeted recommendations for cognitive enhancement, including brain-supporting nutrients, stress reduction techniques, exercise protocols for neuroplasticity, and lifestyle modifications to support mental clarity.",
-                action: "Access our cognitive health toolkit with brain training exercises, stress management techniques, nutritional protocols for brain health, and tracking tools to monitor your mental clarity improvements.",
-                navigateTo: "/symptoms"
-              },
-              {
-                question: "What actually works to slow down aging?",
-                answer: "Cut through the noise with proven biohacking protocols tailored for women's unique needs.",
-                icon: Zap,
-                detailedAnswer: "Effective anti-aging focuses on cellular health, hormonal optimization, inflammation reduction, and lifestyle factors that impact longevity. Evidence-based approaches include targeted nutrition, specific exercise protocols, stress management, sleep optimization, and strategic supplementation.",
-                assessment: "Complete our comprehensive longevity assessment covering your current health markers, lifestyle factors, family history, and aging concerns. This helps identify your priority areas for anti-aging interventions.",
-                planning: "Get a personalized anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
-                action: "Access our curated collection of anti-aging therapies, track your biological age markers, implement proven longevity protocols, and connect with practitioners who specialize in age optimization for women.",
-                navigateTo: "/therapies"
-              }
-            ].map((item, index) => (
-              <Card 
-                key={index}
-                className="card-elevated hover:shadow-lg transition-all cursor-pointer p-6 bg-white border-l-4 border-l-primary"
-                onClick={() => {
-                  setSelectedQuestion(item);
-                  setIsModalOpen(true);
-                }}
-              >
+            {[{
+            question: "Why is my metabolism slowing down after 35?",
+            answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimize your metabolic health.",
+            icon: Flame,
+            detailedAnswer: "After 35, several physiological changes impact your metabolism: declining estrogen affects insulin sensitivity, muscle mass decreases by 3-8% per decade, and your basal metabolic rate naturally slows. Additionally, lifestyle factors like stress and sleep quality become more impactful.",
+            assessment: "Take our comprehensive Body Composition pillar assessment to understand your unique metabolic profile, including muscle mass, fat distribution, and hormonal influences on your metabolism.",
+            planning: "Based on your results, we'll create a personalized plan that may include targeted nutrition protocols, strength training recommendations, and hormone optimization strategies tailored to your life stage.",
+            action: "Start with our metabolic health tracker, implement evidence-based meal timing strategies, and access our library of metabolism-boosting protocols designed specifically for women over 35.",
+            navigateTo: "/pillars"
+          }, {
+            question: "How do I prepare for perimenopause naturally?",
+            answer: "Get personalized hormone-balancing protocols based on your unique symptoms and lifestyle.",
+            icon: Heart,
+            detailedAnswer: "Perimenopause can begin 8-10 years before menopause, with symptoms like irregular periods, mood changes, sleep disturbances, and weight gain. Natural preparation focuses on supporting your body's hormonal transition through targeted nutrition, lifestyle modifications, and stress management.",
+            assessment: "Complete our Hormonal Balance assessment and symptom tracker to identify your current stage and primary concerns. Our comprehensive evaluation covers sleep patterns, stress levels, cycle changes, and physical symptoms.",
+            planning: "Receive a personalized perimenopause preparation plan including hormone-supporting foods, targeted supplements, exercise recommendations, and stress management techniques based on your specific symptoms and lifestyle.",
+            action: "Access our perimenopause toolkit with daily tracking features, evidence-based protocols for symptom management, and connection to healthcare providers who specialize in women's hormonal health.",
+            navigateTo: "/symptoms"
+          }, {
+            question: "Why am I always tired despite sleeping 8 hours?",
+            answer: "Sleep quality matters more than quantity. Discover what's disrupting your rest and how to fix it.",
+            icon: Moon,
+            detailedAnswer: "Quality sleep involves proper sleep architecture, including adequate deep sleep and REM phases. Factors like hormonal fluctuations, stress, room temperature, light exposure, and evening routines significantly impact sleep quality even when duration seems sufficient.",
+            assessment: "Use our comprehensive sleep assessment to analyze your sleep environment, bedtime routines, stress levels, and potential disruptors. Track your sleep patterns and energy levels to identify specific issues.",
+            planning: "Get a personalized sleep optimization plan that addresses your specific sleep disruptors, including room environment modifications, bedtime routine adjustments, and targeted interventions for your sleep stage.",
+            action: "Implement our evidence-based sleep protocols, access guided sleep meditations, track your improvements with our sleep diary, and learn advanced biohacking techniques for optimal rest and recovery.",
+            navigateTo: "/sleep"
+          }, {
+            question: "Is this brain fog normal or should I be worried?",
+            answer: "Cognitive changes are real but treatable. Learn evidence-based strategies to clear mental fog.",
+            icon: Brain,
+            detailedAnswer: "Brain fog—characterized by difficulty concentrating, memory issues, and mental fatigue—is common during hormonal transitions but shouldn't be dismissed as 'normal aging.' It's often related to hormonal fluctuations, inflammation, stress, sleep quality, and nutritional deficiencies.",
+            assessment: "Take our Brain & Cognitive Health assessment to evaluate your cognitive symptoms, identify potential triggers, and understand how factors like stress, sleep, and nutrition might be affecting your mental clarity.",
+            planning: "Receive targeted recommendations for cognitive enhancement, including brain-supporting nutrients, stress reduction techniques, exercise protocols for neuroplasticity, and lifestyle modifications to support mental clarity.",
+            action: "Access our cognitive health toolkit with brain training exercises, stress management techniques, nutritional protocols for brain health, and tracking tools to monitor your mental clarity improvements.",
+            navigateTo: "/symptoms"
+          }, {
+            question: "What actually works to slow down aging?",
+            answer: "Cut through the noise with proven biohacking protocols tailored for women's unique needs.",
+            icon: Zap,
+            detailedAnswer: "Effective anti-aging focuses on cellular health, hormonal optimization, inflammation reduction, and lifestyle factors that impact longevity. Evidence-based approaches include targeted nutrition, specific exercise protocols, stress management, sleep optimization, and strategic supplementation.",
+            assessment: "Complete our comprehensive longevity assessment covering your current health markers, lifestyle factors, family history, and aging concerns. This helps identify your priority areas for anti-aging interventions.",
+            planning: "Get a personalized anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
+            action: "Access our curated collection of anti-aging therapies, track your biological age markers, implement proven longevity protocols, and connect with practitioners who specialize in age optimization for women.",
+            navigateTo: "/therapies"
+          }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer p-6 bg-white border-l-4 border-l-primary" onClick={() => {
+            setSelectedQuestion(item);
+            setIsModalOpen(true);
+          }}>
                 <CardHeader className="pb-4">
                   <item.icon className="h-8 w-8 text-primary mb-3" />
                   <CardTitle className="text-lg font-semibold leading-tight">
@@ -234,8 +199,7 @@ const Index = () => {
                     Get Your Answer →
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -254,9 +218,8 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => {
-              if (feature.title === "Daily Longevity Inputs") {
-                return (
-                  <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
+            if (feature.title === "Daily Longevity Inputs") {
+              return <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
                     <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col">
                       <CardHeader className="flex-shrink-0">
                         <feature.icon className="h-10 w-10 text-primary mb-4" />
@@ -268,29 +231,22 @@ const Index = () => {
                         </CardDescription>
                       </CardContent>
                     </Card>
-                  </LISInputForm>
-                );
+                  </LISInputForm>;
+            }
+            return <Card key={index} className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" onClick={() => {
+              console.log(`${feature.title} card clicked`);
+              if (feature.title === "Symptom Management") {
+                navigate("/symptoms");
+              } else if (feature.title === "Sleep Optimisation") {
+                navigate("/sleep");
+              } else if (feature.title === "Cycle-Aware Coaching") {
+                navigate("/coaching");
+              } else if (feature.title === "Biohacking Therapies") {
+                navigate("/therapies");
+              } else if (feature.title === "Progress Reports") {
+                navigate("/reports");
               }
-              
-              return (
-                <Card 
-                  key={index} 
-                  className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" 
-                  onClick={() => {
-                    console.log(`${feature.title} card clicked`);
-                    if (feature.title === "Symptom Management") {
-                      navigate("/symptoms");
-                    } else if (feature.title === "Sleep Optimisation") {
-                      navigate("/sleep");
-                    } else if (feature.title === "Cycle-Aware Coaching") {
-                      navigate("/coaching");
-                    } else if (feature.title === "Biohacking Therapies") {
-                      navigate("/therapies");
-                    } else if (feature.title === "Progress Reports") {
-                      navigate("/reports");
-                    }
-                  }}
-                >
+            }}>
                   <CardHeader className="flex-shrink-0">
                     <feature.icon className="h-10 w-10 text-primary mb-4" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -300,9 +256,8 @@ const Index = () => {
                       {feature.description}
                     </CardDescription>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>;
+          })}
           </div>
         </div>
       </section>
@@ -318,25 +273,16 @@ const Index = () => {
               Get personalized, science-backed answers to what's happening in your body. No more guesswork.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
-              <Button 
-                size="lg" 
-                className="primary-gradient relative z-40 pointer-events-auto"
-                onClick={() => {
-                  console.log("Get My Personalized Plan clicked");
-                  navigate("/auth");
-                }}
-              >
+              <Button size="lg" className="primary-gradient relative z-40 pointer-events-auto" onClick={() => {
+              console.log("Get My Personalized Plan clicked");
+              navigate("/auth");
+            }}>
                 Get My Personalized Plan
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="relative z-40 pointer-events-auto"
-                onClick={() => {
-                  console.log("View Premium Plans clicked");
-                  navigate("/upgrade");
-                }}
-              >
+              <Button size="lg" variant="outline" className="relative z-40 pointer-events-auto" onClick={() => {
+              console.log("View Premium Plans clicked");
+              navigate("/upgrade");
+            }}>
                 View Premium Plans
               </Button>
             </div>
@@ -347,8 +293,7 @@ const Index = () => {
       {/* Answer Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          {selectedQuestion && (
-            <>
+          {selectedQuestion && <>
               <DialogHeader>
                 <div className="flex items-center gap-3 mb-2">
                   <selectedQuestion.icon className="h-8 w-8 text-primary" />
@@ -412,30 +357,20 @@ const Index = () => {
                 
                 {/* Call to Action */}
                 <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                  <Button 
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      navigate("/symptoms");
-                    }}
-                    className="flex-1"
-                  >
+                  <Button onClick={() => {
+                setIsModalOpen(false);
+                navigate("/symptoms");
+              }} className="flex-1">
                     Start Your Assessments
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsModalOpen(false)}
-                    className="flex-1"
-                  >
+                  <Button variant="outline" onClick={() => setIsModalOpen(false)} className="flex-1">
                     Close
                   </Button>
                 </div>
               </div>
-            </>
-          )}
+            </>}
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
