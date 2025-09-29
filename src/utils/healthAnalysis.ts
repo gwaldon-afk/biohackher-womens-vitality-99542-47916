@@ -52,29 +52,39 @@ export const getOverallHealthAnalysis = (symptomAssessments: SymptomAssessment[]
 
   // Generate comprehensive analysis text
   let analysis = '';
-  const totalPositive = breakdown.excellent + breakdown.good;
-  const totalConcerning = breakdown.fair + breakdown.poor;
   const domainNames = symptomAssessments.map(a => getSymptomName(a.symptom_type)).join(', ');
+  const excellentAreas = symptomAssessments.filter(a => a.score_category === 'excellent').map(a => getSymptomName(a.symptom_type));
+  const goodAreas = symptomAssessments.filter(a => a.score_category === 'good').map(a => getSymptomName(a.symptom_type));
+  const fairAreas = symptomAssessments.filter(a => a.score_category === 'fair').map(a => getSymptomName(a.symptom_type));
+  const poorAreas = symptomAssessments.filter(a => a.score_category === 'poor').map(a => getSymptomName(a.symptom_type));
+  const positiveAreas = [...excellentAreas, ...goodAreas];
+  const concerningAreas = [...fairAreas, ...poorAreas];
 
   if (avgScore >= 80) {
-    analysis = `Your comprehensive health analysis reveals exceptional wellness management across ${domainNames}, with an outstanding overall score of ${Math.round(avgScore)}/100. This places you in the optimal health category, with ${totalPositive} areas performing excellently.`;
+    analysis = `Your comprehensive health analysis reveals exceptional wellness management across ${domainNames}, with an outstanding overall score of ${Math.round(avgScore)}/100. This places you in the optimal health category.`;
+    if (excellentAreas.length > 0) {
+      analysis += ` Your ${excellentAreas.join(', ')} management is performing excellently.`;
+    }
   } else if (avgScore >= 65) {
-    analysis = `Your health profile demonstrates strong overall wellness with a score of ${Math.round(avgScore)}/100 across ${domainNames}. You have ${totalPositive} areas performing well, indicating effective health management strategies are in place.`;
-    if (totalConcerning > 0) {
-      analysis += ` However, ${totalConcerning} area${totalConcerning > 1 ? 's require' : ' requires'} focused attention to optimize your overall wellbeing.`;
+    analysis = `Your health profile demonstrates strong overall wellness with a score of ${Math.round(avgScore)}/100 across ${domainNames}.`;
+    if (positiveAreas.length > 0) {
+      analysis += ` Your ${positiveAreas.join(', ')} management shows effective health strategies are in place.`;
+    }
+    if (concerningAreas.length > 0) {
+      analysis += ` However, ${concerningAreas.join(', ')} require${concerningAreas.length === 1 ? 's' : ''} focused attention to optimize your overall wellbeing.`;
     }
   } else if (avgScore >= 50) {
     analysis = `Your comprehensive health analysis shows a mixed wellness profile with a score of ${Math.round(avgScore)}/100, indicating both areas of strength and significant opportunities for improvement across ${domainNames}.`;
-    if (totalPositive > 0) {
-      analysis += ` Your success in ${totalPositive} area${totalPositive > 1 ? 's' : ''} demonstrates your capability for effective health management.`;
+    if (positiveAreas.length > 0) {
+      analysis += ` Your success with ${positiveAreas.join(', ')} demonstrates your capability for effective health management.`;
     }
-    if (breakdown.poor > 0) {
-      analysis += ` ${breakdown.poor} area${breakdown.poor > 1 ? 's show' : ' shows'} significant concern and should be your primary focus.`;
+    if (poorAreas.length > 0) {
+      analysis += ` ${poorAreas.join(', ')} show${poorAreas.length === 1 ? 's' : ''} significant concern and should be your primary focus.`;
     }
   } else {
     analysis = `Your current health analysis indicates significant challenges across ${domainNames}, with an overall score of ${Math.round(avgScore)}/100. This comprehensive assessment suggests that targeted health intervention and professional guidance would be highly beneficial.`;
-    if (totalPositive > 0) {
-      analysis += ` However, your success in ${totalPositive} area${totalPositive > 1 ? 's' : ''} shows that positive change is achievable with the right approach.`;
+    if (positiveAreas.length > 0) {
+      analysis += ` However, your success with ${positiveAreas.join(', ')} shows that positive change is achievable with the right approach.`;
     }
   }
 
