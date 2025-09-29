@@ -102,6 +102,7 @@ const AssessmentResults = () => {
     });
     
     if (symptomId && Object.keys(answers).length > 0) {
+      // New assessment with answers in URL
       const calculatedScore = calculateScore(symptomId, answers);
       const personalisedRecommendations = generateRecommendations(symptomId, calculatedScore, answers);
       
@@ -119,8 +120,68 @@ const AssessmentResults = () => {
       
       // Save assessment to database
       saveAssessment(answers, calculatedScore, personalisedRecommendations);
+    } else if (symptomId && user) {
+      // Load existing assessment from database
+      loadExistingAssessment();
     }
-  }, [symptomId, searchParams]);
+  }, [symptomId, searchParams, user]);
+
+  const loadExistingAssessment = async () => {
+    if (!user || !symptomId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('symptom_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('symptom_type', symptomId)
+        .order('completed_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error loading assessment:', error);
+        toast({
+          variant: "destructive",
+          title: "Loading Error",
+          description: "No assessment found for this symptom. Please complete an assessment first."
+        });
+        navigate('/symptoms');
+        return;
+      }
+
+      if (data) {
+        const assessmentScore: AssessmentScore = {
+          overall: data.overall_score,
+          category: data.score_category as 'excellent' | 'good' | 'fair' | 'poor',
+          primaryIssues: data.primary_issues || [],
+          detailScores: (data.detail_scores as Record<string, number>) || {}
+        };
+
+        // Generate recommendations based on saved data
+        const personalisedRecommendations = generateRecommendations(symptomId, assessmentScore, (data.answers as Record<string, string>) || {});
+        
+        setScore(assessmentScore);
+        setRecommendations(personalisedRecommendations);
+        
+        // Initialize supplement selections
+        const initialSelections: Record<number, SupplementInfo[]> = {};
+        personalisedRecommendations.forEach((rec, index) => {
+          if (rec.category === 'supplement' && rec.supplements) {
+            initialSelections[index] = [...rec.supplements];
+          }
+        });
+        setSupplementSelections(initialSelections);
+      }
+    } catch (error) {
+      console.error('Unexpected error loading assessment:', error);
+      toast({
+        variant: "destructive",
+        title: "Loading Error",
+        description: "Failed to load assessment results."
+      });
+    }
+  };
 
   const saveAssessment = async (
     answers: Record<string, string>, 
