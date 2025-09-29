@@ -636,6 +636,299 @@ const Reports = () => {
                 </Card>
               )}
 
+              {/* Medical Consultation Package */}
+              {selectedReport === 'medical-consultation' && (
+                <Card>
+                  <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+                    <div className="text-center space-y-2">
+                      <CardTitle className="text-3xl font-bold text-primary">Medical Consultation Package</CardTitle>
+                      <CardDescription className="text-base">
+                        Comprehensive health report for healthcare professionals
+                      </CardDescription>
+                      <div className="text-sm text-muted-foreground pt-2">
+                        Generated on {format(new Date(), 'MMMM d, yyyy')} | Tracking Period: Last 30 days
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="space-y-8">
+                      {/* Executive Summary */}
+                      <div className="border-l-4 border-primary pl-6 py-4 bg-primary/5">
+                        <h3 className="text-xl font-bold text-primary mb-4">Executive Summary</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Overall Health Score</div>
+                            <div className="text-3xl font-bold text-primary">{getOverallSymptomAnalysis().score}/100</div>
+                            <div className="text-sm text-secondary mt-1">{getOverallSymptomAnalysis().status}</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Longevity Impact Score (30d avg)</div>
+                            <div className="text-3xl font-bold text-secondary">
+                              {lisData.length > 0 ? Math.round(lisData.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / lisData.length) : 'N/A'}
+                            </div>
+                            <div className="text-sm text-muted-foreground mt-1">{lisData.length} days tracked</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Biological Age Impact</div>
+                            <div className="text-3xl font-bold text-accent">
+                              {lisData[0]?.biological_age_impact ? `${lisData[0].biological_age_impact > 0 ? '+' : ''}${lisData[0].biological_age_impact.toFixed(1)}` : 'N/A'}
+                            </div>
+                            <div className="text-sm text-muted-foreground mt-1">years from chronological age</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Clinical Assessment Summary */}
+                      <div>
+                        <h3 className="text-xl font-bold text-primary mb-4 pb-2 border-b-2 border-primary/20">
+                          Clinical Assessment Summary
+                        </h3>
+                        <div className="space-y-6">
+                          {symptomAssessments.length > 0 ? (
+                            symptomAssessments.map((assessment, index) => (
+                              <div key={assessment.id} className="border rounded-lg p-6 bg-card">
+                                <div className="flex justify-between items-start mb-4">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <span className="text-2xl font-bold text-primary">{index + 1}.</span>
+                                      <h4 className="text-lg font-bold">{getSymptomName(assessment.symptom_type)}</h4>
+                                    </div>
+                                    <div className="flex items-center gap-4 ml-8">
+                                      <div>
+                                        <span className="text-sm text-muted-foreground">Assessment Score: </span>
+                                        <span className="text-xl font-bold text-primary">{assessment.overall_score}/100</span>
+                                      </div>
+                                      <Badge variant={
+                                        assessment.score_category === 'excellent' ? 'default' :
+                                        assessment.score_category === 'good' ? 'secondary' :
+                                        assessment.score_category === 'fair' ? 'outline' : 'destructive'
+                                      }>
+                                        {assessment.score_category.toUpperCase()}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                  <div className="text-right text-sm text-muted-foreground">
+                                    Assessed: {format(new Date(assessment.completed_at), 'MMM d, yyyy')}
+                                  </div>
+                                </div>
+
+                                {/* Detail Scores */}
+                                {assessment.detail_scores && (
+                                  <div className="mb-4 ml-8">
+                                    <h5 className="text-sm font-semibold text-muted-foreground mb-2">Detailed Metrics:</h5>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                      {Object.entries(assessment.detail_scores).map(([key, value]) => (
+                                        <div key={key} className="bg-muted/30 p-3 rounded">
+                                          <div className="text-xs text-muted-foreground capitalize">
+                                            {key.replace(/_/g, ' ')}
+                                          </div>
+                                          <div className="text-lg font-bold">{String(value)}/100</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Primary Issues */}
+                                {assessment.primary_issues && assessment.primary_issues.length > 0 && (
+                                  <div className="mb-4 ml-8">
+                                    <h5 className="text-sm font-semibold text-muted-foreground mb-2">Primary Concerns:</h5>
+                                    <div className="flex flex-wrap gap-2">
+                                      {assessment.primary_issues.map((issue: string, idx: number) => (
+                                        <Badge key={idx} variant="outline" className="text-xs">
+                                          {issue.replace(/_/g, ' ')}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Clinical Recommendations */}
+                                <div className="ml-8 space-y-3">
+                                  <h5 className="text-sm font-semibold text-muted-foreground">Clinical Recommendations:</h5>
+                                  
+                                  {assessment.recommendations?.immediate && assessment.recommendations.immediate.length > 0 && (
+                                    <div className="bg-red-50 dark:bg-red-950/20 p-3 rounded">
+                                      <div className="text-xs font-semibold text-red-700 dark:text-red-400 mb-2">IMMEDIATE ACTIONS:</div>
+                                      <ul className="list-disc list-inside space-y-1 text-sm">
+                                        {assessment.recommendations.immediate.map((rec: string, idx: number) => (
+                                          <li key={idx} className="text-red-900 dark:text-red-300">{rec}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+
+                                  {assessment.recommendations?.lifestyle && assessment.recommendations.lifestyle.length > 0 && (
+                                    <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded">
+                                      <div className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-2">LIFESTYLE MODIFICATIONS:</div>
+                                      <ul className="list-disc list-inside space-y-1 text-sm">
+                                        {assessment.recommendations.lifestyle.map((rec: string, idx: number) => (
+                                          <li key={idx} className="text-blue-900 dark:text-blue-300">{rec}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+
+                                  {assessment.recommendations?.professional && assessment.recommendations.professional.length > 0 && (
+                                    <div className="bg-purple-50 dark:bg-purple-950/20 p-3 rounded">
+                                      <div className="text-xs font-semibold text-purple-700 dark:text-purple-400 mb-2">SPECIALIST REFERRALS:</div>
+                                      <ul className="list-disc list-inside space-y-1 text-sm">
+                                        {assessment.recommendations.professional.map((rec: string, idx: number) => (
+                                          <li key={idx} className="text-purple-900 dark:text-purple-300">{rec}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center p-8 bg-muted/20 rounded-lg">
+                              <p className="text-muted-foreground">No symptom assessments completed yet.</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Daily Health Metrics */}
+                      {lisData.length > 0 && (
+                        <div>
+                          <h3 className="text-xl font-bold text-primary mb-4 pb-2 border-b-2 border-primary/20">
+                            Daily Health Metrics & Lifestyle Analysis
+                          </h3>
+                          <div className="space-y-6">
+                            {/* Four Pillars Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="border-2 border-purple-200 dark:border-purple-800 rounded-lg p-5 bg-purple-50/50 dark:bg-purple-950/20">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <Brain className="h-6 w-6 text-purple-600" />
+                                  <h4 className="text-lg font-bold">Brain (Cognitive Health)</h4>
+                                </div>
+                                <div className="text-3xl font-bold text-purple-600 mb-2">
+                                  {Math.round(lisData.reduce((sum, d) => sum + (d.cognitive_engagement_score || 0), 0) / lisData.filter(d => d.cognitive_engagement_score).length) || 'N/A'}
+                                  <span className="text-lg text-muted-foreground">/100</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  Based on learning activities, cognitive engagement, and mental stimulation
+                                </div>
+                              </div>
+
+                              <div className="border-2 border-blue-200 dark:border-blue-800 rounded-lg p-5 bg-blue-50/50 dark:bg-blue-950/20">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <Activity className="h-6 w-6 text-blue-600" />
+                                  <h4 className="text-lg font-bold">Body (Physical Activity)</h4>
+                                </div>
+                                <div className="text-3xl font-bold text-blue-600 mb-2">
+                                  {Math.round(lisData.reduce((sum, d) => sum + (d.physical_activity_score || 0), 0) / lisData.filter(d => d.physical_activity_score).length) || 'N/A'}
+                                  <span className="text-lg text-muted-foreground">/100</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  Based on steps, activity intensity, and exercise duration
+                                </div>
+                              </div>
+
+                              <div className="border-2 border-green-200 dark:border-green-800 rounded-lg p-5 bg-green-50/50 dark:bg-green-950/20">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <Heart className="h-6 w-6 text-green-600" />
+                                  <h4 className="text-lg font-bold">Balance (Sleep & Stress)</h4>
+                                </div>
+                                <div className="text-3xl font-bold text-green-600 mb-2">
+                                  {Math.round(lisData.reduce((sum, d) => sum + (d.sleep_score || 0), 0) / lisData.filter(d => d.sleep_score).length) || 'N/A'}
+                                  <span className="text-lg text-muted-foreground">/100</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  Based on sleep quality, duration, and stress management
+                                </div>
+                              </div>
+
+                              <div className="border-2 border-pink-200 dark:border-pink-800 rounded-lg p-5 bg-pink-50/50 dark:bg-pink-950/20">
+                                <div className="flex items-center gap-3 mb-3">
+                                  <Users className="h-6 w-6 text-pink-600" />
+                                  <h4 className="text-lg font-bold">Beauty (Nutrition)</h4>
+                                </div>
+                                <div className="text-3xl font-bold text-pink-600 mb-2">
+                                  {Math.round(lisData.reduce((sum, d) => sum + (d.nutrition_score || 0), 0) / lisData.filter(d => d.nutrition_score).length) || 'N/A'}
+                                  <span className="text-lg text-muted-foreground">/100</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  Based on meal quality and nutritional balance
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Key Metrics Table */}
+                            <div className="border rounded-lg overflow-hidden">
+                              <table className="w-full">
+                                <thead className="bg-muted">
+                                  <tr>
+                                    <th className="text-left p-3 text-sm font-semibold">Metric</th>
+                                    <th className="text-center p-3 text-sm font-semibold">30-Day Average</th>
+                                    <th className="text-center p-3 text-sm font-semibold">Latest Value</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y">
+                                  <tr>
+                                    <td className="p-3 text-sm">Sleep Duration</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {(lisData.reduce((sum, d) => sum + (d.total_sleep_hours || 0), 0) / lisData.filter(d => d.total_sleep_hours).length).toFixed(1)}h
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.total_sleep_hours?.toFixed(1) || 'N/A'}h</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="p-3 text-sm">Daily Steps</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.steps || 0), 0) / lisData.filter(d => d.steps).length).toLocaleString()}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.steps?.toLocaleString() || 'N/A'}</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="p-3 text-sm">Heart Rate Variability (HRV)</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.hrv || 0), 0) / lisData.filter(d => d.hrv).length) || 'N/A'}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.hrv || 'N/A'}</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="p-3 text-sm">Stress Score</td>
+                                    <td className="p-3 text-sm text-center font-medium">
+                                      {Math.round(lisData.reduce((sum, d) => sum + (d.stress_score || 0), 0) / lisData.filter(d => d.stress_score).length) || 'N/A'}
+                                    </td>
+                                    <td className="p-3 text-sm text-center">{lisData[0]?.stress_score || 'N/A'}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Clinical Notes Section */}
+                      <div className="border-t-2 border-dashed pt-6">
+                        <h3 className="text-xl font-bold text-primary mb-4">Healthcare Provider Notes</h3>
+                        <div className="border rounded-lg p-6 bg-muted/20 min-h-[200px]">
+                          <p className="text-sm text-muted-foreground italic">
+                            This section is reserved for healthcare provider notes and observations during consultation.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="border-t pt-6 text-center text-sm text-muted-foreground">
+                        <p>This report is generated for medical consultation purposes and should be reviewed by a qualified healthcare professional.</p>
+                        <p className="mt-2">Report ID: {Math.random().toString(36).substr(2, 9).toUpperCase()} | Generated: {format(new Date(), 'PPpp')}</p>
+                      </div>
+
+                      <div className="flex justify-center gap-4">
+                        <Button onClick={() => window.print()} size="lg">
+                          <FileText className="h-4 w-4 mr-2" />
+                          Print Medical Report
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Weekly Wellness Dashboard */}
               {selectedReport === 'wellness-dashboard' && (
                 <Card>
