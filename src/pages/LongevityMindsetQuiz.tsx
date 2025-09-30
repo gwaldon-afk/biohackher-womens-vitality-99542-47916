@@ -389,7 +389,7 @@ const LongevityMindsetQuiz = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <RadioGroup
-                value={answers[currentQ.id]?.toString()}
+                value={answers[currentQ.id] !== undefined ? answers[currentQ.id].toString() : ""}
                 onValueChange={(value) => handleAnswer(currentQ.id, parseInt(value))}
               >
                 {currentQ.options.map((option) => (
