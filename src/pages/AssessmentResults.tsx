@@ -287,6 +287,9 @@ const AssessmentResults = () => {
         return calculateJointPainScore(answers);
       case 'gut':
         return calculateGutScore(answers);
+      case 'brain-fog':
+      case 'brain-brain-fog-assessment':
+        return calculateBrainFogScore(answers);
       default:
         return calculateGenericScore(answers);
     }
@@ -585,10 +588,119 @@ const AssessmentResults = () => {
     };
   };
 
+  const calculateBrainFogScore = (answers: Record<string, string>): AssessmentScore => {
+    let overallScore = 100;
+    const primaryIssues: string[] = [];
+
+    // Frequency (Question 1)
+    switch (answers['1']) {
+      case 'constant':
+        overallScore -= 45;
+        primaryIssues.push('Persistent mental cloudiness');
+        break;
+      case 'daily':
+        overallScore -= 35;
+        primaryIssues.push('Daily brain fog episodes');
+        break;
+      case 'weekly':
+        overallScore -= 20;
+        primaryIssues.push('Frequent mental fog');
+        break;
+      case 'rare':
+        overallScore -= 5;
+        break;
+    }
+
+    // Severity/Impact (Question 2)
+    switch (answers['2']) {
+      case 'severe':
+        overallScore -= 35;
+        primaryIssues.push('Significant functional impairment');
+        break;
+      case 'moderate':
+        overallScore -= 25;
+        primaryIssues.push('Moderate impact on daily tasks');
+        break;
+      case 'mild':
+        overallScore -= 15;
+        primaryIssues.push('Mild cognitive slowdown');
+        break;
+      case 'minimal':
+        overallScore -= 5;
+        break;
+    }
+
+    // Timing pattern (Question 3)
+    switch (answers['3']) {
+      case 'morning':
+        primaryIssues.push('Morning cognitive difficulty');
+        break;
+      case 'afternoon':
+        primaryIssues.push('Post-lunch mental fatigue');
+        break;
+      case 'evening':
+        primaryIssues.push('Evening mental exhaustion');
+        break;
+      case 'variable':
+        primaryIssues.push('Unpredictable brain fog pattern');
+        break;
+    }
+
+    // Accompanying symptoms (Question 4)
+    switch (answers['4']) {
+      case 'all':
+        primaryIssues.push('Multiple cognitive symptoms');
+        overallScore -= 10;
+        break;
+      case 'concentration':
+        primaryIssues.push('Difficulty concentrating');
+        break;
+      case 'memory':
+        primaryIssues.push('Memory problems');
+        break;
+      case 'words':
+        primaryIssues.push('Word-finding difficulties');
+        break;
+    }
+
+    // Add trigger info if provided (Question 5)
+    if (answers['5'] && answers['5'].trim().length > 0) {
+      const triggers = answers['5'].toLowerCase();
+      if (triggers.includes('stress')) primaryIssues.push('Stress-triggered');
+      if (triggers.includes('sleep')) primaryIssues.push('Sleep-related');
+      if (triggers.includes('hormone')) primaryIssues.push('Hormone-related');
+      if (triggers.includes('diet') || triggers.includes('food')) primaryIssues.push('Diet-related');
+    }
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: Math.max(0, overallScore),
+      category,
+      primaryIssues
+    };
+  };
+
   const calculateGenericScore = (answers: Record<string, string>): AssessmentScore => {
     // Generic scoring for symptoms without specific logic yet
     let overallScore = 75; // Default moderate score
-    const primaryIssues = ['Assessment completed'];
+    const primaryIssues: string[] = [];
+
+    // Try to extract some meaningful info from answers
+    Object.entries(answers).forEach(([key, value]) => {
+      if (value && typeof value === 'string' && value.length > 3 && !value.includes('?')) {
+        primaryIssues.push(value.substring(0, 50));
+      }
+    });
+
+    // If no meaningful issues found, add a generic placeholder
+    if (primaryIssues.length === 0) {
+      primaryIssues.push('General assessment');
+    }
 
     let category: 'excellent' | 'good' | 'fair' | 'poor';
     if (overallScore >= 85) category = 'excellent';
