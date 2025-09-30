@@ -70,10 +70,10 @@ const Index = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
                   <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
-                  console.log("Get my answers clicked");
-                  navigate("/symptoms");
+                  console.log("Longevity quiz clicked");
+                  navigate("/longevity-mindset-quiz");
                 }}>
-                    Get My Answers Now
+                    Discover Your Longevity Mindset
                   </Button>
                   <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
                   console.log("View Dashboard clicked");

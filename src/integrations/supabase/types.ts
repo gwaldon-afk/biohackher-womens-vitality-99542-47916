@@ -165,6 +165,42 @@ export type Database = {
           },
         ]
       }
+      mindset_quiz_leads: {
+        Row: {
+          answers: Json
+          completed_at: string
+          created_at: string
+          email: string | null
+          habit_score: number | null
+          id: string
+          mindset_score: number | null
+          mindset_type: string
+          user_id: string | null
+        }
+        Insert: {
+          answers: Json
+          completed_at?: string
+          created_at?: string
+          email?: string | null
+          habit_score?: number | null
+          id?: string
+          mindset_score?: number | null
+          mindset_type: string
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string
+          created_at?: string
+          email?: string | null
+          habit_score?: number | null
+          id?: string
+          mindset_score?: number | null
+          mindset_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       nutrition_preferences: {
         Row: {
           activity_level: string | null
