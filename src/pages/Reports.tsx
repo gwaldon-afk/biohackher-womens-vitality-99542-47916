@@ -144,8 +144,15 @@ const Reports = () => {
 
       if (error) throw error;
 
+      // Normalize symptom types to handle variants
+      const normalizeSymptomType = (type: string) => {
+        // Remove "brain-" prefix duplicates (e.g., "brain-brain-fog-assessment" -> "brain-fog")
+        return type.replace(/^brain-brain-/, 'brain-');
+      };
+
       const uniqueAssessments = assessments?.reduce((acc: any[], current) => {
-        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+        const normalizedType = normalizeSymptomType(current.symptom_type);
+        if (!acc.find(item => normalizeSymptomType(item.symptom_type) === normalizedType)) {
           acc.push(current);
         }
         return acc;
