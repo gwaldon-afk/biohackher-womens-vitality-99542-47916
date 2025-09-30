@@ -144,16 +144,30 @@ const Reports = () => {
 
       if (error) throw error;
 
+      console.log('Raw assessments from DB:', assessments?.map(a => ({ 
+        id: a.id, 
+        symptom_type: a.symptom_type, 
+        score: a.overall_score,
+        completed_at: a.completed_at 
+      })));
+
       // Deduplicate: keep only the most recent assessment for each symptom_type
       // Data is already ordered by completed_at DESC, so first occurrence is most recent
       const seenTypes = new Set<string>();
       const uniqueAssessments = assessments?.filter((assessment) => {
         if (seenTypes.has(assessment.symptom_type)) {
+          console.log('Filtering out duplicate:', assessment.symptom_type, assessment.id);
           return false;
         }
         seenTypes.add(assessment.symptom_type);
         return true;
       }) || [];
+
+      console.log('After deduplication:', uniqueAssessments?.map(a => ({ 
+        id: a.id, 
+        symptom_type: a.symptom_type, 
+        score: a.overall_score 
+      })));
 
       if (uniqueAssessments.length === 0) {
         generateDemoSymptomAssessments();
