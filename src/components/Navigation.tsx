@@ -17,18 +17,10 @@ const Navigation = () => {
     { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: t('navigation.dashboard') },
     { href: "/symptoms", label: "Symptom Assessment" },
-  ];
-
-  const biohackingItems = [
-    { href: "/therapies", label: "Therapies" },
-    { href: "/sleep", label: "Sleep" },
-    { href: "/nutrition", label: "Nutrition" },
-    { href: "/coaching", label: "Coaching" },
-    { href: "/supplements", label: "Supplements" },
+    { href: "/biohacking-toolkit", label: "Biohacking Toolkit" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
-  const isBiohackingActive = () => biohackingItems.some(item => isActive(item.href));
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -70,29 +62,16 @@ const Navigation = () => {
                     <div>BiohackHer</div>
                     <div>Pillars</div>
                   </div>
+                ) : item.label === "Biohacking Toolkit" ? (
+                  <div className="text-center leading-tight">
+                    <div>Biohacking</div>
+                    <div>Toolkit</div>
+                  </div>
                 ) : (
                   item.label
                 )}
               </Link>
             ))}
-            
-            {/* Biohacking Toolkit Buttons */}
-            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50">
-              {biohackingItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "text-xs font-medium transition-all hover:text-primary px-2 py-1 rounded whitespace-nowrap",
-                    isActive(item.href)
-                      ? "text-primary bg-background shadow-sm"
-                      : "text-muted-foreground hover:bg-background/50"
-                  )}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
 
             <Link
               to="/shop"
@@ -190,36 +169,16 @@ const Navigation = () => {
                       <div>BiohackHer</div>
                       <div>Pillars</div>
                     </div>
+                  ) : item.label === "Biohacking Toolkit" ? (
+                    <div className="text-center leading-tight">
+                      <div>Biohacking</div>
+                      <div>Toolkit</div>
+                    </div>
                   ) : (
                     item.label
                   )}
                 </Link>
               ))}
-              
-              {/* Biohacking Section in Mobile */}
-              <div className="px-2 py-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  <div>Biohacking</div>
-                  <div>Toolkit</div>
-                </p>
-                <div className="flex flex-col space-y-2 ml-2">
-                  {biohackingItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      className={cn(
-                        "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
-                        isActive(item.href)
-                          ? "text-primary bg-primary/10 rounded"
-                          : "text-muted-foreground"
-                      )}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
 
               <Link
                 to="/shop"
