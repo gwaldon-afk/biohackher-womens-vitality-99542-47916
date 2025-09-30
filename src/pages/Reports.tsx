@@ -144,19 +144,16 @@ const Reports = () => {
 
       if (error) throw error;
 
-      // Normalize symptom types to handle variants
-      const normalizeSymptomType = (type: string) => {
-        // Remove "brain-" prefix duplicates (e.g., "brain-brain-fog-assessment" -> "brain-fog")
-        return type.replace(/^brain-brain-/, 'brain-');
-      };
-
-      const uniqueAssessments = assessments?.reduce((acc: any[], current) => {
-        const normalizedType = normalizeSymptomType(current.symptom_type);
-        if (!acc.find(item => normalizeSymptomType(item.symptom_type) === normalizedType)) {
-          acc.push(current);
+      // Deduplicate: keep only the most recent assessment for each symptom_type
+      // Data is already ordered by completed_at DESC, so first occurrence is most recent
+      const seenTypes = new Set<string>();
+      const uniqueAssessments = assessments?.filter((assessment) => {
+        if (seenTypes.has(assessment.symptom_type)) {
+          return false;
         }
-        return acc;
-      }, []) || [];
+        seenTypes.add(assessment.symptom_type);
+        return true;
+      }) || [];
 
       if (uniqueAssessments.length === 0) {
         generateDemoSymptomAssessments();
