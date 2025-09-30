@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, User, Settings, Crown, ChevronDown, ShoppingBag } from "lucide-react";
+import { Menu, X, Activity, User, Settings, Crown, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
 import { LocaleSelector } from "@/components/LocaleSelector";
 import { useTranslation } from "react-i18next";
@@ -49,7 +48,7 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             {mainNavItems.map((item) => (
               <Link
                 key={item.href}
@@ -77,36 +76,23 @@ const Navigation = () => {
               </Link>
             ))}
             
-            {/* Biohacking Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className={cn(
-                "text-sm font-medium transition-colors hover:text-primary flex items-center gap-1 whitespace-nowrap",
-                isBiohackingActive()
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}>
-                <div className="text-center leading-tight">
-                  <div>Biohacking</div>
-                  <div>Toolkit</div>
-                </div>
-                <ChevronDown className="h-3 w-3" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="bg-background border border-border">
-                {biohackingItems.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <Link
-                      to={item.href}
-                      className={cn(
-                        "w-full cursor-pointer",
-                        isActive(item.href) ? "text-primary bg-primary/10" : ""
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Biohacking Toolkit Buttons */}
+            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50">
+              {biohackingItems.map((item) => (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={cn(
+                    "text-xs font-medium transition-all hover:text-primary px-2 py-1 rounded whitespace-nowrap",
+                    isActive(item.href)
+                      ? "text-primary bg-background shadow-sm"
+                      : "text-muted-foreground hover:bg-background/50"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
 
             <Link
               to="/shop"
@@ -146,7 +132,7 @@ const Navigation = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-3">
             <LocaleSelector />
             <ShoppingCartIcon />
             <Link to="/upgrade">
@@ -166,7 +152,7 @@ const Navigation = () => {
           </div>
 
           {/* Mobile actions */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="lg:hidden flex items-center space-x-2">
             <ShoppingCartIcon />
             <Button
               variant="ghost"
@@ -180,7 +166,7 @@ const Navigation = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="lg:hidden py-4 border-t border-border">
             <div className="flex flex-col space-y-4">
               {mainNavItems.map((item) => (
                 <Link
