@@ -66,7 +66,7 @@ const Index = () => {
                 </p>
                 <div className="flex items-center gap-2 mb-8 justify-center lg:justify-start">
                   <Users className="h-5 w-5 text-white/80" />
-                  <span className="text-white/80">Join 10,000+ women who found their answers</span>
+                  <span className="text-white/80">Longevity and biohacking strategies that's actually for women</span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
                   <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
