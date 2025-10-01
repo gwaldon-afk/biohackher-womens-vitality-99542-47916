@@ -239,17 +239,6 @@ const Index = () => {
                 </div>}
             </div>
 
-            <div className="bg-muted/30 rounded-lg p-6 mt-8">
-              <p className="mb-4">
-                <strong>Meet Azra Alagic, Founder & Longevity Expert</strong>
-              </p>
-              <p>
-                With over a decade of experience in women's hormonal health and longevity research, Azra founded 
-                BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
-                after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
-                interventions designed specifically for women's unique physiological needs throughout all life stages.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -418,6 +407,38 @@ const Index = () => {
                 View Premium Plans
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Azra Section */}
+      <section className="py-16 lg:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <Card className="card-elevated overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-muted/30 flex items-center justify-center p-8">
+                  {/* Photo placeholder - replace with actual image */}
+                  <div className="w-full aspect-square bg-muted/50 rounded-lg flex items-center justify-center">
+                    <p className="text-muted-foreground">Photo of Azra</p>
+                  </div>
+                </div>
+                <div className="p-8 flex flex-col justify-center">
+                  <h2 className="text-2xl lg:text-3xl font-bold mb-4">
+                    Meet Azra Alagic
+                  </h2>
+                  <p className="text-lg text-primary font-semibold mb-4">
+                    Founder & Longevity Expert
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed">
+                    With over a decade of experience in women's hormonal health and longevity research, Azra founded 
+                    BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
+                    after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
+                    interventions designed specifically for women's unique physiological needs throughout all life stages.
+                  </p>
+                </div>
+              </div>
+            </Card>
           </div>
         </div>
       </section>
