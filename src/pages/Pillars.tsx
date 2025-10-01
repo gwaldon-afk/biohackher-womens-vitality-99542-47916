@@ -316,68 +316,76 @@ const Pillars = () => {
                           {selectedPillar === "beauty" && "Unlock your radiant potential with cutting-edge approaches to skin health and cellular rejuvenation. Browse beauty-enhancing practices, professional-grade therapies, and collagen-boosting supplements for visible, lasting results."}
                         </p>
                       </div>
-                      {/* Button Row */}
-                      <div className="flex gap-4 justify-center flex-wrap">
-                        <button
-                          onClick={() => setSelectedSection(selectedSection === "training" ? null : "training")}
-                          className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
-                            selectedSection === "training" 
-                              ? "border-primary bg-primary text-primary-foreground shadow-lg" 
-                              : "border-border bg-card hover:border-primary/50 hover:shadow-md"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center gap-2 mb-2">
-                            <Activity className="h-5 w-5" />
-                            <span className="font-semibold text-lg">Training</span>
-                          </div>
-                          <p className="text-sm opacity-90 text-center">
-                            {selectedPillar === "brain" && "Daily practices to sharpen your mind"}
-                            {selectedPillar === "body" && "Movement protocols to build strength"}
-                            {selectedPillar === "balance" && "Rituals to restore inner peace"}
-                            {selectedPillar === "beauty" && "Habits for radiant, youthful skin"}
-                          </p>
-                        </button>
+                      
+                      {/* Biohacks Card with Buttons */}
+                      <Card className="p-6">
+                        <h3 className="text-2xl font-bold text-center mb-4">
+                          {pillars[selectedPillar as keyof typeof pillars].title} Biohacks
+                        </h3>
                         
-                        <button
-                          onClick={() => setSelectedSection(selectedSection === "therapy" ? null : "therapy")}
-                          className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
-                            selectedSection === "therapy" 
-                              ? "border-primary bg-primary text-primary-foreground shadow-lg" 
-                              : "border-border bg-card hover:border-primary/50 hover:shadow-md"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center gap-2 mb-2">
-                            <TestTube className="h-5 w-5" />
-                            <span className="font-semibold text-lg">Therapies</span>
-                          </div>
-                          <p className="text-sm opacity-90 text-center">
-                            {selectedPillar === "brain" && "Proven treatments for cognitive enhancement"}
-                            {selectedPillar === "body" && "Advanced recovery and performance therapies"}
-                            {selectedPillar === "balance" && "Expert interventions for stress relief"}
-                            {selectedPillar === "beauty" && "Clinical procedures for visible results"}
-                          </p>
-                        </button>
-                        
-                        <button
-                          onClick={() => setSelectedSection(selectedSection === "supplements" ? null : "supplements")}
-                          className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
-                            selectedSection === "supplements" 
-                              ? "border-primary bg-primary text-primary-foreground shadow-lg" 
-                              : "border-border bg-card hover:border-primary/50 hover:shadow-md"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center gap-2 mb-2">
-                            <Pill className="h-5 w-5" />
-                            <span className="font-semibold text-lg">Supplements</span>
-                          </div>
-                          <p className="text-sm opacity-90 text-center">
-                            {selectedPillar === "brain" && "Targeted nutrients to boost mental clarity"}
-                            {selectedPillar === "body" && "Performance supplements for optimal fitness"}
-                            {selectedPillar === "balance" && "Natural compounds to support calm"}
-                            {selectedPillar === "beauty" && "Collagen and antioxidants for skin health"}
-                          </p>
-                        </button>
-                      </div>
+                        {/* Button Row */}
+                        <div className="flex gap-4 justify-center flex-wrap">
+                          <button
+                            onClick={() => setSelectedSection(selectedSection === "training" ? null : "training")}
+                            className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
+                              selectedSection === "training" 
+                                ? "border-primary bg-primary text-primary-foreground shadow-lg" 
+                                : "border-border bg-card hover:border-primary/50 hover:shadow-md"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <Activity className="h-5 w-5" />
+                              <span className="font-semibold text-lg">Training</span>
+                            </div>
+                            <p className="text-sm opacity-90 text-center">
+                              {selectedPillar === "brain" && "Daily practices to sharpen your mind"}
+                              {selectedPillar === "body" && "Movement protocols to build strength"}
+                              {selectedPillar === "balance" && "Rituals to restore inner peace"}
+                              {selectedPillar === "beauty" && "Habits for radiant, youthful skin"}
+                            </p>
+                          </button>
+                          
+                          <button
+                            onClick={() => setSelectedSection(selectedSection === "therapy" ? null : "therapy")}
+                            className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
+                              selectedSection === "therapy" 
+                                ? "border-primary bg-primary text-primary-foreground shadow-lg" 
+                                : "border-border bg-card hover:border-primary/50 hover:shadow-md"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <TestTube className="h-5 w-5" />
+                              <span className="font-semibold text-lg">Therapies</span>
+                            </div>
+                            <p className="text-sm opacity-90 text-center">
+                              {selectedPillar === "brain" && "Proven treatments for cognitive enhancement"}
+                              {selectedPillar === "body" && "Advanced recovery and performance therapies"}
+                              {selectedPillar === "balance" && "Expert interventions for stress relief"}
+                              {selectedPillar === "beauty" && "Clinical procedures for visible results"}
+                            </p>
+                          </button>
+                          
+                          <button
+                            onClick={() => setSelectedSection(selectedSection === "supplements" ? null : "supplements")}
+                            className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
+                              selectedSection === "supplements" 
+                                ? "border-primary bg-primary text-primary-foreground shadow-lg" 
+                                : "border-border bg-card hover:border-primary/50 hover:shadow-md"
+                            }`}
+                          >
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <Pill className="h-5 w-5" />
+                              <span className="font-semibold text-lg">Supplements</span>
+                            </div>
+                            <p className="text-sm opacity-90 text-center">
+                              {selectedPillar === "brain" && "Targeted nutrients to boost mental clarity"}
+                              {selectedPillar === "body" && "Performance supplements for optimal fitness"}
+                              {selectedPillar === "balance" && "Natural compounds to support calm"}
+                              {selectedPillar === "beauty" && "Collagen and antioxidants for skin health"}
+                            </p>
+                          </button>
+                        </div>
+                      </Card>
 
                       {/* Content Display with Close Button */}
                       {selectedSection && (
