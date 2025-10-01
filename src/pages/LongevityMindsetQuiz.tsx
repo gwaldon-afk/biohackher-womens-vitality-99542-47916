@@ -262,22 +262,22 @@ const LongevityMindsetQuiz = () => {
     {
       type: "Overwhelmed Starter",
       range: "1.0 - 1.5",
-      color: "from-purple-500 to-pink-600",
+      color: "from-orange-200 to-orange-300",
     },
     {
       type: "Curious Skeptic",
       range: "1.5 - 2.5",
-      color: "from-amber-500 to-orange-600",
+      color: "from-orange-300 to-orange-400",
     },
     {
       type: "Awakening Explorer",
       range: "2.5 - 3.5",
-      color: "from-blue-500 to-cyan-600",
+      color: "from-orange-400 to-orange-500",
     },
     {
       type: "Empowered Biohacker",
       range: "3.5 - 4.0",
-      color: "from-green-500 to-emerald-600",
+      color: "from-orange-500 to-orange-600",
     },
   ];
 
