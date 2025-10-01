@@ -237,6 +237,50 @@ const LongevityMindsetQuiz = () => {
 
   const mindsetResult = showResults ? calculateMindsetType() : null;
 
+  const calculateDimensionScores = () => {
+    const dimensionScores: Record<string, { total: number; count: number; avg: number }> = {};
+    
+    questions.forEach((q) => {
+      const answer = answers[q.id];
+      if (answer !== undefined) {
+        if (!dimensionScores[q.dimension]) {
+          dimensionScores[q.dimension] = { total: 0, count: 0, avg: 0 };
+        }
+        dimensionScores[q.dimension].total += answer;
+        dimensionScores[q.dimension].count += 1;
+      }
+    });
+
+    Object.keys(dimensionScores).forEach((dim) => {
+      dimensionScores[dim].avg = dimensionScores[dim].total / dimensionScores[dim].count;
+    });
+
+    return dimensionScores;
+  };
+
+  const allMindsetTypes = [
+    {
+      type: "Overwhelmed Starter",
+      range: "1.0 - 1.5",
+      color: "from-purple-500 to-pink-600",
+    },
+    {
+      type: "Curious Skeptic",
+      range: "1.5 - 2.5",
+      color: "from-amber-500 to-orange-600",
+    },
+    {
+      type: "Awakening Explorer",
+      range: "2.5 - 3.5",
+      color: "from-blue-500 to-cyan-600",
+    },
+    {
+      type: "Empowered Biohacker",
+      range: "3.5 - 4.0",
+      color: "from-green-500 to-emerald-600",
+    },
+  ];
+
   const handleEmailSubmit = async () => {
     if (!email || !email.includes("@")) {
       toast.error("Please enter a valid email address");
@@ -279,11 +323,15 @@ const LongevityMindsetQuiz = () => {
   };
 
   if (showResults && mindsetResult) {
+    const dimensionScores = calculateDimensionScores();
+    const totalScore = Object.values(answers).reduce((sum, val) => sum + val, 0);
+    const avgScore = totalScore / questions.length;
+
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-16">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto space-y-6">
             <Card className="card-elevated">
               <CardHeader className="text-center">
                 <div className={`mx-auto w-20 h-20 rounded-full bg-gradient-to-br ${mindsetResult.color} flex items-center justify-center mb-4`}>
@@ -347,6 +395,86 @@ const LongevityMindsetQuiz = () => {
                     </p>
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Mindset Type Scale */}
+            <Card className="card-elevated">
+              <CardHeader>
+                <CardTitle className="text-xl">Longevity Mindset Type Scale</CardTitle>
+                <CardDescription>See where you fall on the mindset spectrum</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {allMindsetTypes.map((type) => {
+                    const isUserType = type.type === mindsetResult.type;
+                    return (
+                      <div
+                        key={type.type}
+                        className={`rounded-lg border-2 p-4 transition-all ${
+                          isUserType
+                            ? "border-primary bg-primary/5 scale-105"
+                            : "border-border bg-muted/30"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${type.color} flex items-center justify-center flex-shrink-0`}>
+                            <Sparkles className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <p className={`font-semibold ${isUserType ? "text-xl text-primary" : "text-base"}`}>
+                              {type.type}
+                              {isUserType && " (You)"}
+                            </p>
+                            <p className="text-sm text-muted-foreground">Score Range: {type.range}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Your score: <span className="font-semibold text-primary">{avgScore.toFixed(2)}</span> / 4.0
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Dimension Breakdown */}
+            <Card className="card-elevated">
+              <CardHeader>
+                <CardTitle className="text-xl">Your Mindset Dimension Breakdown</CardTitle>
+                <CardDescription>Detailed analysis of the components that shape your longevity mindset</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {Object.entries(dimensionScores)
+                    .sort(([, a], [, b]) => b.avg - a.avg)
+                    .map(([dimension, data]) => {
+                      const percentage = (data.avg / 4) * 100;
+                      const Icon = questions.find(q => q.dimension === dimension)?.icon || Brain;
+                      return (
+                        <div key={dimension} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Icon className="h-4 w-4 text-primary" />
+                              <span className="font-medium">{dimension}</span>
+                            </div>
+                            <span className="text-sm text-muted-foreground">
+                              {data.avg.toFixed(1)} / 4.0
+                            </span>
+                          </div>
+                          <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/70 transition-all"
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </CardContent>
             </Card>
           </div>
