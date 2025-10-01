@@ -450,15 +450,16 @@ const LongevityMindsetQuiz = () => {
               <CardContent>
                 <div className="space-y-4">
                   {/* Continuum labels */}
-                  <div className="flex justify-between text-sm text-muted-foreground mb-2">
+                  <div className="flex justify-between text-sm text-muted-foreground mb-4">
                     <span>Emerging</span>
+                    <span>Evolving</span>
+                    <span>Engaging</span>
                     <span>Empowered</span>
                   </div>
                   
                   {Object.entries(dimensionScores)
                     .sort(([, a], [, b]) => b.avg - a.avg)
                     .map(([dimension, data], index) => {
-                      const percentage = (data.avg / 4) * 100;
                       const Icon = questions.find(q => q.dimension === dimension)?.icon || Brain;
                       
                       // Map dimensions to branding colors (peach shades)
@@ -480,41 +481,114 @@ const LongevityMindsetQuiz = () => {
                         return colors[index % colors.length];
                       };
                       
-                      // Get insight for each dimension
-                      const getDimensionInsight = (dim: string, score: number) => {
-                        const insights: Record<string, string> = {
-                          "Belief About Aging": score >= 3 ? "You see aging as malleable" : "You're exploring what's possible",
-                          "Future Self Vision": score >= 3 ? "You envision a vibrant future" : "You're building your vision",
-                          "Longevity Knowledge": score >= 3 ? "You're informed and curious" : "You're beginning your learning journey",
-                          "Personal Agency": score >= 3 ? "You feel in control of your health" : "You're developing your sense of control",
-                          "Openness to Learning": score >= 3 ? "You embrace new information" : "You're cultivating curiosity",
-                          "Exploration Readiness": score >= 3 ? "You're eager to experiment" : "You're warming up to new practices",
-                          "Commitment Pattern": score >= 3 ? "You follow through consistently" : "You're building lasting habits",
-                          "Readiness to Act": score >= 3 ? "You're primed for action" : "You're preparing to take steps",
-                          "Self-Worth": score >= 3 ? "You prioritize your wellbeing" : "You're learning to put yourself first",
-                          "Possibility Mindset": score >= 3 ? "You believe in your potential" : "You're opening to possibilities",
-                          "Scientific Curiosity": score >= 3 ? "You seek to understand deeply" : "You're developing scientific thinking",
-                          "Community Orientation": score >= 3 ? "You thrive with others" : "You're finding your community",
-                        };
-                        return insights[dim] || "Your mindset is developing";
+                      // Get score label based on 4-point scale
+                      const getScoreLabel = (score: number) => {
+                        if (score >= 3.5) return "Empowered";
+                        if (score >= 2.75) return "Engaging";
+                        if (score >= 2.0) return "Evolving";
+                        return "Emerging";
                       };
                       
+                      // Get expanded insight for each dimension
+                      const getDimensionInsight = (dim: string, score: number) => {
+                        const insights: Record<string, Record<string, string>> = {
+                          "Belief About Aging": {
+                            "Empowered": "You embrace aging as a dynamic, malleable process full of potential",
+                            "Engaging": "You're actively questioning limiting beliefs about aging and exploring new possibilities",
+                            "Evolving": "You're beginning to see that aging doesn't have to mean decline",
+                            "Emerging": "You're discovering that your beliefs about aging can shape your experience"
+                          },
+                          "Future Self Vision": {
+                            "Empowered": "You hold a vivid, compelling vision of your vibrant future self",
+                            "Engaging": "You're actively crafting a vision of who you want to become",
+                            "Evolving": "You're starting to imagine a future filled with vitality and purpose",
+                            "Emerging": "You're exploring what your future self might look and feel like"
+                          },
+                          "Longevity Knowledge": {
+                            "Empowered": "You're well-versed in longevity science and eager to learn more",
+                            "Engaging": "You're actively building your knowledge of health optimization and longevity",
+                            "Evolving": "You're developing a foundational understanding of how to extend healthspan",
+                            "Emerging": "You're at the beginning of your longevity learning journey"
+                          },
+                          "Personal Agency": {
+                            "Empowered": "You feel confident in your ability to influence your health outcomes",
+                            "Engaging": "You're actively taking steps to assert control over your wellbeing",
+                            "Evolving": "You're recognizing your power to shape your health trajectory",
+                            "Emerging": "You're discovering that you have more control than you thought"
+                          },
+                          "Openness to Learning": {
+                            "Empowered": "You actively seek out and embrace new health information and practices",
+                            "Engaging": "You're increasingly receptive to new ideas about health and longevity",
+                            "Evolving": "You're becoming more curious about alternative health approaches",
+                            "Emerging": "You're beginning to open your mind to new wellness possibilities"
+                          },
+                          "Exploration Readiness": {
+                            "Empowered": "You're enthusiastic about experimenting with new longevity interventions",
+                            "Engaging": "You're building confidence to try new health optimization strategies",
+                            "Evolving": "You're warming up to the idea of testing novel wellness approaches",
+                            "Emerging": "You're considering whether you're ready to try something new"
+                          },
+                          "Commitment Pattern": {
+                            "Empowered": "You consistently follow through on your health commitments with discipline",
+                            "Engaging": "You're actively working to turn intentions into lasting habits",
+                            "Evolving": "You're developing stronger patterns of consistency in your wellness routine",
+                            "Emerging": "You're exploring what it takes to maintain healthy habits long-term"
+                          },
+                          "Readiness to Act": {
+                            "Empowered": "You're primed and motivated to take immediate action on your health",
+                            "Engaging": "You're actively preparing to implement meaningful health changes",
+                            "Evolving": "You're building the momentum needed to start making changes",
+                            "Emerging": "You're contemplating what first steps you might take"
+                          },
+                          "Self-Worth": {
+                            "Empowered": "You deeply value yourself and prioritize your wellbeing without guilt",
+                            "Engaging": "You're actively learning to put your health and happiness first",
+                            "Evolving": "You're recognizing that you deserve to invest in your wellbeing",
+                            "Emerging": "You're beginning to see yourself as worthy of care and attention"
+                          },
+                          "Possibility Mindset": {
+                            "Empowered": "You believe wholeheartedly in your capacity for transformation",
+                            "Engaging": "You're actively cultivating belief in your potential for change",
+                            "Evolving": "You're opening to the possibility that real change is within reach",
+                            "Emerging": "You're considering that more might be possible than you thought"
+                          },
+                          "Scientific Curiosity": {
+                            "Empowered": "You deeply engage with scientific research to inform your health decisions",
+                            "Engaging": "You're actively developing your ability to evaluate health evidence",
+                            "Evolving": "You're growing more interested in the science behind health claims",
+                            "Emerging": "You're beginning to question and seek evidence for health information"
+                          },
+                          "Community Orientation": {
+                            "Empowered": "You thrive through connection and actively seek community support",
+                            "Engaging": "You're building relationships that support your health journey",
+                            "Evolving": "You're recognizing the value of community in achieving wellness goals",
+                            "Emerging": "You're discovering that you don't have to do this alone"
+                          },
+                        };
+                        const label = getScoreLabel(score);
+                        return insights[dim]?.[label] || "Your mindset is developing";
+                      };
+                      
+                      const scoreLabel = getScoreLabel(data.avg);
+                      
                       return (
-                        <div key={dimension} className="space-y-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <Icon className={`h-4 w-4 ${getIconColor(index)}`} />
-                              <span className="font-medium">{dimension}</span>
+                        <div key={dimension} className="space-y-1">
+                          <div className="flex items-start gap-2">
+                            <Icon className={`h-4 w-4 ${getIconColor(index)} mt-0.5`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline gap-2 flex-wrap">
+                                <span className="font-medium">{dimension}</span>
+                                <span className="text-sm text-muted-foreground/70">
+                                  {data.avg.toFixed(1)}/4.0
+                                </span>
+                                <span className="text-sm font-medium text-orange-500">
+                                  {scoreLabel}
+                                </span>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {getDimensionInsight(dimension, data.avg)}
+                              </p>
                             </div>
-                            <span className="text-xs text-muted-foreground">
-                              {getDimensionInsight(dimension, data.avg)}
-                            </span>
-                          </div>
-                          <div className="relative h-3 bg-muted rounded-full overflow-hidden">
-                            <div
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400/75 to-orange-500/75 transition-all"
-                              style={{ width: `${percentage}%` }}
-                            />
                           </div>
                         </div>
                       );
