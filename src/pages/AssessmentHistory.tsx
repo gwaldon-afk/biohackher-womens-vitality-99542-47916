@@ -156,7 +156,7 @@ const AssessmentHistory = () => {
 
   const getSymptomName = (id: string) => {
     const nameMap: Record<string, string> = {
-      "hot-flashes": "Hot Flashes",
+      "hot-flashes": "Hot Flushes",
       "sleep": "Sleep Issues",
       "joint-pain": "Joint Pain",
       "brain-fog": "Brain Fog",

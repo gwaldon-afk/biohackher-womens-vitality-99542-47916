@@ -111,7 +111,7 @@ const Shop = () => {
       inStock: true
     },
 
-    // Hot Flashes Products
+    // Hot Flushes Products
     {
       id: "hf-black-cohosh",
       name: "Black Cohosh Extract 80mg",

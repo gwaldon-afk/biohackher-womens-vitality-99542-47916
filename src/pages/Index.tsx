@@ -31,7 +31,7 @@ const Index = () => {
   }, {
     icon: Thermometer,
     title: "Symptom Management",
-    description: "Evidence-based interventions for hot flashes, sleep issues, and mood changes with Gold/Silver/Bronze ratings."
+    description: "Evidence-based interventions for hot flushes, sleep issues, and mood changes with Gold/Silver/Bronze ratings."
   }, {
     icon: Heart,
     title: "Cycle-Aware Coaching",

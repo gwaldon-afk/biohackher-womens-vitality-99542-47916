@@ -111,7 +111,7 @@ const Symptoms = () => {
   const symptoms = [
     {
       id: "hot-flashes",
-      name: "Hot Flashes",
+      name: "Hot Flushes",
       icon: Thermometer,
       severity: "Moderate",
       frequency: "Daily",

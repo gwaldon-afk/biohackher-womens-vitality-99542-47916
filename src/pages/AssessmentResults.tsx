@@ -230,7 +230,7 @@ const AssessmentResults = () => {
 
   const getSymptomName = (id: string) => {
     const nameMap: Record<string, string> = {
-      "hot-flashes": "Hot Flashes",
+      "hot-flashes": "Hot Flushes",
       "sleep": "Sleep Issues",
       "joint-pain": "Joint Pain",
       "brain-fog": "Brain Fog",
@@ -392,15 +392,15 @@ const AssessmentResults = () => {
     switch (answers['1']) {
       case 'frequent':
         overallScore -= 40;
-        primaryIssues.push('Very frequent hot flashes');
+        primaryIssues.push('Very frequent hot flushes');
         break;
       case 'daily':
         overallScore -= 30;
-        primaryIssues.push('Daily hot flashes');
+        primaryIssues.push('Daily hot flushes');
         break;
       case 'weekly':
         overallScore -= 15;
-        primaryIssues.push('Weekly hot flashes');
+        primaryIssues.push('Weekly hot flushes');
         break;
       case 'rare':
         overallScore -= 5;
@@ -428,9 +428,9 @@ const AssessmentResults = () => {
 
     // Timing patterns (Question 3)
     if (answers['3'] === 'night') {
-      primaryIssues.push('Night-time hot flashes disrupting sleep');
+      primaryIssues.push('Night-time hot flushes disrupting sleep');
     } else if (answers['3'] === 'triggers') {
-      primaryIssues.push('Trigger-based hot flashes');
+      primaryIssues.push('Trigger-based hot flushes');
     }
 
     let category: 'excellent' | 'good' | 'fair' | 'poor';
@@ -1682,7 +1682,7 @@ const AssessmentResults = () => {
       },
       {
         title: "Evening Primrose Oil",
-        description: "Take 1000-2000mg evening primrose oil with dinner to support hormone balance and reduce hot flashes.",
+        description: "Take 1000-2000mg evening primrose oil with dinner to support hormone balance and reduce hot flushes.",
         priority: 'medium',
         category: 'supplement',
         icon: Pill,
@@ -2124,7 +2124,7 @@ const AssessmentResults = () => {
                   <div>
                     <h4 className="font-medium text-success mb-2">What You Should Expect:</h4>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Reduced frequency and intensity of hot flashes</li>
+                      <li>• Reduced frequency and intensity of hot flushes</li>
                       <li>• Better temperature regulation throughout the day</li>
                       <li>• Improved sleep quality with fewer night sweats</li>
                       <li>• Enhanced overall comfort during daily activities</li>
@@ -2352,9 +2352,9 @@ const AssessmentResults = () => {
               {symptomId === 'hot-flashes' && (
                 <div className="space-y-4">
                   <div className="bg-background/80 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2 text-primary">Hormone Changes & Hot Flashes</h4>
+                    <h4 className="font-semibold mb-2 text-primary">Hormone Changes & Hot Flushes</h4>
                     <p className="text-sm text-muted-foreground mb-3">
-                      Hot flashes occur when declining estrogen levels affect the hypothalamus, your body's temperature control center. 
+                      Hot flushes occur when declining estrogen levels affect the hypothalamus, your body's temperature control center. 
                       This triggers sudden dilation of blood vessels, causing the characteristic warmth, sweating, and flushing.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -20,7 +20,7 @@ export const getSymptomName = (symptomId: string) => {
     'joint-pain': 'Joint Pain',
     'sleep': 'Sleep Quality',
     'gut': 'Digestive Health',
-    'hot-flashes': 'Hot Flashes',
+    'hot-flashes': 'Hot Flushes',
     'memory-focus': 'Memory & Focus',
     'mobility': 'Mobility',
     'bloating': 'Bloating',

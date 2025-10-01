@@ -16,7 +16,7 @@ const assessmentQuestions = {
   "hot-flashes": [
     {
       id: 1,
-      question: "How often do you experience hot flashes?",
+      question: "How often do you experience hot flushes?",
       type: "radio",
       options: [
         { value: "rare", label: "Rarely (less than once a week)" },
@@ -27,7 +27,7 @@ const assessmentQuestions = {
     },
     {
       id: 2,
-      question: "How severe are your hot flashes typically?",
+      question: "How severe are your hot flushes typically?",
       type: "radio",
       options: [
         { value: "mild", label: "Mild - barely noticeable" },
@@ -38,7 +38,7 @@ const assessmentQuestions = {
     },
     {
       id: 3,
-      question: "When do your hot flashes typically occur?",
+      question: "When do your hot flushes typically occur?",
       type: "radio",
       options: [
         { value: "anytime", label: "Any time of day" },
@@ -49,7 +49,7 @@ const assessmentQuestions = {
     },
     {
       id: 4,
-      question: "What triggers seem to make your hot flashes worse?",
+      question: "What triggers seem to make your hot flushes worse?",
       type: "textarea",
       placeholder: "Describe any triggers you've noticed (stress, certain foods, activities, etc.)"
     }
@@ -687,7 +687,7 @@ const assessmentQuestions = {
       options: [
         { value: "normal", label: "Normal temperature regulation" },
         { value: "slightly-sensitive", label: "Slightly more sensitive to temperature changes" },
-        { value: "hot-flashes", label: "Experience hot flashes or sudden temperature changes" },
+        { value: "hot-flashes", label: "Experience hot flushes or sudden temperature changes" },
         { value: "severe-dysregulation", label: "Severe temperature regulation problems" }
       ]
     },
@@ -1694,7 +1694,7 @@ const SymptomAssessment = () => {
 
   const getSymptomName = (id: string) => {
     const nameMap: Record<string, string> = {
-      "hot-flashes": "Hot Flashes",
+      "hot-flashes": "Hot Flushes",
       "sleep": "Sleep Issues",
       "joint-pain": "Joint Pain",
       "brain-fog": "Brain Fog",
