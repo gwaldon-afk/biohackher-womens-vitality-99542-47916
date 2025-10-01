@@ -454,11 +454,31 @@ const LongevityMindsetQuiz = () => {
                     .map(([dimension, data]) => {
                       const percentage = (data.avg / 4) * 100;
                       const Icon = questions.find(q => q.dimension === dimension)?.icon || Brain;
+                      
+                      // Map dimensions to branding colors
+                      const getIconColor = (dim: string) => {
+                        const colorMap: Record<string, string> = {
+                          "Belief About Aging": "text-emerald-500",
+                          "Future Self Vision": "text-cyan-500",
+                          "Awareness": "text-blue-500",
+                          "Personal Agency": "text-primary",
+                          "Openness to Learning": "text-pink-500",
+                          "Exploration Readiness": "text-amber-500",
+                          "Commitment Pattern": "text-purple-500",
+                          "Readiness to Act": "text-green-500",
+                          "Self-Worth": "text-rose-500",
+                          "Possibility Mindset": "text-indigo-500",
+                          "Scientific Curiosity": "text-violet-500",
+                          "Community Orientation": "text-teal-500",
+                        };
+                        return colorMap[dim] || "text-primary";
+                      };
+                      
                       return (
                         <div key={dimension} className="space-y-2">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <Icon className="h-4 w-4 text-primary" />
+                              <Icon className={`h-4 w-4 ${getIconColor(dimension)}`} />
                               <span className="font-medium">{dimension}</span>
                             </div>
                             <span className="text-sm text-muted-foreground">
