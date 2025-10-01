@@ -451,43 +451,38 @@ const LongevityMindsetQuiz = () => {
                 <div className="space-y-4">
                   {Object.entries(dimensionScores)
                     .sort(([, a], [, b]) => b.avg - a.avg)
-                    .map(([dimension, data]) => {
+                    .map(([dimension, data], index) => {
                       const percentage = (data.avg / 4) * 100;
                       const Icon = questions.find(q => q.dimension === dimension)?.icon || Brain;
                       
-                      // Map dimensions to branding colors
-                      const getIconColor = (dim: string) => {
-                        const colorMap: Record<string, string> = {
-                          "Belief About Aging": "text-emerald-500",
-                          "Future Self Vision": "text-cyan-500",
-                          "Awareness": "text-blue-500",
-                          "Personal Agency": "text-primary",
-                          "Openness to Learning": "text-pink-500",
-                          "Exploration Readiness": "text-amber-500",
-                          "Commitment Pattern": "text-purple-500",
-                          "Readiness to Act": "text-green-500",
-                          "Self-Worth": "text-rose-500",
-                          "Possibility Mindset": "text-indigo-500",
-                          "Scientific Curiosity": "text-violet-500",
-                          "Community Orientation": "text-teal-500",
-                        };
-                        return colorMap[dim] || "text-primary";
+                      // Map dimensions to branding colors (peach shades)
+                      const getIconColor = (index: number) => {
+                        const colors = [
+                          "text-orange-400",
+                          "text-orange-500",
+                          "text-orange-600",
+                          "text-orange-500",
+                          "text-orange-400",
+                          "text-orange-600",
+                          "text-orange-500",
+                          "text-orange-400",
+                          "text-orange-600",
+                          "text-orange-500",
+                          "text-orange-400",
+                          "text-orange-600",
+                        ];
+                        return colors[index % colors.length];
                       };
                       
                       return (
                         <div key={dimension} className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Icon className={`h-4 w-4 ${getIconColor(dimension)}`} />
-                              <span className="font-medium">{dimension}</span>
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                              {data.avg.toFixed(1)} / 4.0
-                            </span>
+                          <div className="flex items-center gap-2">
+                            <Icon className={`h-4 w-4 ${getIconColor(index)}`} />
+                            <span className="font-medium">{dimension}</span>
                           </div>
                           <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                             <div
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/70 transition-all"
+                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400 to-orange-500 transition-all"
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
