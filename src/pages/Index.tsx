@@ -105,51 +105,37 @@ const Index = () => {
 
             {/* Four Pillars Section */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              {[
-                {
-                  title: "Brain",
-                  subtitle: "Get on top of brain fog and sharpen your mind",
-                  image: brainPillar,
-                  icon: Brain,
-                  color: "from-primary to-primary-light",
-                  path: "/pillars?pillar=brain"
-                },
-                {
-                  title: "Body",
-                  subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
-                  image: bodyPillar,
-                  icon: Activity,
-                  color: "from-primary-dark to-primary",
-                  path: "/pillars?pillar=body"
-                },
-                {
-                  title: "Balance",
-                  subtitle: "Achieve inner calm and peace",
-                  image: balancePillar,
-                  icon: Zap,
-                  color: "from-secondary to-secondary-light",
-                  path: "/pillars?pillar=balance"
-                },
-                {
-                  title: "Beauty",
-                  subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
-                  image: beautyPillar,
-                  icon: Sparkles,
-                  color: "from-secondary-dark to-secondary",
-                  path: "/pillars?pillar=beauty"
-                }
-              ].map((pillar, index) => (
-                <Card 
-                  key={index} 
-                  className="card-elevated hover:shadow-lg transition-all cursor-pointer overflow-hidden group"
-                  onClick={() => navigate(pillar.path)}
-                >
+              {[{
+              title: "Brain",
+              subtitle: "Get on top of brain fog and sharpen your mind",
+              image: brainPillar,
+              icon: Brain,
+              color: "from-primary to-primary-light",
+              path: "/pillars?pillar=brain"
+            }, {
+              title: "Body",
+              subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
+              image: bodyPillar,
+              icon: Activity,
+              color: "from-primary-dark to-primary",
+              path: "/pillars?pillar=body"
+            }, {
+              title: "Balance",
+              subtitle: "Achieve inner calm and peace",
+              image: balancePillar,
+              icon: Zap,
+              color: "from-secondary to-secondary-light",
+              path: "/pillars?pillar=balance"
+            }, {
+              title: "Beauty",
+              subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
+              image: beautyPillar,
+              icon: Sparkles,
+              color: "from-secondary-dark to-secondary",
+              path: "/pillars?pillar=beauty"
+            }].map((pillar, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer overflow-hidden group" onClick={() => navigate(pillar.path)}>
                   <div className="relative">
-                    <img 
-                      src={pillar.image} 
-                      alt={`${pillar.title} pillar`} 
-                      className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    <img src={pillar.image} alt={`${pillar.title} pillar`} className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
                     <div className="absolute top-3 left-3">
                       <pillar.icon className="h-6 w-6 text-white" />
@@ -163,8 +149,7 @@ const Index = () => {
                       {pillar.subtitle}
                     </CardDescription>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
 
             <div className="max-w-3xl mx-auto text-center mb-12">
@@ -177,37 +162,28 @@ const Index = () => {
 
             <div className="mb-12">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                {[
-                  { id: "healthspan", label: "Health Span V Life Span" },
-                  { id: "biohacking", label: "What is Biohacking" },
-                  { id: "women-focused", label: "Women Focused" },
-                  { id: "research-gap", label: "The Women Research Gap" }
-                ].map((topic) => (
-                  <button
-                    key={topic.id}
-                    onClick={() => setSelectedTopic(selectedTopic === topic.id ? "" : topic.id)}
-                    className={`p-4 rounded-lg border-4 transition-all duration-300 text-center font-medium ${
-                      selectedTopic === topic.id
-                        ? "bg-primary border-primary text-primary-foreground shadow-lg"
-                        : "bg-background border-primary hover:border-primary hover:bg-primary/10"
-                    }`}
-                  >
+                {[{
+                id: "healthspan",
+                label: "Health Span V Life Span"
+              }, {
+                id: "biohacking",
+                label: "What is Biohacking"
+              }, {
+                id: "women-focused",
+                label: "Women Focused"
+              }, {
+                id: "research-gap",
+                label: "The Women Research Gap"
+              }].map(topic => <button key={topic.id} onClick={() => setSelectedTopic(selectedTopic === topic.id ? "" : topic.id)} className={`p-4 rounded-lg border-4 transition-all duration-300 text-center font-medium ${selectedTopic === topic.id ? "bg-primary border-primary text-primary-foreground shadow-lg" : "bg-background border-primary hover:border-primary hover:bg-primary/10"}`}>
                     {topic.label}
-                  </button>
-                ))}
+                  </button>)}
               </div>
 
-              {selectedTopic && (
-                <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground relative">
-                  <button
-                    onClick={() => setSelectedTopic("")}
-                    className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted/50 transition-colors"
-                    aria-label="Close"
-                  >
+              {selectedTopic && <div className="bg-muted/30 rounded-lg p-6 space-y-4 text-lg text-muted-foreground relative">
+                  <button onClick={() => setSelectedTopic("")} className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted/50 transition-colors" aria-label="Close">
                     <X className="h-5 w-5" />
                   </button>
-                  {selectedTopic === 'healthspan' && (
-                    <div className="space-y-4">
+                  {selectedTopic === 'healthspan' && <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">Health Span vs Life Span</h3>
                       <p>
                         Longevity isn't just about adding years to your life—it's about adding <strong>life to your years</strong>. 
@@ -218,11 +194,9 @@ const Index = () => {
                         True longevity means maintaining vitality, cognitive function, and physical wellness as you age. 
                         It's about feeling energized at 50, thriving at 60, and remaining independent and vibrant well into your later years.
                       </p>
-                    </div>
-                  )}
+                    </div>}
                   
-                  {selectedTopic === 'biohacking' && (
-                    <div className="space-y-4">
+                  {selectedTopic === 'biohacking' && <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">What is Biohacking</h3>
                       <p>
                         This is where <strong>biohacking becomes essential</strong>. By understanding and optimizing your body's 
@@ -234,11 +208,9 @@ const Index = () => {
                         body's natural systems, not against them. It's about using science-backed strategies to optimize 
                         your health and performance at the cellular level.
                       </p>
-                    </div>
-                  )}
+                    </div>}
                   
-                  {selectedTopic === 'women-focused' && (
-                    <div className="space-y-4">
+                  {selectedTopic === 'women-focused' && <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">Women Focused Approach</h3>
                       <p>
                         <strong>BiohackHer recognizes that women's biology isn't just "small men"</strong>—we have unique needs 
@@ -249,11 +221,9 @@ const Index = () => {
                         That's why we've dedicated our research and protocols specifically to women's physiology, creating a new field of 
                         women-centered longevity science that addresses your unique hormonal and metabolic needs.
                       </p>
-                    </div>
-                  )}
+                    </div>}
                   
-                  {selectedTopic === 'research-gap' && (
-                    <div className="space-y-4">
+                  {selectedTopic === 'research-gap' && <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">The Women Research Gap</h3>
                       <p>
                         There's a significant gap in longevity research. Traditionally, longevity and biohacking research has been 
@@ -265,10 +235,8 @@ const Index = () => {
                         only about 38% of participants in medical research are women. This creates a dangerous knowledge gap when 
                         women's hormonal cycles, metabolism, and aging processes differ significantly from men's.
                       </p>
-                    </div>
-                  )}
-                </div>
-              )}
+                    </div>}
+                </div>}
             </div>
 
             <div className="bg-muted/30 rounded-lg p-6 mt-8">
@@ -290,9 +258,7 @@ const Index = () => {
       <section className="py-10 lg:py-14 bg-muted/20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              Sound Familiar? You're Not Alone.
-            </h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Got Questions? You're Not Alone.</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               These are the questions thousands of women ask. Get evidence-based answers, not generic advice.
             </p>
