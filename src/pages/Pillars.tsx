@@ -318,7 +318,7 @@ const Pillars = () => {
                       </div>
                       
                       {/* Biohacks Card with Buttons */}
-                      <Card className="p-6">
+                      <Card className="p-6 bg-primary">
                         <h3 className="text-2xl font-bold text-center mb-4">
                           {pillars[selectedPillar as keyof typeof pillars].title} Biohacks
                         </h3>
