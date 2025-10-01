@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind, Scale, Scissors, Heart, Calendar, Headphones, Droplets, BookOpen, Settings, Plus, History, ArrowLeft, Activity, Sparkles } from "lucide-react";
+import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind, Scale, Scissors, Heart, Calendar, Headphones, Droplets, BookOpen, Settings, Plus, History, ArrowLeft, Activity, Sparkles, Smile, Scan } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SymptomChoiceDialog from "@/components/SymptomChoiceDialog";
 import { supabase } from "@/integrations/supabase/client";
@@ -526,6 +526,128 @@ const Symptoms = () => {
           description: "300mg alpha-GPC on empty stomach",
           evidence: "Silver",
           contraindications: ["Acetylcholine sensitivity", "TMAO concerns"]
+        }
+      ]
+    },
+    {
+      id: "skin-health",
+      name: "Skin Health",
+      icon: Scan,
+      severity: "Mild",
+      frequency: "Ongoing",
+      pillars: ["beauty", "body", "balance"],
+      actions: [
+        {
+          title: "Retinoid Protocol",
+          description: "Start with 0.025% retinol 2x/week, gradually increase to nightly over 8 weeks",
+          evidence: "Gold",
+          contraindications: ["Pregnancy", "Breastfeeding", "Rosacea", "Eczema"]
+        },
+        {
+          title: "Vitamin C + Ferulic Acid Serum",
+          description: "15-20% L-ascorbic acid with 1% ferulic acid applied in morning",
+          evidence: "Gold",
+          contraindications: ["Active breakouts", "Very sensitive skin"]
+        },
+        {
+          title: "Collagen Peptides + Vitamin C",
+          description: "10g hydrolyzed collagen peptides daily with 500mg vitamin C",
+          evidence: "Silver",
+          contraindications: ["Collagen allergies", "Kidney disease"]
+        },
+        {
+          title: "Niacinamide 10% Serum",
+          description: "Apply 10% niacinamide serum twice daily for pore refinement and barrier support",
+          evidence: "Gold",
+          contraindications: ["Niacin sensitivity"]
+        },
+        {
+          title: "Hyaluronic Acid Layering",
+          description: "Apply multiple molecular weights of HA on damp skin, seal with ceramide moisturizer",
+          evidence: "Silver",
+          contraindications: ["Very dry climates without occlusive"]
+        },
+        {
+          title: "Red Light Therapy",
+          description: "660nm + 850nm wavelengths for 10-15 minutes, 4-5x/week for collagen synthesis",
+          evidence: "Silver",
+          contraindications: ["Photosensitivity", "Active skin cancer", "Melasma"]
+        },
+        {
+          title: "Broad Spectrum SPF 50+",
+          description: "Mineral or chemical sunscreen reapplied every 2 hours during sun exposure",
+          evidence: "Gold",
+          contraindications: ["Sunscreen allergies"]
+        },
+        {
+          title: "Omega-3 + GLA Supplementation",
+          description: "2g EPA/DHA fish oil + 300mg evening primrose oil for skin barrier health",
+          evidence: "Silver",
+          contraindications: ["Blood thinners", "Seafood allergies"]
+        }
+      ]
+    },
+    {
+      id: "appearance-concerns",
+      name: "Appearance",
+      icon: Smile,
+      severity: "Variable",
+      frequency: "Ongoing",
+      pillars: ["beauty", "balance", "brain"],
+      actions: [
+        {
+          title: "Facial Gua Sha Protocol",
+          description: "5-10 minute lymphatic drainage massage daily with rose quartz or jade tool",
+          evidence: "Bronze",
+          contraindications: ["Active acne", "Skin infections", "Recent facial procedures"]
+        },
+        {
+          title: "Microcurrent Facial Device",
+          description: "15-minute microcurrent facial 3-5x/week to tone facial muscles and boost collagen",
+          evidence: "Silver",
+          contraindications: ["Pregnancy", "Pacemaker", "Epilepsy", "Metal implants in face"]
+        },
+        {
+          title: "Face Yoga + Massage",
+          description: "10-minute daily facial exercises targeting jawline, eyes, and forehead",
+          evidence: "Bronze",
+          contraindications: ["TMJ disorders", "Recent Botox or fillers"]
+        },
+        {
+          title: "Peptide Complex Serum",
+          description: "Multi-peptide serum (Matrixyl, Argireline) applied twice daily for anti-aging",
+          evidence: "Silver",
+          contraindications: ["Peptide sensitivity"]
+        },
+        {
+          title: "Ceramide Barrier Repair",
+          description: "Ceramide-rich moisturizer with cholesterol and fatty acids for skin barrier",
+          evidence: "Gold",
+          contraindications: ["Fungal acne"]
+        },
+        {
+          title: "Growth Factor Serum",
+          description: "EGF or plant-based growth factor serum for cellular regeneration",
+          evidence: "Silver",
+          contraindications: ["Active cancer", "History of skin cancer"]
+        },
+        {
+          title: "Caffeine + Peptide Eye Complex",
+          description: "Caffeine 5% + peptides for dark circles and puffiness, applied morning and evening",
+          evidence: "Silver",
+          contraindications: ["Eye irritation", "Contact lens issues"]
+        },
+        {
+          title: "Sleep Optimization for Beauty",
+          description: "7-9 hours sleep on silk pillowcase, elevated head position to reduce puffiness",
+          evidence: "Gold",
+          contraindications: ["Sleep apnea without treatment"]
+        },
+        {
+          title: "Hydration Protocol",
+          description: "Drink 35ml water per kg body weight daily, with electrolytes for skin hydration",
+          evidence: "Gold",
+          contraindications: ["Kidney disease", "Heart failure"]
         }
       ]
     }
