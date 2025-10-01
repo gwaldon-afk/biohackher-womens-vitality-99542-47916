@@ -351,7 +351,7 @@ const Pillars = () => {
                             <span className="font-semibold text-lg">Therapies</span>
                           </div>
                           <p className="text-sm opacity-90 text-center">
-                            {selectedPillar === "brain" && "Professional treatments for cognitive enhancement"}
+                            {selectedPillar === "brain" && "Tested treatments for cognitive enhancement"}
                             {selectedPillar === "body" && "Advanced recovery and performance therapies"}
                             {selectedPillar === "balance" && "Expert interventions for stress relief"}
                             {selectedPillar === "beauty" && "Clinical procedures for visible results"}
