@@ -368,27 +368,47 @@ const Pillars = () => {
                                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                                     Beginner (Start Here)
                                   </h4>
-                                  <ul className="space-y-2 ml-5">
+                                  <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.training.beginner.map(
-                                      (training: string, index: number) => (
-                                        <li key={index} className="flex items-center gap-2">
-                                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                          {protocolDetails[training as keyof typeof protocolDetails] ? (
-                                            <Tooltip>
-                                              <TooltipTrigger asChild>
-                                                <button className="text-left hover:text-primary underline decoration-dotted">
-                                                  {training}
-                                                </button>
-                                              </TooltipTrigger>
-                                              <TooltipContent className="max-w-md">
-                                                <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
-                                              </TooltipContent>
-                                            </Tooltip>
-                                          ) : (
-                                            <span>{training}</span>
-                                          )}
-                                        </li>
-                                      )
+                                      (training: string, index: number) => {
+                                        const getTrainingHook = (training: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Morning meditation (5-10 mins)": "Start your day with calm focus to reduce brain fog and improve decision-making.",
+                                              "Deep breathing exercises": "Activate your parasympathetic nervous system to lower stress instantly.",
+                                              "Regular sleep schedule": "Optimize memory consolidation and cognitive recovery with consistent sleep timing."
+                                            },
+                                            body: {
+                                              "Walking 8,000-10,000 steps daily": "Build cardiovascular health and maintain mobility without joint stress.",
+                                              "Morning movement routine (5-10 minutes)": "Wake up your muscles and joints to move pain-free throughout the day.",
+                                              "Mobility work & dynamic stretching (daily 15 min)": "Prevent injury and maintain flexibility as you age."
+                                            },
+                                            balance: {
+                                              "Morning sunlight exposure (10-30 min for cortisol regulation)": "Reset your circadian rhythm and optimize your natural stress hormone cycle.",
+                                              "Sleep hygiene protocol implementation": "Improve sleep quality to enhance stress resilience and emotional regulation.",
+                                              "Gratitude practice (3 things daily)": "Rewire your brain for positivity and reduce anxiety with this simple habit."
+                                            },
+                                            beauty: {
+                                              "UV protection with broad-spectrum SPF 30+": "Prevent 90% of visible aging by blocking harmful UV rays daily.",
+                                              "Hydration optimization (half body weight in oz)": "Plump your skin from within and support cellular detoxification.",
+                                              "Beauty sleep optimization (7-9 hours)": "Maximize cellular repair and collagen production during your nightly reset."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[training] || protocolDetails[training as keyof typeof protocolDetails] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-2">
+                                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{training}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTrainingHook(training, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -399,27 +419,47 @@ const Pillars = () => {
                                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                                     Intermediate (6+ Weeks Experience)
                                   </h4>
-                                  <ul className="space-y-2 ml-5">
+                                  <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.training.intermediate.map(
-                                      (training: string, index: number) => (
-                                        <li key={index} className="flex items-center gap-2">
-                                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                          {protocolDetails[training as keyof typeof protocolDetails] ? (
-                                            <Tooltip>
-                                              <TooltipTrigger asChild>
-                                                <button className="text-left hover:text-primary underline decoration-dotted">
-                                                  {training}
-                                                </button>
-                                              </TooltipTrigger>
-                                              <TooltipContent className="max-w-md">
-                                                <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
-                                              </TooltipContent>
-                                            </Tooltip>
-                                          ) : (
-                                            <span>{training}</span>
-                                          )}
-                                        </li>
-                                      )
+                                      (training: string, index: number) => {
+                                        const getTrainingHook = (training: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Cold shower therapy": "Boost alertness and mental resilience through controlled stress exposure.",
+                                              "Intermittent fasting": "Enhance cognitive function and promote cellular cleanup through metabolic switching.",
+                                              "Brain training games": "Build cognitive reserve and sharpen processing speed with targeted exercises."
+                                            },
+                                            body: {
+                                              "Zone 2 cardio training (180-age in BPM, 45-60 min)": "Build mitochondrial density and metabolic flexibility for lasting energy.",
+                                              "Strength training 3-4x/week (compound movements)": "Preserve muscle mass and bone density to stay strong as you age.",
+                                              "Progressive overload resistance training": "Continuously challenge your body to build strength and prevent plateaus."
+                                            },
+                                            balance: {
+                                              "Stress-reducing breathwork training (4-7-8, box breathing)": "Master your stress response with science-backed breathing techniques.",
+                                              "Meditation & mindfulness practice (10-20 min daily)": "Rewire your brain for calm and improve emotional regulation over time.",
+                                              "Yoga & gentle movement practices": "Combine physical and mental balance through mindful movement."
+                                            },
+                                            beauty: {
+                                              "Facial massage & lymphatic drainage (5 min daily)": "Sculpt your face naturally and reduce puffiness with gentle manipulation.",
+                                              "Collagen-boosting nutrition protocols": "Support your skin's structure from within with targeted nutrition.",
+                                              "Antioxidant-rich diet implementation": "Fight free radical damage and protect your skin with powerful plant compounds."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[training] || protocolDetails[training as keyof typeof protocolDetails] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-2">
+                                            <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{training}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTrainingHook(training, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -430,27 +470,47 @@ const Pillars = () => {
                                     <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                                     Advanced (3+ Months Experience)
                                   </h4>
-                                  <ul className="space-y-2 ml-5">
+                                  <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.training.advanced.map(
-                                      (training: string, index: number) => (
-                                        <li key={index} className="flex items-center gap-2">
-                                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                                          {protocolDetails[training as keyof typeof protocolDetails] ? (
-                                            <Tooltip>
-                                              <TooltipTrigger asChild>
-                                                <button className="text-left hover:text-primary underline decoration-dotted">
-                                                  {training}
-                                                </button>
-                                              </TooltipTrigger>
-                                              <TooltipContent className="max-w-md">
-                                                <p>{protocolDetails[training as keyof typeof protocolDetails]}</p>
-                                              </TooltipContent>
-                                            </Tooltip>
-                                          ) : (
-                                            <span>{training}</span>
-                                          )}
-                                        </li>
-                                      )
+                                      (training: string, index: number) => {
+                                        const getTrainingHook = (training: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Wim Hof breathing": "Master extreme breathwork to unlock peak mental performance and stress resistance.",
+                                              "Extended fasting": "Trigger deep autophagy and neuroplasticity through prolonged metabolic shifts.",
+                                              "Advanced meditation techniques": "Access altered states of consciousness for profound mental clarity and insight."
+                                            },
+                                            body: {
+                                              "High-intensity interval training (HIIT 2x/week)": "Maximize cardiovascular fitness and fat burning in minimal time.",
+                                              "Plyometric exercises for power development": "Build explosive strength and maintain athletic performance at any age.",
+                                              "Balance and proprioception training": "Prevent falls and maintain coordination as you age."
+                                            },
+                                            balance: {
+                                              "Hormonal cycle tracking & optimization": "Sync your lifestyle with your natural hormonal rhythms for effortless wellbeing.",
+                                              "Forest bathing & nature therapy sessions": "Harness the healing power of nature to reduce cortisol and boost immunity.",
+                                              "Stress response training techniques": "Build unshakeable calm through advanced nervous system conditioning."
+                                            },
+                                            beauty: {
+                                              "Facial exercises for muscle tone (gua sha)": "Lift and tone facial muscles naturally for a sculpted, youthful appearance.",
+                                              "Cold water face rinses for circulation": "Tighten pores and boost blood flow for an instant glow.",
+                                              "Dry brushing for lymphatic circulation": "Detoxify and smooth your skin while promoting whole-body wellness."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[training] || protocolDetails[training as keyof typeof protocolDetails] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-2">
+                                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{training}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTrainingHook(training, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -471,14 +531,41 @@ const Pillars = () => {
                                   </h4>
                                   <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.gold.map(
-                                      (therapy: string, index: number) => (
-                                        <li key={index} className="flex items-start gap-3">
-                                          <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            {therapy}
-                                          </div>
-                                        </li>
-                                      )
+                                      (therapy: string, index: number) => {
+                                        const getTherapyHook = (therapy: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Neurofeedback therapy": "Train your brain waves for improved focus and reduced anxiety through real-time feedback.",
+                                              "TMS (Transcranial Magnetic Stimulation)": "Stimulate neural pathways to enhance mood and cognitive performance."
+                                            },
+                                            body: {
+                                              "Heat therapy: Sauna 4x/week (79-100°C, 20 min)": "Boost cardiovascular health and cellular detoxification through regular heat exposure.",
+                                              "Cryotherapy sessions for recovery": "Accelerate muscle recovery and reduce inflammation with targeted cold therapy."
+                                            },
+                                            balance: {
+                                              "Hormone testing & optimization protocols": "Identify and correct hormonal imbalances affecting your stress response and energy.",
+                                              "Biofeedback therapy sessions": "Master control over your stress response through guided physiological monitoring."
+                                            },
+                                            beauty: {
+                                              "Professional LED red light therapy (660-850nm)": "Stimulate collagen production and reduce inflammation for visibly younger skin.",
+                                              "Microneedling for collagen induction": "Trigger your skin's natural healing for improved texture and firmness."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[therapy] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-3">
+                                            <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{therapy}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTherapyHook(therapy, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -491,14 +578,41 @@ const Pillars = () => {
                                   </h4>
                                   <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.silver.map(
-                                      (therapy: string, index: number) => (
-                                        <li key={index} className="flex items-start gap-3">
-                                          <div className="w-2 h-2 bg-gray-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            {therapy}
-                                          </div>
-                                        </li>
-                                      )
+                                      (therapy: string, index: number) => {
+                                        const getTherapyHook = (therapy: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Light therapy": "Reset your circadian rhythm and lift your mood with targeted wavelength exposure.",
+                                              "Float tank sessions": "Experience deep relaxation and mental clarity through sensory deprivation."
+                                            },
+                                            body: {
+                                              "Deep tissue massage (weekly/bi-weekly)": "Release chronic muscle tension and improve mobility with therapeutic bodywork.",
+                                              "Physical therapy movement assessment": "Correct movement patterns to prevent injury and optimize performance."
+                                            },
+                                            balance: {
+                                              "Stress management counseling & CBT": "Develop lasting strategies to manage anxiety and stress through professional guidance.",
+                                              "HRV training for autonomic balance": "Improve stress resilience by training your nervous system's recovery capacity."
+                                            },
+                                            beauty: {
+                                              "Chemical peels (glycolic, lactic acid)": "Reveal fresher, brighter skin by removing damaged surface layers.",
+                                              "Lymphatic drainage massage therapy": "Reduce puffiness and boost circulation for a sculpted, glowing complexion."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[therapy] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-3">
+                                            <div className="w-2 h-2 bg-gray-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{therapy}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTherapyHook(therapy, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -511,14 +625,41 @@ const Pillars = () => {
                                   </h4>
                                   <ul className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.therapies.bronze.map(
-                                      (therapy: string, index: number) => (
-                                        <li key={index} className="flex items-start gap-3">
-                                          <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            {therapy}
-                                          </div>
-                                        </li>
-                                      )
+                                      (therapy: string, index: number) => {
+                                        const getTherapyHook = (therapy: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Aromatherapy": "Enhance mood and cognitive function through therapeutic essential oil blends.",
+                                              "Music therapy": "Harness sound frequencies to improve emotional wellbeing and mental clarity."
+                                            },
+                                            body: {
+                                              "Myofascial release techniques": "Break up adhesions and improve tissue mobility for pain-free movement.",
+                                              "Recovery monitoring (HRV, sleep tracking)": "Optimize your training load with data-driven recovery insights."
+                                            },
+                                            balance: {
+                                              "Professional massage therapy": "Melt away tension and activate your parasympathetic nervous system.",
+                                              "Acupuncture for nervous system balance": "Restore flow and reduce stress through targeted pressure point therapy."
+                                            },
+                                            beauty: {
+                                              "Professional dermatological treatments": "Address specific skin concerns with medical-grade solutions.",
+                                              "Aesthetic consultation & treatment planning": "Create a personalized roadmap to your skin goals with expert guidance."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[therapy] || "";
+                                        };
+                                        
+                                        return (
+                                          <li key={index} className="flex items-start gap-3">
+                                            <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="font-medium">{therapy}</div>
+                                              <p className="text-sm text-muted-foreground mt-1">
+                                                {getTherapyHook(therapy, selectedPillar)}
+                                              </p>
+                                            </div>
+                                          </li>
+                                        );
+                                      }
                                     )}
                                   </ul>
                                 </div>
@@ -539,32 +680,59 @@ const Pillars = () => {
                                   </h4>
                                   <div className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.essential.map(
-                                      (supplement: any, index: number) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-start gap-3 p-3 bg-green-50 rounded-lg"
-                                        >
-                                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            <div className="flex items-start justify-between">
-                                              <div>
-                                                <h5 className="font-medium text-green-800">{supplement.name}</h5>
-                                                <p className="text-sm text-green-700">{supplement.dosage}</p>
-                                                <p className="text-xs text-green-600 mt-1">{supplement.timing}</p>
+                                      (supplement: any, index: number) => {
+                                        const getSupplementHook = (name: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Omega-3": "Essential fatty acids that build brain cell membranes and reduce inflammation.",
+                                              "Magnesium": "Calms the nervous system and supports neurotransmitter production for better sleep."
+                                            },
+                                            body: {
+                                              "Whey or plant protein": "Provides amino acids needed for muscle repair and growth after training.",
+                                              "Creatine monohydrate": "Fuels high-intensity performance and supports muscle strength development."
+                                            },
+                                            balance: {
+                                              "Ashwagandha": "Adaptogen that lowers cortisol and helps your body handle stress more effectively.",
+                                              "Magnesium glycinate": "The most absorbable form to promote deep relaxation and quality sleep."
+                                            },
+                                            beauty: {
+                                              "Collagen peptides": "Bioavailable building blocks that support skin elasticity and hydration from within.",
+                                              "Vitamin C": "Critical cofactor for collagen synthesis and powerful antioxidant protection."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[name] || "";
+                                        };
+                                        
+                                        return (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3 p-3 bg-green-50 rounded-lg"
+                                          >
+                                            <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="flex items-start justify-between">
+                                                <div className="flex-1 pr-3">
+                                                  <h5 className="font-medium text-green-800">{supplement.name}</h5>
+                                                  <p className="text-sm text-green-700">{supplement.dosage}</p>
+                                                  <p className="text-xs text-green-600 mt-1">{supplement.timing}</p>
+                                                  <p className="text-xs text-muted-foreground mt-2">
+                                                    {getSupplementHook(supplement.name, selectedPillar)}
+                                                  </p>
+                                                </div>
+                                                <Button
+                                                  size="sm"
+                                                  variant="outline"
+                                                  className="border-green-300 text-green-700 hover:bg-green-100 shrink-0"
+                                                  onClick={() => handleAddToCart(supplement)}
+                                                >
+                                                  <ShoppingCart className="h-3 w-3 mr-1" />
+                                                  Add
+                                                </Button>
                                               </div>
-                                              <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="border-green-300 text-green-700 hover:bg-green-100"
-                                                onClick={() => handleAddToCart(supplement)}
-                                              >
-                                                <ShoppingCart className="h-3 w-3 mr-1" />
-                                                Add
-                                              </Button>
                                             </div>
                                           </div>
-                                        </div>
-                                      )
+                                        );
+                                      }
                                     )}
                                   </div>
                                 </div>
@@ -577,32 +745,55 @@ const Pillars = () => {
                                   </h4>
                                   <div className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.beneficial.map(
-                                      (supplement: any, index: number) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
-                                        >
-                                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            <div className="flex items-start justify-between">
-                                              <div>
-                                                <h5 className="font-medium text-blue-800">{supplement.name}</h5>
-                                                <p className="text-sm text-blue-700">{supplement.dosage}</p>
-                                                <p className="text-xs text-blue-600 mt-1">{supplement.timing}</p>
+                                      (supplement: any, index: number) => {
+                                        const getSupplementHook = (name: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Lions Mane": "Mushroom extract that promotes nerve growth factor for improved memory and focus."
+                                            },
+                                            body: {
+                                              "Collagen peptides": "Supports joint health and connective tissue repair for injury prevention."
+                                            },
+                                            balance: {
+                                              "GABA": "Calming neurotransmitter that promotes relaxation and restful sleep."
+                                            },
+                                            beauty: {
+                                              "Hyaluronic acid": "Molecule that holds 1000x its weight in water for deep skin hydration."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[name] || "";
+                                        };
+                                        
+                                        return (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg"
+                                          >
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="flex items-start justify-between">
+                                                <div className="flex-1 pr-3">
+                                                  <h5 className="font-medium text-blue-800">{supplement.name}</h5>
+                                                  <p className="text-sm text-blue-700">{supplement.dosage}</p>
+                                                  <p className="text-xs text-blue-600 mt-1">{supplement.timing}</p>
+                                                  <p className="text-xs text-muted-foreground mt-2">
+                                                    {getSupplementHook(supplement.name, selectedPillar)}
+                                                  </p>
+                                                </div>
+                                                <Button
+                                                  size="sm"
+                                                  variant="outline"
+                                                  className="border-blue-300 text-blue-700 hover:bg-blue-100 shrink-0"
+                                                  onClick={() => handleAddToCart(supplement)}
+                                                >
+                                                  <ShoppingCart className="h-3 w-3 mr-1" />
+                                                  Add
+                                                </Button>
                                               </div>
-                                              <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="border-blue-300 text-blue-700 hover:bg-blue-100"
-                                                onClick={() => handleAddToCart(supplement)}
-                                              >
-                                                <ShoppingCart className="h-3 w-3 mr-1" />
-                                                Add
-                                              </Button>
                                             </div>
                                           </div>
-                                        </div>
-                                      )
+                                        );
+                                      }
                                     )}
                                   </div>
                                 </div>
@@ -615,32 +806,55 @@ const Pillars = () => {
                                   </h4>
                                   <div className="space-y-3 ml-5">
                                     {pillars[selectedPillar as keyof typeof pillars].biohacks.supplements.optional.map(
-                                      (supplement: any, index: number) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg"
-                                        >
-                                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
-                                          <div className="flex-1">
-                                            <div className="flex items-start justify-between">
-                                              <div>
-                                                <h5 className="font-medium text-purple-800">{supplement.name}</h5>
-                                                <p className="text-sm text-purple-700">{supplement.dosage}</p>
-                                                <p className="text-xs text-purple-600 mt-1">{supplement.timing}</p>
+                                      (supplement: any, index: number) => {
+                                        const getSupplementHook = (name: string, pillar: string) => {
+                                          const hooks: Record<string, Record<string, string>> = {
+                                            brain: {
+                                              "Nootropic blend": "Advanced cognitive enhancers for peak mental performance and productivity."
+                                            },
+                                            body: {
+                                              "CoQ10": "Mitochondrial support for energy production and cardiovascular health."
+                                            },
+                                            balance: {
+                                              "L-theanine": "Amino acid that promotes calm focus without drowsiness."
+                                            },
+                                            beauty: {
+                                              "Astaxanthin": "Potent antioxidant that protects skin from UV damage and oxidative stress."
+                                            }
+                                          };
+                                          return hooks[pillar]?.[name] || "";
+                                        };
+                                        
+                                        return (
+                                          <div
+                                            key={index}
+                                            className="flex items-start gap-3 p-3 bg-purple-50 rounded-lg"
+                                          >
+                                            <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                                            <div className="flex-1">
+                                              <div className="flex items-start justify-between">
+                                                <div className="flex-1 pr-3">
+                                                  <h5 className="font-medium text-purple-800">{supplement.name}</h5>
+                                                  <p className="text-sm text-purple-700">{supplement.dosage}</p>
+                                                  <p className="text-xs text-purple-600 mt-1">{supplement.timing}</p>
+                                                  <p className="text-xs text-muted-foreground mt-2">
+                                                    {getSupplementHook(supplement.name, selectedPillar)}
+                                                  </p>
+                                                </div>
+                                                <Button
+                                                  size="sm"
+                                                  variant="outline"
+                                                  className="border-purple-300 text-purple-700 hover:bg-purple-100 shrink-0"
+                                                  onClick={() => handleAddToCart(supplement)}
+                                                >
+                                                  <ShoppingCart className="h-3 w-3 mr-1" />
+                                                  Add
+                                                </Button>
                                               </div>
-                                              <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="border-purple-300 text-purple-700 hover:bg-purple-100"
-                                                onClick={() => handleAddToCart(supplement)}
-                                              >
-                                                <ShoppingCart className="h-3 w-3 mr-1" />
-                                                Add
-                                              </Button>
                                             </div>
                                           </div>
-                                        </div>
-                                      )
+                                        );
+                                      }
                                     )}
                                   </div>
                                 </div>
