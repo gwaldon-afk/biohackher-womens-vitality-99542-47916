@@ -333,6 +333,19 @@ const Pillars = () => {
                         {/* Button Row */}
                         <div className="flex gap-4 justify-center flex-wrap">
                           <button
+                            onClick={() => navigate("/symptoms")}
+                            className="flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all border-border bg-card hover:border-primary/50 hover:shadow-md"
+                          >
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <UserRound className="h-5 w-5" />
+                              <span className="font-semibold text-lg">Symptom Assessment</span>
+                            </div>
+                            <p className="text-sm opacity-90 text-center">
+                              Take your {pillars[selectedPillar as keyof typeof pillars].title} assessment now
+                            </p>
+                          </button>
+                          
+                          <button
                             onClick={() => setSelectedSection(selectedSection === "training" ? null : "training")}
                             className={`flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all ${
                               selectedSection === "training" 
