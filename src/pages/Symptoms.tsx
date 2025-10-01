@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind, Scale, Scissors, Heart, Calendar, Headphones, Droplets, BookOpen, Settings, Plus, History, ArrowLeft } from "lucide-react";
+import { Thermometer, Moon, Brain, UtensilsCrossed, FileText, Printer, Bone, Zap, Battery, Wind, Scale, Scissors, Heart, Calendar, Headphones, Droplets, BookOpen, Settings, Plus, History, ArrowLeft, Activity, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SymptomChoiceDialog from "@/components/SymptomChoiceDialog";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,7 @@ const Symptoms = () => {
   const [loading, setLoading] = useState(true);
   const [showChoiceDialog, setShowChoiceDialog] = useState(false);
   const [choiceDialogSymptom, setChoiceDialogSymptom] = useState<{id: string, name: string, icon: any} | null>(null);
+  const [selectedPillar, setSelectedPillar] = useState<string>("all");
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -114,6 +115,7 @@ const Symptoms = () => {
       icon: Thermometer,
       severity: "Moderate",
       frequency: "Daily",
+      pillars: ["body", "balance"],
       actions: [
         {
           title: "Cold Exposure Therapy",
@@ -141,6 +143,7 @@ const Symptoms = () => {
       icon: Moon,
       severity: "Mild",
       frequency: "3-4x/week",
+      pillars: ["brain", "body", "balance", "beauty"],
       actions: [
         {
           title: "Magnesium Glycinate",
@@ -168,6 +171,7 @@ const Symptoms = () => {
       icon: Brain,
       severity: "Variable",
       frequency: "Weekly",
+      pillars: ["brain", "balance"],
       actions: [
         {
           title: "HRV Breathwork",
@@ -195,6 +199,7 @@ const Symptoms = () => {
       icon: UtensilsCrossed,
       severity: "Mild",
       frequency: "Occasional",
+      pillars: ["brain", "body", "balance", "beauty"],
       actions: [
         {
           title: "Intermittent Fasting",
@@ -222,6 +227,7 @@ const Symptoms = () => {
       icon: Bone,
       severity: "Moderate",
       frequency: "Daily",
+      pillars: ["body"],
       actions: [
         {
           title: "Curcumin Supplementation",
@@ -249,6 +255,7 @@ const Symptoms = () => {
       icon: Zap,
       severity: "Moderate",
       frequency: "4-5x/week",
+      pillars: ["brain"],
       actions: [
         {
           title: "Lion's Mane Mushroom",
@@ -276,6 +283,7 @@ const Symptoms = () => {
       icon: Battery,
       severity: "High",
       frequency: "Daily",
+      pillars: ["body", "balance"],
       actions: [
         {
           title: "Mitochondrial Support Stack",
@@ -303,6 +311,7 @@ const Symptoms = () => {
       icon: Wind,
       severity: "Mild",
       frequency: "After meals",
+      pillars: ["body"],
       actions: [
         {
           title: "FODMAP Elimination",
@@ -330,6 +339,7 @@ const Symptoms = () => {
       icon: Scale,
       severity: "Moderate",
       frequency: "Gradual",
+      pillars: ["body", "balance"],
       actions: [
         {
           title: "Intermittent Fasting 16:8",
@@ -357,6 +367,7 @@ const Symptoms = () => {
       icon: Scissors,
       severity: "Mild",
       frequency: "Progressive",
+      pillars: ["beauty"],
       actions: [
         {
           title: "Scalp Massage with Rosemary Oil",
@@ -384,6 +395,7 @@ const Symptoms = () => {
       icon: Heart,
       severity: "Variable",
       frequency: "Daily",
+      pillars: ["brain", "balance"],
       actions: [
         {
           title: "GABA Support Protocol",
@@ -411,6 +423,7 @@ const Symptoms = () => {
       icon: Calendar,
       severity: "High",
       frequency: "Monthly",
+      pillars: ["body", "balance"],
       actions: [
         {
           title: "Seed Cycling Protocol",
@@ -438,6 +451,7 @@ const Symptoms = () => {
       icon: Headphones,
       severity: "Moderate",
       frequency: "2-3x/week",
+      pillars: ["brain"],
       actions: [
         {
           title: "Magnesium Malate",
@@ -465,6 +479,7 @@ const Symptoms = () => {
       icon: Droplets,
       severity: "High",
       frequency: "Nightly",
+      pillars: ["body", "balance"],
       actions: [
         {
           title: "Black Cohosh Extract",
@@ -492,6 +507,7 @@ const Symptoms = () => {
       icon: BookOpen,
       severity: "Mild",
       frequency: "Daily",
+      pillars: ["brain"],
       actions: [
         {
           title: "Phosphatidylserine",
@@ -517,16 +533,22 @@ const Symptoms = () => {
 
   const currentSymptom = symptoms.find(s => s.id === selectedSymptom);
 
+  // Filter symptoms by pillar
+  const filterByPillar = (symptomList: typeof symptoms) => {
+    if (selectedPillar === "all") return symptomList;
+    return symptomList.filter(symptom => symptom.pillars?.includes(selectedPillar));
+  };
+
   // Split symptoms into assessed and available
-  const assessedSymptoms = user ? symptoms.filter(symptom => {
+  const assessedSymptoms = user ? filterByPillar(symptoms.filter(symptom => {
     const userSymptom = userSymptoms.find(us => us.symptom_id === symptom.id);
     return userSymptom?.is_active === true;
-  }) : [];
+  })) : [];
   
-  const availableSymptoms = user ? symptoms.filter(symptom => {
+  const availableSymptoms = user ? filterByPillar(symptoms.filter(symptom => {
     const userSymptom = userSymptoms.find(us => us.symptom_id === symptom.id);
     return !userSymptom || userSymptom.is_active !== true;
-  }) : symptoms;
+  })) : filterByPillar(symptoms);
 
   // Get user symptom data for a specific symptom
   const getUserSymptomData = (symptomId: string) => {
@@ -777,10 +799,59 @@ Generated by Biohackher - Women's Longevity Coach
           </div>
         )}
 
-        {/* My Symptom Profile Section */}
+        {/* Pillar Filter */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2 justify-center">
+            <Button
+              variant={selectedPillar === "all" ? "default" : "outline"}
+              onClick={() => setSelectedPillar("all")}
+              size="sm"
+            >
+              All Pillars
+            </Button>
+            <Button
+              variant={selectedPillar === "brain" ? "default" : "outline"}
+              onClick={() => setSelectedPillar("brain")}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Brain className="h-4 w-4" />
+              Brain
+            </Button>
+            <Button
+              variant={selectedPillar === "body" ? "default" : "outline"}
+              onClick={() => setSelectedPillar("body")}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Activity className="h-4 w-4" />
+              Body
+            </Button>
+            <Button
+              variant={selectedPillar === "balance" ? "default" : "outline"}
+              onClick={() => setSelectedPillar("balance")}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Heart className="h-4 w-4" />
+              Balance
+            </Button>
+            <Button
+              variant={selectedPillar === "beauty" ? "default" : "outline"}
+              onClick={() => setSelectedPillar("beauty")}
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Beauty
+            </Button>
+          </div>
+        </div>
+
+        {/* Completed Symptom Assessments */}
         {user && assessedSymptoms.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold mb-6">My Symptom Profile</h2>
+            <h2 className="text-2xl font-semibold mb-6">Completed Symptom Assessments</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {assessedSymptoms.map((symptom) => {
                 const userSymptom = getUserSymptomData(symptom.id);
@@ -796,7 +867,7 @@ Generated by Biohackher - Women's Longevity Coach
                     />
                     <label
                       htmlFor={`assessed-${symptom.id}`}
-                      className="cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full max-w-[140px] border-primary bg-primary/10 hover:bg-primary/20"
+                      className="cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full h-full min-h-[160px] border-primary bg-primary/10 hover:bg-primary/20"
                       onClick={() => handleSymptomSelect(symptom.id)}
                     >
                       <symptom.icon className="h-8 w-8 mb-3 text-primary" />
@@ -835,7 +906,7 @@ Generated by Biohackher - Women's Longevity Coach
                   />
                   <label
                     htmlFor={symptom.id}
-                    className={`cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full max-w-[140px] ${
+                    className={`cursor-pointer flex flex-col items-center p-4 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full h-full min-h-[160px] ${
                       selectedSymptom === symptom.id
                         ? 'border-primary bg-primary/20 shadow-lg'
                         : 'border-primary bg-primary/10 hover:bg-primary/20'
