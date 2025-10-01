@@ -4,7 +4,8 @@ import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, TestTube, Calendar, AlertTriangle, CheckCircle, ShoppingCart } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Brain, Heart, Zap, Sparkles, UserRound, Pill, Activity, TestTube, Calendar, AlertTriangle, CheckCircle, ShoppingCart, ClipboardList } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
@@ -22,7 +23,32 @@ const Pillars = () => {
   const { completions, loading } = useAssessmentCompletions();
   const [selectedPillar, setSelectedPillar] = useState<string | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [showAssessmentDialog, setShowAssessmentDialog] = useState(false);
   const { t } = useTranslation();
+
+  // Pillar-specific assessments
+  const pillarAssessments = {
+    brain: [
+      { id: "cognitive-function", name: "Cognitive Function", description: "Assess memory, focus, and mental clarity" },
+      { id: "brain-fog", name: "Brain Fog", description: "Evaluate mental fatigue and concentration issues" },
+      { id: "sleep", name: "Sleep Quality", description: "Analyze sleep patterns affecting brain health" }
+    ],
+    body: [
+      { id: "energy-levels", name: "Energy Levels", description: "Measure physical vitality and fatigue" },
+      { id: "physical-performance", name: "Physical Performance", description: "Assess strength, endurance, and mobility" },
+      { id: "pain-assessment", name: "Pain Assessment", description: "Track pain locations and intensity" }
+    ],
+    balance: [
+      { id: "stress-assessment", name: "Stress Assessment", description: "Evaluate stress levels and triggers" },
+      { id: "mood-tracking", name: "Mood Tracking", description: "Monitor emotional wellbeing and patterns" },
+      { id: "anxiety-assessment", name: "Anxiety Assessment", description: "Assess anxiety symptoms and frequency" }
+    ],
+    beauty: [
+      { id: "skin-health", name: "Skin Health", description: "Evaluate skin concerns and aging signs" },
+      { id: "hair-vitality", name: "Hair Vitality", description: "Assess hair health and changes" },
+      { id: "aging-concerns", name: "Aging Concerns", description: "Track visible aging and skin elasticity" }
+    ]
+  };
 
   // Pillars data with biohacks, therapies, supplements, etc.
   const pillars = {
@@ -333,11 +359,11 @@ const Pillars = () => {
                         {/* Button Row */}
                         <div className="flex gap-4 justify-center flex-wrap">
                           <button
-                            onClick={() => navigate("/symptoms")}
+                            onClick={() => setShowAssessmentDialog(true)}
                             className="flex-1 min-w-[250px] max-w-xs p-6 rounded-lg border-2 transition-all border-border bg-card hover:border-primary/50 hover:shadow-md"
                           >
                             <div className="flex items-center justify-center gap-2 mb-2">
-                              <UserRound className="h-5 w-5" />
+                              <ClipboardList className="h-5 w-5" />
                               <span className="font-semibold text-lg">Symptom Assessment</span>
                             </div>
                             <p className="text-sm opacity-90 text-center">
@@ -933,6 +959,74 @@ const Pillars = () => {
             )}
           </div>
         </section>
+
+        {/* Assessment Selection Dialog */}
+        <Dialog open={showAssessmentDialog} onOpenChange={setShowAssessmentDialog}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-2xl">
+                <ClipboardList className="h-6 w-6 text-primary" />
+                {selectedPillar && pillars[selectedPillar as keyof typeof pillars].title} Assessments
+              </DialogTitle>
+              <DialogDescription>
+                Select an assessment to complete. You can complete multiple assessments and return anytime to track your progress.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 mt-4">
+              {selectedPillar && pillarAssessments[selectedPillar as keyof typeof pillarAssessments].map((assessment) => {
+                const isCompleted = completions[assessment.id];
+                
+                return (
+                  <Card 
+                    key={assessment.id}
+                    className={`cursor-pointer transition-all hover:shadow-md ${
+                      isCompleted ? 'bg-green-50 border-green-200' : 'hover:border-primary/50'
+                    }`}
+                    onClick={() => {
+                      setShowAssessmentDialog(false);
+                      navigate(`/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`);
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-lg">{assessment.name}</h3>
+                            {isCompleted && (
+                              <Badge variant="outline" className="bg-green-100 text-green-700 border-green-300">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                Completed
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{assessment.description}</p>
+                        </div>
+                        <Button 
+                          size="sm"
+                          variant={isCompleted ? "outline" : "default"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAssessmentDialog(false);
+                            navigate(`/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`);
+                          }}
+                        >
+                          {isCompleted ? 'Retake' : 'Start'}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <Button variant="outline" onClick={() => setShowAssessmentDialog(false)}>
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
