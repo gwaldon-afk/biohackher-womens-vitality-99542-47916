@@ -854,6 +854,72 @@ const assessmentQuestions = {
   ],
 
   // Individual Symptom Assessments
+  
+  // Brain Pillar - Cognitive Function Assessment
+  "cognitive-function": [
+    {
+      id: 1,
+      question: "How would you rate your overall cognitive performance?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - sharp and quick thinking" },
+        { value: "good", label: "Good - generally perform well mentally" },
+        { value: "fair", label: "Fair - noticeable cognitive challenges" },
+        { value: "poor", label: "Poor - significant cognitive difficulties" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How is your processing speed when solving problems?",
+      type: "radio",
+      options: [
+        { value: "fast", label: "Fast - quickly analyze and solve problems" },
+        { value: "normal", label: "Normal - average problem-solving speed" },
+        { value: "slow", label: "Slow - need extra time to process" },
+        { value: "very-slow", label: "Very slow - struggle with problem-solving" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How well do you maintain focus during complex tasks?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - sustained focus for hours" },
+        { value: "good", label: "Good - can focus for 1-2 hours" },
+        { value: "fair", label: "Fair - can focus for 30-60 minutes" },
+        { value: "poor", label: "Poor - difficulty maintaining focus" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How is your verbal fluency and ability to express thoughts?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - articulate and expressive" },
+        { value: "good", label: "Good - generally communicate well" },
+        { value: "fair", label: "Fair - sometimes struggle to express ideas" },
+        { value: "poor", label: "Poor - significant difficulty communicating" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How well do you adapt to new situations or changes?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - very adaptable and flexible" },
+        { value: "good", label: "Good - handle changes reasonably well" },
+        { value: "fair", label: "Fair - changes are somewhat difficult" },
+        { value: "poor", label: "Poor - struggle significantly with change" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What cognitive areas concern you most?",
+      type: "textarea",
+      placeholder: "Describe any specific cognitive challenges like memory, attention, processing speed, etc."
+    }
+  ],
+
   "brain-fog": [
     {
       id: 1,
@@ -962,6 +1028,471 @@ const assessmentQuestions = {
         { value: "drains", label: "Drains me - takes longer to recover than expected" },
         { value: "depletes", label: "Severely depletes me - exhausted for days" }
       ]
+    }
+  ],
+
+  // Body Pillar - Physical Performance Assessment
+  "physical-performance": [
+    {
+      id: 1,
+      question: "How would you rate your current physical fitness level?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - very fit and athletic" },
+        { value: "good", label: "Good - reasonably fit and active" },
+        { value: "fair", label: "Fair - some fitness but could improve" },
+        { value: "poor", label: "Poor - low fitness and physical capacity" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How is your cardiovascular endurance?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - can sustain activity for long periods" },
+        { value: "good", label: "Good - decent stamina for moderate activity" },
+        { value: "fair", label: "Fair - get winded fairly quickly" },
+        { value: "poor", label: "Poor - very limited endurance" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How is your muscle strength and power?",
+      type: "radio",
+      options: [
+        { value: "strong", label: "Strong - feel physically powerful" },
+        { value: "moderate", label: "Moderate - adequate strength" },
+        { value: "weak", label: "Weak - struggle with physical tasks" },
+        { value: "very-weak", label: "Very weak - difficulty with basic activities" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How is your flexibility and mobility?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - very flexible and mobile" },
+        { value: "good", label: "Good - reasonable range of motion" },
+        { value: "stiff", label: "Stiff - limited flexibility" },
+        { value: "very-stiff", label: "Very stiff - severely restricted movement" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How quickly do you recover after physical activity?",
+      type: "radio",
+      options: [
+        { value: "fast", label: "Fast - recover within hours" },
+        { value: "normal", label: "Normal - recover by next day" },
+        { value: "slow", label: "Slow - takes 2-3 days to recover" },
+        { value: "very-slow", label: "Very slow - extended recovery needed" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What physical activities do you currently do?",
+      type: "textarea",
+      placeholder: "Describe your current exercise routine, sports, or physical activities..."
+    }
+  ],
+
+  "pain-assessment": [
+    {
+      id: 1,
+      question: "Where do you primarily experience pain?",
+      type: "radio",
+      options: [
+        { value: "head", label: "Head and neck" },
+        { value: "back", label: "Back (upper, middle, or lower)" },
+        { value: "joints", label: "Joints (knees, hips, shoulders, etc.)" },
+        { value: "muscles", label: "Muscles throughout body" },
+        { value: "multiple", label: "Multiple areas" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate your pain intensity (1-10 scale)?",
+      type: "radio",
+      options: [
+        { value: "mild", label: "Mild (1-3/10)" },
+        { value: "moderate", label: "Moderate (4-6/10)" },
+        { value: "severe", label: "Severe (7-8/10)" },
+        { value: "extreme", label: "Extreme (9-10/10)" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How long have you been experiencing this pain?",
+      type: "radio",
+      options: [
+        { value: "acute", label: "Acute - less than 3 months" },
+        { value: "subacute", label: "Subacute - 3-6 months" },
+        { value: "chronic", label: "Chronic - 6-12 months" },
+        { value: "long-term", label: "Long-term - more than 1 year" }
+      ]
+    },
+    {
+      id: 4,
+      question: "When is your pain typically worse?",
+      type: "radio",
+      options: [
+        { value: "morning", label: "Morning upon waking" },
+        { value: "activity", label: "During or after activity" },
+        { value: "rest", label: "At rest or when sitting/lying" },
+        { value: "constant", label: "Constant throughout the day" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How does pain affect your daily life?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal - barely affects activities" },
+        { value: "some", label: "Some limitation with certain activities" },
+        { value: "significant", label: "Significant - avoid many activities" },
+        { value: "severe", label: "Severe - major impact on daily life" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What helps relieve your pain?",
+      type: "textarea",
+      placeholder: "Describe treatments, activities, or methods that help reduce your pain..."
+    }
+  ],
+
+  // Balance Pillar - Stress Assessment
+  "stress-assessment": [
+    {
+      id: 1,
+      question: "How would you rate your current stress levels?",
+      type: "radio",
+      options: [
+        { value: "low", label: "Low - minimal stress in life" },
+        { value: "moderate", label: "Moderate - manageable stress levels" },
+        { value: "high", label: "High - frequently feel stressed" },
+        { value: "extreme", label: "Extreme - overwhelmed by stress" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How often do you feel overwhelmed?",
+      type: "radio",
+      options: [
+        { value: "rarely", label: "Rarely - only in extreme situations" },
+        { value: "sometimes", label: "Sometimes - during busy periods" },
+        { value: "often", label: "Often - several times per week" },
+        { value: "constantly", label: "Constantly - feel overwhelmed daily" }
+      ]
+    },
+    {
+      id: 3,
+      question: "What physical symptoms of stress do you experience?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal physical symptoms" },
+        { value: "some", label: "Some symptoms (tension, headaches)" },
+        { value: "many", label: "Many symptoms (pain, stomach issues, fatigue)" },
+        { value: "severe", label: "Severe symptoms affecting health" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How does stress affect your sleep?",
+      type: "radio",
+      options: [
+        { value: "unaffected", label: "Unaffected - sleep well despite stress" },
+        { value: "slightly", label: "Slightly affected - occasional sleep issues" },
+        { value: "significantly", label: "Significantly affected - frequent insomnia" },
+        { value: "severely", label: "Severely affected - chronic sleep problems" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What are your main sources of stress?",
+      type: "textarea",
+      placeholder: "Describe your primary stressors (work, relationships, health, finances, etc.)..."
+    }
+  ],
+
+  "mood-tracking": [
+    {
+      id: 1,
+      question: "How would you describe your overall mood most days?",
+      type: "radio",
+      options: [
+        { value: "positive", label: "Positive - generally happy and optimistic" },
+        { value: "neutral", label: "Neutral - neither particularly happy nor sad" },
+        { value: "low", label: "Low - often feel sad or down" },
+        { value: "very-low", label: "Very low - persistent sadness or depression" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How stable is your mood throughout the day?",
+      type: "radio",
+      options: [
+        { value: "very-stable", label: "Very stable - consistent mood" },
+        { value: "mostly-stable", label: "Mostly stable with minor fluctuations" },
+        { value: "variable", label: "Variable - noticeable mood swings" },
+        { value: "very-variable", label: "Very variable - extreme mood changes" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How often do you feel irritable or frustrated?",
+      type: "radio",
+      options: [
+        { value: "rarely", label: "Rarely - generally patient and calm" },
+        { value: "sometimes", label: "Sometimes - occasional irritability" },
+        { value: "often", label: "Often - frequently irritable" },
+        { value: "constantly", label: "Constantly - persistently irritable" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How would you rate your emotional resilience?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - bounce back quickly from setbacks" },
+        { value: "good", label: "Good - manage challenges reasonably well" },
+        { value: "fair", label: "Fair - struggle with emotional challenges" },
+        { value: "poor", label: "Poor - difficulty coping emotionally" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What factors most influence your mood?",
+      type: "textarea",
+      placeholder: "Describe what affects your mood (hormones, stress, sleep, social interactions, etc.)..."
+    }
+  ],
+
+  "anxiety-assessment": [
+    {
+      id: 1,
+      question: "How often do you experience anxiety or worry?",
+      type: "radio",
+      options: [
+        { value: "rare", label: "Rarely - only in very stressful situations" },
+        { value: "sometimes", label: "Sometimes - a few times per week" },
+        { value: "often", label: "Often - most days I feel anxious" },
+        { value: "constant", label: "Constantly - persistent anxiety throughout day" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate the intensity of your anxiety?",
+      type: "radio",
+      options: [
+        { value: "mild", label: "Mild - manageable worry or unease" },
+        { value: "moderate", label: "Moderate - noticeable anxiety that affects functioning" },
+        { value: "severe", label: "Severe - intense anxiety that disrupts daily life" },
+        { value: "panic", label: "Panic level - overwhelming fear or panic attacks" }
+      ]
+    },
+    {
+      id: 3,
+      question: "Do you experience physical symptoms with anxiety?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal - mostly mental worry" },
+        { value: "some", label: "Some physical symptoms (tension, butterflies)" },
+        { value: "many", label: "Many symptoms (racing heart, sweating, trembling)" },
+        { value: "severe", label: "Severe symptoms (chest pain, difficulty breathing)" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How does anxiety affect your daily activities?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal impact - function normally" },
+        { value: "some", label: "Some impact - occasionally avoid things" },
+        { value: "significant", label: "Significant impact - regularly avoid activities" },
+        { value: "severe", label: "Severe impact - anxiety controls my life" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What situations or thoughts trigger your anxiety most?",
+      type: "textarea",
+      placeholder: "Describe your main anxiety triggers, situations, or thought patterns..."
+    }
+  ],
+
+  // Beauty Pillar Assessments
+  "skin-health": [
+    {
+      id: 1,
+      question: "How would you describe your current skin condition?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - clear, smooth, radiant" },
+        { value: "good", label: "Good - generally healthy skin" },
+        { value: "fair", label: "Fair - some concerns or issues" },
+        { value: "poor", label: "Poor - multiple skin problems" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What is your primary skin concern?",
+      type: "radio",
+      options: [
+        { value: "aging", label: "Aging signs (wrinkles, fine lines, sagging)" },
+        { value: "acne", label: "Acne or breakouts" },
+        { value: "dryness", label: "Dryness or dehydration" },
+        { value: "pigmentation", label: "Pigmentation or dark spots" },
+        { value: "sensitivity", label: "Sensitivity or redness" },
+        { value: "texture", label: "Uneven texture or large pores" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How consistent is your skincare routine?",
+      type: "radio",
+      options: [
+        { value: "very-consistent", label: "Very consistent - daily routine" },
+        { value: "mostly-consistent", label: "Mostly consistent with occasional lapses" },
+        { value: "inconsistent", label: "Inconsistent - sporadic routine" },
+        { value: "minimal", label: "Minimal or no routine" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How much sun exposure do you get?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal - mostly indoors" },
+        { value: "moderate", label: "Moderate - some daily sun" },
+        { value: "significant", label: "Significant - outdoors frequently" },
+        { value: "extensive", label: "Extensive - outdoor work/activities" }
+      ]
+    },
+    {
+      id: 5,
+      question: "How does your skin react to products or environment?",
+      type: "radio",
+      options: [
+        { value: "tolerant", label: "Tolerant - rarely reacts negatively" },
+        { value: "somewhat-sensitive", label: "Somewhat sensitive - occasional reactions" },
+        { value: "sensitive", label: "Sensitive - frequently reacts" },
+        { value: "very-sensitive", label: "Very sensitive - reacts to many things" }
+      ]
+    },
+    {
+      id: 6,
+      question: "What skin improvements would you most like to see?",
+      type: "textarea",
+      placeholder: "Describe your main skin goals and what you'd like to improve..."
+    }
+  ],
+
+  "hair-vitality": [
+    {
+      id: 1,
+      question: "How would you describe your current hair health?",
+      type: "radio",
+      options: [
+        { value: "excellent", label: "Excellent - thick, strong, healthy" },
+        { value: "good", label: "Good - generally healthy hair" },
+        { value: "fair", label: "Fair - some concerns or changes" },
+        { value: "poor", label: "Poor - multiple hair issues" }
+      ]
+    },
+    {
+      id: 2,
+      question: "What is your primary hair concern?",
+      type: "radio",
+      options: [
+        { value: "thinning", label: "Thinning or hair loss" },
+        { value: "texture", label: "Texture changes (dry, brittle, frizzy)" },
+        { value: "growth", label: "Slow growth or lack of growth" },
+        { value: "graying", label: "Premature graying" },
+        { value: "scalp", label: "Scalp issues (dryness, oiliness, dandruff)" }
+      ]
+    },
+    {
+      id: 3,
+      question: "Have you noticed changes in hair density or volume?",
+      type: "radio",
+      options: [
+        { value: "no-change", label: "No change - hair density stable" },
+        { value: "slight-thinning", label: "Slight thinning noticed" },
+        { value: "moderate-loss", label: "Moderate hair loss or thinning" },
+        { value: "significant-loss", label: "Significant hair loss" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How is your hair's texture and strength?",
+      type: "radio",
+      options: [
+        { value: "strong", label: "Strong and resilient" },
+        { value: "normal", label: "Normal texture and strength" },
+        { value: "weak", label: "Weak or brittle" },
+        { value: "very-weak", label: "Very weak - breaks easily" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What hair improvements would you like to achieve?",
+      type: "textarea",
+      placeholder: "Describe your hair goals and what you'd like to improve..."
+    }
+  ],
+
+  "aging-concerns": [
+    {
+      id: 1,
+      question: "What are your primary aging concerns?",
+      type: "radio",
+      options: [
+        { value: "facial", label: "Facial aging (wrinkles, lines, sagging)" },
+        { value: "skin", label: "Overall skin texture and elasticity" },
+        { value: "hair", label: "Hair changes (thinning, graying)" },
+        { value: "body", label: "Body composition and physical changes" },
+        { value: "multiple", label: "Multiple aging concerns" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How would you rate visible signs of aging?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal - aging gracefully" },
+        { value: "some", label: "Some signs - expected for age" },
+        { value: "moderate", label: "Moderate - more than expected" },
+        { value: "advanced", label: "Advanced - significant aging signs" }
+      ]
+    },
+    {
+      id: 3,
+      question: "How important is anti-aging to you?",
+      type: "radio",
+      options: [
+        { value: "very-important", label: "Very important - top priority" },
+        { value: "important", label: "Important - actively working on it" },
+        { value: "somewhat", label: "Somewhat important" },
+        { value: "not-priority", label: "Not a current priority" }
+      ]
+    },
+    {
+      id: 4,
+      question: "What anti-aging measures are you currently taking?",
+      type: "radio",
+      options: [
+        { value: "comprehensive", label: "Comprehensive - multiple strategies" },
+        { value: "some", label: "Some - basic skincare and lifestyle" },
+        { value: "minimal", label: "Minimal - just beginning" },
+        { value: "none", label: "None yet" }
+      ]
+    },
+    {
+      id: 5,
+      question: "What aging-related changes concern you most?",
+      type: "textarea",
+      placeholder: "Describe the specific aging changes that concern you and your goals..."
     }
   ],
 
