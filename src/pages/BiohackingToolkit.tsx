@@ -68,11 +68,13 @@ const BiohackingToolkit = () => {
                 <Link key={item.id} to={item.href}>
                   <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer border-2 hover:border-primary">
                     <CardHeader className="p-4">
-                      <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mb-3">
-                        <Icon className="h-6 w-6 text-primary-dark" />
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+                          <Icon className="h-5 w-5 text-primary-dark" />
+                        </div>
+                        <CardTitle className="text-lg">{item.title}</CardTitle>
                       </div>
-                      <CardTitle className="text-xl">{item.title}</CardTitle>
-                      <CardDescription className="text-sm">
+                      <CardDescription className="text-base">
                         {item.description}
                       </CardDescription>
                     </CardHeader>
