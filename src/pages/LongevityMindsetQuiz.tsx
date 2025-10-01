@@ -47,7 +47,7 @@ const questions: Question[] = [
   {
     id: "q3",
     question: "How familiar are you with longevity science?",
-    dimension: "Awareness",
+    dimension: "Longevity Knowledge",
     icon: Brain,
     options: [
       { value: 1, label: "Not familiar at all - this is all new to me" },
@@ -449,6 +449,12 @@ const LongevityMindsetQuiz = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Continuum labels */}
+                  <div className="flex justify-between text-sm text-muted-foreground mb-2">
+                    <span>Emerging</span>
+                    <span>Empowered</span>
+                  </div>
+                  
                   {Object.entries(dimensionScores)
                     .sort(([, a], [, b]) => b.avg - a.avg)
                     .map(([dimension, data], index) => {
@@ -474,15 +480,39 @@ const LongevityMindsetQuiz = () => {
                         return colors[index % colors.length];
                       };
                       
+                      // Get insight for each dimension
+                      const getDimensionInsight = (dim: string, score: number) => {
+                        const insights: Record<string, string> = {
+                          "Belief About Aging": score >= 3 ? "You see aging as malleable" : "You're exploring what's possible",
+                          "Future Self Vision": score >= 3 ? "You envision a vibrant future" : "You're building your vision",
+                          "Longevity Knowledge": score >= 3 ? "You're informed and curious" : "You're beginning your learning journey",
+                          "Personal Agency": score >= 3 ? "You feel in control of your health" : "You're developing your sense of control",
+                          "Openness to Learning": score >= 3 ? "You embrace new information" : "You're cultivating curiosity",
+                          "Exploration Readiness": score >= 3 ? "You're eager to experiment" : "You're warming up to new practices",
+                          "Commitment Pattern": score >= 3 ? "You follow through consistently" : "You're building lasting habits",
+                          "Readiness to Act": score >= 3 ? "You're primed for action" : "You're preparing to take steps",
+                          "Self-Worth": score >= 3 ? "You prioritize your wellbeing" : "You're learning to put yourself first",
+                          "Possibility Mindset": score >= 3 ? "You believe in your potential" : "You're opening to possibilities",
+                          "Scientific Curiosity": score >= 3 ? "You seek to understand deeply" : "You're developing scientific thinking",
+                          "Community Orientation": score >= 3 ? "You thrive with others" : "You're finding your community",
+                        };
+                        return insights[dim] || "Your mindset is developing";
+                      };
+                      
                       return (
                         <div key={dimension} className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Icon className={`h-4 w-4 ${getIconColor(index)}`} />
-                            <span className="font-medium">{dimension}</span>
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <Icon className={`h-4 w-4 ${getIconColor(index)}`} />
+                              <span className="font-medium">{dimension}</span>
+                            </div>
+                            <span className="text-xs text-muted-foreground">
+                              {getDimensionInsight(dimension, data.avg)}
+                            </span>
                           </div>
                           <div className="relative h-3 bg-muted rounded-full overflow-hidden">
                             <div
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400 to-orange-500 transition-all"
+                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-orange-400/75 to-orange-500/75 transition-all"
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
