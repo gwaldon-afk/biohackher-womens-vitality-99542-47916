@@ -307,6 +307,15 @@ const Pillars = () => {
 
                     {/* Horizontal Section Buttons */}
                     <div className="space-y-6">
+                      {/* Overview Text */}
+                      <div className="text-center max-w-3xl mx-auto mb-6">
+                        <p className="text-muted-foreground">
+                          {selectedPillar === "brain" && "Discover evidence-based protocols to optimize your cognitive function. From simple daily practices to advanced interventions, explore training techniques, therapeutic approaches, and targeted supplements designed to enhance mental clarity and focus."}
+                          {selectedPillar === "body" && "Transform your physical health with science-backed strategies for strength, mobility, and vitality. Choose from progressive training protocols, recovery therapies, and performance-enhancing supplements tailored to your fitness level and goals."}
+                          {selectedPillar === "balance" && "Find your calm with practices proven to reduce stress and restore equilibrium. Explore daily rituals, therapeutic modalities, and supportive supplements that help you navigate life's challenges with greater ease and resilience."}
+                          {selectedPillar === "beauty" && "Unlock your radiant potential with cutting-edge approaches to skin health and cellular rejuvenation. Browse beauty-enhancing practices, professional-grade therapies, and collagen-boosting supplements for visible, lasting results."}
+                        </p>
+                      </div>
                       {/* Button Row */}
                       <div className="flex gap-4 justify-center">
                         <Button
