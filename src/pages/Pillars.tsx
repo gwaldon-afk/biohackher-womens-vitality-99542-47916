@@ -62,7 +62,7 @@ const Pillars = () => {
       subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
       image: bodyPillar,
       icon: Activity,
-      color: "from-green-500 to-emerald-600",
+      color: "from-primary-dark to-primary",
       biohacks: {
         training: {
           beginner: ["Walking 8,000-10,000 steps daily", "Morning movement routine (5-10 minutes)", "Mobility work & dynamic stretching (daily 15 min)"],
@@ -93,7 +93,7 @@ const Pillars = () => {
       subtitle: "Achieve inner calm and peace",
       image: balancePillar,
       icon: Zap,
-      color: "from-blue-500 to-cyan-600",
+      color: "from-secondary to-secondary-light",
       biohacks: {
         training: {
           beginner: ["Morning sunlight exposure (10-30 min for cortisol regulation)", "Sleep hygiene protocol implementation", "Gratitude practice (3 things daily)"],
@@ -124,7 +124,7 @@ const Pillars = () => {
       subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
       image: beautyPillar,
       icon: Sparkles,
-      color: "from-pink-500 to-rose-600",
+      color: "from-secondary-dark to-secondary",
       biohacks: {
         training: {
           beginner: ["UV protection with broad-spectrum SPF 30+", "Hydration optimization (half body weight in oz)", "Beauty sleep optimization (7-9 hours)"],
