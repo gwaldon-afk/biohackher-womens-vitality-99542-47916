@@ -67,8 +67,8 @@ const BiohackingToolkit = () => {
               return (
                 <Link key={item.id} to={item.href}>
                   <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer border-2 hover:border-primary">
-                    <CardHeader className="p-4">
-                      <div className="flex items-center gap-3 mb-2">
+                    <CardHeader className="p-4 text-center">
+                      <div className="flex items-center justify-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
                           <Icon className="h-5 w-5 text-primary-dark" />
                         </div>
