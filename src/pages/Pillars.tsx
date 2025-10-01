@@ -261,7 +261,7 @@ const Pillars = () => {
               {Object.entries(pillars).map(([key, pillar]) => (
                 <Card
                   key={key}
-                  className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
+                  className={`card-elevated hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group ${
                     selectedPillar === key ? "ring-2 ring-primary" : ""
                   }`}
                   onClick={() => {
@@ -269,20 +269,27 @@ const Pillars = () => {
                     setSelectedSection(null); // Reset dropdown sections when switching pillars
                   }}
                 >
-                  <CardHeader className="text-center">
-                    <div className="w-full h-48 mb-4 overflow-hidden rounded-lg">
-                      <img
-                        src={pillar.image}
-                        alt={`${pillar.title} pillar`}
-                        className="w-full h-full object-cover"
-                      />
+                  <div className="relative">
+                    <img
+                      src={pillar.image}
+                      alt={`${pillar.title} pillar`}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
+                    <div className="absolute top-3 left-3">
+                      <pillar.icon className="h-6 w-6 text-white" />
                     </div>
+                  </div>
+                  <CardHeader className="text-center pb-2">
                     <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                      <pillar.icon className="h-6 w-6" />
                       {pillar.title}
                     </CardTitle>
-                    <CardDescription className="text-center">{pillar.subtitle}</CardDescription>
                   </CardHeader>
+                  <CardContent className="pt-0 text-center">
+                    <CardDescription className="text-sm">
+                      {pillar.subtitle}
+                    </CardDescription>
+                  </CardContent>
                 </Card>
               ))}
             </div>
