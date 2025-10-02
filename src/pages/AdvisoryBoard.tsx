@@ -40,6 +40,42 @@ const AdvisoryBoard = () => {
       bio: "Dr. Rodriguez bridges conventional pharmacy with evidence-based botanical medicine. She reviews all supplement recommendations for safety, efficacy, and drug-nutrient interactions.",
       publications: 28,
       yearsExperience: 12
+    },
+    {
+      name: "Dr. Patricia Williams, MD",
+      title: "Reproductive Endocrinologist",
+      credentials: "MD, Board Certified OB/GYN & Reproductive Endocrinology",
+      specialty: "Hormonal Transitions & Menopause",
+      bio: "Dr. Williams is a leading expert in perimenopause and menopause management. She has dedicated her 20-year career to helping women navigate hormonal transitions with evidence-based HRT and lifestyle interventions.",
+      publications: 41,
+      yearsExperience: 20
+    },
+    {
+      name: "Dr. Maya Patel, MD",
+      title: "Dermatologist",
+      credentials: "MD, Board Certified Dermatology, Fellowship in Cosmetic Dermatology",
+      specialty: "Skin Health & Anti-Aging",
+      bio: "Dr. Patel specializes in the science of skin aging and evidence-based aesthetic treatments. Her research focuses on nutritional and topical interventions for maintaining youthful, healthy skin.",
+      publications: 34,
+      yearsExperience: 14
+    },
+    {
+      name: "Dr. Rachel Green, MD, PhD",
+      title: "Psychiatrist",
+      credentials: "MD, PhD in Neuroscience, Board Certified Psychiatry",
+      specialty: "Mental Health & Stress Management",
+      bio: "Dr. Green combines neuroscience research with clinical psychiatry to address anxiety, depression, and cognitive health in midlife women. She specializes in non-pharmacological interventions for mental wellness.",
+      publications: 38,
+      yearsExperience: 16
+    },
+    {
+      name: "Dr. Jennifer Kim, MD",
+      title: "Cardiologist",
+      credentials: "MD, Board Certified Cardiology, Specialist in Women's Heart Health",
+      specialty: "Cardiovascular Longevity",
+      bio: "Dr. Kim is a pioneer in women's cardiovascular health, particularly focused on post-menopausal heart disease prevention. Her work emphasizes lifestyle interventions and early detection strategies.",
+      publications: 45,
+      yearsExperience: 19
     }
   ];
 
@@ -63,13 +99,13 @@ const AdvisoryBoard = () => {
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <Card className="text-center">
             <CardContent className="pt-6">
-              <div className="text-4xl font-bold text-primary mb-2">163</div>
+              <div className="text-4xl font-bold text-primary mb-2">321</div>
               <p className="text-sm text-muted-foreground">Combined Publications</p>
             </CardContent>
           </Card>
           <Card className="text-center">
             <CardContent className="pt-6">
-              <div className="text-4xl font-bold text-primary mb-2">67</div>
+              <div className="text-4xl font-bold text-primary mb-2">134</div>
               <p className="text-sm text-muted-foreground">Years Combined Experience</p>
             </CardContent>
           </Card>
