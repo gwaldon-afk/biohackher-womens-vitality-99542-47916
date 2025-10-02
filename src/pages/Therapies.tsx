@@ -50,11 +50,11 @@ const Therapies = () => {
       contraindications: ["Heart conditions", "Pregnancy", "Eating disorders"],
       benefits: ["Brown fat activation", "Mood enhancement", "Immune boost"],
       researchCitation: {
-        title: "Cold Water Immersion and Other Forms of Cryotherapy: Physiological Changes Potentially Affecting Recovery From High-Intensity Exercise",
+        title: "Cold-water immersion and other forms of cryotherapy: physiological changes potentially affecting recovery from high-intensity exercise",
         journal: "Extreme Physiology & Medicine",
-        year: 2019,
-        url: "https://pubmed.ncbi.nlm.nih.gov/32020712/",
-        doi: "10.1186/s13728-019-0103-9",
+        year: 2013,
+        url: "https://pubmed.ncbi.nlm.nih.gov/24004719/",
+        doi: "10.1186/2046-7648-2-26",
         studyType: "Review" as const
       }
     },
@@ -74,9 +74,9 @@ const Therapies = () => {
       researchCitation: {
         title: "Contrast Water Therapy and Exercise Induced Muscle Damage: A Systematic Review and Meta-Analysis",
         journal: "PLoS ONE",
-        year: 2017,
-        url: "https://pubmed.ncbi.nlm.nih.gov/29083549/",
-        doi: "10.1371/journal.pone.0178548",
+        year: 2013,
+        url: "https://pubmed.ncbi.nlm.nih.gov/23626806/",
+        doi: "10.1371/journal.pone.0062356",
         studyType: "Meta-analysis" as const
       }
     },
