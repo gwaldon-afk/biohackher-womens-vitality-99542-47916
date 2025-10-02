@@ -8,6 +8,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 interface LongevityProjectionProps {
   sustainedLIS: number;
   dataPoints: number; // How many days of data we have
+  currentAge?: number; // User's current age for projected age calculation
 }
 
 interface ProjectionData {
@@ -17,7 +18,7 @@ interface ProjectionData {
   color: string;
 }
 
-const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionProps) => {
+const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: LongevityProjectionProps) => {
   // Algorithm: Calculate longevity age impact based on sustained LIS
   const calculateLongevityImpact = (lis: number, years: number): number => {
     let baseImpact = 0;
@@ -171,7 +172,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#6b7280' }}
-                  domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                  domain={[(dataMin: number) => Math.floor(dataMin - 0.5), (dataMax: number) => Math.ceil(dataMax + 0.5)]}
                   tickFormatter={(value) => `${value > 0 ? '+' : ''}${value}y`}
                 />
                 <Bar dataKey="impact" radius={[4, 4, 0, 0]}>
@@ -181,8 +182,12 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
                   <LabelList
                     dataKey="impact"
                     position="top"
-                    style={{ fontSize: '11px', fontWeight: '600' }}
-                    formatter={(value: number) => `${value > 0 ? '+' : ''}${value.toFixed(1)}y`}
+                    style={{ fontSize: '10px', fontWeight: '600' }}
+                    formatter={(value: number, entry: any) => {
+                      const years = entry.years;
+                      const projectedAge = currentAge + years + value;
+                      return `${projectedAge.toFixed(1)} yo`;
+                    }}
                   />
                 </Bar>
                 <ChartTooltip 

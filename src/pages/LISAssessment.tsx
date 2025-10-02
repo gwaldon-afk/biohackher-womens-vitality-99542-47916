@@ -497,7 +497,11 @@ const LISAssessment = () => {
               {/* Longevity Projection for Logged-in Users */}
               {user && (
                 <div className="mt-6">
-                  <LongevityProjection sustainedLIS={lisScore} dataPoints={1} />
+                  <LongevityProjection 
+                    sustainedLIS={lisScore} 
+                    dataPoints={1}
+                    currentAge={parseInt(profileData.age) || 42}
+                  />
                 </div>
               )}
 
