@@ -105,11 +105,8 @@ const Index = () => {
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
-                        <p className="text-sm font-medium mb-2 text-primary">Longevity Impact Score (LIS)</p>
-                        <p className="text-xs text-muted-foreground">
-                          LIS measures your daily habits' impact on biological aging. 
-                          Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
-                          and below 60 suggest accelerated aging. Take the assessment to discover your score.
+                        <p className="text-sm text-muted-foreground">
+                          Discover if your daily habits are aging you faster—or reversing the clock. Get your score in 2 minutes.
                         </p>
                       </TooltipContent>
                     </Tooltip>
