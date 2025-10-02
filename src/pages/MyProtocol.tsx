@@ -10,6 +10,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
+import { useProtocols } from "@/hooks/useProtocols";
+import { useAdherence } from "@/hooks/useAdherence";
+import { ProtocolItemCard } from "@/components/ProtocolItemCard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AssessmentData {
   id: string;
@@ -24,12 +28,33 @@ const MyProtocol = () => {
   const { toast } = useToast();
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { protocols, fetchProtocolItems } = useProtocols();
+  const { adherence, toggleAdherence, getAdherenceStats } = useAdherence();
+  const [protocolItems, setProtocolItems] = useState<any[]>([]);
+  const [loadingItems, setLoadingItems] = useState(false);
+
+  const activeProtocols = protocols.filter(p => p.is_active);
 
   useEffect(() => {
     if (user) {
       fetchAssessments();
+      loadProtocolItems();
     }
-  }, [user]);
+  }, [user, protocols]);
+
+  const loadProtocolItems = async () => {
+    if (activeProtocols.length === 0) return;
+    
+    setLoadingItems(true);
+    try {
+      const allItems = await Promise.all(
+        activeProtocols.map(protocol => fetchProtocolItems(protocol.id))
+      );
+      setProtocolItems(allItems.flat());
+    } finally {
+      setLoadingItems(false);
+    }
+  };
 
   const fetchAssessments = async () => {
     if (!user) return;
@@ -162,9 +187,66 @@ const MyProtocol = () => {
             My <span className="text-primary">Personalized Protocol</span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Your complete supplement protocol based on {assessments.length} completed assessment{assessments.length > 1 ? 's' : ''}
+            Your complete wellness protocol and daily tracking
           </p>
         </div>
+
+        <Tabs defaultValue="today" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+            <TabsTrigger value="protocols">My Protocols</TabsTrigger>
+          </TabsList>
+
+          {/* Today's Protocol Tab */}
+          <TabsContent value="today" className="space-y-6">
+            {activeProtocols.length === 0 ? (
+              <Card>
+                <CardContent className="pt-12 pb-12 text-center">
+                  <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold mb-2">No Active Protocol</h2>
+                  <p className="text-muted-foreground mb-6">
+                    Create your first protocol to start tracking your wellness routine.
+                  </p>
+                  <Button onClick={() => navigate('/symptoms')}>
+                    Start with an Assessment
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Today's Protocol</CardTitle>
+                    <CardDescription>
+                      Complete your daily wellness routine
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {loadingItems ? (
+                      <p className="text-muted-foreground">Loading protocol items...</p>
+                    ) : protocolItems.length === 0 ? (
+                      <p className="text-muted-foreground">No items in your active protocols yet.</p>
+                    ) : (
+                      protocolItems
+                        .filter(item => item.is_active)
+                        .map((item) => (
+                          <ProtocolItemCard
+                            key={item.id}
+                            item={item}
+                            completed={adherence[item.id]?.completed || false}
+                            onToggleComplete={() => toggleAdherence(item.id)}
+                          />
+                        ))
+                    )}
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </TabsContent>
+
+          {/* Recommendations Tab */}
+          <TabsContent value="recommendations" className="space-y-6">
 
         {/* Protocol Completion Status */}
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5">
@@ -314,35 +396,79 @@ const MyProtocol = () => {
           </CardContent>
         </Card>
 
-        {/* Next Steps */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Optimize Your Protocol</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button 
-              variant="outline" 
-              className="w-full justify-start"
-              onClick={() => navigate('/symptoms')}
-            >
-              Take More Assessments to Expand Your Protocol
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full justify-start"
-              onClick={() => navigate('/shop')}
-            >
-              Browse All Supplements in Shop
-            </Button>
-            <Button 
-              variant="outline" 
-              className="w-full justify-start"
-              onClick={() => navigate('/dashboard')}
-            >
-              View Your Health Dashboard
-            </Button>
-          </CardContent>
-        </Card>
+            {/* Next Steps */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Optimize Your Protocol</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/symptoms')}
+                >
+                  Take More Assessments to Expand Your Protocol
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/shop')}
+                >
+                  Browse All Supplements in Shop
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* My Protocols Tab */}
+          <TabsContent value="protocols" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>My Custom Protocols</CardTitle>
+                    <CardDescription>
+                      Manage your personalized wellness protocols
+                    </CardDescription>
+                  </div>
+                  <Button onClick={() => navigate('/symptoms')}>
+                    Create New Protocol
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {activeProtocols.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No active protocols. Create your first one!
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {activeProtocols.map(protocol => (
+                      <Card key={protocol.id}>
+                        <CardHeader>
+                          <CardTitle className="text-lg">{protocol.name}</CardTitle>
+                          {protocol.description && (
+                            <CardDescription>{protocol.description}</CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center justify-between">
+                            <div className="text-sm text-muted-foreground">
+                              Started: {new Date(protocol.start_date).toLocaleDateString()}
+                            </div>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

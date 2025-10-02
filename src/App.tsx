@@ -30,6 +30,7 @@ import Pillars from "./pages/Pillars";
 import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
 import MyProtocol from "./pages/MyProtocol";
+import ProgressTracking from "./pages/ProgressTracking";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
+            <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
             <Route path="/about" element={<About />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

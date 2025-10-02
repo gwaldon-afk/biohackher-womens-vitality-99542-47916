@@ -297,6 +297,184 @@ export type Database = {
         }
         Relationships: []
       }
+      progress_measurements: {
+        Row: {
+          body_fat_percentage: number | null
+          chest_circumference: number | null
+          created_at: string
+          custom_measurements: Json | null
+          date: string
+          hip_circumference: number | null
+          id: string
+          muscle_mass: number | null
+          notes: string | null
+          updated_at: string
+          user_id: string
+          waist_circumference: number | null
+          weight: number | null
+        }
+        Insert: {
+          body_fat_percentage?: number | null
+          chest_circumference?: number | null
+          created_at?: string
+          custom_measurements?: Json | null
+          date?: string
+          hip_circumference?: number | null
+          id?: string
+          muscle_mass?: number | null
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+          waist_circumference?: number | null
+          weight?: number | null
+        }
+        Update: {
+          body_fat_percentage?: number | null
+          chest_circumference?: number | null
+          created_at?: string
+          custom_measurements?: Json | null
+          date?: string
+          hip_circumference?: number | null
+          id?: string
+          muscle_mass?: number | null
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+          waist_circumference?: number | null
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      progress_photos: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          photo_type: string
+          photo_url: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          photo_type?: string
+          photo_url: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          photo_type?: string
+          photo_url?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      protocol_adherence: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          protocol_item_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          protocol_item_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          protocol_item_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_adherence_protocol_item_id_fkey"
+            columns: ["protocol_item_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      protocol_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          dosage: string | null
+          frequency: Database["public"]["Enums"]["protocol_frequency"]
+          id: string
+          is_active: boolean
+          item_type: Database["public"]["Enums"]["protocol_item_type"]
+          name: string
+          notes: string | null
+          product_link: string | null
+          protocol_id: string
+          time_of_day: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          frequency?: Database["public"]["Enums"]["protocol_frequency"]
+          id?: string
+          is_active?: boolean
+          item_type: Database["public"]["Enums"]["protocol_item_type"]
+          name: string
+          notes?: string | null
+          product_link?: string | null
+          protocol_id: string
+          time_of_day?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          dosage?: string | null
+          frequency?: Database["public"]["Enums"]["protocol_frequency"]
+          id?: string
+          is_active?: boolean
+          item_type?: Database["public"]["Enums"]["protocol_item_type"]
+          name?: string
+          notes?: string | null
+          product_link?: string | null
+          protocol_id?: string
+          time_of_day?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_items_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "user_protocols"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       self_reported_metrics: {
         Row: {
           created_at: string
@@ -482,6 +660,45 @@ export type Database = {
         }
         Relationships: []
       }
+      user_protocols: {
+        Row: {
+          created_at: string
+          created_from_pillar: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_from_pillar?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_from_pillar?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_symptoms: {
         Row: {
           created_at: string
@@ -582,7 +799,18 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      protocol_frequency:
+        | "daily"
+        | "twice_daily"
+        | "three_times_daily"
+        | "weekly"
+        | "as_needed"
+      protocol_item_type:
+        | "supplement"
+        | "therapy"
+        | "habit"
+        | "exercise"
+        | "diet"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -709,6 +937,21 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      protocol_frequency: [
+        "daily",
+        "twice_daily",
+        "three_times_daily",
+        "weekly",
+        "as_needed",
+      ],
+      protocol_item_type: [
+        "supplement",
+        "therapy",
+        "habit",
+        "exercise",
+        "diet",
+      ],
+    },
   },
 } as const
