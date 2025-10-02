@@ -28,11 +28,11 @@ const Therapies = () => {
       contraindications: ["Pregnancy", "Cancer treatment area", "Photosensitizing medications"],
       benefits: ["Collagen production", "Wound healing", "Reduced inflammation"],
       researchCitation: {
-        title: "Low-Level Light Therapy for Skin: Review and Summary of Current Applications",
-        journal: "Lasers in Surgery and Medicine",
-        year: 2020,
-        url: "https://pubmed.ncbi.nlm.nih.gov/33147112/",
-        doi: "10.1002/lsm.23381",
+        title: "Photobiomodulation in human muscle tissue: an advantage in sports performance?",
+        journal: "Journal of Biophotonics",
+        year: 2016,
+        url: "https://pubmed.ncbi.nlm.nih.gov/26833881/",
+        doi: "10.1002/jbio.201500137",
         studyType: "Review" as const
       }
     },
