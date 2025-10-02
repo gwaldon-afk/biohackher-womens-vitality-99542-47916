@@ -1039,52 +1039,131 @@ const AssessmentResults = () => {
 
   const generateHotFlashesRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
     const recs: Recommendation[] = [];
+    
+    const hasFrequentFlashes = answers['1'] === 'frequently' || answers['1'] === 'very-frequently';
+    const hasSevereIntensity = answers['2'] === 'severe' || answers['2'] === 'extreme';
+    const hasNightSweats = answers['3'] === 'night' || answers['3'] === 'both';
+    const significantImpact = answers['4'] === 'significantly' || answers['4'] === 'severely';
 
+    // HIGH PRIORITY: Evidence-Based Supplement Protocol
     recs.push({
-      title: "Cooling Techniques",
-      description: "Keep a portable fan nearby, dress in breathable layers, and use cooling towels or cooling pads during episodes.",
+      title: "Evidence-Based Hot Flash Supplement Protocol",
+      description: "Clinically-researched supplements shown to significantly reduce vasomotor symptoms in menopausal women.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Pill,
+      personalisedAssessment: `Your assessment indicates ${hasFrequentFlashes ? 'frequent' : 'regular'} hot flashes${hasSevereIntensity ? ' with severe intensity' : ''}${hasNightSweats ? ' including night sweats' : ''}. This evidence-based protocol addresses the underlying hormonal mechanisms.`,
+      supplements: [
+        { name: "Black Cohosh Extract (Standardized)", dosage: "40-80mg daily (6.5mg triterpene glycosides)", price: "£24.99", selected: true },
+        { name: "S-Equol (Soy Isoflavone Metabolite)", dosage: "10-20mg daily", price: "£34.99", selected: true },
+        { name: "Pycnogenol (French Maritime Pine Bark)", dosage: "50-100mg daily", price: "£29.99", selected: true },
+        { name: "Sage Extract", dosage: "300mg standardized extract daily", price: "£19.99", selected: false },
+        { name: "Evening Primrose Oil (GLA)", dosage: "1000mg twice daily", price: "£16.99", selected: false }
+      ],
+      analysis: "**Evidence-Based Research:** Black Cohosh has demonstrated 20-50% reduction in hot flash frequency in multiple RCTs and systematic reviews, with best results at 6.5mg triterpene glycosides. S-equol (the active metabolite only 30-50% of people can produce from soy) shows significant vasomotor symptom reduction in clinical trials. Pycnogenol demonstrated 46% reduction in hot flash scores in RCTs. Sage extract reduced hot flash frequency by up to 64% in clinical studies. **Mechanism:** These compounds interact with serotonin receptors, support estrogen receptor modulation, and reduce neurokinin B activity involved in thermoregulation.",
+      improvement: "Take black cohosh with meals for 12 weeks minimum (most studies show peak benefit at 8-12 weeks). S-equol best taken in morning. Pycnogenol with breakfast. Sage extract can be taken anytime. Evening primrose oil with meals to reduce GI effects.",
+      timeline: "Initial reductions in frequency typically within 2-4 weeks. Significant improvements (40-60% reduction in frequency and severity) typically seen within 6-12 weeks of consistent supplementation."
+    });
+
+    // Lifestyle interventions always included
+    recs.push({
+      title: "Trigger Identification & Management",
+      description: "Systematic approach to identify and avoid personal hot flash triggers while implementing cooling strategies.",
       priority: 'high',
       category: 'lifestyle',
       icon: Thermometer,
-      analysis: `Your hot flash frequency indicates hormonal fluctuations affecting your body's temperature regulation. Quick cooling strategies can reduce episode intensity by 40-60%.`,
-      improvement: "Create a cooling kit with portable fan, cooling towels, and breathable clothing. Practice deep breathing during episodes to activate parasympathetic response.",
-      timeline: "Immediate relief during episodes, with overall episode intensity reducing over 2-4 weeks of consistent management"
+      analysis: "Research shows 70-80% of women have identifiable triggers including caffeine, alcohol, spicy foods, stress, and environmental heat. Trigger avoidance can reduce episode frequency by 30-50%.",
+      improvement: "Keep detailed symptom diary tracking triggers. Common triggers: caffeine after 2pm, alcohol (especially red wine), spicy foods, hot beverages, stress, warm environments. Create personal cooling kit with portable fan, cooling towels, breathable clothing.",
+      timeline: "Immediate relief from trigger avoidance and cooling strategies. Pattern recognition typically develops within 2-3 weeks of tracking."
     });
 
-    if (answers['2'] === 'severe' || answers['2'] === 'extreme') {
+    // Cognitive Behavioral Therapy for hot flashes
+    if (significantImpact || hasSevereIntensity) {
       recs.push({
-        title: "Hormonal Balance Support Supplements",
-        description: "Supplements that may assist in addressing hot flash episodes and supporting natural hormonal balance.",
+        title: "Cognitive Behavioral Therapy for Hot Flashes (CBT-MH)",
+        description: "Evidence-based psychological intervention specifically designed to reduce hot flash severity and improve quality of life.",
         priority: 'high',
-        category: 'supplement',
-        icon: Pill,
-        personalisedAssessment: `Your severe hot flash intensity assessment suggests these supplements may assist in supporting natural hormonal balance.`,
-        supplements: [
-          { name: "Black Cohosh Extract", dosage: "40-80mg daily with meals", selected: true },
-          { name: "Evening Primrose Oil", dosage: "1000mg twice daily", selected: true },
-          { name: "Red Clover Isoflavones", dosage: "80mg daily", selected: false }
-        ],
-        analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-        improvement: "General recommended dosages are 40-80mg black cohosh daily with meals and 1000mg evening primrose oil twice daily. Create a cooling kit with portable fan, cooling towels, and breathable clothing for episode relief. For your specific recommended dosage, consult a healthcare professional.",
-        timeline: "Most people generally experience significant improvements within 4-8 weeks of consistent implementation. If hot flash symptoms persist or worsen, consult a healthcare provider."
-      });
-
-      recs.push({
-        title: "Hormone Balance Support",
-        description: "Include phytoestrogen-rich foods like soy, flax seeds, and legumes. Consider consulting about bioidentical hormone options.",
-        priority: 'medium',
-        category: 'diet',
-        icon: Heart
+        category: 'therapy',
+        icon: Brain,
+        analysis: "**Clinical Evidence:** CBT for menopausal hot flashes (CBT-MH) has been shown in multiple RCTs to reduce hot flash problem rating by 40-60% and significantly improve quality of life, sleep, and mood. More effective than control interventions. Works by changing cognitive and behavioral responses to hot flashes, reducing stress reactivity, and improving sleep.",
+        improvement: "Seek therapist trained in CBT-MH or use evidence-based programs like Cognitive Behavioral Therapy for Menopause. Typically involves 4-6 sessions covering paced breathing, cognitive restructuring, sleep hygiene, and behavioral activation.",
+        timeline: "Improvements typically seen within 4-6 weeks of treatment, with benefits maintained long-term."
       });
     }
 
-    if (answers['3'] === 'night') {
+    // Paced Respiration
+    recs.push({
+      title: "Paced Breathing Technique",
+      description: "Controlled slow breathing (6-8 breaths per minute) to reduce hot flash frequency and severity.",
+      priority: 'high',
+      category: 'routine',
+      icon: Heart,
+      analysis: "**Research Evidence:** Paced respiration has shown 40-50% reduction in hot flash frequency in clinical trials. Mechanism involves calming sympathetic nervous system activation and improving thermoregulatory control through vagal nerve stimulation.",
+      improvement: "Practice 15 minutes twice daily: breathe in for 5 seconds, out for 5 seconds (6 breaths/minute). Also use during hot flash onset. Use apps like Breathwrk or Paced Breathing for guidance.",
+      timeline: "Technique learned within days. Hot flash reduction typically seen within 2-4 weeks of consistent practice."
+    });
+
+    // Night sweats specific
+    if (hasNightSweats) {
       recs.push({
-        title: "Night-time Environment Setup",
-        description: "Use moisture-wicking sleepwear, cooling mattress pads, and keep room temperature cool (18-20°C).",
+        title: "Night Sweat Management Protocol",
+        description: "Comprehensive sleep environment and bedding optimization to minimize night sweat disruption.",
         priority: 'high',
         category: 'environment',
-        icon: Moon
+        icon: Moon,
+        analysis: "Night sweats disrupt sleep architecture and contribute to daytime fatigue, mood changes, and cognitive impairment. Environmental optimization can reduce episode intensity by 40-60%.",
+        improvement: "Use moisture-wicking sleepwear (merino wool or technical fabrics), cooling mattress pad or BedJet, keep room 16-18°C, use layered bedding for easy adjustment, keep cold water and fan bedside, layer sheets for quick changes.",
+        timeline: "Immediate improvement in sleep quality with environmental optimization."
+      });
+    }
+
+    // Acupuncture recommendation
+    recs.push({
+      title: "Acupuncture for Vasomotor Symptoms",
+      description: "Evidence-based complementary therapy shown to reduce hot flash frequency and severity.",
+      priority: 'medium',
+      category: 'therapy',
+      icon: Activity,
+      analysis: "**Clinical Evidence:** Multiple systematic reviews and RCTs show acupuncture reduces hot flash frequency by 30-50% and improves quality of life scores. May work through neuromodulation of thermoregulatory centers and hormone regulation.",
+      improvement: "Seek qualified acupuncturist experienced in menopausal symptoms. Typical protocol involves weekly sessions for 8-12 weeks, then maintenance sessions.",
+      timeline: "Initial improvements often seen within 4-6 sessions (4-6 weeks). Peak benefits at 8-12 weeks."
+    });
+
+    // Dietary interventions
+    recs.push({
+      title: "Phytoestrogen-Rich Mediterranean Diet",
+      description: "Dietary pattern incorporating plant estrogens and anti-inflammatory foods to support hormonal balance.",
+      priority: 'medium',
+      category: 'diet',
+      icon: Heart,
+      analysis: "**Research Evidence:** Mediterranean diet pattern with phytoestrogens reduces menopausal symptoms by 20-40%. Phytoestrogens bind weakly to estrogen receptors, potentially easing transition. Best sources: organic non-GMO soy (tofu, tempeh, edamame), flaxseeds (ground), legumes, whole grains.",
+      improvement: "Include 2-3 servings phytoestrogen-rich foods daily (e.g., 100g tofu, 2 tbsp ground flaxseed). Limit alcohol to <3 drinks/week, reduce caffeine, avoid spicy foods if triggers. Increase omega-3s from fatty fish 2-3x weekly.",
+      timeline: "Dietary effects typically develop over 4-8 weeks of consistent implementation."
+    });
+
+    // Weight and exercise
+    recs.push({
+      title: "Exercise & Weight Management",
+      description: "Regular physical activity and healthy weight maintenance to reduce hot flash frequency and severity.",
+      priority: 'medium',
+      category: 'lifestyle',
+      icon: Activity,
+      analysis: "**Clinical Evidence:** Higher BMI associated with increased hot flash frequency and severity. Weight loss of 5-10% can reduce symptoms by 30-50%. Regular exercise improves thermoregulation, reduces stress, and supports hormonal balance. Yoga shows particular benefit for menopausal symptoms in RCTs.",
+      improvement: "Aim for 150 minutes moderate exercise weekly. Include strength training 2-3x weekly to maintain muscle mass and metabolism. Consider yoga or tai chi for stress reduction and symptom management.",
+      timeline: "Exercise benefits develop over 4-8 weeks. Weight loss effects proportional to amount lost (5-10% reduction optimal)."
+    });
+
+    // Hormone therapy consideration
+    if (significantImpact) {
+      recs.push({
+        title: "Hormone Therapy Evaluation",
+        description: "Medical consultation for hormone replacement therapy (HRT) assessment - the most effective treatment for vasomotor symptoms.",
+        priority: 'high',
+        category: 'therapy',
+        icon: TestTube,
+        analysis: "**Gold Standard Treatment:** Systemic hormone therapy (estrogen with progesterone for intact uterus, estrogen alone after hysterectomy) reduces hot flash frequency by 70-90% and is the most effective treatment available. Risks and benefits vary individually. Women's Health Initiative studies show overall favorable risk-benefit for women <60 or within 10 years of menopause. Modern bioidentical hormones available in various forms (patch, gel, pill).",
+        improvement: "Schedule consultation with menopause specialist or gynecologist to discuss personal risk factors, treatment options (systemic vs. vaginal estrogen), and optimal hormone formulations. Discuss family history, cardiovascular health, breast cancer risk, and current symptoms.",
+        timeline: "HRT typically provides relief within 2-4 weeks, with maximal benefit by 3 months."
       });
     }
 
@@ -1096,21 +1175,22 @@ const AssessmentResults = () => {
 
     // Always include core joint pain recommendations
     recs.push({
-      title: "Joint Support Supplements",
-      description: "Supplements that may assist in addressing joint discomfort and supporting long-term joint health and mobility.",
+      title: "Evidence-Based Joint Support Protocol",
+      description: "Clinically-researched supplements shown to reduce joint pain, inflammation, and support cartilage health.",
       priority: 'high',
       category: 'supplement',
       icon: Pill,
-      personalisedAssessment: "Your joint pain assessment indicates these supplements may assist in supporting natural joint comfort and mobility.",
+      personalisedAssessment: `Your joint pain assessment indicates ${answers['2'] === 'severe' || answers['2'] === 'extreme' ? 'severe' : answers['2'] === 'moderate' ? 'moderate' : 'mild'} joint discomfort${answers['1'] ? ' affecting ' + answers['1'] : ''}. This evidence-based protocol addresses inflammation, cartilage support, and pain reduction.`,
       supplements: [
-        { name: "Curcumin with Bioperine", dosage: "500-1000mg daily with meals", price: "£27.99", selected: true },
-        { name: "Omega-3 Fish Oil", dosage: "2-3g daily with food", price: "£24.99", selected: true },
-        { name: "Glucosamine Sulfate", dosage: "1500mg daily", price: "£26.99", selected: false },
-        { name: "Boswellia Extract", dosage: "400mg twice daily", price: "£29.99", selected: false }
+        { name: "Curcumin (95% Curcuminoids with Bioperine)", dosage: "500-1000mg twice daily with meals", price: "£27.99", selected: true },
+        { name: "Omega-3 EPA/DHA", dosage: "2000-3000mg combined EPA/DHA daily", price: "£24.99", selected: true },
+        { name: "Glucosamine Sulfate", dosage: "1500mg daily in single dose", price: "£26.99", selected: true },
+        { name: "Boswellia Serrata Extract (AKBA)", dosage: "400mg twice daily", price: "£29.99", selected: false },
+        { name: "UC-II Collagen (Undenatured Type II)", dosage: "40mg daily on empty stomach", price: "£32.99", selected: false }
       ],
-      analysis: "**Professional Health Advisory:** Please consult with a healthcare provider before starting any new supplement regimen, especially if you have existing health conditions or take medications. These supplements are intended to support general wellness and are not intended to diagnose, treat, cure, or prevent any disease.",
-      improvement: "General recommended dosages are 500-1000mg curcumin with black pepper (bioperine) and 2-3g omega-3 fish oil daily with meals. Choose high-quality fish oil with EPA:DHA ratio of 2:1. For your specific recommended dosage, consult a healthcare professional.",
-      timeline: "Most people generally experience initial pain reduction within 2-3 weeks, with significant improvements in joint mobility after 6-8 weeks of consistent implementation. If joint pain symptoms persist or worsen, consult a healthcare provider."
+      analysis: "**Evidence-Based Research:** Curcumin demonstrates significant pain reduction (40-60%) and improved function in multiple RCTs for osteoarthritis, comparable to NSAIDs but without GI side effects when taken with Bioperine for absorption. Omega-3s (EPA/DHA) reduce inflammatory markers and joint pain by 30-40% in clinical trials. Glucosamine sulfate shows significant benefit for knee OA in long-term studies (1500mg daily superior to divided doses). Boswellia AKBA inhibits inflammatory enzymes with 30-65% improvement in pain scores. UC-II collagen shows remarkable results with only 40mg daily (works through oral tolerance mechanism, NOT cartilage building). **Mechanism:** Multi-targeted approach - curcumin/boswellia inhibit inflammatory pathways (COX-2, 5-LOX), omega-3s modulate prostaglandins, glucosamine supports cartilage matrix, UC-II modulates immune response.",
+      improvement: "Take curcumin with black pepper (piperine/bioperine) and fat for absorption. Omega-3 with meals to reduce fishy aftertaste. Glucosamine as single 1500mg dose (more effective than divided). Boswellia twice daily with meals. UC-II on empty stomach (do NOT take with glucosamine/chondroitin as it works differently).",
+      timeline: "Initial pain reduction with curcumin/boswellia within 1-2 weeks. Omega-3 anti-inflammatory effects develop over 4-8 weeks. Glucosamine requires 6-12 weeks for cartilage effects. UC-II shows benefits within 90-120 days in clinical trials."
     });
 
     // Always include movement routine
