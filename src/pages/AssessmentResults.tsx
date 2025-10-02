@@ -252,6 +252,7 @@ const AssessmentResults = () => {
       "night-sweats": "Night Sweats",
       "memory-issues": "Memory Issues",
       "gut": "Gut Health",
+      "sexual-function": "Sexual Function",
       // Brain Pillar Assessments
       "brain-brain-fog-assessment": "Brain Fog Assessment",
       "brain-memory-&-focus-analysis": "Memory & Focus Analysis",
@@ -298,6 +299,8 @@ const AssessmentResults = () => {
       case 'brain-fog':
       case 'brain-brain-fog-assessment':
         return calculateBrainFogScore(answers);
+      case 'sexual-function':
+        return calculateSexualFunctionScore(answers);
       default:
         return calculateGenericScore(answers);
     }
@@ -693,6 +696,183 @@ const AssessmentResults = () => {
     };
   };
 
+  const calculateSexualFunctionScore = (answers: Record<string, string>): AssessmentScore => {
+    let overallScore = 100;
+    const primaryIssues: string[] = [];
+    let libidoScore = 100;
+    let arousalScore = 100;
+    let painScore = 100;
+    let satisfactionScore = 100;
+
+    // Question 1: Overall libido
+    switch (answers['1']) {
+      case 'absent':
+        libidoScore = 20;
+        overallScore -= 30;
+        primaryIssues.push('Significantly diminished libido');
+        break;
+      case 'low':
+        libidoScore = 50;
+        overallScore -= 20;
+        primaryIssues.push('Low sexual desire');
+        break;
+      case 'moderate':
+        libidoScore = 70;
+        overallScore -= 10;
+        primaryIssues.push('Reduced libido frequency');
+        break;
+      case 'strong':
+        libidoScore = 100;
+        break;
+    }
+
+    // Question 2: Libido change over time
+    switch (answers['2']) {
+      case 'sudden-decline':
+        overallScore -= 20;
+        primaryIssues.push('Sudden libido decline requiring evaluation');
+        break;
+      case 'gradual-decline':
+        overallScore -= 15;
+        primaryIssues.push('Gradual decline in sexual interest');
+        break;
+      case 'fluctuates':
+        overallScore -= 8;
+        break;
+      case 'no-change':
+        break;
+    }
+
+    // Question 3: Vaginal dryness (critical for comfort)
+    switch (answers['3']) {
+      case 'severe':
+        painScore = 20;
+        overallScore -= 25;
+        primaryIssues.push('Severe vaginal dryness causing pain');
+        break;
+      case 'frequent':
+        painScore = 50;
+        overallScore -= 18;
+        primaryIssues.push('Frequent vaginal dryness affecting intimacy');
+        break;
+      case 'occasional':
+        painScore = 75;
+        overallScore -= 10;
+        primaryIssues.push('Occasional vaginal dryness');
+        break;
+      case 'none':
+        painScore = 100;
+        break;
+    }
+
+    // Question 4: Arousal ability
+    switch (answers['4']) {
+      case 'very-difficult':
+        arousalScore = 25;
+        overallScore -= 20;
+        primaryIssues.push('Significant difficulty achieving arousal');
+        break;
+      case 'difficult':
+        arousalScore = 50;
+        overallScore -= 15;
+        primaryIssues.push('Difficulty with arousal');
+        break;
+      case 'somewhat-easy':
+        arousalScore = 75;
+        overallScore -= 8;
+        break;
+      case 'easy':
+        arousalScore = 100;
+        break;
+    }
+
+    // Question 5: Pain during activity
+    switch (answers['5']) {
+      case 'severe':
+        painScore = Math.min(painScore, 20);
+        overallScore -= 25;
+        primaryIssues.push('Severe pain during intimacy - medical evaluation recommended');
+        break;
+      case 'moderate':
+        painScore = Math.min(painScore, 50);
+        overallScore -= 18;
+        primaryIssues.push('Moderate pain affecting enjoyment');
+        break;
+      case 'mild':
+        painScore = Math.min(painScore, 75);
+        overallScore -= 10;
+        primaryIssues.push('Mild discomfort during intimacy');
+        break;
+      case 'none':
+        // No additional impact
+        break;
+    }
+
+    // Question 6: Orgasm satisfaction
+    switch (answers['6']) {
+      case 'dissatisfied':
+        satisfactionScore = 30;
+        overallScore -= 15;
+        primaryIssues.push('Difficulty achieving orgasm');
+        break;
+      case 'somewhat-satisfied':
+        satisfactionScore = 65;
+        overallScore -= 8;
+        break;
+      case 'satisfied':
+        satisfactionScore = 85;
+        break;
+      case 'very-satisfied':
+        satisfactionScore = 100;
+        break;
+    }
+
+    // Question 7 & 8: Frequency and changes
+    if (answers['7'] === 'rarely' || answers['7'] === 'never') {
+      overallScore -= 10;
+      if (!primaryIssues.includes('Low sexual desire') && !primaryIssues.includes('Significantly diminished libido')) {
+        primaryIssues.push('Infrequent sexual activity');
+      }
+    }
+
+    if (answers['8'] === 'decreased-significantly') {
+      overallScore -= 12;
+      if (answers['2'] !== 'sudden-decline' && answers['2'] !== 'gradual-decline') {
+        primaryIssues.push('Significant decrease in sexual frequency');
+      }
+    }
+
+    // Question 9: Emotional factors
+    if (answers['9'] === 'major' || answers['9'] === 'moderate') {
+      overallScore -= 10;
+      primaryIssues.push('Emotional factors significantly impacting intimacy');
+    }
+
+    // Question 10: Relationship satisfaction
+    if (answers['10'] === 'dissatisfied') {
+      overallScore -= 10;
+      primaryIssues.push('Relationship concerns affecting intimacy');
+    }
+
+    let category: 'excellent' | 'good' | 'fair' | 'poor';
+    if (overallScore >= 85) category = 'excellent';
+    else if (overallScore >= 70) category = 'good';
+    else if (overallScore >= 50) category = 'fair';
+    else category = 'poor';
+
+    return {
+      overall: Math.max(0, overallScore),
+      category,
+      primaryIssues,
+      detailScores: {
+        'Libido & Desire': libidoScore,
+        'Arousal Function': arousalScore,
+        'Comfort & Pain': painScore,
+        'Sexual Satisfaction': satisfactionScore
+      }
+    };
+  };
+
   const calculateGenericScore = (answers: Record<string, string>): AssessmentScore => {
     // Generic scoring for symptoms without specific logic yet
     let overallScore = 75; // Default moderate score
@@ -766,6 +946,8 @@ const AssessmentResults = () => {
         return generateSkinHealthRecommendations(score, answers);
       case 'beauty-hair-&-nail-analysis':
         return generateHairNailRecommendations(score, answers);
+      case 'sexual-function':
+        return generateSexualFunctionRecommendations(score, answers);
       default:
         return generateDefaultRecommendations(symptomType, score);
     }
@@ -2780,6 +2962,176 @@ const generateHairNailRecommendations = (score: AssessmentScore, answers: Record
       timeline: "Scalp health improvements within 2-4 weeks"
     }
   ];
+};
+
+const generateSexualFunctionRecommendations = (score: AssessmentScore, answers: Record<string, string>): Recommendation[] => {
+  const recs: Recommendation[] = [];
+  const userGoal = answers['11']?.toLowerCase() || '';
+  
+  // Determine primary concerns from assessment
+  const hasDryness = answers['3'] === 'occasional' || answers['3'] === 'frequent' || answers['3'] === 'severe';
+  const hasPain = answers['5'] === 'mild' || answers['5'] === 'moderate' || answers['5'] === 'severe';
+  const hasLowLibido = answers['1'] === 'low' || answers['1'] === 'absent' || answers['1'] === 'moderate';
+  const hasArousalIssues = answers['4'] === 'difficult' || answers['4'] === 'very-difficult';
+  const hasEmotionalFactors = answers['9'] === 'moderate' || answers['9'] === 'major';
+  
+  // HIGH PRIORITY: Vaginal Dryness & Discomfort (if present)
+  if (hasDryness || hasPain || userGoal.includes('dryness') || userGoal.includes('discomfort') || userGoal.includes('pain')) {
+    recs.push({
+      title: "Vaginal Health & Comfort Protocol",
+      description: "Evidence-based interventions to address vaginal dryness and discomfort during intimacy.",
+      priority: 'high',
+      category: 'supplement',
+      icon: Heart,
+      personalisedAssessment: `Your assessment indicates ${answers['3'] === 'severe' ? 'severe' : answers['3'] === 'frequent' ? 'frequent' : 'occasional'} vaginal dryness${hasPain ? ' with discomfort' : ''}. This protocol addresses the underlying causes of vaginal atrophy and dryness.`,
+      supplements: [
+        { name: "Vaginal DHEA (Prasterone)", dosage: "6.5mg intravaginal suppository nightly", price: "£45.99", selected: true },
+        { name: "Hyaluronic Acid Vaginal Gel", dosage: "Apply 2-3 times weekly or before intimacy", price: "£24.99", selected: true },
+        { name: "Sea Buckthorn Oil", dosage: "2g (2 capsules) daily with meals", price: "£28.99", selected: true },
+        { name: "Vitamin E Suppositories", dosage: "Insert vaginally 3 times weekly", price: "£18.99", selected: false }
+      ],
+      analysis: "**Evidence-Based Research:** Vaginal DHEA (prasterone) has been shown in multiple RCTs to significantly improve vaginal atrophy, dryness, and dyspareunia in postmenopausal women, with improvements seen in 70-80% of users. Sea buckthorn oil demonstrates significant improvement in vaginal health markers in clinical trials. Hyaluronic acid provides immediate lubrication and long-term tissue hydration. **Medical Advisory:** Severe or persistent pain warrants medical evaluation to rule out conditions like vulvodynia, lichen sclerosus, or endometriosis.",
+      improvement: "Use vaginal DHEA nightly for 12 weeks, then reduce to 2-3 times weekly for maintenance. Apply hyaluronic gel before intimacy and 2 times weekly for tissue health. Take sea buckthorn oil with fat-containing meals for optimal absorption.",
+      timeline: "Initial improvements in vaginal moisture typically within 2-4 weeks. Significant improvement in tissue health, elasticity, and comfort within 8-12 weeks of consistent use."
+    });
+
+    recs.push({
+      title: "Pelvic Floor Physical Therapy",
+      description: "Specialized physical therapy to address pelvic floor dysfunction, pain, and improve sexual comfort.",
+      priority: 'high',
+      category: 'therapy',
+      icon: Activity,
+      analysis: `${hasPain ? 'Pain during intimacy often involves pelvic floor muscle tension or dysfunction. ' : ''}Pelvic floor physical therapy has a 70-80% success rate for treating sexual pain disorders. A specialized pelvic floor physiotherapist can assess muscle tension, trigger points, and provide manual therapy and exercises to improve function and reduce discomfort.`,
+      improvement: "Seek a certified pelvic floor physiotherapist (POGP registered in UK). Treatment typically involves 6-12 sessions with home exercises. May include myofascial release, dilator therapy, and relaxation techniques.",
+      timeline: "Most patients experience noticeable improvement within 6-8 weeks, with significant pain reduction within 3-6 months of consistent therapy."
+    });
+  }
+
+  // Hormone Support for Libido & Overall Function
+  if (hasLowLibido || hasDryness || answers['2'] === 'gradual-decline' || answers['2'] === 'sudden-decline') {
+    recs.push({
+      title: "Hormonal Health Assessment & Support",
+      description: "Comprehensive hormone testing and evidence-based supplementation to support healthy sexual function.",
+      priority: 'high',
+      category: 'supplement',
+      icon: TestTube,
+      personalisedAssessment: `${answers['2'] === 'gradual-decline' ? 'Your gradual decline in libido suggests potential hormonal changes. ' : ''}${answers['2'] === 'sudden-decline' ? 'A sudden decline warrants immediate hormone evaluation. ' : ''}Hormonal factors significantly influence libido, arousal, and vaginal health.`,
+      supplements: [
+        { name: "Maca Root Extract", dosage: "3000mg daily in divided doses", price: "£22.99", selected: true },
+        { name: "Panax Ginseng", dosage: "200mg standardized extract daily", price: "£24.99", selected: true },
+        { name: "L-Arginine", dosage: "3-5g daily in divided doses", price: "£19.99", selected: false },
+        { name: "Tribulus Terrestris", dosage: "750-1500mg daily", price: "£18.99", selected: false }
+      ],
+      analysis: "**Evidence-Based Research:** Maca root has been shown in RCTs to significantly improve sexual desire and reduce sexual dysfunction in postmenopausal women. Panax ginseng demonstrates improvement in arousal and satisfaction in clinical trials. L-Arginine supports nitric oxide production and blood flow. **Clinical Recommendation:** Consider comprehensive hormone panel (estradiol, testosterone, DHEA-S, thyroid) with healthcare provider, especially if sudden decline occurred.",
+      improvement: "Take maca with breakfast and lunch for sustained effect. Panax ginseng is best taken in morning. L-arginine divided into 2-3 doses throughout day. Allow 6-8 weeks for full effect as these work gradually.",
+      timeline: "Initial improvements in energy and mood within 2-4 weeks. Significant libido and arousal improvements typically seen within 6-12 weeks of consistent supplementation."
+    });
+  }
+
+  // Arousal & Blood Flow Support
+  if (hasArousalIssues || hasDryness) {
+    recs.push({
+      title: "Circulation & Arousal Enhancement",
+      description: "Targeted support for healthy blood flow and physiological arousal response.",
+      priority: 'medium',
+      category: 'supplement',
+      icon: Heart,
+      personalisedAssessment: "Healthy blood flow to genital tissues is essential for arousal, natural lubrication, and sensation.",
+      supplements: [
+        { name: "French Maritime Pine Bark Extract (Pycnogenol)", dosage: "100mg daily", price: "£29.99", selected: true },
+        { name: "L-Citrulline", dosage: "3-6g daily", price: "£21.99", selected: false },
+        { name: "Omega-3 (High EPA/DHA)", dosage: "2000-3000mg combined EPA/DHA daily", price: "£26.99", selected: true }
+      ],
+      analysis: "**Research Evidence:** Pycnogenol combined with L-arginine has shown significant improvements in sexual function in clinical trials. L-Citrulline converts to L-arginine and supports nitric oxide production more effectively. Omega-3 fatty acids support vascular health and reduce inflammation.",
+      improvement: "Take pine bark extract with breakfast. L-citrulline on empty stomach or before intimacy. Omega-3 with meals containing fat for absorption.",
+      timeline: "Vascular health improvements develop over 4-8 weeks. Optimal benefits typically seen within 8-12 weeks."
+    });
+  }
+
+  // Stress & Emotional Factors
+  if (hasEmotionalFactors || answers['9'] === 'some') {
+    recs.push({
+      title: "Stress Management & Mind-Body Connection",
+      description: "Evidence-based techniques to reduce stress, anxiety, and enhance sexual well-being.",
+      priority: 'high',
+      category: 'therapy',
+      icon: Brain,
+      analysis: "Sexual function is deeply connected to psychological well-being. Chronic stress elevates cortisol, which suppresses sex hormones and desire. Mindfulness-based interventions have shown 60-70% improvement in sexual function in clinical trials.",
+      improvement: "Practice mindfulness meditation 10-20 minutes daily. Consider sex therapy or counseling to address emotional barriers. Mindful self-compassion exercises can reduce performance anxiety.",
+      timeline: "Initial stress reduction within 2-3 weeks. Significant improvements in sexual confidence and desire within 6-12 weeks of consistent practice."
+    });
+
+    recs.push({
+      title: "Adaptogenic Stress Support",
+      description: "Herbal adaptogens to support healthy stress response and hormonal balance.",
+      priority: 'medium',
+      category: 'supplement',
+      icon: Zap,
+      personalisedAssessment: "Chronic stress significantly impacts sexual function through hormonal pathways. Adaptogens help restore balance.",
+      supplements: [
+        { name: "Ashwagandha KSM-66", dosage: "300-600mg twice daily", price: "£23.99", selected: true },
+        { name: "Rhodiola Rosea", dosage: "200-400mg daily", price: "£21.99", selected: false },
+        { name: "Magnesium Glycinate", dosage: "300-400mg before bed", price: "£18.99", selected: true }
+      ],
+      analysis: "**Clinical Evidence:** Ashwagandha (KSM-66 extract) has demonstrated significant improvements in sexual function, arousal, and satisfaction in RCTs, particularly in women. Also reduces cortisol and anxiety. Magnesium supports relaxation and hormone production.",
+      improvement: "Take ashwagandha with meals (morning and evening). Rhodiola best taken in morning. Magnesium glycinate 1 hour before bed.",
+      timeline: "Stress reduction and improved energy within 2-4 weeks. Sexual function improvements typically seen within 6-8 weeks."
+    });
+  }
+
+  // Relationship & Communication
+  if (answers['10'] === 'somewhat-satisfied' || answers['10'] === 'dissatisfied' || answers['10'] !== 'not-applicable') {
+    recs.push({
+      title: "Relationship & Intimacy Enhancement",
+      description: "Communication strategies and couples-focused interventions to enhance connection and sexual satisfaction.",
+      priority: 'medium',
+      category: 'therapy',
+      icon: Heart,
+      analysis: "Sexual satisfaction is strongly correlated with relationship quality and communication. Couples therapy and sex-positive communication can significantly improve both intimacy and sexual function.",
+      improvement: "Consider couples counseling or sex therapy. Practice open communication about desires, boundaries, and concerns. Schedule regular intimacy time without pressure for performance.",
+      timeline: "Communication improvements can yield immediate benefits. Deeper relationship and sexual satisfaction typically develops over 2-6 months."
+    });
+  }
+
+  // Lifestyle & General Health
+  recs.push({
+    title: "Sexual Health Lifestyle Optimization",
+    description: "Foundational lifestyle practices that support healthy sexual function.",
+    priority: 'medium',
+    category: 'lifestyle',
+    icon: Activity,
+    analysis: "Regular exercise improves blood flow, body image, and hormonal balance. Quality sleep is essential for hormone production. Avoiding smoking and limiting alcohol supports vascular health critical for arousal.",
+    improvement: "30-45 minutes moderate exercise 4-5 times weekly. Prioritize 7-8 hours quality sleep. Limit alcohol to 1 drink or less. Avoid smoking and recreational drugs.",
+    timeline: "Energy and circulation improvements within 2-4 weeks. Sexual function improvements typically seen within 4-8 weeks of consistent healthy habits."
+  });
+
+  // Diet for Sexual Health
+  recs.push({
+    title: "Nutrition for Sexual Vitality",
+    description: "Dietary strategies to support hormonal health, circulation, and sexual function.",
+    priority: 'medium',
+    category: 'diet',
+    icon: Heart,
+    analysis: "Certain nutrients are essential for sexual health: zinc for hormone production, omega-3s for circulation, antioxidants for tissue health. Mediterranean diet pattern associated with improved sexual function.",
+    improvement: "Include zinc-rich foods (oysters, pumpkin seeds, grass-fed beef), fatty fish 2-3x weekly, dark leafy greens, berries, and dark chocolate (70%+ cacao). Limit processed foods and sugar which promote inflammation.",
+    timeline: "Nutritional improvements support gradual enhancement in overall health and sexual function over 4-12 weeks."
+  });
+
+  // Medical Consultation Recommendation
+  if (answers['5'] === 'severe' || answers['2'] === 'sudden-decline' || answers['3'] === 'severe') {
+    recs.push({
+      title: "Medical Evaluation & Specialized Care",
+      description: "Professional medical assessment to rule out underlying conditions and explore medical treatment options.",
+      priority: 'high',
+      category: 'therapy',
+      icon: AlertTriangle,
+      analysis: "Severe pain, sudden changes, or severe dryness warrant medical evaluation. Conditions like endometriosis, pelvic floor dysfunction, hormonal disorders, or medication side effects may require medical treatment. Hormone replacement therapy (HRT) can be highly effective for menopausal symptoms affecting sexual function.",
+      improvement: "Schedule appointment with gynecologist or sexual medicine specialist. Prepare list of symptoms, timeline, and medications. Discuss options like vaginal estrogen, systemic HRT, or other medical interventions.",
+      timeline: "Medical treatments can provide relief within weeks to months depending on underlying cause and treatment approach."
+    });
+  }
+
+  return recs;
 };
 
 const generateDefaultRecommendations = (symptomType: string, score: AssessmentScore): Recommendation[] => {
