@@ -651,6 +651,76 @@ const Symptoms = () => {
           contraindications: ["Kidney disease", "Heart failure"]
         }
       ]
+    },
+    {
+      id: "sexual-function",
+      name: "Sexual Function",
+      icon: Heart,
+      severity: "Variable",
+      frequency: "Ongoing",
+      pillars: ["balance", "body", "brain"],
+      actions: [
+        {
+          title: "Pelvic Floor Strengthening",
+          description: "Daily Kegel exercises: 3 sets of 10-15 contractions, hold 5-10 seconds each",
+          evidence: "Gold",
+          contraindications: ["Pelvic pain disorders", "Active pelvic infection"]
+        },
+        {
+          title: "Vaginal Moisturizer Protocol",
+          description: "Hyaluronic acid-based vaginal moisturizer applied 2-3x weekly for tissue hydration",
+          evidence: "Gold",
+          contraindications: ["Active vaginal infection", "Allergy to ingredients"]
+        },
+        {
+          title: "Maca Root Supplementation",
+          description: "1500-3000mg daily of standardized maca root extract to support libido",
+          evidence: "Silver",
+          contraindications: ["Hormone-sensitive conditions", "Thyroid disorders"]
+        },
+        {
+          title: "L-Arginine Complex",
+          description: "3000-5000mg L-arginine daily to support blood flow and arousal",
+          evidence: "Silver",
+          contraindications: ["Blood pressure medications", "Herpes", "Recent heart attack"]
+        },
+        {
+          title: "Mindfulness-Based Intimacy",
+          description: "10-15 minute daily sensate focus exercises to reduce performance anxiety",
+          evidence: "Gold",
+          contraindications: ["Severe relationship issues requiring therapy"]
+        },
+        {
+          title: "DHEA Vaginal Suppository",
+          description: "6.5mg DHEA vaginal suppository nightly for vaginal atrophy and dryness",
+          evidence: "Gold",
+          contraindications: ["Hormone-sensitive cancers", "Vaginal bleeding"]
+        },
+        {
+          title: "Tribulus Terrestris",
+          description: "500-750mg daily of standardized extract to support libido and arousal",
+          evidence: "Bronze",
+          contraindications: ["Diabetes medications", "Blood pressure issues"]
+        },
+        {
+          title: "Relationship Communication Exercises",
+          description: "Weekly structured intimacy conversations using frameworks like Gottman Method",
+          evidence: "Gold",
+          contraindications: ["Active domestic abuse - seek professional help"]
+        },
+        {
+          title: "Omega-3 + Vitamin E",
+          description: "2000mg EPA/DHA fish oil + 400 IU vitamin E daily for tissue health",
+          evidence: "Silver",
+          contraindications: ["Blood thinners", "Fish allergies"]
+        },
+        {
+          title: "Red Light Therapy (Pelvic)",
+          description: "10-15 minute pelvic area red light therapy 3-4x weekly for tissue regeneration",
+          evidence: "Bronze",
+          contraindications: ["Photosensitivity", "Active infections"]
+        }
+      ]
     }
   ];
 
