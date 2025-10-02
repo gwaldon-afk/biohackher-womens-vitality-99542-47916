@@ -353,6 +353,7 @@ const LISAssessment = () => {
                   onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
                   className="w-full px-4 py-3 rounded-lg border border-input bg-background"
                   placeholder="Enter your age"
+                  autoComplete="off"
                 />
               </div>
 
