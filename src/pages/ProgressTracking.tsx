@@ -8,6 +8,8 @@ import { MeasurementForm } from "@/components/MeasurementForm";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AIInsightsCard } from "@/components/AIInsightsCard";
+import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 
 const ProgressTracking = () => {
   const { measurements, addMeasurement, loading } = useMeasurements();
@@ -269,6 +271,12 @@ const ProgressTracking = () => {
                 </div>
               </TabsContent>
             </Tabs>
+
+            {/* AI-Powered Premium Features */}
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              <AIInsightsCard isPremium={false} />
+              <MonthlyReportCard isPremium={false} />
+            </div>
           </>
         )}
       </main>

@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { getOverallHealthAnalysis, getSymptomName, getTopRecommendations } from "@/utils/healthAnalysis";
 import { ProgressTracker } from "@/components/ProgressTracker";
 import { StreakCard } from "@/components/StreakCard";
+import { AIInsightsCard } from "@/components/AIInsightsCard";
+import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 
 interface DashboardData {
   currentScore: number;
@@ -355,6 +357,12 @@ const Dashboard = () => {
               />
             </div>
           </div>
+        </div>
+
+        {/* AI Insights & Reports Section - Premium Features */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <AIInsightsCard isPremium={false} />
+          <MonthlyReportCard isPremium={false} />
         </div>
 
         {/* Personalized Health Assessment */}

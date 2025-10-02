@@ -29,3 +29,9 @@ verify_jwt = false
 
 [functions.data-sync-wearable]
 verify_jwt = false
+
+[functions.generate-insights]
+verify_jwt = true
+
+[functions.generate-monthly-report]
+verify_jwt = true
