@@ -74,7 +74,7 @@ const Index = () => {
                   console.log("Longevity quiz clicked");
                   navigate("/longevity-mindset-quiz");
                 }}>
-                    Discover Your Longevity Mindset
+                    What's Your Longevity Mindset
                   </Button>
                   <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
                   console.log("View Dashboard clicked");
