@@ -351,10 +351,10 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-10 lg:py-16">
+      <section className="py-8 lg:py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 gradient-text">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-3 gradient-text">
               Your Complete Longevity Toolkit
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -362,16 +362,16 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
             if (feature.title === "Daily Longevity Inputs") {
               return <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
-                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col">
-                      <CardHeader className="flex-shrink-0">
-                        <feature.icon className="h-10 w-10 text-primary mb-4" />
+                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-60 flex flex-col">
+                      <CardHeader className="flex-shrink-0 pb-3">
+                        <feature.icon className="h-10 w-10 text-primary mb-3" />
                         <CardTitle className="text-xl">{feature.title}</CardTitle>
                       </CardHeader>
-                      <CardContent className="flex-1">
+                      <CardContent className="flex-1 pt-0">
                         <CardDescription className="text-base">
                           {feature.description}
                         </CardDescription>
@@ -379,7 +379,7 @@ const Index = () => {
                     </Card>
                   </LISInputForm>;
             }
-            return <Card key={index} className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-64 flex flex-col" onClick={() => {
+            return <Card key={index} className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-60 flex flex-col" onClick={() => {
               console.log(`${feature.title} card clicked`);
               if (feature.title === "Symptom Management") {
                 navigate("/symptoms");
@@ -393,11 +393,11 @@ const Index = () => {
                 navigate("/reports");
               }
             }}>
-                  <CardHeader className="flex-shrink-0">
-                    <feature.icon className="h-10 w-10 text-primary mb-4" />
+                  <CardHeader className="flex-shrink-0 pb-3">
+                    <feature.icon className="h-10 w-10 text-primary mb-3" />
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
                   </CardHeader>
-                  <CardContent className="flex-1">
+                  <CardContent className="flex-1 pt-0">
                     <CardDescription className="text-base">
                       {feature.description}
                     </CardDescription>
