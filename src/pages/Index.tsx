@@ -84,7 +84,7 @@ const Index = () => {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
                         <p className="text-sm text-muted-foreground">
-                          Discover your personal approach to healthy aging with a quick mindset assessment.
+                          Unlock what's been holding you back from living younger, longer. Quick 2-minute quiz.
                         </p>
                       </TooltipContent>
                     </Tooltip>
@@ -123,7 +123,7 @@ const Index = () => {
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
                         <p className="text-sm text-muted-foreground">
-                          Access your personalized longevity dashboard with health tracking and insights.
+                          See your transformation in real-time. Track what's working and what needs a boost.
                         </p>
                       </TooltipContent>
                     </Tooltip>
