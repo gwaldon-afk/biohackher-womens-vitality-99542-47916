@@ -16,10 +16,18 @@ const LISAssessment = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [showProfile, setShowProfile] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [lisScore, setLisScore] = useState(0);
+  const [profileData, setProfileData] = useState({
+    age: "",
+    gender: "",
+    healthGoal: "",
+    activityLevel: "",
+    healthConcerns: [] as string[]
+  });
 
   const questions = [
     {
@@ -203,6 +211,18 @@ const LISAssessment = () => {
     return { label: "Needs Attention", icon: TrendingDown, color: "text-red-600", bg: "bg-red-50" };
   };
 
+  const handleProfileComplete = () => {
+    if (profileData.age && profileData.gender && profileData.healthGoal && profileData.activityLevel) {
+      setShowProfile(false);
+    } else {
+      toast({
+        title: "Complete Your Profile",
+        description: "Please fill in all required fields to continue",
+        variant: "destructive"
+      });
+    }
+  };
+
   const getDetailedAnalysis = (score: number) => {
     // Calculate category scores
     const categoryScores = {
@@ -265,17 +285,24 @@ const LISAssessment = () => {
       .map(([key, _]) => key.charAt(0).toUpperCase() + key.slice(1));
 
     let analysis = "";
+    const age = parseInt(profileData.age);
+    const ageContext = age < 30 ? "in your 20s" : age < 40 ? "in your 30s" : age < 50 ? "in your 40s" : age < 60 ? "in your 50s" : "over 60";
     
     if (score >= 90) {
-      analysis = `Outstanding! Your LIS score of ${score} places you in the top tier of longevity optimization. You're consistently making choices that support healthy aging across all key areas of life.`;
+      analysis = `Outstanding! Your LIS score of ${score} places you in the top tier of longevity optimization for someone ${ageContext}. You're consistently making choices that support healthy aging across all key areas of life.`;
+      if (profileData.healthGoal) analysis += ` Your focus on ${profileData.healthGoal.toLowerCase()} is clearly paying off.`;
     } else if (score >= 80) {
-      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. Your lifestyle choices are positively impacting your biological age.`;
+      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. For someone ${ageContext} with your goal of ${profileData.healthGoal.toLowerCase()}, your lifestyle choices are positively impacting your biological age.`;
     } else if (score >= 70) {
-      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits, though there's room for optimization to maximize your longevity potential.`;
+      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits for someone ${ageContext}. Given your goal of ${profileData.healthGoal.toLowerCase()}, there's significant room for optimization to maximize your longevity potential.`;
     } else if (score >= 60) {
-      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. Strategic improvements could significantly enhance your longevity.`;
+      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. As someone ${ageContext} aiming for ${profileData.healthGoal.toLowerCase()}, strategic improvements could significantly enhance your longevity.`;
     } else {
-      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. The good news: lifestyle changes can have a powerful impact on biological aging.`;
+      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. For someone ${ageContext}, the good news is that lifestyle changes can have a powerful impact on biological aging, especially when working toward ${profileData.healthGoal.toLowerCase()}.`;
+    }
+    
+    if (profileData.healthConcerns.length > 0) {
+      analysis += ` Given your focus on ${profileData.healthConcerns.join(', ').toLowerCase()}, the areas for improvement we've identified are particularly relevant.`;
     }
 
     if (strengths.length > 0) {
@@ -293,6 +320,137 @@ const LISAssessment = () => {
   const category = getScoreCategory(lisScore);
   const CategoryIcon = category.icon;
   const { analysis, categoryScores } = getDetailedAnalysis(lisScore);
+
+  // Profile Collection Screen
+  if (showProfile) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 max-w-3xl">
+          <Card className="border-primary/20">
+            <CardHeader>
+              <div className="text-center mb-4">
+                <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Target className="h-8 w-8 text-primary" />
+                </div>
+                <CardTitle className="text-3xl mb-2">Let's Get to Know You</CardTitle>
+                <CardDescription className="text-base">
+                  Help us personalize your Longevity Impact Score by sharing a few details about yourself
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Age */}
+              <div className="space-y-2">
+                <Label htmlFor="age" className="text-base font-medium">What's your age? *</Label>
+                <input
+                  id="age"
+                  type="number"
+                  min="18"
+                  max="120"
+                  value={profileData.age}
+                  onChange={(e) => setProfileData({ ...profileData, age: e.target.value })}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background"
+                  placeholder="Enter your age"
+                />
+              </div>
+
+              {/* Gender */}
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Gender *</Label>
+                <RadioGroup value={profileData.gender} onValueChange={(value) => setProfileData({ ...profileData, gender: value })}>
+                  {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
+                    <div key={option} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, gender: option })}>
+                      <RadioGroupItem value={option} id={`gender-${option}`} />
+                      <Label htmlFor={`gender-${option}`} className="cursor-pointer font-normal flex-1">{option}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Primary Health Goal */}
+              <div className="space-y-3">
+                <Label className="text-base font-medium">What's your primary health goal? *</Label>
+                <RadioGroup value={profileData.healthGoal} onValueChange={(value) => setProfileData({ ...profileData, healthGoal: value })}>
+                  {[
+                    "Increase longevity and healthspan",
+                    "Improve energy and vitality",
+                    "Better sleep quality",
+                    "Reduce stress and anxiety",
+                    "Optimize physical performance",
+                    "Prevent age-related decline"
+                  ].map((option) => (
+                    <div key={option} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, healthGoal: option })}>
+                      <RadioGroupItem value={option} id={`goal-${option}`} />
+                      <Label htmlFor={`goal-${option}`} className="cursor-pointer font-normal flex-1">{option}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Current Activity Level */}
+              <div className="space-y-3">
+                <Label className="text-base font-medium">How would you describe your current activity level? *</Label>
+                <RadioGroup value={profileData.activityLevel} onValueChange={(value) => setProfileData({ ...profileData, activityLevel: value })}>
+                  {[
+                    { value: "sedentary", label: "Sedentary - Mostly sitting, minimal movement" },
+                    { value: "lightly-active", label: "Lightly Active - Some walking, light exercise 1-2x/week" },
+                    { value: "moderately-active", label: "Moderately Active - Regular exercise 3-4x/week" },
+                    { value: "very-active", label: "Very Active - Intense exercise 5+ times/week" },
+                    { value: "athlete", label: "Athlete - Training daily or competitively" }
+                  ].map((option) => (
+                    <div key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, activityLevel: option.value })}>
+                      <RadioGroupItem value={option.value} id={`activity-${option.value}`} />
+                      <Label htmlFor={`activity-${option.value}`} className="cursor-pointer font-normal flex-1">{option.label}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+
+              {/* Health Concerns (Optional) */}
+              <div className="space-y-3">
+                <Label className="text-base font-medium">Any specific health areas you'd like to focus on? (Optional)</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    "Sleep issues",
+                    "Chronic stress",
+                    "Low energy",
+                    "Brain fog",
+                    "Weight management",
+                    "Joint pain",
+                    "Digestive issues",
+                    "Mood concerns"
+                  ].map((concern) => (
+                    <div
+                      key={concern}
+                      className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                        profileData.healthConcerns.includes(concern)
+                          ? "bg-primary/10 border-primary"
+                          : "hover:bg-muted/50"
+                      }`}
+                      onClick={() => {
+                        const updated = profileData.healthConcerns.includes(concern)
+                          ? profileData.healthConcerns.filter(c => c !== concern)
+                          : [...profileData.healthConcerns, concern];
+                        setProfileData({ ...profileData, healthConcerns: updated });
+                      }}
+                    >
+                      <span className="text-sm">{concern}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Button onClick={handleProfileComplete} size="lg" className="w-full">
+                Continue to Assessment
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (showResults) {
     return (
