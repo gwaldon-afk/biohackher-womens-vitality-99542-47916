@@ -96,7 +96,7 @@ const Index = () => {
       {/* Longevity Introduction Section */}
       <section className="py-16 lg:py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Understanding <span className="gradient-text">Longevity</span>: Your Path to Living Well Longer
             </h2>
@@ -153,7 +153,7 @@ const Index = () => {
                 </Card>)}
             </div>
 
-            <div className="max-w-3xl mx-auto text-center mb-12">
+            <div className="max-w-4xl mx-auto text-center mb-12">
               <p className="text-lg text-muted-foreground">
                 Our comprehensive approach addresses the four foundational areas of women's longevity. 
                 Each pillar represents a critical component of your health journey, from cognitive optimization 
