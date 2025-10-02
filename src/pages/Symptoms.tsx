@@ -590,7 +590,7 @@ const Symptoms = () => {
     },
     {
       id: "appearance-concerns",
-      name: "Appearance",
+      name: "Physical Appearance",
       icon: Smile,
       severity: "Variable",
       frequency: "Ongoing",
