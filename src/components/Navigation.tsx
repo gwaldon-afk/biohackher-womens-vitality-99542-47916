@@ -16,8 +16,8 @@ const Navigation = () => {
     { href: "/", label: "Home" },
     { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: t('navigation.dashboard') },
-    { href: "/symptoms", label: "Symptom Assessment" },
-    { href: "/biohacking-toolkit", label: "Biohacking Toolkit" },
+    { href: "/symptoms", label: "Symptoms" },
+    { href: "/biohacking-toolkit", label: "Toolkit" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -52,24 +52,7 @@ const Navigation = () => {
                     : "text-muted-foreground"
                 )}
               >
-                {item.label === "Symptom Assessment" ? (
-                  <div className="text-center leading-tight">
-                    <div>Symptom</div>
-                    <div>Assessment</div>
-                  </div>
-                ) : item.label === "Pillars" ? (
-                  <div className="text-center leading-tight">
-                    <div>BiohackHer</div>
-                    <div>Pillars</div>
-                  </div>
-                ) : item.label === "Biohacking Toolkit" ? (
-                  <div className="text-center leading-tight">
-                    <div>Biohacking</div>
-                    <div>Toolkit</div>
-                  </div>
-                ) : (
-                  item.label
-                )}
+                {item.label}
               </Link>
             ))}
 
@@ -159,24 +142,7 @@ const Navigation = () => {
                   )}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.label === "Symptom Assessment" ? (
-                    <div className="text-center leading-tight">
-                      <div>Symptom</div>
-                      <div>Assessment</div>
-                    </div>
-                  ) : item.label === "Pillars" ? (
-                    <div className="text-center leading-tight">
-                      <div>BiohackHer</div>
-                      <div>Pillars</div>
-                    </div>
-                  ) : item.label === "Biohacking Toolkit" ? (
-                    <div className="text-center leading-tight">
-                      <div>Biohacking</div>
-                      <div>Toolkit</div>
-                    </div>
-                  ) : (
-                    item.label
-                  )}
+                  {item.label}
                 </Link>
               ))}
 
@@ -220,6 +186,9 @@ const Navigation = () => {
               </Link>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
+                <div className="px-2">
+                  <LocaleSelector />
+                </div>
                 <Link to="/upgrade" onClick={() => setIsOpen(false)}>
                   <Button variant="outline" className="w-full text-secondary border-secondary">
                     <Crown className="h-4 w-4 mr-2" />

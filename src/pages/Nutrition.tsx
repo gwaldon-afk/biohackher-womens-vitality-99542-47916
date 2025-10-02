@@ -11,6 +11,7 @@ import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, Ref
 import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
+import ResearchCitation from "@/components/ResearchCitation";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -1107,10 +1108,20 @@ const Nutrition = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Nutrition Optimization</h1>
-          <p className="text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h1 className="text-3xl font-bold gradient-text">Nutrition Optimization</h1>
+            <ScienceBackedIcon className="h-6 w-6" />
+          </div>
+          <p className="text-muted-foreground text-center">
             Calculate your personalised protein needs and explore leucine-rich foods for optimal muscle protein synthesis
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 max-w-3xl mx-auto">
+            <p className="text-sm text-blue-800">
+              <strong>📚 Educational Information:</strong> This content presents evidence-based nutrition recommendations. 
+              It is for educational purposes only and does not constitute medical or dietary advice. 
+              Always consult with qualified healthcare or nutrition professionals before making dietary changes.
+            </p>
+          </div>
         </div>
 
         {/* Current Preferences Display */}
@@ -1487,9 +1498,21 @@ const Nutrition = () => {
                     </div>
                   </div>
 
-                  <div className="text-sm text-muted-foreground">
-                    <strong>Note:</strong> These targets are calculated based on your activity level and goals. 
-                    Aim for the higher end of the protein range for optimal muscle protein synthesis.
+                  <div className="space-y-3">
+                    <div className="text-sm text-muted-foreground">
+                      <strong>Note:</strong> These targets are calculated based on your activity level and goals. 
+                      Aim for the higher end of the protein range for optimal muscle protein synthesis.
+                    </div>
+                    <div className="pt-2 border-t">
+                      <ResearchCitation
+                        title="Protein Requirements and Recommendations for Athletes"
+                        journal="Journal of Sports Sciences"
+                        year={2018}
+                        url="https://pubmed.ncbi.nlm.nih.gov/29466096/"
+                        doi="10.1080/02640414.2018.1437722"
+                        studyType="Review"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -1499,7 +1522,18 @@ const Nutrition = () => {
           <TabsContent value="leucine" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Leucine-Rich Foods</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  Leucine-Rich Foods
+                  <ScienceBackedIcon className="h-5 w-5" showTooltip={false} />
+                  <ResearchCitation
+                    title="The Role of Leucine in Weight Loss Diet and Glucose Homeostasis"
+                    journal="Frontiers in Pharmacology"
+                    year={2016}
+                    url="https://pubmed.ncbi.nlm.nih.gov/27242532/"
+                    doi="10.3389/fphar.2016.00144"
+                    studyType="Review"
+                  />
+                </CardTitle>
                 <CardDescription>
                   Leucine is a key amino acid that triggers muscle protein synthesis. Aim for 2.5-3g per meal.
                 </CardDescription>
@@ -1523,20 +1557,41 @@ const Nutrition = () => {
                 
                 <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-900 mb-2">💡 Pro Tip</h4>
-                  <p className="text-sm text-blue-800">
+                  <p className="text-sm text-blue-800 mb-3">
                     To maximize muscle protein synthesis, consume leucine-rich foods within 2 hours after resistance training. 
                     Combining different protein sources can help you reach the optimal leucine threshold.
                   </p>
+                  <div className="border-t border-blue-300 pt-2">
+                    <ResearchCitation
+                      title="Nutrient Timing Revisited: Is There a Post-Exercise Anabolic Window?"
+                      journal="Journal of the International Society of Sports Nutrition"
+                      year={2013}
+                      url="https://pubmed.ncbi.nlm.nih.gov/23360586/"
+                      doi="10.1186/1550-2783-10-5"
+                      studyType="Review"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
           
           <TabsContent value="fodmap" className="mt-6">
-            <div className="space-y-6">
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold">FODMAP Guide</h2>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-2xl font-bold">FODMAP Guide</h2>
+                    <ScienceBackedIcon className="h-5 w-5" showTooltip={false} />
+                    <ResearchCitation
+                      title="A Diet Low in FODMAPs Reduces Symptoms of Irritable Bowel Syndrome"
+                      journal="Gastroenterology"
+                      year={2014}
+                      url="https://pubmed.ncbi.nlm.nih.gov/24076059/"
+                      doi="10.1053/j.gastro.2013.09.046"
+                      studyType="RCT"
+                    />
+                  </div>
                   <p className="text-muted-foreground">
                     Foods to include and avoid for digestive comfort
                   </p>
