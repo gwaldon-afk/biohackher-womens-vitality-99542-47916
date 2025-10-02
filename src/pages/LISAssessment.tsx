@@ -23,7 +23,7 @@ const LISAssessment = () => {
   const [lisScore, setLisScore] = useState(0);
   const [profileData, setProfileData] = useState({
     age: "",
-    healthGoal: "",
+    healthGoals: [] as string[],
     healthConcerns: [] as string[]
   });
 
@@ -210,7 +210,7 @@ const LISAssessment = () => {
   };
 
   const handleProfileComplete = () => {
-    if (profileData.age && profileData.healthGoal) {
+    if (profileData.age && profileData.healthGoals.length > 0) {
       setShowProfile(false);
     } else {
       toast({
@@ -285,18 +285,21 @@ const LISAssessment = () => {
     let analysis = "";
     const age = parseInt(profileData.age);
     const ageContext = age < 30 ? "in your 20s" : age < 40 ? "in your 30s" : age < 50 ? "in your 40s" : age < 60 ? "in your 50s" : "over 60";
+    const goalsText = profileData.healthGoals.length > 1 
+      ? profileData.healthGoals.slice(0, -1).join(', ') + ' and ' + profileData.healthGoals.slice(-1)
+      : profileData.healthGoals[0];
     
     if (score >= 90) {
       analysis = `Outstanding! Your LIS score of ${score} places you in the top tier of longevity optimization for someone ${ageContext}. You're consistently making choices that support healthy aging across all key areas of life.`;
-      if (profileData.healthGoal) analysis += ` Your focus on ${profileData.healthGoal.toLowerCase()} is clearly paying off.`;
+      if (profileData.healthGoals.length > 0) analysis += ` Your focus on ${goalsText.toLowerCase()} is clearly paying off.`;
     } else if (score >= 80) {
-      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. For someone ${ageContext} with your goal of ${profileData.healthGoal.toLowerCase()}, your lifestyle choices are positively impacting your biological age.`;
+      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. For someone ${ageContext} with your goals of ${goalsText.toLowerCase()}, your lifestyle choices are positively impacting your biological age.`;
     } else if (score >= 70) {
-      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits for someone ${ageContext}. Given your goal of ${profileData.healthGoal.toLowerCase()}, there's significant room for optimization to maximize your longevity potential.`;
+      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits for someone ${ageContext}. Given your goals of ${goalsText.toLowerCase()}, there's significant room for optimization to maximize your longevity potential.`;
     } else if (score >= 60) {
-      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. As someone ${ageContext} aiming for ${profileData.healthGoal.toLowerCase()}, strategic improvements could significantly enhance your longevity.`;
+      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. As someone ${ageContext} aiming for ${goalsText.toLowerCase()}, strategic improvements could significantly enhance your longevity.`;
     } else {
-      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. For someone ${ageContext}, the good news is that lifestyle changes can have a powerful impact on biological aging, especially when working toward ${profileData.healthGoal.toLowerCase()}.`;
+      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. For someone ${ageContext}, the good news is that lifestyle changes can have a powerful impact on biological aging, especially when working toward ${goalsText.toLowerCase()}.`;
     }
     
     if (profileData.healthConcerns.length > 0) {
@@ -353,10 +356,10 @@ const LISAssessment = () => {
                 />
               </div>
 
-              {/* Primary Health Goal */}
+              {/* Primary Health Goals */}
               <div className="space-y-3">
-                <Label className="text-base font-medium">What's your primary health goal? *</Label>
-                <RadioGroup value={profileData.healthGoal} onValueChange={(value) => setProfileData({ ...profileData, healthGoal: value })}>
+                <Label className="text-base font-medium">What are your primary health goals? (Select all that apply) *</Label>
+                <div className="grid md:grid-cols-2 gap-3">
                   {[
                     "Increase longevity and healthspan",
                     "Improve energy and vitality",
@@ -364,13 +367,25 @@ const LISAssessment = () => {
                     "Reduce stress and anxiety",
                     "Optimize physical performance",
                     "Prevent age-related decline"
-                  ].map((option) => (
-                    <div key={option} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, healthGoal: option })}>
-                      <RadioGroupItem value={option} id={`goal-${option}`} />
-                      <Label htmlFor={`goal-${option}`} className="cursor-pointer font-normal flex-1">{option}</Label>
+                  ].map((goal) => (
+                    <div
+                      key={goal}
+                      className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                        profileData.healthGoals.includes(goal)
+                          ? "bg-primary/10 border-primary"
+                          : "hover:bg-muted/50"
+                      }`}
+                      onClick={() => {
+                        const updated = profileData.healthGoals.includes(goal)
+                          ? profileData.healthGoals.filter(g => g !== goal)
+                          : [...profileData.healthGoals, goal];
+                        setProfileData({ ...profileData, healthGoals: updated });
+                      }}
+                    >
+                      <span className="text-sm">{goal}</span>
                     </div>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
 
               {/* Health Concerns (Optional) */}
