@@ -19,7 +19,7 @@ const Therapies = () => {
       name: "Red Light Therapy",
       icon: Sun,
       color: "text-red-500",
-      description: "660nm-850nm light for cellular energy and recovery",
+      description: "Photobiomodulation using 660nm-850nm wavelengths penetrates skin to stimulate mitochondrial ATP production, enhancing cellular energy metabolism and activating anti-inflammatory pathways for accelerated healing and tissue repair",
       protocols: [
         { name: "Face & Neck", duration: 10, distance: "15-30cm" },
         { name: "Full Body", duration: 15, distance: "45-60cm" },
@@ -41,7 +41,7 @@ const Therapies = () => {
       name: "Cold Exposure",
       icon: Snowflake,
       color: "text-blue-500",
-      description: "Controlled cold exposure for metabolic and mental benefits",
+      description: "Strategic cold exposure activates brown adipose tissue thermogenesis, triggers norepinephrine release for mood elevation, strengthens vagal tone, and induces beneficial stress adaptation responses that enhance metabolic flexibility and immune function",
       protocols: [
         { name: "Cold Shower", duration: 3, temperature: "10-15°C" },
         { name: "Ice Bath", duration: 2, temperature: "7-13°C" },
@@ -63,7 +63,7 @@ const Therapies = () => {
       name: "Heat/Cold Contrast", 
       icon: Waves,
       color: "text-orange-500",
-      description: "Alternating hot and cold for circulation and recovery",
+      description: "Cyclical vasodilation and vasoconstriction dramatically increases peripheral blood flow, accelerates metabolic waste removal, reduces muscle inflammation, and trains the autonomic nervous system for improved stress resilience and cardiovascular adaptation",
       protocols: [
         { name: "Sauna + Cold Plunge", duration: 20, cycles: "3 rounds" },
         { name: "Hot/Cold Shower", duration: 12, cycles: "4 rounds" },
@@ -85,7 +85,7 @@ const Therapies = () => {
       name: "HRV Breathwork",
       icon: Heart,
       color: "text-green-500", 
-      description: "Heart rate variability training through controlled breathing",
+      description: "Deliberate breathing patterns modulate autonomic balance by increasing heart rate variability, activating parasympathetic dominance, reducing cortisol levels, and enhancing vagal nerve tone for improved emotional regulation and stress resilience",
       protocols: [
         { name: "4-7-8 Breathing", duration: 10, pattern: "4in-7hold-8out" },
         { name: "Box Breathing", duration: 15, pattern: "4in-4hold-4out-4hold" },
