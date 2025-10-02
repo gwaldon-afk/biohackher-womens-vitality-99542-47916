@@ -362,24 +362,32 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
             {features.map((feature, index) => {
             if (feature.title === "Daily Longevity Inputs") {
               return <LISInputForm key={index} onScoreCalculated={handleScoreCalculated}>
-                    <Card className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-60 flex flex-col">
-                      <CardHeader className="flex-shrink-0 pb-3">
-                        <feature.icon className="h-10 w-10 text-primary mb-3" />
-                        <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <Card className="card-elevated hover:shadow-lg transition-all cursor-pointer px-4 py-2 bg-white border-l-4 border-l-primary">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <feature.icon className="h-5 w-5 text-primary flex-shrink-0" />
+                            <CardTitle className="text-base font-semibold leading-tight">{feature.title}</CardTitle>
+                          </div>
+                          <div className="flex items-center text-primary font-medium text-sm ml-2">
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            Track →
+                          </div>
+                        </div>
                       </CardHeader>
-                      <CardContent className="flex-1 pt-0">
-                        <CardDescription className="text-base">
+                      <CardContent className="pt-0 pb-2">
+                        <CardDescription className="text-sm">
                           {feature.description}
                         </CardDescription>
                       </CardContent>
                     </Card>
                   </LISInputForm>;
             }
-            return <Card key={index} className="card-elevated hover:shadow-lg transition-shadow cursor-pointer h-60 flex flex-col" onClick={() => {
+            return <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer px-4 py-2 bg-white border-l-4 border-l-primary" onClick={() => {
               console.log(`${feature.title} card clicked`);
               if (feature.title === "Symptom Management") {
                 navigate("/symptoms");
@@ -393,12 +401,20 @@ const Index = () => {
                 navigate("/reports");
               }
             }}>
-                  <CardHeader className="flex-shrink-0 pb-3">
-                    <feature.icon className="h-10 w-10 text-primary mb-3" />
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <feature.icon className="h-5 w-5 text-primary flex-shrink-0" />
+                        <CardTitle className="text-base font-semibold leading-tight">{feature.title}</CardTitle>
+                      </div>
+                      <div className="flex items-center text-primary font-medium text-sm ml-2">
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Explore →
+                      </div>
+                    </div>
                   </CardHeader>
-                  <CardContent className="flex-1 pt-0">
-                    <CardDescription className="text-base">
+                  <CardContent className="pt-0 pb-2">
+                    <CardDescription className="text-sm">
                       {feature.description}
                     </CardDescription>
                   </CardContent>
