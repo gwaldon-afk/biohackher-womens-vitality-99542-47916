@@ -94,10 +94,13 @@ const LongevityProjection = ({ sustainedLIS, dataPoints }: LongevityProjectionPr
     }
     // If impact is positive (aging faster), be direct about need for change
     else {
+      const totalImprovement = fiveYearImpact - optimalFiveYear; // Gap between current and optimal
+      const twentyYearImprovement = twentyYearImpact - optimalTwentyYear;
+      
       return {
         type: "empowerment" as const,
         title: "Transform Your Trajectory 🚀",
-        message: `Your current path adds ${fiveYearImpact.toFixed(1)} years to your biological age in 5 years. But here's the powerful opportunity: with optimal habits, you could achieve ${Math.abs(optimalFiveYear).toFixed(1)} years younger instead - shifting from aging ${fiveYearImpact.toFixed(1)} years faster to ${Math.abs(optimalFiveYear).toFixed(1)} years slower! Priority: sleep quality, physical activity, stress management, and nutrition.`,
+        message: `Your current path means your biological age is ${fiveYearImpact.toFixed(1)} years older than your actual age just after 5 years. But here's the powerful opportunity: with optimal habits, you could turn it around and your biological age could be ${Math.abs(optimalFiveYear).toFixed(1)} years younger instead. That's a potential overall improvement of ${totalImprovement.toFixed(1)} years just by adopting a longevity-focused lifestyle! This could mean an extra ${totalImprovement.toFixed(1)} years of healthier living to explore life and spend with your loved ones. When calculated over 20 years it could add up to an extra ${twentyYearImprovement.toFixed(1)} years. Priority: sleep quality, physical activity, stress management, and nutrition.`,
         color: "text-amber-700 bg-amber-50 border-amber-200"
       };
     }
