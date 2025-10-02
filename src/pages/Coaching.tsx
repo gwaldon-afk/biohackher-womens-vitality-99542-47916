@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, TrendingUp, Snowflake, Dumbbell, Heart, Moon } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 
 const Coaching = () => {
   const [currentStage, setCurrentStage] = useState("follicular");
@@ -165,8 +166,11 @@ const Coaching = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Cycle-Aware Coaching</h1>
-          <p className="text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h1 className="text-3xl font-bold gradient-text">Cycle-Aware Coaching</h1>
+            <ScienceBackedIcon className="h-6 w-6" />
+          </div>
+          <p className="text-muted-foreground text-center">
             Optimise your training, recovery, and nutrition based on your hormonal stage
           </p>
         </div>
@@ -235,10 +239,11 @@ const Coaching = () => {
           <TabsContent value="training" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Dumbbell className="h-5 w-5" />
-                  Training Recommendations
-                </CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Dumbbell className="h-5 w-5" />
+                Training Recommendations
+                <ScienceBackedIcon className="h-4 w-4" />
+              </CardTitle>
                 <CardDescription>
                   Optimise your workouts based on your current hormonal state
                 </CardDescription>
@@ -290,10 +295,11 @@ const Coaching = () => {
           <TabsContent value="nutrition" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  Nutrition Focus
-                </CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Nutrition Focus
+                <ScienceBackedIcon className="h-4 w-4" />
+              </CardTitle>
                 <CardDescription>
                   Eat to support your hormonal phase
                 </CardDescription>

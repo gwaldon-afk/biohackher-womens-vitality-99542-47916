@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Zap, Sparkles, Scale, Pill, Star, ShieldCheck, AlertTriangle } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import EvidenceBadge from "@/components/EvidenceBadge";
+import ResearchCitation from "@/components/ResearchCitation";
 
 const Supplements = () => {
   const [selectedPillar, setSelectedPillar] = useState("brain");
@@ -199,8 +202,11 @@ const Supplements = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Biohacking Supplements</h1>
-          <p className="text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h1 className="text-3xl font-bold gradient-text">Biohacking Supplements</h1>
+            <ScienceBackedIcon className="h-6 w-6" />
+          </div>
+          <p className="text-muted-foreground text-center">
             Evidence-based supplement protocols organised by the four pillars of wellness
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
@@ -230,10 +236,10 @@ const Supplements = () => {
                 />
                 <label
                   htmlFor={key}
-                  className={`cursor-pointer flex flex-col items-center p-6 rounded-lg border-2 transition-all hover:scale-105 hover:shadow-md w-full ${
+                  className={`cursor-pointer flex flex-col items-center p-6 rounded-lg border-2 border-l-4 transition-all hover:scale-105 hover:shadow-md w-full ${
                     selectedPillar === key
-                      ? 'border-primary bg-primary text-primary-foreground shadow-lg'
-                      : 'border-gray-200 bg-primary-dark hover:border-primary/50 hover:bg-primary'
+                      ? 'border-primary bg-primary text-primary-foreground shadow-lg border-l-primary'
+                      : 'border-gray-200 bg-primary-dark hover:border-primary/50 hover:bg-primary border-l-primary/30'
                   }`}
                 >
                   <pillar.icon className={`h-10 w-10 mb-3 ${
@@ -262,6 +268,7 @@ const Supplements = () => {
               <div className="flex items-center justify-center gap-3 mb-4">
                 <currentPillar.icon className={`h-8 w-8 ${currentPillar.color}`} />
                 <h2 className="text-3xl font-bold">{currentPillar.title} Supplements</h2>
+                <ScienceBackedIcon className="h-6 w-6" />
               </div>
               <p className="text-muted-foreground text-lg">{currentPillar.description}</p>
             </div>
@@ -274,14 +281,9 @@ const Supplements = () => {
                       <CardTitle className="flex items-center gap-2">
                         <Pill className="h-5 w-5 text-primary" />
                         {supplement.name}
+                        <ScienceBackedIcon className="h-4 w-4" showTooltip={false} />
                       </CardTitle>
-                      <Badge 
-                        variant="outline" 
-                        className={getEvidenceBadgeClass(supplement.evidence)}
-                      >
-                        <Star className="h-3 w-3 mr-1" />
-                        {supplement.evidence}
-                      </Badge>
+                      <EvidenceBadge level={supplement.evidence as any} />
                     </div>
                     <CardDescription className="flex items-center gap-2">
                       <strong>Dosage:</strong> {supplement.dosage}

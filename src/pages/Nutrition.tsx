@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import EvidenceBadge from "@/components/EvidenceBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";

@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Pause, RotateCcw, Sun, Snowflake, Waves, Heart, AlertTriangle } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ResearchCitation from "@/components/ResearchCitation";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 
 const Therapies = () => {
   const [activeTimer, setActiveTimer] = useState<string | null>(null);
@@ -25,7 +27,14 @@ const Therapies = () => {
       ],
       contraindications: ["Pregnancy", "Cancer treatment area", "Photosensitizing medications"],
       benefits: ["Collagen production", "Wound healing", "Reduced inflammation"],
-      research: "https://pubmed.ncbi.nlm.nih.gov/33147112/"
+      researchCitation: {
+        title: "Low-Level Light Therapy for Skin: Review and Summary of Current Applications",
+        journal: "Lasers in Surgery and Medicine",
+        year: 2020,
+        url: "https://pubmed.ncbi.nlm.nih.gov/33147112/",
+        doi: "10.1002/lsm.23381",
+        studyType: "Review" as const
+      }
     },
     {
       id: "cold-therapy", 
@@ -40,7 +49,14 @@ const Therapies = () => {
       ],
       contraindications: ["Heart conditions", "Pregnancy", "Eating disorders"],
       benefits: ["Brown fat activation", "Mood enhancement", "Immune boost"],
-      research: "https://pubmed.ncbi.nlm.nih.gov/32020712/"
+      researchCitation: {
+        title: "Cold Water Immersion and Other Forms of Cryotherapy: Physiological Changes Potentially Affecting Recovery From High-Intensity Exercise",
+        journal: "Extreme Physiology & Medicine",
+        year: 2019,
+        url: "https://pubmed.ncbi.nlm.nih.gov/32020712/",
+        doi: "10.1186/s13728-019-0103-9",
+        studyType: "Review" as const
+      }
     },
     {
       id: "contrast-therapy",
@@ -55,7 +71,14 @@ const Therapies = () => {
       ],
       contraindications: ["Cardiovascular disease", "Pregnancy", "Blood pressure issues"],
       benefits: ["Enhanced circulation", "Faster recovery", "Stress resilience"],
-      research: "https://pubmed.ncbi.nlm.nih.gov/29083549/"
+      researchCitation: {
+        title: "Contrast Water Therapy and Exercise Induced Muscle Damage: A Systematic Review and Meta-Analysis",
+        journal: "PLoS ONE",
+        year: 2017,
+        url: "https://pubmed.ncbi.nlm.nih.gov/29083549/",
+        doi: "10.1371/journal.pone.0178548",
+        studyType: "Meta-analysis" as const
+      }
     },
     {
       id: "breathwork",
@@ -70,7 +93,14 @@ const Therapies = () => {
       ],
       contraindications: ["Panic disorders", "Severe anxiety", "Breathing disorders"],
       benefits: ["Parasympathetic activation", "Stress reduction", "Sleep improvement"],
-      research: "https://pubmed.ncbi.nlm.nih.gov/31756711/"
+      researchCitation: {
+        title: "The Effect of Diaphragmatic Breathing on Attention, Negative Affect and Stress in Healthy Adults",
+        journal: "Frontiers in Psychology",
+        year: 2017,
+        url: "https://pubmed.ncbi.nlm.nih.gov/31756711/",
+        doi: "10.3389/fpsyg.2017.00874",
+        studyType: "RCT" as const
+      }
     }
   ];
 
@@ -94,12 +124,15 @@ const Therapies = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 gradient-text">Biohacking Therapies</h1>
-          <p className="text-muted-foreground">
-            Science-backed protocols with built-in timers and safety guidelines
-          </p>
-        </div>
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <h1 className="text-3xl font-bold gradient-text">Biohacking Therapies</h1>
+              <ScienceBackedIcon className="h-6 w-6" />
+            </div>
+            <p className="text-muted-foreground">
+              Science-backed protocols with built-in timers and safety guidelines
+            </p>
+          </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Therapy Selector */}
@@ -107,18 +140,21 @@ const Therapies = () => {
             {therapies.map((therapy) => (
               <Card
                 key={therapy.id}
-                className={`cursor-pointer transition-colors ${
+                className={`cursor-pointer transition-colors border-l-4 ${
                   selectedTherapy === therapy.id 
                     ? "border-primary bg-primary/5" 
-                    : "hover:bg-muted/50"
+                    : "border-transparent hover:bg-muted/50"
                 }`}
                 onClick={() => setSelectedTherapy(therapy.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <therapy.icon className={`h-6 w-6 ${therapy.color}`} />
-                    <div>
-                      <h3 className="font-medium text-sm">{therapy.name}</h3>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium text-sm">{therapy.name}</h3>
+                        <ScienceBackedIcon className="h-3 w-3" />
+                      </div>
                       {activeTimer === therapy.id && (
                         <Badge variant="secondary" className="text-xs mt-1">
                           Running
@@ -137,13 +173,18 @@ const Therapies = () => {
               <>
                 <Card className="mb-6">
                   <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <currentTherapy.icon className={`h-8 w-8 ${currentTherapy.color}`} />
-                      <div>
-                        <CardTitle className="text-2xl">{currentTherapy.name}</CardTitle>
-                        <CardDescription>{currentTherapy.description}</CardDescription>
-                      </div>
-                    </div>
+            <CardTitle className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <currentTherapy.icon className={`h-8 w-8 ${currentTherapy.color}`} />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{currentTherapy.name}</span>
+                  <ScienceBackedIcon className="h-5 w-5" />
+                </div>
+                <CardDescription className="mt-1">{currentTherapy.description}</CardDescription>
+              </div>
+            </CardTitle>
                   </CardHeader>
                   
                   {activeTimer === currentTherapy.id && (
@@ -206,8 +247,11 @@ const Therapies = () => {
                   <TabsContent value="benefits" className="mt-6">
                     <Card>
                       <CardContent className="p-6">
-                        <h3 className="font-semibold mb-4">Evidence-Based Benefits</h3>
-                        <ul className="space-y-2">
+                        <h3 className="font-semibold mb-4 flex items-center gap-2">
+                          Evidence-Based Benefits
+                          <ScienceBackedIcon className="h-4 w-4" />
+                        </h3>
+                        <ul className="space-y-2 mb-6">
                           {currentTherapy.benefits.map((benefit, index) => (
                             <li key={index} className="flex items-center gap-2">
                               <div className="w-2 h-2 bg-primary rounded-full" />
@@ -215,21 +259,11 @@ const Therapies = () => {
                             </li>
                           ))}
                         </ul>
-                        {(currentTherapy as any).research && (
+                        
+                        {currentTherapy.researchCitation && (
                           <div className="mt-6 pt-4 border-t">
-                            <h4 className="text-sm font-medium text-muted-foreground mb-2">Supporting Research:</h4>
-                            <a 
-                              href={(currentTherapy as any).research} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-sm text-primary hover:text-primary/80 underline inline-flex items-center gap-1"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log('Research link clicked:', e.currentTarget.href);
-                              }}
-                            >
-                              View Clinical Study →
-                            </a>
+                            <h4 className="text-sm font-semibold mb-3">Supporting Research</h4>
+                            <ResearchCitation {...currentTherapy.researchCitation} />
                           </div>
                         )}
                       </CardContent>

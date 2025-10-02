@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Moon, UtensilsCrossed, Brain, Pill } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 
 const BiohackingToolkit = () => {
   const toolkitItems = [
@@ -66,13 +67,18 @@ const BiohackingToolkit = () => {
               const Icon = item.icon;
               return (
                 <Link key={item.id} to={item.href}>
-                  <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer border-2 hover:border-primary">
+                  <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1 cursor-pointer border-2 hover:border-primary border-l-4 border-l-primary/40">
                     <CardHeader className="p-4">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
                           <Icon className="h-5 w-5 text-primary-dark" />
                         </div>
-                        <CardTitle className="text-lg">{item.title}</CardTitle>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-lg">{item.title}</CardTitle>
+                            <ScienceBackedIcon className="h-4 w-4" />
+                          </div>
+                        </div>
                       </div>
                       <CardDescription className="text-base">
                         {item.description}
