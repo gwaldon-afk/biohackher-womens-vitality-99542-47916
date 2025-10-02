@@ -70,16 +70,25 @@ const Index = () => {
                   <Users className="h-5 w-5 text-white/80" />
                   <span className="text-white/80">Longevity and biohacking strategies that's actually for women</span>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
-                  <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
-                  console.log("Longevity quiz clicked");
-                  navigate("/longevity-mindset-quiz");
-                }}>
-                    <Lightbulb className="h-5 w-5 mr-2" />
-                    What's Your Longevity Mindset
-                  </Button>
-                  
-                  <TooltipProvider>
+                <TooltipProvider>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
+                          console.log("Longevity quiz clicked");
+                          navigate("/longevity-mindset-quiz");
+                        }}>
+                          <Lightbulb className="h-5 w-5 mr-2" />
+                          What's Your Longevity Mindset
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
+                        <p className="text-sm text-muted-foreground">
+                          Discover your personal approach to healthy aging with a quick mindset assessment.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button 
@@ -104,16 +113,25 @@ const Index = () => {
                         </p>
                       </TooltipContent>
                     </Tooltip>
-                  </TooltipProvider>
-                  
-                  <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
-                  console.log("View Dashboard clicked");
-                  navigate("/dashboard");
-                }}>
-                    <LayoutDashboard className="h-5 w-5 mr-2" />
-                    View Dashboard
-                  </Button>
-                </div>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
+                          console.log("View Dashboard clicked");
+                          navigate("/dashboard");
+                        }}>
+                          <LayoutDashboard className="h-5 w-5 mr-2" />
+                          View Dashboard
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
+                        <p className="text-sm text-muted-foreground">
+                          Access your personalized longevity dashboard with health tracking and insights.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </div>
               
               <div className="relative">
