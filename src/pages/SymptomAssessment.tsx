@@ -1536,6 +1536,127 @@ const assessmentQuestions = {
       type: "textarea",
       placeholder: "Describe your main anxiety triggers, situations, or thought patterns..."
     }
+  ],
+
+  "sexual-function": [
+    {
+      id: 1,
+      question: "How would you rate your overall sexual desire or libido?",
+      type: "radio",
+      options: [
+        { value: "strong", label: "Strong - healthy, regular sexual desire" },
+        { value: "moderate", label: "Moderate - present but less frequent than before" },
+        { value: "low", label: "Low - noticeably diminished interest in sex" },
+        { value: "absent", label: "Absent - little to no sexual desire" }
+      ]
+    },
+    {
+      id: 2,
+      question: "How has your libido changed over time?",
+      type: "radio",
+      options: [
+        { value: "no-change", label: "No significant change - remains consistent" },
+        { value: "gradual-decline", label: "Gradual decline over months/years" },
+        { value: "sudden-decline", label: "Sudden or sharp decline" },
+        { value: "fluctuates", label: "Fluctuates with hormonal cycles or stress" }
+      ]
+    },
+    {
+      id: 3,
+      question: "Do you experience vaginal dryness or discomfort during intimacy?",
+      type: "radio",
+      options: [
+        { value: "none", label: "No issues - adequate natural lubrication" },
+        { value: "occasional", label: "Occasional dryness - manageable with lubricant" },
+        { value: "frequent", label: "Frequent dryness - significantly impacts intimacy" },
+        { value: "severe", label: "Severe dryness - makes intimacy painful" }
+      ]
+    },
+    {
+      id: 4,
+      question: "How would you rate your ability to achieve arousal?",
+      type: "radio",
+      options: [
+        { value: "easy", label: "Easy - arousal happens naturally and quickly" },
+        { value: "somewhat-easy", label: "Somewhat easy - takes longer but achievable" },
+        { value: "difficult", label: "Difficult - requires significant effort or stimulation" },
+        { value: "very-difficult", label: "Very difficult - rarely or never able to become aroused" }
+      ]
+    },
+    {
+      id: 5,
+      question: "Do you experience pain or discomfort during sexual activity?",
+      type: "radio",
+      options: [
+        { value: "none", label: "No pain - comfortable throughout" },
+        { value: "mild", label: "Mild discomfort - tolerable but noticeable" },
+        { value: "moderate", label: "Moderate pain - affects enjoyment and participation" },
+        { value: "severe", label: "Severe pain - makes intimacy very difficult or impossible" }
+      ]
+    },
+    {
+      id: 6,
+      question: "How satisfied are you with your ability to reach orgasm?",
+      type: "radio",
+      options: [
+        { value: "very-satisfied", label: "Very satisfied - orgasm happens regularly and easily" },
+        { value: "satisfied", label: "Satisfied - achievable with appropriate stimulation" },
+        { value: "somewhat-satisfied", label: "Somewhat satisfied - takes longer or less intense" },
+        { value: "dissatisfied", label: "Dissatisfied - rarely or never able to orgasm" }
+      ]
+    },
+    {
+      id: 7,
+      question: "How frequently do you engage in sexual activity?",
+      type: "radio",
+      options: [
+        { value: "very-often", label: "Very often - multiple times per week" },
+        { value: "regularly", label: "Regularly - once or twice per week" },
+        { value: "occasionally", label: "Occasionally - a few times per month" },
+        { value: "rarely", label: "Rarely - less than once per month" },
+        { value: "never", label: "Never or almost never" }
+      ]
+    },
+    {
+      id: 8,
+      question: "Has your frequency of sexual activity changed recently?",
+      type: "radio",
+      options: [
+        { value: "increased", label: "Increased - more active than before" },
+        { value: "no-change", label: "No change - consistent with previous patterns" },
+        { value: "decreased-slightly", label: "Decreased slightly - minor reduction" },
+        { value: "decreased-significantly", label: "Decreased significantly - much less active" }
+      ]
+    },
+    {
+      id: 9,
+      question: "Do emotional factors (stress, anxiety, relationship issues) affect your sexual function?",
+      type: "radio",
+      options: [
+        { value: "minimal", label: "Minimal impact - emotional state doesn't significantly affect sexuality" },
+        { value: "some", label: "Some impact - noticeable effect during stressful times" },
+        { value: "moderate", label: "Moderate impact - emotional state strongly influences desire" },
+        { value: "major", label: "Major impact - emotional factors are primary barrier to intimacy" }
+      ]
+    },
+    {
+      id: 10,
+      question: "How satisfied are you with your intimate relationship overall?",
+      type: "radio",
+      options: [
+        { value: "very-satisfied", label: "Very satisfied - fulfilling and connected" },
+        { value: "satisfied", label: "Satisfied - generally good with minor issues" },
+        { value: "somewhat-satisfied", label: "Somewhat satisfied - room for improvement" },
+        { value: "dissatisfied", label: "Dissatisfied - significant issues present" },
+        { value: "not-applicable", label: "Not applicable - not currently in relationship" }
+      ]
+    },
+    {
+      id: 11,
+      question: "What specific concerns or goals do you have regarding your sexual health and function?",
+      type: "textarea",
+      placeholder: "Describe any specific concerns, symptoms you've noticed, changes over time, or goals you'd like to achieve..."
+    }
   ]
 };
 
