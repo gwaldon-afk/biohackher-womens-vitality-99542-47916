@@ -6,10 +6,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, ArrowRight, Target, TrendingUp, TrendingDown, Minus, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Target, TrendingUp, TrendingDown, Minus, CheckCircle2, Sparkles, Activity, Heart, Brain, Users, Utensils, Moon } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import LongevityProjection from "@/components/LongevityProjection";
 
 const LISAssessment = () => {
   const navigate = useNavigate();
@@ -23,65 +24,135 @@ const LISAssessment = () => {
   const questions = [
     {
       id: 0,
+      category: "Sleep Quality",
+      icon: Moon,
       question: "How many hours of quality sleep did you get last night?",
       options: [
-        { value: "less-than-5", label: "Less than 5 hours", score: 40 },
-        { value: "5-6", label: "5-6 hours", score: 60 },
-        { value: "6-7", label: "6-7 hours", score: 80 },
-        { value: "7-9", label: "7-9 hours", score: 100 },
-        { value: "more-than-9", label: "More than 9 hours", score: 70 }
+        { value: "less-than-5", label: "Less than 5 hours", score: 40, detail: "Significantly below optimal" },
+        { value: "5-6", label: "5-6 hours", score: 60, detail: "Below recommended range" },
+        { value: "6-7", label: "6-7 hours", score: 80, detail: "Adequate for some adults" },
+        { value: "7-9", label: "7-9 hours (optimal)", score: 100, detail: "Optimal sleep duration" },
+        { value: "more-than-9", label: "More than 9 hours", score: 70, detail: "May indicate oversleeping" }
       ]
     },
     {
       id: 1,
-      question: "How would you rate your stress level today?",
+      category: "Sleep Recovery",
+      icon: Moon,
+      question: "How did you feel when you woke up this morning?",
       options: [
-        { value: "very-high", label: "Very High - Overwhelming", score: 40 },
-        { value: "high", label: "High - Significant stress", score: 60 },
-        { value: "moderate", label: "Moderate - Manageable", score: 80 },
-        { value: "low", label: "Low - Minimal stress", score: 100 },
-        { value: "very-low", label: "Very Low - Completely relaxed", score: 100 }
+        { value: "exhausted", label: "Exhausted - Needed to drag myself out of bed", score: 40 },
+        { value: "tired", label: "Tired - Could use more sleep", score: 60 },
+        { value: "okay", label: "Okay - Reasonably rested", score: 80 },
+        { value: "refreshed", label: "Refreshed - Ready to start the day", score: 100 }
       ]
     },
     {
       id: 2,
-      question: "How much physical activity did you do today?",
+      category: "Stress Management",
+      icon: Heart,
+      question: "How would you rate your stress level today?",
       options: [
-        { value: "none", label: "None", score: 50 },
-        { value: "light", label: "Light activity (walking, stretching)", score: 75 },
-        { value: "moderate", label: "Moderate (30+ min exercise)", score: 100 },
-        { value: "vigorous", label: "Vigorous (intense workout)", score: 95 },
-        { value: "excessive", label: "Excessive (may be overtraining)", score: 70 }
+        { value: "very-high", label: "Very High - Overwhelming, hard to cope", score: 40 },
+        { value: "high", label: "High - Significant stress affecting daily life", score: 60 },
+        { value: "moderate", label: "Moderate - Manageable with effort", score: 80 },
+        { value: "low", label: "Low - Minimal stress, feeling balanced", score: 100 }
       ]
     },
     {
       id: 3,
-      question: "How would you describe your nutrition today?",
+      category: "Stress Recovery",
+      icon: Heart,
+      question: "Did you take time today for stress-reducing activities?",
       options: [
-        { value: "poor", label: "Poor - Mostly processed foods", score: 40 },
-        { value: "fair", label: "Fair - Some healthy choices", score: 65 },
-        { value: "good", label: "Good - Mostly whole foods", score: 85 },
-        { value: "excellent", label: "Excellent - Nutrient-dense, balanced", score: 100 }
+        { value: "none", label: "No time for relaxation", score: 50 },
+        { value: "minimal", label: "Brief moments (5-10 min)", score: 70 },
+        { value: "some", label: "Moderate time (15-30 min)", score: 90 },
+        { value: "dedicated", label: "Dedicated practice (30+ min)", score: 100 }
       ]
     },
     {
       id: 4,
-      question: "How many meaningful social connections did you have today?",
+      category: "Physical Activity",
+      icon: Activity,
+      question: "How much physical activity did you do today?",
       options: [
-        { value: "none", label: "None - Isolated", score: 50 },
-        { value: "minimal", label: "Minimal - Brief interactions", score: 70 },
-        { value: "some", label: "Some - Quality conversation", score: 90 },
-        { value: "multiple", label: "Multiple - Deep connections", score: 100 }
+        { value: "none", label: "Sedentary - No intentional movement", score: 50 },
+        { value: "light", label: "Light - Walking, stretching (10-20 min)", score: 75 },
+        { value: "moderate", label: "Moderate - 30+ min exercise", score: 100 },
+        { value: "vigorous", label: "Vigorous - Intense workout", score: 95 }
       ]
     },
     {
       id: 5,
+      category: "Movement Variety",
+      icon: Activity,
+      question: "What types of movement did you include?",
+      options: [
+        { value: "none", label: "No variety, mostly sitting", score: 50 },
+        { value: "basic", label: "One type (e.g., just walking)", score: 70 },
+        { value: "mixed", label: "Multiple types (cardio + strength or flexibility)", score: 90 },
+        { value: "comprehensive", label: "Comprehensive (cardio, strength, flexibility)", score: 100 }
+      ]
+    },
+    {
+      id: 6,
+      category: "Nutrition Quality",
+      icon: Utensils,
+      question: "How would you describe your nutrition today?",
+      options: [
+        { value: "poor", label: "Poor - Mostly processed/fast food", score: 40 },
+        { value: "fair", label: "Fair - Some healthy choices mixed in", score: 65 },
+        { value: "good", label: "Good - Mostly whole, unprocessed foods", score: 85 },
+        { value: "excellent", label: "Excellent - Nutrient-dense, well-balanced", score: 100 }
+      ]
+    },
+    {
+      id: 7,
+      category: "Hydration & Habits",
+      icon: Utensils,
+      question: "How well did you hydrate and time your meals?",
+      options: [
+        { value: "poor", label: "Poor - Dehydrated, irregular eating", score: 50 },
+        { value: "fair", label: "Fair - Some water, inconsistent meals", score: 70 },
+        { value: "good", label: "Good - Adequate water, regular meals", score: 90 },
+        { value: "optimal", label: "Optimal - Well-hydrated, timed nutrition", score: 100 }
+      ]
+    },
+    {
+      id: 8,
+      category: "Social Connection",
+      icon: Users,
+      question: "How many meaningful social connections did you have today?",
+      options: [
+        { value: "none", label: "None - Isolated all day", score: 50 },
+        { value: "minimal", label: "Minimal - Brief, surface interactions", score: 70 },
+        { value: "some", label: "Some - Quality conversation or connection", score: 90 },
+        { value: "multiple", label: "Multiple - Deep, meaningful connections", score: 100 }
+      ]
+    },
+    {
+      id: 9,
+      category: "Cognitive Engagement",
+      icon: Brain,
       question: "How mentally engaged and focused were you today?",
       options: [
-        { value: "very-low", label: "Very Low - Brain fog", score: 40 },
-        { value: "low", label: "Low - Struggled to focus", score: 60 },
-        { value: "moderate", label: "Moderate - Normal focus", score: 80 },
-        { value: "high", label: "High - Sharp and clear", score: 100 }
+        { value: "very-low", label: "Very Low - Brain fog, hard to concentrate", score: 40 },
+        { value: "low", label: "Low - Struggled to stay focused", score: 60 },
+        { value: "moderate", label: "Moderate - Normal focus and clarity", score: 80 },
+        { value: "high", label: "High - Sharp, clear, highly productive", score: 100 }
+      ]
+    },
+    {
+      id: 10,
+      category: "Learning & Growth",
+      icon: Brain,
+      question: "Did you engage in learning or mental stimulation today?",
+      options: [
+        { value: "none", label: "No new learning or challenges", score: 50 },
+        { value: "minimal", label: "Brief exposure (reading, podcast)", score: 75 },
+        { value: "moderate", label: "Deliberate learning (30+ min)", score: 90 },
+        { value: "intensive", label: "Deep learning or problem-solving", score: 100 }
       ]
     }
   ];
@@ -132,25 +203,96 @@ const LISAssessment = () => {
     return { label: "Needs Attention", icon: TrendingDown, color: "text-red-600", bg: "bg-red-50" };
   };
 
-  const getShortAnalysis = (score: number) => {
+  const getDetailedAnalysis = (score: number) => {
+    // Calculate category scores
+    const categoryScores = {
+      sleep: 0,
+      stress: 0,
+      activity: 0,
+      nutrition: 0,
+      social: 0,
+      cognitive: 0
+    };
+    
+    let categoryCount = { sleep: 0, stress: 0, activity: 0, nutrition: 0, social: 0, cognitive: 0 };
+    
+    questions.forEach((question) => {
+      const answer = answers[question.id];
+      if (answer) {
+        const option = question.options.find(opt => opt.value === answer);
+        if (option) {
+          const cat = question.category.toLowerCase();
+          if (cat.includes('sleep')) {
+            categoryScores.sleep += option.score;
+            categoryCount.sleep++;
+          } else if (cat.includes('stress')) {
+            categoryScores.stress += option.score;
+            categoryCount.stress++;
+          } else if (cat.includes('activity') || cat.includes('movement')) {
+            categoryScores.activity += option.score;
+            categoryCount.activity++;
+          } else if (cat.includes('nutrition') || cat.includes('hydration')) {
+            categoryScores.nutrition += option.score;
+            categoryCount.nutrition++;
+          } else if (cat.includes('social')) {
+            categoryScores.social += option.score;
+            categoryCount.social++;
+          } else if (cat.includes('cognitive') || cat.includes('learning')) {
+            categoryScores.cognitive += option.score;
+            categoryCount.cognitive++;
+          }
+        }
+      }
+    });
+
+    // Calculate averages
+    const avgScores = {
+      sleep: categoryCount.sleep > 0 ? Math.round(categoryScores.sleep / categoryCount.sleep) : 0,
+      stress: categoryCount.stress > 0 ? Math.round(categoryScores.stress / categoryCount.stress) : 0,
+      activity: categoryCount.activity > 0 ? Math.round(categoryScores.activity / categoryCount.activity) : 0,
+      nutrition: categoryCount.nutrition > 0 ? Math.round(categoryScores.nutrition / categoryCount.nutrition) : 0,
+      social: categoryCount.social > 0 ? Math.round(categoryScores.social / categoryCount.social) : 0,
+      cognitive: categoryCount.cognitive > 0 ? Math.round(categoryScores.cognitive / categoryCount.cognitive) : 0
+    };
+
+    // Find strengths and areas for improvement
+    const strengths = Object.entries(avgScores)
+      .filter(([_, score]) => score >= 85)
+      .map(([key, _]) => key.charAt(0).toUpperCase() + key.slice(1));
+    
+    const improvements = Object.entries(avgScores)
+      .filter(([_, score]) => score < 70)
+      .map(([key, _]) => key.charAt(0).toUpperCase() + key.slice(1));
+
+    let analysis = "";
+    
     if (score >= 90) {
-      return "Outstanding! Your daily habits are strongly supporting healthy aging and longevity. You're in the top tier of biological age optimization.";
+      analysis = `Outstanding! Your LIS score of ${score} places you in the top tier of longevity optimization. You're consistently making choices that support healthy aging across all key areas of life.`;
+    } else if (score >= 80) {
+      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. Your lifestyle choices are positively impacting your biological age.`;
+    } else if (score >= 70) {
+      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits, though there's room for optimization to maximize your longevity potential.`;
+    } else if (score >= 60) {
+      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. Strategic improvements could significantly enhance your longevity.`;
+    } else {
+      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. The good news: lifestyle changes can have a powerful impact on biological aging.`;
     }
-    if (score >= 80) {
-      return "Great work! Your lifestyle choices are positively impacting your biological age. You're on the right track with minor areas for optimization.";
+
+    if (strengths.length > 0) {
+      analysis += `\n\nYour strengths: ${strengths.join(', ')}. These areas are serving you well.`;
     }
-    if (score >= 70) {
-      return "Good foundation! Your habits are generally supportive of healthy aging, but there's significant room for improvement to reverse biological aging.";
+    
+    if (improvements.length > 0) {
+      analysis += `\n\nPriority areas for improvement: ${improvements.join(', ')}. Focus here for maximum longevity impact.`;
     }
-    if (score >= 60) {
-      return "Fair status. Your current habits are neutral to slightly aging. Targeted improvements could significantly impact your longevity trajectory.";
-    }
-    return "Attention needed. Your daily habits may be accelerating biological aging. Significant lifestyle changes could help reverse this trajectory.";
+
+    return { analysis, categoryScores: avgScores };
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const category = getScoreCategory(lisScore);
   const CategoryIcon = category.icon;
+  const { analysis, categoryScores } = getDetailedAnalysis(lisScore);
 
   if (showResults) {
     return (
@@ -178,10 +320,46 @@ const LISAssessment = () => {
                   <CategoryIcon className={`h-5 w-5 ${category.color}`} />
                   <h3 className={`text-xl font-semibold ${category.color}`}>{category.label}</h3>
                 </div>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {getShortAnalysis(lisScore)}
+                <p className="text-muted-foreground max-w-2xl mx-auto whitespace-pre-line leading-relaxed">
+                  {analysis}
                 </p>
               </div>
+
+              {/* Category Breakdown */}
+              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold mb-4 text-center">Your Longevity Pillars Breakdown</h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {Object.entries(categoryScores).map(([key, score]) => {
+                    const iconMap = {
+                      sleep: Moon,
+                      stress: Heart,
+                      activity: Activity,
+                      nutrition: Utensils,
+                      social: Users,
+                      cognitive: Brain
+                    };
+                    const Icon = iconMap[key as keyof typeof iconMap];
+                    const scoreColor = score >= 85 ? 'text-green-600' : score >= 70 ? 'text-blue-600' : score >= 60 ? 'text-amber-600' : 'text-red-600';
+                    
+                    return (
+                      <div key={key} className="bg-background/80 p-4 rounded-lg border border-primary/10">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Icon className={`h-4 w-4 ${scoreColor}`} />
+                          <span className="text-sm font-medium capitalize">{key}</span>
+                        </div>
+                        <div className={`text-2xl font-bold ${scoreColor}`}>{score}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Longevity Projection for Logged-in Users */}
+              {user && (
+                <div className="mt-6">
+                  <LongevityProjection sustainedLIS={lisScore} dataPoints={1} />
+                </div>
+              )}
 
               {/* Teaser for Registered Users */}
               {!user && (
@@ -306,13 +484,16 @@ const LISAssessment = () => {
               </div>
             </div>
             <Progress value={progress} className="mb-6" />
-            <div className="flex items-center gap-2 text-primary mb-2">
-              <Target className="h-5 w-5" />
-              <span className="text-sm font-medium">Longevity Impact Assessment</span>
+            <div className="flex items-center gap-3 text-primary mb-2">
+              {(() => {
+                const Icon = questions[currentQuestion].icon;
+                return <Icon className="h-5 w-5" />;
+              })()}
+              <span className="text-sm font-medium">{questions[currentQuestion].category}</span>
             </div>
             <CardTitle className="text-2xl">{questions[currentQuestion].question}</CardTitle>
             <CardDescription>
-              Select the option that best describes your current habits
+              Choose the option that best reflects your typical daily habits
             </CardDescription>
           </CardHeader>
           <CardContent>
