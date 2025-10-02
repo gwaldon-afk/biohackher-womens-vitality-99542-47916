@@ -19,7 +19,7 @@ const Therapies = () => {
       name: "Red Light Therapy",
       icon: Sun,
       color: "text-red-500",
-      description: "Photobiomodulation using 660nm-850nm wavelengths penetrates skin to stimulate mitochondrial ATP production, enhancing cellular energy metabolism and activating anti-inflammatory pathways for accelerated healing and tissue repair",
+      description: "Uses specific wavelengths of red and near-infrared light (660nm-850nm) that penetrate deep into your skin. This light energizes your cells' powerhouses (mitochondria) to produce more ATP (cellular energy), which helps reduce inflammation and speeds up healing and tissue repair throughout your body",
       protocols: [
         { name: "Face & Neck", duration: 10, distance: "15-30cm" },
         { name: "Full Body", duration: 15, distance: "45-60cm" },
@@ -41,7 +41,7 @@ const Therapies = () => {
       name: "Cold Exposure",
       icon: Snowflake,
       color: "text-blue-500",
-      description: "Strategic cold exposure activates brown adipose tissue thermogenesis, triggers norepinephrine release for mood elevation, strengthens vagal tone, and induces beneficial stress adaptation responses that enhance metabolic flexibility and immune function",
+      description: "Controlled exposure to cold temperatures activates your body's special fat-burning tissue (brown adipose tissue) and triggers the release of norepinephrine, a hormone that naturally boosts your mood. It also strengthens your vagal nerve tone and trains your body to handle stress better, improving your metabolism and immune system over time",
       protocols: [
         { name: "Cold Shower", duration: 3, temperature: "10-15°C" },
         { name: "Ice Bath", duration: 2, temperature: "7-13°C" },
@@ -63,7 +63,7 @@ const Therapies = () => {
       name: "Heat/Cold Contrast", 
       icon: Waves,
       color: "text-orange-500",
-      description: "Cyclical vasodilation and vasoconstriction dramatically increases peripheral blood flow, accelerates metabolic waste removal, reduces muscle inflammation, and trains the autonomic nervous system for improved stress resilience and cardiovascular adaptation",
+      description: "Alternating between hot and cold causes your blood vessels to expand (vasodilation) and contract (vasoconstriction), pumping fresh blood throughout your body. This flushes out metabolic waste, reduces muscle inflammation, and trains your nervous system to better handle stress while improving cardiovascular health",
       protocols: [
         { name: "Sauna + Cold Plunge", duration: 20, cycles: "3 rounds" },
         { name: "Hot/Cold Shower", duration: 12, cycles: "4 rounds" },
@@ -85,7 +85,7 @@ const Therapies = () => {
       name: "HRV Breathwork",
       icon: Heart,
       color: "text-green-500", 
-      description: "Deliberate breathing patterns modulate autonomic balance by increasing heart rate variability, activating parasympathetic dominance, reducing cortisol levels, and enhancing vagal nerve tone for improved emotional regulation and stress resilience",
+      description: "Specific breathing techniques help balance your nervous system by improving heart rate variability (HRV), activating your body's relaxation response (parasympathetic system), and lowering stress hormones like cortisol. This strengthens your vagal nerve, helping you manage emotions and handle stress more effectively",
       protocols: [
         { name: "4-7-8 Breathing", duration: 10, pattern: "4in-7hold-8out" },
         { name: "Box Breathing", duration: 15, pattern: "4in-4hold-4out-4hold" },
