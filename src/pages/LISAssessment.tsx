@@ -23,9 +23,7 @@ const LISAssessment = () => {
   const [lisScore, setLisScore] = useState(0);
   const [profileData, setProfileData] = useState({
     age: "",
-    gender: "",
     healthGoal: "",
-    activityLevel: "",
     healthConcerns: [] as string[]
   });
 
@@ -212,7 +210,7 @@ const LISAssessment = () => {
   };
 
   const handleProfileComplete = () => {
-    if (profileData.age && profileData.gender && profileData.healthGoal && profileData.activityLevel) {
+    if (profileData.age && profileData.healthGoal) {
       setShowProfile(false);
     } else {
       toast({
@@ -355,19 +353,6 @@ const LISAssessment = () => {
                 />
               </div>
 
-              {/* Gender */}
-              <div className="space-y-3">
-                <Label className="text-base font-medium">Gender *</Label>
-                <RadioGroup value={profileData.gender} onValueChange={(value) => setProfileData({ ...profileData, gender: value })}>
-                  {["Male", "Female", "Non-binary", "Prefer not to say"].map((option) => (
-                    <div key={option} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, gender: option })}>
-                      <RadioGroupItem value={option} id={`gender-${option}`} />
-                      <Label htmlFor={`gender-${option}`} className="cursor-pointer font-normal flex-1">{option}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-
               {/* Primary Health Goal */}
               <div className="space-y-3">
                 <Label className="text-base font-medium">What's your primary health goal? *</Label>
@@ -383,25 +368,6 @@ const LISAssessment = () => {
                     <div key={option} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, healthGoal: option })}>
                       <RadioGroupItem value={option} id={`goal-${option}`} />
                       <Label htmlFor={`goal-${option}`} className="cursor-pointer font-normal flex-1">{option}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-
-              {/* Current Activity Level */}
-              <div className="space-y-3">
-                <Label className="text-base font-medium">How would you describe your current activity level? *</Label>
-                <RadioGroup value={profileData.activityLevel} onValueChange={(value) => setProfileData({ ...profileData, activityLevel: value })}>
-                  {[
-                    { value: "sedentary", label: "Sedentary - Mostly sitting, minimal movement" },
-                    { value: "lightly-active", label: "Lightly Active - Some walking, light exercise 1-2x/week" },
-                    { value: "moderately-active", label: "Moderately Active - Regular exercise 3-4x/week" },
-                    { value: "very-active", label: "Very Active - Intense exercise 5+ times/week" },
-                    { value: "athlete", label: "Athlete - Training daily or competitively" }
-                  ].map((option) => (
-                    <div key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer" onClick={() => setProfileData({ ...profileData, activityLevel: option.value })}>
-                      <RadioGroupItem value={option.value} id={`activity-${option.value}`} />
-                      <Label htmlFor={`activity-${option.value}`} className="cursor-pointer font-normal flex-1">{option.label}</Label>
                     </div>
                   ))}
                 </RadioGroup>
