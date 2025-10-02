@@ -13,6 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { getOverallHealthAnalysis, getSymptomName, getTopRecommendations } from "@/utils/healthAnalysis";
+import { ProgressTracker } from "@/components/ProgressTracker";
+import { StreakCard } from "@/components/StreakCard";
 
 interface DashboardData {
   currentScore: number;
@@ -334,6 +336,26 @@ const Dashboard = () => {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-8">
+
+        {/* Progress & Streaks Section */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <ProgressTracker />
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Your Streaks</h3>
+            <div className="space-y-3">
+              <StreakCard
+                activityType="daily_check_in"
+                title="Daily Check-In"
+                description="Log your daily wellness metrics"
+              />
+              <StreakCard
+                activityType="assessments"
+                title="Assessments"
+                description="Complete health assessments"
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Personalized Health Assessment */}
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">

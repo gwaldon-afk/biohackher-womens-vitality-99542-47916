@@ -341,6 +341,39 @@ export type Database = {
           },
         ]
       }
+      streak_tracking: {
+        Row: {
+          activity_type: string
+          created_at: string
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       symptom_assessments: {
         Row: {
           answers: Json
@@ -414,6 +447,36 @@ export type Database = {
           id?: string
           pillar?: string | null
           score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          created_at: string
+          id: string
+          onboarding_completed: boolean
+          onboarding_step: number | null
+          pillars_visited: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number | null
+          pillars_visited?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number | null
+          pillars_visited?: Json | null
           updated_at?: string
           user_id?: string
         }
