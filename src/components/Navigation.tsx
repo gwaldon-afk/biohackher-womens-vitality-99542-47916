@@ -4,6 +4,7 @@ import { Menu, X, Activity, User, Settings, Crown, ShoppingBag } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
 import { LocaleSelector } from "@/components/LocaleSelector";
+import TrustBar from "@/components/TrustBar";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
@@ -23,8 +24,9 @@ const Navigation = () => {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
+    <>
+      <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
@@ -205,8 +207,10 @@ const Navigation = () => {
             </div>
           </div>
         )}
-      </div>
-    </nav>
+        </div>
+      </nav>
+      <TrustBar />
+    </>
   );
 };
 

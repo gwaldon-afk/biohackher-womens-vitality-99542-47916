@@ -423,6 +423,39 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Complete Your Protocol Card */}
+        {recentAssessments.length > 0 && (
+          <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Pill className="h-5 w-5 text-primary" />
+                Complete Your Protocol
+              </CardTitle>
+              <CardDescription>
+                Recommended supplements based on your assessments
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-2xl font-bold text-primary">
+                    {recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair').length}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Areas need attention</p>
+                </div>
+                <Button onClick={() => navigate('/my-protocol')}>
+                  View My Protocol
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Based on your {recentAssessments.length} completed assessment{recentAssessments.length > 1 ? 's' : ''}, 
+                we've identified evidence-based supplements that may support your wellness goals.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* My Health Profile Section */}
         <div className="mb-8">
           {/* Symptoms Overview - Full Width */}

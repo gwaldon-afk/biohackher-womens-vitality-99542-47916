@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X, Shield, FileText, Award } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
@@ -565,6 +565,169 @@ const Index = () => {
             </>}
         </DialogContent>
       </Dialog>
+
+      {/* Research Foundation Section */}
+      <section className="py-16 bg-gradient-to-b from-primary/5 to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              Built on <span className="text-primary">Scientific Evidence</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Every recommendation on BiohackHer is backed by peer-reviewed research 
+              and validated by our advisory board of leading health experts.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-primary mb-2">34,000+</div>
+                <p className="text-sm text-muted-foreground">Research Studies Reviewed</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-primary mb-2">163</div>
+                <p className="text-sm text-muted-foreground">Combined Advisory Publications</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-primary mb-2">87%</div>
+                <p className="text-sm text-muted-foreground">Members Report Improvement</p>
+              </CardContent>
+            </Card>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-primary mb-2">3 weeks</div>
+                <p className="text-sm text-muted-foreground">Average Time to See Results</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-8">
+            <Button variant="outline" onClick={() => navigate('/advisory-board')}>
+              Meet Our Advisory Board
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Success Stories with Specific Metrics */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">
+              Real <span className="text-primary">Results</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              See how BiohackHer members have transformed their health with evidence-based protocols
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-2xl font-bold text-primary">60%</div>
+                  <Badge variant="outline" className="text-success border-success">Reduction</Badge>
+                </div>
+                <CardTitle className="text-lg">Hot Flushes Reduced</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-3">
+                  "Using the Balance pillar protocols, my hot flushes reduced by 60% in just 3 weeks. 
+                  I finally feel like myself again."
+                </p>
+                <p className="text-xs text-muted-foreground">- Sarah M., 48</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-2xl font-bold text-primary">45→78</div>
+                  <Badge variant="outline" className="text-success border-success">+33 Points</Badge>
+                </div>
+                <CardTitle className="text-lg">Sleep Score Improved</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-3">
+                  "My sleep assessment score went from 45 to 78 in just 4 weeks. I'm waking up 
+                  refreshed for the first time in years."
+                </p>
+                <p className="text-xs text-muted-foreground">- Jennifer L., 52</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-2xl font-bold text-primary">80%</div>
+                  <Badge variant="outline" className="text-success border-success">Improvement</Badge>
+                </div>
+                <CardTitle className="text-lg">Joint Pain Decreased</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-3">
+                  "The joint health protocol reduced my pain by 80%. I can finally enjoy my morning 
+                  walks without discomfort."
+                </p>
+                <p className="text-xs text-muted-foreground">- Maria K., 56</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-muted-foreground">
+              Join 10,000+ women optimizing their health with BiohackHer
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Safety First Section */}
+      <section className="py-16 bg-gradient-to-b from-background to-primary/5">
+        <div className="container mx-auto px-4">
+          <Card className="max-w-4xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center">Your Privacy & Safety Matters</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <Shield className="h-8 w-8 text-primary" />
+                  </div>
+                  <h4 className="font-semibold mb-2">Data Encryption</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Your health data is encrypted and never shared
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <Award className="h-8 w-8 text-primary" />
+                  </div>
+                  <h4 className="font-semibold mb-2">Expert Reviewed</h4>
+                  <p className="text-sm text-muted-foreground">
+                    All protocols validated by our advisory board
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <FileText className="h-8 w-8 text-primary" />
+                  </div>
+                  <h4 className="font-semibold mb-2">Evidence-Based</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Every recommendation backed by peer-reviewed research
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
     </div>;
 };
 export default Index;

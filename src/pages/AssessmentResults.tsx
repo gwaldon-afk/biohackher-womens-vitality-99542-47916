@@ -11,9 +11,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertTriangle, Info, Moon, Lightbulb, Pill, Heart, Thermometer, Bone, Brain, Battery, Scale, Scissors, Shield, Calendar, Zap, ChevronDown, ShoppingCart, Droplets, Target, Activity, Sparkles, TestTube } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import ProtocolCard from "@/components/ProtocolCard";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
+import { useCart } from "@/hooks/useCart";
 
 interface AssessmentScore {
   overall: number;
@@ -54,6 +57,11 @@ const AssessmentResults = () => {
   const [selectedRecommendationCategory, setSelectedRecommendationCategory] = useState("all");
   const [isSaving, setIsSaving] = useState(false);
   const [supplementSelections, setSupplementSelections] = useState<Record<number, SupplementInfo[]>>({});
+  const { addToCart } = useCart();
+  
+  // Get product recommendations based on assessment
+  const productRecommendations = score ? matchProductsToAssessment(symptomId || '', score.overall) : [];
+  const bundlePricing = calculateBundlePrice(productRecommendations);
 
   const handleSupplementToggle = (recIndex: number, suppIndex: number) => {
     setSupplementSelections(prev => {
@@ -2003,6 +2011,50 @@ const AssessmentResults = () => {
             )}
           </CardContent>
         </Card>
+
+        {/* Personalized Product Protocol */}
+        {productRecommendations.length > 0 && score && (
+          <div className="mb-8">
+            <ProtocolCard
+              symptomName={getSymptomName(symptomId!)}
+              score={score.overall}
+              recommendations={productRecommendations}
+              onAddToCart={(productId) => {
+                // Find product in recommendations and add to cart
+                const product = productRecommendations.find(p => p.id === productId);
+                if (product) {
+                  addToCart({ 
+                    id: product.id, 
+                    name: product.name, 
+                    price: product.price,
+                    quantity: 1
+                  } as any);
+                  toast({
+                    title: "Added to Cart",
+                    description: `${product.name} has been added to your cart.`
+                  });
+                }
+              }}
+              onAddBundle={() => {
+                // Add all products to cart
+                productRecommendations.forEach(product => {
+                  addToCart({ 
+                    id: product.id, 
+                    name: product.name, 
+                    price: product.price,
+                    quantity: 1
+                  } as any);
+                });
+                toast({
+                  title: "Protocol Added!",
+                  description: `Complete ${getSymptomName(symptomId!)} protocol added to cart with 10% bundle discount.`
+                });
+              }}
+              bundleTotal={bundlePricing.total}
+              bundleSavings={bundlePricing.savings}
+            />
+          </div>
+        )}
 
         {/* Recommendations */}
         <div className="w-full">
