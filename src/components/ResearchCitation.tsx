@@ -51,26 +51,26 @@ const ResearchCitation = ({
           </div>
 
           <div className="flex gap-3 text-xs">
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 underline inline-flex items-center gap-1"
-              onClick={(e) => e.stopPropagation()}
-            >
-              View Study <ExternalLink className="h-3 w-3" />
-            </a>
             {doi && (
               <a
                 href={`https://doi.org/${doi}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                className="text-primary hover:text-primary/80 underline inline-flex items-center gap-1 font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
-                DOI <ExternalLink className="h-3 w-3" />
+                View Study (DOI) <ExternalLink className="h-3 w-3" />
               </a>
             )}
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Alternative Source <ExternalLink className="h-3 w-3" />
+            </a>
           </div>
         </div>
       </div>
