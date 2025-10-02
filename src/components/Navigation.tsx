@@ -15,9 +15,10 @@ const Navigation = () => {
 
   const mainNavItems = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: t('navigation.dashboard') },
-    { href: "/symptoms", label: "Symptoms" },
+    { href: "/symptoms", label: "Assessments" },
     { href: "/biohacking-toolkit", label: "Toolkit" },
   ];
 
@@ -80,18 +81,6 @@ const Navigation = () => {
               )}
             >
               FAQ
-            </Link>
-
-            <Link
-              to="/reports"
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary whitespace-nowrap",
-                isActive("/reports")
-                  ? "text-primary"
-                  : "text-muted-foreground"
-              )}
-            >
-              Reports
             </Link>
           </div>
 
@@ -172,19 +161,6 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
               >
                 FAQ
-              </Link>
-
-              <Link
-                to="/reports"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1",
-                  isActive("/reports")
-                    ? "text-primary bg-primary/10 rounded"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                Reports
               </Link>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">

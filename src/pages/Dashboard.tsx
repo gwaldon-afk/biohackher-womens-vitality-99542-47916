@@ -2,10 +2,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProgressCircle } from "@/components/ui/progress-circle";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill } from "lucide-react";
 import Navigation from "@/components/Navigation";
-import { useNavigate } from "react-router-dom";
+import Reports from "@/pages/Reports";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,8 +40,10 @@ interface UserSymptom {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [data, setData] = useState<DashboardData>({
     currentScore: 72.5,
     weeklyTrend: 'up',
@@ -308,17 +312,28 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
 
         {/* Welcome Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome back, <span className="text-primary">Sarah</span>
+          <h1 className="text-4xl font-bold mb-2">
+            My <span className="text-primary">Health Journey</span>
           </h1>
-          <p className="text-lg text-primary font-medium">
-            Your central hub for tracking your health journey. Monitor your progress, discover personalized recommendations, and take action on insights tailored specifically for your body. Everything you need to feel your best is right here.
+          <p className="text-lg text-muted-foreground">
+            Track your progress, view comprehensive reports, and access your complete health data
           </p>
         </div>
+
+        {/* Tabs for My Journey */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-8">
 
         {/* Personalized Health Assessment */}
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
@@ -625,8 +640,8 @@ const Dashboard = () => {
 
         {/* Quick Access Links */}
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
-          <Button variant="link" onClick={() => navigate('/reports')} className="text-sm">
-            View Detailed Reports →
+          <Button variant="link" onClick={() => navigate('/symptoms')} className="text-sm">
+            Take New Assessment →
           </Button>
           <Button variant="link" onClick={() => navigate('/nutrition')} className="text-sm">
             Nutrition Guidance →
@@ -635,6 +650,32 @@ const Dashboard = () => {
             Sleep Optimization →
           </Button>
         </div>
+          </TabsContent>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports">
+            <Reports />
+          </TabsContent>
+
+          {/* History Tab */}
+          <TabsContent value="history">
+            <Card>
+              <CardHeader>
+                <CardTitle>Assessment History</CardTitle>
+                <CardDescription>View all your past assessments and track changes over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <History className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">Your detailed assessment history</p>
+                  <Button onClick={() => navigate('/assessment-history')}>
+                    View Full History
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

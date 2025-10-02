@@ -31,6 +31,7 @@ import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
 import MyProtocol from "./pages/MyProtocol";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
+            <Route path="/about" element={<About />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
