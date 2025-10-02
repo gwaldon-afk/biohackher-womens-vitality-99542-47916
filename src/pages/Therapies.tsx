@@ -178,9 +178,12 @@ const Therapies = () => {
                 <currentTherapy.icon className={`h-8 w-8 ${currentTherapy.color}`} />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-2xl">{currentTherapy.name}</span>
                   <ScienceBackedIcon className="h-5 w-5" />
+                  {currentTherapy.researchCitation && (
+                    <ResearchCitation {...currentTherapy.researchCitation} />
+                  )}
                 </div>
                 <CardDescription className="mt-1">{currentTherapy.description}</CardDescription>
               </div>
