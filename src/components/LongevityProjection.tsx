@@ -183,10 +183,23 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
                     dataKey="impact"
                     position="top"
                     style={{ fontSize: '10px', fontWeight: '600' }}
-                    formatter={(value: number, entry: any) => {
-                      const years = entry.years;
-                      const projectedAge = currentAge + years + value;
-                      return `${projectedAge.toFixed(1)} yo`;
+                    content={(props: any) => {
+                      const { x, y, width, value, index } = props;
+                      if (index === undefined || !projectionData[index]) return null;
+                      const entry = projectionData[index];
+                      const projectedAge = currentAge + entry.years + value;
+                      return (
+                        <text
+                          x={x + width / 2}
+                          y={y - 5}
+                          fill="#374151"
+                          textAnchor="middle"
+                          fontSize="10"
+                          fontWeight="600"
+                        >
+                          {projectedAge.toFixed(1)} yo
+                        </text>
+                      );
                     }}
                   />
                 </Bar>
