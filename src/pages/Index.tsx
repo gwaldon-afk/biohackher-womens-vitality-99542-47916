@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X, Shield, FileText, Award, Target } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X, Shield, FileText, Award, Target, Lightbulb, LayoutDashboard } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
@@ -75,6 +75,7 @@ const Index = () => {
                   console.log("Longevity quiz clicked");
                   navigate("/longevity-mindset-quiz");
                 }}>
+                    <Lightbulb className="h-5 w-5 mr-2" />
                     What's Your Longevity Mindset
                   </Button>
                   
@@ -109,6 +110,7 @@ const Index = () => {
                   console.log("View Dashboard clicked");
                   navigate("/dashboard");
                 }}>
+                    <LayoutDashboard className="h-5 w-5 mr-2" />
                     View Dashboard
                   </Button>
                 </div>
