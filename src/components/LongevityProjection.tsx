@@ -156,11 +156,11 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
         {/* Projection Chart */}
         <div>
           <h4 className="font-medium text-gray-900 mb-4 text-center">
-            Projected Longevity Age Impact
+            Rate of Ageing: Actual vs LIS Biological Age
           </h4>
-          <ChartContainer config={chartConfig} className="h-[200px] w-full">
+          <ChartContainer config={chartConfig} className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={projectionData} margin={{ top: 30, right: 30, left: 20, bottom: 5 }}>
+              <BarChart data={projectionData} margin={{ top: 50, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis 
                   dataKey="period" 
@@ -174,6 +174,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
                   tick={{ fontSize: 12, fill: '#6b7280' }}
                   domain={[(dataMin: number) => Math.floor(dataMin - 0.5), (dataMax: number) => Math.ceil(dataMax + 0.5)]}
                   tickFormatter={(value) => `${value > 0 ? '+' : ''}${value}y`}
+                  label={{ value: 'Rate of Ageing (Years Impact)', angle: -90, position: 'insideLeft', style: { fontSize: 11, fill: '#6b7280' } }}
                 />
                 <Bar dataKey="impact" radius={[4, 4, 0, 0]}>
                   {projectionData.map((entry, index) => (
@@ -182,23 +183,39 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
                   <LabelList
                     dataKey="impact"
                     position="top"
-                    style={{ fontSize: '10px', fontWeight: '600' }}
                     content={(props: any) => {
-                      const { x, y, width, value, index } = props;
+                      const { x, y, width, value, index, height } = props;
                       if (index === undefined || !projectionData[index]) return null;
                       const entry = projectionData[index];
-                      const projectedAge = currentAge + entry.years + value;
+                      const lisBioAge = currentAge + entry.years + value;
+                      const actualAge = currentAge + entry.years;
+                      const bioAgeColor = value > 0 ? '#ef4444' : value < 0 ? '#10b981' : '#6b7280';
+                      
                       return (
-                        <text
-                          x={x + width / 2}
-                          y={y - 5}
-                          fill="#374151"
-                          textAnchor="middle"
-                          fontSize="10"
-                          fontWeight="600"
-                        >
-                          {projectedAge.toFixed(1)} yo
-                        </text>
+                        <g>
+                          {/* LIS Biological Age - Top label */}
+                          <text
+                            x={x + width / 2}
+                            y={y - 25}
+                            fill={bioAgeColor}
+                            textAnchor="middle"
+                            fontSize="10"
+                            fontWeight="700"
+                          >
+                            LIS Bio: {lisBioAge.toFixed(1)}yo
+                          </text>
+                          {/* Actual Age - Second label */}
+                          <text
+                            x={x + width / 2}
+                            y={y - 12}
+                            fill="#9ca3af"
+                            textAnchor="middle"
+                            fontSize="9"
+                            fontWeight="500"
+                          >
+                            Actual: {actualAge}yo
+                          </text>
+                        </g>
                       );
                     }}
                   />
@@ -207,14 +224,37 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       const value = payload[0].value as number;
+                      const dataIndex = projectionData.findIndex(d => d.period === label);
+                      if (dataIndex === -1) return null;
+                      
+                      const entry = projectionData[dataIndex];
+                      const lisBioAge = currentAge + entry.years + value;
+                      const actualAge = currentAge + entry.years;
+                      const gap = Math.abs(value);
+                      
                       return (
                         <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-md">
-                          <p className="font-medium text-gray-900">{label}</p>
-                          <p className={`text-sm ${value > 0 ? 'text-red-600' : value < 0 ? 'text-green-600' : 'text-gray-600'}`}>
-                            Longevity Age: {value > 0 ? '+' : ''}{value.toFixed(1)} years
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {value > 0 ? 'Older than chronological age' : value < 0 ? 'Younger than chronological age' : 'Same as chronological age'}
+                          <p className="font-semibold text-gray-900 mb-2">{label}</p>
+                          <div className="space-y-1.5 text-xs">
+                            <div className="flex justify-between gap-3">
+                              <span className="text-gray-600">Actual Age:</span>
+                              <span className="font-semibold text-gray-900">{actualAge} years</span>
+                            </div>
+                            <div className="flex justify-between gap-3">
+                              <span className="text-gray-600">LIS Bio Age:</span>
+                              <span className={`font-semibold ${value > 0 ? 'text-red-600' : value < 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                {lisBioAge.toFixed(1)} years
+                              </span>
+                            </div>
+                            <div className="flex justify-between gap-3 pt-1 border-t border-gray-100">
+                              <span className="text-gray-600">Gap:</span>
+                              <span className={`font-semibold ${value > 0 ? 'text-red-600' : value < 0 ? 'text-green-600' : 'text-gray-600'}`}>
+                                {gap.toFixed(1)} years {value > 0 ? 'older' : value < 0 ? 'younger' : 'same'}
+                              </span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-2 italic">
+                            {value > 0 ? 'Aging faster than chronological age' : value < 0 ? 'Aging slower than chronological age' : 'Aging at normal rate'}
                           </p>
                         </div>
                       );
