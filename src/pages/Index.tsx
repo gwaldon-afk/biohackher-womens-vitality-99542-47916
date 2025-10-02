@@ -10,7 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X, Shield, FileText, Award } from "lucide-react";
+import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, Users, CheckCircle, Sparkles, X, Shield, FileText, Award, Target } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
@@ -76,6 +77,34 @@ const Index = () => {
                 }}>
                     What's Your Longevity Mindset
                   </Button>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          size="lg" 
+                          variant="secondary" 
+                          className="bg-white/90 text-primary border border-white hover:bg-white relative z-50 pointer-events-auto"
+                          onClick={() => {
+                            console.log("Get LIS clicked");
+                            navigate("/lis-assessment");
+                          }}
+                        >
+                          <Target className="h-5 w-5 mr-2" />
+                          Get Your Longevity Impact Score
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
+                        <p className="text-sm font-medium mb-2 text-primary">Longevity Impact Score (LIS)</p>
+                        <p className="text-xs text-muted-foreground">
+                          LIS measures your daily habits' impact on biological aging. 
+                          Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
+                          and below 60 suggest accelerated aging. Take the assessment to discover your score.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
                   <Button size="lg" variant="outline" className="bg-white text-primary border-white hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
                   console.log("View Dashboard clicked");
                   navigate("/dashboard");

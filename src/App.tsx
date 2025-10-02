@@ -29,6 +29,7 @@ import Shop from "./pages/Shop";
 import Pillars from "./pages/Pillars";
 import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
+import LISAssessment from "./pages/LISAssessment";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/pillars" element={<Pillars />} />
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
+            <Route path="/lis-assessment" element={<LISAssessment />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
