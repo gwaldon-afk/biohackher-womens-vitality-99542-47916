@@ -466,7 +466,7 @@ const Index = () => {
                 </div>
                 <div className="p-8 flex flex-col justify-center">
                   <h2 className="text-2xl lg:text-3xl font-bold mb-4">
-                    Meet Azra Alagic
+                    Meet Azra
                   </h2>
                   <p className="text-lg text-primary font-semibold mb-4">
                     Founder & Longevity Expert
