@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Zap, Sparkles, Scale, Pill, Star, ShieldCheck, AlertTriangle } from "lucide-react";
@@ -7,6 +8,8 @@ import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
 import ResearchCitation from "@/components/ResearchCitation";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import EducationalDisclaimer from "@/components/EducationalDisclaimer";
 
 const Supplements = () => {
   const [selectedPillar, setSelectedPillar] = useState("brain");
@@ -201,6 +204,14 @@ const Supplements = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
+        <Breadcrumbs
+          items={[
+            { label: "Toolkit", href: "/biohacking-toolkit" },
+            { label: "Supplements", href: "/supplements" }
+          ]}
+          className="mb-6"
+        />
+        
         <div className="mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
             <h1 className="text-3xl font-bold gradient-text">Biohacking Supplements</h1>
@@ -209,13 +220,7 @@ const Supplements = () => {
           <p className="text-muted-foreground text-center">
             Evidence-based supplement protocols organised by the four pillars of wellness
           </p>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-            <p className="text-sm text-blue-800">
-              <strong>📚 Educational Information:</strong> This content presents commonly used supplements and approaches. 
-              It is for educational purposes only and does not constitute medical advice. 
-              Always consult with qualified healthcare professionals before starting any supplement regimen.
-            </p>
-          </div>
+          <EducationalDisclaimer type="therapy" className="mt-4 max-w-3xl mx-auto" />
         </div>
 
         {/* Pillar Selection */}
@@ -358,6 +363,22 @@ const Supplements = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+            
+            {/* CTA after supplements section */}
+            <div className="flex flex-col items-center gap-4 mt-12 p-8 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/20">
+              <h3 className="text-2xl font-bold text-center">Ready to Optimize Your Health?</h3>
+              <p className="text-muted-foreground text-center max-w-2xl">
+                Get personalized supplement recommendations based on your unique health profile and goals.
+              </p>
+              <div className="flex gap-4">
+                <Button onClick={() => window.location.href = '/symptoms'} size="lg">
+                  Take Health Assessment
+                </Button>
+                <Button onClick={() => window.location.href = '/dashboard'} variant="outline" size="lg">
+                  View Dashboard
+                </Button>
+              </div>
             </div>
           </div>
         )}

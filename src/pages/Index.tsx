@@ -14,6 +14,7 @@ import { Activity, Heart, Moon, Thermometer, Zap, TrendingUp, Brain, Flame, User
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
+import CTAButton from "@/components/CTAButton";
 import { useState } from "react";
 const Index = () => {
   const navigate = useNavigate();
@@ -96,12 +97,12 @@ const Index = () => {
       <section className="py-16 lg:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-8">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Understanding <span className="gradient-text">Longevity</span>: Your Path to Living Well Longer
             </h2>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-8 text-center">
-              Our <span className="gradient-text">Biohacking Pillars</span>
-            </h2>
+            <p className="text-lg text-muted-foreground mb-12">
+              Our approach is built on four foundational pillars designed specifically for women's unique physiological needs
+            </p>
 
             {/* Four Pillars Section */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -158,6 +159,20 @@ const Index = () => {
                 Each pillar represents a critical component of your health journey, from cognitive optimization 
                 to physical vitality, emotional balance, and aesthetic wellness—all designed specifically for women's unique physiological needs.
               </p>
+            </div>
+
+            {/* CTA after pillars section */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 mb-8">
+              <CTAButton
+                text="Explore All Pillars"
+                href="/pillars"
+                variant="default"
+              />
+              <CTAButton
+                text="Take Assessment"
+                href="/symptoms"
+                variant="outline"
+              />
             </div>
 
             <div className="mb-12">
@@ -321,6 +336,16 @@ const Index = () => {
                   <p className="text-muted-foreground text-sm">{item.answer}</p>
                 </CardContent>
               </Card>)}
+          </div>
+          
+          {/* CTA after questions */}
+          <div className="flex justify-center mt-12">
+            <CTAButton
+              text="Get Your Personalized Health Plan"
+              href="/symptoms"
+              variant="default"
+              className="text-lg px-8"
+            />
           </div>
         </div>
       </section>

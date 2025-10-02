@@ -8,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Moon, Sun, Lightbulb, Pill, Clock, CheckCircle2, Brain, Heart, Activity, FlaskConical, TestTube, FileText, Stethoscope } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import EducationalDisclaimer from "@/components/EducationalDisclaimer";
+import CTAButton from "@/components/CTAButton";
 import { useNavigate } from "react-router-dom";
 
 const Sleep = () => {
@@ -663,11 +666,20 @@ const Sleep = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-8">
+        <Breadcrumbs
+          items={[
+            { label: "Toolkit", href: "/biohacking-toolkit" },
+            { label: "Sleep", href: "/sleep" }
+          ]}
+          className="mb-6"
+        />
+        
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">Sleep Optimisation for Longevity</h1>
           <p className="text-muted-foreground">
             Evidence-based approach to optimising sleep for maximum lifespan and healthspan
           </p>
+          <EducationalDisclaimer type="health" className="mt-4" />
         </div>
 
         {/* Section Selector with Radio Buttons */}
@@ -708,6 +720,26 @@ const Sleep = () => {
 
         {/* Dynamic Content Based on Selected Section */}
         {renderContent()}
+        
+        {/* CTA Section */}
+        <div className="max-w-4xl mx-auto mt-12 p-8 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/20 text-center">
+          <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Sleep?</h3>
+          <p className="text-muted-foreground mb-6">
+            Get personalized sleep recommendations based on your unique patterns and health profile.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <CTAButton
+              text="Start Sleep Assessment"
+              href="/symptoms"
+              variant="default"
+            />
+            <CTAButton
+              text="View Dashboard"
+              href="/dashboard"
+              variant="outline"
+            />
+          </div>
+        </div>
       </main>
     </div>
   );

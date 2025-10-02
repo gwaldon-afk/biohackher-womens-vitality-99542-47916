@@ -8,6 +8,9 @@ import { Play, Pause, RotateCcw, Sun, Snowflake, Waves, Heart, AlertTriangle } f
 import Navigation from "@/components/Navigation";
 import ResearchCitation from "@/components/ResearchCitation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import EducationalDisclaimer from "@/components/EducationalDisclaimer";
+import CTAButton from "@/components/CTAButton";
 
 const Therapies = () => {
   const [activeTimer, setActiveTimer] = useState<string | null>(null);
@@ -298,6 +301,26 @@ const Therapies = () => {
                 </Tabs>
               </>
             )}
+          </div>
+        </div>
+        
+        {/* CTA Section */}
+        <div className="max-w-4xl mx-auto mt-12 p-8 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-primary/20 text-center">
+          <h3 className="text-2xl font-bold mb-4">Start Your Biohacking Journey</h3>
+          <p className="text-muted-foreground mb-6">
+            Combine these evidence-based therapies with personalized nutrition and symptom tracking for optimal results.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <CTAButton
+              text="Complete Health Assessment"
+              href="/symptoms"
+              variant="default"
+            />
+            <CTAButton
+              text="View My Dashboard"
+              href="/dashboard"
+              variant="outline"
+            />
           </div>
         </div>
       </main>
