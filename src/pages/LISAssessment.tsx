@@ -287,19 +287,19 @@ const LISAssessment = () => {
     const ageContext = age < 30 ? "in your 20s" : age < 40 ? "in your 30s" : age < 50 ? "in your 40s" : age < 60 ? "in your 50s" : "over 60";
     const goalsText = profileData.healthGoals.length > 1 
       ? profileData.healthGoals.slice(0, -1).join(', ') + ' and ' + profileData.healthGoals.slice(-1)
-      : profileData.healthGoals[0];
+      : profileData.healthGoals[0] || "improving your health";
     
     if (score >= 90) {
       analysis = `Outstanding! Your LIS score of ${score} places you in the top tier of longevity optimization for someone ${ageContext}. You're consistently making choices that support healthy aging across all key areas of life.`;
       if (profileData.healthGoals.length > 0) analysis += ` Your focus on ${goalsText.toLowerCase()} is clearly paying off.`;
     } else if (score >= 80) {
-      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. For someone ${ageContext} with your goals of ${goalsText.toLowerCase()}, your lifestyle choices are positively impacting your biological age.`;
+      analysis = `Excellent work! Your LIS score of ${score} shows you're actively working toward longevity. For someone ${ageContext}${profileData.healthGoals.length > 0 ? ` with your goals of ${goalsText.toLowerCase()}` : ''}, your lifestyle choices are positively impacting your biological age.`;
     } else if (score >= 70) {
-      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits for someone ${ageContext}. Given your goals of ${goalsText.toLowerCase()}, there's significant room for optimization to maximize your longevity potential.`;
+      analysis = `Good foundation! Your LIS score of ${score} indicates solid health habits for someone ${ageContext}. ${profileData.healthGoals.length > 0 ? `Given your goals of ${goalsText.toLowerCase()}, there's` : "There's"} significant room for optimization to maximize your longevity potential.`;
     } else if (score >= 60) {
-      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. As someone ${ageContext} aiming for ${goalsText.toLowerCase()}, strategic improvements could significantly enhance your longevity.`;
+      analysis = `Fair status. Your LIS score of ${score} suggests your current habits are neutral to slightly aging. As someone ${ageContext}${profileData.healthGoals.length > 0 ? ` aiming for ${goalsText.toLowerCase()}` : ''}, strategic improvements could significantly enhance your longevity.`;
     } else {
-      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. For someone ${ageContext}, the good news is that lifestyle changes can have a powerful impact on biological aging, especially when working toward ${goalsText.toLowerCase()}.`;
+      analysis = `Your LIS score of ${score} indicates significant opportunity for improvement. For someone ${ageContext}, the good news is that lifestyle changes can have a powerful impact on biological aging${profileData.healthGoals.length > 0 ? `, especially when working toward ${goalsText.toLowerCase()}` : ''}.`;
     }
     
     if (profileData.healthConcerns.length > 0) {
