@@ -276,7 +276,23 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const currentScore = calculateScore();
 
   // Check subscription access before opening modal
-  const handleOpenModal = () => {
+  const handleOpenModal = async () => {
+    // Check if this is their first daily score - if so, allow it without subscription check
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { count } = await supabase
+        .from('daily_scores')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+      
+      // Allow first daily score submission for onboarding
+      if (count === 0) {
+        setOpen(true);
+        return;
+      }
+    }
+    
+    // For subsequent submissions, check subscription
     if (!canSubmitDaily()) {
       navigate('/upgrade');
       return;
