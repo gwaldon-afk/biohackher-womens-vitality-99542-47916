@@ -14,11 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      baseline_assessment_schedule: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_baseline_date: string
+          next_prompt_date: string
+          prompt_dismissed: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_baseline_date: string
+          next_prompt_date: string
+          prompt_dismissed?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_baseline_date?: string
+          next_prompt_date?: string
+          prompt_dismissed?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "baseline_assessment_schedule_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       daily_scores: {
         Row: {
           active_minutes: number | null
           activity_intensity: number | null
           activity_type: string | null
+          assessment_type: string | null
           biological_age_impact: number
           cognitive_engagement_score: number | null
           color_code: string
@@ -28,6 +67,7 @@ export type Database = {
           hrv: number | null
           id: string
           input_mode: string | null
+          is_baseline: boolean | null
           learning_minutes: number | null
           longevity_impact_score: number
           meal_quality: number | null
@@ -36,12 +76,14 @@ export type Database = {
           nutritional_detailed_score: number | null
           nutritional_grade: string | null
           physical_activity_score: number | null
+          questionnaire_data: Json | null
           rem_hours: number | null
           self_reported_stress: number | null
           sleep_score: number | null
           social_connections_score: number | null
           social_interaction_quality: number | null
           social_time_minutes: number | null
+          source_type: string | null
           steps: number | null
           stress_score: number | null
           total_sleep_hours: number | null
@@ -52,6 +94,7 @@ export type Database = {
           active_minutes?: number | null
           activity_intensity?: number | null
           activity_type?: string | null
+          assessment_type?: string | null
           biological_age_impact: number
           cognitive_engagement_score?: number | null
           color_code: string
@@ -61,6 +104,7 @@ export type Database = {
           hrv?: number | null
           id?: string
           input_mode?: string | null
+          is_baseline?: boolean | null
           learning_minutes?: number | null
           longevity_impact_score: number
           meal_quality?: number | null
@@ -69,12 +113,14 @@ export type Database = {
           nutritional_detailed_score?: number | null
           nutritional_grade?: string | null
           physical_activity_score?: number | null
+          questionnaire_data?: Json | null
           rem_hours?: number | null
           self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
           social_interaction_quality?: number | null
           social_time_minutes?: number | null
+          source_type?: string | null
           steps?: number | null
           stress_score?: number | null
           total_sleep_hours?: number | null
@@ -85,6 +131,7 @@ export type Database = {
           active_minutes?: number | null
           activity_intensity?: number | null
           activity_type?: string | null
+          assessment_type?: string | null
           biological_age_impact?: number
           cognitive_engagement_score?: number | null
           color_code?: string
@@ -94,6 +141,7 @@ export type Database = {
           hrv?: number | null
           id?: string
           input_mode?: string | null
+          is_baseline?: boolean | null
           learning_minutes?: number | null
           longevity_impact_score?: number
           meal_quality?: number | null
@@ -102,12 +150,14 @@ export type Database = {
           nutritional_detailed_score?: number | null
           nutritional_grade?: string | null
           physical_activity_score?: number | null
+          questionnaire_data?: Json | null
           rem_hours?: number | null
           self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
           social_interaction_quality?: number | null
           social_time_minutes?: number | null
+          source_type?: string | null
           steps?: number | null
           stress_score?: number | null
           total_sleep_hours?: number | null

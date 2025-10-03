@@ -202,8 +202,11 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
         // Cognitive data
         meditation_minutes: cognitiveData.meditationMinutes,
         learning_minutes: cognitiveData.learningMinutes,
-        // Input method
+        // Input method and source type
         input_mode: activeTab,
+        source_type: 'manual_entry',
+        assessment_type: 'daily_tracking',
+        is_baseline: false,
         // Individual pillar scores for reference
         sleep_score: (sleepData.totalSleepHours / 8) * 25,
         stress_score: ((200 - stressData.hrv) / 200 + (10 - stressData.selfReportedStress) / 10) * 10,
@@ -305,6 +308,28 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               Input your daily metrics to calculate your personalised LIS score
             </DialogDescription>
           </DialogHeader>
+
+          {/* Wearable Connection Banner */}
+          <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Smartphone className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                  Connect a wearable for automatic tracking
+                </p>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                  Manual entry is available, but connecting a device will save you time with automatic daily updates.
+                </p>
+                <Button 
+                  variant="link" 
+                  className="h-auto p-0 text-blue-600 dark:text-blue-400 text-xs mt-2"
+                  onClick={() => window.location.href = '/settings?tab=integrations'}
+                >
+                  Connect Device →
+                </Button>
+              </div>
+            </div>
+          </div>
 
           {/* Date Selection */}
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">

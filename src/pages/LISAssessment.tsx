@@ -10,6 +10,7 @@ import { ArrowLeft, ArrowRight, Target, TrendingUp, TrendingDown, Minus, CheckCi
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import LongevityProjection from "@/components/LongevityProjection";
 
 const LISAssessment = () => {
@@ -54,6 +55,16 @@ const LISAssessment = () => {
     
     return mockAnswers;
   };
+
+  // Redirect logged-in users unless in special mode or dev
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    const dev = searchParams.get('dev');
+    
+    if (user && !mode && dev !== 'true') {
+      navigate('/dashboard');
+    }
+  }, [user, searchParams, navigate]);
 
   // URL parameter handling for dev mode
   useEffect(() => {
@@ -269,7 +280,7 @@ const LISAssessment = () => {
     }
   };
 
-  const calculateScore = () => {
+  const calculateScore = async () => {
     let totalScore = 0;
     let answeredQuestions = 0;
 
@@ -286,6 +297,80 @@ const LISAssessment = () => {
 
     const finalScore = answeredQuestions > 0 ? Math.round(totalScore / answeredQuestions) : 0;
     setLisScore(finalScore);
+
+    // Save baseline score to database if user is logged in and in onboarding/reassessment mode
+    const mode = searchParams.get('mode');
+    if (user && (mode === 'onboarding' || mode === 'reassessment')) {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Save to daily_scores as baseline
+        const { error: scoreError } = await supabase
+          .from('daily_scores')
+          .insert([{
+            user_id: user.id,
+            date: today,
+            longevity_impact_score: finalScore,
+            biological_age_impact: finalScore > 75 ? -0.5 : finalScore > 50 ? 0 : 0.5,
+            color_code: finalScore > 75 ? 'green' : finalScore > 50 ? 'yellow' : 'red',
+            source_type: 'lifestyle_baseline',
+            assessment_type: mode === 'onboarding' ? 'lifestyle_baseline' : 'quarterly_review',
+            is_baseline: mode === 'onboarding',
+            questionnaire_data: {
+              questions: questions.map(q => ({ id: q.id, category: q.category, question: q.question, options: q.options })),
+              answers,
+              profileData
+            }
+          }]);
+
+        if (scoreError) throw scoreError;
+
+        // Create or update baseline assessment schedule
+        if (mode === 'onboarding') {
+          const nextPromptDate = new Date();
+          nextPromptDate.setDate(nextPromptDate.getDate() + 90); // 90 days from now
+
+          const { error: scheduleError } = await supabase
+            .from('baseline_assessment_schedule')
+            .insert([{
+              user_id: user.id,
+              last_baseline_date: today,
+              next_prompt_date: nextPromptDate.toISOString().split('T')[0],
+              prompt_dismissed: false
+            }]);
+
+          if (scheduleError) throw scheduleError;
+        } else if (mode === 'reassessment') {
+          // Update schedule for next quarter
+          const nextPromptDate = new Date();
+          nextPromptDate.setDate(nextPromptDate.getDate() + 90);
+
+          const { error: scheduleError } = await supabase
+            .from('baseline_assessment_schedule')
+            .update({
+              last_baseline_date: today,
+              next_prompt_date: nextPromptDate.toISOString().split('T')[0],
+              prompt_dismissed: false
+            })
+            .eq('user_id', user.id);
+
+          if (scheduleError) throw scheduleError;
+        }
+
+        toast({
+          title: "Baseline Saved!",
+          description: `Your baseline LIS of ${finalScore} has been recorded.`,
+        });
+      } catch (error) {
+        console.error('Error saving baseline score:', error);
+        toast({
+          title: "Save Error",
+          description: "Your score was calculated but couldn't be saved.",
+          variant: "destructive"
+        });
+      }
+    }
+
     setShowResults(true);
   };
 

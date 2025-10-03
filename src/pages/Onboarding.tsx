@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, ArrowLeft, X, CheckCircle, Brain, Heart, Zap, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, X, CheckCircle, Brain, Heart, Zap, Sparkles, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProgress } from "@/hooks/useUserProgress";
@@ -43,7 +43,7 @@ const Onboarding = () => {
   const { completeOnboarding, updateProgress } = useUserProgress();
   const { toast } = useToast();
 
-  const totalSteps = 6;
+  const totalSteps = 7;
   const progress = (currentStep / totalSteps) * 100;
 
   const handleNext = async () => {
@@ -401,11 +401,39 @@ const Onboarding = () => {
                 </div>
               </div>
               <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 text-center">
-                <CheckCircle className="h-8 w-8 text-primary mx-auto mb-2" />
-                <p className="text-sm font-medium">You're all set!</p>
+                <p className="text-sm font-medium">Next: Establish Your Baseline</p>
                 <p className="text-xs text-muted-foreground">
-                  Complete pillar assessments to get personalized recommendations
+                  Take a quick assessment to set your starting point
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      case 7:
+        return (
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl gradient-text">
+                Your Lifestyle Baseline Assessment
+              </CardTitle>
+              <CardDescription>
+                This creates your starting point to track improvements over time
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
+                <Activity className="h-12 w-12 text-primary mx-auto mb-4" />
+                <p className="text-sm text-muted-foreground mb-4">
+                  You'll now complete a brief assessment to establish your baseline Longevity Impact Score.
+                  This takes about 3-5 minutes.
+                </p>
+                <Button 
+                  onClick={() => navigate('/lis-assessment?mode=onboarding')}
+                  className="w-full"
+                >
+                  Start Baseline Assessment
+                </Button>
               </div>
             </CardContent>
           </Card>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,10 +7,21 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { User, Bell, Shield, FileText, AlertTriangle } from "lucide-react";
+import { User, Bell, Shield, FileText, AlertTriangle, Smartphone, Activity, Watch } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 const Settings = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'profile';
+
   const [profile, setProfile] = useState({
     name: "Sarah Johnson",
     email: "sarah@example.com",
@@ -33,6 +44,65 @@ const Settings = () => {
     researchParticipation: false
   });
 
+  // Baseline assessment data
+  const [baselineScore, setBaselineScore] = useState<number | null>(null);
+  const [baselineDate, setBaselineDate] = useState<Date | null>(null);
+  const [nextReviewDate, setNextReviewDate] = useState<Date | null>(null);
+  const [reassessmentHistory, setReassessmentHistory] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      fetchBaselineData();
+    }
+  }, [user]);
+
+  const fetchBaselineData = async () => {
+    if (!user) return;
+
+    try {
+      // Fetch baseline score
+      const { data: baseline } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_baseline', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (baseline) {
+        setBaselineScore(baseline.longevity_impact_score);
+        setBaselineDate(new Date(baseline.created_at));
+      }
+
+      // Fetch schedule
+      const { data: schedule } = await supabase
+        .from('baseline_assessment_schedule')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (schedule) {
+        setNextReviewDate(new Date(schedule.next_prompt_date));
+      }
+
+      // Fetch reassessment history
+      const { data: history } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('assessment_type', ['lifestyle_baseline', 'quarterly_review'])
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (history) {
+        setReassessmentHistory(history);
+      }
+    } catch (error) {
+      console.error('Error fetching baseline data:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -45,23 +115,31 @@ const Settings = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue={defaultTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Profile
+              <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="flex items-center gap-2">
+              <Smartphone className="h-4 w-4" />
+              <span className="hidden sm:inline">Integrations</span>
+            </TabsTrigger>
+            <TabsTrigger value="health-profile" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              <span className="hidden sm:inline">Health Profile</span>
             </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
-              Notifications
+              <span className="hidden sm:inline">Notifications</span>
             </TabsTrigger>
             <TabsTrigger value="privacy" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
-              Privacy
+              <span className="hidden sm:inline">Privacy</span>
             </TabsTrigger>
             <TabsTrigger value="legal" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Legal
+              <span className="hidden sm:inline">Legal</span>
             </TabsTrigger>
           </TabsList>
           
@@ -181,7 +259,152 @@ const Settings = () => {
               </Card>
             </div>
           </TabsContent>
-          
+
+          {/* Integrations Tab */}
+          <TabsContent value="integrations" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Connected Devices</CardTitle>
+                <CardDescription>
+                  Connect your wearable devices for automatic daily LIS tracking
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Apple Health */}
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Smartphone className="h-8 w-8 text-gray-600" />
+                    <div>
+                      <h4 className="font-medium">Apple Health</h4>
+                      <p className="text-sm text-muted-foreground">Not connected</p>
+                    </div>
+                  </div>
+                  <Button variant="default" disabled>
+                    Coming Soon
+                  </Button>
+                </div>
+
+                {/* Oura Ring */}
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Watch className="h-8 w-8 text-purple-600" />
+                    <div>
+                      <h4 className="font-medium">Oura Ring</h4>
+                      <p className="text-sm text-muted-foreground">Not connected</p>
+                    </div>
+                  </div>
+                  <Button variant="default" disabled>
+                    Coming Soon
+                  </Button>
+                </div>
+
+                {/* Fitbit */}
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Activity className="h-8 w-8 text-blue-600" />
+                    <div>
+                      <h4 className="font-medium">Fitbit</h4>
+                      <p className="text-sm text-muted-foreground">Not connected</p>
+                    </div>
+                  </div>
+                  <Button variant="default" disabled>
+                    Coming Soon
+                  </Button>
+                </div>
+
+                {/* Garmin */}
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Watch className="h-8 w-8 text-cyan-600" />
+                    <div>
+                      <h4 className="font-medium">Garmin</h4>
+                      <p className="text-sm text-muted-foreground">Not connected</p>
+                    </div>
+                  </div>
+                  <Button variant="default" disabled>
+                    Coming Soon
+                  </Button>
+                </div>
+
+                <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    🚧 Wearable integrations coming soon! We're working on bringing automatic syncing to BiohackHer.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Health Profile Tab */}
+          <TabsContent value="health-profile" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Health Profile</CardTitle>
+                <CardDescription>
+                  Your lifestyle baseline assessment and re-assessment history
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {baselineScore ? (
+                  <>
+                    {/* Current Baseline Info */}
+                    <div className="p-4 bg-primary/5 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium">Current Baseline Score</p>
+                        <Badge variant="secondary" className="text-lg px-3 py-1">{baselineScore}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Established: {baselineDate && format(baselineDate, 'MMMM d, yyyy')}
+                      </p>
+                      {nextReviewDate && (
+                        <p className="text-xs text-primary mt-2">
+                          Next review recommended: {format(nextReviewDate, 'MMMM d, yyyy')}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Re-assessment Button */}
+                    <Button 
+                      onClick={() => navigate('/lis-assessment?mode=reassessment')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Update My Baseline Assessment
+                    </Button>
+
+                    {/* History */}
+                    {reassessmentHistory.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium">Assessment History</h4>
+                        {reassessmentHistory.map((assessment) => (
+                          <div key={assessment.id} className="flex items-center justify-between p-3 border rounded-lg">
+                            <div>
+                              <p className="text-sm">{format(new Date(assessment.created_at), 'MMM d, yyyy')}</p>
+                              <p className="text-xs text-muted-foreground capitalize">
+                                {assessment.assessment_type?.replace('_', ' ')}
+                              </p>
+                            </div>
+                            <Badge>{assessment.longevity_impact_score}</Badge>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center p-6">
+                    <p className="text-muted-foreground mb-4">No baseline assessment found</p>
+                    <Button 
+                      onClick={() => navigate('/lis-assessment?mode=onboarding')}
+                      variant="default"
+                    >
+                      Take Your Baseline Assessment
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="notifications" className="mt-6">
             <Card>
               <CardHeader>

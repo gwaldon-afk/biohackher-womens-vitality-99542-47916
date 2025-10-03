@@ -17,6 +17,9 @@ import { ProgressTracker } from "@/components/ProgressTracker";
 import { StreakCard } from "@/components/StreakCard";
 import { AIInsightsCard } from "@/components/AIInsightsCard";
 import { MonthlyReportCard } from "@/components/MonthlyReportCard";
+import { BaselineReassessmentPrompt } from "@/components/BaselineReassessmentPrompt";
+import { useLISData } from "@/hooks/useLISData";
+import { format } from "date-fns";
 
 interface DashboardData {
   currentScore: number;
@@ -58,6 +61,9 @@ const Dashboard = () => {
   const [recentAssessments, setRecentAssessments] = useState<SymptomAssessment[]>([]);
   const [activeSymptoms, setActiveSymptoms] = useState<UserSymptom[]>([]);
   const [loadingSymptoms, setLoadingSymptoms] = useState(false);
+  
+  // LIS data from new hook
+  const lisData = useLISData();
 
   // Fetch user's symptoms and assessments
   useEffect(() => {
@@ -338,6 +344,75 @@ const Dashboard = () => {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-8">
+
+        {/* Baseline Reassessment Prompt */}
+        <BaselineReassessmentPrompt />
+
+        {/* LIS Baseline Comparison Card */}
+        {lisData.baselineScore && (
+          <Card className="col-span-2 bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardHeader>
+              <CardTitle>Your Longevity Impact Score</CardTitle>
+              <CardDescription>Baseline vs Current Performance</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Baseline Score */}
+                <div className="text-center p-6 bg-background/80 rounded-lg border">
+                  <p className="text-sm text-muted-foreground mb-2">Baseline (Onboarding)</p>
+                  <p className="text-4xl font-bold text-primary">{lisData.baselineScore}</p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {lisData.baselineDate && format(lisData.baselineDate, 'MMM d, yyyy')}
+                  </p>
+                </div>
+
+                {/* Current Score */}
+                <div className="text-center p-6 bg-background/80 rounded-lg border">
+                  <p className="text-sm text-muted-foreground mb-2">Current (30-day avg)</p>
+                  <p className="text-4xl font-bold text-secondary">
+                    {lisData.currentScore || 'No data'}
+                  </p>
+                  {lisData.improvement !== 0 && (
+                    <div className="flex items-center justify-center gap-2 mt-2">
+                      {lisData.improvement >= 0 ? (
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4 text-red-600" />
+                      )}
+                      <span className={lisData.improvement >= 0 ? "text-green-600" : "text-red-600"}>
+                        {lisData.improvement >= 0 ? '+' : ''}{lisData.improvement} points
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Data Sources Indicator */}
+              <div className="mt-6 p-4 bg-background/80 rounded-lg border">
+                <h4 className="font-medium mb-3">Data Sources</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Wearable Sync</span>
+                    <Badge variant={lisData.hasWearableData ? "default" : "outline"}>
+                      {lisData.hasWearableData ? "Active" : "Not connected"}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Manual Entry</span>
+                    <Badge variant={lisData.hasManualData ? "default" : "outline"}>
+                      {lisData.manualEntryCount} entries
+                    </Badge>
+                  </div>
+                </div>
+                {lisData.lastSyncTime && (
+                  <p className="text-xs text-muted-foreground mt-3">
+                    Last synced: {format(new Date(lisData.lastSyncTime), 'MMM d, h:mm a')}
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Progress & Streaks Section */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
