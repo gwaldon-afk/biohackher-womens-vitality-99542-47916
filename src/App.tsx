@@ -18,6 +18,7 @@ import AssessmentHistory from "./pages/AssessmentHistory";
 import BiohackingToolkit from "./pages/BiohackingToolkit";
 import Therapies from "./pages/Therapies";
 import Supplements from "./pages/Supplements";
+import ResearchEvidence from "./pages/ResearchEvidence";
 import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
 import Coaching from "./pages/Coaching";
@@ -56,8 +57,9 @@ const App = () => (
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />
             <Route path="/biohacking-toolkit" element={<BiohackingToolkit />} />
-            <Route path="/therapies" element={<Therapies />} />
-            <Route path="/supplements" element={<Supplements />} />
+          <Route path="/therapies" element={<Therapies />} />
+          <Route path="/supplements" element={<Supplements />} />
+          <Route path="/research-evidence" element={<ResearchEvidence />} />
             <Route path="/sleep" element={<Sleep />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/coaching" element={<Coaching />} />
