@@ -6,6 +6,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { Progress } from '@/components/ui/progress';
 import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import LISInputForm from '@/components/LISInputForm';
+import { useLISData } from '@/hooks/useLISData';
+import { useToast } from '@/hooks/use-toast';
+import Navigation from '@/components/Navigation';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -13,6 +17,8 @@ const LISResults = () => {
   const [searchParams] = useSearchParams();
   const isGuest = !user;
   const score = parseFloat(searchParams.get('score') || '0');
+  const lisData = useLISData();
+  const { toast } = useToast();
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
@@ -28,7 +34,9 @@ const LISResults = () => {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="container max-w-4xl mx-auto py-8 px-4">
       <Card className="mb-6">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -161,20 +169,29 @@ const LISResults = () => {
               </div>
 
               <div className="space-y-3">
-                <Button 
-                  onClick={() => navigate('/dashboard?action=submitDaily')} 
-                  className="w-full"
-                  size="lg"
-                >
-                  <Activity className="h-5 w-5 mr-2" />
-                  Submit Your First Daily Score
-                </Button>
+                <LISInputForm onScoreCalculated={() => {
+                  lisData.refetch();
+                  toast({
+                    title: "Great Start! 🎉",
+                    description: "Your first daily score has been recorded. You can now view your dashboard!",
+                  });
+                  // Optional: Auto-navigate after submission
+                  setTimeout(() => navigate('/dashboard'), 2000);
+                }}>
+                  <Button 
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Activity className="h-5 w-5 mr-2" />
+                    Submit Your First Daily Score Now
+                  </Button>
+                </LISInputForm>
                 <Button 
                   onClick={() => navigate('/dashboard')} 
                   variant="outline"
                   className="w-full"
                 >
-                  View Dashboard
+                  Skip for Now - View Dashboard
                 </Button>
               </div>
             </div>
@@ -195,6 +212,7 @@ const LISResults = () => {
           </AlertDescription>
         </Alert>
       )}
+    </div>
     </div>
   );
 };
