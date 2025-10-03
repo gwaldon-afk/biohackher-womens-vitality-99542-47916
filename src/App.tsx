@@ -31,11 +31,13 @@ import Pillars from "./pages/Pillars";
 import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
 import LISAssessment from "./pages/LISAssessment";
+import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +74,8 @@ const App = () => (
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/lis-assessment" element={<LISAssessment />} />
+            <Route path="/lis2-setup" element={<LIS2InitialAssessment />} />
+            <Route path="/lis2-research" element={<LIS2Research />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />

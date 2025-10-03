@@ -28,7 +28,9 @@ const sleepSchema = z.object({
 
 const stressSchema = z.object({
   hrv: z.number().min(0).max(200),
-  selfReportedStress: z.number().min(1).max(10)
+  selfReportedStress: z.number().min(1).max(10),
+  selfPerceivedAge: z.number().min(10).max(120).optional(),
+  subjectiveCalmnessRating: z.number().min(0).max(10).optional()
 });
 
 const activitySchema = z.object({
@@ -72,7 +74,9 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
   const [stressData, setStressData] = useState({
     hrv: 45,
-    selfReportedStress: 5
+    selfReportedStress: 5,
+    selfPerceivedAge: undefined as number | undefined,
+    subjectiveCalmnessRating: 5
   });
 
   const [activityData, setActivityData] = useState({

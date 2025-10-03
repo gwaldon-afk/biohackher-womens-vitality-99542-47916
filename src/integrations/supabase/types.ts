@@ -52,6 +52,30 @@ export type Database = {
           },
         ]
       }
+      calmness_baselines: {
+        Row: {
+          baseline_calmness_30day: number
+          created_at: string | null
+          date: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          baseline_calmness_30day: number
+          created_at?: string | null
+          date: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          baseline_calmness_30day?: number
+          created_at?: string | null
+          date?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           active_minutes: number | null
@@ -62,6 +86,7 @@ export type Database = {
           cognitive_engagement_score: number | null
           color_code: string
           created_at: string
+          daily_delta_ba_lis: number | null
           date: string
           deep_sleep_hours: number | null
           hrv: number | null
@@ -69,6 +94,7 @@ export type Database = {
           input_mode: string | null
           is_baseline: boolean | null
           learning_minutes: number | null
+          lis_version: string | null
           longevity_impact_score: number
           meal_quality: number | null
           meditation_minutes: number | null
@@ -78,6 +104,7 @@ export type Database = {
           physical_activity_score: number | null
           questionnaire_data: Json | null
           rem_hours: number | null
+          self_perceived_age: number | null
           self_reported_stress: number | null
           sleep_score: number | null
           social_connections_score: number | null
@@ -86,8 +113,10 @@ export type Database = {
           source_type: string | null
           steps: number | null
           stress_score: number | null
+          subjective_calmness_rating: number | null
           total_sleep_hours: number | null
           updated_at: string
+          user_chronological_age: number | null
           user_id: string
         }
         Insert: {
@@ -99,6 +128,7 @@ export type Database = {
           cognitive_engagement_score?: number | null
           color_code: string
           created_at?: string
+          daily_delta_ba_lis?: number | null
           date: string
           deep_sleep_hours?: number | null
           hrv?: number | null
@@ -106,6 +136,7 @@ export type Database = {
           input_mode?: string | null
           is_baseline?: boolean | null
           learning_minutes?: number | null
+          lis_version?: string | null
           longevity_impact_score: number
           meal_quality?: number | null
           meditation_minutes?: number | null
@@ -115,6 +146,7 @@ export type Database = {
           physical_activity_score?: number | null
           questionnaire_data?: Json | null
           rem_hours?: number | null
+          self_perceived_age?: number | null
           self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
@@ -123,8 +155,10 @@ export type Database = {
           source_type?: string | null
           steps?: number | null
           stress_score?: number | null
+          subjective_calmness_rating?: number | null
           total_sleep_hours?: number | null
           updated_at?: string
+          user_chronological_age?: number | null
           user_id: string
         }
         Update: {
@@ -136,6 +170,7 @@ export type Database = {
           cognitive_engagement_score?: number | null
           color_code?: string
           created_at?: string
+          daily_delta_ba_lis?: number | null
           date?: string
           deep_sleep_hours?: number | null
           hrv?: number | null
@@ -143,6 +178,7 @@ export type Database = {
           input_mode?: string | null
           is_baseline?: boolean | null
           learning_minutes?: number | null
+          lis_version?: string | null
           longevity_impact_score?: number
           meal_quality?: number | null
           meditation_minutes?: number | null
@@ -152,6 +188,7 @@ export type Database = {
           physical_activity_score?: number | null
           questionnaire_data?: Json | null
           rem_hours?: number | null
+          self_perceived_age?: number | null
           self_reported_stress?: number | null
           sleep_score?: number | null
           social_connections_score?: number | null
@@ -160,8 +197,10 @@ export type Database = {
           source_type?: string | null
           steps?: number | null
           stress_score?: number | null
+          subjective_calmness_rating?: number | null
           total_sleep_hours?: number | null
           updated_at?: string
+          user_chronological_age?: number | null
           user_id?: string
         }
         Relationships: [
@@ -677,6 +716,54 @@ export type Database = {
           score?: number | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_health_profile: {
+        Row: {
+          created_at: string | null
+          current_bmi: number | null
+          date_of_birth: string
+          date_quit_smoking: string | null
+          height_cm: number | null
+          id: string
+          initial_subjective_age_delta: number | null
+          is_current_smoker: boolean | null
+          is_former_smoker: boolean | null
+          social_engagement_baseline: number | null
+          updated_at: string | null
+          user_id: string
+          weight_kg: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_bmi?: number | null
+          date_of_birth: string
+          date_quit_smoking?: string | null
+          height_cm?: number | null
+          id?: string
+          initial_subjective_age_delta?: number | null
+          is_current_smoker?: boolean | null
+          is_former_smoker?: boolean | null
+          social_engagement_baseline?: number | null
+          updated_at?: string | null
+          user_id: string
+          weight_kg?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          current_bmi?: number | null
+          date_of_birth?: string
+          date_quit_smoking?: string | null
+          height_cm?: number | null
+          id?: string
+          initial_subjective_age_delta?: number | null
+          is_current_smoker?: boolean | null
+          is_former_smoker?: boolean | null
+          social_engagement_baseline?: number | null
+          updated_at?: string | null
+          user_id?: string
+          weight_kg?: number | null
         }
         Relationships: []
       }
