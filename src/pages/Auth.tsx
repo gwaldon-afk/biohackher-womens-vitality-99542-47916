@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -49,11 +50,26 @@ const Auth = () => {
     },
   });
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated and check for health profile
   useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
+    const checkProfileAndRedirect = async () => {
+      if (user) {
+        // Check if user has completed LIS 2.0 setup
+        const { data: healthProfile } = await supabase
+          .from('user_health_profile')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        if (!healthProfile) {
+          navigate('/lis2-setup');
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    };
+    
+    checkProfileAndRedirect();
   }, [user, navigate]);
 
   const handleSignIn = async (data: SignInData) => {
@@ -61,7 +77,22 @@ const Auth = () => {
     const { error } = await signIn(data.email, data.password);
     
     if (!error) {
-      navigate('/dashboard');
+      // Check if user has completed LIS 2.0 setup
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (currentUser) {
+        const { data: healthProfile } = await supabase
+          .from('user_health_profile')
+          .select('id')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
+        
+        if (!healthProfile) {
+          navigate('/lis2-setup');
+        } else {
+          navigate('/dashboard');
+        }
+      }
     }
     setIsLoading(false);
   };

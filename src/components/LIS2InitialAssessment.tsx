@@ -8,7 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Scale, Cigarette, Users, Calendar } from "lucide-react";
+import { Heart, Scale, Cigarette, Users, Calendar, Sparkles } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const LIS2InitialAssessment = () => {
   const navigate = useNavigate();
@@ -260,7 +261,23 @@ export const LIS2InitialAssessment = () => {
   };
 
   return (
-    <div className="container max-w-2xl mx-auto py-8">
+    <div className="container max-w-2xl mx-auto py-8 px-4">
+      {/* Welcome Banner */}
+      <Alert className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+        <Sparkles className="h-5 w-5 text-primary" />
+        <AlertTitle className="text-lg font-semibold">Welcome to LIS 2.0!</AlertTitle>
+        <AlertDescription className="mt-2">
+          Before you can start tracking your daily longevity score, we need to establish your personal baseline. 
+          This one-time setup takes about 2 minutes and includes:
+          <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+            <li>Basic health metrics (DOB, height, weight)</li>
+            <li>Lifestyle factors (smoking status)</li>
+            <li>Initial subjective age assessment</li>
+            <li>Social engagement baseline</li>
+          </ul>
+        </AlertDescription>
+      </Alert>
+
       <Card>
         <CardHeader>
           <CardTitle>LIS 2.0 Initial Assessment</CardTitle>
