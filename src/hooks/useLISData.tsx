@@ -14,6 +14,7 @@ interface LISData {
   hasManualData: boolean;
   manualEntryCount: number;
   lastSyncTime: string | null;
+  refetch: () => Promise<void>;
 }
 
 export const useLISData = (): LISData => {
@@ -110,6 +111,7 @@ export const useLISData = (): LISData => {
     hasWearableData,
     hasManualData,
     manualEntryCount,
-    lastSyncTime
+    lastSyncTime,
+    refetch: fetchLISData
   };
 };

@@ -298,9 +298,9 @@ const LISAssessment = () => {
     const finalScore = answeredQuestions > 0 ? Math.round(totalScore / answeredQuestions) : 0;
     setLisScore(finalScore);
 
-    // Save baseline score to database if user is logged in and in onboarding/reassessment mode
+    // Save score to database if user is logged in
     const mode = searchParams.get('mode');
-    if (user && (mode === 'onboarding' || mode === 'reassessment')) {
+    if (user && (mode === 'onboarding' || mode === 'reassessment' || mode === 'assessment')) {
       try {
         const today = new Date().toISOString().split('T')[0];
         
@@ -313,8 +313,8 @@ const LISAssessment = () => {
             longevity_impact_score: finalScore,
             biological_age_impact: finalScore > 75 ? -0.5 : finalScore > 50 ? 0 : 0.5,
             color_code: finalScore > 75 ? 'green' : finalScore > 50 ? 'yellow' : 'red',
-            source_type: 'lifestyle_baseline',
-            assessment_type: mode === 'onboarding' ? 'lifestyle_baseline' : 'quarterly_review',
+            source_type: mode === 'onboarding' ? 'lifestyle_baseline' : mode === 'reassessment' ? 'quarterly_review' : 'manual_entry',
+            assessment_type: mode === 'onboarding' ? 'lifestyle_baseline' : mode === 'reassessment' ? 'quarterly_review' : 'daily_tracking',
             is_baseline: mode === 'onboarding',
             questionnaire_data: {
               questions: questions.map(q => ({ id: q.id, category: q.category, question: q.question, options: q.options })),

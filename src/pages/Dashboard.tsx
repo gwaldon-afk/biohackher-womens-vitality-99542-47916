@@ -62,8 +62,14 @@ const Dashboard = () => {
   const [activeSymptoms, setActiveSymptoms] = useState<UserSymptom[]>([]);
   const [loadingSymptoms, setLoadingSymptoms] = useState(false);
   
-  // LIS data from new hook
   const lisData = useLISData();
+
+  // Refetch LIS data when returning to overview tab
+  useEffect(() => {
+    if (activeTab === 'overview' && user) {
+      lisData.refetch();
+    }
+  }, [activeTab, user]);
 
   // Fetch user's symptoms and assessments
   useEffect(() => {
