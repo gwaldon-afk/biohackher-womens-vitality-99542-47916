@@ -640,7 +640,7 @@ const LISAssessment = () => {
 
               {/* Category Breakdown */}
               <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-4 text-center">Your Longevity Pillars Breakdown</h3>
+                <h3 className="text-lg font-semibold mb-4 text-center">Your Longevity Score Breakdown</h3>
                 <div className="grid md:grid-cols-3 gap-4">
                   {Object.entries(categoryScores).map(([key, score]) => {
                     const iconMap = {
