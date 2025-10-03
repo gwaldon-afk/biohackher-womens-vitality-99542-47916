@@ -477,9 +477,15 @@ const Dashboard = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="cursor-help">
-                          <ProgressCircle value={data.currentScore} size="lg" className="text-primary">
+                          <ProgressCircle 
+                            value={lisData.currentScore || lisData.baselineScore || 0} 
+                            size="lg" 
+                            className="text-primary"
+                          >
                             <div className="text-center">
-                              <div className="text-xl font-bold">{data.currentScore}</div>
+                              <div className="text-xl font-bold">
+                                {lisData.currentScore || lisData.baselineScore || 0}
+                              </div>
                               <div className="text-xs text-muted-foreground">LIS Score</div>
                             </div>
                           </ProgressCircle>
@@ -488,9 +494,9 @@ const Dashboard = () => {
                       <TooltipContent className="max-w-xs p-3">
                         <p className="text-sm font-medium mb-2">Longevity Impact Score (LIS)</p>
                         <p className="text-xs">
-                          LIS measures your daily habits impact on biological aging. 
-                          Scores 80+ indicate aging-reversing habits, 60-80 are neutral, 
-                          and below 60 may accelerate aging.
+                          LIS measures your daily habits impact on biological ageing. 
+                          Scores 80+ indicate ageing-reversing habits, 60-80 are neutral, 
+                          and below 60 may accelerate ageing.
                         </p>
                       </TooltipContent>
                     </Tooltip>
