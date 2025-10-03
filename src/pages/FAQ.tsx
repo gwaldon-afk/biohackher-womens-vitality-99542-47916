@@ -277,6 +277,51 @@ const FAQ = () => {
             </CardContent>
           </Card>
 
+          {/* Research & Evidence Ratings Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Research & Evidence Ratings</CardTitle>
+              <CardDescription>
+                Understanding the strength of scientific evidence behind interventions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="space-y-2">
+                <AccordionItem value="evidence-levels">
+                  <AccordionTrigger>What do the Gold, Silver, Bronze, and Emerging evidence ratings mean?</AccordionTrigger>
+                  <AccordionContent>
+                    <p>We rate the scientific evidence quality for each longevity intervention to help you make informed decisions:</p>
+                    <div className="mt-4 space-y-3">
+                      <div className="p-3 border-l-4 border-yellow-500 bg-yellow-50 rounded">
+                        <p className="font-bold text-sm text-yellow-900">🥇 Gold Evidence</p>
+                        <p className="text-xs text-yellow-800 mt-1">Multiple randomized controlled trials (RCTs), meta-analyses, and systematic reviews</p>
+                        <p className="text-xs text-yellow-700 mt-2"><em>Example: Mediterranean diet's cardiovascular benefits have gold-standard evidence from numerous large-scale studies.</em></p>
+                      </div>
+                      <div className="p-3 border-l-4 border-gray-400 bg-gray-50 rounded">
+                        <p className="font-bold text-sm text-gray-900">🥈 Silver Evidence</p>
+                        <p className="text-xs text-gray-800 mt-1">Multiple observational studies with some RCTs, showing consistent patterns</p>
+                        <p className="text-xs text-gray-700 mt-2"><em>Example: Omega-3 supplementation has strong observational data and some controlled trials.</em></p>
+                      </div>
+                      <div className="p-3 border-l-4 border-amber-600 bg-amber-50 rounded">
+                        <p className="font-bold text-sm text-amber-900">🥉 Bronze Evidence</p>
+                        <p className="text-xs text-amber-800 mt-1">Preliminary research and mechanistic studies showing biological plausibility</p>
+                        <p className="text-xs text-amber-700 mt-2"><em>Example: NMN supplementation has promising mechanistic data but limited long-term human trials.</em></p>
+                      </div>
+                      <div className="p-3 border-l-4 border-blue-500 bg-blue-50 rounded">
+                        <p className="font-bold text-sm text-blue-900">🔬 Emerging Evidence</p>
+                        <p className="text-xs text-blue-800 mt-1">Promising early findings that require more research validation</p>
+                        <p className="text-xs text-blue-700 mt-2"><em>Example: Novel compounds or interventions with initial positive signals but insufficient data.</em></p>
+                      </div>
+                    </div>
+                    <div className="mt-4 p-3 bg-muted rounded-lg">
+                      <p className="text-xs text-muted-foreground"><strong>Note:</strong> All interventions in our database are evaluated and continuously updated as new research emerges. Higher evidence ratings generally indicate more confidence in effectiveness and safety.</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+
           {/* Scientific Basis Section */}
           <Card>
             <CardHeader>
