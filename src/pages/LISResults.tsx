@@ -170,30 +170,42 @@ const LISResults = () => {
               </div>
 
               <div className="space-y-3">
-                <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
-                  lisData.refetch();
-                  toast({
-                    title: "Great Start! 🎉",
-                    description: "Your first daily score has been recorded. You can now view your dashboard!",
-                  });
-                  // Optional: Auto-navigate after submission
-                  setTimeout(() => navigate('/dashboard'), 2000);
-                }}>
+                {lisData.dailyScores.length === 0 ? (
+                  <>
+                    <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
+                      lisData.refetch();
+                      toast({
+                        title: "Great Start! 🎉",
+                        description: "Your first daily score has been recorded. You can now view your dashboard!",
+                      });
+                      // Optional: Auto-navigate after submission
+                      setTimeout(() => navigate('/dashboard'), 2000);
+                    }}>
+                      <Button 
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Activity className="h-5 w-5 mr-2" />
+                        Submit Your First Daily Score Now
+                      </Button>
+                    </FirstTimeDailyScoreWelcome>
+                    <Button 
+                      onClick={() => navigate('/dashboard')} 
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Skip for Now - View Dashboard
+                    </Button>
+                  </>
+                ) : (
                   <Button 
+                    onClick={() => navigate('/dashboard')} 
                     className="w-full"
                     size="lg"
                   >
-                    <Activity className="h-5 w-5 mr-2" />
-                    Submit Your First Daily Score Now
+                    View Your Dashboard
                   </Button>
-                </FirstTimeDailyScoreWelcome>
-                <Button 
-                  onClick={() => navigate('/dashboard')} 
-                  variant="outline"
-                  className="w-full"
-                >
-                  Skip for Now - View Dashboard
-                </Button>
+                )}
               </div>
             </div>
           )}
