@@ -276,7 +276,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
             
             {/* Current Projections */}
             <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-3 text-center">Rate of Ageing - Current Habits</h5>
+              <h5 className="text-sm font-medium text-gray-700 mb-3 text-center">Current Habits</h5>
               <div className="grid grid-cols-2 gap-3">
                 <div className="text-center">
                   <div className="text-xs text-gray-600 mb-1">5-Year</div>
