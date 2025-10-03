@@ -219,13 +219,17 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
       const scoreValue = response?.score?.longevity_impact_score || 0;
       const version = response?.version || 'LIS 1.0';
 
-      toast({
-        title: `${version} Score Calculated!`,
-        description: `Your Longevity Impact Score: ${scoreValue}/100 for ${format(scoreDate, 'dd/MM/yyyy')}`,
-        variant: "default"
-      });
+      // Check if this is first submission by checking if we have a profile yet
+      const { count } = await supabase
+        .from('daily_scores')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
 
+      const isFirstScore = (count || 0) === 1; // Just submitted their first one
+
+      // Navigate to results page to show the score
       setOpen(false);
+      navigate(`/daily-score-results?score=${scoreValue}&date=${dateString}&version=${version}&firstTime=${isFirstScore}`);
       onScoreCalculated();
     } catch (error) {
       console.error('Error calculating score:', error);

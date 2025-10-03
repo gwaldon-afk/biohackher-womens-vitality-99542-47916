@@ -435,12 +435,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <LISInputForm onScoreCalculated={() => {
-                    fetchDailyScoreCount();
-                    lisData.refetch();
-                    toast({
-                      title: "Great Start! 🎉",
-                      description: "Your first daily score has been recorded. Keep it up!",
-                    });
+                    // Don't need to do anything here - form will navigate to results page
                   }}>
                     <Button className="w-full" size="lg">
                       <Zap className="h-5 w-5 mr-2" />
