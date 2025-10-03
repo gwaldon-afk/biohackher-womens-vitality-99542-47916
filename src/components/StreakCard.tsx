@@ -37,14 +37,14 @@ export const StreakCard = ({ activityType, title, description }: StreakCardProps
         <div className="flex items-center justify-between">
           <div>
             <div className="text-3xl font-bold text-primary">{currentStreak}</div>
-            <p className="text-sm text-muted-foreground">Current Streak</p>
+            <p className="text-sm text-muted-foreground">Days in a Row</p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-semibold text-muted-foreground flex items-center gap-1">
               <TrendingUp className="h-4 w-4" />
               {longestStreak}
             </div>
-            <p className="text-sm text-muted-foreground">Best Streak</p>
+            <p className="text-sm text-muted-foreground">Personal Record</p>
           </div>
         </div>
       </CardContent>
