@@ -484,7 +484,7 @@ const Dashboard = () => {
         {/* Welcome Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">
-            My <span className="text-primary">Health Journey</span>
+            Welcome Back to Your <span className="text-primary">Health Journey</span>
           </h1>
           <p className="text-lg text-muted-foreground">
             Track your progress, view comprehensive reports, and access your complete health data
