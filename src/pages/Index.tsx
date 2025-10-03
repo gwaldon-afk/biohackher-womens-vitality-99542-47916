@@ -126,7 +126,7 @@ const Index = () => {
                           }}
                         >
                           <Target className="h-5 w-5 mr-2" />
-                          Get Your LIS 2.0 Score
+                          Get Your LIS Score
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
