@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import LISInputForm from "@/components/LISInputForm";
 import CTAButton from "@/components/CTAButton";
+import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 const Index = () => {
   const navigate = useNavigate();
@@ -99,13 +100,33 @@ const Index = () => {
                           size="lg" 
                           variant="secondary" 
                           className="bg-white/90 text-primary border border-white hover:bg-white relative z-50 pointer-events-auto"
-                          onClick={() => {
+                          onClick={async () => {
                             console.log("Get LIS clicked");
-                            navigate("/lis-assessment?mode=assessment");
+                            
+                            // Check if user is logged in
+                            const { data: { user } } = await supabase.auth.getUser();
+                            
+                            if (!user) {
+                              navigate("/auth?redirect=/lis2-setup");
+                              return;
+                            }
+                            
+                            // Check if user has completed LIS 2.0 setup
+                            const { data: profile } = await supabase
+                              .from('user_health_profile')
+                              .select('id')
+                              .eq('user_id', user.id)
+                              .maybeSingle();
+                            
+                            if (!profile) {
+                              navigate("/lis2-setup");
+                            } else {
+                              navigate("/dashboard");
+                            }
                           }}
                         >
                           <Target className="h-5 w-5 mr-2" />
-                          Get Your Longevity Impact Score
+                          Get Your LIS 2.0 Score
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
