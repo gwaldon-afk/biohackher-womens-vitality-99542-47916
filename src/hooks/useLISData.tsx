@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -29,13 +29,7 @@ export const useLISData = (): LISData => {
   const [manualEntryCount, setManualEntryCount] = useState(0);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (user) {
-      fetchLISData();
-    }
-  }, [user]);
-
-  const fetchLISData = async () => {
+  const fetchLISData = useCallback(async () => {
     try {
       if (!user) return;
 
@@ -95,7 +89,13 @@ export const useLISData = (): LISData => {
       console.error('Error fetching LIS data:', error);
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchLISData();
+    }
+  }, [user, fetchLISData]);
 
   const improvement = currentScore && baselineScore ? currentScore - baselineScore : 0;
   const opportunityGap = baselineScore && currentScore ? baselineScore - currentScore : 0;

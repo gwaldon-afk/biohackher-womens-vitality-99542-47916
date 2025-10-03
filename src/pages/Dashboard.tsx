@@ -64,13 +64,6 @@ const Dashboard = () => {
   
   const lisData = useLISData();
 
-  // Refetch LIS data when returning to overview tab
-  useEffect(() => {
-    if (activeTab === 'overview' && user) {
-      lisData.refetch();
-    }
-  }, [activeTab, user]);
-
   // Fetch user's symptoms and assessments
   useEffect(() => {
     if (user) {
