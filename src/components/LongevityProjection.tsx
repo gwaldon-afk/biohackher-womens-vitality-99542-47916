@@ -269,7 +269,7 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
 
         {/* Key Projections Summary */}
         <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
-          <h4 className="font-semibold text-gray-900 mb-3 text-center">Key Longevity Age Estimates</h4>
+          <h4 className="font-semibold text-gray-900 mb-3 text-center">LIS Rate of Ageing Estimates</h4>
           
           {/* Current vs Optimal Comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
