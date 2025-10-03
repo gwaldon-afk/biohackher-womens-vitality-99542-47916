@@ -55,12 +55,15 @@ export const LIS2InitialAssessment = () => {
         social_engagement_baseline: formData.social_engagement_baseline,
       });
 
+      // Calculate a simple baseline score for demonstration
+      const baselineScore = 70 + (formData.social_engagement_baseline * 2);
+
       toast({
         title: "Profile Created!",
         description: "Your LIS 2.0 baseline has been established. Start tracking today!",
       });
 
-      navigate("/dashboard");
+      navigate(`/lis-results?score=${baselineScore}`);
     } catch (error) {
       toast({
         title: "Error",

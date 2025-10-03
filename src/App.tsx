@@ -19,6 +19,7 @@ import BiohackingToolkit from "./pages/BiohackingToolkit";
 import Therapies from "./pages/Therapies";
 import Supplements from "./pages/Supplements";
 import ResearchEvidence from "./pages/ResearchEvidence";
+import LISResults from "./pages/LISResults";
 import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
 import Coaching from "./pages/Coaching";
@@ -75,6 +76,7 @@ const App = () => (
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/lis-assessment" element={<LISAssessment />} />
             <Route path="/lis2-setup" element={<LIS2InitialAssessment />} />
+            <Route path="/lis-results" element={<LISResults />} />
             <Route path="/lis2-research" element={<LIS2Research />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
             <Route path="/progress" element={<ProgressTracking />} />

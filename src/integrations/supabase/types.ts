@@ -213,6 +213,36 @@ export type Database = {
           },
         ]
       }
+      guest_lis_assessments: {
+        Row: {
+          assessment_data: Json
+          brief_results: Json
+          claimed_at: string | null
+          claimed_by_user_id: string | null
+          created_at: string | null
+          id: string
+          session_id: string
+        }
+        Insert: {
+          assessment_data: Json
+          brief_results: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          created_at?: string | null
+          id?: string
+          session_id: string
+        }
+        Update: {
+          assessment_data?: Json
+          brief_results?: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          created_at?: string | null
+          id?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       habit_tracking: {
         Row: {
           created_at: string
@@ -836,6 +866,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          created_at: string | null
+          daily_submissions_count: number | null
+          id: string
+          last_submission_date: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_end_date: string | null
+          subscription_start_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier: Database["public"]["Enums"]["subscription_tier"]
+          trial_end_date: string | null
+          trial_start_date: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          daily_submissions_count?: number | null
+          id?: string
+          last_submission_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
+          trial_end_date?: string | null
+          trial_start_date?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          daily_submissions_count?: number | null
+          id?: string
+          last_submission_date?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
+          trial_end_date?: string | null
+          trial_start_date?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_symptoms: {
         Row: {
           created_at: string
@@ -948,6 +1029,8 @@ export type Database = {
         | "habit"
         | "exercise"
         | "diet"
+      subscription_status: "active" | "trialing" | "canceled" | "expired"
+      subscription_tier: "guest" | "registered" | "subscribed" | "premium"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1089,6 +1172,8 @@ export const Constants = {
         "exercise",
         "diet",
       ],
+      subscription_status: ["active", "trialing", "canceled", "expired"],
+      subscription_tier: ["guest", "registered", "subscribed", "premium"],
     },
   },
 } as const

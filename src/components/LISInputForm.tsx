@@ -12,10 +12,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User, CalendarIcon, Info } from "lucide-react";
+import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User, CalendarIcon, Info, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
+import { useSubscription } from "@/hooks/useSubscription";
 import { z } from "zod";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -69,6 +70,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { profile, loading: profileLoading } = useHealthProfile();
+  const { subscription, canSubmitDaily, getDaysRemainingInTrial } = useSubscription();
 
   // Manual input state
   const [sleepData, setSleepData] = useState({
@@ -269,12 +271,21 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   // Calculate current score for display
   const currentScore = calculateScore();
 
+  // Check subscription access before opening modal
+  const handleOpenModal = () => {
+    if (!canSubmitDaily()) {
+      navigate('/upgrade');
+      return;
+    }
+    setOpen(true);
+  };
+
   return (
     <>
       <div
         onClick={() => {
           console.log("Card clicked - opening modal");
-          setOpen(true);
+          handleOpenModal();
         }}
         className="cursor-pointer"
       >
@@ -290,6 +301,11 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
             </DialogTitle>
             <DialogDescription>
               Input your daily metrics to calculate your personalised LIS score
+              {subscription?.subscription_status === 'trialing' && (
+                <Badge variant="secondary" className="ml-2">
+                  {getDaysRemainingInTrial()} days trial remaining
+                </Badge>
+              )}
             </DialogDescription>
           </DialogHeader>
 
