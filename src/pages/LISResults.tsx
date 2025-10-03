@@ -133,25 +133,50 @@ const LISResults = () => {
                     </CardContent>
                   </Card>
 
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Personalized Recommendations</h4>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex gap-2">
-                        <span className="text-primary">→</span>
-                        <span>Continue tracking daily to see trends over time</span>
-                      </li>
-                      <li className="flex gap-2">
-                        <span className="text-primary">→</span>
-                        <span>Your 7-day free trial allows unlimited daily submissions</span>
-                      </li>
-                    </ul>
-                  </div>
+                  <Alert className="bg-primary/5 border-primary/20">
+                    <Activity className="h-5 w-5 text-primary" />
+                    <AlertTitle>Next Step: Track Your First Day</AlertTitle>
+                    <AlertDescription className="mt-2">
+                      <p className="text-sm mb-3">
+                        Now that you've established your baseline, it's time to start your daily tracking journey. 
+                        Submit your first daily score to see how your habits impact your longevity.
+                      </p>
+                      <ul className="space-y-2 text-sm mb-4">
+                        <li className="flex gap-2">
+                          <span className="text-primary">→</span>
+                          <span>Takes just 2 minutes per day</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-primary">→</span>
+                          <span>Track across 6 key longevity pillars</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-primary">→</span>
+                          <span>See your progress and trends over time</span>
+                        </li>
+                      </ul>
+                    </AlertDescription>
+                  </Alert>
                 </div>
               </div>
 
-              <Button onClick={() => navigate('/dashboard')} className="w-full">
-                Go to Dashboard
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={() => navigate('/dashboard?action=submitDaily')} 
+                  className="w-full"
+                  size="lg"
+                >
+                  <Activity className="h-5 w-5 mr-2" />
+                  Submit Your First Daily Score
+                </Button>
+                <Button 
+                  onClick={() => navigate('/dashboard')} 
+                  variant="outline"
+                  className="w-full"
+                >
+                  View Dashboard
+                </Button>
+              </div>
             </div>
           )}
         </CardContent>

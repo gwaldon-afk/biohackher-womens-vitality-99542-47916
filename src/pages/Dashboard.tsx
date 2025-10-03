@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -62,8 +63,40 @@ const Dashboard = () => {
   const [recentAssessments, setRecentAssessments] = useState<SymptomAssessment[]>([]);
   const [activeSymptoms, setActiveSymptoms] = useState<UserSymptom[]>([]);
   const [loadingSymptoms, setLoadingSymptoms] = useState(false);
+  const [dailyScoreCount, setDailyScoreCount] = useState<number | null>(null);
+  const [loadingScoreCount, setLoadingScoreCount] = useState(true);
   
   const lisData = useLISData();
+
+  // Check if we should auto-open the daily submission modal
+  const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
+
+  // Fetch daily score count to determine if user is new
+  useEffect(() => {
+    if (user) {
+      fetchDailyScoreCount();
+    }
+  }, [user]);
+
+  const fetchDailyScoreCount = async () => {
+    if (!user) return;
+    
+    setLoadingScoreCount(true);
+    try {
+      const { count, error } = await supabase
+        .from('daily_scores')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      setDailyScoreCount(count || 0);
+    } catch (error) {
+      console.error('Error fetching daily score count:', error);
+      setDailyScoreCount(0);
+    } finally {
+      setLoadingScoreCount(false);
+    }
+  };
 
   // Fetch user's symptoms and assessments
   useEffect(() => {
@@ -324,6 +357,138 @@ const Dashboard = () => {
       
       <main className="container mx-auto px-4 py-8 max-w-6xl">
 
+        {/* Loading State */}
+        {loadingScoreCount ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground">Loading your dashboard...</p>
+            </div>
+          </div>
+        ) : dailyScoreCount === 0 ? (
+          /* First-Time User Simplified View */
+          <>
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold mb-2">
+                Welcome to Your <span className="text-primary">Health Journey</span>
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Let's start tracking your first day
+              </p>
+            </div>
+
+            <div className="max-w-3xl mx-auto space-y-6">
+              {/* Main CTA Card */}
+              <Card className="border-2 border-primary shadow-lg">
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                    <Activity className="h-6 w-6 text-primary" />
+                    Submit Your First Daily Score
+                  </CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    Track your daily habits across 6 key longevity pillars
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <Moon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Sleep Quality</p>
+                        <p className="text-xs text-muted-foreground">Total hours, REM, deep sleep</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <Heart className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Stress & Age Perception</p>
+                        <p className="text-xs text-muted-foreground">HRV, stress levels, how you feel</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <Activity className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Physical Activity</p>
+                        <p className="text-xs text-muted-foreground">Steps, active minutes, intensity</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <TrendingUp className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Nutrition</p>
+                        <p className="text-xs text-muted-foreground">Meal quality and choices</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Social Connection</p>
+                        <p className="text-xs text-muted-foreground">Interaction quality and time</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
+                      <Brain className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-sm">Cognitive Engagement</p>
+                        <p className="text-xs text-muted-foreground">Meditation, learning activities</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Alert className="border-primary/20 bg-primary/5">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <AlertTitle>Why Daily Tracking Matters</AlertTitle>
+                    <AlertDescription className="text-sm mt-2">
+                      Daily tracking reveals patterns and trends that single assessments can't capture. 
+                      You'll see how your habits truly impact your longevity score over time.
+                    </AlertDescription>
+                  </Alert>
+
+                  <LISInputForm onScoreCalculated={() => {
+                    fetchDailyScoreCount(); // Refresh count after submission
+                    lisData.refetch();
+                    toast({
+                      title: "Great Start! 🎉",
+                      description: "Your first daily score has been recorded. Keep it up!",
+                    });
+                  }}>
+                    <Button className="w-full" size="lg">
+                      <Zap className="h-5 w-5 mr-2" />
+                      Submit First Daily Score
+                    </Button>
+                  </LISInputForm>
+
+                  <p className="text-center text-sm text-muted-foreground">
+                    Takes just 2 minutes • Track anytime today
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Secondary Info Card */}
+              <Card className="border-muted">
+                <CardHeader>
+                  <CardTitle className="text-lg">What Happens Next?</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm">
+                  <div className="flex gap-3">
+                    <span className="text-primary font-bold">1.</span>
+                    <p>Submit your daily scores regularly (aim for daily consistency)</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="text-primary font-bold">2.</span>
+                    <p>After a few submissions, you'll unlock insights, trends, and personalized recommendations</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <span className="text-primary font-bold">3.</span>
+                    <p>Track your progress over weeks and months to see real longevity improvements</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        ) : (
+          /* Full Dashboard View for Users with Data */
+          <>
         {/* Welcome Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">
@@ -831,6 +996,8 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
+        </>
+        )}
       </main>
     </div>
   );
