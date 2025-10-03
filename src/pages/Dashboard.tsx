@@ -20,6 +20,7 @@ import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 import { BaselineReassessmentPrompt } from "@/components/BaselineReassessmentPrompt";
 import { useLISData } from "@/hooks/useLISData";
 import { format } from "date-fns";
+import LISInputForm from "@/components/LISInputForm";
 
 interface DashboardData {
   currentScore: number;
@@ -346,6 +347,50 @@ const Dashboard = () => {
 
         {/* Baseline Reassessment Prompt */}
         <BaselineReassessmentPrompt />
+
+        {/* LIS 2.0 Daily Input Card */}
+        <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Submit Today's LIS 2.0 Data
+                  <Badge variant="secondary" className="ml-2">Daily Tracking</Badge>
+                </CardTitle>
+                <CardDescription className="mt-2">
+                  LIS 2.0 tracks 6 pillars daily: Stress & Subjective Age (30%), Activity (20%), Sleep (15%), 
+                  Nutrition (15%), Social (10%), Cognitive (10%)
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 bg-background/80 rounded-lg border border-primary/10">
+                <p className="text-sm font-medium text-primary mb-2">How LIS 2.0 Works:</p>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• <strong>One-time setup</strong>: Baseline health profile (completed at /lis2-setup)</li>
+                  <li>• <strong>Daily tracking</strong>: Submit metrics across 6 pillars for continuous monitoring</li>
+                  <li>• <strong>30-day calmness baseline</strong>: Your scores improve as you build consistency</li>
+                  <li>• <strong>Age-stratified targets</strong>: Personalized to your chronological age</li>
+                </ul>
+              </div>
+              <LISInputForm onScoreCalculated={() => {
+                lisData.refetch();
+                toast({
+                  title: "LIS 2.0 Score Updated",
+                  description: "Your daily data has been submitted and score calculated.",
+                });
+              }}>
+                <Button className="w-full" size="lg">
+                  <Zap className="h-5 w-5 mr-2" />
+                  Submit Today's LIS 2.0 Data
+                </Button>
+              </LISInputForm>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* LIS Baseline Comparison Card */}
         {lisData.baselineScore && (
