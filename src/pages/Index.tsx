@@ -97,7 +97,7 @@ const Index = () => {
                           className="bg-white/90 text-primary border border-white hover:bg-white relative z-50 pointer-events-auto"
                           onClick={() => {
                             console.log("Get LIS clicked");
-                            navigate("/lis-assessment");
+                            navigate("/lis-assessment?mode=assessment");
                           }}
                         >
                           <Target className="h-5 w-5 mr-2" />
