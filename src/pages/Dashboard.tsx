@@ -378,7 +378,47 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-6">
+              {/* Explanation Section */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="pt-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Activity className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">What You'll Track Daily</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Track 6 key areas: Sleep Quality, Stress Levels, Physical Activity, Nutrition, Social Connection, and Mental Wellness
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">What You'll Get</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Personalized insights, clear progress tracking, and actionable recommendations to improve your healthspan
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Time Commitment</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Just 2-3 minutes per day. Even faster with a connected wearable device.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* CTA Card */}
               <Card className="border-2 border-primary shadow-xl">
                 <CardHeader className="text-center space-y-4 pb-6">
                   <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -386,15 +426,15 @@ const Dashboard = () => {
                   </div>
                   <div>
                     <CardTitle className="text-2xl mb-2">
-                      Ready to Complete Your First Daily Score?
+                      Ready to Get Started?
                     </CardTitle>
                     <CardDescription className="text-base">
-                      This is your personalized health tracking system
+                      Click below to open your daily tracking form
                     </CardDescription>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
+                  <LISInputForm onScoreCalculated={() => {
                     fetchDailyScoreCount();
                     lisData.refetch();
                     toast({
@@ -406,13 +446,11 @@ const Dashboard = () => {
                       <Zap className="h-5 w-5 mr-2" />
                       Complete Your First Daily Score
                     </Button>
-                  </FirstTimeDailyScoreWelcome>
+                  </LISInputForm>
 
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground">
-                      Click above to learn what you'll track, why it matters, and what you'll get
-                    </p>
-                  </div>
+                  <p className="text-center text-sm text-muted-foreground">
+                    Your health journey starts here
+                  </p>
                 </CardContent>
               </Card>
             </div>
