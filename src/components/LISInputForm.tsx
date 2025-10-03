@@ -11,13 +11,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User, CalendarIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Activity, Heart, Moon, Brain, Users, Utensils, Smartphone, User, CalendarIcon, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { z } from "zod";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import NutritionalScorecard from "./NutritionalScorecard";
+import { useNavigate } from "react-router-dom";
 
 // Validation schemas
 const sleepSchema = z.object({
@@ -29,8 +32,8 @@ const sleepSchema = z.object({
 const stressSchema = z.object({
   hrv: z.number().min(0).max(200),
   selfReportedStress: z.number().min(1).max(10),
-  selfPerceivedAge: z.number().min(10).max(120).optional(),
-  subjectiveCalmnessRating: z.number().min(0).max(10).optional()
+  selfPerceivedAge: z.number().min(10).max(120),
+  subjectiveCalmnessRating: z.number().min(0).max(10)
 });
 
 const activitySchema = z.object({
@@ -64,6 +67,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("manual");
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { profile, loading: profileLoading } = useHealthProfile();
 
   // Manual input state
   const [sleepData, setSleepData] = useState({
@@ -75,7 +80,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   const [stressData, setStressData] = useState({
     hrv: 45,
     selfReportedStress: 5,
-    selfPerceivedAge: undefined as number | undefined,
+    selfPerceivedAge: 35,
     subjectiveCalmnessRating: 5
   });
 
@@ -152,8 +157,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
     
     setLoading(true);
     try {
-      const score = calculateScore();
-      
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -168,88 +171,65 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
       }
 
       const dateString = format(scoreDate, 'yyyy-MM-dd');
-      
-      // Check if entry already exists for this date
-      const { data: existingEntry } = await supabase
-        .from('daily_scores')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('date', dateString)
-        .maybeSingle();
 
-      let result;
-      const dataToSave = {
-        date: dateString,
-        user_id: user.id,
-        longevity_impact_score: score,
-        biological_age_impact: score > 75 ? -0.5 : score > 50 ? 0 : 0.5,
-        color_code: score > 75 ? 'green' : score > 50 ? 'yellow' : 'red',
-        // Sleep data
-        total_sleep_hours: sleepData.totalSleepHours,
-        rem_hours: sleepData.remHours,
-        deep_sleep_hours: sleepData.deepSleepHours,
-        // Stress data
-        hrv: stressData.hrv,
-        self_reported_stress: stressData.selfReportedStress,
-        // Activity data
-        active_minutes: activityData.activeMinutes,
-        steps: activityData.steps,
-        activity_intensity: activityData.intensity,
-        activity_type: activityData.type,
-        // Nutrition data
-        meal_quality: nutritionInputMode === "simple" ? nutritionData.mealQuality : null,
-        nutritional_detailed_score: nutritionInputMode === "detailed" ? nutritionalScore : null,
-        nutritional_grade: nutritionInputMode === "detailed" ? nutritionalGrade : null,
-        // Social data
-        social_interaction_quality: socialData.interactionQuality,
-        social_time_minutes: socialData.socialTimeMinutes,
-        // Cognitive data
-        meditation_minutes: cognitiveData.meditationMinutes,
-        learning_minutes: cognitiveData.learningMinutes,
-        // Input method and source type
-        input_mode: activeTab,
-        source_type: 'manual_entry',
-        assessment_type: 'daily_tracking',
-        is_baseline: false,
-        // Individual pillar scores for reference
-        sleep_score: (sleepData.totalSleepHours / 8) * 25,
-        stress_score: ((200 - stressData.hrv) / 200 + (10 - stressData.selfReportedStress) / 10) * 10,
-        physical_activity_score: (activityData.activeMinutes / 60) * 15,
-        nutrition_score: nutritionInputMode === "detailed" && nutritionalScore !== 0 
-          ? (nutritionalScore + 10) / 20 * 15 
-          : (nutritionData.mealQuality / 10) * 15,
-        social_connections_score: ((socialData.interactionQuality / 10) + (socialData.socialTimeMinutes / 120)) * 7.5,
-        cognitive_engagement_score: ((cognitiveData.meditationMinutes + cognitiveData.learningMinutes) / 65) * 10
-      };
+      // Call the score-calculate edge function with metrics
+      const { data: response, error: functionError } = await supabase.functions.invoke('score-calculate', {
+        body: {
+          user_id: user.id,
+          date: dateString,
+          sleep: {
+            total_hours: sleepData.totalSleepHours,
+            rem_hours: sleepData.remHours,
+            deep_sleep_hours: sleepData.deepSleepHours
+          },
+          stress: {
+            hrv: stressData.hrv,
+            self_reported: stressData.selfReportedStress,
+            self_perceived_age: stressData.selfPerceivedAge,
+            subjective_calmness_rating: stressData.subjectiveCalmnessRating
+          },
+          activity: {
+            steps: activityData.steps,
+            active_minutes: activityData.activeMinutes,
+            activity_intensity: activityData.intensity
+          },
+          nutrition: {
+            meal_quality_score: nutritionInputMode === "simple" ? nutritionData.mealQuality : null,
+            nutritional_detailed_score: nutritionInputMode === "detailed" ? nutritionalScore : null
+          },
+          social: {
+            social_time_minutes: socialData.socialTimeMinutes,
+            interaction_quality: socialData.interactionQuality
+          },
+          cognitive: {
+            meditation_minutes: cognitiveData.meditationMinutes,
+            learning_minutes: cognitiveData.learningMinutes
+          },
+          assessment_type: 'daily_tracking',
+          is_baseline: false,
+          input_mode: activeTab,
+          source_type: 'manual_entry'
+        }
+      });
 
-      if (existingEntry) {
-        // Update existing entry
-        result = await supabase
-          .from('daily_scores')
-          .update(dataToSave)
-          .eq('id', existingEntry.id);
-      } else {
-        // Insert new entry
-        result = await supabase
-          .from('daily_scores')
-          .insert(dataToSave);
-      }
+      if (functionError) throw functionError;
 
-      if (result.error) throw result.error;
+      const scoreValue = response?.score?.longevity_impact_score || 0;
+      const version = response?.version || 'LIS 1.0';
 
       toast({
-        title: "Score Updated!",
-        description: `Your Longevity Impact Score: ${score}/100 for ${format(scoreDate, 'dd/MM/yyyy')}`,
+        title: `${version} Score Calculated!`,
+        description: `Your Longevity Impact Score: ${scoreValue}/100 for ${format(scoreDate, 'dd/MM/yyyy')}`,
         variant: "default"
       });
 
       setOpen(false);
       onScoreCalculated();
     } catch (error) {
-      console.error('Error saving score:', error);
+      console.error('Error calculating score:', error);
       toast({
         title: "Error",
-        description: `Failed to save your score: ${error.message || 'Unknown error'}`,
+        description: `Failed to calculate your score: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     } finally {
@@ -312,6 +292,39 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               Input your daily metrics to calculate your personalised LIS score
             </DialogDescription>
           </DialogHeader>
+
+          {/* LIS 2.0 Setup Prompt */}
+          {!profileLoading && !profile && (
+            <Alert className="mb-4 border-primary/50 bg-primary/5">
+              <Info className="h-4 w-4" />
+              <AlertTitle>Unlock LIS 2.0 (Recommended)</AlertTitle>
+              <AlertDescription className="mt-2">
+                <p className="text-sm mb-2">
+                  Complete your health profile to activate LIS 2.0 with scientifically validated scoring based on subjective age (HR≈2.11) and social engagement (HR≈1.72).
+                </p>
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={() => {
+                    setOpen(false);
+                    navigate('/lis2-setup');
+                  }}
+                >
+                  Complete LIS 2.0 Setup (2 minutes)
+                </Button>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {!profileLoading && profile && (
+            <Alert className="mb-4 border-green-500/50 bg-green-500/5">
+              <Info className="h-4 w-4 text-green-600" />
+              <AlertTitle className="text-green-700">LIS 2.0 Active</AlertTitle>
+              <AlertDescription className="text-sm text-green-600">
+                Your scores are using the latest LIS 2.0 methodology with personalized health profile.
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Wearable Connection Banner */}
           <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
@@ -429,21 +442,52 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                   </CardContent>
                 </Card>
 
-                {/* Stress Management */}
+                {/* Stress Management - LIS 2.0 */}
                 <Card className="h-[400px] flex flex-col">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-red-500" />
-                      Stress Management
-                      <Badge variant="secondary">20%</Badge>
+                      Stress & Subjective Age
+                      <Badge variant="secondary">30%</Badge>
+                      <Badge variant="outline" className="text-xs">LIS 2.0</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Chronic stress accelerates aging through inflammation and cellular damage.
+                      Subjective age is a powerful predictor of longevity (HR≈2.11)
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3 flex-1">
+                  <CardContent className="space-y-3 flex-1 overflow-y-auto">
                     <div>
-                      <Label htmlFor="hrv">Heart Rate Variability</Label>
+                      <Label htmlFor="selfPerceivedAge">How old do you feel today?</Label>
+                      <Input
+                        id="selfPerceivedAge"
+                        type="number"
+                        min="10"
+                        max="120"
+                        value={stressData.selfPerceivedAge}
+                        onChange={(e) => setStressData({...stressData, selfPerceivedAge: parseInt(e.target.value)})}
+                        placeholder="Enter your subjective age"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Your true biological age signal
+                      </p>
+                    </div>
+                    <div>
+                      <Label htmlFor="calmnessRating">Morning Recovery/Calmness (0-10)</Label>
+                      <Input
+                        id="calmnessRating"
+                        type="number"
+                        min="0"
+                        max="10"
+                        value={stressData.subjectiveCalmnessRating}
+                        onChange={(e) => setStressData({...stressData, subjectiveCalmnessRating: parseInt(e.target.value)})}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        0 = Extremely stressed, 10 = Completely recovered
+                      </p>
+                    </div>
+                    <Separator />
+                    <div>
+                      <Label htmlFor="hrv" className="text-xs text-muted-foreground">HRV (Optional)</Label>
                       <Input
                         id="hrv"
                         type="number"
@@ -454,7 +498,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="stressLevel">Self-Reported Stress (1-10)</Label>
+                      <Label htmlFor="stressLevel" className="text-xs text-muted-foreground">Stress Level (1-10, Optional)</Label>
                       <Input
                         id="stressLevel"
                         type="number"
