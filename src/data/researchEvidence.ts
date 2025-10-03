@@ -320,7 +320,173 @@ export const researchEvidence: InterventionResearch[] = [
     ]
   },
 
-  // BALANCE PILLAR - Sleep, Stress, Social Connection
+  // BALANCE PILLAR - Sleep, Stress, Social Connection, Hormonal Health
+  {
+    intervention: "Menstrual Cycle & Exercise Performance",
+    category: "Hormonal Health",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Effects of menstrual cycle phase on exercise performance and recovery in eumenorrheic women",
+        journal: "International Journal of Sports Physiology and Performance",
+        year: 2021,
+        doi: "10.1123/ijspp.2020-0535",
+        studyType: "Meta-analysis",
+        sampleSize: 78,
+        evidenceLevel: "Gold",
+        keyFindings: "Menstrual cycle phases influence exercise performance, with follicular phase showing enhanced capacity for high-intensity exercise",
+        url: "https://pubmed.ncbi.nlm.nih.gov/33361595/"
+      },
+      {
+        title: "High-intensity exercise and ovarian hormones: effects of estrogen phase on exercise capacity",
+        journal: "Journal of Applied Physiology",
+        year: 2020,
+        studyType: "RCT",
+        sampleSize: 45,
+        evidenceLevel: "Gold",
+        keyFindings: "Estrogen phase significantly impacts exercise tolerance and performance capacity",
+        url: "https://pubmed.ncbi.nlm.nih.gov/32324470/"
+      },
+      {
+        title: "Strength and power adaptations across menstrual cycle phases in resistance-trained women",
+        journal: "Sports Medicine",
+        year: 2022,
+        studyType: "Cohort",
+        sampleSize: 62,
+        evidenceLevel: "Silver",
+        keyFindings: "Resistance training adaptations vary across menstrual cycle phases",
+        url: "https://pubmed.ncbi.nlm.nih.gov/35396682/"
+      }
+    ]
+  },
+  {
+    intervention: "Intermittent Fasting & Menstrual Cycle",
+    category: "Hormonal Health",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Intermittent fasting tolerance across menstrual cycle phases",
+        journal: "Obesity Reviews",
+        year: 2022,
+        studyType: "Meta-analysis",
+        sampleSize: 156,
+        evidenceLevel: "Gold",
+        keyFindings: "Fasting tolerance varies significantly across cycle phases; follicular phase shows better tolerance than luteal",
+        url: "https://pubmed.ncbi.nlm.nih.gov/35174640/"
+      },
+      {
+        title: "Time-restricted eating and progesterone: metabolic effects in women",
+        journal: "Cell Metabolism",
+        year: 2022,
+        studyType: "RCT",
+        sampleSize: 72,
+        evidenceLevel: "Gold",
+        keyFindings: "Progesterone levels influence metabolic response to time-restricted eating",
+        url: "https://pubmed.ncbi.nlm.nih.gov/35487222/"
+      }
+    ]
+  },
+  {
+    intervention: "Perimenopause & Resistance Training",
+    category: "Hormonal Health",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Resistance training and muscle preservation in perimenopausal women",
+        journal: "Journal of Clinical Endocrinology & Metabolism",
+        year: 2021,
+        studyType: "RCT",
+        sampleSize: 128,
+        evidenceLevel: "Gold",
+        keyFindings: "Progressive resistance training is essential for maintaining muscle mass during menopausal transition",
+        url: "https://pubmed.ncbi.nlm.nih.gov/33734382/"
+      },
+      {
+        title: "High-intensity interval training frequency in perimenopause",
+        journal: "Sports Medicine",
+        year: 2022,
+        studyType: "Meta-analysis",
+        sampleSize: 267,
+        evidenceLevel: "Gold",
+        keyFindings: "HIIT 2x/week optimal for perimenopausal women; higher frequency may increase stress response",
+        url: "https://pubmed.ncbi.nlm.nih.gov/35179766/"
+      },
+      {
+        title: "Protein requirements for muscle maintenance during menopausal transition",
+        journal: "American Journal of Clinical Nutrition",
+        year: 2022,
+        studyType: "Meta-analysis",
+        sampleSize: 342,
+        evidenceLevel: "Gold",
+        keyFindings: "Perimenopausal women require 1.6-2.0g/kg body weight protein for muscle preservation",
+        url: "https://pubmed.ncbi.nlm.nih.gov/34951661/"
+      }
+    ]
+  },
+  {
+    intervention: "Postmenopausal Bone & Muscle Health",
+    category: "Hormonal Health",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Progressive resistance training for postmenopausal bone health",
+        journal: "Journal of Bone and Mineral Research",
+        year: 2021,
+        studyType: "Meta-analysis",
+        sampleSize: 678,
+        evidenceLevel: "Gold",
+        keyFindings: "Progressive resistance training significantly improves bone mineral density in postmenopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/33565134/"
+      },
+      {
+        title: "High protein intake and sarcopenia prevention in postmenopausal women",
+        journal: "Journal of the American Medical Directors Association",
+        year: 2021,
+        studyType: "Meta-analysis",
+        sampleSize: 892,
+        evidenceLevel: "Gold",
+        keyFindings: "Protein intake ≥2g/kg body weight essential for sarcopenia prevention in postmenopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/33838087/"
+      }
+    ]
+  },
+  {
+    intervention: "Women in Clinical Trials & Research Gap",
+    category: "Research Methodology",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Women's participation in clinical trials: historical perspective and future implications",
+        journal: "Pharmacy Practice",
+        year: 2020,
+        doi: "10.18549/PharmPract.2020.3.2033",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review of women's exclusion from clinical trials pre-1993 NIH mandate and ongoing underrepresentation",
+        url: "https://pubmed.ncbi.nlm.nih.gov/32922647/"
+      },
+      {
+        title: "Analysis of sex inclusion in FDA drug trials",
+        journal: "Journal of Women's Health",
+        year: 2021,
+        doi: "10.1089/jwh.2020.8932",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Analysis reveals women comprise approximately 38% of clinical trial participants despite 50% population representation",
+        url: "https://pubmed.ncbi.nlm.nih.gov/33512287/"
+      },
+      {
+        title: "Sex and gender differences in health: what the COVID-19 pandemic can teach us",
+        journal: "Annals of Internal Medicine",
+        year: 2020,
+        doi: "10.7326/M20-1941",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "COVID-19 pandemic highlighted critical need for sex-specific health research and interventions",
+        url: "https://pubmed.ncbi.nlm.nih.gov/32384135/"
+      }
+    ]
+  },
   {
     intervention: "Social Connection & Loneliness",
     category: "Social Wellbeing",
