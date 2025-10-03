@@ -95,7 +95,8 @@ export const useLISData = (): LISData => {
     if (user) {
       fetchLISData();
     }
-  }, [user, fetchLISData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const improvement = currentScore && baselineScore ? currentScore - baselineScore : 0;
   const opportunityGap = baselineScore && currentScore ? baselineScore - currentScore : 0;
