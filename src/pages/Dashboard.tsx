@@ -485,17 +485,17 @@ const Dashboard = () => {
                               <div className="text-xl font-bold">
                                 {lisData.currentScore || lisData.baselineScore || 0}
                               </div>
-                              <div className="text-xs text-muted-foreground">LIS Score</div>
+                              <div className="text-xs text-muted-foreground">LIS 2.0</div>
                             </div>
                           </ProgressCircle>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs p-3">
-                        <p className="text-sm font-medium mb-2">Longevity Impact Score (LIS)</p>
+                        <p className="text-sm font-medium mb-2">Longevity Impact Score 2.0</p>
                         <p className="text-xs">
-                          LIS measures your daily habits impact on biological ageing. 
-                          Scores 80+ indicate ageing-reversing habits, 60-80 are neutral, 
-                          and below 60 may accelerate ageing.
+                          LIS 2.0 uses your subjective age delta, activity patterns, sleep quality, 
+                          calmness improvement, nutrition, and social engagement to calculate your 
+                          daily impact on biological aging with personalized age-stratified targets.
                         </p>
                       </TooltipContent>
                     </Tooltip>
