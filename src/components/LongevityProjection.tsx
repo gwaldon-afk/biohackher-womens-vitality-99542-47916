@@ -317,9 +317,12 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
                   Opportunity Gap: {(() => {
                     const currentFiveYear = projectionData[0].impact;
                     const optimalFiveYear = optimalProjectionData[0].impact;
-                    const gap = Math.abs(currentFiveYear - optimalFiveYear);
-                    return `${gap.toFixed(1)} years`;
-                  })()} (5yr)
+                    const gapFive = Math.abs(currentFiveYear - optimalFiveYear);
+                    const currentTwentyYear = projectionData[3].impact;
+                    const optimalTwentyYear = optimalProjectionData[3].impact;
+                    const gapTwenty = Math.abs(currentTwentyYear - optimalTwentyYear);
+                    return `${gapFive.toFixed(1)} years (5yr) | ${gapTwenty.toFixed(1)} years (20yr)`;
+                  })()}
                 </div>
               </div>
             </div>
