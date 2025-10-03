@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -16,6 +16,7 @@ const LISAssessment = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [showProfile, setShowProfile] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -26,6 +27,93 @@ const LISAssessment = () => {
     healthGoals: [] as string[],
     healthConcerns: [] as string[]
   });
+
+  // Mock data generation functions for dev mode
+  const generateMockProfileData = (customAge?: string | null) => ({
+    age: customAge || "42",
+    healthGoals: [
+      "Increase longevity and healthspan",
+      "Improve energy and vitality",
+      "Better sleep quality"
+    ],
+    healthConcerns: ["Chronic stress", "Low energy"]
+  });
+
+  const generateMockAnswers = (targetScore: number) => {
+    const mockAnswers: Record<number, string> = {};
+    
+    questions.forEach((question) => {
+      // Find the option closest to target score
+      const sortedOptions = [...question.options].sort((a, b) => {
+        const diffA = Math.abs(a.score - targetScore);
+        const diffB = Math.abs(b.score - targetScore);
+        return diffA - diffB;
+      });
+      mockAnswers[question.id] = sortedOptions[0].value;
+    });
+    
+    return mockAnswers;
+  };
+
+  // URL parameter handling for dev mode
+  useEffect(() => {
+    const step = searchParams.get('step');
+    const dev = searchParams.get('dev');
+    const score = searchParams.get('score');
+    const questionNum = searchParams.get('q');
+    const skipProfile = searchParams.get('skipProfile');
+    const age = searchParams.get('age');
+
+    // Dev mode or jumping to results
+    if (dev === 'true' || step === 'results') {
+      const mockProfile = generateMockProfileData(age);
+      const targetScore = score ? parseInt(score) : 85;
+      const mockAnswers = generateMockAnswers(targetScore);
+      
+      setProfileData(mockProfile);
+      setAnswers(mockAnswers);
+      setLisScore(targetScore);
+      
+      if (step === 'results') {
+        setShowProfile(false);
+        setShowResults(true);
+      } else {
+        setShowProfile(false);
+      }
+      
+      toast({
+        title: "🛠️ Dev Mode Active",
+        description: `Loaded with mock data (Score: ${targetScore})`,
+        duration: 3000,
+      });
+    }
+    // Jump to specific question
+    else if (step === 'question' || questionNum) {
+      const qNum = questionNum ? parseInt(questionNum) : 0;
+      const mockProfile = generateMockProfileData(age);
+      setProfileData(mockProfile);
+      setShowProfile(false);
+      setCurrentQuestion(Math.min(Math.max(0, qNum), questions.length - 1));
+      
+      toast({
+        title: "🛠️ Dev Mode Active",
+        description: `Jumped to question ${Math.min(Math.max(0, qNum) + 1, questions.length)}`,
+        duration: 3000,
+      });
+    }
+    // Skip profile, go to assessment
+    else if (step === 'assessment' || skipProfile === 'true') {
+      const mockProfile = generateMockProfileData(age);
+      setProfileData(mockProfile);
+      setShowProfile(false);
+      
+      toast({
+        title: "🛠️ Dev Mode Active",
+        description: "Skipped profile collection",
+        duration: 3000,
+      });
+    }
+  }, [searchParams]);
 
   const questions = [
     {
