@@ -26,8 +26,8 @@ import { useNavigate } from "react-router-dom";
 // Validation schemas
 const sleepSchema = z.object({
   totalSleepHours: z.number().min(0).max(24),
-  remHours: z.number().min(0).max(12),
-  deepSleepHours: z.number().min(0).max(12)
+  remHours: z.number().min(0).max(12).optional(),
+  deepSleepHours: z.number().min(0).max(12).optional()
 });
 
 const stressSchema = z.object({
@@ -75,8 +75,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
   // Manual input state
   const [sleepData, setSleepData] = useState({
     totalSleepHours: 8,
-    remHours: 2,
-    deepSleepHours: 1.5
+    remHours: undefined as number | undefined,
+    deepSleepHours: undefined as number | undefined
   });
 
   const [stressData, setStressData] = useState({
@@ -181,8 +181,8 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
           date: dateString,
           sleep: {
             total_hours: sleepData.totalSleepHours,
-            rem_hours: sleepData.remHours,
-            deep_sleep_hours: sleepData.deepSleepHours
+            rem_hours: sleepData.remHours ?? null,
+            deep_sleep_hours: sleepData.deepSleepHours ?? null
           },
           stress: {
             hrv: stressData.hrv,
@@ -432,28 +432,38 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="remSleep">REM Sleep (hours)</Label>
+                      <Label htmlFor="remSleep" className="flex items-center gap-2">
+                        REM Sleep (hours)
+                        <Badge variant="secondary" className="text-xs">Optional</Badge>
+                      </Label>
                       <Input
                         id="remSleep"
                         type="number"
                         min="0"
                         max="12"
                         step="0.5"
-                        value={sleepData.remHours}
-                        onChange={(e) => setSleepData({...sleepData, remHours: parseFloat(e.target.value)})}
+                        placeholder="Leave blank if unknown"
+                        value={sleepData.remHours ?? ''}
+                        onChange={(e) => setSleepData({...sleepData, remHours: e.target.value ? parseFloat(e.target.value) : undefined})}
                       />
+                      <p className="text-xs text-muted-foreground mt-1">From sleep tracker or leave blank</p>
                     </div>
                     <div>
-                      <Label htmlFor="deepSleep">Deep Sleep (hours)</Label>
+                      <Label htmlFor="deepSleep" className="flex items-center gap-2">
+                        Deep Sleep (hours)
+                        <Badge variant="secondary" className="text-xs">Optional</Badge>
+                      </Label>
                       <Input
                         id="deepSleep"
                         type="number"
                         min="0"
                         max="12"
                         step="0.5"
-                        value={sleepData.deepSleepHours}
-                        onChange={(e) => setSleepData({...sleepData, deepSleepHours: parseFloat(e.target.value)})}
+                        placeholder="Leave blank if unknown"
+                        value={sleepData.deepSleepHours ?? ''}
+                        onChange={(e) => setSleepData({...sleepData, deepSleepHours: e.target.value ? parseFloat(e.target.value) : undefined})}
                       />
+                      <p className="text-xs text-muted-foreground mt-1">From sleep tracker or leave blank</p>
                     </div>
                   </CardContent>
                 </Card>
