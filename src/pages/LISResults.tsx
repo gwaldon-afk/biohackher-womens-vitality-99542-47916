@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import LISInputForm from '@/components/LISInputForm';
+import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome';
 import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
@@ -169,7 +170,7 @@ const LISResults = () => {
               </div>
 
               <div className="space-y-3">
-                <LISInputForm onScoreCalculated={() => {
+                <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
                   lisData.refetch();
                   toast({
                     title: "Great Start! 🎉",
@@ -185,7 +186,7 @@ const LISResults = () => {
                     <Activity className="h-5 w-5 mr-2" />
                     Submit Your First Daily Score Now
                   </Button>
-                </LISInputForm>
+                </FirstTimeDailyScoreWelcome>
                 <Button 
                   onClick={() => navigate('/dashboard')} 
                   variant="outline"

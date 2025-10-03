@@ -22,6 +22,7 @@ import { BaselineReassessmentPrompt } from "@/components/BaselineReassessmentPro
 import { useLISData } from "@/hooks/useLISData";
 import { format } from "date-fns";
 import LISInputForm from "@/components/LISInputForm";
+import FirstTimeDailyScoreWelcome from "@/components/FirstTimeDailyScoreWelcome";
 
 interface DashboardData {
   currentScore: number;
@@ -435,16 +436,7 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <Alert className="border-primary/20 bg-primary/5">
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                    <AlertTitle>Why Daily Tracking Matters</AlertTitle>
-                    <AlertDescription className="text-sm mt-2">
-                      Daily tracking reveals patterns and trends that single assessments can't capture. 
-                      You'll see how your habits truly impact your longevity score over time.
-                    </AlertDescription>
-                  </Alert>
-
-                  <LISInputForm onScoreCalculated={() => {
+                  <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
                     fetchDailyScoreCount(); // Refresh count after submission
                     lisData.refetch();
                     toast({
@@ -454,12 +446,12 @@ const Dashboard = () => {
                   }}>
                     <Button className="w-full" size="lg">
                       <Zap className="h-5 w-5 mr-2" />
-                      Submit First Daily Score
+                      Submit Your First Daily Score
                     </Button>
-                  </LISInputForm>
+                  </FirstTimeDailyScoreWelcome>
 
                   <p className="text-center text-sm text-muted-foreground">
-                    Takes just 2 minutes • Track anytime today
+                    Takes just 2-3 minutes • Your health journey starts here
                   </p>
                 </CardContent>
               </Card>
