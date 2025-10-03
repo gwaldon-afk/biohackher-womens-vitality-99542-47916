@@ -1,9 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { TrendingUp, TrendingDown, Calendar, Clock, Info } from "lucide-react";
+import { TrendingUp, TrendingDown, Calendar, Clock, Info, AlertCircle } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, LabelList } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Link } from "react-router-dom";
 
 interface LongevityProjectionProps {
   sustainedLIS: number;
@@ -356,15 +357,40 @@ const LongevityProjection = ({ sustainedLIS, dataPoints, currentAge = 42 }: Long
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <Alert className="bg-gray-50 border-gray-200">
-          <Info className="h-4 w-4 text-gray-500" />
-          <AlertDescription className="text-xs text-gray-600">
-            <strong>Disclaimer:</strong> This projection is a model-based estimate based on your recent health trends and current scientific research. 
-            It is not a medical diagnosis or a guarantee of future health outcomes. Your longevity is influenced by a complex interplay of genetics, 
-            environment, and lifestyle, and this feature is intended as a motivational tool to support your wellness journey.
+        {/* Enhanced Disclaimer - Algorithm Transparency */}
+        <Alert className="bg-amber-50 border-amber-300">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-xs text-amber-900 space-y-2">
+            <div>
+              <strong>Important: About This Projection</strong>
+            </div>
+            <p>
+              This biological age projection uses a <strong>proprietary algorithm</strong> that estimates aging impact based on lifestyle 
+              factors (sleep, exercise, nutrition, stress, etc.). While these factors are scientifically validated to influence aging, 
+              <strong> this specific calculation is NOT a validated medical biological age test</strong>.
+            </p>
+            <p>
+              <strong>For accurate biological age measurement</strong>, consider professional testing such as:
+            </p>
+            <ul className="list-disc list-inside ml-2 space-y-1">
+              <li>Epigenetic testing (DNA methylation clocks like Horvath, GrimAge, PhenoAge)</li>
+              <li>Comprehensive blood biomarker panels</li>
+              <li>Clinical biological age assessments with your healthcare provider</li>
+            </ul>
+            <p className="pt-2 border-t border-amber-200 mt-2">
+              This tool is designed as a <strong>motivational tracker</strong> to help you visualize the potential impact of lifestyle 
+              improvements on longevity, based on current scientific research trends. Results are educational estimates, not medical predictions.
+            </p>
           </AlertDescription>
         </Alert>
+
+        {/* Research Basis Note */}
+        <div className="text-xs text-muted-foreground text-center">
+          Our lifestyle factor weights are based on peer-reviewed longevity research. 
+          <Link to="/research-evidence" className="text-primary hover:underline ml-1">
+            View our research database →
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

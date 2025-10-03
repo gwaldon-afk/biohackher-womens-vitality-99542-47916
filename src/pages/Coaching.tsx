@@ -3,9 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, TrendingUp, Snowflake, Dumbbell, Heart, Moon } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Calendar, TrendingUp, Snowflake, Dumbbell, Heart, Moon, ChevronDown } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import ResearchCitation from "@/components/ResearchCitation";
+import { getResearchByStage } from "@/data/cycleCoachingResearch";
 
 const Coaching = () => {
   const [currentStage, setCurrentStage] = useState("follicular");
@@ -159,6 +162,7 @@ const Coaching = () => {
 
   const currentStageData = cycleStages[currentStage as keyof typeof cycleStages];
   const currentRecommendations = recommendations[currentStage as keyof typeof recommendations];
+  const stageResearch = getResearchByStage(currentStage);
 
   return (
     <div className="min-h-screen bg-background">
@@ -264,6 +268,29 @@ const Coaching = () => {
                     Plan This Week's Workouts
                   </Button>
                 </div>
+
+                {stageResearch && stageResearch.training.length > 0 && (
+                  <Collapsible className="mt-6">
+                    <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                      <ChevronDown className="h-4 w-4" />
+                      View Supporting Research ({stageResearch.training.length} studies)
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 space-y-3">
+                      {stageResearch.training.map((study, index) => (
+                        <ResearchCitation
+                          key={index}
+                          title={study.title}
+                          journal={study.journal}
+                          year={study.year}
+                          url={study.url}
+                          doi={study.doi}
+                          studyType={study.studyType}
+                          sampleSize={study.sampleSize}
+                        />
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -288,6 +315,29 @@ const Coaching = () => {
                     </div>
                   ))}
                 </div>
+
+                {stageResearch && stageResearch.recovery.length > 0 && (
+                  <Collapsible className="mt-6">
+                    <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                      <ChevronDown className="h-4 w-4" />
+                      View Supporting Research ({stageResearch.recovery.length} studies)
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 space-y-3">
+                      {stageResearch.recovery.map((study, index) => (
+                        <ResearchCitation
+                          key={index}
+                          title={study.title}
+                          journal={study.journal}
+                          year={study.year}
+                          url={study.url}
+                          doi={study.doi}
+                          studyType={study.studyType}
+                          sampleSize={study.sampleSize}
+                        />
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -313,6 +363,29 @@ const Coaching = () => {
                     </div>
                   ))}
                 </div>
+
+                {stageResearch && stageResearch.nutrition.length > 0 && (
+                  <Collapsible className="mt-6">
+                    <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                      <ChevronDown className="h-4 w-4" />
+                      View Supporting Research ({stageResearch.nutrition.length} studies)
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 space-y-3">
+                      {stageResearch.nutrition.map((study, index) => (
+                        <ResearchCitation
+                          key={index}
+                          title={study.title}
+                          journal={study.journal}
+                          year={study.year}
+                          url={study.url}
+                          doi={study.doi}
+                          studyType={study.studyType}
+                          sampleSize={study.sampleSize}
+                        />
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -337,6 +410,29 @@ const Coaching = () => {
                     </div>
                   ))}
                 </div>
+
+                {stageResearch && stageResearch.biohacking.length > 0 && (
+                  <Collapsible className="mt-6">
+                    <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                      <ChevronDown className="h-4 w-4" />
+                      View Supporting Research ({stageResearch.biohacking.length} studies)
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 space-y-3">
+                      {stageResearch.biohacking.map((study, index) => (
+                        <ResearchCitation
+                          key={index}
+                          title={study.title}
+                          journal={study.journal}
+                          year={study.year}
+                          url={study.url}
+                          doi={study.doi}
+                          studyType={study.studyType}
+                          sampleSize={study.sampleSize}
+                        />
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

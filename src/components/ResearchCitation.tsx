@@ -7,7 +7,7 @@ interface ResearchCitationProps {
   year?: number;
   url: string;
   doi?: string;
-  studyType?: "RCT" | "Meta-analysis" | "Cohort" | "Review" | "Observational";
+  studyType?: "RCT" | "Meta-analysis" | "Cohort" | "Review" | "Observational" | "Systematic Review" | "Policy" | "Report";
   sampleSize?: number;
   className?: string;
 }

@@ -1,4 +1,8 @@
 import heroImage from "@/assets/hero-image.jpg";
+import ResearchCitation from "@/components/ResearchCitation";
+import { womenResearchGapCitations } from "@/data/womenResearchGapCitations";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -296,6 +300,26 @@ const Index = () => {
                         only about 38% of participants in medical research are women. This creates a dangerous knowledge gap when 
                         women's hormonal cycles, metabolism, and aging processes differ significantly from men's.
                       </p>
+
+                      <Collapsible className="mt-6">
+                        <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80">
+                          <ChevronDown className="h-4 w-4" />
+                          View Research Citations ({womenResearchGapCitations.length} sources)
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-4 space-y-3">
+                          {womenResearchGapCitations.map((citation, index) => (
+                            <ResearchCitation
+                              key={index}
+                              title={citation.title}
+                              journal={citation.journal}
+                              year={citation.year}
+                              url={citation.url}
+                              doi={citation.doi}
+                              studyType={citation.studyType}
+                            />
+                          ))}
+                        </CollapsibleContent>
+                      </Collapsible>
                     </div>}
                 </div>}
             </div>
