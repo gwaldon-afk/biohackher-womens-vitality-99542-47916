@@ -39,7 +39,7 @@ const stressSchema = z.object({
 
 const activitySchema = z.object({
   activeMinutes: z.number().min(0).max(1440),
-  steps: z.number().min(0).max(100000),
+  steps: z.number().min(0).max(100000).optional(),
   intensity: z.number().min(1).max(10),
   type: z.enum(["strength", "cardio", "hiit"])
 });
@@ -88,7 +88,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
 
   const [activityData, setActivityData] = useState({
     activeMinutes: 60,
-    steps: 8000,
+    steps: undefined as number | undefined,
     intensity: 6,
     type: "cardio" as "strength" | "cardio" | "hiit"
   });
@@ -191,7 +191,7 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
             subjective_calmness_rating: stressData.subjectiveCalmnessRating
           },
           activity: {
-            steps: activityData.steps,
+            steps: activityData.steps ?? null,
             active_minutes: activityData.activeMinutes,
             activity_intensity: activityData.intensity
           },
@@ -562,15 +562,20 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="steps">Steps</Label>
+                      <Label htmlFor="steps" className="flex items-center gap-2">
+                        Steps
+                        <Badge variant="secondary" className="text-xs">Optional</Badge>
+                      </Label>
                       <Input
                         id="steps"
                         type="number"
                         min="0"
                         max="100000"
-                        value={activityData.steps}
-                        onChange={(e) => setActivityData({...activityData, steps: parseInt(e.target.value)})}
+                        placeholder="Leave blank if not tracked"
+                        value={activityData.steps ?? ''}
+                        onChange={(e) => setActivityData({...activityData, steps: e.target.value ? parseInt(e.target.value) : undefined})}
                       />
+                      <p className="text-xs text-muted-foreground mt-1">From tracker or leave blank</p>
                     </div>
                     <div>
                       <Label htmlFor="intensity">Intensity (1-10)</Label>
@@ -582,6 +587,11 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         value={activityData.intensity}
                         onChange={(e) => setActivityData({...activityData, intensity: parseInt(e.target.value)})}
                       />
+                      <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                        <p><strong>1-3:</strong> Light (walking, stretching)</p>
+                        <p><strong>4-6:</strong> Moderate (brisk walk, cycling)</p>
+                        <p><strong>7-10:</strong> Vigorous (running, HIIT)</p>
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="activityType">Activity Type</Label>
@@ -666,6 +676,12 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                           value={nutritionData.mealQuality}
                           onChange={(e) => setNutritionData({mealQuality: parseInt(e.target.value)})}
                         />
+                        <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                          <p><strong>1-3:</strong> Poor quality</p>
+                          <p><strong>4-6:</strong> Moderate quality</p>
+                          <p><strong>7-8:</strong> Good quality</p>
+                          <p><strong>9-10:</strong> Excellent quality</p>
+                        </div>
                       </div>
                     )}
 
@@ -734,6 +750,12 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                         value={socialData.interactionQuality}
                         onChange={(e) => setSocialData({...socialData, interactionQuality: parseInt(e.target.value)})}
                       />
+                      <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                        <p><strong>1-3:</strong> Minimal</p>
+                        <p><strong>4-6:</strong> Moderate</p>
+                        <p><strong>7-8:</strong> Meaningful</p>
+                        <p><strong>9-10:</strong> Deep connection</p>
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="socialTime">Social Time (minutes)</Label>
