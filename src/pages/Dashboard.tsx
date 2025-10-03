@@ -373,71 +373,29 @@ const Dashboard = () => {
               <h1 className="text-4xl font-bold mb-2">
                 Welcome to Your <span className="text-primary">Health Journey</span>
               </h1>
-              <p className="text-lg text-muted-foreground">
-                Let's start tracking your first day
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                You're about to take your first step toward optimizing your healthspan and lifespan
               </p>
             </div>
 
-            <div className="max-w-3xl mx-auto space-y-6">
-              {/* Main CTA Card */}
-              <Card className="border-2 border-primary shadow-lg">
-                <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-2xl flex items-center justify-center gap-2">
-                    <Activity className="h-6 w-6 text-primary" />
-                    Submit Your First Daily Score
-                  </CardTitle>
-                  <CardDescription className="text-base mt-2">
-                    Track your daily habits across 6 key longevity pillars
-                  </CardDescription>
+            <div className="max-w-2xl mx-auto">
+              <Card className="border-2 border-primary shadow-xl">
+                <CardHeader className="text-center space-y-4 pb-6">
+                  <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Activity className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl mb-2">
+                      Ready to Complete Your First Daily Score?
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                      This is your personalized health tracking system
+                    </CardDescription>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <Moon className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Sleep Quality</p>
-                        <p className="text-xs text-muted-foreground">Total hours, REM, deep sleep</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <Heart className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Stress & Age Perception</p>
-                        <p className="text-xs text-muted-foreground">HRV, stress levels, how you feel</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <Activity className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Physical Activity</p>
-                        <p className="text-xs text-muted-foreground">Steps, active minutes, intensity</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <TrendingUp className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Nutrition</p>
-                        <p className="text-xs text-muted-foreground">Meal quality and choices</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <Users className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Social Connection</p>
-                        <p className="text-xs text-muted-foreground">Interaction quality and time</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-                      <Brain className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="font-medium text-sm">Cognitive Engagement</p>
-                        <p className="text-xs text-muted-foreground">Meditation, learning activities</p>
-                      </div>
-                    </div>
-                  </div>
-
                   <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
-                    fetchDailyScoreCount(); // Refresh count after submission
+                    fetchDailyScoreCount();
                     lisData.refetch();
                     toast({
                       title: "Great Start! 🎉",
@@ -446,33 +404,14 @@ const Dashboard = () => {
                   }}>
                     <Button className="w-full" size="lg">
                       <Zap className="h-5 w-5 mr-2" />
-                      Submit Your First Daily Score
+                      Complete Your First Daily Score
                     </Button>
                   </FirstTimeDailyScoreWelcome>
 
-                  <p className="text-center text-sm text-muted-foreground">
-                    Takes just 2-3 minutes • Your health journey starts here
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Secondary Info Card */}
-              <Card className="border-muted">
-                <CardHeader>
-                  <CardTitle className="text-lg">What Happens Next?</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  <div className="flex gap-3">
-                    <span className="text-primary font-bold">1.</span>
-                    <p>Submit your daily scores regularly (aim for daily consistency)</p>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="text-primary font-bold">2.</span>
-                    <p>After a few submissions, you'll unlock insights, trends, and personalized recommendations</p>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="text-primary font-bold">3.</span>
-                    <p>Track your progress over weeks and months to see real longevity improvements</p>
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Click above to learn what you'll track, why it matters, and what you'll get
+                    </p>
                   </div>
                 </CardContent>
               </Card>
