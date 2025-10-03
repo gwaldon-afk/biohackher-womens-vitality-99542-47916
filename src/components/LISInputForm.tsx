@@ -817,11 +817,11 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    Current Score: <span className="font-bold text-foreground">{currentScore}/100</span>
+                    Preview Score (based on current inputs): <span className="font-bold text-foreground">{currentScore}/100</span>
                   </p>
                 </div>
                 <Button onClick={handleSubmit} disabled={loading} className="min-w-32">
-                  {loading ? "Saving..." : "Update Score"}
+                  {loading ? "Calculating..." : "Calculate My Score"}
                 </Button>
               </div>
             </TabsContent>
