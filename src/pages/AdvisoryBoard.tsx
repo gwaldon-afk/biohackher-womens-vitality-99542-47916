@@ -18,7 +18,7 @@ const AdvisoryBoard = () => {
       name: "Dr. James Chen, MD",
       title: "Integrative Medicine Physician",
       credentials: "MD, Board Certified Internal Medicine, Fellowship in Integrative Medicine",
-      specialty: "Sleep Optimization & Cognitive Health",
+      specialty: "Sleep Optimisation & Cognitive Health",
       bio: "Dr. Chen specializes in evidence-based integrative approaches to sleep disorders and cognitive decline. His research focuses on non-pharmaceutical interventions for age-related health concerns.",
       publications: 32,
       yearsExperience: 18

@@ -16,14 +16,14 @@ const BiohackingToolkit = () => {
     {
       id: "sleep",
       title: "Sleep",
-      description: "Optimize your sleep quality and recovery",
+      description: "Optimise your sleep quality and recovery",
       icon: Moon,
       href: "/sleep"
     },
     {
       id: "nutrition",
       title: "Nutrition",
-      description: "Personalized nutrition strategies for longevity",
+      description: "Personalised nutrition strategies for longevity",
       icon: UtensilsCrossed,
       href: "/nutrition"
     },
@@ -56,7 +56,7 @@ const BiohackingToolkit = () => {
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Your comprehensive suite of evidence-based biohacking tools and protocols. 
-              Explore personalized strategies for optimal health, performance, and longevity 
+              Explore personalised strategies for optimal health, performance, and longevity 
               tailored specifically for women's unique biology.
             </p>
           </div>

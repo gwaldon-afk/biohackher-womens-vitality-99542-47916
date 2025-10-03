@@ -509,7 +509,7 @@ const LISAssessment = () => {
                 </div>
                 <CardTitle className="text-3xl mb-2">Let's Get to Know You</CardTitle>
                 <CardDescription className="text-base">
-                  Help us personalize your Longevity Impact Score by sharing a few details about yourself
+                  Help us personalise your Longevity Impact Score by sharing a few details about yourself
                 </CardDescription>
               </div>
             </CardHeader>

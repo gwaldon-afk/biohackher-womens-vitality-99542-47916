@@ -266,7 +266,7 @@ const Index = () => {
                       </p>
                       <p>
                         Biohacking provides the tools and knowledge to work <em>with</em> your 
-                        body's natural systems, not against them. It's about using science-backed strategies to optimize 
+                        body's natural systems, not against them. It's about using science-backed strategies to optimise 
                         your health and performance at the cellular level.
                       </p>
                     </div>}
@@ -274,7 +274,7 @@ const Index = () => {
                   {selectedTopic === 'women-focused' && <div className="space-y-4">
                       <h3 className="text-xl font-semibold text-foreground">Women Focused Approach</h3>
                       <p>
-                        <strong>BiohackHer recognizes that women's biology isn't just "small men"</strong>—we have unique needs 
+                        <strong>BiohackHer recognises that women's biology isn't just "small men"</strong>—we have unique needs 
                         throughout our cycles, pregnancies, perimenopause, and beyond. Women's longevity strategies must account 
                         for estrogen fluctuations, different stress responses, and varying nutritional needs.
                       </p>
@@ -317,20 +317,20 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
             {[{
             question: "Why is my metabolism slowing down after 35?",
-            answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimize your metabolic health.",
+            answer: "Hormonal shifts affect insulin sensitivity and muscle mass. We help you understand and optimise your metabolic health.",
             icon: Flame,
             detailedAnswer: "After 35, several physiological changes impact your metabolism: declining estrogen affects insulin sensitivity, muscle mass decreases by 3-8% per decade, and your basal metabolic rate naturally slows. Additionally, lifestyle factors like stress and sleep quality become more impactful.",
             assessment: "Take our comprehensive Body Composition pillar assessment to understand your unique metabolic profile, including muscle mass, fat distribution, and hormonal influences on your metabolism.",
-            planning: "Based on your results, we'll create a personalized plan that may include targeted nutrition protocols, strength training recommendations, and hormone optimization strategies tailored to your life stage.",
+            planning: "Based on your results, we'll create a personalised plan that may include targeted nutrition protocols, strength training recommendations, and hormone optimisation strategies tailored to your life stage.",
             action: "Start with our metabolic health tracker, implement evidence-based meal timing strategies, and access our library of metabolism-boosting protocols designed specifically for women over 35.",
             navigateTo: "/pillars"
           }, {
             question: "How do I prepare for perimenopause naturally?",
-            answer: "Get personalized hormone-balancing protocols based on your unique symptoms and lifestyle.",
+            answer: "Get personalised hormone-balancing protocols based on your unique symptoms and lifestyle.",
             icon: Heart,
             detailedAnswer: "Perimenopause can begin 8-10 years before menopause, with symptoms like irregular periods, mood changes, sleep disturbances, and weight gain. Natural preparation focuses on supporting your body's hormonal transition through targeted nutrition, lifestyle modifications, and stress management.",
             assessment: "Complete our Hormonal Balance assessment and symptom tracker to identify your current stage and primary concerns. Our comprehensive evaluation covers sleep patterns, stress levels, cycle changes, and physical symptoms.",
-            planning: "Receive a personalized perimenopause preparation plan including hormone-supporting foods, targeted supplements, exercise recommendations, and stress management techniques based on your specific symptoms and lifestyle.",
+            planning: "Receive a personalised perimenopause preparation plan including hormone-supporting foods, targeted supplements, exercise recommendations, and stress management techniques based on your specific symptoms and lifestyle.",
             action: "Access our perimenopause toolkit with daily tracking features, evidence-based protocols for symptom management, and connection to healthcare providers who specialize in women's hormonal health.",
             navigateTo: "/symptoms"
           }, {
@@ -339,7 +339,7 @@ const Index = () => {
             icon: Moon,
             detailedAnswer: "Quality sleep involves proper sleep architecture, including adequate deep sleep and REM phases. Factors like hormonal fluctuations, stress, room temperature, light exposure, and evening routines significantly impact sleep quality even when duration seems sufficient.",
             assessment: "Use our comprehensive sleep assessment to analyze your sleep environment, bedtime routines, stress levels, and potential disruptors. Track your sleep patterns and energy levels to identify specific issues.",
-            planning: "Get a personalized sleep optimization plan that addresses your specific sleep disruptors, including room environment modifications, bedtime routine adjustments, and targeted interventions for your sleep stage.",
+            planning: "Get a personalised sleep optimisation plan that addresses your specific sleep disruptors, including room environment modifications, bedtime routine adjustments, and targeted interventions for your sleep stage.",
             action: "Implement our evidence-based sleep protocols, access guided sleep meditations, track your improvements with our sleep diary, and learn advanced biohacking techniques for optimal rest and recovery.",
             navigateTo: "/sleep"
           }, {
@@ -357,7 +357,7 @@ const Index = () => {
             icon: Zap,
             detailedAnswer: "Effective anti-aging focuses on cellular health, hormonal optimization, inflammation reduction, and lifestyle factors that impact longevity. Evidence-based approaches include targeted nutrition, specific exercise protocols, stress management, sleep optimization, and strategic supplementation.",
             assessment: "Complete our comprehensive longevity assessment covering your current health markers, lifestyle factors, family history, and aging concerns. This helps identify your priority areas for anti-aging interventions.",
-            planning: "Get a personalized anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
+            planning: "Get a personalised anti-aging protocol that may include specific therapies like red light therapy, cold exposure, targeted supplementation, and lifestyle modifications based on the latest longevity research.",
             action: "Access our curated collection of anti-aging therapies, track your biological age markers, implement proven longevity protocols, and connect with practitioners who specialize in age optimization for women.",
             navigateTo: "/therapies"
           }].map((item, index) => <Card key={index} className="card-elevated hover:shadow-lg transition-all cursor-pointer px-4 py-2 bg-white border-l-4 border-l-primary" onClick={() => {
@@ -387,7 +387,7 @@ const Index = () => {
           {/* CTA after questions */}
           <div className="flex justify-center mt-12">
             <CTAButton
-              text="Get Your Personalized Health Plan"
+              text="Get Your Personalised Health Plan"
               href="/symptoms"
               variant="default"
               className="text-lg px-8"
@@ -478,14 +478,14 @@ const Index = () => {
               Stop Wondering. Start <span className="gradient-text">Knowing</span>.
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Get personalized, science-backed answers to what's happening in your body. No more guesswork.
+              Get personalised, science-backed answers to what's happening in your body. No more guesswork.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
               <Button size="lg" className="primary-gradient relative z-40 pointer-events-auto" onClick={() => {
-              console.log("Get My Personalized Plan clicked");
+              console.log("Get My Personalised Plan clicked");
               navigate("/auth");
             }}>
-                Get My Personalized Plan
+                Get My Personalised Plan
               </Button>
               <Button size="lg" variant="outline" className="relative z-40 pointer-events-auto" onClick={() => {
               console.log("View Premium Plans clicked");
@@ -520,7 +520,7 @@ const Index = () => {
                   <p className="text-muted-foreground leading-relaxed">
                     With over a decade of experience in women's hormonal health and longevity research, Azra founded 
                     BiohackHer after witnessing countless women struggle with the changes happening in their bodies 
-                    after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
+                    after 35. Her evidence-based approach combines cutting-edge biohacking protocols with personalised 
                     interventions designed specifically for women's unique physiological needs throughout all life stages.
                   </p>
                 </div>

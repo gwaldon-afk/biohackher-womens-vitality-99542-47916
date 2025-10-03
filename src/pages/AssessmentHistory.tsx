@@ -256,7 +256,7 @@ const AssessmentHistory = () => {
           </h1>
           <p className="text-muted-foreground">
             Review your completed symptom assessments and track your progress over time. 
-            <span className="font-medium text-primary"> Click any assessment card to view detailed results and personalized recommendations.</span>
+            <span className="font-medium text-primary"> Click any assessment card to view detailed results and personalised recommendations.</span>
           </p>
         </div>
 

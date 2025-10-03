@@ -71,7 +71,7 @@ export const MonthlyReportCard = ({ isPremium = false }: MonthlyReportCardProps)
             <FileText className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
             <h3 className="font-semibold mb-2">Unlock Monthly Reports</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Get detailed monthly progress reports with insights, trends, and personalized recommendations.
+              Get detailed monthly progress reports with insights, trends, and personalised recommendations.
             </p>
             <Button variant="default">Upgrade to Premium</Button>
           </div>

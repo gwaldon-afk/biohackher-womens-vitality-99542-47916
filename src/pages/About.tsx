@@ -22,7 +22,7 @@ const About = () => {
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Empowering women to take control of their health through evidence-based 
-            biohacking and personalized longevity protocols.
+            biohacking and personalised longevity protocols.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ const About = () => {
                 <p className="text-lg">
                   BiohackHer was born from a simple but powerful observation: <strong className="text-foreground">women's health 
                   is dramatically underserved</strong> in the longevity and biohacking space. While men have access to 
-                  extensive research and protocols for optimizing their health, women face unique challenges that 
+                  extensive research and protocols for optimising their health, women face unique challenges that 
                   are often overlooked or misunderstood.
                 </p>
                 
@@ -53,8 +53,8 @@ const About = () => {
                 <div className="bg-primary/10 p-6 rounded-lg border border-primary/20 my-6">
                   <h3 className="text-xl font-semibold text-primary mb-3">Our Mission</h3>
                   <p className="text-foreground">
-                    To democratize access to science-backed longevity protocols specifically designed for women's 
-                    unique physiology, making personalized health optimization accessible, affordable, and actionable 
+                    To democratise access to science-backed longevity protocols specifically designed for women's 
+                    unique physiology, making personalised health optimisation accessible, affordable, and actionable 
                     for every woman—regardless of age, background, or health literacy.
                   </p>
                 </div>
@@ -71,7 +71,7 @@ const About = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
-                    <span><strong>Personalized assessments</strong> that understand your unique symptoms</span>
+                    <span><strong>Personalised assessments</strong> that understand your unique symptoms</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
@@ -120,7 +120,7 @@ const About = () => {
                     happening in their bodies after 35.
                   </p>
                   <p>
-                    Her evidence-based approach combines cutting-edge biohacking protocols with personalized 
+                    Her evidence-based approach combines cutting-edge biohacking protocols with personalised 
                     interventions designed specifically for women's unique physiological needs throughout all 
                     life stages.
                   </p>
@@ -135,7 +135,7 @@ const About = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Target className="h-5 w-5 text-primary" />
-                      <span className="text-sm">Helped 10,000+ Women Optimize Their Health</span>
+                      <span className="text-sm">Helped 10,000+ Women Optimise Their Health</span>
                     </div>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ const About = () => {
                 <div className="p-4 bg-background rounded-lg border">
                   <h4 className="font-semibold mb-2">Recent Episodes</h4>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Episode 47: Optimizing Sleep for Women Over 40</li>
+                    <li>• Episode 47: Optimising Sleep for Women Over 40</li>
                     <li>• Episode 46: The Truth About Hormone Replacement</li>
                     <li>• Episode 45: Gut Health & Menopausal Symptoms</li>
                   </ul>

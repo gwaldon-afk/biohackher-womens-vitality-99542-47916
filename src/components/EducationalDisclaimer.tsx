@@ -25,7 +25,7 @@ const EducationalDisclaimer = ({ type = "general", className = "" }: Educational
     general: {
       icon: Info,
       title: "Educational Information",
-      text: "This information is for educational purposes only and does not constitute medical advice. Always consult with qualified healthcare professionals for personalized guidance."
+      text: "This information is for educational purposes only and does not constitute medical advice. Always consult with qualified healthcare professionals for personalised guidance."
     }
   };
 

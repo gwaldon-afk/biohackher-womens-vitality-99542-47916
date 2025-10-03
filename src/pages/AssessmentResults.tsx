@@ -986,7 +986,7 @@ const AssessmentResults = () => {
       timeline: "Most people generally notice initial improvements in sleep depth within 1-2 weeks, with significant sleep quality enhancement after 4-6 weeks of consistent implementation. If sleep symptoms persist or worsen, consult a healthcare provider."
     });
 
-    // Always include sleep environment optimization
+    // Always include sleep environment optimisation
     recs.push({
       title: "Sleep Environment Optimisation",
       description: "Keep your bedroom temperature between 18-20°C, ensure complete darkness with blackout curtains, and minimise noise.",
@@ -1012,7 +1012,7 @@ const AssessmentResults = () => {
 
     // Always include sleep therapy option
     recs.push({
-      title: "Cognitive Behavioral Therapy for Insomnia (CBT-I)",
+      title: "Cognitive Behavioural Therapy for Insomnia (CBT-I)",
       description: "Consider professional CBT-I if sleep issues persist despite other interventions - most effective long-term treatment.",
       priority: 'low',
       category: 'therapy',
@@ -1077,16 +1077,16 @@ const AssessmentResults = () => {
       timeline: "Immediate relief from trigger avoidance and cooling strategies. Pattern recognition typically develops within 2-3 weeks of tracking."
     });
 
-    // Cognitive Behavioral Therapy for hot flashes
+    // Cognitive Behavioural Therapy for hot flashes
     if (significantImpact || hasSevereIntensity) {
       recs.push({
-        title: "Cognitive Behavioral Therapy for Hot Flashes (CBT-MH)",
+        title: "Cognitive Behavioural Therapy for Hot Flashes (CBT-MH)",
         description: "Evidence-based psychological intervention specifically designed to reduce hot flash severity and improve quality of life.",
         priority: 'high',
         category: 'therapy',
         icon: Brain,
-        analysis: "**Clinical Evidence:** CBT for menopausal hot flashes (CBT-MH) has been shown in multiple RCTs to reduce hot flash problem rating by 40-60% and significantly improve quality of life, sleep, and mood. More effective than control interventions. Works by changing cognitive and behavioral responses to hot flashes, reducing stress reactivity, and improving sleep.",
-        improvement: "Seek therapist trained in CBT-MH or use evidence-based programs like Cognitive Behavioral Therapy for Menopause. Typically involves 4-6 sessions covering paced breathing, cognitive restructuring, sleep hygiene, and behavioral activation.",
+        analysis: "**Clinical Evidence:** CBT for menopausal hot flashes (CBT-MH) has been shown in multiple RCTs to reduce hot flash problem rating by 40-60% and significantly improve quality of life, sleep, and mood. More effective than control interventions. Works by changing cognitive and behavioural responses to hot flashes, reducing stress reactivity, and improving sleep.",
+        improvement: "Seek therapist trained in CBT-MH or use evidence-based programs like Cognitive Behavioural Therapy for Menopause. Typically involves 4-6 sessions covering paced breathing, cognitive restructuring, sleep hygiene, and behavioural activation.",
         timeline: "Improvements typically seen within 4-6 weeks of treatment, with benefits maintained long-term."
       });
     }
@@ -1107,13 +1107,13 @@ const AssessmentResults = () => {
     if (hasNightSweats) {
       recs.push({
         title: "Night Sweat Management Protocol",
-        description: "Comprehensive sleep environment and bedding optimization to minimize night sweat disruption.",
+        description: "Comprehensive sleep environment and bedding optimisation to minimise night sweat disruption.",
         priority: 'high',
         category: 'environment',
         icon: Moon,
-        analysis: "Night sweats disrupt sleep architecture and contribute to daytime fatigue, mood changes, and cognitive impairment. Environmental optimization can reduce episode intensity by 40-60%.",
+        analysis: "Night sweats disrupt sleep architecture and contribute to daytime fatigue, mood changes, and cognitive impairment. Environmental optimisation can reduce episode intensity by 40-60%.",
         improvement: "Use moisture-wicking sleepwear (merino wool or technical fabrics), cooling mattress pad or BedJet, keep room 16-18°C, use layered bedding for easy adjustment, keep cold water and fan bedside, layer sheets for quick changes.",
-        timeline: "Immediate improvement in sleep quality with environmental optimization."
+        timeline: "Immediate improvement in sleep quality with environmental optimisation."
       });
     }
 
@@ -1208,7 +1208,7 @@ const AssessmentResults = () => {
     // Always include ergonomic environment
     recs.push({
       title: "Joint-Friendly Environment Setup",
-      description: "Optimize your living and work spaces to reduce joint stress with proper ergonomics and supportive surfaces.",
+      description: "Optimise your living and work spaces to reduce joint stress with proper ergonomics and supportive surfaces.",
       priority: 'medium',
       category: 'environment',
       icon: Calendar,
@@ -1347,7 +1347,7 @@ const AssessmentResults = () => {
       icon: Activity,
       analysis: "Lifestyle factors like stress, meal timing, and physical activity significantly impact gut health and digestive function.",
       improvement: "Practice stress reduction techniques, eat at consistent times, take gentle walks after meals, prioritize quality sleep.",
-      timeline: "Digestive improvements typically develop within 2-4 weeks of lifestyle optimization"
+      timeline: "Digestive improvements typically develop within 2-4 weeks of lifestyle optimisation"
     });
 
     return recs;
@@ -1387,9 +1387,9 @@ const AssessmentResults = () => {
         priority: 'medium',
         category: 'environment',
         icon: Lightbulb,
-        analysis: "Environmental factors significantly impact cognitive performance. Optimized spaces can improve focus and mental clarity by 25-40%.",
+        analysis: "Environmental factors significantly impact cognitive performance. Optimised spaces can improve focus and mental clarity by 25-40%.",
         improvement: "Use natural light when possible, maintain comfortable temperature, remove visual distractions, add plants for air quality.",
-        timeline: "Immediate focus improvements in optimized environment"
+        timeline: "Immediate focus improvements in optimised environment"
       },
       {
         title: "Brain-Healthy Mediterranean Diet",
@@ -1408,11 +1408,11 @@ const AssessmentResults = () => {
         category: 'therapy',
         icon: Brain,
         analysis: "Neurofeedback training can improve attention and reduce brain fog by training specific brainwave patterns associated with clear thinking.",
-        improvement: "Seek qualified neurofeedback practitioner for assessment and personalized training protocol.",
+        improvement: "Seek qualified neurofeedback practitioner for assessment and personalised training protocol.",
         timeline: "Cognitive improvements typically seen after 8-15 sessions over 4-8 weeks"
       },
       {
-        title: "Cognitive Lifestyle Optimization",
+        title: "Cognitive Lifestyle Optimisation",
         description: "Maintain regular sleep schedule, manage stress levels, and incorporate daily mental challenges to support brain health.",
         priority: 'medium',
         category: 'lifestyle',

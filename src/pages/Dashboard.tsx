@@ -136,7 +136,7 @@ const Dashboard = () => {
 
   const getPersonalizedAssessmentStatements = () => {
     if (recentAssessments.length === 0) return {
-      primaryStatement: "Your health journey is just beginning. Complete your first symptom assessment to unlock personalized insights and recommendations tailored specifically to your wellness goals.",
+      primaryStatement: "Your health journey is just beginning. Complete your first symptom assessment to unlock personalised insights and recommendations tailored specifically to your wellness goals.",
       secondaryStatements: [],
       actionStatement: "Take your first assessment to discover your unique health profile and receive targeted guidance for optimal wellbeing."
     };
@@ -164,7 +164,7 @@ const Dashboard = () => {
 
     // Generate primary assessment statement
     if (avgScore >= 80) {
-      primaryStatement = `Your health profile demonstrates exceptional symptom management across ${recentAssessments.length} key areas, with an overall wellness score of ${Math.round(avgScore)}/100. This places you in the top tier of health optimization, indicating that your current lifestyle and health strategies are highly effective.`;
+      primaryStatement = `Your health profile demonstrates exceptional symptom management across ${recentAssessments.length} key areas, with an overall wellness score of ${Math.round(avgScore)}/100. This places you in the top tier of health optimisation, indicating that your current lifestyle and health strategies are highly effective.`;
       
       if (excellentSymptoms.length > 0) {
         secondaryStatements.push(`Your ${excellentSymptoms.map(a => getSymptomName(a.symptom_type)).join(', ')} management is exemplary, serving as a strong foundation for your overall wellness.`);
@@ -176,7 +176,7 @@ const Dashboard = () => {
       
       if (poorSymptoms.length + fairSymptoms.length > 0) {
         const concerningAreas = [...poorSymptoms, ...fairSymptoms].map(a => getSymptomName(a.symptom_type));
-        secondaryStatements.push(`While your foundation is solid, ${concerningAreas.join(', ')} ${concerningAreas.length === 1 ? 'requires' : 'require'} targeted attention to optimize your overall wellbeing.`);
+        secondaryStatements.push(`While your foundation is solid, ${concerningAreas.join(', ')} ${concerningAreas.length === 1 ? 'requires' : 'require'} targeted attention to optimise your overall wellbeing.`);
       }
       
       if (commonIssues.length > 0) {
@@ -243,7 +243,7 @@ const Dashboard = () => {
     if (activeSymptoms.length === 0) {
       recommendations.push({
         title: "Start Your Health Assessment",
-        description: "Take your first symptom assessment to get personalized recommendations",
+        description: "Take your first symptom assessment to get personalised recommendations",
         action: () => navigate('/symptoms'),
         priority: 'high'
       });
@@ -440,7 +440,7 @@ const Dashboard = () => {
           <MonthlyReportCard isPremium={false} />
         </div>
 
-        {/* Personalized Health Assessment */}
+        {/* Personalised Health Assessment */}
         <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
           <CardContent className="p-6">
             <div className="space-y-6">
@@ -605,7 +605,7 @@ const Dashboard = () => {
                   {recentAssessments.map((assessment) => {
                     const Icon = getSymptomIcon(assessment.symptom_type);
                     const getSymptomInsight = (category: string, score: number) => {
-                      if (category === 'excellent') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} management is exemplary and well-optimized.`;
+                      if (category === 'excellent') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} management is exemplary and well-optimised.`;
                       if (category === 'good') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} shows positive management with room for fine-tuning.`;
                       if (category === 'fair') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} needs focused attention for improvement.`;
                       return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} requires immediate intervention and support.`;

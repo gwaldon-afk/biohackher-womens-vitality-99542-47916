@@ -41,7 +41,7 @@ export const AIInsightsCard = ({ isPremium = false }: AIInsightsCardProps) => {
       
       toast({
         title: "Insights Generated",
-        description: "Your personalized wellness insights are ready!"
+        description: "Your personalised wellness insights are ready!"
       });
     } catch (error) {
       console.error("Error generating insights:", error);
@@ -66,7 +66,7 @@ export const AIInsightsCard = ({ isPremium = false }: AIInsightsCardProps) => {
               {isPremium && <Badge variant="default">Premium</Badge>}
             </CardTitle>
             <CardDescription>
-              Get personalized wellness recommendations based on your data
+              Get personalised wellness recommendations based on your data
             </CardDescription>
           </div>
         </div>
@@ -77,7 +77,7 @@ export const AIInsightsCard = ({ isPremium = false }: AIInsightsCardProps) => {
             <Sparkles className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
             <h3 className="font-semibold mb-2">Unlock AI Insights</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Get personalized recommendations, trend analysis, and actionable advice with Premium.
+              Get personalised recommendations, trend analysis, and actionable advice with Premium.
             </p>
             <Button variant="default">Upgrade to Premium</Button>
           </div>
@@ -103,7 +103,7 @@ export const AIInsightsCard = ({ isPremium = false }: AIInsightsCardProps) => {
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Analyzing...
+                    Analysing...
                   </>
                 ) : (
                   <>

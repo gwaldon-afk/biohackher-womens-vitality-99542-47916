@@ -214,7 +214,7 @@ const LongevityMindsetQuiz = () => {
     } else if (avgScore >= 2.5) {
       return {
         type: "Awakening Explorer",
-        description: "You're curious about longevity and open to learning, but may need more guidance to fully commit. You recognize the possibility of influencing your aging process.",
+        description: "You're curious about longevity and open to learning, but may need more guidance to fully commit. You recognise the possibility of influencing your aging process.",
         actionPlan: "Begin with education and small experiments. Our symptom assessments will help you understand your body and build confidence in your ability to create change.",
         color: "from-blue-500 to-cyan-600",
       };
@@ -513,7 +513,7 @@ const LongevityMindsetQuiz = () => {
                           "Personal Agency": {
                             "Empowered": "You feel confident in your ability to influence your health outcomes",
                             "Engaging": "You're actively taking steps to assert control over your wellbeing",
-                            "Evolving": "You're recognizing your power to shape your health trajectory",
+                            "Evolving": "You're recognising your power to shape your health trajectory",
                             "Emerging": "You're discovering that you have more control than you thought"
                           },
                           "Openness to Learning": {
@@ -543,7 +543,7 @@ const LongevityMindsetQuiz = () => {
                           "Self-Worth": {
                             "Empowered": "You deeply value yourself and prioritize your wellbeing without guilt",
                             "Engaging": "You're actively learning to put your health and happiness first",
-                            "Evolving": "You're recognizing that you deserve to invest in your wellbeing",
+                            "Evolving": "You're recognising that you deserve to invest in your wellbeing",
                             "Emerging": "You're beginning to see yourself as worthy of care and attention"
                           },
                           "Possibility Mindset": {
@@ -561,7 +561,7 @@ const LongevityMindsetQuiz = () => {
                           "Community Orientation": {
                             "Empowered": "You thrive through connection and actively seek community support",
                             "Engaging": "You're building relationships that support your health journey",
-                            "Evolving": "You're recognizing the value of community in achieving wellness goals",
+                            "Evolving": "You're recognising the value of community in achieving wellness goals",
                             "Emerging": "You're discovering that you don't have to do this alone"
                           },
                         };

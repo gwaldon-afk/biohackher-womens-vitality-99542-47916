@@ -41,7 +41,7 @@ const ProtocolCard = ({
       <CardHeader>
         <div className="flex items-center gap-2 mb-2">
           <Package className="h-5 w-5 text-primary" />
-          <CardTitle className="text-2xl">Your Personalized Protocol</CardTitle>
+          <CardTitle className="text-2xl">Your Personalised Protocol</CardTitle>
         </div>
         <CardDescription className="text-base">
           Based on your {symptomName} score of {score}/100, these evidence-based supplements 

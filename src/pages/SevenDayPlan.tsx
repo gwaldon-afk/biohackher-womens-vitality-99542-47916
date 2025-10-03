@@ -557,7 +557,7 @@ const SevenDayPlan = () => {
               id: "balance-1-2",
               name: "Stress Response Assessment",
               duration: "15 mins",
-              description: "Learn to recognize early stress signals in your body. Practice identifying physical sensations, emotions, and thought patterns during stress.",
+              description: "Learn to recognise early stress signals in your body. Practice identifying physical sensations, emotions, and thought patterns during stress.",
               type: "meditation" as const,
               difficulty: "easy" as const
             },
