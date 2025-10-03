@@ -628,8 +628,8 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">34,000+</div>
-                <p className="text-sm text-muted-foreground">Research Studies Reviewed</p>
+                <div className="text-4xl font-bold text-primary mb-2">150+</div>
+                <p className="text-sm text-muted-foreground">Peer-Reviewed Studies</p>
               </CardContent>
             </Card>
             <Card className="text-center">

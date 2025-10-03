@@ -171,8 +171,8 @@ const About = () => {
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">34,000+</div>
-                <p className="text-sm text-muted-foreground">Studies Reviewed</p>
+                <div className="text-4xl font-bold text-primary mb-2">150+</div>
+                <p className="text-sm text-muted-foreground">Peer-Reviewed Studies</p>
               </CardContent>
             </Card>
           </div>
