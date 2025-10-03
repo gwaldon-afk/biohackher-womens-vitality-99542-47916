@@ -677,10 +677,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                           onChange={(e) => setNutritionData({mealQuality: parseInt(e.target.value)})}
                         />
                         <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
-                          <p><strong>1-3:</strong> Poor quality</p>
-                          <p><strong>4-6:</strong> Moderate quality</p>
-                          <p><strong>7-8:</strong> Good quality</p>
-                          <p><strong>9-10:</strong> Excellent quality</p>
+                          <p><strong>1-3:</strong> Fast food, processed</p>
+                          <p><strong>4-6:</strong> Mixed meals, some fresh</p>
+                          <p><strong>7-8:</strong> Home cooked, balanced</p>
+                          <p><strong>9-10:</strong> Whole foods, nutrient-rich</p>
                         </div>
                       </div>
                     )}
