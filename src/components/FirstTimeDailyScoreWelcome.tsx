@@ -142,7 +142,7 @@ const FirstTimeDailyScoreWelcome = ({ children, onScoreCalculated }: FirstTimeDa
               className="w-full text-base"
               onClick={handleGetStarted}
             >
-              Submit Your First Daily Score
+              Get Started - Open Daily Score Form
               <ChevronRight className="h-5 w-5 ml-2" />
             </Button>
 
