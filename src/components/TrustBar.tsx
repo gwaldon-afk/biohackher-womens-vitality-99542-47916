@@ -16,7 +16,7 @@ const TrustBar = () => {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <FileText className="h-4 w-4 text-primary" />
-            <span className="font-medium">{studyCount} Peer-Reviewed Studies</span>
+            <span className="font-medium">Peer-Reviewed Studies</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Award className="h-4 w-4 text-primary" />
