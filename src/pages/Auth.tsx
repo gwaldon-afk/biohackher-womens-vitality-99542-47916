@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -32,6 +33,10 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
+  
+  // Get session ID from URL if user is registering from guest results
+  const searchParams = new URLSearchParams(window.location.search);
+  const guestSessionId = searchParams.get('session');
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
@@ -100,6 +105,50 @@ const Auth = () => {
   const handleSignUp = async (data: SignUpData) => {
     setIsLoading(true);
     const { error } = await signUp(data.email, data.password, data.preferredName);
+    
+    if (!error && guestSessionId) {
+      // User is registering from guest results - claim their assessment
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (currentUser) {
+        // Get the guest assessment data
+        const { data: guestAssessment } = await supabase
+          .from('guest_lis_assessments')
+          .select('*')
+          .eq('session_id', guestSessionId)
+          .maybeSingle();
+        
+        if (guestAssessment) {
+          const assessmentData = guestAssessment.assessment_data as any;
+          const baselineData = assessmentData.baselineData;
+          
+          // Create health profile from guest data
+          await supabase.from('user_health_profile').insert({
+            user_id: currentUser.id,
+            date_of_birth: baselineData.dateOfBirth,
+            height_cm: baselineData.heightCm,
+            weight_kg: baselineData.weightKg,
+            current_bmi: baselineData.bmi,
+          });
+          
+          // Mark guest assessment as claimed
+          await supabase
+            .from('guest_lis_assessments')
+            .update({ 
+              claimed_by_user_id: currentUser.id,
+              claimed_at: new Date().toISOString()
+            })
+            .eq('session_id', guestSessionId);
+          
+          // Redirect to full results instead of setup
+          toast.success('Welcome! Your assessment has been saved.');
+          navigate('/lis-results');
+          setIsLoading(false);
+          return;
+        }
+      }
+    }
+    
     setIsLoading(false);
   };
 
