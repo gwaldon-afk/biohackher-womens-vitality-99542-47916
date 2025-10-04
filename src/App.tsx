@@ -40,6 +40,8 @@ import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
+import GuestLISAssessment from "./pages/GuestLISAssessment";
+import GuestLISResults from "./pages/GuestLISResults";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +55,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
+            <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />

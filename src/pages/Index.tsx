@@ -79,7 +79,25 @@ const Index = () => {
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-30">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button size="lg" className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto" onClick={() => {
+                        <Button 
+                          size="lg" 
+                          className="bg-white text-primary hover:bg-white/90 relative z-50 pointer-events-auto"
+                          onClick={() => navigate("/guest-lis-assessment")}
+                        >
+                          <Target className="h-5 w-5 mr-2" />
+                          Take Your Free LIS Assessment
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
+                        <p className="text-sm text-muted-foreground">
+                          Get your science-backed Longevity Impact Score in 3 minutes. No registration required.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="lg" variant="outline" className="bg-white/90 text-primary border-white hover:bg-white relative z-50 pointer-events-auto" onClick={() => {
                           console.log("Longevity quiz clicked");
                           navigate("/longevity-mindset-quiz");
                         }}>
@@ -90,48 +108,6 @@ const Index = () => {
                       <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
                         <p className="text-sm text-muted-foreground">
                           Unlock what's been holding you back from living younger, longer. Quick 2-minute quiz.
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button 
-                          size="lg" 
-                          variant="secondary" 
-                          className="bg-white/90 text-primary border border-white hover:bg-white relative z-50 pointer-events-auto"
-                          onClick={async () => {
-                            console.log("Get LIS clicked");
-                            
-                            // Check if user is logged in
-                            const { data: { user } } = await supabase.auth.getUser();
-                            
-                            if (!user) {
-                              navigate("/auth?redirect=/lis2-setup");
-                              return;
-                            }
-                            
-                            // Check if user has completed LIS 2.0 setup
-                            const { data: profile } = await supabase
-                              .from('user_health_profile')
-                              .select('id')
-                              .eq('user_id', user.id)
-                              .maybeSingle();
-                            
-                            if (!profile) {
-                              navigate("/lis2-setup");
-                            } else {
-                              navigate("/dashboard");
-                            }
-                          }}
-                        >
-                          <Target className="h-5 w-5 mr-2" />
-                          Get Your LIS Score
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs p-3 bg-white border-primary/20">
-                        <p className="text-sm text-muted-foreground">
-                          Discover if your daily habits are aging you faster—or reversing the clock. Get your score in 2 minutes.
                         </p>
                       </TooltipContent>
                     </Tooltip>
