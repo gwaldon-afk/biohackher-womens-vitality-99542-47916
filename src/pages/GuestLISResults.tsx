@@ -75,33 +75,72 @@ export default function GuestLISResults() {
     }
   };
 
-  const calculateBiologicalAge = (): { bioAge: number; delta: number; annualDeceleration: number } => {
+  const calculateBiologicalAge = (): { 
+    bioAge: number; 
+    delta: number; 
+    annualDeceleration: number;
+    projections: {
+      current5yr: number;
+      current20yr: number;
+      optimized5yr: number;
+      optimized20yr: number;
+      improvementGap5yr: number;
+      improvementGap20yr: number;
+    }
+  } => {
     if (!results || !assessmentData?.baselineData) {
-      return { bioAge: 0, delta: 0, annualDeceleration: 0 };
+      return { 
+        bioAge: 0, 
+        delta: 0, 
+        annualDeceleration: 0,
+        projections: {
+          current5yr: 0,
+          current20yr: 0,
+          optimized5yr: 0,
+          optimized20yr: 0,
+          improvementGap5yr: 0,
+          improvementGap20yr: 0
+        }
+      };
     }
 
     const chronologicalAge = assessmentData.baselineData.age;
     const lisScore = results.finalScore;
     
     // Formula: Annual BA Deceleration = (LIS Score / 100) * -0.11
-    // This means:
-    // - LIS 100 = -0.11 years per year (aging 0.11 years slower)
-    // - LIS 50 = -0.055 years per year (aging 0.055 years slower)
-    // - LIS 0 = 0 years per year (aging at normal rate)
-    
-    // Convert to cumulative effect over lifetime
-    // Simplified: Each 10 points above/below 50 = ~1 year difference
     const baselineScore = 50; // Average population
     const scoreDelta = lisScore - baselineScore;
-    const biologicalAgeDelta = (scoreDelta / 10) * -1; // Negative because higher LIS = younger bio age
+    const biologicalAgeDelta = (scoreDelta / 10) * -1;
     
     const biologicalAge = chronologicalAge + biologicalAgeDelta;
     const annualDeceleration = (lisScore / 100) * -0.11;
+    
+    // Current aging rate (1 year chronological + deceleration effect)
+    const currentAgingRate = 1 + annualDeceleration;
+    
+    // Optimized scenario: LIS score of 85 (achievable with biohacking)
+    const optimizedLIS = 85;
+    const optimizedDeceleration = (optimizedLIS / 100) * -0.11;
+    const optimizedAgingRate = 1 + optimizedDeceleration;
+    
+    // Future projections
+    const current5yr = biologicalAge + (currentAgingRate * 5);
+    const current20yr = biologicalAge + (currentAgingRate * 20);
+    const optimized5yr = biologicalAge + (optimizedAgingRate * 5);
+    const optimized20yr = biologicalAge + (optimizedAgingRate * 20);
 
     return {
       bioAge: Math.round(biologicalAge * 10) / 10,
       delta: Math.round(biologicalAgeDelta * 10) / 10,
-      annualDeceleration: Math.round(annualDeceleration * 1000) / 1000
+      annualDeceleration: Math.round(annualDeceleration * 1000) / 1000,
+      projections: {
+        current5yr: Math.round(current5yr * 10) / 10,
+        current20yr: Math.round(current20yr * 10) / 10,
+        optimized5yr: Math.round(optimized5yr * 10) / 10,
+        optimized20yr: Math.round(optimized20yr * 10) / 10,
+        improvementGap5yr: Math.round((current5yr - optimized5yr) * 10) / 10,
+        improvementGap20yr: Math.round((current20yr - optimized20yr) * 10) / 10
+      }
     };
   };
 
@@ -240,7 +279,7 @@ export default function GuestLISResults() {
                 </div>
               </div>
 
-              <div className="p-4 bg-background rounded-lg">
+              <div className="p-4 bg-background rounded-lg mb-6">
                 <p className="text-sm text-muted-foreground mb-2">
                   Based on your LIS score of {results.finalScore}, your lifestyle is causing you to age approximately{' '}
                   <span className="font-bold text-foreground">
@@ -258,7 +297,97 @@ export default function GuestLISResults() {
                 </p>
               </div>
 
-              <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+              {/* Future Projections */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-left">Your Aging Trajectory</h4>
+                
+                {/* 5 Year Projection */}
+                <div className="p-5 bg-background rounded-lg border-2">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold text-base">In 5 Years</span>
+                    <span className="text-sm text-muted-foreground">
+                      You'll be {assessmentData.baselineData.age + 5} years old
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-orange-600">
+                          {bioAgeData.projections.current5yr}
+                        </span>
+                        <span className="text-sm text-muted-foreground">years bio age</span>
+                      </div>
+                    </div>
+                    
+                    <div className="text-left border-l-2 border-primary/20 pl-4">
+                      <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-green-600">
+                          {bioAgeData.projections.optimized5yr}
+                        </span>
+                        <span className="text-sm text-muted-foreground">years bio age</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 p-2 bg-green-500/10 rounded border border-green-500/20">
+                    <p className="text-sm font-medium text-green-700">
+                      💡 Potential improvement: <span className="font-bold">{bioAgeData.projections.improvementGap5yr} years younger</span> with optimized lifestyle
+                    </p>
+                  </div>
+                </div>
+
+                {/* 20 Year Projection */}
+                <div className="p-5 bg-background rounded-lg border-2 border-primary">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold text-base">In 20 Years</span>
+                    <span className="text-sm text-muted-foreground">
+                      You'll be {assessmentData.baselineData.age + 20} years old
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-left">
+                      <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-destructive">
+                          {bioAgeData.projections.current20yr}
+                        </span>
+                        <span className="text-sm text-muted-foreground">years bio age</span>
+                      </div>
+                    </div>
+                    
+                    <div className="text-left border-l-2 border-primary/20 pl-4">
+                      <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-bold text-green-600">
+                          {bioAgeData.projections.optimized20yr}
+                        </span>
+                        <span className="text-sm text-muted-foreground">years bio age</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-primary/10 rounded border-2 border-green-500/30">
+                    <p className="text-sm font-bold text-green-700 mb-1">
+                      🚀 Transform Your Future: <span className="text-lg">{bioAgeData.projections.improvementGap20yr} years younger!</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      That's like turning back the clock by gaining {bioAgeData.projections.improvementGap20yr} extra years of vitality
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                  <p className="text-xs text-muted-foreground mb-2">
+                    <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {(1 + bioAgeData.annualDeceleration).toFixed(3)}x per year.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 p-3 bg-primary/10 rounded-lg">
                 <p className="text-sm font-medium text-primary">
                   <Lock className="w-4 h-4 inline mr-1" />
                   Register to unlock detailed aging insights and personalized action plan
