@@ -14,7 +14,16 @@ interface BriefResults {
   smokingPenalty: number;
 }
 
+interface BaselineData {
+  dateOfBirth: string;
+  age: number;
+  heightCm: number;
+  weightKg: number;
+  bmi: number;
+}
+
 interface AssessmentData {
+  baselineData: BaselineData;
   answers: Array<{
     questionId: string;
     answer: string;
@@ -64,6 +73,36 @@ export default function GuestLISResults() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const calculateBiologicalAge = (): { bioAge: number; delta: number; annualDeceleration: number } => {
+    if (!results || !assessmentData?.baselineData) {
+      return { bioAge: 0, delta: 0, annualDeceleration: 0 };
+    }
+
+    const chronologicalAge = assessmentData.baselineData.age;
+    const lisScore = results.finalScore;
+    
+    // Formula: Annual BA Deceleration = (LIS Score / 100) * -0.11
+    // This means:
+    // - LIS 100 = -0.11 years per year (aging 0.11 years slower)
+    // - LIS 50 = -0.055 years per year (aging 0.055 years slower)
+    // - LIS 0 = 0 years per year (aging at normal rate)
+    
+    // Convert to cumulative effect over lifetime
+    // Simplified: Each 10 points above/below 50 = ~1 year difference
+    const baselineScore = 50; // Average population
+    const scoreDelta = lisScore - baselineScore;
+    const biologicalAgeDelta = (scoreDelta / 10) * -1; // Negative because higher LIS = younger bio age
+    
+    const biologicalAge = chronologicalAge + biologicalAgeDelta;
+    const annualDeceleration = (lisScore / 100) * -0.11;
+
+    return {
+      bioAge: Math.round(biologicalAge * 10) / 10,
+      delta: Math.round(biologicalAgeDelta * 10) / 10,
+      annualDeceleration: Math.round(annualDeceleration * 1000) / 1000
+    };
   };
 
   const getRiskCategory = (score: number): { label: string; color: string; description: string } => {
@@ -134,6 +173,7 @@ export default function GuestLISResults() {
   if (!results) return null;
 
   const riskCategory = getRiskCategory(results.finalScore);
+  const bioAgeData = calculateBiologicalAge();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -171,6 +211,62 @@ export default function GuestLISResults() {
             </div>
           )}
         </Card>
+
+        {/* Biological Age Card */}
+        {assessmentData?.baselineData && (
+          <Card className="p-8 mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-6">Your Biological Age Estimate</h3>
+              
+              <div className="grid md:grid-cols-3 gap-6 mb-6">
+                <div className="p-4 bg-background rounded-lg">
+                  <div className="text-sm text-muted-foreground mb-1">Chronological Age</div>
+                  <div className="text-4xl font-bold">{assessmentData.baselineData.age}</div>
+                  <div className="text-xs text-muted-foreground mt-1">years</div>
+                </div>
+
+                <div className="p-4 bg-background rounded-lg border-2 border-primary">
+                  <div className="text-sm text-muted-foreground mb-1">Biological Age</div>
+                  <div className="text-4xl font-bold text-primary">{bioAgeData.bioAge}</div>
+                  <div className="text-xs text-muted-foreground mt-1">years</div>
+                </div>
+
+                <div className="p-4 bg-background rounded-lg">
+                  <div className="text-sm text-muted-foreground mb-1">Age Delta</div>
+                  <div className={`text-4xl font-bold ${bioAgeData.delta > 0 ? 'text-destructive' : 'text-green-600'}`}>
+                    {bioAgeData.delta > 0 ? '+' : ''}{bioAgeData.delta}
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">years</div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-background rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">
+                  Based on your LIS score of {results.finalScore}, your lifestyle is causing you to age approximately{' '}
+                  <span className="font-bold text-foreground">
+                    {Math.abs(bioAgeData.annualDeceleration)} years per year{' '}
+                    {bioAgeData.annualDeceleration < 0 ? 'slower' : 'faster'}
+                  </span>{' '}
+                  than average.
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  {bioAgeData.delta < 0 
+                    ? `🎉 Your biological age is ${Math.abs(bioAgeData.delta)} years younger than your chronological age!` 
+                    : bioAgeData.delta === 0 
+                    ? 'Your biological age matches your chronological age.' 
+                    : `⚠️ Your biological age is ${bioAgeData.delta} years older than your chronological age.`}
+                </p>
+              </div>
+
+              <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                <p className="text-sm font-medium text-primary">
+                  <Lock className="w-4 h-4 inline mr-1" />
+                  Register to unlock detailed aging insights and personalized action plan
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Pillar Scores */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">
