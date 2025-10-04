@@ -4,10 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Heart, Activity, Sparkles } from 'lucide-react';
+import { Brain, Heart, Activity, Sparkles, User } from 'lucide-react';
 
 interface QuestionOption {
   text: string;
@@ -356,17 +357,75 @@ const PILLAR_ICONS = {
   Beauty: Sparkles
 };
 
+interface BaselineData {
+  dateOfBirth: string;
+  heightCm: string;
+  weightKg: string;
+}
+
 export default function GuestLISAssessment() {
   const navigate = useNavigate();
+  const [showBaseline, setShowBaseline] = useState(true);
+  const [baselineData, setBaselineData] = useState<BaselineData>({
+    dateOfBirth: '',
+    heightCm: '',
+    weightKg: ''
+  });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const progress = ((currentQuestion + 1) / ASSESSMENT_QUESTIONS.length) * 100;
-  const question = ASSESSMENT_QUESTIONS[currentQuestion];
-  const PillarIcon = PILLAR_ICONS[question.pillar.replace('_Penalty', '') as keyof typeof PILLAR_ICONS] || Activity;
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const calculateBMI = (): number => {
+    const height = parseFloat(baselineData.heightCm);
+    const weight = parseFloat(baselineData.weightKg);
+    if (height && weight) {
+      return parseFloat((weight / Math.pow(height / 100, 2)).toFixed(1));
+    }
+    return 0;
+  };
+
+  const handleBaselineSubmit = () => {
+    if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
+      toast.error('Please fill in all baseline information');
+      return;
+    }
+
+    const age = calculateAge(baselineData.dateOfBirth);
+    if (age < 18 || age > 120) {
+      toast.error('Please enter a valid date of birth');
+      return;
+    }
+
+    if (parseFloat(baselineData.heightCm) < 100 || parseFloat(baselineData.heightCm) > 250) {
+      toast.error('Please enter a valid height (100-250 cm)');
+      return;
+    }
+
+    if (parseFloat(baselineData.weightKg) < 30 || parseFloat(baselineData.weightKg) > 300) {
+      toast.error('Please enter a valid weight (30-300 kg)');
+      return;
+    }
+
+    setShowBaseline(false);
+  };
+
+  const progress = showBaseline ? 0 : ((currentQuestion + 1) / ASSESSMENT_QUESTIONS.length) * 100;
+  const question = !showBaseline ? ASSESSMENT_QUESTIONS[currentQuestion] : null;
+  const PillarIcon = question ? PILLAR_ICONS[question.pillar.replace('_Penalty', '') as keyof typeof PILLAR_ICONS] || Activity : Activity;
 
   const handleAnswerSelect = (option: QuestionOption) => {
+    if (!question) return;
     setAnswers(prev => ({
       ...prev,
       [question.question_id]: option
@@ -374,7 +433,7 @@ export default function GuestLISAssessment() {
   };
 
   const handleNext = () => {
-    if (!answers[question.question_id]) {
+    if (!question || !answers[question.question_id]) {
       toast.error('Please select an answer to continue');
       return;
     }
@@ -461,6 +520,13 @@ export default function GuestLISAssessment() {
 
       // Prepare assessment data
       const assessmentData = {
+        baselineData: {
+          dateOfBirth: baselineData.dateOfBirth,
+          age: calculateAge(baselineData.dateOfBirth),
+          heightCm: parseFloat(baselineData.heightCm),
+          weightKg: parseFloat(baselineData.weightKg),
+          bmi: calculateBMI()
+        },
         answers: Object.entries(answers).map(([questionId, option]) => ({
           questionId,
           answer: option.text,
@@ -501,7 +567,8 @@ export default function GuestLISAssessment() {
     }
   };
 
-  const selectedAnswer = answers[question.question_id];
+  const selectedAnswer = question ? answers[question.question_id] : undefined;
+  const bmi = calculateBMI();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -517,85 +584,187 @@ export default function GuestLISAssessment() {
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">
-              Question {currentQuestion + 1} of {ASSESSMENT_QUESTIONS.length}
-            </span>
-            <span className="text-sm font-medium">{Math.round(progress)}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-
-        {/* Question Card */}
-        <Card className="p-8 mb-6 border-2">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="p-3 rounded-full bg-primary/10">
-              <PillarIcon className="w-6 h-6 text-primary" />
+        {!showBaseline && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-muted-foreground">
+                Question {currentQuestion + 1} of {ASSESSMENT_QUESTIONS.length}
+              </span>
+              <span className="text-sm font-medium">{Math.round(progress)}%</span>
             </div>
-            <div className="flex-1">
-              <div className="text-sm font-medium text-primary mb-2">
-                {question.pillar.replace('_Penalty', '')} Pillar
+            <Progress value={progress} className="h-2" />
+          </div>
+        )}
+
+        {/* Baseline Data Collection or Question Card */}
+        {showBaseline ? (
+          <Card className="p-8 mb-6 border-2">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="p-3 rounded-full bg-primary/10">
+                <User className="w-6 h-6 text-primary" />
               </div>
-              <h2 className="text-xl font-semibold leading-relaxed">
-                {question.text}
-              </h2>
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold mb-2">Before We Begin</h2>
+                <p className="text-muted-foreground">
+                  We need a few baseline metrics to calculate your personalized Longevity Impact Score
+                </p>
+              </div>
             </div>
-          </div>
 
-          <RadioGroup
-            value={selectedAnswer?.text || ''}
-            onValueChange={(value) => {
-              const option = question.options.find(opt => opt.text === value);
-              if (option) handleAnswerSelect(option);
-            }}
-            className="space-y-3"
-          >
-            {question.options.map((option, index) => (
-              <div
-                key={index}
-                className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                  selectedAnswer?.text === option.text
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border'
-                }`}
-                onClick={() => handleAnswerSelect(option)}
-              >
-                <RadioGroupItem value={option.text} id={`option-${index}`} />
-                <Label
-                  htmlFor={`option-${index}`}
-                  className="flex-1 cursor-pointer leading-relaxed"
-                >
-                  {option.text}
+            <div className="space-y-6">
+              <div>
+                <Label htmlFor="dob" className="text-base mb-2 block">
+                  Date of Birth
                 </Label>
+                <Input
+                  id="dob"
+                  type="date"
+                  value={baselineData.dateOfBirth}
+                  onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                  max={new Date().toISOString().split('T')[0]}
+                  className="text-lg"
+                />
+                {baselineData.dateOfBirth && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Age: {calculateAge(baselineData.dateOfBirth)} years
+                  </p>
+                )}
               </div>
-            ))}
-          </RadioGroup>
-        </Card>
+
+              <div>
+                <Label htmlFor="height" className="text-base mb-2 block">
+                  Height (cm)
+                </Label>
+                <Input
+                  id="height"
+                  type="number"
+                  placeholder="e.g., 165"
+                  value={baselineData.heightCm}
+                  onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
+                  min="100"
+                  max="250"
+                  className="text-lg"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="weight" className="text-base mb-2 block">
+                  Weight (kg)
+                </Label>
+                <Input
+                  id="weight"
+                  type="number"
+                  placeholder="e.g., 65"
+                  value={baselineData.weightKg}
+                  onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
+                  min="30"
+                  max="300"
+                  step="0.1"
+                  className="text-lg"
+                />
+              </div>
+
+              {bmi > 0 && (
+                <div className="p-4 bg-primary/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
+                  <p className="text-3xl font-bold text-primary">{bmi}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
+                  </p>
+                </div>
+              )}
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-8 mb-6 border-2">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="p-3 rounded-full bg-primary/10">
+                <PillarIcon className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-primary mb-2">
+                  {question?.pillar.replace('_Penalty', '')} Pillar
+                </div>
+                <h2 className="text-xl font-semibold leading-relaxed">
+                  {question?.text}
+                </h2>
+              </div>
+            </div>
+
+            <RadioGroup
+              value={selectedAnswer?.text || ''}
+              onValueChange={(value) => {
+                const option = question?.options.find(opt => opt.text === value);
+                if (option) handleAnswerSelect(option);
+              }}
+              className="space-y-3"
+            >
+              {question?.options.map((option, index) => (
+                <div
+                  key={index}
+                  className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
+                    selectedAnswer?.text === option.text
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border'
+                  }`}
+                  onClick={() => handleAnswerSelect(option)}
+                >
+                  <RadioGroupItem value={option.text} id={`option-${index}`} />
+                  <Label
+                    htmlFor={`option-${index}`}
+                    className="flex-1 cursor-pointer leading-relaxed"
+                  >
+                    {option.text}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </Card>
+        )}
 
         {/* Navigation Buttons */}
         <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={currentQuestion === 0}
-          >
-            Back
-          </Button>
+          {showBaseline ? (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/')}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleBaselineSubmit}
+                disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg}
+                className="min-w-32"
+              >
+                Start Assessment
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentQuestion === 0}
+              >
+                Back
+              </Button>
 
-          <Button
-            onClick={handleNext}
-            disabled={!selectedAnswer || isSubmitting}
-            className="min-w-32"
-          >
-            {isSubmitting ? (
-              'Calculating...'
-            ) : currentQuestion === ASSESSMENT_QUESTIONS.length - 1 ? (
-              'Get My Score'
-            ) : (
-              'Next'
-            )}
-          </Button>
+              <Button
+                onClick={handleNext}
+                disabled={!selectedAnswer || isSubmitting}
+                className="min-w-32"
+              >
+                {isSubmitting ? (
+                  'Calculating...'
+                ) : currentQuestion === ASSESSMENT_QUESTIONS.length - 1 ? (
+                  'Get My Score'
+                ) : (
+                  'Next'
+                )}
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Footer Note */}
