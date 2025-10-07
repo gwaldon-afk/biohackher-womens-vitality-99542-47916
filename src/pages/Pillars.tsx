@@ -62,60 +62,187 @@ const Pillars = () => {
     return null;
   };
 
-  // Pillar-specific assessments
+  // Pillar-specific assessments based on journey path
+  const getAssessmentsForPath = (pillarKey: string) => {
+    const performanceAssessments: Record<string, any[]> = {
+      brain: [{
+        id: "cognitive-performance",
+        name: "Cognitive Performance",
+        description: "Measure peak mental performance, focus, and processing speed"
+      }, {
+        id: "mental-clarity",
+        name: "Mental Clarity",
+        description: "Assess cognitive sharpness and decision-making ability"
+      }, {
+        id: "sleep-optimization",
+        name: "Sleep Optimization",
+        description: "Evaluate sleep quality for peak cognitive recovery"
+      }],
+      body: [{
+        id: "athletic-performance",
+        name: "Athletic Performance",
+        description: "Assess strength, power, and endurance metrics"
+      }, {
+        id: "recovery-optimization",
+        name: "Recovery Optimization",
+        description: "Measure recovery capacity and training readiness"
+      }, {
+        id: "body-composition",
+        name: "Body Composition",
+        description: "Track muscle mass, body fat, and performance metrics"
+      }],
+      balance: [{
+        id: "stress-resilience",
+        name: "Stress Resilience",
+        description: "Evaluate stress management and performance under pressure"
+      }, {
+        id: "energy-optimization",
+        name: "Energy Optimization",
+        description: "Assess sustained energy levels and metabolic efficiency"
+      }, {
+        id: "hormone-optimization",
+        name: "Hormone Optimization",
+        description: "Measure hormonal balance for peak performance"
+      }],
+      beauty: [{
+        id: "cellular-vitality",
+        name: "Cellular Vitality",
+        description: "Assess cellular health and biological aging markers"
+      }, {
+        id: "skin-performance",
+        name: "Skin Performance",
+        description: "Evaluate skin health and protective barrier function"
+      }, {
+        id: "recovery-appearance",
+        name: "Recovery & Appearance",
+        description: "Track visible recovery and vitality markers"
+      }]
+    };
+
+    const menopauseAssessments: Record<string, any[]> = {
+      brain: [{
+        id: "brain-fog",
+        name: "Brain Fog Assessment",
+        description: "Evaluate mental fatigue and concentration during transition"
+      }, {
+        id: "memory-changes",
+        name: "Memory Changes",
+        description: "Assess memory and cognitive changes during menopause"
+      }, {
+        id: "sleep-disruption",
+        name: "Sleep Disruption",
+        description: "Analyze sleep patterns affected by hormonal changes"
+      }],
+      body: [{
+        id: "weight-changes",
+        name: "Weight Changes",
+        description: "Track metabolic changes and weight management"
+      }, {
+        id: "muscle-maintenance",
+        name: "Muscle Maintenance",
+        description: "Assess muscle mass preservation during transition"
+      }, {
+        id: "energy-fluctuations",
+        name: "Energy Fluctuations",
+        description: "Monitor energy levels through hormonal shifts"
+      }],
+      balance: [{
+        id: "hot-flushes",
+        name: "Hot Flushes",
+        description: "Track frequency and severity of hot flushes"
+      }, {
+        id: "mood-changes",
+        name: "Mood Changes",
+        description: "Monitor emotional wellbeing during hormonal transition"
+      }, {
+        id: "hormone-symptoms",
+        name: "Hormone Symptoms",
+        description: "Assess overall menopause symptom severity"
+      }],
+      beauty: [{
+        id: "skin-changes",
+        name: "Skin Changes",
+        description: "Evaluate skin thinning and dryness during menopause"
+      }, {
+        id: "collagen-loss",
+        name: "Collagen Loss",
+        description: "Assess skin elasticity and collagen changes"
+      }, {
+        id: "aging-acceleration",
+        name: "Aging Acceleration",
+        description: "Track visible aging changes during transition"
+      }]
+    };
+
+    const generalAssessments: Record<string, any[]> = {
+      brain: [{
+        id: "cognitive-function",
+        name: "Cognitive Function",
+        description: "Assess memory, focus, and mental clarity"
+      }, {
+        id: "brain-fog",
+        name: "Brain Fog",
+        description: "Evaluate mental fatigue and concentration issues"
+      }, {
+        id: "sleep",
+        name: "Sleep Quality",
+        description: "Analyze sleep patterns affecting brain health"
+      }],
+      body: [{
+        id: "energy-levels",
+        name: "Energy Levels",
+        description: "Measure physical vitality and fatigue"
+      }, {
+        id: "physical-performance",
+        name: "Physical Performance",
+        description: "Assess strength, endurance, and mobility"
+      }, {
+        id: "pain-assessment",
+        name: "Pain Assessment",
+        description: "Track pain locations and intensity"
+      }],
+      balance: [{
+        id: "stress-assessment",
+        name: "Stress Assessment",
+        description: "Evaluate stress levels and triggers"
+      }, {
+        id: "mood-tracking",
+        name: "Mood Tracking",
+        description: "Monitor emotional wellbeing and patterns"
+      }, {
+        id: "anxiety-assessment",
+        name: "Anxiety Assessment",
+        description: "Assess anxiety symptoms and frequency"
+      }],
+      beauty: [{
+        id: "skin-health",
+        name: "Skin Health",
+        description: "Evaluate skin concerns and aging signs"
+      }, {
+        id: "hair-vitality",
+        name: "Hair Vitality",
+        description: "Assess hair health and changes"
+      }, {
+        id: "aging-concerns",
+        name: "Aging Concerns",
+        description: "Track visible aging and skin elasticity"
+      }]
+    };
+
+    if (journeyPath === 'performance') {
+      return performanceAssessments[pillarKey] || generalAssessments[pillarKey];
+    } else if (journeyPath === 'menopause') {
+      return menopauseAssessments[pillarKey] || generalAssessments[pillarKey];
+    }
+    
+    return generalAssessments[pillarKey] || [];
+  };
+
   const pillarAssessments = {
-    brain: [{
-      id: "cognitive-function",
-      name: "Cognitive Function",
-      description: "Assess memory, focus, and mental clarity"
-    }, {
-      id: "brain-fog",
-      name: "Brain Fog",
-      description: "Evaluate mental fatigue and concentration issues"
-    }, {
-      id: "sleep",
-      name: "Sleep Quality",
-      description: "Analyze sleep patterns affecting brain health"
-    }],
-    body: [{
-      id: "energy-levels",
-      name: "Energy Levels",
-      description: "Measure physical vitality and fatigue"
-    }, {
-      id: "physical-performance",
-      name: "Physical Performance",
-      description: "Assess strength, endurance, and mobility"
-    }, {
-      id: "pain-assessment",
-      name: "Pain Assessment",
-      description: "Track pain locations and intensity"
-    }],
-    balance: [{
-      id: "stress-assessment",
-      name: "Stress Assessment",
-      description: "Evaluate stress levels and triggers"
-    }, {
-      id: "mood-tracking",
-      name: "Mood Tracking",
-      description: "Monitor emotional wellbeing and patterns"
-    }, {
-      id: "anxiety-assessment",
-      name: "Anxiety Assessment",
-      description: "Assess anxiety symptoms and frequency"
-    }],
-    beauty: [{
-      id: "skin-health",
-      name: "Skin Health",
-      description: "Evaluate skin concerns and aging signs"
-    }, {
-      id: "hair-vitality",
-      name: "Hair Vitality",
-      description: "Assess hair health and changes"
-    }, {
-      id: "aging-concerns",
-      name: "Aging Concerns",
-      description: "Track visible aging and skin elasticity"
-    }]
+    brain: getAssessmentsForPath('brain'),
+    body: getAssessmentsForPath('body'),
+    balance: getAssessmentsForPath('balance'),
+    beauty: getAssessmentsForPath('beauty')
   };
 
   // Pillars data with biohacks, therapies, supplements, etc.
