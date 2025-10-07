@@ -18,6 +18,8 @@ const LISAssessment = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const journeyContext = searchParams.get('context') || 'general';
+  const pillarContext = searchParams.get('pillar') || '';
   const [showProfile, setShowProfile] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -28,6 +30,27 @@ const LISAssessment = () => {
     healthGoals: [] as string[],
     healthConcerns: [] as string[]
   });
+
+  // Get context-appropriate messaging
+  const getContextMessaging = () => {
+    if (journeyContext === 'performance' && pillarContext === 'brain') {
+      return {
+        title: "Cognitive Performance Assessment",
+        description: "Let's assess your current cognitive performance baseline to optimize your mental clarity, focus, and processing speed"
+      };
+    } else if (journeyContext === 'menopause' && pillarContext === 'brain') {
+      return {
+        title: "Brain Health Assessment",
+        description: "Let's evaluate how hormonal changes are affecting your cognitive function, memory, and mental clarity"
+      };
+    }
+    return {
+      title: "Let's Get to Know You",
+      description: "Help us personalise your Longevity Impact Score by sharing a few details about yourself"
+    };
+  };
+
+  const contextMessaging = getContextMessaging();
 
   // Mock data generation functions for dev mode
   const generateMockProfileData = (customAge?: string | null) => ({
@@ -507,9 +530,9 @@ const LISAssessment = () => {
                 <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                   <Target className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="text-3xl mb-2">Let's Get to Know You</CardTitle>
+                <CardTitle className="text-3xl mb-2">{contextMessaging.title}</CardTitle>
                 <CardDescription className="text-base">
-                  Help us personalise your Longevity Impact Score by sharing a few details about yourself
+                  {contextMessaging.description}
                 </CardDescription>
               </div>
             </CardHeader>

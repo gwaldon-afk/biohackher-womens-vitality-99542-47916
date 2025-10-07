@@ -1382,7 +1382,7 @@ const Pillars = () => {
               // Route to appropriate assessment
               const getAssessmentRoute = () => {
                 if (selectedPillar === 'brain') {
-                  return '/lis-assessment';
+                  return `/lis-assessment?context=${journeyPath}&pillar=brain`;
                 }
                 return `/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`;
               };
