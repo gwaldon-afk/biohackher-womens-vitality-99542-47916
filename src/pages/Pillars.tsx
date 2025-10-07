@@ -245,15 +245,280 @@ const Pillars = () => {
     beauty: getAssessmentsForPath('beauty')
   };
 
-  // Pillars data with biohacks, therapies, supplements, etc.
-  const pillars = {
-    brain: {
-      title: "Brain",
-      subtitle: getContentForPath('brain')?.subtitle || "Get on top of brain fog and sharpen your mind",
-      image: brainPillar,
-      icon: Brain,
-      color: "from-primary to-primary-light",
-      biohacks: {
+  // Get biohacks based on journey path
+  const getBiohacksForPath = (pillarKey: string) => {
+    const performanceBiohacks: Record<string, any> = {
+      brain: {
+        training: {
+          beginner: ["Peak focus morning routine (15 mins)", "Cognitive priming exercises", "Sleep optimization protocol"],
+          intermediate: ["Nootropic stacking strategy", "Advanced memory techniques", "Mental performance tracking"],
+          advanced: ["Neurofeedback training", "Flow state optimization", "Cognitive load management"]
+        },
+        therapies: {
+          gold: ["Neurofeedback therapy for peak performance", "TMS for cognitive enhancement"],
+          silver: ["Binaural beats for focus", "Cognitive behavioral training"],
+          bronze: ["Brain training apps", "Mental performance coaching"]
+        },
+        supplements: {
+          essential: [{
+            name: "Omega-3 (high EPA)",
+            dosage: "2000mg EPA/DHA",
+            timing: "With breakfast"
+          }, {
+            name: "Creatine",
+            dosage: "5g for cognitive performance",
+            timing: "Anytime"
+          }],
+          beneficial: [{
+            name: "Lions Mane + Cordyceps",
+            dosage: "1000mg blend",
+            timing: "Morning for mental clarity"
+          }],
+          optional: [{
+            name: "Nootropic stack (L-theanine + Caffeine)",
+            dosage: "200mg + 100mg",
+            timing: "Before cognitive tasks"
+          }]
+        }
+      },
+      body: {
+        training: {
+          beginner: ["Daily activity target: 12,000 steps", "Foundation strength training (3x/week)", "Mobility routine (15 min daily)"],
+          intermediate: ["VO2 max training (2x/week)", "Olympic lift progressions", "Sports-specific conditioning"],
+          advanced: ["Periodized strength programming", "Power development training", "Athletic performance testing"]
+        },
+        therapies: {
+          gold: ["Performance lab testing (VO2, lactate)", "Sports massage therapy (2x/week)"],
+          silver: ["Compression therapy for recovery", "Active recovery protocols"],
+          bronze: ["Foam rolling & self-myofascial release", "Ice bath recovery sessions"]
+        },
+        supplements: {
+          essential: [{
+            name: "Whey protein isolate",
+            dosage: "25-30g",
+            timing: "Post-workout"
+          }, {
+            name: "Creatine monohydrate",
+            dosage: "5g daily",
+            timing: "Post-workout"
+          }],
+          beneficial: [{
+            name: "Beta-alanine",
+            dosage: "3-5g for endurance",
+            timing: "Pre-workout"
+          }],
+          optional: [{
+            name: "BCAAs",
+            dosage: "10g during training",
+            timing: "Intra-workout"
+          }]
+        }
+      },
+      balance: {
+        training: {
+          beginner: ["Morning cortisol optimization routine", "Performance-focused breathwork", "Recovery scoring protocols"],
+          intermediate: ["HRV-guided training", "Stress resilience training", "Performance meditation (15 min)"],
+          advanced: ["Biofeedback mastery", "Nervous system optimization", "Peak state training"]
+        },
+        therapies: {
+          gold: ["HRV biofeedback training", "Performance psychology coaching"],
+          silver: ["Float tank for mental recovery", "Red light therapy for recovery"],
+          bronze: ["Contrast therapy (hot/cold)", "Guided visualization training"]
+        },
+        supplements: {
+          essential: [{
+            name: "Rhodiola rosea",
+            dosage: "400mg for stress resilience",
+            timing: "Morning"
+          }, {
+            name: "Magnesium threonate",
+            dosage: "2000mg for recovery",
+            timing: "Evening"
+          }],
+          beneficial: [{
+            name: "Ashwagandha KSM-66",
+            dosage: "600mg for performance stress",
+            timing: "Morning & evening"
+          }],
+          optional: [{
+            name: "Phosphatidylserine",
+            dosage: "300mg for cortisol control",
+            timing: "Post-training"
+          }]
+        }
+      },
+      beauty: {
+        training: {
+          beginner: ["Cellular hydration protocol", "Antioxidant-rich nutrition", "Quality sleep routine (8+ hours)"],
+          intermediate: ["Collagen synthesis optimization", "Red light therapy sessions", "Micronutrient optimization"],
+          advanced: ["NAD+ optimization protocols", "Cellular health tracking", "Longevity-focused nutrition"]
+        },
+        therapies: {
+          gold: ["Professional red light therapy (850nm)", "NAD+ IV therapy"],
+          silver: ["LED light therapy panels", "Professional skin treatments"],
+          bronze: ["At-home red light devices", "Facial massage protocols"]
+        },
+        supplements: {
+          essential: [{
+            name: "Collagen peptides",
+            dosage: "20g daily",
+            timing: "Morning"
+          }, {
+            name: "Vitamin C",
+            dosage: "2000mg for collagen",
+            timing: "Split AM/PM"
+          }],
+          beneficial: [{
+            name: "Hyaluronic acid",
+            dosage: "200mg for hydration",
+            timing: "With meals"
+          }],
+          optional: [{
+            name: "NMN or NR",
+            dosage: "500mg for cellular health",
+            timing: "Morning"
+          }]
+        }
+      }
+    };
+
+    const menopauseBiohacks: Record<string, any> = {
+      brain: {
+        training: {
+          beginner: ["Brain fog journaling (5 mins)", "Memory support exercises", "Sleep hygiene for cognition"],
+          intermediate: ["Hormone-aware cognitive training", "Stress reduction breathwork", "Memory palace techniques"],
+          advanced: ["Neuroplasticity exercises", "Cognitive reserve building", "Advanced mindfulness practice"]
+        },
+        therapies: {
+          gold: ["Hormone replacement therapy consultation", "Cognitive behavioral therapy"],
+          silver: ["Light therapy for mood", "Acupuncture for brain fog"],
+          bronze: ["Aromatherapy for focus", "Herbal support protocols"]
+        },
+        supplements: {
+          essential: [{
+            name: "Omega-3 (DHA focus)",
+            dosage: "1000mg DHA",
+            timing: "With breakfast"
+          }, {
+            name: "B-complex",
+            dosage: "High potency",
+            timing: "Morning"
+          }],
+          beneficial: [{
+            name: "Ginkgo biloba",
+            dosage: "120mg for memory",
+            timing: "Morning"
+          }],
+          optional: [{
+            name: "Phosphatidylserine",
+            dosage: "100mg for cognition",
+            timing: "Morning"
+          }]
+        }
+      },
+      body: {
+        training: {
+          beginner: ["Gentle daily walks (30 min)", "Light resistance training", "Joint-friendly movement"],
+          intermediate: ["Strength preservation workouts", "Metabolism-boosting exercises", "Balance training"],
+          advanced: ["Progressive strength training", "Metabolic conditioning", "Bone density exercises"]
+        },
+        therapies: {
+          gold: ["Hormone therapy for muscle preservation", "Physical therapy assessment"],
+          silver: ["Massage for muscle tension", "Hydrotherapy"],
+          bronze: ["Heat therapy for joints", "Gentle yoga classes"]
+        },
+        supplements: {
+          essential: [{
+            name: "Protein powder",
+            dosage: "20g for muscle preservation",
+            timing: "Daily"
+          }, {
+            name: "Calcium + Vitamin D3",
+            dosage: "1000mg + 2000IU",
+            timing: "With meals"
+          }],
+          beneficial: [{
+            name: "Collagen",
+            dosage: "10g for joints",
+            timing: "Anytime"
+          }],
+          optional: [{
+            name: "CLA",
+            dosage: "3g for metabolism",
+            timing: "With meals"
+          }]
+        }
+      },
+      balance: {
+        training: {
+          beginner: ["Hot flush tracking", "Cooling breathwork", "Evening relaxation routine"],
+          intermediate: ["Hormone balancing practices", "Stress management techniques", "Sleep optimization"],
+          advanced: ["Advanced hormone tracking", "Biohacking hot flushes", "Comprehensive lifestyle modification"]
+        },
+        therapies: {
+          gold: ["Bioidentical hormone therapy", "Functional medicine consultation"],
+          silver: ["Acupuncture for symptoms", "CBT for mood"],
+          bronze: ["Herbal medicine protocols", "Mind-body therapies"]
+        },
+        supplements: {
+          essential: [{
+            name: "Black cohosh",
+            dosage: "40mg for hot flushes",
+            timing: "Twice daily"
+          }, {
+            name: "Magnesium glycinate",
+            dosage: "400mg",
+            timing: "Evening"
+          }],
+          beneficial: [{
+            name: "Sage extract",
+            dosage: "300mg for sweating",
+            timing: "Morning"
+          }],
+          optional: [{
+            name: "Evening primrose oil",
+            dosage: "1000mg",
+            timing: "With meals"
+          }]
+        }
+      },
+      beauty: {
+        training: {
+          beginner: ["Hydration protocol (2L+ water)", "Gentle skincare routine", "Sleep optimization"],
+          intermediate: ["Collagen-rich diet", "Facial massage techniques", "Skin barrier repair"],
+          advanced: ["Advanced skincare layering", "Professional treatment schedule", "Hormone-skin connection optimization"]
+        },
+        therapies: {
+          gold: ["Hormone therapy for skin", "Professional dermatology"],
+          silver: ["Medical-grade facials", "LED therapy"],
+          bronze: ["At-home facial devices", "Professional skin consultation"]
+        },
+        supplements: {
+          essential: [{
+            name: "Collagen peptides",
+            dosage: "10-15g for skin",
+            timing: "Morning"
+          }, {
+            name: "Biotin",
+            dosage: "5000mcg for hair",
+            timing: "With meals"
+          }],
+          beneficial: [{
+            name: "Hyaluronic acid",
+            dosage: "100mg for skin moisture",
+            timing: "Anytime"
+          }],
+          optional: [{
+            name: "Resveratrol",
+            dosage: "500mg anti-aging",
+            timing: "With fats"
+          }]
+        }
+      }
+    };
+
+    const generalBiohacks: Record<string, any> = {
+      brain: {
         training: {
           beginner: ["Morning meditation (5-10 mins)", "Deep breathing exercises", "Regular sleep schedule"],
           intermediate: ["Cold shower therapy", "Intermittent fasting", "Brain training games"],
@@ -285,15 +550,8 @@ const Pillars = () => {
             timing: "Before mental tasks"
           }]
         }
-      }
-    },
-    body: {
-      title: "Body",
-      subtitle: getContentForPath('body')?.subtitle || "Keep your body agile and mobile by fighting the signs of ageing",
-      image: bodyPillar,
-      icon: Activity,
-      color: "from-primary-dark to-primary",
-      biohacks: {
+      },
+      body: {
         training: {
           beginner: ["Walking 8,000-10,000 steps daily", "Morning movement routine (5-10 minutes)", "Mobility work & dynamic stretching (daily 15 min)"],
           intermediate: ["Zone 2 cardio training (180-age in BPM, 45-60 min)", "Strength training 3-4x/week (compound movements)", "Progressive overload resistance training"],
@@ -325,15 +583,8 @@ const Pillars = () => {
             timing: "With meals"
           }]
         }
-      }
-    },
-    balance: {
-      title: "Balance",
-      subtitle: getContentForPath('balance')?.subtitle || "Achieve inner calm and peace",
-      image: balancePillar,
-      icon: Zap,
-      color: "from-secondary to-secondary-light",
-      biohacks: {
+      },
+      balance: {
         training: {
           beginner: ["Morning sunlight exposure (10-30 min for cortisol regulation)", "Sleep hygiene protocol implementation", "Gratitude practice (3 things daily)"],
           intermediate: ["Stress-reducing breathwork training (4-7-8, box breathing)", "Meditation & mindfulness practice (10-20 min daily)", "Yoga & gentle movement practices"],
@@ -365,15 +616,8 @@ const Pillars = () => {
             timing: "Anytime"
           }]
         }
-      }
-    },
-    beauty: {
-      title: "Beauty",
-      subtitle: getContentForPath('beauty')?.subtitle || "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
-      image: beautyPillar,
-      icon: Sparkles,
-      color: "from-secondary-dark to-secondary",
-      biohacks: {
+      },
+      beauty: {
         training: {
           beginner: ["UV protection with broad-spectrum SPF 30+", "Hydration optimization (half body weight in oz)", "Beauty sleep optimization (7-9 hours)"],
           intermediate: ["Facial massage & lymphatic drainage (5 min daily)", "Collagen-boosting nutrition protocols", "Antioxidant-rich diet implementation"],
@@ -406,6 +650,50 @@ const Pillars = () => {
           }]
         }
       }
+    };
+
+    if (journeyPath === 'performance') {
+      return performanceBiohacks[pillarKey] || generalBiohacks[pillarKey];
+    } else if (journeyPath === 'menopause') {
+      return menopauseBiohacks[pillarKey] || generalBiohacks[pillarKey];
+    }
+    
+    return generalBiohacks[pillarKey];
+  };
+
+  // Pillars data with biohacks, therapies, supplements, etc.
+  const pillars = {
+    brain: {
+      title: "Brain",
+      subtitle: getContentForPath('brain')?.subtitle || "Get on top of brain fog and sharpen your mind",
+      image: brainPillar,
+      icon: Brain,
+      color: "from-primary to-primary-light",
+      biohacks: getBiohacksForPath('brain')
+    },
+    body: {
+      title: "Body",
+      subtitle: getContentForPath('body')?.subtitle || "Keep your body agile and mobile by fighting the signs of ageing",
+      image: bodyPillar,
+      icon: Activity,
+      color: "from-primary-dark to-primary",
+      biohacks: getBiohacksForPath('body')
+    },
+    balance: {
+      title: "Balance",
+      subtitle: getContentForPath('balance')?.subtitle || "Achieve inner calm and peace",
+      image: balancePillar,
+      icon: Zap,
+      color: "from-secondary to-secondary-light",
+      biohacks: getBiohacksForPath('balance')
+    },
+    beauty: {
+      title: "Beauty",
+      subtitle: getContentForPath('beauty')?.subtitle || "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
+      image: beautyPillar,
+      icon: Sparkles,
+      color: "from-secondary-dark to-secondary",
+      biohacks: getBiohacksForPath('beauty')
     }
   };
 
