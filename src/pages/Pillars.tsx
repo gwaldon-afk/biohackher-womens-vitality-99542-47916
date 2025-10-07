@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import bodyPillar from "@/assets/body-pillar.png";
 import balancePillar from "@/assets/balance-pillar.png";
 const Pillars = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const journeyPath = searchParams.get('path') || 'general';
   const {
     toast
   } = useToast();
@@ -33,6 +35,32 @@ const Pillars = () => {
   const {
     t
   } = useTranslation();
+
+  // Content variants based on journey path
+  const getContentForPath = (pillarKey: string) => {
+    const contentMap: Record<string, Record<string, { subtitle: string }>> = {
+      performance: {
+        brain: { subtitle: "Mental clarity & cognitive optimization for peak performance" },
+        body: { subtitle: "Physical vitality & athletic performance optimization" },
+        balance: { subtitle: "Metabolic & hormonal optimization for sustained energy" },
+        beauty: { subtitle: "Cellular health & vitality for peak physical condition" }
+      },
+      menopause: {
+        brain: { subtitle: "Navigate brain fog & cognitive changes during hormonal transition" },
+        body: { subtitle: "Maintain strength & manage weight changes through menopause" },
+        balance: { subtitle: "Balance hormones & manage menopause symptoms naturally" },
+        beauty: { subtitle: "Combat skin changes & maintain radiance during hormonal shifts" }
+      }
+    };
+
+    const pathContent = contentMap[journeyPath as 'performance' | 'menopause'];
+    if (pathContent && pathContent[pillarKey]) {
+      return pathContent[pillarKey];
+    }
+
+    // Default general content - return original subtitle
+    return null;
+  };
 
   // Pillar-specific assessments
   const pillarAssessments = {
@@ -94,7 +122,7 @@ const Pillars = () => {
   const pillars = {
     brain: {
       title: "Brain",
-      subtitle: "Get on top of brain fog and sharpen your mind",
+      subtitle: getContentForPath('brain')?.subtitle || "Get on top of brain fog and sharpen your mind",
       image: brainPillar,
       icon: Brain,
       color: "from-primary to-primary-light",
@@ -134,7 +162,7 @@ const Pillars = () => {
     },
     body: {
       title: "Body",
-      subtitle: "Keep your body agile and mobile by fighting the signs of ageing",
+      subtitle: getContentForPath('body')?.subtitle || "Keep your body agile and mobile by fighting the signs of ageing",
       image: bodyPillar,
       icon: Activity,
       color: "from-primary-dark to-primary",
@@ -174,7 +202,7 @@ const Pillars = () => {
     },
     balance: {
       title: "Balance",
-      subtitle: "Achieve inner calm and peace",
+      subtitle: getContentForPath('balance')?.subtitle || "Achieve inner calm and peace",
       image: balancePillar,
       icon: Zap,
       color: "from-secondary to-secondary-light",
@@ -214,7 +242,7 @@ const Pillars = () => {
     },
     beauty: {
       title: "Beauty",
-      subtitle: "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
+      subtitle: getContentForPath('beauty')?.subtitle || "Learn to glow from the outside in with the latest hacks to keep you looking younger than ever",
       image: beautyPillar,
       icon: Sparkles,
       color: "from-secondary-dark to-secondary",
