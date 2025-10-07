@@ -430,7 +430,7 @@ const Pillars = () => {
                               <span className="font-semibold text-lg">Symptom Assessments</span>
                             </div>
                             <p className="text-sm opacity-90 text-center">
-                              Take your {pillars[selectedPillar as keyof typeof pillars].title} assessment now
+                              Take your {pillars[selectedPillar as keyof typeof pillars].title} assessments now
                             </p>
                           </button>
                           
