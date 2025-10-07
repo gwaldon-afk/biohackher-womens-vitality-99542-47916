@@ -649,26 +649,26 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">150+</div>
-                <p className="text-sm text-muted-foreground">Peer-Reviewed Studies</p>
+                <div className="text-4xl font-bold text-primary mb-2">2,000+</div>
+                <p className="text-sm text-muted-foreground">Studies on Biohacking Interventions</p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">163</div>
-                <p className="text-sm text-muted-foreground">Combined Advisory Publications</p>
+                <div className="text-4xl font-bold text-primary mb-2">15-20%</div>
+                <p className="text-sm text-muted-foreground">Potential Lifespan Extension via Optimization</p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">87%</div>
-                <p className="text-sm text-muted-foreground">Members Report Improvement</p>
+                <div className="text-4xl font-bold text-primary mb-2">40%</div>
+                <p className="text-sm text-muted-foreground">Biological Age Reduction Possible</p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">3 weeks</div>
-                <p className="text-sm text-muted-foreground">Average Time to See Results</p>
+                <div className="text-4xl font-bold text-primary mb-2">80%</div>
+                <p className="text-sm text-muted-foreground">Health Outcomes Influenced by Lifestyle</p>
               </CardContent>
             </Card>
           </div>
