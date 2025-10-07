@@ -1378,9 +1378,18 @@ const Pillars = () => {
             <div className="space-y-3 mt-4">
               {selectedPillar && pillarAssessments[selectedPillar as keyof typeof pillarAssessments].map(assessment => {
               const isCompleted = completions[assessment.id];
+              
+              // Route to appropriate assessment
+              const getAssessmentRoute = () => {
+                if (selectedPillar === 'brain') {
+                  return '/lis-assessment';
+                }
+                return `/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`;
+              };
+              
               return <Card key={assessment.id} className={`cursor-pointer transition-all hover:shadow-md ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:border-primary/50'}`} onClick={() => {
                 setShowAssessmentDialog(false);
-                navigate(`/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`);
+                navigate(getAssessmentRoute());
               }}>
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -1397,7 +1406,7 @@ const Pillars = () => {
                         <Button size="sm" variant={isCompleted ? "outline" : "default"} onClick={e => {
                       e.stopPropagation();
                       setShowAssessmentDialog(false);
-                      navigate(`/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`);
+                      navigate(getAssessmentRoute());
                     }}>
                           {isCompleted ? 'Retake' : 'Start'}
                         </Button>
