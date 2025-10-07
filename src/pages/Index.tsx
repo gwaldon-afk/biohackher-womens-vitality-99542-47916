@@ -1,6 +1,7 @@
 import heroImage from "@/assets/hero-image.jpg";
 import ResearchCitation from "@/components/ResearchCitation";
 import { womenResearchGapCitations } from "@/data/womenResearchGapCitations";
+import { biohackingStatsEvidence } from "@/data/biohackingStatsEvidence";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import beautyPillar from "@/assets/beauty-pillar.png";
@@ -27,6 +28,7 @@ const Index = () => {
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<string>("");
+  const [selectedStat, setSelectedStat] = useState<typeof biohackingStatsEvidence[0] | null>(null);
   const handleScoreCalculated = () => {
     // Callback when LIS score is calculated
     console.log("LIS score calculated from homepage");
@@ -647,30 +649,18 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">2,000+</div>
-                <p className="text-sm text-muted-foreground">Studies on Biohacking Interventions</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">15-20%</div>
-                <p className="text-sm text-muted-foreground">Potential Lifespan Extension via Optimization</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">40%</div>
-                <p className="text-sm text-muted-foreground">Biological Age Reduction Possible</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-primary mb-2">80%</div>
-                <p className="text-sm text-muted-foreground">Health Outcomes Influenced by Lifestyle</p>
-              </CardContent>
-            </Card>
+            {biohackingStatsEvidence.map((stat, index) => (
+              <Card 
+                key={index} 
+                className="text-center cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => setSelectedStat(stat)}
+              >
+                <CardContent className="pt-6">
+                  <div className="text-4xl font-bold text-primary mb-2">{stat.statValue}</div>
+                  <p className="text-sm text-muted-foreground">{stat.statLabel}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           <div className="text-center mt-8">
@@ -795,6 +785,49 @@ const Index = () => {
           </Card>
         </div>
       </section>
+
+      {/* Evidence Dialog for Stats */}
+      <Dialog open={selectedStat !== null} onOpenChange={(open) => !open && setSelectedStat(null)}>
+        <DialogContent className="max-w-3xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{selectedStat?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 overflow-y-auto pr-2">
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+              <div className="text-4xl font-bold text-primary text-center mb-2">
+                {selectedStat?.statValue}
+              </div>
+              <p className="text-center text-muted-foreground font-medium">
+                {selectedStat?.statLabel}
+              </p>
+            </div>
+            
+            <p className="text-muted-foreground leading-relaxed">
+              {selectedStat?.description}
+            </p>
+            
+            <div className="pt-4">
+              <h4 className="font-semibold mb-4 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Supporting Research
+              </h4>
+              <div className="space-y-3">
+                {selectedStat?.citations.map((citation, index) => (
+                  <ResearchCitation
+                    key={index}
+                    title={citation.title}
+                    journal={citation.journal}
+                    year={citation.year}
+                    doi={citation.doi}
+                    url={citation.url}
+                    studyType={citation.studyType}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>;
 };
 export default Index;
