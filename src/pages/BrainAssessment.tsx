@@ -1,0 +1,531 @@
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { ArrowLeft, ArrowRight, Brain, Zap, Target, Moon, TrendingUp, AlertCircle } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+
+const BrainAssessment = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const journeyContext = searchParams.get('context') || 'general';
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [showResults, setShowResults] = useState(false);
+  const [scores, setScores] = useState({
+    memory: 0,
+    focus: 0,
+    processing: 0,
+    clarity: 0,
+    overall: 0
+  });
+
+  const performanceQuestions = [
+    {
+      id: 1,
+      category: "Memory & Recall",
+      icon: Brain,
+      question: "How would you rate your short-term memory and ability to recall information?",
+      options: [
+        { value: "poor", label: "Poor - Frequently forget things within minutes", score: 25 },
+        { value: "fair", label: "Fair - Sometimes forget details or names", score: 50 },
+        { value: "good", label: "Good - Generally remember most things", score: 75 },
+        { value: "excellent", label: "Excellent - Sharp recall and retention", score: 100 }
+      ]
+    },
+    {
+      id: 2,
+      category: "Focus & Concentration",
+      icon: Target,
+      question: "How easily can you maintain focus on demanding cognitive tasks?",
+      options: [
+        { value: "very-difficult", label: "Very difficult - Constantly distracted", score: 25 },
+        { value: "challenging", label: "Challenging - Struggle to concentrate for long", score: 50 },
+        { value: "moderate", label: "Moderate - Can focus with effort", score: 75 },
+        { value: "excellent", label: "Excellent - Deep focus for extended periods", score: 100 }
+      ]
+    },
+    {
+      id: 3,
+      category: "Processing Speed",
+      icon: Zap,
+      question: "How quickly do you process new information and make decisions?",
+      options: [
+        { value: "slow", label: "Slow - Takes time to understand and respond", score: 25 },
+        { value: "below-average", label: "Below average - Processing feels sluggish", score: 50 },
+        { value: "average", label: "Average - Normal processing speed", score: 75 },
+        { value: "fast", label: "Fast - Quick comprehension and response", score: 100 }
+      ]
+    },
+    {
+      id: 4,
+      category: "Mental Clarity",
+      icon: Brain,
+      question: "How clear and sharp does your thinking feel throughout the day?",
+      options: [
+        { value: "foggy", label: "Foggy - Frequent brain fog", score: 25 },
+        { value: "unclear", label: "Unclear - Often feel mentally cloudy", score: 50 },
+        { value: "clear", label: "Clear - Generally sharp thinking", score: 75 },
+        { value: "crystal", label: "Crystal clear - Consistently sharp and alert", score: 100 }
+      ]
+    },
+    {
+      id: 5,
+      category: "Working Memory",
+      icon: Brain,
+      question: "How well can you hold and manipulate information in your mind?",
+      options: [
+        { value: "poor", label: "Poor - Difficult to juggle multiple pieces of info", score: 25 },
+        { value: "fair", label: "Fair - Can handle simple mental tasks", score: 50 },
+        { value: "good", label: "Good - Can manage complex mental tasks", score: 75 },
+        { value: "excellent", label: "Excellent - Easily handle multiple complex inputs", score: 100 }
+      ]
+    },
+    {
+      id: 6,
+      category: "Mental Energy",
+      icon: Zap,
+      question: "How would you describe your mental energy levels?",
+      options: [
+        { value: "depleted", label: "Depleted - Mentally exhausted most of the day", score: 25 },
+        { value: "low", label: "Low - Energy drops significantly after tasks", score: 50 },
+        { value: "moderate", label: "Moderate - Steady energy with some dips", score: 75 },
+        { value: "high", label: "High - Sustained mental energy throughout day", score: 100 }
+      ]
+    },
+    {
+      id: 7,
+      category: "Learning Ability",
+      icon: TrendingUp,
+      question: "How easily do you learn and retain new skills or information?",
+      options: [
+        { value: "difficult", label: "Difficult - Takes many repetitions to learn", score: 25 },
+        { value: "slow", label: "Slow - Need significant time to master new things", score: 50 },
+        { value: "moderate", label: "Moderate - Learn at a normal pace", score: 75 },
+        { value: "fast", label: "Fast - Quickly grasp and retain new information", score: 100 }
+      ]
+    },
+    {
+      id: 8,
+      category: "Sleep Quality Impact",
+      icon: Moon,
+      question: "How does your sleep quality affect your cognitive performance?",
+      options: [
+        { value: "severe", label: "Severe - Poor sleep significantly impairs cognition", score: 25 },
+        { value: "moderate", label: "Moderate - Noticeable cognitive impact from sleep", score: 50 },
+        { value: "mild", label: "Mild - Slight impact from sleep quality", score: 75 },
+        { value: "minimal", label: "Minimal - Maintain performance despite sleep variation", score: 100 }
+      ]
+    },
+    {
+      id: 9,
+      category: "Stress Resilience",
+      icon: AlertCircle,
+      question: "How well does your cognitive performance hold up under stress?",
+      options: [
+        { value: "poor", label: "Poor - Performance drops significantly under pressure", score: 25 },
+        { value: "fair", label: "Fair - Noticeable decline when stressed", score: 50 },
+        { value: "good", label: "Good - Mostly maintain performance under stress", score: 75 },
+        { value: "excellent", label: "Excellent - Thrive under pressure", score: 100 }
+      ]
+    },
+    {
+      id: 10,
+      category: "Problem Solving",
+      icon: Brain,
+      question: "How effectively can you solve complex problems?",
+      options: [
+        { value: "struggle", label: "Struggle - Have difficulty with complex problems", score: 25 },
+        { value: "basic", label: "Basic - Can solve simple problems", score: 50 },
+        { value: "proficient", label: "Proficient - Handle most complex problems well", score: 75 },
+        { value: "advanced", label: "Advanced - Excel at complex problem-solving", score: 100 }
+      ]
+    }
+  ];
+
+  const menopauseQuestions = [
+    {
+      id: 1,
+      category: "Brain Fog",
+      icon: Brain,
+      question: "How often do you experience brain fog or mental cloudiness?",
+      options: [
+        { value: "daily", label: "Daily - Constantly feel foggy", score: 25 },
+        { value: "frequent", label: "Several times a week", score: 50 },
+        { value: "occasional", label: "Occasionally - A few times a month", score: 75 },
+        { value: "rare", label: "Rarely or never", score: 100 }
+      ]
+    },
+    {
+      id: 2,
+      category: "Memory Changes",
+      icon: Brain,
+      question: "Have you noticed changes in your memory since perimenopause/menopause?",
+      options: [
+        { value: "significant", label: "Significant - Much worse than before", score: 25 },
+        { value: "moderate", label: "Moderate - Noticeable decline", score: 50 },
+        { value: "mild", label: "Mild - Slight changes", score: 75 },
+        { value: "none", label: "No change - Memory remains sharp", score: 100 }
+      ]
+    },
+    {
+      id: 3,
+      category: "Word Finding",
+      icon: Brain,
+      question: "Do you struggle to find the right words when speaking?",
+      options: [
+        { value: "constantly", label: "Constantly - Very frustrating", score: 25 },
+        { value: "often", label: "Often - Multiple times daily", score: 50 },
+        { value: "sometimes", label: "Sometimes - Occasionally happens", score: 75 },
+        { value: "rarely", label: "Rarely - Not a problem", score: 100 }
+      ]
+    },
+    {
+      id: 4,
+      category: "Concentration",
+      icon: Target,
+      question: "How has your ability to concentrate been affected?",
+      options: [
+        { value: "severely", label: "Severely - Can barely focus", score: 25 },
+        { value: "moderately", label: "Moderately - Significantly harder to focus", score: 50 },
+        { value: "mildly", label: "Mildly - Some difficulty focusing", score: 75 },
+        { value: "unaffected", label: "Unaffected - No change in concentration", score: 100 }
+      ]
+    },
+    {
+      id: 5,
+      category: "Mental Fatigue",
+      icon: Zap,
+      question: "How quickly does mental fatigue set in during cognitive tasks?",
+      options: [
+        { value: "immediate", label: "Immediately - Exhausted very quickly", score: 25 },
+        { value: "fast", label: "Fast - Within 30 minutes", score: 50 },
+        { value: "moderate", label: "Moderate - After 1-2 hours", score: 75 },
+        { value: "slow", label: "Slow - Sustained mental energy", score: 100 }
+      ]
+    },
+    {
+      id: 6,
+      category: "Sleep Disruption",
+      icon: Moon,
+      question: "How are hot flushes or night sweats affecting your sleep and cognition?",
+      options: [
+        { value: "severe", label: "Severe - Major sleep disruption, significant cognitive impact", score: 25 },
+        { value: "moderate", label: "Moderate - Regular disruption affecting mental clarity", score: 50 },
+        { value: "mild", label: "Mild - Some disruption but manageable", score: 75 },
+        { value: "none", label: "None - No sleep disruption", score: 100 }
+      ]
+    },
+    {
+      id: 7,
+      category: "Mood & Cognition",
+      icon: AlertCircle,
+      question: "How do mood changes affect your cognitive function?",
+      options: [
+        { value: "major", label: "Major impact - Mood swings severely affect thinking", score: 25 },
+        { value: "significant", label: "Significant - Clear cognitive impact from mood", score: 50 },
+        { value: "moderate", label: "Moderate - Some impact on cognition", score: 75 },
+        { value: "minimal", label: "Minimal - Mood stable, cognition unaffected", score: 100 }
+      ]
+    },
+    {
+      id: 8,
+      category: "Task Completion",
+      icon: Target,
+      question: "How often do you forget what you're doing mid-task?",
+      options: [
+        { value: "constantly", label: "Constantly - Lose track multiple times daily", score: 25 },
+        { value: "often", label: "Often - Several times a week", score: 50 },
+        { value: "occasionally", label: "Occasionally - Once in a while", score: 75 },
+        { value: "rarely", label: "Rarely - Stay on task well", score: 100 }
+      ]
+    },
+    {
+      id: 9,
+      category: "Decision Making",
+      icon: Brain,
+      question: "How has your decision-making ability been affected?",
+      options: [
+        { value: "much-worse", label: "Much worse - Very indecisive", score: 25 },
+        { value: "worse", label: "Worse - Takes longer to decide", score: 50 },
+        { value: "slightly-affected", label: "Slightly affected - Minor changes", score: 75 },
+        { value: "unaffected", label: "Unaffected - No change", score: 100 }
+      ]
+    },
+    {
+      id: 10,
+      category: "Overall Impact",
+      icon: Brain,
+      question: "Overall, how much are hormonal changes affecting your cognitive function?",
+      options: [
+        { value: "severely", label: "Severely - Major decline in all areas", score: 25 },
+        { value: "significantly", label: "Significantly - Clear impact across multiple areas", score: 50 },
+        { value: "moderately", label: "Moderately - Some areas affected", score: 75 },
+        { value: "minimally", label: "Minimally - Little to no impact", score: 100 }
+      ]
+    }
+  ];
+
+  const questions = journeyContext === 'menopause' ? menopauseQuestions : performanceQuestions;
+  const currentQ = questions[currentQuestion];
+
+  const handleAnswerChange = (value: string) => {
+    setAnswers({ ...answers, [currentQuestion]: value });
+  };
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      calculateResults();
+    }
+  };
+
+  const handleBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
+
+  const calculateResults = async () => {
+    let totalScore = 0;
+    let categoryScores = { memory: 0, focus: 0, processing: 0, clarity: 0 };
+    let categoryCounts = { memory: 0, focus: 0, processing: 0, clarity: 0 };
+
+    questions.forEach((question, idx) => {
+      const answer = answers[idx];
+      if (answer) {
+        const option = question.options.find(opt => opt.value === answer);
+        if (option) {
+          totalScore += option.score;
+          
+          const cat = question.category.toLowerCase();
+          if (cat.includes('memory')) {
+            categoryScores.memory += option.score;
+            categoryCounts.memory++;
+          } else if (cat.includes('focus') || cat.includes('concentration')) {
+            categoryScores.focus += option.score;
+            categoryCounts.focus++;
+          } else if (cat.includes('processing') || cat.includes('speed')) {
+            categoryScores.processing += option.score;
+            categoryCounts.processing++;
+          } else if (cat.includes('clarity') || cat.includes('fog')) {
+            categoryScores.clarity += option.score;
+            categoryCounts.clarity++;
+          }
+        }
+      }
+    });
+
+    const overallScore = Math.round(totalScore / questions.length);
+    
+    setScores({
+      memory: categoryCounts.memory > 0 ? Math.round(categoryScores.memory / categoryCounts.memory) : 0,
+      focus: categoryCounts.focus > 0 ? Math.round(categoryScores.focus / categoryCounts.focus) : 0,
+      processing: categoryCounts.processing > 0 ? Math.round(categoryScores.processing / categoryCounts.processing) : 0,
+      clarity: categoryCounts.clarity > 0 ? Math.round(categoryScores.clarity / categoryCounts.clarity) : 0,
+      overall: overallScore
+    });
+
+    // Save to database if user is logged in
+    if (user) {
+      try {
+        await supabase.from('symptom_assessments').insert({
+          user_id: user.id,
+          symptom_type: 'brain_assessment',
+          overall_score: overallScore,
+          score_category: overallScore >= 80 ? 'excellent' : overallScore >= 60 ? 'good' : overallScore >= 40 ? 'fair' : 'needs_attention',
+          answers: answers,
+          detail_scores: categoryScores,
+          recommendations: []
+        });
+
+        await supabase.from('user_assessment_completions').insert({
+          user_id: user.id,
+          assessment_id: 'brain-cognitive-assessment',
+          pillar: 'brain',
+          score: overallScore
+        });
+      } catch (error) {
+        console.error('Error saving assessment:', error);
+      }
+    }
+
+    setShowResults(true);
+  };
+
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  if (showResults) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <Card>
+            <CardHeader>
+              <div className="text-center">
+                <div className="mx-auto mb-4 w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Brain className="h-10 w-10 text-primary" />
+                </div>
+                <CardTitle className="text-3xl mb-2">
+                  {journeyContext === 'menopause' ? 'Brain Health Results' : 'Cognitive Performance Results'}
+                </CardTitle>
+                <CardDescription>
+                  Your brain assessment is complete
+                </CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg">
+                <div className="text-6xl font-bold text-primary mb-2">{scores.overall}</div>
+                <div className="text-lg text-muted-foreground">Overall Brain Score</div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary mb-1">{scores.memory}</div>
+                      <div className="text-sm text-muted-foreground">Memory & Recall</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary mb-1">{scores.focus}</div>
+                      <div className="text-sm text-muted-foreground">Focus & Concentration</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary mb-1">{scores.processing}</div>
+                      <div className="text-sm text-muted-foreground">Processing Speed</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-primary mb-1">{scores.clarity}</div>
+                      <div className="text-sm text-muted-foreground">Mental Clarity</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-4 pt-6">
+                <h3 className="text-xl font-semibold">Your Analysis</h3>
+                {scores.overall >= 80 ? (
+                  <p className="text-muted-foreground">
+                    Excellent! Your cognitive performance is in the optimal range. Continue your current practices and consider advanced optimization strategies.
+                  </p>
+                ) : scores.overall >= 60 ? (
+                  <p className="text-muted-foreground">
+                    Good foundation. Your brain is functioning well with room for improvement. Focus on the lower-scoring categories for targeted enhancement.
+                  </p>
+                ) : scores.overall >= 40 ? (
+                  <p className="text-muted-foreground">
+                    Fair status. Several areas need attention. Consider implementing structured cognitive enhancement protocols and lifestyle modifications.
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground">
+                    Significant opportunity for improvement. Your scores suggest addressing sleep, stress, nutrition, and targeted cognitive training would be beneficial.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex gap-4 pt-6">
+                <Button onClick={() => navigate('/pillars?path=' + journeyContext)} variant="outline" className="flex-1">
+                  Back to Pillars
+                </Button>
+                <Button onClick={() => navigate('/dashboard')} className="flex-1">
+                  View Dashboard
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <Card>
+          <CardHeader>
+            <div className="mb-4">
+              <Progress value={progress} className="h-2" />
+              <p className="text-sm text-muted-foreground mt-2">
+                Question {currentQuestion + 1} of {questions.length}
+              </p>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-lg bg-primary/10">
+                <currentQ.icon className="h-6 w-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="text-sm text-muted-foreground mb-1">{currentQ.category}</div>
+                <CardTitle className="text-xl">{currentQ.question}</CardTitle>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <RadioGroup value={answers[currentQuestion]} onValueChange={handleAnswerChange}>
+              {currentQ.options.map((option) => (
+                <div
+                  key={option.value}
+                  className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors ${
+                    answers[currentQuestion] === option.value
+                      ? "bg-primary/10 border-primary"
+                      : "hover:bg-muted/50"
+                  }`}
+                  onClick={() => handleAnswerChange(option.value)}
+                >
+                  <RadioGroupItem value={option.value} id={option.value} />
+                  <Label htmlFor={option.value} className="flex-1 cursor-pointer">
+                    {option.label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+
+            <div className="flex gap-4 pt-4">
+              <Button
+                onClick={handleBack}
+                disabled={currentQuestion === 0}
+                variant="outline"
+                className="flex-1"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+              <Button
+                onClick={handleNext}
+                disabled={!answers[currentQuestion]}
+                className="flex-1"
+              >
+                {currentQuestion === questions.length - 1 ? "View Results" : "Next"}
+                {currentQuestion !== questions.length - 1 && <ArrowRight className="h-4 w-4 ml-2" />}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default BrainAssessment;

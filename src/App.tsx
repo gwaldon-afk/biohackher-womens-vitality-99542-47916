@@ -42,6 +42,7 @@ import NotFound from "./pages/NotFound";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
+import BrainAssessment from "./pages/BrainAssessment";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/lis-assessment" element={<LISAssessment />} />
+            <Route path="/brain-assessment" element={<BrainAssessment />} />
             <Route path="/lis2-setup" element={<LIS2InitialAssessment />} />
             <Route path="/lis-results" element={<LISResults />} />
             <Route path="/daily-score-results" element={<DailyScoreResults />} />
