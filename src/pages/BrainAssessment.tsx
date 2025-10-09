@@ -389,69 +389,282 @@ const BrainAssessment = () => {
                 <div className="text-lg text-muted-foreground">Overall Brain Score</div>
               </div>
 
+              {/* Detailed Analysis Section */}
+              <Card className="border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    Your Cognitive Profile Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="prose prose-sm max-w-none">
+                    <p className="text-foreground leading-relaxed">
+                      {scores.overall >= 80 ? (
+                        <>
+                          <strong className="text-primary">Excellent cognitive performance!</strong> Your overall score of {scores.overall}/100 indicates optimal brain function across multiple domains. You're operating at a high level cognitively, with particularly strong performance in areas scoring above 75.
+                        </>
+                      ) : scores.overall >= 60 ? (
+                        <>
+                          <strong className="text-primary">Good cognitive function</strong> with your score of {scores.overall}/100. While you're performing well overall, there are specific areas where targeted optimization could elevate your cognitive performance to the next level.
+                        </>
+                      ) : scores.overall >= 40 ? (
+                        <>
+                          <strong className="text-amber-600">Fair cognitive performance.</strong> Your score of {scores.overall}/100 suggests you're experiencing notable cognitive challenges that are likely impacting your daily function. The good news is that with targeted, evidence-based interventions, significant improvements are achievable.
+                        </>
+                      ) : (
+                        <>
+                          <strong className="text-destructive">Your cognitive function requires immediate attention.</strong> A score of {scores.overall}/100 indicates substantial challenges across multiple cognitive domains that are significantly affecting your quality of life. A comprehensive, multi-faceted approach is strongly recommended.
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Category Breakdown */}
               <div className="grid md:grid-cols-2 gap-4">
-                <Card>
+                <Card className={scores.memory >= 75 ? "border-green-500/50" : scores.memory >= 50 ? "border-amber-500/50" : "border-destructive/50"}>
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.memory}</div>
-                      <div className="text-sm text-muted-foreground">Memory & Recall</div>
+                      <div className="text-sm text-muted-foreground mb-2">Memory & Recall</div>
+                      <Progress value={scores.memory} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {scores.memory >= 75 ? "Strong memory function" : scores.memory >= 50 ? "Room for improvement" : "Needs focused support"}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className={scores.focus >= 75 ? "border-green-500/50" : scores.focus >= 50 ? "border-amber-500/50" : "border-destructive/50"}>
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.focus}</div>
-                      <div className="text-sm text-muted-foreground">Focus & Concentration</div>
+                      <div className="text-sm text-muted-foreground mb-2">Focus & Concentration</div>
+                      <Progress value={scores.focus} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {scores.focus >= 75 ? "Excellent concentration" : scores.focus >= 50 ? "Moderate focus issues" : "Significant attention challenges"}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className={scores.processing >= 75 ? "border-green-500/50" : scores.processing >= 50 ? "border-amber-500/50" : "border-destructive/50"}>
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.processing}</div>
-                      <div className="text-sm text-muted-foreground">Processing Speed</div>
+                      <div className="text-sm text-muted-foreground mb-2">Processing Speed</div>
+                      <Progress value={scores.processing} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {scores.processing >= 75 ? "Fast mental processing" : scores.processing >= 50 ? "Average processing speed" : "Slower cognitive processing"}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                <Card className={scores.clarity >= 75 ? "border-green-500/50" : scores.clarity >= 50 ? "border-amber-500/50" : "border-destructive/50"}>
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.clarity}</div>
-                      <div className="text-sm text-muted-foreground">Mental Clarity</div>
+                      <div className="text-sm text-muted-foreground mb-2">Mental Clarity</div>
+                      <Progress value={scores.clarity} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {scores.clarity >= 75 ? "Sharp and clear thinking" : scores.clarity >= 50 ? "Some mental fog" : "Frequent brain fog"}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <div className="space-y-4 pt-6">
-                <h3 className="text-xl font-semibold">Your Analysis</h3>
-                {scores.overall >= 80 ? (
-                  <p className="text-muted-foreground">
-                    Excellent! Your cognitive performance is in the optimal range. Continue your current practices and consider advanced optimization strategies.
-                  </p>
-                ) : scores.overall >= 60 ? (
-                  <p className="text-muted-foreground">
-                    Good foundation. Your brain is functioning well with room for improvement. Focus on the lower-scoring categories for targeted enhancement.
-                  </p>
-                ) : scores.overall >= 40 ? (
-                  <p className="text-muted-foreground">
-                    Fair status. Several areas need attention. Consider implementing structured cognitive enhancement protocols and lifestyle modifications.
-                  </p>
-                ) : (
-                  <p className="text-muted-foreground">
-                    Significant opportunity for improvement. Your scores suggest addressing sleep, stress, nutrition, and targeted cognitive training would be beneficial.
-                  </p>
-                )}
+              {/* Strengths and Areas for Improvement */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <Card className="border-green-500/20 bg-green-500/5">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-green-600" />
+                      Your Strengths
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      {scores.memory >= 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-0.5">✓</span>
+                          <span>Strong memory and recall capabilities - maintain this with continued cognitive engagement</span>
+                        </li>
+                      )}
+                      {scores.focus >= 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-0.5">✓</span>
+                          <span>Excellent concentration and sustained attention abilities</span>
+                        </li>
+                      )}
+                      {scores.processing >= 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-0.5">✓</span>
+                          <span>Fast processing speed and quick decision-making capacity</span>
+                        </li>
+                      )}
+                      {scores.clarity >= 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-green-600 mt-0.5">✓</span>
+                          <span>Clear, sharp thinking with minimal brain fog</span>
+                        </li>
+                      )}
+                      {scores.memory < 75 && scores.focus < 75 && scores.processing < 75 && scores.clarity < 75 && (
+                        <li className="text-muted-foreground italic">
+                          Your cognitive profile shows areas that would benefit from targeted support. The recommendations below will help you build new strengths.
+                        </li>
+                      )}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-amber-500/20 bg-amber-500/5">
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Target className="h-5 w-5 text-amber-600" />
+                      Priority Focus Areas
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      {scores.memory < 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 mt-0.5">→</span>
+                          <span><strong>Memory enhancement:</strong> {scores.memory < 50 ? "Significant improvement needed" : "Can be optimized with specific strategies"}</span>
+                        </li>
+                      )}
+                      {scores.focus < 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 mt-0.5">→</span>
+                          <span><strong>Focus training:</strong> {scores.focus < 50 ? "Attention deficits require structured support" : "Concentration can be sharpened"}</span>
+                        </li>
+                      )}
+                      {scores.processing < 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 mt-0.5">→</span>
+                          <span><strong>Processing speed:</strong> {scores.processing < 50 ? "Cognitive processing needs support" : "Can be enhanced with targeted exercises"}</span>
+                        </li>
+                      )}
+                      {scores.clarity < 75 && (
+                        <li className="flex items-start gap-2">
+                          <span className="text-amber-600 mt-0.5">→</span>
+                          <span><strong>Mental clarity:</strong> {scores.clarity < 50 ? "Brain fog significantly affecting function" : "Clarity improvements achievable"}</span>
+                        </li>
+                      )}
+                      {scores.memory >= 75 && scores.focus >= 75 && scores.processing >= 75 && scores.clarity >= 75 && (
+                        <li className="text-muted-foreground italic">
+                          Excellent performance across all categories! Focus on maintenance and continued optimization.
+                        </li>
+                      )}
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
 
-              <div className="flex gap-4 pt-6">
-                <Button onClick={() => navigate('/pillars?path=' + journeyContext)} variant="outline" className="flex-1">
-                  Back to Pillars
+              {/* Personalized Recommendations */}
+              <Card className="border-primary/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="h-5 w-5" />
+                    Your Personalized Action Plan
+                  </CardTitle>
+                  <CardDescription>
+                    Evidence-based interventions tailored to your cognitive profile
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {journeyContext === 'menopause' ? (
+                    <div className="space-y-3">
+                      <div className="p-4 bg-primary/5 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-primary">1. Hormone Health Assessment</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Given your menopause-related cognitive changes, comprehensive hormone testing (estrogen, progesterone, testosterone, thyroid) is essential. Declining estrogen directly impacts brain function, neurotransmitter production, and neuroplasticity.
+                        </p>
+                      </div>
+                      {scores.clarity < 75 && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">2. Brain Fog Protocol</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Your brain fog score indicates this is affecting your daily function. Consider: Omega-3 supplementation (2g EPA/DHA daily), B-vitamin complex, adequate protein intake (1.2-1.6g/kg bodyweight), and stress management techniques. Clinical research shows these interventions significantly reduce menopause-related cognitive fog.
+                          </p>
+                        </div>
+                      )}
+                      {scores.memory < 75 && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">3. Memory Support Strategy</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Implement daily cognitive exercises (15-20 mins), ensure 7-9 hours quality sleep, consider phosphatidylserine supplementation (300mg daily), and practice memory techniques like spaced repetition. Regular aerobic exercise (150 mins/week) has shown to specifically improve hippocampal function and memory during menopause.
+                          </p>
+                        </div>
+                      )}
+                      <div className="p-4 bg-primary/5 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-primary">{scores.memory < 75 && scores.clarity < 75 ? "4" : scores.clarity < 75 || scores.memory < 75 ? "3" : "2"}. Sleep Optimization</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Poor sleep compounds cognitive challenges. Prioritize: consistent sleep schedule, cool room temperature (16-19°C), magnesium glycinate (300-400mg before bed), and consider CBT-I if insomnia persists. Address night sweats with breathable bedding and temperature regulation strategies.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {scores.focus < 75 && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">1. Attention & Focus Enhancement</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Implement structured focus training: Pomodoro technique (25-min focused work blocks), environmental optimization (minimize distractions, use noise-cancelling when needed), and consider L-theanine + caffeine combination (200mg + 100mg) for acute focus needs. Regular meditation practice (10-20 mins daily) significantly improves sustained attention within 8 weeks.
+                          </p>
+                        </div>
+                      )}
+                      {scores.processing < 75 && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">{scores.focus < 75 ? "2" : "1"}. Processing Speed Training</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Engage in specific cognitive training: speed reading practice, dual n-back training (15 mins daily), and quick decision-making exercises. Ensure optimal metabolic support with adequate B-vitamins, iron status check (ferritin should be {'>'}50ng/mL), and maintain stable blood glucose. High-intensity interval training (HIIT) 3x/week improves processing speed via BDNF upregulation.
+                          </p>
+                        </div>
+                      )}
+                      {scores.memory < 75 && (
+                        <div className="p-4 bg-primary/5 rounded-lg">
+                          <h4 className="font-semibold mb-2 text-primary">{[scores.focus < 75, scores.processing < 75].filter(Boolean).length + 1}. Memory Optimization</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Implement evidence-based memory techniques: spaced repetition for learning, mnemonic devices, and regular recall practice. Nutritional support: phosphatidylserine (300mg), omega-3s (2g combined EPA/DHA), and Bacopa monnieri (300mg standardized extract). Ensure 7-9 hours sleep as memory consolidation occurs during deep sleep phases.
+                          </p>
+                        </div>
+                      )}
+                      <div className="p-4 bg-primary/5 rounded-lg">
+                        <h4 className="font-semibold mb-2 text-primary">{[scores.focus < 75, scores.processing < 75, scores.memory < 75].filter(Boolean).length + 1}. Lifestyle Foundation</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Regardless of your current performance, maintaining optimal brain health requires: 150 mins moderate aerobic exercise weekly, 7-9 hours quality sleep, stress management practices, social engagement, Mediterranean-style diet rich in polyphenols, and continuous learning activities. These foundational practices prevent cognitive decline and enhance neuroplasticity.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Next Steps */}
+              <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                <CardContent className="pt-6">
+                  <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5 text-primary" />
+                    Recommended Next Steps
+                  </h3>
+                  <ol className="space-y-2 text-sm list-decimal list-inside">
+                    <li>Review your detailed results above and identify your top 1-2 priority areas</li>
+                    <li>Start with the first recommendation from your action plan within the next 48 hours</li>
+                    <li>Track your progress daily to monitor improvements and adjust strategies</li>
+                    <li>Consider booking a consultation with a healthcare provider specializing in cognitive health</li>
+                    <li>Reassess your cognitive performance in 4-6 weeks to measure progress</li>
+                  </ol>
+                </CardContent>
+              </Card>
+
+              <div className="text-center space-y-4">
+                <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full md:w-auto">
+                  View Your Dashboard
                 </Button>
-                <Button onClick={() => navigate('/dashboard')} className="flex-1">
-                  View Dashboard
-                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Your results have been saved and will be tracked over time to monitor your progress
+                </p>
               </div>
             </CardContent>
           </Card>
