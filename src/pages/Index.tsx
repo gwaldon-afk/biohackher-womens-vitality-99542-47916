@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Activity, Brain, Sparkles, Zap, Target, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import TrustBar from "@/components/TrustBar";
 import CTAButton from "@/components/CTAButton";
 
 const Index = () => {
@@ -17,7 +16,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <TrustBar />
       
       {/* Hero Section - Dual Path Messaging */}
       <section className="relative overflow-hidden">

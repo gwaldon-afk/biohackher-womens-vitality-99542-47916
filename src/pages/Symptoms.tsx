@@ -503,6 +503,38 @@ const Symptoms = () => {
       ]
     },
     {
+      id: "cognitive-performance",
+      name: "Cognitive Performance",
+      icon: Brain,
+      severity: "Variable",
+      frequency: "Ongoing",
+      pillars: ["brain"],
+      actions: [
+        {
+          title: "Brain Assessment",
+          description: "Complete comprehensive cognitive performance assessment to identify specific areas for optimization",
+          evidence: "Gold",
+          contraindications: []
+        }
+      ]
+    },
+    {
+      id: "menopause-brain-health",
+      name: "Menopause Brain Health",
+      icon: Brain,
+      severity: "Variable",
+      frequency: "Ongoing",
+      pillars: ["brain", "balance"],
+      actions: [
+        {
+          title: "Brain Assessment",
+          description: "Complete menopause-specific brain health assessment to address cognitive changes during hormonal transitions",
+          evidence: "Gold",
+          contraindications: []
+        }
+      ]
+    },
+    {
       id: "memory-issues",
       name: "Memory Issues",
       icon: BookOpen,
@@ -752,6 +784,13 @@ const Symptoms = () => {
   const handleSymptomSelect = (symptomId: string) => {
     const symptom = symptoms.find(s => s.id === symptomId);
     if (!symptom) return;
+    
+    // Route brain assessments to specialized brain assessment page
+    if (symptomId === "cognitive-performance" || symptomId === "menopause-brain-health") {
+      const context = symptomId === "cognitive-performance" ? "performance" : "menopause";
+      navigate(`/brain-assessment?context=${context}&pillar=brain`);
+      return;
+    }
     
     // Check if this is an assessed symptom (from My Symptom Profile)
     const isAssessed = assessedSymptoms.some(s => s.id === symptomId);
