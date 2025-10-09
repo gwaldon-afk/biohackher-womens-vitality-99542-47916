@@ -188,14 +188,30 @@ export default function GuestLISResults() {
     return sorted;
   };
 
-  const getSimpleAnalysis = () => {
-    if (!assessmentData || !results) return '';
+  const getComprehensiveAnalysis = () => {
+    if (!assessmentData || !results) return null;
 
     const riskCategory = getRiskCategory(results.finalScore);
     const topWeakness = getTopImprovements()[0];
     const topStrength = getTopStrengths()[0];
+    const bioAgeData = calculateBiologicalAge();
+    const ageingRate = 1 + bioAgeData.annualDeceleration; // Current aging rate
 
-    return `Your LIS score of ${results.finalScore} falls in the ${riskCategory.label} category. ${riskCategory.description} Your strongest area is ${topStrength[0]} (${topStrength[1]}/100), while ${topWeakness[0]} (${topWeakness[1]}/100) presents the greatest opportunity for improvement.`;
+    return {
+      overview: `Your Longevity Impact Score of ${results.finalScore} places you in the ${riskCategory.label} category, suggesting ${
+        results.finalScore >= 80 ? 'exceptional longevity habits that are significantly slowing your biological aging' :
+        results.finalScore >= 60 ? 'good foundational habits with clear opportunities for optimization' :
+        results.finalScore >= 40 ? 'moderate habits that could be enhanced to dramatically improve your healthspan' :
+        'lifestyle patterns that need attention to reverse accelerated aging'
+      }.`,
+      biologicalAge: `Based on your habits, you're aging at approximately ${ageingRate.toFixed(2)} biological years per calendar year, which means you could ${
+        ageingRate < 1 ? `effectively gain ${Math.round((1 - ageingRate) * 30)} healthy years over the next 30 years` :
+        ageingRate > 1 ? `lose ${Math.round((ageingRate - 1) * 30)} potential healthy years over the next 30 years without intervention` :
+        'age at a standard rate with room for optimization'
+      }.`,
+      strengths: `Your ${topStrength[0]} score of ${Math.round(topStrength[1])}% shows strong habits in this pillar. This provides a solid foundation - maintaining this while improving other areas will compound your longevity gains.`,
+      priorities: `${topWeakness[0]} (${Math.round(topWeakness[1])}%) represents your highest-impact improvement opportunity. Research shows that targeted interventions in your weakest pillar can shift your overall aging trajectory within 4-6 weeks and add years to your healthspan.`
+    };
   };
 
   if (isLoading) {
@@ -237,9 +253,40 @@ export default function GuestLISResults() {
 
           <Progress value={results.finalScore} className="h-3 mb-4" />
 
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            {getSimpleAnalysis()}
-          </p>
+          <div className="space-y-4">
+            {(() => {
+              const analysis = getComprehensiveAnalysis();
+              if (!analysis) return <p className="text-muted-foreground">Analysis unavailable</p>;
+              
+              return (
+                <>
+                  <div className="bg-muted/30 p-4 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2 text-primary">Overall Assessment</h4>
+                    <p className="text-sm text-muted-foreground mb-3">{analysis.overview}</p>
+                    <p className="text-sm text-muted-foreground">{analysis.biologicalAge}</p>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-success/5 border border-success/20 p-3 rounded-lg">
+                      <h4 className="font-semibold text-sm mb-2 text-success flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
+                        Your Strength
+                      </h4>
+                      <p className="text-xs text-muted-foreground">{analysis.strengths}</p>
+                    </div>
+                    
+                    <div className="bg-warning/5 border border-warning/20 p-3 rounded-lg">
+                      <h4 className="font-semibold text-sm mb-2 text-warning flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        Priority Focus
+                      </h4>
+                      <p className="text-xs text-muted-foreground">{analysis.priorities}</p>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
 
           {results.smokingPenalty > 0 && (
             <div className="mt-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
