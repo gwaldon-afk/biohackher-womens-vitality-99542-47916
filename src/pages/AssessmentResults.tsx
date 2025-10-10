@@ -7,13 +7,14 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
-import { assessmentConfigs } from "@/data/assessmentQuestions";
+import { useAssessments } from "@/hooks/useAssessments";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { getAssessment } = useAssessments();
   
   const state = location.state as {
     score: number;
@@ -36,7 +37,7 @@ const AssessmentResults = () => {
     return null;
   }
 
-  const assessmentConfig = assessmentConfigs[symptomId];
+  const assessmentConfig = symptomId ? getAssessment(symptomId) : null;
   const { score, answers, assessmentName, scoringGuidance, scoreCategory, categoryDescription, pillar } = state;
 
   const getCategoryColor = (category: string) => {

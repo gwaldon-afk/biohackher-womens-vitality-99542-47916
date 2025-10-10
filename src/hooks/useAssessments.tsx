@@ -16,7 +16,7 @@ export interface AssessmentConfig {
   name: string;
   description: string;
   pillar: string;
-  journey_path?: string | null;
+  journey_path?: string;
   questions: AssessmentQuestion[];
   scoringGuidance: {
     excellent: { min: number; max: number; description: string };
@@ -31,80 +31,88 @@ export const useAssessments = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAssessments = async () => {
+  useEffect(() => {
+    loadAssessments();
+  }, []);
+
+  const loadAssessments = async () => {
     try {
       setLoading(true);
-      setError(null);
-
-      // Fetch all assessments
+      
+      // Fetch assessments with their questions and options
       const { data: assessmentsData, error: assessmentsError } = await supabase
         .from('assessments')
-        .select('*')
+        .select(`
+          *,
+          assessment_questions (
+            id,
+            question_text,
+            question_order,
+            category,
+            assessment_question_options (
+              option_text,
+              option_order,
+              score_value
+            )
+          )
+        `)
         .order('id');
 
       if (assessmentsError) throw assessmentsError;
 
-      // Fetch all questions with their options
-      const { data: questionsData, error: questionsError } = await supabase
-        .from('assessment_questions')
-        .select(`
-          *,
-          assessment_question_options (
-            option_text,
-            option_order,
-            score_value
-          )
-        `)
-        .order('question_order');
-
-      if (questionsError) throw questionsError;
-
-      // Build assessment configs
-      const configs: Record<string, AssessmentConfig> = {};
-
-      assessmentsData?.forEach((assessment) => {
-        const assessmentQuestions = questionsData
-          ?.filter((q: any) => q.assessment_id === assessment.id)
+      // Transform database structure to match AssessmentConfig interface
+      const assessmentsMap: Record<string, AssessmentConfig> = {};
+      
+      assessmentsData?.forEach((assessment: any) => {
+        const questions: AssessmentQuestion[] = assessment.assessment_questions
+          .sort((a: any, b: any) => a.question_order - b.question_order)
           .map((q: any) => ({
             id: q.id,
             category: q.category || '',
             question: q.question_text,
-            options: (q.assessment_question_options || [])
+            options: q.assessment_question_options
               .sort((a: any, b: any) => a.option_order - b.option_order)
               .map((opt: any) => ({
                 text: opt.option_text,
                 score: opt.score_value
               }))
-          })) || [];
+          }));
 
-        configs[assessment.id] = {
+        assessmentsMap[assessment.id] = {
           id: assessment.id,
           name: assessment.name,
           description: assessment.description,
           pillar: assessment.pillar,
           journey_path: assessment.journey_path,
-          questions: assessmentQuestions,
-          scoringGuidance: assessment.scoring_guidance as any
+          questions,
+          scoringGuidance: assessment.scoring_guidance
         };
       });
 
-      setAssessments(configs);
-    } catch (err: any) {
-      console.error('Error fetching assessments:', err);
-      setError(err.message);
+      setAssessments(assessmentsMap);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading assessments:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load assessments');
+      
+      // Fallback to static assessments if database fails
+      import('@/data/assessmentQuestions').then(module => {
+        setAssessments(module.assessmentConfigs);
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchAssessments();
-  }, []);
+  const getAssessment = (id: string): AssessmentConfig | null => {
+    return assessments[id] || null;
+  };
 
   return {
     assessments,
     loading,
     error,
-    refetch: fetchAssessments
+    getAssessment,
+    refetch: loadAssessments
   };
 };
