@@ -19,6 +19,7 @@ const Navigation = () => {
     { href: "/pillars", label: "Pillars" },
     { href: "/dashboard", label: t('navigation.dashboard') },
     { href: "/analytics", label: "Analytics" },
+    { href: "/symptom-trends", label: "Symptom Trends" },
     { href: "/achievements", label: "Achievements" },
     { href: "/symptoms", label: "Assessments" },
     { href: "/biohacking-toolkit", label: "Toolkit" },
