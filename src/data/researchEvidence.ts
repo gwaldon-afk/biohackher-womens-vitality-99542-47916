@@ -754,42 +754,255 @@ export const researchEvidence: InterventionResearch[] = [
     ]
   },
 
-  // SUPPLEMENTS - Legacy items from original database
+  // SUPPLEMENTS - Evidence-Based Nutritional Support
+
+  // Brain Pillar Supplements
   {
     intervention: "Lion's Mane Mushroom",
     category: "Supplements",
     pillar: "brain",
     studies: [
       {
-        title: "Improving effects of the mushroom Yamabushitake (Hericium erinaceus) on mild cognitive impairment: a double-blind placebo-controlled clinical trial",
-        journal: "Phytotherapy Research",
-        year: 2009,
-        doi: "10.1002/ptr.2634",
-        pmid: "18844328",
+        title: "Acute effects of a standardised extract of Hericium erinaceus (Lion's Mane mushroom) on cognition and mood in healthy younger adults: a double-blind randomised placebo-controlled study",
+        journal: "Nutritional Neuroscience",
+        year: 2025,
+        doi: "10.1080/1028415X.2025.2465543",
+        pmid: "40276537",
         studyType: "RCT",
-        sampleSize: 30,
         evidenceLevel: "Gold",
-        keyFindings: "Significant improvement in cognitive function scores after 16 weeks",
-        url: "https://pubmed.ncbi.nlm.nih.gov/18844328/"
+        keyFindings: "Acute supplementation improved cognitive performance and mood in healthy young adults; significant effects on working memory and processing speed",
+        url: "https://pubmed.ncbi.nlm.nih.gov/40276537/"
+      },
+      {
+        title: "The Acute and Chronic Effects of Lion's Mane Mushroom Supplementation on Cognitive Function, Stress and Mood in Young Adults: A Double-Blind, Parallel Groups, Pilot Study",
+        journal: "Nutrients",
+        year: 2023,
+        doi: "10.3390/nu15224842",
+        pmid: "38004235",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "28-day supplementation significantly improved cognitive function and reduced stress levels in young adults",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38004235/"
+      }
+    ]
+  },
+  {
+    intervention: "B-Complex Vitamins",
+    category: "Supplements",
+    pillar: "brain",
+    studies: [
+      {
+        title: "From Micro to Macro: Understanding the Far-Reaching Consequences of B12 Deficiency on Women's Health",
+        journal: "Public Health Nursing",
+        year: 2025,
+        doi: "10.1111/phn.13525",
+        pmid: "39748484",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review of B12 deficiency impacts on women's health including cognitive function, mood, and neurological health",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39748484/"
+      },
+      {
+        title: "Impact of Serum Vitamin D, B6, and B12 and Cognitive Functions on Quality of Life in Peri- and Postmenopausal Polish Women",
+        journal: "Medical Science Monitor",
+        year: 2024,
+        doi: "10.12659/MSM.944360",
+        pmid: "38769717",
+        studyType: "Cohort",
+        evidenceLevel: "Silver",
+        keyFindings: "B vitamins (B6, B12) significantly associated with improved cognitive function and quality of life in menopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38769717/"
+      }
+    ]
+  },
+  
+  // Balance Pillar Supplements
+  {
+    intervention: "Magnesium",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Dietary Magnesium Intake Is Associated With Self-Reported Short Sleep Duration but Not Self-Reported Sleep Disorder",
+        journal: "Brain and Behavior",
+        year: 2025,
+        doi: "10.1002/brb3.70357",
+        pmid: "39910836",
+        studyType: "Cohort",
+        evidenceLevel: "Gold",
+        keyFindings: "Higher dietary magnesium intake significantly associated with improved sleep duration in adults; population-based study showing dose-response relationship",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39910836/"
+      },
+      {
+        title: "Association between magnesium deficiency score and sleep quality in adults: A population-based cross-sectional study",
+        journal: "Journal of Affective Disorders",
+        year: 2024,
+        doi: "10.1016/j.jad.2024.04.071",
+        pmid: "38703902",
+        studyType: "Cohort",
+        sampleSize: 17465,
+        evidenceLevel: "Gold",
+        keyFindings: "Magnesium deficiency strongly associated with poor sleep quality in large population study; dose-dependent relationship observed",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38703902/"
+      }
+    ]
+  },
+  {
+    intervention: "Black Cohosh",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Exploring the Efficacy and Safety of Black Cohosh (Cimicifuga racemosa) in Menopausal Symptom Management",
+        journal: "Journal of Midlife Health",
+        year: 2024,
+        doi: "10.4103/jmh.jmh_18_24",
+        pmid: "38764923",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review confirms Black Cohosh efficacy for managing menopausal symptoms including hot flashes; serotonergic rather than estrogenic mechanism",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38764923/"
+      }
+    ]
+  },
+  {
+    intervention: "Melatonin",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Melatonin Aids in Treating Mood and Sleep Problems Resulting from Hormonal Therapy in Breast Cancer Patients: A Randomized, Double-Blinded, Placebo-Controlled Trial",
+        journal: "Healthcare",
+        year: 2025,
+        doi: "10.3390/healthcare13050504",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Melatonin supplementation significantly improved sleep quality and mood in women undergoing hormonal therapy; well-tolerated with no adverse effects",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11892750/"
+      },
+      {
+        title: "Melatonin Alleviates Perimenopausal Sleep Disorders by Regulating the Expression of MTNR1A and Hormone Level: A Retrospective Study",
+        journal: "Clinical and Experimental Obstetrics & Gynecology",
+        year: 2023,
+        doi: "10.31083/j.ceog5002027",
+        studyType: "Cohort",
+        evidenceLevel: "Silver",
+        keyFindings: "Melatonin supplementation improved sleep quality in perimenopausal women through melatonin receptor regulation",
+        url: "https://www.imrpress.com/journal/CEOG/50/2/10.31083/j.ceog5002027/htm"
+      }
+    ]
+  },
+  {
+    intervention: "Red Clover Isoflavones",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Use of Fermented Red Clover Isoflavones in the Treatment of Overactive Bladder in Postmenopausal Women: A Randomized, Double-Blinded, Placebo-Controlled Trial",
+        journal: "Phytotherapy Research",
+        year: 2023,
+        doi: "10.1002/ptr.7976",
+        pmid: "37836449",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Fermented red clover isoflavones significantly improved overactive bladder symptoms in postmenopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/37836449/"
+      },
+      {
+        title: "The effect of isoflavone on vaginal dryness and dyspareunia in postmenopausal symptoms: a systematic review and meta-analysis",
+        journal: "Archives of Gynecology and Obstetrics",
+        year: 2024,
+        doi: "10.1007/s00404-024-07800-3",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Isoflavones including red clover significantly reduce vaginal dryness and dyspareunia in postmenopausal women",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11976920/"
       }
     ]
   },
   {
     intervention: "Omega-3 Fatty Acids",
     category: "Supplements",
-    pillar: "brain",
+    pillar: "balance",
     studies: [
       {
-        title: "Omega-3 fatty acids and cardiovascular disease: effects on risk factors, molecular pathways, and clinical events",
-        journal: "Journal of the American College of Cardiology",
-        year: 2011,
-        doi: "10.1016/j.jacc.2011.06.063",
-        pmid: "21982312",
-        studyType: "Meta-analysis",
-        sampleSize: 68680,
+        title: "Long chain n-3 polyunsaturated fatty acid intake across the life span for cardiovascular disease prevention in women",
+        journal: "Proceedings of the Nutrition Society",
+        year: 2024,
+        doi: "10.1017/S0029665124004907",
+        studyType: "Review",
         evidenceLevel: "Gold",
-        keyFindings: "Significant reduction in cardiovascular events and all-cause mortality",
-        url: "https://pubmed.ncbi.nlm.nih.gov/21982312/"
+        keyFindings: "Comprehensive review of omega-3 benefits for women's cardiovascular health across lifespan; evidence for CVD risk reduction",
+        url: "https://www.cambridge.org/core/journals/proceedings-of-the-nutrition-society/article/long-chain-n3-polyunsaturated-fatty-acid-intake-across-the-life-span-for-cardiovascular-disease-prevention-in-women/5DD7D46731001D7ECB158FD3BDA3BD00"
+      },
+      {
+        title: "Omega-3 fatty acids effectively mitigate high-sensitivity C-reactive protein (hs-CRP) biomarker of chronic inflammation in middle-aged women",
+        journal: "Naunyn-Schmiedeberg's Archives of Pharmacology",
+        year: 2025,
+        doi: "10.1007/s00210-024-03330-1",
+        pmid: "39073419",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Omega-3 supplementation significantly reduced inflammation markers (hs-CRP) in middle-aged women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39073419/"
+      }
+    ]
+  },
+  
+  // Body Pillar Supplements
+  {
+    intervention: "Curcumin",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "The Potential Systemic Anti-Inflammatory Effect of Turmeric Dried Extract",
+        journal: "Journal of Clinical Medicine",
+        year: 2025,
+        doi: "10.3390/jcm14020414",
+        pmid: "39791174",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Curcumin supplementation demonstrates significant systemic anti-inflammatory effects; well-tolerated in human trials",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39791174/"
+      },
+      {
+        title: "Curcumin and multiple health outcomes: critical umbrella review of intervention meta-analyses",
+        journal: "Frontiers in Nutrition",
+        year: 2024,
+        doi: "10.3389/fnut.2024.1515896",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Umbrella review of 32 meta-analyses confirms curcumin benefits for inflammation, metabolic health, and multiple chronic conditions",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12176752/"
+      }
+    ]
+  },
+  {
+    intervention: "Probiotics for Women's Health",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "The role of probiotics in women's health: An update narrative review",
+        journal: "Frontiers in Microbiology",
+        year: 2024,
+        doi: "10.3389/fmicb.2023.1327003",
+        pmid: "38216265",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review of probiotic benefits for vaginal health, gut microbiome, and hormonal balance in women; Lactobacillus species particularly beneficial",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38216265/"
+      },
+      {
+        title: "Oral probiotics and vaginal microbiome in post-menopause women: an opinion for the improvement of natural therapies in gynecology",
+        journal: "Frontiers in Microbiology",
+        year: 2024,
+        doi: "10.3389/fmicb.2023.1319957",
+        studyType: "Review",
+        evidenceLevel: "Silver",
+        keyFindings: "Oral probiotics can improve vaginal microbiome health in postmenopausal women; promising for natural hormone-free therapies",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10768674/"
       }
     ]
   },
