@@ -699,21 +699,208 @@ export const researchEvidence: InterventionResearch[] = [
       }
     ]
   },
+  
+  // THERAPIES - Evidence-Based Complementary Treatments
+  
+  // Balance & Body Pillar Therapies
   {
-    intervention: "Cold Exposure Therapy",
+    intervention: "Sauna & Heat Therapy",
     category: "Therapies",
     pillar: "balance",
     studies: [
       {
-        title: "Cold exposure and metabolic health: a translational review",
-        journal: "Diabetes, Obesity and Metabolism",
-        year: 2021,
-        doi: "10.1111/dom.14492",
-        pmid: "34145952",
+        title: "Passive heat therapy for cardiovascular disease: current evidence and future directions",
+        journal: "Applied Physiology, Nutrition, and Metabolism",
+        year: 2025,
+        doi: "10.1139/apnm-2024-0374",
+        pmid: "39819110",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review of passive heat therapy benefits for cardiovascular health; promotes physiological adaptations and cardiovascular protection",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39819110/"
+      },
+      {
+        title: "The multifaceted benefits of passive heat therapies for extending the healthspan: A comprehensive review with a focus on Finnish sauna",
+        journal: "Temperature",
+        year: 2024,
+        doi: "10.1080/23328940.2024.2337309",
+        pmid: "38577299",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Sauna bathing associated with reduced cardiovascular mortality, improved healthspan, and multiple physiological benefits",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38577299/"
+      },
+      {
+        title: "Comparison of thermoregulatory, cardiovascular, and immune responses to different passive heat therapy modalities",
+        journal: "Journal of Applied Physiology",
+        year: 2025,
+        doi: "10.1152/japplphysiol.00857.2024",
+        pmid: "40332494",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Comparison of hot water immersion, traditional sauna, and far infrared sauna; all modalities provide cardiovascular and immune benefits",
+        url: "https://pubmed.ncbi.nlm.nih.gov/40332494/"
+      }
+    ]
+  },
+  {
+    intervention: "Cold Water Immersion & Cryotherapy",
+    category: "Therapies",
+    pillar: "body",
+    studies: [
+      {
+        title: "Effects of cold-water immersion on health and wellbeing: A systematic review and meta-analysis",
+        journal: "Sports Medicine",
+        year: 2025,
+        doi: "10.1007/s40279-024-02162-x",
+        pmid: "39879231",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Systematic review confirms cold water immersion benefits for recovery, mental health, and metabolic health",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39879231/"
+      },
+      {
+        title: "The swimming habits of women who cold water swim",
+        journal: "International Journal of Aquatic Research and Education",
+        year: 2024,
+        pmid: "39168149",
+        studyType: "Cohort",
+        evidenceLevel: "Silver",
+        keyFindings: "Study of cold water swimming habits in women; associated with improved mood, stress resilience, and community connection",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39168149/"
+      }
+    ]
+  },
+  {
+    intervention: "Acupuncture for Women's Health",
+    category: "Therapies",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Acupuncture-adjuvant therapies for treating perimenopausal depression: A network meta-analysis",
+        journal: "Medicine",
+        year: 2023,
+        doi: "10.1097/MD.0000000000034656",
+        pmid: "37603500",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Network meta-analysis confirms acupuncture efficacy for perimenopausal depression with minimal side effects compared to antidepressants",
+        url: "https://pubmed.ncbi.nlm.nih.gov/37603500"
+      },
+      {
+        title: "Efficacy and safety of therapies related to acupuncture for menopausal hot flashes: A Bayesian network meta-analysis",
+        journal: "Medicine",
+        year: 2024,
+        doi: "10.1097/MD.0000000000038218",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Acupuncture therapies significantly reduce hot flash frequency and severity in menopausal women",
+        url: "https://journals.lww.com/md-journal/fulltext/2024/05170/efficacy_and_safety_of_therapies_related_to.27.aspx"
+      },
+      {
+        title: "Acupuncture improves perimenopausal depression via a mechanism involving activation of the phosphatidylinositol 3-kinase pathway in a rat model",
+        journal: "Neuroreport",
+        year: 2025,
+        pmid: "40810266",
+        studyType: "RCT",
+        evidenceLevel: "Silver",
+        keyFindings: "Mechanistic study showing acupuncture improves perimenopausal depression through neurobiological pathways",
+        url: "https://pubmed.ncbi.nlm.nih.gov/40810266/"
+      }
+    ]
+  },
+  {
+    intervention: "Massage Therapy",
+    category: "Therapies",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Manual therapy and exercise effects on inflammatory cytokines: a narrative overview",
+        journal: "Chiropractic & Manual Therapies",
+        year: 2024,
+        doi: "10.1186/s12998-024-00540-5",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Manual therapy and massage reduce pro-inflammatory cytokines and improve pain outcomes in musculoskeletal conditions",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11091266/"
+      },
+      {
+        title: "Mental Health Impact of Massage and Massage Therapy for Survivors of Domestic and Family Violence: A Scoping Review",
+        journal: "International Journal of Therapeutic Massage & Bodywork",
+        year: 2025,
+        pmid: "40881723",
         studyType: "Review",
         evidenceLevel: "Silver",
-        keyFindings: "Beneficial effects on metabolic health, thermogenesis, and insulin sensitivity",
-        url: "https://pubmed.ncbi.nlm.nih.gov/34145952/"
+        keyFindings: "Massage therapy improves mental health outcomes for women survivors of trauma; reduces PTSD and anxiety symptoms",
+        url: "https://pubmed.ncbi.nlm.nih.gov/40881723/"
+      },
+      {
+        title: "The objective and subjective impact of a daily self-massage on visible signs of stress on the skin and emotional well-being",
+        journal: "International Journal of Cosmetic Science",
+        year: 2023,
+        doi: "10.1111/ics.12888",
+        pmid: "37483121",
+        studyType: "RCT",
+        evidenceLevel: "Silver",
+        keyFindings: "Daily self-massage reduces stress biomarkers, improves skin appearance, and enhances emotional wellbeing",
+        url: "https://pubmed.ncbi.nlm.nih.gov/37483121/"
+      }
+    ]
+  },
+  {
+    intervention: "Yoga for Women's Health",
+    category: "Therapies",
+    pillar: "balance",
+    studies: [
+      {
+        title: "The effectiveness of yoga on menopausal symptoms: A systematic review and meta-analysis of randomized controlled trials",
+        journal: "International Journal of Nursing Studies",
+        year: 2025,
+        doi: "10.1016/j.ijnurstu.2024.104927",
+        pmid: "39467491",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive meta-analysis shows yoga significantly reduces menopausal symptoms including hot flashes, psychological symptoms, and sleep disturbances",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39467491/"
+      },
+      {
+        title: "The Effect of Yoga on Menopause Symptoms: A Randomized Controlled Trial",
+        journal: "Holistic Nursing Practice",
+        year: 2024,
+        doi: "10.1097/HNP.0000000000000651",
+        pmid: "38709129",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "10-week yoga intervention significantly improved menopausal symptoms across physical, psychological, and vasomotor domains",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38709129/"
+      }
+    ]
+  },
+  {
+    intervention: "Meditation & Mindfulness",
+    category: "Therapies",
+    pillar: "brain",
+    studies: [
+      {
+        title: "Digital Meditation to Target Employee Stress: A Randomized Clinical Trial",
+        journal: "JAMA Network Open",
+        year: 2025,
+        doi: "10.1001/jamanetworkopen.2024.55320",
+        pmid: "39808431",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Digital meditation intervention significantly reduced stress, anxiety, and improved mental health outcomes; accessible and scalable approach",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39808431/"
+      },
+      {
+        title: "The Impact of Mindfulness Programmes on Anxiety, Depression and Stress During Pregnancy: A Systematic Review and Meta-Analysis",
+        journal: "Mindfulness",
+        year: 2024,
+        doi: "10.1007/s12671-024-02385-8",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Mindfulness interventions significantly reduce anxiety, depression, and stress in pregnant women",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12192663/"
       }
     ]
   },
@@ -1043,10 +1230,42 @@ export const researchEvidence: InterventionResearch[] = [
     ]
   },
   {
-    intervention: "Red Light Therapy",
+    intervention: "Red Light Therapy & Photobiomodulation",
     category: "Therapies",
-    pillar: "body",
+    pillar: "beauty",
     studies: [
+      {
+        title: "Reverse skin aging signs by red light photobiomodulation",
+        journal: "Photodermatology, Photoimmunology & Photomedicine",
+        year: 2023,
+        doi: "10.1111/phpp.12890",
+        pmid: "37522497",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Red light photobiomodulation effectively reverses multiple signs of skin aging including wrinkles, elasticity loss, and pigmentation",
+        url: "https://pubmed.ncbi.nlm.nih.gov/37522497/"
+      },
+      {
+        title: "Photobiomodulation Reduces Periocular Wrinkle Volume by 30%: A Randomized Controlled Trial",
+        journal: "Photobiomodulation, Photomedicine, and Laser Surgery",
+        year: 2023,
+        doi: "10.1089/photob.2022.0114",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Red and amber LED therapy significantly reduced periocular wrinkle volume by 30% with measurable improvements in skin texture",
+        url: "https://www.liebertpub.com/doi/abs/10.1089/photob.2022.0114"
+      },
+      {
+        title: "Comparison of the effects of 2 frequencies of application of photobiomodulation on facial rejuvenation: Controlled, randomized, and double-blind clinical trial",
+        journal: "Lasers in Medical Science",
+        year: 2023,
+        doi: "10.1007/s10103-023-03719-x",
+        pmid: "36749255",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Photobiomodulation twice weekly effectively improves facial skin appearance, collagen synthesis, and rejuvenation markers",
+        url: "https://pubmed.ncbi.nlm.nih.gov/36749255"
+      },
       {
         title: "Low-level laser therapy (LLLT) for treatment of hair loss",
         journal: "Lasers in Surgery and Medicine",
