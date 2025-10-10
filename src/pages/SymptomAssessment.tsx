@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { assessmentConfigs } from "@/data/assessmentQuestions";
+import { useAssessments } from "@/hooks/useAssessments";
 import { ArrowLeft } from "lucide-react";
 
 const SymptomAssessment = () => {
@@ -17,11 +18,27 @@ const SymptomAssessment = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { assessments, loading: assessmentsLoading } = useAssessments();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
-  // Get assessment config from the comprehensive assessment data
-  const assessmentConfig = symptomId ? assessmentConfigs[symptomId] : null;
+  // Get assessment config from database
+  const assessmentConfig = symptomId && assessments[symptomId] ? assessments[symptomId] : null;
+  
+  if (assessmentsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <Skeleton className="h-12 w-3/4" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-96 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   if (!assessmentConfig) {
     return (
