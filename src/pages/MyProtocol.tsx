@@ -14,6 +14,9 @@ import { useProtocols } from "@/hooks/useProtocols";
 import { useAdherence } from "@/hooks/useAdherence";
 import { ProtocolItemCard } from "@/components/ProtocolItemCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProtocolBuilderDialog } from "@/components/ProtocolBuilderDialog";
+import { AdherenceCalendar } from "@/components/AdherenceCalendar";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface AssessmentData {
   id: string;
@@ -28,7 +31,7 @@ const MyProtocol = () => {
   const { toast } = useToast();
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
   const [loading, setLoading] = useState(true);
-  const { protocols, fetchProtocolItems } = useProtocols();
+  const { protocols, fetchProtocolItems, deleteProtocol, updateProtocol, deleteProtocolItem } = useProtocols();
   const { adherence, toggleAdherence, getAdherenceStats } = useAdherence();
   const [protocolItems, setProtocolItems] = useState<any[]>([]);
   const [loadingItems, setLoadingItems] = useState(false);
@@ -192,10 +195,11 @@ const MyProtocol = () => {
         </div>
 
         <Tabs defaultValue="today" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-            <TabsTrigger value="protocols">My Protocols</TabsTrigger>
+            <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
           {/* Today's Protocol Tab */}
@@ -236,6 +240,15 @@ const MyProtocol = () => {
                             item={item}
                             completed={adherence[item.id]?.completed || false}
                             onToggleComplete={() => toggleAdherence(item.id)}
+                            showActions
+                            onDelete={async () => {
+                              await deleteProtocolItem(item.id);
+                              await loadProtocolItems();
+                              toast({
+                                title: "Item Removed",
+                                description: "Protocol item has been deleted."
+                              });
+                            }}
                           />
                         ))
                     )}
@@ -243,6 +256,11 @@ const MyProtocol = () => {
                 </Card>
               </>
             )}
+          </TabsContent>
+
+          {/* Calendar Tab */}
+          <TabsContent value="calendar" className="space-y-6">
+            <AdherenceCalendar />
           </TabsContent>
 
           {/* Recommendations Tab */}
@@ -431,9 +449,7 @@ const MyProtocol = () => {
                       Manage your personalized wellness protocols
                     </CardDescription>
                   </div>
-                  <Button onClick={() => navigate('/symptoms')}>
-                    Create New Protocol
-                  </Button>
+                  <ProtocolBuilderDialog />
                 </div>
               </CardHeader>
               <CardContent>
@@ -446,21 +462,38 @@ const MyProtocol = () => {
                     {activeProtocols.map(protocol => (
                       <Card key={protocol.id}>
                         <CardHeader>
-                          <CardTitle className="text-lg">{protocol.name}</CardTitle>
-                          {protocol.description && (
-                            <CardDescription>{protocol.description}</CardDescription>
-                          )}
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-muted-foreground">
-                              Started: {new Date(protocol.start_date).toLocaleDateString()}
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <CardTitle className="text-lg">{protocol.name}</CardTitle>
+                              {protocol.description && (
+                                <CardDescription>{protocol.description}</CardDescription>
+                              )}
+                              <div className="flex gap-2 mt-2">
+                                <Badge variant="outline">
+                                  Started {new Date(protocol.start_date).toLocaleDateString()}
+                                </Badge>
+                                {protocol.created_from_pillar && (
+                                  <Badge variant="secondary">
+                                    {protocol.created_from_pillar}
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                            <Button variant="outline" size="sm">
-                              View Details
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={async () => {
+                                await updateProtocol(protocol.id, { is_active: false });
+                                toast({
+                                  title: "Protocol Archived",
+                                  description: "Protocol has been deactivated."
+                                });
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
-                        </CardContent>
+                        </CardHeader>
                       </Card>
                     ))}
                   </div>
