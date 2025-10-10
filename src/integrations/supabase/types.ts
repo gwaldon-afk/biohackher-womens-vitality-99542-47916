@@ -1330,6 +1330,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_insights: {
+        Row: {
+          category: string
+          created_at: string
+          data_points: Json | null
+          description: string
+          generated_at: string
+          id: string
+          insight_type: string
+          is_dismissed: boolean | null
+          is_viewed: boolean | null
+          priority: string
+          recommendations: Json | null
+          title: string
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          data_points?: Json | null
+          description: string
+          generated_at?: string
+          id?: string
+          insight_type: string
+          is_dismissed?: boolean | null
+          is_viewed?: boolean | null
+          priority?: string
+          recommendations?: Json | null
+          title: string
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          data_points?: Json | null
+          description?: string
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          is_dismissed?: boolean | null
+          is_viewed?: boolean | null
+          priority?: string
+          recommendations?: Json | null
+          title?: string
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: []
+      }
       user_points: {
         Row: {
           created_at: string | null

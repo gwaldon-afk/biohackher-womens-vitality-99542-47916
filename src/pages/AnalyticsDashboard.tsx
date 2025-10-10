@@ -507,7 +507,7 @@ const AnalyticsDashboard = () => {
 
             {/* AI Insights */}
             <div className="mt-8">
-              <AIInsightsCard isPremium={isPremium} />
+              <AIInsightsCard />
             </div>
           </>
         )}

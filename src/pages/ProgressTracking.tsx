@@ -274,7 +274,7 @@ const ProgressTracking = () => {
 
             {/* AI-Powered Premium Features */}
             <div className="grid md:grid-cols-2 gap-6 mt-8">
-              <AIInsightsCard isPremium={false} />
+              <AIInsightsCard />
               <MonthlyReportCard isPremium={false} />
             </div>
           </>

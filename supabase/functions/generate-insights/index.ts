@@ -1,154 +1,236 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header");
-
     const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError || !user) throw new Error("User not authenticated");
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    const { timeframe = "week" } = await req.json();
+    // Fetch user's recent data (last 14 days)
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
-    // Fetch user's data for the timeframe
-    const startDate = new Date();
-    if (timeframe === "week") startDate.setDate(startDate.getDate() - 7);
-    else if (timeframe === "month") startDate.setMonth(startDate.getMonth() - 1);
-    else if (timeframe === "quarter") startDate.setMonth(startDate.getMonth() - 3);
+    const [dailyScoresResult, wearablesResult, symptomsResult, adherenceResult] = await Promise.all([
+      supabaseClient
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', fourteenDaysAgo.toISOString().split('T')[0])
+        .order('date', { ascending: false }),
+      
+      supabaseClient
+        .from('wearable_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', fourteenDaysAgo.toISOString().split('T')[0])
+        .order('date', { ascending: false }),
+      
+      supabaseClient
+        .from('symptom_tracking')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('tracked_date', fourteenDaysAgo.toISOString().split('T')[0])
+        .order('tracked_date', { ascending: false }),
+      
+      supabaseClient
+        .from('protocol_adherence')
+        .select('*, protocol_items(*)')
+        .eq('user_id', user.id)
+        .gte('date', fourteenDaysAgo.toISOString().split('T')[0])
+        .order('date', { ascending: false })
+    ]);
 
-    // Get adherence data
-    const { data: adherenceData } = await supabaseClient
-      .from("protocol_adherence")
-      .select("*")
-      .eq("user_id", user.id)
-      .gte("date", startDate.toISOString().split("T")[0]);
+    const dailyScores = dailyScoresResult.data || [];
+    const wearables = wearablesResult.data || [];
+    const symptoms = symptomsResult.data || [];
+    const adherence = adherenceResult.data || [];
 
-    // Get measurements
-    const { data: measurements } = await supabaseClient
-      .from("progress_measurements")
-      .select("*")
-      .eq("user_id", user.id)
-      .gte("date", startDate.toISOString().split("T")[0])
-      .order("date", { ascending: false });
+    // Prepare data summary for AI
+    const dataSummary = {
+      dailyScores: {
+        count: dailyScores.length,
+        avgSleepScore: dailyScores.reduce((sum, d) => sum + (d.sleep_score || 0), 0) / (dailyScores.length || 1),
+        avgStressScore: dailyScores.reduce((sum, d) => sum + (d.stress_score || 0), 0) / (dailyScores.length || 1),
+        avgActivityScore: dailyScores.reduce((sum, d) => sum + (d.physical_activity_score || 0), 0) / (dailyScores.length || 1),
+        avgNutritionScore: dailyScores.reduce((sum, d) => sum + (d.nutrition_score || 0), 0) / (dailyScores.length || 1),
+        avgLongevityScore: dailyScores.reduce((sum, d) => sum + (d.longevity_impact_score || 0), 0) / (dailyScores.length || 1),
+        recent: dailyScores.slice(0, 7)
+      },
+      wearables: {
+        count: wearables.length,
+        avgSleepHours: wearables.reduce((sum, w) => sum + (w.sleep_duration_hours || 0), 0) / (wearables.length || 1),
+        avgHRV: wearables.reduce((sum, w) => sum + (w.hrv_ms || 0), 0) / (wearables.length || 1),
+        avgSteps: wearables.reduce((sum, w) => sum + (w.steps || 0), 0) / (wearables.length || 1),
+        recent: wearables.slice(0, 7)
+      },
+      symptoms: {
+        count: symptoms.length,
+        types: [...new Set(symptoms.map(s => s.symptom_id))],
+        avgSeverity: symptoms.reduce((sum, s) => sum + (s.severity || 0), 0) / (symptoms.length || 1)
+      },
+      adherence: {
+        count: adherence.length,
+        completionRate: adherence.filter(a => a.completed).length / (adherence.length || 1) * 100
+      }
+    };
 
-    // Get assessments
-    const { data: assessments } = await supabaseClient
-      .from("symptom_assessments")
-      .select("*")
-      .eq("user_id", user.id)
-      .gte("completed_at", startDate.toISOString())
-      .order("completed_at", { ascending: false });
+    // Generate insights using Lovable AI
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
 
-    // Calculate stats
-    const adherenceRate = adherenceData && adherenceData.length > 0
-      ? Math.round((adherenceData.filter(a => a.completed).length / adherenceData.length) * 100)
-      : 0;
+    const prompt = `You are a health insights analyst. Analyze the following health data and generate 3-5 actionable insights:
 
-    const latestMeasurement = measurements && measurements[0];
-    const previousMeasurement = measurements && measurements[1];
+Data Summary:
+- Daily Scores (last 14 days): ${dataSummary.dailyScores.count} entries
+  * Avg Sleep Score: ${dataSummary.dailyScores.avgSleepScore.toFixed(1)}/100
+  * Avg Stress Score: ${dataSummary.dailyScores.avgStressScore.toFixed(1)}/100
+  * Avg Activity Score: ${dataSummary.dailyScores.avgActivityScore.toFixed(1)}/100
+  * Avg Nutrition Score: ${dataSummary.dailyScores.avgNutritionScore.toFixed(1)}/100
+  * Avg Longevity Score: ${dataSummary.dailyScores.avgLongevityScore.toFixed(1)}/100
 
-    // Build context for AI
-    const context = `
-User Wellness Data (${timeframe}):
+- Wearable Data: ${dataSummary.wearables.count} entries
+  * Avg Sleep: ${dataSummary.wearables.avgSleepHours.toFixed(1)} hours
+  * Avg HRV: ${dataSummary.wearables.avgHRV.toFixed(0)} ms
+  * Avg Steps: ${dataSummary.wearables.avgSteps.toFixed(0)}
 
-Protocol Adherence:
-- Completion rate: ${adherenceRate}%
-- Total tracked items: ${adherenceData?.length || 0}
-- Completed: ${adherenceData?.filter(a => a.completed).length || 0}
+- Symptoms: ${dataSummary.symptoms.count} tracked, types: ${dataSummary.symptoms.types.join(', ')}
+- Protocol Adherence: ${dataSummary.adherence.completionRate.toFixed(0)}%
 
-Progress Measurements:
-${latestMeasurement ? `
-- Latest weight: ${latestMeasurement.weight || "N/A"} kg
-- Body fat: ${latestMeasurement.body_fat_percentage || "N/A"}%
-- Weight change: ${previousMeasurement && latestMeasurement.weight && previousMeasurement.weight 
-  ? (latestMeasurement.weight - previousMeasurement.weight).toFixed(1) 
-  : "N/A"} kg
-` : "- No measurements recorded"}
+Generate insights in this exact JSON format (no markdown, just raw JSON):
+{
+  "insights": [
+    {
+      "type": "trend_analysis|anomaly_detected|protocol_suggestion|weekly_summary",
+      "category": "sleep|stress|activity|nutrition|overall",
+      "title": "Clear, action-oriented title",
+      "description": "2-3 sentences explaining the insight",
+      "recommendations": ["Specific action 1", "Specific action 2"],
+      "priority": "low|medium|high|urgent"
+    }
+  ]
+}
 
-Assessments:
-- Total assessments: ${assessments?.length || 0}
-${assessments && assessments.length > 0 ? `
-- Latest score: ${assessments[0].overall_score}/100 (${assessments[0].symptom_type})
-` : ""}
+Focus on:
+1. Patterns and trends in the data
+2. Correlations between different metrics
+3. Areas that need immediate attention
+4. Positive changes to acknowledge
+5. Specific, actionable recommendations`;
 
-Based on this data, provide:
-1. A brief analysis of their progress (2-3 sentences)
-2. Three specific, actionable recommendations for improvement
-3. One encouraging insight about their wellness journey
-
-Be supportive, specific, and evidence-based.
-`;
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
-
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: 'google/gemini-2.5-flash',
         messages: [
-          {
-            role: "system",
-            content: "You are a supportive wellness coach analyzing health data. Be encouraging, specific, and actionable."
-          },
-          {
-            role: "user",
-            content: context
-          }
+          { role: 'system', content: 'You are a health data analyst. Always respond with valid JSON only, no markdown formatting.' },
+          { role: 'user', content: prompt }
         ],
+        temperature: 0.7,
       }),
     });
 
     if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("AI API error:", aiResponse.status, errorText);
-      throw new Error(`AI API error: ${aiResponse.status}`);
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      throw new Error(`AI Gateway error: ${aiResponse.status}`);
     }
 
     const aiData = await aiResponse.json();
-    const insight = aiData.choices[0].message.content;
+    const content = aiData.choices[0].message.content;
+    
+    // Parse the JSON response (remove markdown code blocks if present)
+    let parsedContent;
+    try {
+      const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      parsedContent = JSON.parse(cleanContent);
+    } catch (e) {
+      console.error('Failed to parse AI response:', content);
+      throw new Error('Failed to parse AI response');
+    }
+
+    // Store insights in database
+    const insightsToStore = parsedContent.insights.map((insight: any) => ({
+      user_id: user.id,
+      insight_type: insight.type,
+      category: insight.category,
+      title: insight.title,
+      description: insight.description,
+      recommendations: insight.recommendations,
+      priority: insight.priority,
+      data_points: {
+        dailyScores: dataSummary.dailyScores.recent,
+        wearables: dataSummary.wearables.recent,
+        symptoms: dataSummary.symptoms,
+        adherence: dataSummary.adherence
+      }
+    }));
+
+    const { data: insertedInsights, error: insertError } = await supabaseClient
+      .from('user_insights')
+      .insert(insightsToStore)
+      .select();
+
+    if (insertError) {
+      console.error('Error storing insights:', insertError);
+      throw insertError;
+    }
+
+    console.log(`Generated ${insertedInsights?.length || 0} insights for user ${user.id}`);
 
     return new Response(
-      JSON.stringify({
-        insight,
-        stats: {
-          adherenceRate,
-          measurementCount: measurements?.length || 0,
-          assessmentCount: assessments?.length || 0,
-        }
+      JSON.stringify({ 
+        success: true, 
+        insights: insertedInsights,
+        message: `Generated ${insertedInsights?.length || 0} new insights` 
       }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
+
   } catch (error) {
-    console.error("Error generating insights:", error);
+    console.error('Error in generate-insights:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
