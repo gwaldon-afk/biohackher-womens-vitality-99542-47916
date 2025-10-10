@@ -58,10 +58,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
+        return;
+      }
+
+      // If no profile exists, it will be created by the database trigger on next sign-in
+      if (!data) {
+        console.log('No profile found for user, will be created automatically');
         return;
       }
 
