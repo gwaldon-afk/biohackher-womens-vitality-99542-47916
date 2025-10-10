@@ -76,13 +76,13 @@ const Pillars = () => {
         name: "Mental Clarity",
         description: "Assess cognitive sharpness and reduce brain fog",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "sleep",
         name: "Sleep Optimization",
         description: "Evaluate sleep quality for peak cognitive recovery",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }],
       body: [{
         id: "athletic-performance",
@@ -108,32 +108,32 @@ const Pillars = () => {
         name: "Stress Resilience",
         description: "Evaluate stress management and performance under pressure",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "energy-levels",
         name: "Energy Optimization",
         description: "Assess sustained energy levels and metabolic efficiency",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "mood",
         name: "Mood Optimization",
         description: "Track emotional balance for peak performance",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }],
       beauty: [{
         id: "skin-health",
         name: "Cellular Vitality",
         description: "Assess cellular health and biological aging markers",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "hair-thinning",
         name: "Hair & Skin Vitality",
         description: "Track visible vitality and recovery markers",
         journeyPath: "performance",
-        isSymptom: true
+        isSymptom: false
       }]
     };
 
@@ -143,70 +143,70 @@ const Pillars = () => {
         name: "Brain Fog Assessment",
         description: "Evaluate mental fatigue and concentration during transition",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "mood",
         name: "Memory & Mood Changes",
         description: "Assess cognitive and emotional changes during menopause",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "sleep",
         name: "Sleep Disruption",
         description: "Analyze sleep patterns affected by hormonal changes",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }],
       body: [{
         id: "weight-changes",
         name: "Weight Changes",
         description: "Track metabolic changes and weight management",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "joint-pain",
         name: "Joint & Muscle Health",
         description: "Assess pain and muscle preservation during transition",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "energy-levels",
         name: "Energy Fluctuations",
         description: "Monitor energy levels through hormonal shifts",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }],
       balance: [{
         id: "hot-flashes",
         name: "Hot Flushes",
         description: "Track frequency and severity of hot flushes",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "mood",
         name: "Mood Changes",
         description: "Monitor emotional wellbeing during hormonal transition",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "anxiety",
         name: "Anxiety & Stress",
         description: "Assess anxiety symptoms during menopause",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }],
       beauty: [{
         id: "skin-health",
         name: "Skin Changes",
         description: "Evaluate skin thinning and dryness during menopause",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }, {
         id: "hair-thinning",
         name: "Hair Changes",
         description: "Assess hair health and changes during transition",
         journeyPath: "menopause",
-        isSymptom: true
+        isSymptom: false
       }]
     };
 
@@ -1391,16 +1391,13 @@ const Pillars = () => {
               {selectedPillar && pillarAssessments[selectedPillar as keyof typeof pillarAssessments].map(assessment => {
               const isCompleted = completions[assessment.id];
               
-              // Route to appropriate assessment or symptom tracking
+              // Route to appropriate assessment page
               const getAssessmentRoute = () => {
-                // If it's a symptom, route to symptoms page with from parameter
-                if (assessment.isSymptom) {
-                  return `/symptoms?from=pillars&highlight=${assessment.id}`;
-                }
-                // Otherwise route to formal assessment
+                // Special case for cognitive function assessment
                 if (selectedPillar === 'brain' && assessment.id === 'cognitive-function') {
                   return `/brain-assessment?context=${assessment.journeyPath || journeyPath || 'general'}&pillar=brain`;
                 }
+                // All other assessments route to standard assessment page
                 return `/assessment/${assessment.id}?pillar=${selectedPillar}`;
               };
               
