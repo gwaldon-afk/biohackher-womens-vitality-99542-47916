@@ -453,33 +453,44 @@ export default function GuestLISAssessment() {
 
   const calculateScore = () => {
     let totalScore = 0;
-    let smokingPenalty = 0;
+    let smokingPenaltyPercent = 0;
 
     Object.entries(answers).forEach(([questionId, option]) => {
       totalScore += option.score_value;
 
-      // Apply smoking penalties
+      // Apply smoking penalties as percentage reductions
       if (questionId === 'Q11_SmokingStatus') {
         if (option.text.includes('Current Smoker')) {
-          smokingPenalty = 60;
+          smokingPenaltyPercent = 0.60; // 60% reduction for current smokers
         } else if (option.text.includes('less than 1 year')) {
-          smokingPenalty = 30;
+          smokingPenaltyPercent = 0.30; // 30% reduction
         } else if (option.text.includes('more than 1 year')) {
-          smokingPenalty = 15;
+          smokingPenaltyPercent = 0.15; // 15% reduction
         }
       }
     });
 
-    // Normalize to 0-100 scale (max possible raw score is 1200 + 25 from Q10)
-    const maxPossibleScore = 1225;
-    const normalizedScore = (totalScore / maxPossibleScore) * 100;
-    const finalScore = Math.max(0, normalizedScore - smokingPenalty);
+    // Calculate pillar scores first
+    const pillarScores = calculatePillarScores();
+    
+    // Final score is the average of pillar scores
+    const pillarValues = Object.values(pillarScores);
+    const averagePillarScore = pillarValues.length > 0 
+      ? pillarValues.reduce((sum, score) => sum + score, 0) / pillarValues.length 
+      : 0;
+    
+    // Apply smoking penalty as percentage reduction
+    const scoreAfterPenalty = averagePillarScore * (1 - smokingPenaltyPercent);
+    const finalScore = Math.max(0, Math.round(scoreAfterPenalty));
+    
+    // Calculate absolute penalty amount for display
+    const smokingPenalty = Math.round(averagePillarScore * smokingPenaltyPercent);
 
     return {
-      finalScore: Math.round(finalScore),
+      finalScore,
       rawScore: totalScore,
       smokingPenalty,
-      pillarScores: calculatePillarScores()
+      pillarScores
     };
   };
 
