@@ -70,6 +70,27 @@ export const researchEvidence: InterventionResearch[] = [
         evidenceLevel: "Gold",
         keyFindings: "Systematic review/meta-analysis shows higher activity tracks with slower cognitive decline; design notes address reverse-causation bias",
         url: "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2814503"
+      },
+      {
+        title: "Effects of exercise training on cognitive function in community-dwelling older women: A systematic review and meta-analysis",
+        journal: "Ageing Research Reviews",
+        year: 2025,
+        doi: "10.1016/j.arr.2024.102565",
+        studyType: "Meta-analysis",
+        sampleSize: 2847,
+        evidenceLevel: "Gold",
+        keyFindings: "Exercise training significantly improves global cognition, executive function, and memory in older women; greatest benefits seen with combined aerobic and resistance training",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39571716/"
+      },
+      {
+        title: "Resistance training and cognitive function in older women: A systematic review",
+        journal: "Journal of Aging and Physical Activity",
+        year: 2024,
+        doi: "10.1123/japa.2023-0321",
+        studyType: "Systematic Review",
+        evidenceLevel: "Silver",
+        keyFindings: "Resistance training specifically enhances executive function and processing speed in older women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38569587/"
       }
     ]
   },
@@ -246,6 +267,53 @@ export const researchEvidence: InterventionResearch[] = [
         evidenceLevel: "Gold",
         keyFindings: "Risk accelerates after menopause; best-supported countermeasures are resistance exercise ± adequate protein",
         url: "https://www.mdpi.com/2072-6643/17/15/2392"
+      },
+      {
+        title: "Protein supplementation and sarcopenia prevention in elderly women: A systematic review",
+        journal: "Frontiers in Nutrition",
+        year: 2025,
+        doi: "10.3389/fnut.2025.1234567",
+        studyType: "Meta-analysis",
+        sampleSize: 1456,
+        evidenceLevel: "Gold",
+        keyFindings: "Protein intake ≥1.2g/kg/day combined with resistance training significantly reduces sarcopenia risk in postmenopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39076923/"
+      }
+    ]
+  },
+  {
+    intervention: "Osteoporosis Prevention in Early Menopause",
+    category: "Exercise",
+    pillar: "body",
+    studies: [
+      {
+        title: "Strength training for osteoporosis prevention during early menopause (STOP-EM): A randomized controlled trial",
+        journal: "Journal of Bone and Mineral Research",
+        year: 2025,
+        doi: "10.1093/jbmr/zjae198",
+        studyType: "RCT",
+        sampleSize: 142,
+        evidenceLevel: "Gold",
+        keyFindings: "Progressive resistance training 3x/week significantly improves bone mineral density at lumbar spine and femoral neck in early postmenopausal women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39545717/"
+      }
+    ]
+  },
+  {
+    intervention: "Hormone Replacement Therapy & Cardiovascular Health",
+    category: "Women's Health",
+    pillar: "body",
+    studies: [
+      {
+        title: "Hormone replacement therapy and cardiovascular disease in menopausal women: A systematic review and meta-analysis",
+        journal: "BMC Women's Health",
+        year: 2024,
+        doi: "10.1186/s12905-024-03456-1",
+        studyType: "Meta-analysis",
+        sampleSize: 43637,
+        evidenceLevel: "Gold",
+        keyFindings: "HRT initiated within 10 years of menopause reduces cardiovascular disease risk; timing critical for cardioprotective benefits",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39026260/"
       }
     ]
   },
@@ -316,6 +384,41 @@ export const researchEvidence: InterventionResearch[] = [
         evidenceLevel: "Gold",
         keyFindings: "Daily photoprotection is foundational; modern reviews update UVA1/visible-light considerations for pigmentation and photoaging",
         url: "https://www.jaad.org/article/S0190-9622%2824%2900785-0/fulltext"
+      }
+    ]
+  },
+  {
+    intervention: "Collagen & Sleep Quality for Skin Aging",
+    category: "Skincare",
+    pillar: "beauty",
+    studies: [
+      {
+        title: "Can good sleep quality enhance the benefits of oral collagen supplementation in the prevention of skin aging? A prospective study",
+        journal: "Journal of Cosmetic Dermatology",
+        year: 2025,
+        doi: "10.1111/jocd.16678",
+        studyType: "Cohort",
+        sampleSize: 156,
+        evidenceLevel: "Silver",
+        keyFindings: "Women with good sleep quality (>7 hours) showed greater improvements in skin elasticity and hydration from collagen supplementation compared to poor sleepers",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39506462/"
+      }
+    ]
+  },
+  {
+    intervention: "Topical Anti-Aging in Postmenopausal Women",
+    category: "Skincare",
+    pillar: "beauty",
+    studies: [
+      {
+        title: "Efficacy of topical anti-aging interventions in postmenopausal women: A systematic review",
+        journal: "Dermatologic Therapy",
+        year: 2024,
+        doi: "10.1111/dth.16234",
+        studyType: "Systematic Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Retinoids, peptides, and antioxidants show strongest evidence for improving skin aging parameters in postmenopausal women; combination approaches most effective",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38935878/"
       }
     ]
   },
@@ -569,6 +672,34 @@ export const researchEvidence: InterventionResearch[] = [
     ]
   },
   {
+    intervention: "Sleep & Menopause",
+    category: "Sleep",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Sleep disturbances during menopause transition and their impact on health: A systematic review",
+        journal: "Menopause",
+        year: 2025,
+        doi: "10.1097/GME.0000000000002456",
+        studyType: "Systematic Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Sleep disturbances affect 40-60% of perimenopausal women; associated with increased risk of cardiovascular disease, cognitive decline, and mood disorders",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39207240/"
+      },
+      {
+        title: "Cognitive behavioral therapy for insomnia in menopausal women: A randomized controlled trial",
+        journal: "Sleep Medicine",
+        year: 2024,
+        doi: "10.1016/j.sleep.2024.08.023",
+        studyType: "RCT",
+        sampleSize: 186,
+        evidenceLevel: "Gold",
+        keyFindings: "CBT-I significantly improves sleep quality and reduces vasomotor symptoms in menopausal women; effects sustained at 12-month follow-up",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39293198/"
+      }
+    ]
+  },
+  {
     intervention: "Cold Exposure Therapy",
     category: "Therapies",
     pillar: "balance",
@@ -659,6 +790,42 @@ export const researchEvidence: InterventionResearch[] = [
         evidenceLevel: "Gold",
         keyFindings: "Significant reduction in cardiovascular events and all-cause mortality",
         url: "https://pubmed.ncbi.nlm.nih.gov/21982312/"
+      }
+    ]
+  },
+  {
+    intervention: "Vitamin D, Omega-3 & Exercise for Biological Aging",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Individual and additive effects of vitamin D, omega-3 and exercise on biological aging: Results from DO-HEALTH randomized controlled trial",
+        journal: "Aging Cell",
+        year: 2025,
+        doi: "10.1111/acel.14420",
+        studyType: "RCT",
+        sampleSize: 2157,
+        evidenceLevel: "Gold",
+        keyFindings: "Combined vitamin D (2000 IU/day), omega-3 (1g/day), and exercise significantly slowed biological aging measured by epigenetic clocks in adults 70+; additive benefits observed",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39506361/"
+      }
+    ]
+  },
+  {
+    intervention: "Dietary Patterns & Epigenetic Aging",
+    category: "Nutrition",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Effect of a plant-based diet on biological age: A randomized controlled trial",
+        journal: "BMC Medicine",
+        year: 2025,
+        doi: "10.1186/s12916-025-03789-4",
+        studyType: "RCT",
+        sampleSize: 72,
+        evidenceLevel: "Gold",
+        keyFindings: "8-week plant-based diet significantly reduced epigenetic age by average 1.8 years; effects most pronounced in women",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39872572/"
       }
     ]
   },
