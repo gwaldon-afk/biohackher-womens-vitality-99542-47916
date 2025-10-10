@@ -66,68 +66,74 @@ const Pillars = () => {
   const getAssessmentsForPath = (pillarKey: string) => {
     const performanceAssessments: Record<string, any[]> = {
       brain: [{
-        id: "cognitive-performance",
+        id: "cognitive-function",
         name: "Cognitive Performance",
         description: "Measure peak mental performance, focus, and processing speed",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: false
       }, {
-        id: "mental-clarity",
+        id: "brain-fog",
         name: "Mental Clarity",
-        description: "Assess cognitive sharpness and decision-making ability",
-        journeyPath: "performance"
+        description: "Assess cognitive sharpness and reduce brain fog",
+        journeyPath: "performance",
+        isSymptom: true
       }, {
-        id: "sleep-optimization",
+        id: "sleep",
         name: "Sleep Optimization",
         description: "Evaluate sleep quality for peak cognitive recovery",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: true
       }],
       body: [{
         id: "athletic-performance",
         name: "Athletic Performance",
         description: "Assess strength, power, and endurance metrics",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: false
       }, {
         id: "recovery-optimization",
         name: "Recovery Optimization",
         description: "Measure recovery capacity and training readiness",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: false
       }, {
         id: "body-composition",
         name: "Body Composition",
         description: "Track muscle mass, body fat, and performance metrics",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: false
       }],
       balance: [{
-        id: "stress-resilience",
+        id: "anxiety",
         name: "Stress Resilience",
         description: "Evaluate stress management and performance under pressure",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: true
       }, {
-        id: "energy-optimization",
+        id: "energy-levels",
         name: "Energy Optimization",
         description: "Assess sustained energy levels and metabolic efficiency",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: true
       }, {
-        id: "hormone-optimization",
-        name: "Hormone Optimization",
-        description: "Measure hormonal balance for peak performance",
-        journeyPath: "performance"
+        id: "mood",
+        name: "Mood Optimization",
+        description: "Track emotional balance for peak performance",
+        journeyPath: "performance",
+        isSymptom: true
       }],
       beauty: [{
-        id: "cellular-vitality",
+        id: "skin-health",
         name: "Cellular Vitality",
         description: "Assess cellular health and biological aging markers",
-        journeyPath: "performance"
+        journeyPath: "performance",
+        isSymptom: true
       }, {
-        id: "skin-performance",
-        name: "Skin Performance",
-        description: "Evaluate skin health and protective barrier function",
-        journeyPath: "performance"
-      }, {
-        id: "recovery-appearance",
-        name: "Recovery & Appearance",
-        description: "Track visible recovery and vitality markers",
-        journeyPath: "performance"
+        id: "hair-thinning",
+        name: "Hair & Skin Vitality",
+        description: "Track visible vitality and recovery markers",
+        journeyPath: "performance",
+        isSymptom: true
       }]
     };
 
@@ -136,65 +142,71 @@ const Pillars = () => {
         id: "brain-fog",
         name: "Brain Fog Assessment",
         description: "Evaluate mental fatigue and concentration during transition",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "memory-changes",
-        name: "Memory Changes",
-        description: "Assess memory and cognitive changes during menopause",
-        journeyPath: "menopause"
+        id: "mood",
+        name: "Memory & Mood Changes",
+        description: "Assess cognitive and emotional changes during menopause",
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "sleep-disruption",
+        id: "sleep",
         name: "Sleep Disruption",
         description: "Analyze sleep patterns affected by hormonal changes",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }],
       body: [{
         id: "weight-changes",
         name: "Weight Changes",
         description: "Track metabolic changes and weight management",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "muscle-maintenance",
-        name: "Muscle Maintenance",
-        description: "Assess muscle mass preservation during transition",
-        journeyPath: "menopause"
+        id: "joint-pain",
+        name: "Joint & Muscle Health",
+        description: "Assess pain and muscle preservation during transition",
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "energy-fluctuations",
+        id: "energy-levels",
         name: "Energy Fluctuations",
         description: "Monitor energy levels through hormonal shifts",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }],
       balance: [{
-        id: "hot-flushes",
+        id: "hot-flashes",
         name: "Hot Flushes",
         description: "Track frequency and severity of hot flushes",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "mood-changes",
+        id: "mood",
         name: "Mood Changes",
         description: "Monitor emotional wellbeing during hormonal transition",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "hormone-symptoms",
-        name: "Hormone Symptoms",
-        description: "Assess overall menopause symptom severity",
-        journeyPath: "menopause"
+        id: "anxiety",
+        name: "Anxiety & Stress",
+        description: "Assess anxiety symptoms during menopause",
+        journeyPath: "menopause",
+        isSymptom: true
       }],
       beauty: [{
-        id: "skin-changes",
+        id: "skin-health",
         name: "Skin Changes",
         description: "Evaluate skin thinning and dryness during menopause",
-        journeyPath: "menopause"
+        journeyPath: "menopause",
+        isSymptom: true
       }, {
-        id: "collagen-loss",
-        name: "Collagen Loss",
-        description: "Assess skin elasticity and collagen changes",
-        journeyPath: "menopause"
-      }, {
-        id: "aging-acceleration",
-        name: "Aging Acceleration",
-        description: "Track visible aging changes during transition",
-        journeyPath: "menopause"
+        id: "hair-thinning",
+        name: "Hair Changes",
+        description: "Assess hair health and changes during transition",
+        journeyPath: "menopause",
+        isSymptom: true
       }]
     };
 
@@ -1379,9 +1391,14 @@ const Pillars = () => {
               {selectedPillar && pillarAssessments[selectedPillar as keyof typeof pillarAssessments].map(assessment => {
               const isCompleted = completions[assessment.id];
               
-              // Route to appropriate assessment
+              // Route to appropriate assessment or symptom tracking
               const getAssessmentRoute = () => {
-                if (selectedPillar === 'brain') {
+                // If it's a symptom, route to symptoms page with from parameter
+                if (assessment.isSymptom) {
+                  return `/symptoms?from=pillars&highlight=${assessment.id}`;
+                }
+                // Otherwise route to formal assessment
+                if (selectedPillar === 'brain' && assessment.id === 'cognitive-function') {
                   return `/brain-assessment?context=${assessment.journeyPath || journeyPath || 'general'}&pillar=brain`;
                 }
                 return `/assessment/${assessment.id}?pillar=${selectedPillar}`;
