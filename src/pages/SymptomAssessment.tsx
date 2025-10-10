@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,12 @@ const SymptomAssessment = () => {
   const { assessments, loading: assessmentsLoading } = useAssessments();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+
+  // Reset state when symptomId changes to prevent answer carryover
+  useEffect(() => {
+    setAnswers({});
+    setCurrentQuestion(0);
+  }, [symptomId]);
 
   // Get assessment config from database
   const assessmentConfig = symptomId && assessments[symptomId] ? assessments[symptomId] : null;
