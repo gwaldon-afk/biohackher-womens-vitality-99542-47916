@@ -47,6 +47,8 @@ const Shop = () => {
     queryFn: getProducts
   });
 
+  console.log('[Shop] Query state:', { isLoading, hasData: !!dbProducts, dataLength: dbProducts?.length, error });
+
   // Convert database products to local format
   const products: Product[] = (dbProducts || []).map(dbProduct => ({
     id: dbProduct.id,

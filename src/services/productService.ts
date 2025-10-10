@@ -29,11 +29,14 @@ export interface Product {
  * Fetch all active products
  */
 export const getProducts = async () => {
+  console.log('[productService] getProducts called');
   const { data, error } = await supabase
     .from('products')
     .select('*')
     .eq('is_active', true)
     .order('display_order');
+
+  console.log('[productService] Query result:', { data, error, count: data?.length });
 
   if (error) {
     console.error('Error fetching products:', error);
