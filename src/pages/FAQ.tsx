@@ -3,8 +3,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Brain, Heart, Moon, Utensils, TrendingUp } from "lucide-react";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const FAQ = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Scroll to anchor after a brief delay to ensure content is rendered
+    if (location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -180,16 +196,22 @@ const FAQ = () => {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="data-privacy">
+                <AccordionItem value="data-privacy" id="data-privacy">
                   <AccordionTrigger>How is my health data protected?</AccordionTrigger>
                   <AccordionContent>
                     <p>Your health data security is our top priority:</p>
                     <div className="mt-3 space-y-2 text-sm">
-                      <div>• <strong>Encryption:</strong> All data encrypted in transit and at rest using AES-256</div>
-                      <div>• <strong>HIPAA Compliance:</strong> We follow healthcare data protection standards</div>
-                      <div>• <strong>Local Storage:</strong> Sensitive calculations performed on your device when possible</div>
-                      <div>• <strong>No Data Selling:</strong> Your health data is never sold to third parties</div>
-                      <div>• <strong>User Control:</strong> You can export or delete all your data at any time</div>
+                      <div>• <strong>Encryption:</strong> All data encrypted in transit (TLS 1.3) and at rest (AES-256)</div>
+                      <div>• <strong>Supabase Security:</strong> Enterprise-grade database with SOC 2 Type II compliance</div>
+                      <div>• <strong>Row Level Security:</strong> Your data is isolated and accessible only to you</div>
+                      <div>• <strong>No Data Selling:</strong> Your health data is never sold or shared with third parties</div>
+                      <div>• <strong>GDPR Compliant:</strong> Full data portability and right to deletion</div>
+                      <div>• <strong>User Control:</strong> Export or permanently delete all your data at any time</div>
+                      <div>• <strong>Regular Audits:</strong> Security testing and vulnerability assessments conducted quarterly</div>
+                    </div>
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm font-medium text-blue-800">Industry Standards:</p>
+                      <p className="text-xs text-blue-700">We follow healthcare data protection standards including ISO 27001 principles and implement security best practices recommended by OWASP and NIST.</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>

@@ -4,7 +4,7 @@ import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, Trend
 import { Button } from "@/components/ui/button";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
 import { LocaleSelector } from "@/components/LocaleSelector";
-import TrustBar from "@/components/TrustBar";
+import TrustBarWithSecurity from "@/components/TrustBar";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
@@ -367,7 +367,7 @@ const Navigation = () => {
         )}
         </div>
       </nav>
-      <TrustBar />
+      <TrustBarWithSecurity />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Award, FileText } from "lucide-react";
+import { Award, FileText, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { getTotalStudyCount } from "@/data/researchEvidence";
@@ -30,4 +30,45 @@ const TrustBar = () => {
   );
 };
 
-export default TrustBar;
+const DataSecurityBadge = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <Link 
+      to="/faq#data-privacy" 
+      className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      <Shield className="h-4 w-4 text-primary" />
+      <span className="font-medium">{t('trustBar.dataSecurity')}</span>
+    </Link>
+  );
+};
+
+const TrustBarWithSecurity = () => {
+  return (
+    <div className="w-full bg-primary/5 border-b border-primary/10 py-2">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-center gap-6 md:gap-12 flex-wrap text-xs md:text-sm">
+          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <ScienceBackedIcon className="h-4 w-4" showTooltip={false} />
+            <span className="font-medium">Evidence-Based</span>
+          </Link>
+          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <FileText className="h-4 w-4 text-primary" />
+            <span className="font-medium">Peer-Reviewed</span>
+          </Link>
+          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <Award className="h-4 w-4 text-primary" />
+            <span className="font-medium">Science-Backed</span>
+          </Link>
+          <DataSecurityBadge />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TrustBarWithSecurity;
