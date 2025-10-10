@@ -946,6 +946,28 @@ const hotFlushes: AssessmentConfig = {
         { text: "Moderately", score: 35 },
         { text: "Severely - Major disruption", score: 10 }
       ]
+    },
+    {
+      id: "flush-duration",
+      category: "Duration",
+      question: "How long does each hot flush episode typically last?",
+      options: [
+        { text: "Brief - Less than 1 minute", score: 100 },
+        { text: "Short - 1-3 minutes", score: 65 },
+        { text: "Moderate - 3-5 minutes", score: 35 },
+        { text: "Prolonged - More than 5 minutes", score: 10 }
+      ]
+    },
+    {
+      id: "flush-triggers",
+      category: "Triggers",
+      question: "Can you identify specific triggers for your hot flushes?",
+      options: [
+        { text: "No flushes or easily avoided triggers", score: 100 },
+        { text: "Few predictable triggers", score: 65 },
+        { text: "Multiple triggers - Some unavoidable", score: 35 },
+        { text: "Unpredictable - No clear triggers", score: 10 }
+      ]
     }
   ],
   scoringGuidance: {
@@ -1004,6 +1026,17 @@ const memoryChanges: AssessmentConfig = {
         { text: "Generally clear", score: 65 },
         { text: "Often foggy", score: 35 },
         { text: "Constantly foggy", score: 10 }
+      ]
+    },
+    {
+      id: "remembering-tasks",
+      category: "Prospective Memory",
+      question: "How often do you forget to do things you planned (appointments, tasks, taking medications)?",
+      options: [
+        { text: "Rarely - Remember everything", score: 100 },
+        { text: "Sometimes - Occasional forgetfulness", score: 65 },
+        { text: "Often - Frequently forget", score: 35 },
+        { text: "Very often - Rely heavily on reminders", score: 10 }
       ]
     }
   ],
@@ -1064,6 +1097,28 @@ const weightChanges: AssessmentConfig = {
         { text: "Much more difficult", score: 40 },
         { text: "Extremely difficult", score: 10 }
       ]
+    },
+    {
+      id: "appetite-changes",
+      category: "Appetite",
+      question: "How have your hunger and appetite patterns changed during menopause?",
+      options: [
+        { text: "No change - Same as before", score: 100 },
+        { text: "Slightly increased or more cravings", score: 70 },
+        { text: "Significantly increased - Constant hunger", score: 40 },
+        { text: "Uncontrollable cravings or binge patterns", score: 10 }
+      ]
+    },
+    {
+      id: "weight-exercise-response",
+      category: "Exercise Impact",
+      question: "How does your body respond to exercise for weight management now?",
+      options: [
+        { text: "Responds well - Same as before", score: 100 },
+        { text: "Slightly less responsive", score: 70 },
+        { text: "Much less responsive - Need more effort", score: 40 },
+        { text: "Barely responds - Exercise doesn't help", score: 10 }
+      ]
     }
   ],
   scoringGuidance: {
@@ -1122,6 +1177,28 @@ const muscleMaintenance: AssessmentConfig = {
         { text: "Slightly slower", score: 70 },
         { text: "Much slower", score: 40 },
         { text: "Very slow - Prolonged soreness", score: 10 }
+      ]
+    },
+    {
+      id: "functional-tasks",
+      category: "Functional Capacity",
+      question: "Can you perform everyday tasks requiring strength as easily as before?",
+      options: [
+        { text: "Yes - All tasks remain easy", score: 100 },
+        { text: "Most tasks - Slight difficulty with heavy lifting", score: 70 },
+        { text: "Some difficulty - Noticeable impact on daily tasks", score: 40 },
+        { text: "Significant difficulty - Struggle with routine tasks", score: 10 }
+      ]
+    },
+    {
+      id: "joint-muscle-health",
+      category: "Joint Support",
+      question: "How well do your muscles support your joints during movement?",
+      options: [
+        { text: "Excellent support - Stable and strong", score: 100 },
+        { text: "Good support - Generally stable", score: 70 },
+        { text: "Reduced support - Some instability", score: 40 },
+        { text: "Poor support - Frequent joint pain or instability", score: 10 }
       ]
     }
   ],
@@ -1182,6 +1259,17 @@ const energyFluctuations: AssessmentConfig = {
         { text: "Noticeably reduced", score: 35 },
         { text: "Significantly reduced", score: 10 }
       ]
+    },
+    {
+      id: "morning-energy-menopause",
+      category: "Morning Energy",
+      question: "How do you feel when you first wake up in the morning?",
+      options: [
+        { text: "Energized and refreshed", score: 100 },
+        { text: "Reasonably rested - Takes time to wake", score: 65 },
+        { text: "Tired and groggy", score: 35 },
+        { text: "Exhausted - Feel like I haven't slept", score: 10 }
+      ]
     }
   ],
   scoringGuidance: {
@@ -1240,6 +1328,28 @@ const moodChanges: AssessmentConfig = {
         { text: "Sometimes", score: 65 },
         { text: "Often", score: 35 },
         { text: "Most of the time", score: 10 }
+      ]
+    },
+    {
+      id: "anxiety-menopause",
+      category: "Anxiety",
+      question: "How often do you experience feelings of anxiety or worry related to menopause?",
+      options: [
+        { text: "Rarely - Feel calm", score: 100 },
+        { text: "Sometimes - Manageable anxiety", score: 65 },
+        { text: "Often - Frequent anxiety", score: 35 },
+        { text: "Constantly - Overwhelming anxiety", score: 10 }
+      ]
+    },
+    {
+      id: "emotional-coping-menopause",
+      category: "Coping",
+      question: "How well can you manage and recover from emotional challenges?",
+      options: [
+        { text: "Very well - Bounce back quickly", score: 100 },
+        { text: "Well - Recover within a day", score: 65 },
+        { text: "Poorly - Takes days to recover", score: 35 },
+        { text: "Very poorly - Struggle to recover", score: 10 }
       ]
     }
   ],
@@ -1311,6 +1421,17 @@ const hormoneSymptoms: AssessmentConfig = {
         { text: "Moderately", score: 40 },
         { text: "Severely", score: 10 }
       ]
+    },
+    {
+      id: "palpitations-menopause",
+      category: "Cardiovascular",
+      question: "Do you experience heart palpitations or irregular heartbeat?",
+      options: [
+        { text: "Never", score: 100 },
+        { text: "Rarely - Occasional flutter", score: 70 },
+        { text: "Sometimes - Regular occurrence", score: 40 },
+        { text: "Frequently - Daily episodes", score: 10 }
+      ]
     }
   ],
   scoringGuidance: {
@@ -1369,6 +1490,28 @@ const skinChanges: AssessmentConfig = {
         { text: "Slightly more sensitive", score: 70 },
         { text: "Noticeably more sensitive", score: 40 },
         { text: "Very sensitive - Reacts to everything", score: 10 }
+      ]
+    },
+    {
+      id: "skin-texture-menopause",
+      category: "Texture",
+      question: "How has the texture and smoothness of your skin changed?",
+      options: [
+        { text: "No change - Still smooth", score: 100 },
+        { text: "Slightly rougher or uneven", score: 70 },
+        { text: "Noticeably rough or crepey", score: 40 },
+        { text: "Very rough - Significant textural changes", score: 10 }
+      ]
+    },
+    {
+      id: "skin-healing-menopause",
+      category: "Healing",
+      question: "How quickly do minor skin injuries or blemishes heal?",
+      options: [
+        { text: "Quickly - Within days", score: 100 },
+        { text: "Normally - About a week", score: 70 },
+        { text: "Slowly - 1-2 weeks", score: 40 },
+        { text: "Very slowly - Weeks or scarring", score: 10 }
       ]
     }
   ],
@@ -1546,6 +1689,28 @@ const sleepDisruption: AssessmentConfig = {
         { text: "Slightly - Minor fatigue", score: 65 },
         { text: "Moderately - Significant fatigue", score: 35 },
         { text: "Severely - Can barely function", score: 10 }
+      ]
+    },
+    {
+      id: "falling-asleep-menopause",
+      category: "Sleep Onset",
+      question: "How long does it take you to fall asleep at night?",
+      options: [
+        { text: "Quickly - Within 15 minutes", score: 100 },
+        { text: "Moderately - 15-30 minutes", score: 65 },
+        { text: "Slowly - 30-60 minutes", score: 35 },
+        { text: "Very slowly - Over an hour or insomnia", score: 10 }
+      ]
+    },
+    {
+      id: "wake-time-variability",
+      category: "Circadian Rhythm",
+      question: "Do you wake at a consistent time naturally, or is your sleep schedule erratic?",
+      options: [
+        { text: "Very consistent - Natural wake-up", score: 100 },
+        { text: "Mostly consistent - Occasional variation", score: 65 },
+        { text: "Inconsistent - Wake times vary significantly", score: 35 },
+        { text: "Very erratic - No pattern at all", score: 10 }
       ]
     }
   ],
