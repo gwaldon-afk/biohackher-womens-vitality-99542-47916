@@ -157,6 +157,13 @@ const LISResults = () => {
             </div>
           </div>
 
+          {/* Short Disclaimer */}
+          <div className="mt-6 p-4 bg-muted/50 border border-muted rounded-lg">
+            <p className="text-xs text-muted-foreground text-center">
+              <strong>Note:</strong> This LIS assessment is a guide based on your responses. For accurate biological age measurement, we recommend comprehensive blood testing and biomarker analysis.
+            </p>
+          </div>
+
           {/* Guest User - Prompt to Register */}
           {isGuest && (
             <Alert className="mt-6 border-primary">
@@ -223,6 +230,13 @@ const LISResults = () => {
                           <p className="text-xs text-muted-foreground">
                             Based on current habits, you could {score >= 70 ? 'add 10-20 healthy years' : score >= 50 ? 'maintain baseline healthspan with potential for 5-10 additional years' : 'be losing 5-10 potential healthy years'} compared to average aging trajectories. 
                             Optimizing your lowest-scoring pillars could shift this significantly.
+                          </p>
+                        </div>
+
+                        {/* Medium Disclaimer */}
+                        <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg">
+                          <p className="text-sm text-muted-foreground">
+                            <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For precise biological age determination, we recommend comprehensive blood work including inflammation markers, metabolic panels, and hormonal assessments.
                           </p>
                         </div>
                       </div>

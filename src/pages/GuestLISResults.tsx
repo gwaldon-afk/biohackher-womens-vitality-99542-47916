@@ -296,6 +296,13 @@ export default function GuestLISResults() {
               </div>
             </div>
           )}
+
+          {/* Short Disclaimer */}
+          <div className="mt-6 p-4 bg-muted/50 border border-muted rounded-lg">
+            <p className="text-xs text-muted-foreground text-center">
+              <strong>Note:</strong> This LIS assessment is a guide based on your responses. For accurate biological age measurement, we recommend comprehensive blood testing and biomarker analysis.
+            </p>
+          </div>
         </Card>
 
         {/* Biological Age Card */}
@@ -432,6 +439,13 @@ export default function GuestLISResults() {
                     <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {(1 + bioAgeData.annualDeceleration).toFixed(3)}x per year.
                   </p>
                 </div>
+              </div>
+
+              {/* Medium Disclaimer */}
+              <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For precise biological age determination, we recommend comprehensive blood work including inflammation markers, metabolic panels, and hormonal assessments.
+                </p>
               </div>
 
               <div className="mt-6 p-3 bg-primary/10 rounded-lg">
