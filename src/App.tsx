@@ -43,6 +43,7 @@ import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
 import BrainAssessment from "./pages/BrainAssessment";
+import ToolkitCategory from "./pages/ToolkitCategory";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />
             <Route path="/biohacking-toolkit" element={<BiohackingToolkit />} />
+            {/* Legacy routes - keep for backward compatibility */}
           <Route path="/therapies" element={<Therapies />} />
           <Route path="/supplements" element={<Supplements />} />
           <Route path="/research-evidence" element={<ResearchEvidence />} />
@@ -90,6 +92,8 @@ const App = () => (
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
             <Route path="/about" element={<About />} />
+            {/* Dynamic toolkit category route - MUST be before catch-all */}
+            <Route path="/:categorySlug" element={<ToolkitCategory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
