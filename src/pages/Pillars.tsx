@@ -795,7 +795,7 @@ const Pillars = () => {
               {/* Journey Context Badge */}
               {journeyPath !== 'general' && (
                 <div className="mb-4">
-                  <Badge variant="secondary" className="text-lg px-4 py-2">
+                  <Badge variant="default" className="text-lg px-4 py-2">
                     {journeyPath === 'performance' ? 'Performance Journey' : 'Menopause Journey'}
                   </Badge>
                 </div>
@@ -852,7 +852,7 @@ const Pillars = () => {
                       {/* Journey Context Badge */}
                       {journeyPath !== 'general' && (
                         <div className="mb-4">
-                          <Badge variant="secondary" className="text-sm px-3 py-1">
+                          <Badge variant="default" className="text-sm px-3 py-1">
                             {journeyPath === 'performance' ? 'Performance Journey' : 'Menopause Journey'}
                           </Badge>
                         </div>
