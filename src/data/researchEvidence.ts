@@ -1194,6 +1194,182 @@ export const researchEvidence: InterventionResearch[] = [
     ]
   },
   {
+    intervention: "Glucosamine, Chondroitin & MSM",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "The Safety and Efficacy of Glucosamine and/or Chondroitin in Humans: A Systematic Review",
+        journal: "Nutrients",
+        year: 2024,
+        doi: "10.3390/nu16132066",
+        studyType: "Systematic Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive systematic review confirms glucosamine and chondroitin safety and efficacy for osteoarthritis; well-tolerated with minimal side effects",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12250884/"
+      },
+      {
+        title: "Evaluation of efficacy and safety of glucosamine sulfate, chondroitin sulfate, and their combination in knee osteoarthritis: a systematic review and meta-analysis",
+        journal: "BMC Musculoskeletal Disorders",
+        year: 2024,
+        doi: "10.1186/s12891-024-07404-0",
+        pmid: "38581640",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Meta-analysis demonstrates glucosamine and chondroitin combination reduces pain and improves function in knee osteoarthritis",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38581640/"
+      },
+      {
+        title: "The effect of combined hydrolyzed type 2 collagen, methylsulfonylmethane, glucosamine sulfate and chondroitin sulfate supplementation on knee osteoarthritis symptoms",
+        journal: "Journal of Orthopaedic Surgery and Research",
+        year: 2024,
+        doi: "10.1186/s13018-024-04799-4",
+        pmid: "38948650",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Combined supplementation including MSM significantly reduces osteoarthritis symptoms and improves joint function",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38948650/"
+      }
+    ]
+  },
+  {
+    intervention: "L-Glutamine",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "A systematic review and meta-analysis of clinical trials on the effects of glutamine supplementation on gut permeability in adults",
+        journal: "Nutrition Reviews",
+        year: 2024,
+        doi: "10.1093/nutrit/nuae129",
+        pmid: "39397201",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Meta-analysis confirms glutamine supplementation significantly improves gut barrier integrity and reduces intestinal permeability in adults",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39397201/"
+      },
+      {
+        title: "Glutamine-derived peptides: Current progress and future directions",
+        journal: "Comprehensive Reviews in Food Science and Food Safety",
+        year: 2024,
+        doi: "10.1111/1541-4337.13385",
+        pmid: "38847753",
+        studyType: "Review",
+        evidenceLevel: "Silver",
+        keyFindings: "Comprehensive review of glutamine's critical role in immune function, nitrogen balance, and intestinal integrity maintenance",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38847753/"
+      }
+    ]
+  },
+  {
+    intervention: "L-Theanine",
+    category: "Supplements",
+    pillar: "balance",
+    studies: [
+      {
+        title: "Dietary supplementation with Lactium and L-theanine alleviates sleep disturbance in adults: a double-blind, randomized, placebo-controlled clinical study",
+        journal: "Nutritional Neuroscience",
+        year: 2024,
+        doi: "10.1080/1028415X.2024.2372234",
+        pmid: "38953043",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "L-theanine supplementation significantly improves sleep quality and reduces sleep disturbances in adults with sleep issues",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38953043/"
+      },
+      {
+        title: "Theanine maintains sleep quality in healthy young women by suppressing the increase in caffeine-induced wakefulness after sleep onset",
+        journal: "Food & Function",
+        year: 2023,
+        doi: "10.1039/D3FO01247F",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "L-theanine specifically benefits young women by counteracting caffeine-induced sleep disruption and maintaining sleep quality",
+        url: "https://pubs.rsc.org/en/content/articlehtml/2023/fo/d3fo01247f"
+      },
+      {
+        title: "The effects of L-theanine supplementation on the outcomes of patients with mental disorders: a systematic review",
+        journal: "BMC Psychiatry",
+        year: 2024,
+        doi: "10.1186/s12888-024-06275-4",
+        pmid: "39633316",
+        studyType: "Systematic Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Systematic review confirms L-theanine reduces anxiety and improves mental health outcomes across various conditions",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39633316/"
+      }
+    ]
+  },
+  {
+    intervention: "Prebiotic Fiber",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "Effects of a diverse prebiotic fibre blend on inflammation, the gut microbiota and affective symptoms in metabolic syndrome: a pilot randomised controlled trial",
+        journal: "British Journal of Nutrition",
+        year: 2024,
+        doi: "10.1017/S0007114524002186",
+        pmid: "39411833",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Diverse prebiotic fiber blend significantly reduces inflammation, improves gut microbiota composition, and enhances mental health in metabolic syndrome",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39411833/"
+      },
+      {
+        title: "The Effect of Prebiotics, Alone or as Part of Synbiotics, on Cardiometabolic Parameters in Women with Polycystic Ovary Syndrome: A Systematic Review and Meta-Analysis",
+        journal: "Nutrients",
+        year: 2025,
+        doi: "10.3390/nu17010192",
+        pmid: "39857760",
+        studyType: "Meta-analysis",
+        evidenceLevel: "Gold",
+        keyFindings: "Meta-analysis demonstrates prebiotic fiber supplementation improves cardiometabolic health markers in women with PCOS",
+        url: "https://pubmed.ncbi.nlm.nih.gov/39857760/"
+      },
+      {
+        title: "The Role of Prebiotics in Modulating Gut Microbiota: Implications for Human Health",
+        journal: "International Journal of Molecular Sciences",
+        year: 2024,
+        doi: "10.3390/ijms25105365",
+        pmid: "38732060",
+        studyType: "Review",
+        evidenceLevel: "Gold",
+        keyFindings: "Comprehensive review of prebiotic mechanisms in modulating beneficial gut bacteria and supporting overall health",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38732060/"
+      }
+    ]
+  },
+  {
+    intervention: "Digestive Enzymes",
+    category: "Supplements",
+    pillar: "body",
+    studies: [
+      {
+        title: "Efficacy of digestive enzyme supplementation in functional dyspepsia: A monocentric, randomized, double-blind, placebo-controlled, clinical trial",
+        journal: "Neurogastroenterology & Motility",
+        year: 2023,
+        doi: "10.1111/nmo.14709",
+        pmid: "37976892",
+        studyType: "RCT",
+        evidenceLevel: "Gold",
+        keyFindings: "Digestive enzyme supplementation significantly improves symptoms in functional dyspepsia patients; well-tolerated and effective",
+        url: "https://pubmed.ncbi.nlm.nih.gov/37976892/"
+      },
+      {
+        title: "In vitro simulated study of macronutrient digestion in complex food using digestive enzyme supplement",
+        journal: "Heliyon",
+        year: 2024,
+        doi: "10.1016/j.heliyon.2024.e30354",
+        pmid: "38707299",
+        studyType: "RCT",
+        evidenceLevel: "Silver",
+        keyFindings: "Digestive enzyme supplements enhance macronutrient breakdown and nutrient bioavailability from complex foods",
+        url: "https://pubmed.ncbi.nlm.nih.gov/38707299/"
+      }
+    ]
+  },
+  {
     intervention: "Vitamin D, Omega-3 & Exercise for Biological Aging",
     category: "Supplements",
     pillar: "balance",
