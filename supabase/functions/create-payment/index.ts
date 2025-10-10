@@ -14,11 +14,18 @@ serve(async (req) => {
   }
 
   try {
-    const { productId, priceAmount } = await req.json();
+    const { priceId, quantity = 1 } = await req.json();
 
-    if (!productId || !priceAmount) {
-      throw new Error("Product ID and price amount are required");
+    // Validate input
+    if (!priceId || typeof priceId !== 'string' || !priceId.startsWith('price_')) {
+      throw new Error("Valid Stripe price ID is required (must start with 'price_')");
     }
+
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
+      throw new Error("Quantity must be an integer between 1 and 100");
+    }
+
+    console.log(`Creating payment session for price: ${priceId}, quantity: ${quantity}`);
 
     // Create Supabase client
     const supabaseClient = createClient(
@@ -36,6 +43,7 @@ serve(async (req) => {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
         userEmail = data.user?.email;
+        console.log(`Authenticated user: ${userEmail}`);
       }
     } catch (error) {
       console.log("No authenticated user, proceeding with guest checkout");
@@ -51,29 +59,26 @@ serve(async (req) => {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
+        console.log(`Found existing customer: ${customerId}`);
       }
     }
 
-    // Create a one-time payment session
+    // Create a one-time payment session using price ID
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: productId,
-            },
-            unit_amount: Math.round(priceAmount * 100), // Convert to cents
-          },
-          quantity: 1,
+          price: priceId,
+          quantity: quantity,
         },
       ],
       mode: "payment",
       success_url: `${req.headers.get("origin")}/shop?payment=success`,
       cancel_url: `${req.headers.get("origin")}/shop?payment=cancelled`,
     });
+
+    console.log(`Payment session created: ${session.id}`);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

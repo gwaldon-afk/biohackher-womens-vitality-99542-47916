@@ -6,6 +6,71 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helpers
+function isValidNumber(value: any, min: number = 0, max: number = Infinity): boolean {
+  return typeof value === 'number' && !isNaN(value) && value >= min && value <= max;
+}
+
+function isValidDate(dateString: any): boolean {
+  if (typeof dateString !== 'string') return false;
+  const date = new Date(dateString);
+  return date instanceof Date && !isNaN(date.getTime());
+}
+
+function sanitizeMetrics(metrics: any): DailyMetrics | null {
+  // Validate required fields
+  if (!metrics.user_id || typeof metrics.user_id !== 'string') {
+    throw new Error('Invalid user_id');
+  }
+  
+  if (!metrics.date || !isValidDate(metrics.date)) {
+    throw new Error('Invalid date format');
+  }
+
+  // Validate optional numeric fields with reasonable bounds
+  const validateOptionalNumber = (value: any, min: number, max: number) => {
+    return value === undefined || value === null ? undefined : 
+           isValidNumber(value, min, max) ? value : undefined;
+  };
+
+  return {
+    user_id: metrics.user_id,
+    date: metrics.date,
+    sleep: metrics.sleep ? {
+      total_hours: validateOptionalNumber(metrics.sleep.total_hours, 0, 24),
+      rem_hours: validateOptionalNumber(metrics.sleep.rem_hours, 0, 12),
+      deep_sleep_hours: validateOptionalNumber(metrics.sleep.deep_sleep_hours, 0, 12),
+    } : undefined,
+    stress: metrics.stress ? {
+      hrv: validateOptionalNumber(metrics.stress.hrv, 0, 200),
+      self_reported: validateOptionalNumber(metrics.stress.self_reported, 1, 10),
+      self_perceived_age: validateOptionalNumber(metrics.stress.self_perceived_age, 0, 150),
+      subjective_calmness_rating: validateOptionalNumber(metrics.stress.subjective_calmness_rating, 1, 10),
+    } : undefined,
+    activity: metrics.activity ? {
+      steps: validateOptionalNumber(metrics.activity.steps, 0, 100000),
+      active_minutes: validateOptionalNumber(metrics.activity.active_minutes, 0, 1440),
+      activity_intensity: validateOptionalNumber(metrics.activity.activity_intensity, 0, 10),
+    } : undefined,
+    nutrition: metrics.nutrition ? {
+      meal_quality_score: validateOptionalNumber(metrics.nutrition.meal_quality_score, 0, 10),
+      nutritional_detailed_score: validateOptionalNumber(metrics.nutrition.nutritional_detailed_score, 0, 100),
+    } : undefined,
+    social: metrics.social ? {
+      social_time_minutes: validateOptionalNumber(metrics.social.social_time_minutes, 0, 1440),
+      interaction_quality: validateOptionalNumber(metrics.social.interaction_quality, 1, 10),
+    } : undefined,
+    cognitive: metrics.cognitive ? {
+      meditation_minutes: validateOptionalNumber(metrics.cognitive.meditation_minutes, 0, 1440),
+      learning_minutes: validateOptionalNumber(metrics.cognitive.learning_minutes, 0, 1440),
+    } : undefined,
+    assessment_type: typeof metrics.assessment_type === 'string' ? metrics.assessment_type : undefined,
+    is_baseline: typeof metrics.is_baseline === 'boolean' ? metrics.is_baseline : undefined,
+    input_mode: typeof metrics.input_mode === 'string' ? metrics.input_mode : undefined,
+    source_type: typeof metrics.source_type === 'string' ? metrics.source_type : undefined,
+  };
+}
+
 interface DailyMetrics {
   user_id: string;
   date: string;
@@ -53,8 +118,15 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const metrics: DailyMetrics = await req.json();
-    console.log('Received metrics:', JSON.stringify(metrics, null, 2));
+    // Parse and validate input
+    const rawMetrics = await req.json();
+    const metrics = sanitizeMetrics(rawMetrics);
+    
+    if (!metrics) {
+      throw new Error('Invalid metrics data provided');
+    }
+    
+    console.log('Validated metrics:', JSON.stringify(metrics, null, 2));
 
     // Get user health profile for LIS 2.0
     const { data: healthProfile } = await supabase
