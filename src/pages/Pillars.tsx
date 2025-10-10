@@ -849,6 +849,15 @@ const Pillars = () => {
                   <CardContent className="p-8">
                     {/* Pillar Header */}
                     <div className="text-center mb-8">
+                      {/* Journey Context Badge */}
+                      {journeyPath !== 'general' && (
+                        <div className="mb-4">
+                          <Badge variant="secondary" className="text-sm px-3 py-1">
+                            {journeyPath === 'performance' ? 'Performance Journey' : 'Menopause Journey'}
+                          </Badge>
+                        </div>
+                      )}
+                      
                       <div className="flex items-center justify-center gap-3 mb-4">
                         {React.createElement(pillars[selectedPillar as keyof typeof pillars].icon, {
                       className: "h-12 w-12 text-primary"
