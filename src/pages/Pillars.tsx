@@ -792,11 +792,24 @@ const Pillars = () => {
         <section className="py-16 lg:py-24">
           <div className="container mx-auto px-4">
             <div className="text-center mb-4">
+              {/* Journey Context Badge */}
+              {journeyPath !== 'general' && (
+                <div className="mb-4">
+                  <Badge variant="secondary" className="text-lg px-4 py-2">
+                    {journeyPath === 'performance' ? 'Performance Journey' : 'Menopause Journey'}
+                  </Badge>
+                </div>
+              )}
+              
               <h1 className="text-4xl lg:text-5xl font-bold mb-6 gradient-text">
                 {t("pillars.title")}
               </h1>
               <p className="text-lg text-foreground font-medium max-w-3xl mx-auto">
-                Understanding your health through four essential pillars gives you a complete picture of your wellbeing. Each pillar addresses a key area that impacts how you look, feel, and function every day. Take targeted assessments to uncover personalized insights and create your roadmap to optimal health.
+                {journeyPath === 'performance' 
+                  ? "Optimize your biology for peak performance and longevity. Each pillar provides targeted assessments and protocols to help you achieve your highest potential."
+                  : journeyPath === 'menopause'
+                  ? "Navigate your menopause journey with confidence. Each pillar addresses the unique changes you're experiencing with science-backed assessments and protocols."
+                  : "Understanding your health through four essential pillars gives you a complete picture of your wellbeing. Each pillar addresses a key area that impacts how you look, feel, and function every day. Take targeted assessments to uncover personalized insights and create your roadmap to optimal health."}
               </p>
             </div>
           </div>
