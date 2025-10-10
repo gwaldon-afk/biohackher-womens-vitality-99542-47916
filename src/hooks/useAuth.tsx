@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { detectUserLocale, updateUserLocale, getUserLocale } from '@/services/localeService';
+import { getAuthRedirectUrl } from '@/utils/capacitor';
 
 interface Profile {
   id: string;
@@ -123,7 +124,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signUp = async (email: string, password: string, preferredName: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${getAuthRedirectUrl()}/`;
       
       const { error } = await supabase.auth.signUp({
         email,
