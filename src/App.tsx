@@ -45,6 +45,7 @@ import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
 import BrainAssessment from "./pages/BrainAssessment";
 import ToolkitCategory from "./pages/ToolkitCategory";
+import Achievements from "./pages/Achievements";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/achievements" element={<Achievements />} />
             <Route path="/symptoms" element={<Symptoms />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />

@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          achievement_id: string
+          category: string
+          created_at: string | null
+          description: string
+          display_order: number | null
+          icon_name: string
+          id: string
+          is_active: boolean
+          name: string
+          points: number
+          requirements: Json
+          tier: string
+        }
+        Insert: {
+          achievement_id: string
+          category: string
+          created_at?: string | null
+          description: string
+          display_order?: number | null
+          icon_name: string
+          id?: string
+          is_active?: boolean
+          name: string
+          points?: number
+          requirements: Json
+          tier?: string
+        }
+        Update: {
+          achievement_id?: string
+          category?: string
+          created_at?: string | null
+          description?: string
+          display_order?: number | null
+          icon_name?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          points?: number
+          requirements?: Json
+          tier?: string
+        }
+        Relationships: []
+      }
       assessment_question_options: {
         Row: {
           created_at: string | null
@@ -1144,6 +1189,33 @@ export type Database = {
           },
         ]
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          created_at: string | null
+          id: string
+          progress: Json | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          created_at?: string | null
+          id?: string
+          progress?: Json | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          created_at?: string | null
+          id?: string
+          progress?: Json | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_assessment_completions: {
         Row: {
           assessment_id: string
@@ -1222,6 +1294,36 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      user_points: {
+        Row: {
+          created_at: string | null
+          id: string
+          level: number
+          points_to_next_level: number
+          total_points: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          level?: number
+          points_to_next_level?: number
+          total_points?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          level?: number
+          points_to_next_level?: number
+          total_points?: number
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
