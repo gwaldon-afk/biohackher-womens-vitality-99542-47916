@@ -1384,7 +1384,7 @@ const Pillars = () => {
                 if (selectedPillar === 'brain') {
                   return `/brain-assessment?context=${journeyPath}&pillar=brain`;
                 }
-                return `/symptom-assessment/${assessment.id}?pillar=${selectedPillar}`;
+                return `/assessment/${assessment.id}?pillar=${selectedPillar}`;
               };
               
               return <Card key={assessment.id} className={`cursor-pointer transition-all hover:shadow-md ${isCompleted ? 'bg-green-50 border-green-200' : 'hover:border-primary/50'}`} onClick={() => {
