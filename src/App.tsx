@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import Symptoms from "./pages/Symptoms";
 import SymptomAssessment from "./pages/SymptomAssessment";
 import AssessmentResults from "./pages/AssessmentResults";
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
             <Route path="/symptoms" element={<Symptoms />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
