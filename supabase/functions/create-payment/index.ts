@@ -7,6 +7,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// TODO: Update these price IDs with your actual Stripe price IDs
+// You can find them in your Stripe Dashboard under Products
+const PRICE_IDS: Record<string, string> = {
+  // Example: 'product-name': 'price_xxxxxxxxxxxxx'
+  'default': 'price_1234567890', // Replace with actual price ID
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -14,18 +21,14 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, quantity = 1 } = await req.json();
+    const { productId, priceId } = await req.json();
 
-    // Validate input
-    if (!priceId || typeof priceId !== 'string' || !priceId.startsWith('price_')) {
-      throw new Error("Valid Stripe price ID is required (must start with 'price_')");
+    // Validate that either productId maps to a price or priceId is provided
+    const actualPriceId = priceId || PRICE_IDS[productId];
+    
+    if (!actualPriceId) {
+      throw new Error(`No price ID found for product: ${productId}. Please configure PRICE_IDS in the edge function.`);
     }
-
-    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
-      throw new Error("Quantity must be an integer between 1 and 100");
-    }
-
-    console.log(`Creating payment session for price: ${priceId}, quantity: ${quantity}`);
 
     // Create Supabase client
     const supabaseClient = createClient(
@@ -43,7 +46,6 @@ serve(async (req) => {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
         userEmail = data.user?.email;
-        console.log(`Authenticated user: ${userEmail}`);
       }
     } catch (error) {
       console.log("No authenticated user, proceeding with guest checkout");
@@ -59,7 +61,6 @@ serve(async (req) => {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
-        console.log(`Found existing customer: ${customerId}`);
       }
     }
 
@@ -69,8 +70,8 @@ serve(async (req) => {
       customer_email: customerId ? undefined : userEmail,
       line_items: [
         {
-          price: priceId,
-          quantity: quantity,
+          price: actualPriceId,
+          quantity: 1,
         },
       ],
       mode: "payment",
@@ -78,7 +79,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/shop?payment=cancelled`,
     });
 
-    console.log(`Payment session created: ${session.id}`);
+    console.log(`Payment session created for price: ${actualPriceId}`);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -6,71 +6,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Input validation helpers
-function isValidNumber(value: any, min: number = 0, max: number = Infinity): boolean {
-  return typeof value === 'number' && !isNaN(value) && value >= min && value <= max;
-}
-
-function isValidDate(dateString: any): boolean {
-  if (typeof dateString !== 'string') return false;
-  const date = new Date(dateString);
-  return date instanceof Date && !isNaN(date.getTime());
-}
-
-function sanitizeMetrics(metrics: any): DailyMetrics | null {
-  // Validate required fields
-  if (!metrics.user_id || typeof metrics.user_id !== 'string') {
-    throw new Error('Invalid user_id');
-  }
-  
-  if (!metrics.date || !isValidDate(metrics.date)) {
-    throw new Error('Invalid date format');
-  }
-
-  // Validate optional numeric fields with reasonable bounds
-  const validateOptionalNumber = (value: any, min: number, max: number) => {
-    return value === undefined || value === null ? undefined : 
-           isValidNumber(value, min, max) ? value : undefined;
-  };
-
-  return {
-    user_id: metrics.user_id,
-    date: metrics.date,
-    sleep: metrics.sleep ? {
-      total_hours: validateOptionalNumber(metrics.sleep.total_hours, 0, 24),
-      rem_hours: validateOptionalNumber(metrics.sleep.rem_hours, 0, 12),
-      deep_sleep_hours: validateOptionalNumber(metrics.sleep.deep_sleep_hours, 0, 12),
-    } : undefined,
-    stress: metrics.stress ? {
-      hrv: validateOptionalNumber(metrics.stress.hrv, 0, 200),
-      self_reported: validateOptionalNumber(metrics.stress.self_reported, 1, 10),
-      self_perceived_age: validateOptionalNumber(metrics.stress.self_perceived_age, 0, 150),
-      subjective_calmness_rating: validateOptionalNumber(metrics.stress.subjective_calmness_rating, 1, 10),
-    } : undefined,
-    activity: metrics.activity ? {
-      steps: validateOptionalNumber(metrics.activity.steps, 0, 100000),
-      active_minutes: validateOptionalNumber(metrics.activity.active_minutes, 0, 1440),
-      activity_intensity: validateOptionalNumber(metrics.activity.activity_intensity, 0, 10),
-    } : undefined,
-    nutrition: metrics.nutrition ? {
-      meal_quality_score: validateOptionalNumber(metrics.nutrition.meal_quality_score, 0, 10),
-      nutritional_detailed_score: validateOptionalNumber(metrics.nutrition.nutritional_detailed_score, 0, 100),
-    } : undefined,
-    social: metrics.social ? {
-      social_time_minutes: validateOptionalNumber(metrics.social.social_time_minutes, 0, 1440),
-      interaction_quality: validateOptionalNumber(metrics.social.interaction_quality, 1, 10),
-    } : undefined,
-    cognitive: metrics.cognitive ? {
-      meditation_minutes: validateOptionalNumber(metrics.cognitive.meditation_minutes, 0, 1440),
-      learning_minutes: validateOptionalNumber(metrics.cognitive.learning_minutes, 0, 1440),
-    } : undefined,
-    assessment_type: typeof metrics.assessment_type === 'string' ? metrics.assessment_type : undefined,
-    is_baseline: typeof metrics.is_baseline === 'boolean' ? metrics.is_baseline : undefined,
-    input_mode: typeof metrics.input_mode === 'string' ? metrics.input_mode : undefined,
-    source_type: typeof metrics.source_type === 'string' ? metrics.source_type : undefined,
-  };
-}
-
 interface DailyMetrics {
   user_id: string;
   date: string;
@@ -108,6 +43,120 @@ interface DailyMetrics {
   source_type?: string;
 }
 
+// Input validation function
+function validateMetrics(metrics: any): { valid: boolean; error?: string } {
+  // Required fields
+  if (!metrics.user_id || typeof metrics.user_id !== 'string') {
+    return { valid: false, error: 'user_id is required and must be a string' };
+  }
+  
+  if (!metrics.date || typeof metrics.date !== 'string') {
+    return { valid: false, error: 'date is required and must be a string' };
+  }
+
+  // Validate date format (YYYY-MM-DD)
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(metrics.date)) {
+    return { valid: false, error: 'date must be in YYYY-MM-DD format' };
+  }
+
+  // Validate numeric ranges for sleep data
+  if (metrics.sleep) {
+    if (metrics.sleep.total_hours !== undefined) {
+      if (typeof metrics.sleep.total_hours !== 'number' || metrics.sleep.total_hours < 0 || metrics.sleep.total_hours > 24) {
+        return { valid: false, error: 'sleep.total_hours must be between 0 and 24' };
+      }
+    }
+    if (metrics.sleep.rem_hours !== undefined) {
+      if (typeof metrics.sleep.rem_hours !== 'number' || metrics.sleep.rem_hours < 0 || metrics.sleep.rem_hours > 24) {
+        return { valid: false, error: 'sleep.rem_hours must be between 0 and 24' };
+      }
+    }
+    if (metrics.sleep.deep_sleep_hours !== undefined) {
+      if (typeof metrics.sleep.deep_sleep_hours !== 'number' || metrics.sleep.deep_sleep_hours < 0 || metrics.sleep.deep_sleep_hours > 24) {
+        return { valid: false, error: 'sleep.deep_sleep_hours must be between 0 and 24' };
+      }
+    }
+  }
+
+  // Validate stress data
+  if (metrics.stress) {
+    if (metrics.stress.hrv !== undefined) {
+      if (typeof metrics.stress.hrv !== 'number' || metrics.stress.hrv < 0 || metrics.stress.hrv > 200) {
+        return { valid: false, error: 'stress.hrv must be between 0 and 200' };
+      }
+    }
+    if (metrics.stress.self_reported !== undefined) {
+      if (typeof metrics.stress.self_reported !== 'number' || metrics.stress.self_reported < 0 || metrics.stress.self_reported > 10) {
+        return { valid: false, error: 'stress.self_reported must be between 0 and 10' };
+      }
+    }
+    if (metrics.stress.self_perceived_age !== undefined) {
+      if (typeof metrics.stress.self_perceived_age !== 'number' || metrics.stress.self_perceived_age < 0 || metrics.stress.self_perceived_age > 150) {
+        return { valid: false, error: 'stress.self_perceived_age must be between 0 and 150' };
+      }
+    }
+    if (metrics.stress.subjective_calmness_rating !== undefined) {
+      if (typeof metrics.stress.subjective_calmness_rating !== 'number' || metrics.stress.subjective_calmness_rating < 0 || metrics.stress.subjective_calmness_rating > 10) {
+        return { valid: false, error: 'stress.subjective_calmness_rating must be between 0 and 10' };
+      }
+    }
+  }
+
+  // Validate activity data
+  if (metrics.activity) {
+    if (metrics.activity.steps !== undefined) {
+      if (typeof metrics.activity.steps !== 'number' || metrics.activity.steps < 0 || metrics.activity.steps > 100000) {
+        return { valid: false, error: 'activity.steps must be between 0 and 100000' };
+      }
+    }
+    if (metrics.activity.active_minutes !== undefined) {
+      if (typeof metrics.activity.active_minutes !== 'number' || metrics.activity.active_minutes < 0 || metrics.activity.active_minutes > 1440) {
+        return { valid: false, error: 'activity.active_minutes must be between 0 and 1440' };
+      }
+    }
+  }
+
+  // Validate nutrition data
+  if (metrics.nutrition) {
+    if (metrics.nutrition.meal_quality_score !== undefined) {
+      if (typeof metrics.nutrition.meal_quality_score !== 'number' || metrics.nutrition.meal_quality_score < 0 || metrics.nutrition.meal_quality_score > 10) {
+        return { valid: false, error: 'nutrition.meal_quality_score must be between 0 and 10' };
+      }
+    }
+  }
+
+  // Validate social data
+  if (metrics.social) {
+    if (metrics.social.social_time_minutes !== undefined) {
+      if (typeof metrics.social.social_time_minutes !== 'number' || metrics.social.social_time_minutes < 0 || metrics.social.social_time_minutes > 1440) {
+        return { valid: false, error: 'social.social_time_minutes must be between 0 and 1440' };
+      }
+    }
+    if (metrics.social.interaction_quality !== undefined) {
+      if (typeof metrics.social.interaction_quality !== 'number' || metrics.social.interaction_quality < 0 || metrics.social.interaction_quality > 10) {
+        return { valid: false, error: 'social.interaction_quality must be between 0 and 10' };
+      }
+    }
+  }
+
+  // Validate cognitive data
+  if (metrics.cognitive) {
+    if (metrics.cognitive.meditation_minutes !== undefined) {
+      if (typeof metrics.cognitive.meditation_minutes !== 'number' || metrics.cognitive.meditation_minutes < 0 || metrics.cognitive.meditation_minutes > 1440) {
+        return { valid: false, error: 'cognitive.meditation_minutes must be between 0 and 1440' };
+      }
+    }
+    if (metrics.cognitive.learning_minutes !== undefined) {
+      if (typeof metrics.cognitive.learning_minutes !== 'number' || metrics.cognitive.learning_minutes < 0 || metrics.cognitive.learning_minutes > 1440) {
+        return { valid: false, error: 'cognitive.learning_minutes must be between 0 and 1440' };
+      }
+    }
+  }
+
+  return { valid: true };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -118,15 +167,18 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Parse and validate input
-    const rawMetrics = await req.json();
-    const metrics = sanitizeMetrics(rawMetrics);
-    
-    if (!metrics) {
-      throw new Error('Invalid metrics data provided');
+    const metrics: DailyMetrics = await req.json();
+    console.log('Received metrics:', JSON.stringify(metrics, null, 2));
+
+    // Validate input
+    const validation = validateMetrics(metrics);
+    if (!validation.valid) {
+      console.error('Validation error:', validation.error);
+      return new Response(
+        JSON.stringify({ error: `Invalid input: ${validation.error}` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
     }
-    
-    console.log('Validated metrics:', JSON.stringify(metrics, null, 2));
 
     // Get user health profile for LIS 2.0
     const { data: healthProfile } = await supabase
