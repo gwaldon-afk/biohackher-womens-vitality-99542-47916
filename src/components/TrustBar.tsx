@@ -1,4 +1,4 @@
-import { Award, FileText, Shield } from "lucide-react";
+import { Award, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { getTotalStudyCount } from "@/data/researchEvidence";
@@ -23,10 +23,6 @@ const TrustBar = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Award className="h-4 w-4 text-primary" />
             <span className="font-medium">{t('trustBar.scienceBacked')}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Shield className="h-4 w-4 text-primary" />
-            <span className="font-medium">{t('trustBar.dataSecurity')}</span>
           </div>
         </div>
       </div>
