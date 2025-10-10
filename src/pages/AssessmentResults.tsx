@@ -1,13 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles, ExternalLink } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessments } from "@/hooks/useAssessments";
+import { useQuery } from "@tanstack/react-query";
+import { getAllToolkitItems, searchToolkitItemsBySymptoms } from "@/services/toolkitService";
+import { searchProductsBySymptoms } from "@/services/productService";
+import { generateUserRecommendations, saveUserRecommendations } from "@/services/recommendationEngine";
+import { useToast } from "@/hooks/use-toast";
+import EvidenceBadge from "@/components/EvidenceBadge";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -15,6 +22,8 @@ const AssessmentResults = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { getAssessment } = useAssessments();
+  const { toast } = useToast();
+  const [savingRecommendations, setSavingRecommendations] = useState(false);
   
   const state = location.state as {
     score: number;
@@ -146,6 +155,45 @@ const AssessmentResults = () => {
   };
 
   const recommendations = getRecommendations();
+
+  // Extract symptoms from poor-scoring categories for recommendation matching
+  const symptomTags = areasForImprovement.map(area => 
+    area.toLowerCase().replace(/\s+/g, '-')
+  );
+
+  // Fetch toolkit recommendations based on symptoms
+  const { data: toolkitItems, isLoading: loadingToolkit } = useQuery({
+    queryKey: ['toolkit-recommendations', symptomTags],
+    queryFn: () => symptomTags.length > 0 
+      ? searchToolkitItemsBySymptoms(symptomTags)
+      : getAllToolkitItems(),
+    enabled: !!state
+  });
+
+  // Fetch product recommendations based on symptoms
+  const { data: products, isLoading: loadingProducts } = useQuery({
+    queryKey: ['product-recommendations', symptomTags],
+    queryFn: () => searchProductsBySymptoms(symptomTags),
+    enabled: symptomTags.length > 0
+  });
+
+  // Generate and save personalized recommendations for authenticated users
+  useEffect(() => {
+    if (user && toolkitItems && toolkitItems.length > 0 && !savingRecommendations) {
+      setSavingRecommendations(true);
+      generateUserRecommendations(user.id, toolkitItems, symptomTags, null)
+        .then(recs => saveUserRecommendations(recs))
+        .catch(error => {
+          console.error('Error saving recommendations:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Failed to save personalized recommendations"
+          });
+        })
+        .finally(() => setSavingRecommendations(false));
+    }
+  }, [user, toolkitItems, symptomTags, savingRecommendations, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
@@ -331,6 +379,145 @@ const AssessmentResults = () => {
             </CardContent>
           </Card>
 
+          {/* Evidence-Based Solutions */}
+          {symptomTags.length > 0 && (
+            <>
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle>Recommended Toolkit Items</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Evidence-based biohacking tools tailored to your assessment results
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  {loadingToolkit ? (
+                    <div className="space-y-4">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="border rounded-lg p-4">
+                          <Skeleton className="h-6 w-3/4 mb-2" />
+                          <Skeleton className="h-4 w-full mb-2" />
+                          <Skeleton className="h-4 w-5/6" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : toolkitItems && toolkitItems.length > 0 ? (
+                    <div className="space-y-4">
+                      {toolkitItems.slice(0, 5).map((item) => (
+                        <div 
+                          key={item.id} 
+                          className="border rounded-lg p-4 hover:border-primary transition-colors cursor-pointer"
+                          onClick={() => navigate(`/${item.category.slug}?item=${item.slug}`)}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-semibold text-lg">{item.name}</h4>
+                            {item.evidence_level && (
+                              <EvidenceBadge level={item.evidence_level.charAt(0).toUpperCase() + item.evidence_level.slice(1) as "Gold" | "Silver" | "Bronze" | "Emerging"} />
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
+                          {item.benefits && item.benefits.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {(item.benefits as string[]).slice(0, 3).map((benefit, idx) => (
+                                <Badge key={idx} variant="secondary" className="text-xs">
+                                  {benefit}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                          <Button variant="outline" size="sm" className="w-full">
+                            Learn More <ExternalLink className="ml-2 h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      {toolkitItems.length > 5 && (
+                        <Button 
+                          variant="link" 
+                          onClick={() => navigate('/biohacking-toolkit')}
+                          className="w-full"
+                        >
+                          View All {toolkitItems.length} Recommendations
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-center text-muted-foreground py-8">
+                      No specific recommendations found. Explore our full toolkit for general solutions.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+
+              {products && products.length > 0 && (
+                <Card className="mb-8">
+                  <CardHeader>
+                    <CardTitle>Recommended Products</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Supplements and products that may support your health goals
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingProducts ? (
+                      <div className="space-y-4">
+                        {[...Array(2)].map((_, i) => (
+                          <div key={i} className="border rounded-lg p-4">
+                            <Skeleton className="h-6 w-3/4 mb-2" />
+                            <Skeleton className="h-4 w-full mb-2" />
+                            <Skeleton className="h-4 w-2/3" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {products.slice(0, 3).map((product) => (
+                          <div key={product.id} className="border rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h4 className="font-semibold">{product.name}</h4>
+                                {product.brand && (
+                                  <p className="text-xs text-muted-foreground">{product.brand}</p>
+                                )}
+                              </div>
+                              {product.evidence_level && (
+                                <EvidenceBadge level={product.evidence_level.charAt(0).toUpperCase() + product.evidence_level.slice(1) as "Gold" | "Silver" | "Bronze" | "Emerging"} />
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
+                            {product.benefits && (product.benefits as string[]).length > 0 && (
+                              <div className="flex flex-wrap gap-1 mb-3">
+                                {(product.benefits as string[]).slice(0, 3).map((benefit, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {benefit}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => navigate('/shop')}
+                              className="w-full"
+                            >
+                              View in Shop
+                            </Button>
+                          </div>
+                        ))}
+                        {products.length > 3 && (
+                          <Button 
+                            variant="link" 
+                            onClick={() => navigate('/shop')}
+                            className="w-full"
+                          >
+                            View All Products
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+
           {/* Next Steps */}
           <Card>
             <CardHeader>
@@ -358,7 +545,7 @@ const AssessmentResults = () => {
                   variant="outline"
                   className="w-full"
                 >
-                  Explore Evidence-Based Solutions
+                  Explore Full Toolkit
                 </Button>
               </div>
             </CardContent>
