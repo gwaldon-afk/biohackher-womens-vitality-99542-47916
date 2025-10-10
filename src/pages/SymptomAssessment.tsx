@@ -11,7 +11,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAssessments } from "@/hooks/useAssessments";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const SymptomAssessment = () => {
   const { symptomId } = useParams();
@@ -21,12 +31,17 @@ const SymptomAssessment = () => {
   const { assessments, loading: assessmentsLoading } = useAssessments();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
 
   // Reset state when symptomId changes to prevent answer carryover
   useEffect(() => {
     setAnswers({});
     setCurrentQuestion(0);
   }, [symptomId]);
+
+  const handleCancelAssessment = () => {
+    navigate('/pillars');
+  };
 
   // Get assessment config from database
   const assessmentConfig = symptomId && assessments[symptomId] ? assessments[symptomId] : null;
@@ -156,14 +171,16 @@ const SymptomAssessment = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/pillars')}
-              className="mb-4"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Pillars
-            </Button>
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowCancelDialog(true)}
+                className="text-muted-foreground"
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel Assessment
+              </Button>
+            </div>
             <h1 className="text-3xl font-bold mb-2">{assessmentConfig.name}</h1>
             <p className="text-muted-foreground">{assessmentConfig.description}</p>
           </div>
@@ -230,6 +247,24 @@ const SymptomAssessment = () => {
           </Card>
         </div>
       </div>
+
+      {/* Cancel Confirmation Dialog */}
+      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Assessment?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress will not be saved. You'll need to start over if you want to complete this assessment later.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continue Assessment</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancelAssessment} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Yes, Cancel
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
