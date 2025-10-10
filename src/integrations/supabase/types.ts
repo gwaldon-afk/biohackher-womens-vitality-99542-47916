@@ -1578,6 +1578,51 @@ export type Database = {
           },
         ]
       }
+      wearable_connections: {
+        Row: {
+          access_token: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean
+          last_sync_at: string | null
+          provider: string
+          provider_user_id: string | null
+          refresh_token: string | null
+          sync_settings: Json | null
+          token_expires_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          provider: string
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          sync_settings?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          provider?: string
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          sync_settings?: Json | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       wearable_data: {
         Row: {
           active_minutes: number | null
