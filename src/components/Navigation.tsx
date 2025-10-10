@@ -30,28 +30,28 @@ const Navigation = () => {
   const { t } = useTranslation();
 
   const simpleNavItems = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/pillars", label: "Pillars" },
-    { href: "/symptoms", label: "Assessments" },
+    { href: "/", label: t('navigation.home') },
+    { href: "/about", label: t('navigation.about') },
+    { href: "/pillars", label: t('navigation.pillars') },
+    { href: "/symptoms", label: t('navigation.assessments') },
   ];
 
   const myJourneyItems = [
     { href: "/dashboard", label: t('navigation.dashboard'), icon: BarChart3 },
-    { href: "/analytics", label: "Analytics", icon: TrendingUp },
-    { href: "/symptom-trends", label: "Symptom Trends", icon: Heart },
-    { href: "/achievements", label: "Achievements", icon: Award },
-    { href: "/progress", label: "Progress Tracking", icon: Target },
-    { href: "/reports", label: "Reports", icon: Trophy },
+    { href: "/analytics", label: t('navigation.analytics'), icon: TrendingUp },
+    { href: "/symptom-trends", label: t('navigation.symptomTrends'), icon: Heart },
+    { href: "/achievements", label: t('navigation.achievements'), icon: Award },
+    { href: "/progress", label: t('navigation.progressTracking'), icon: Target },
+    { href: "/reports", label: t('navigation.reports'), icon: Trophy },
   ];
 
   const toolkitItems = [
-    { href: "/biohacking-toolkit", label: "Biohacking Tools", icon: Sparkles },
-    { href: "/wearables", label: "Wearables", icon: Watch },
-    { href: "/supplements", label: "Supplements", icon: Pill },
-    { href: "/therapies", label: "Therapies", icon: Dumbbell },
-    { href: "/sleep", label: "Sleep", icon: Moon },
-    { href: "/nutrition", label: "Nutrition", icon: Utensils },
+    { href: "/biohacking-toolkit", label: t('navigation.biohackingTools'), icon: Sparkles },
+    { href: "/wearables", label: t('navigation.wearables'), icon: Watch },
+    { href: "/supplements", label: t('navigation.supplements'), icon: Pill },
+    { href: "/therapies", label: t('navigation.therapies'), icon: Dumbbell },
+    { href: "/sleep", label: t('navigation.sleep'), icon: Moon },
+    { href: "/nutrition", label: t('navigation.nutrition'), icon: Utensils },
   ];
 
   const [myJourneyOpen, setMyJourneyOpen] = useState(false);
@@ -100,7 +100,7 @@ const Navigation = () => {
               {/* My Journey Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-muted-foreground hover:text-primary">
-                  My Journey
+                  {t('navigation.myJourney')}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 bg-popover border border-border shadow-lg z-50">
@@ -131,7 +131,7 @@ const Navigation = () => {
               {/* Toolkit Dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="text-muted-foreground hover:text-primary">
-                  Toolkit
+                  {t('navigation.toolkit')}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 bg-popover border border-border shadow-lg z-50">
@@ -169,7 +169,7 @@ const Navigation = () => {
                         : "text-muted-foreground"
                     )}
                   >
-                    Shop
+                    {t('navigation.shop')}
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -184,7 +184,7 @@ const Navigation = () => {
                         : "text-muted-foreground"
                     )}
                   >
-                    FAQ
+                    {t('navigation.faq')}
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -260,7 +260,7 @@ const Navigation = () => {
               {/* My Journey Collapsible */}
               <Collapsible open={myJourneyOpen} onOpenChange={setMyJourneyOpen}>
                 <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  My Journey
+                  {t('navigation.myJourney')}
                   <ChevronDown className={cn("h-4 w-4 transition-transform", myJourneyOpen && "rotate-180")} />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4">
@@ -289,7 +289,7 @@ const Navigation = () => {
               {/* Toolkit Collapsible */}
               <Collapsible open={toolkitOpen} onOpenChange={setToolkitOpen}>
                 <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  Toolkit
+                  {t('navigation.toolkit')}
                   <ChevronDown className={cn("h-4 w-4 transition-transform", toolkitOpen && "rotate-180")} />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4">
@@ -325,7 +325,7 @@ const Navigation = () => {
                 )}
                 onClick={() => setIsOpen(false)}
               >
-                Shop
+                {t('navigation.shop')}
               </Link>
 
               <Link
@@ -338,7 +338,7 @@ const Navigation = () => {
                 )}
                 onClick={() => setIsOpen(false)}
               >
-                FAQ
+                {t('navigation.faq')}
               </Link>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">

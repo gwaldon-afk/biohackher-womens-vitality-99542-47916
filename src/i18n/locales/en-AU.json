@@ -3,7 +3,7 @@
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
-    "continue": "Continue", 
+    "continue": "Continue",
     "back": "Back",
     "next": "Next",
     "complete": "Complete",
@@ -11,7 +11,9 @@
     "delete": "Delete",
     "close": "Close",
     "settings": "Settings",
-    "profile": "Profile"
+    "profile": "Profile",
+    "viewAll": "View All",
+    "learnMore": "Learn More"
   },
   "auth": {
     "signIn": "Sign In",
@@ -27,18 +29,29 @@
     "confirmationSent": "We've sent you a confirmation link to complete your registration."
   },
   "navigation": {
+    "home": "Home",
+    "about": "About",
     "dashboard": "My Journey",
-    "pillars": "4 Pillars",
+    "pillars": "Pillars",
+    "assessments": "Assessments",
+    "myJourney": "My Journey",
+    "toolkit": "Toolkit",
     "symptoms": "Symptoms",
     "therapies": "Therapies",
     "supplements": "Supplements",
-    "sleep": "Sleep", 
+    "sleep": "Sleep",
     "nutrition": "Nutrition",
     "coaching": "Coaching",
     "reports": "Reports",
     "shop": "Shop",
     "faq": "FAQ",
-    "upgrade": "Upgrade"
+    "upgrade": "Upgrade",
+    "analytics": "Analytics",
+    "symptomTrends": "Symptom Trends",
+    "achievements": "Achievements",
+    "progressTracking": "Progress Tracking",
+    "biohackingTools": "Biohacking Tools",
+    "wearables": "Wearables"
   },
   "health": {
     "gp": "GP",
@@ -61,11 +74,40 @@
     "code": "AUD"
   },
   "pillars": {
-    "title": "Your Health Pillars", 
+    "title": "Your Health Pillars",
     "subtitle": "Complete personalised assessments to optimise your health journey",
     "beauty": "Beauty",
     "body": "Body",
     "brain": "Brain",
     "balance": "Balance"
+  },
+  "home": {
+    "hero": {
+      "title": "Optimise Your Biology.",
+      "subtitle": "Live Well Longer.",
+      "description": "The first longevity biohacking platform designed specifically for women's unique physiology—at every stage of life.",
+      "ctaPrimary": "Take Your Free Longevity Assessment",
+      "ctaPerformance": "Optimise Performance",
+      "ctaPerformanceDesc": "Peak vitality, energy & longevity",
+      "ctaMenopause": "Navigate Menopause",
+      "ctaMenopauseDesc": "Thrive through hormonal transitions"
+    },
+    "pillars": {
+      "title": "Four Pillars of Women's Longevity",
+      "subtitle": "Science-backed protocols personalised to your unique biology"
+    }
+  },
+  "trustBar": {
+    "evidenceBased": "Evidence-Based",
+    "peerReviewed": "Peer-Reviewed Studies",
+    "scienceBacked": "Science-Backed Protocols",
+    "dataSecurity": "Data Security Guaranteed"
+  },
+  "dashboard": {
+    "welcome": "Welcome to Your Journey",
+    "overview": "Overview",
+    "assessments": "Assessments",
+    "progress": "Progress",
+    "insights": "Insights"
   }
 }

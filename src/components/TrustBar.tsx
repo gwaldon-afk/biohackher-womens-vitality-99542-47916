@@ -2,8 +2,10 @@ import { Award, FileText, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { getTotalStudyCount } from "@/data/researchEvidence";
+import { useTranslation } from "react-i18next";
 
 const TrustBar = () => {
+  const { t } = useTranslation();
   const studyCount = getTotalStudyCount();
 
   return (
@@ -12,19 +14,19 @@ const TrustBar = () => {
         <div className="flex items-center justify-center gap-6 md:gap-12 flex-wrap text-xs md:text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
             <ScienceBackedIcon className="h-4 w-4" showTooltip={false} />
-            <span className="font-medium">Evidence-Based</span>
+            <span className="font-medium">{t('trustBar.evidenceBased')}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <FileText className="h-4 w-4 text-primary" />
-            <span className="font-medium">Peer-Reviewed Studies</span>
+            <span className="font-medium">{t('trustBar.peerReviewed')}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Award className="h-4 w-4 text-primary" />
-            <span className="font-medium">Science-Backed Protocols</span>
+            <span className="font-medium">{t('trustBar.scienceBacked')}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Shield className="h-4 w-4 text-primary" />
-            <span className="font-medium">Data Security Guaranteed</span>
+            <span className="font-medium">{t('trustBar.dataSecurity')}</span>
           </div>
         </div>
       </div>

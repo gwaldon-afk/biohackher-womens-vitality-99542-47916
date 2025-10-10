@@ -2,7 +2,7 @@
   "common": {
     "loading": "Loading...",
     "save": "Save",
-    "cancel": "Cancel", 
+    "cancel": "Cancel",
     "continue": "Continue",
     "back": "Back",
     "next": "Next",
@@ -11,12 +11,14 @@
     "delete": "Delete",
     "close": "Close",
     "settings": "Settings",
-    "profile": "Profile"
+    "profile": "Profile",
+    "viewAll": "View All",
+    "learnMore": "Learn More"
   },
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "signOut": "Sign Out", 
+    "signOut": "Sign Out",
     "email": "Email",
     "password": "Password",
     "preferredName": "Preferred Name",
@@ -27,9 +29,14 @@
     "confirmationSent": "We've sent you a confirmation link to complete your registration."
   },
   "navigation": {
+    "home": "Home",
+    "about": "About",
     "dashboard": "My Journey",
-    "pillars": "4 Pillars",
-    "symptoms": "Symptoms", 
+    "pillars": "Pillars",
+    "assessments": "Assessments",
+    "myJourney": "My Journey",
+    "toolkit": "Toolkit",
+    "symptoms": "Symptoms",
     "therapies": "Therapies",
     "supplements": "Supplements",
     "sleep": "Sleep",
@@ -38,7 +45,13 @@
     "reports": "Reports",
     "shop": "Shop",
     "faq": "FAQ",
-    "upgrade": "Upgrade"
+    "upgrade": "Upgrade",
+    "analytics": "Analytics",
+    "symptomTrends": "Symptom Trends",
+    "achievements": "Achievements",
+    "progressTracking": "Progress Tracking",
+    "biohackingTools": "Biohacking Tools",
+    "wearables": "Wearables"
   },
   "health": {
     "gp": "Doctor",
@@ -47,7 +60,7 @@
     "temperature": {
       "sleep": "65-68°F",
       "coldExposure": "50-59°F",
-      "sauna": "174-212°F", 
+      "sauna": "174-212°F",
       "cryotherapy": "-200 to -250°F"
     }
   },
@@ -65,7 +78,36 @@
     "subtitle": "Complete personalized assessments to optimize your health journey",
     "beauty": "Beauty",
     "body": "Body",
-    "brain": "Brain", 
+    "brain": "Brain",
     "balance": "Balance"
+  },
+  "home": {
+    "hero": {
+      "title": "Optimize Your Biology.",
+      "subtitle": "Live Well Longer.",
+      "description": "The first longevity biohacking platform designed specifically for women's unique physiology—at every stage of life.",
+      "ctaPrimary": "Take Your Free Longevity Assessment",
+      "ctaPerformance": "Optimize Performance",
+      "ctaPerformanceDesc": "Peak vitality, energy & longevity",
+      "ctaMenopause": "Navigate Menopause",
+      "ctaMenopauseDesc": "Thrive through hormonal transitions"
+    },
+    "pillars": {
+      "title": "Four Pillars of Women's Longevity",
+      "subtitle": "Science-backed protocols personalized to your unique biology"
+    }
+  },
+  "trustBar": {
+    "evidenceBased": "Evidence-Based",
+    "peerReviewed": "Peer-Reviewed Studies",
+    "scienceBacked": "Science-Backed Protocols",
+    "dataSecurity": "Data Security Guaranteed"
+  },
+  "dashboard": {
+    "welcome": "Welcome to Your Journey",
+    "overview": "Overview",
+    "assessments": "Assessments",
+    "progress": "Progress",
+    "insights": "Insights"
   }
 }

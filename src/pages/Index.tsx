@@ -9,9 +9,11 @@ import { Activity, Brain, Sparkles, Zap, Target, TrendingUp } from "lucide-react
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import CTAButton from "@/components/CTAButton";
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,11 +27,11 @@ const Index = () => {
               <div className="text-center lg:text-left space-y-8">
                 <div>
                   <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-                    Optimize Your Biology.<br />
-                    <span className="text-white/90">Live Well Longer.</span>
+                    {t('home.hero.title')}<br />
+                    <span className="text-white/90">{t('home.hero.subtitle')}</span>
                   </h1>
                   <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
-                    The first longevity biohacking platform designed specifically for women's unique physiology—at every stage of life.
+                    {t('home.hero.description')}
                   </p>
                 </div>
 
@@ -41,7 +43,7 @@ const Index = () => {
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
                     <Target className="h-6 w-6 mr-2" />
-                    Take Your Free Longevity Assessment
+                    {t('home.hero.ctaPrimary')}
                   </Button>
                 </div>
 
@@ -54,8 +56,8 @@ const Index = () => {
                           <TrendingUp className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">Optimize Performance</h3>
-                          <p className="text-white/70 text-sm">Peak vitality, energy & longevity</p>
+                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">{t('home.hero.ctaPerformance')}</h3>
+                          <p className="text-white/70 text-sm">{t('home.hero.ctaPerformanceDesc')}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -68,8 +70,8 @@ const Index = () => {
                           <Activity className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">Navigate Menopause</h3>
-                          <p className="text-white/70 text-sm">Thrive through hormonal transitions</p>
+                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">{t('home.hero.ctaMenopause')}</h3>
+                          <p className="text-white/70 text-sm">{t('home.hero.ctaMenopauseDesc')}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -95,10 +97,10 @@ const Index = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-                Four Pillars of Women's <span className="gradient-text">Longevity</span>
+                {t('home.pillars.title')}
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                A comprehensive approach addressing your brain, body, balance, and beauty—designed specifically for women's unique physiology.
+                {t('home.pillars.subtitle')}
               </p>
             </div>
 
