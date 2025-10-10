@@ -14,6 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessment_question_options: {
+        Row: {
+          created_at: string | null
+          id: string
+          option_order: number
+          option_text: string
+          question_id: string
+          score_value: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          option_order: number
+          option_text: string
+          question_id: string
+          score_value: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          option_order?: number
+          option_text?: string
+          question_id?: string
+          score_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_questions: {
+        Row: {
+          assessment_id: string
+          category: string | null
+          created_at: string | null
+          id: string
+          question_order: number
+          question_text: string
+        }
+        Insert: {
+          assessment_id: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          question_order: number
+          question_text: string
+        }
+        Update: {
+          assessment_id?: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          question_order?: number
+          question_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessments: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          journey_path: string | null
+          name: string
+          pillar: string
+          scoring_guidance: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id: string
+          journey_path?: string | null
+          name: string
+          pillar: string
+          scoring_guidance: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_path?: string | null
+          name?: string
+          pillar?: string
+          scoring_guidance?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       baseline_assessment_schedule: {
         Row: {
           created_at: string | null
