@@ -580,6 +580,66 @@ const AssessmentResults = () => {
             </>
           )}
 
+          {/* Unlock More Features CTA for Guest Users */}
+          {!user && (
+            <Card className="mb-8 border-primary/50 bg-gradient-to-br from-primary/5 to-primary/10">
+              <CardHeader>
+                <CardTitle className="text-2xl">Track Your Progress & Unlock Full Analysis</CardTitle>
+                <p className="text-muted-foreground">
+                  You've completed one assessment. Create a free account to unlock:
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Save Your Assessment History</p>
+                      <p className="text-sm text-muted-foreground">Track changes over time and see your progress</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Personalized Protocol Recommendations</p>
+                      <p className="text-sm text-muted-foreground">Get AI-powered insights tailored to your results</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Track Multiple Health Metrics</p>
+                      <p className="text-sm text-muted-foreground">Monitor your journey across all health pillars</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium">Access Your Health Assistant</p>
+                      <p className="text-sm text-muted-foreground">Get personalized guidance and recommendations</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => navigate('/auth?mode=signup')}
+                    className="w-full"
+                    size="lg"
+                  >
+                    Create Free Account
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/auth?mode=login')}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Already have an account? Sign In
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Next Steps */}
           <Card>
             <CardHeader>
