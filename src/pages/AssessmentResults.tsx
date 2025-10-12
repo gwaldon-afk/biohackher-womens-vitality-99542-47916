@@ -428,19 +428,6 @@ const AssessmentResults = () => {
               </div>
             </CardContent>
           </Card>
-                    <ul className="space-y-2">
-                      {areasForImprovement.map(area => (
-                        <li key={area} className="flex items-start">
-                          <span className="text-yellow-500 mr-2">•</span>
-                          <span>{area}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Personalised Recommendations */}
           <Card className="mb-8">
@@ -575,13 +562,13 @@ const AssessmentResults = () => {
                           onClick={() => navigate('/biohacking-toolkit')}
                           className="w-full"
                         >
-                          View All {toolkitItems.length} Recommendations
+                          {t('assessmentResults.toolkit.viewAll', { count: toolkitItems.length })}
                         </Button>
                       )}
                     </div>
                   ) : (
                     <p className="text-center text-muted-foreground py-8">
-                      No specific recommendations found. Explore our full toolkit for general solutions.
+                      {t('assessmentResults.toolkit.noResults')}
                     </p>
                   )}
                 </CardContent>
@@ -590,9 +577,9 @@ const AssessmentResults = () => {
               {products && products.length > 0 && (
                 <Card className="mb-8">
                   <CardHeader>
-                    <CardTitle>Recommended Products</CardTitle>
+                    <CardTitle>{t('assessmentResults.recommendedProducts')}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Supplements and products that may support your health goals
+                      {t('assessmentResults.products.description')}
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -637,7 +624,7 @@ const AssessmentResults = () => {
                               onClick={() => navigate('/shop')}
                               className="w-full"
                             >
-                              View in Shop
+                              {t('assessmentResults.products.viewInShop')}
                             </Button>
                           </div>
                         ))}
@@ -647,7 +634,7 @@ const AssessmentResults = () => {
                             onClick={() => navigate('/shop')}
                             className="w-full"
                           >
-                            View All Products
+                            {t('assessmentResults.products.viewAll')}
                           </Button>
                         )}
                       </div>
@@ -662,9 +649,9 @@ const AssessmentResults = () => {
           {!user && (
             <Card className="mb-8 border-primary/50 bg-gradient-to-br from-primary/5 to-primary/10">
               <CardHeader>
-                <CardTitle className="text-2xl">Track Your Progress & Unlock Full Analysis</CardTitle>
+                <CardTitle className="text-2xl">{t('assessmentResults.guestCTA.title')}</CardTitle>
                 <p className="text-muted-foreground">
-                  You've completed one assessment. Create a free account to unlock:
+                  {t('assessmentResults.guestCTA.subtitle')}
                 </p>
               </CardHeader>
               <CardContent>
@@ -672,29 +659,29 @@ const AssessmentResults = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">Save Your Assessment History</p>
-                      <p className="text-sm text-muted-foreground">Track changes over time and see your progress</p>
+                      <p className="font-medium">{t('assessmentResults.guestCTA.features.history.title')}</p>
+                      <p className="text-sm text-muted-foreground">{t('assessmentResults.guestCTA.features.history.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">Personalised Protocol Recommendations</p>
-                      <p className="text-sm text-muted-foreground">Get AI-powered insights tailored to your results</p>
+                      <p className="font-medium">{t('assessmentResults.guestCTA.features.protocols.title')}</p>
+                      <p className="text-sm text-muted-foreground">{t('assessmentResults.guestCTA.features.protocols.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">Track Multiple Health Metrics</p>
-                      <p className="text-sm text-muted-foreground">Monitor your journey across all health pillars</p>
+                      <p className="font-medium">{t('assessmentResults.guestCTA.features.metrics.title')}</p>
+                      <p className="text-sm text-muted-foreground">{t('assessmentResults.guestCTA.features.metrics.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">Access Your Health Assistant</p>
-                      <p className="text-sm text-muted-foreground">Get personalised guidance and recommendations</p>
+                      <p className="font-medium">{t('assessmentResults.guestCTA.features.assistant.title')}</p>
+                      <p className="text-sm text-muted-foreground">{t('assessmentResults.guestCTA.features.assistant.description')}</p>
                     </div>
                   </div>
                 </div>
@@ -704,14 +691,14 @@ const AssessmentResults = () => {
                     className="w-full"
                     size="lg"
                   >
-                    Create Free Account
+                    {t('assessmentResults.guestCTA.createAccount')}
                   </Button>
                   <Button 
                     onClick={() => navigate('/auth?mode=login')}
                     variant="outline"
                     className="w-full"
                   >
-                    Already have an account? Sign In
+                    {t('assessmentResults.guestCTA.signIn')}
                   </Button>
                 </div>
               </CardContent>
