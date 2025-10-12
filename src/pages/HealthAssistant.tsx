@@ -331,23 +331,25 @@ const HealthAssistant = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Form - Active Conversation */}
-            <form onSubmit={handleSubmit} className="flex gap-3">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask your health question..."
-                disabled={isLoading}
-                className="flex-1 h-12 border-2 border-primary/20 focus:border-primary"
-              />
-              <Button type="submit" disabled={isLoading || !input.trim()} size="lg">
-                {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-              </Button>
-            </form>
+            {/* Input Form - Only show during active conversation */}
+            {messages.length > 0 && (
+              <form onSubmit={handleSubmit} className="flex gap-3">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask your health question..."
+                  disabled={isLoading}
+                  className="flex-1 h-12 border-2 border-primary/20 focus:border-primary"
+                />
+                <Button type="submit" disabled={isLoading || !input.trim()} size="lg">
+                  {isLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
 
