@@ -203,7 +203,7 @@ const Index = () => {
                 className="text-lg px-8 py-6 h-auto"
                 onClick={() => navigate("/about")}
               >
-                Learn More About Our Approach
+                Learn More About Biohackher
               </Button>
             </div>
           </div>
