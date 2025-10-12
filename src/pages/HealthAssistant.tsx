@@ -182,7 +182,7 @@ const HealthAssistant = () => {
                           <div className="mt-4">
                             <h4 className="font-semibold mb-3 flex items-center gap-2 text-lg">
                               <Sparkles className="h-5 w-5 text-primary" />
-                              Tools & Therapies That Can Help:
+                              Tools & Therapies That Could Help:
                             </h4>
                             <div className="grid gap-3">
                               {message.recommended_tools.map((tool: any) => (
