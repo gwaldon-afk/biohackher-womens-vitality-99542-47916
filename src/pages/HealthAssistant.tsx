@@ -4,14 +4,16 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles } from 'lucide-react';
+import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles, ArrowRight, Star, CheckCircle } from 'lucide-react';
 import { useHealthAssistant } from '@/hooks/useHealthAssistant';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import Navigation from '@/components/Navigation';
 import EvidenceBadge from '@/components/EvidenceBadge';
 
 const HealthAssistant = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { messages, isLoading, askQuestion } = useHealthAssistant();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,29 @@ const HealthAssistant = () => {
             Always consult with your healthcare provider for medical concerns.
           </AlertDescription>
         </Alert>
+
+        {/* Sign Up CTA for Guest Users */}
+        {!user && messages.length > 0 && (
+          <Card className="mb-6 border-primary/50 bg-primary/5">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <Star className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-2">Want to save your conversation and access personalized recommendations?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Sign up to unlock your full health journey with personalized assessments, progress tracking, and custom protocols.
+                  </p>
+                  <Button onClick={() => navigate('/auth')}>
+                    Sign Up Free
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Chat Container */}
         <Card className="mb-6">
@@ -104,23 +129,50 @@ const HealthAssistant = () => {
                         {/* Recommended Tools */}
                         {message.recommended_tools && message.recommended_tools.length > 0 && (
                           <div className="mt-4">
-                            <h4 className="font-semibold mb-3 flex items-center gap-2">
-                              <Sparkles className="h-4 w-4" />
-                              Tools That Can Help You:
+                            <h4 className="font-semibold mb-3 flex items-center gap-2 text-lg">
+                              <Sparkles className="h-5 w-5 text-primary" />
+                              Tools & Therapies That Can Help:
                             </h4>
                             <div className="grid gap-3">
                               {message.recommended_tools.map((tool: any) => (
                                 <Card 
                                   key={tool.id} 
-                                  className="cursor-pointer hover:border-primary transition-colors"
-                                  onClick={() => navigate(`/biohacking-toolkit`)}
+                                  className="cursor-pointer hover:border-primary hover:shadow-lg transition-all group"
+                                  onClick={() => navigate(`/${tool.category_slug || 'biohacking-toolkit'}`)}
                                 >
                                   <CardHeader className="pb-3">
-                                    <CardTitle className="text-base">{tool.name}</CardTitle>
+                                    <div className="flex items-start justify-between gap-2">
+                                      <CardTitle className="text-base group-hover:text-primary transition-colors">
+                                        {tool.name}
+                                      </CardTitle>
+                                      {tool.evidence_level && (
+                                        <EvidenceBadge 
+                                          level={tool.evidence_level.charAt(0).toUpperCase() + tool.evidence_level.slice(1) as any} 
+                                          showTooltip={false}
+                                        />
+                                      )}
+                                    </div>
                                     <CardDescription className="text-sm">
+                                      <span className="font-medium text-primary">Why this helps: </span>
                                       {tool.relevance_reason}
                                     </CardDescription>
+                                    {tool.benefits && tool.benefits.length > 0 && (
+                                      <div className="mt-2 flex flex-wrap gap-1">
+                                        {tool.benefits.slice(0, 3).map((benefit: string, idx: number) => (
+                                          <Badge key={idx} variant="secondary" className="text-xs">
+                                            <CheckCircle className="h-3 w-3 mr-1" />
+                                            {benefit}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    )}
                                   </CardHeader>
+                                  <CardContent className="pt-0">
+                                    <Button variant="ghost" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
+                                      Explore This Tool
+                                      <ArrowRight className="h-4 w-4 ml-2" />
+                                    </Button>
+                                  </CardContent>
                                 </Card>
                               ))}
                             </div>
@@ -130,17 +182,42 @@ const HealthAssistant = () => {
                         {/* Recommended Assessments */}
                         {message.recommended_assessments && message.recommended_assessments.length > 0 && (
                           <div className="mt-4">
-                            <h4 className="font-semibold mb-3">Recommended Assessments:</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {message.recommended_assessments.map((assessment: string) => (
-                                <Badge 
-                                  key={assessment} 
-                                  variant="secondary"
-                                  className="cursor-pointer hover:bg-secondary/80"
-                                  onClick={() => navigate('/symptoms')}
+                            <h4 className="font-semibold mb-3 text-lg">Take These Assessments to Track Your Progress:</h4>
+                            <div className="grid gap-3">
+                              {message.recommended_assessments.map((assessment: any) => (
+                                <Card 
+                                  key={assessment.id || assessment} 
+                                  className="cursor-pointer hover:border-primary hover:shadow-lg transition-all group"
+                                  onClick={() => {
+                                    if (user) {
+                                      navigate('/symptoms');
+                                    } else {
+                                      navigate('/auth');
+                                    }
+                                  }}
                                 >
-                                  {assessment}
-                                </Badge>
+                                  <CardContent className="p-4">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex-1">
+                                        <h5 className="font-medium group-hover:text-primary transition-colors">
+                                          {assessment.name || assessment}
+                                        </h5>
+                                        {assessment.description && (
+                                          <p className="text-sm text-muted-foreground mt-1">{assessment.description}</p>
+                                        )}
+                                        {assessment.pillar && (
+                                          <Badge variant="outline" className="mt-2">
+                                            {assessment.pillar} Pillar
+                                          </Badge>
+                                        )}
+                                      </div>
+                                      <Button size="sm" className="ml-4">
+                                        {user ? 'Start Assessment' : 'Sign Up to Start'}
+                                        <ArrowRight className="h-4 w-4 ml-2" />
+                                      </Button>
+                                    </div>
+                                  </CardContent>
+                                </Card>
                               ))}
                             </div>
                           </div>

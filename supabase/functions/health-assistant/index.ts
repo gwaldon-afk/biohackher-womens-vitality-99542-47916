@@ -39,13 +39,18 @@ serve(async (req) => {
     // Fetch toolkit categories and items for context
     const { data: toolkitCategories } = await supabase
       .from('toolkit_categories')
-      .select('name, description')
+      .select('id, name, description, slug')
       .eq('is_active', true);
 
     const { data: toolkitItems } = await supabase
       .from('toolkit_items')
-      .select('id, name, description, target_symptoms, category_id')
+      .select('id, name, description, target_symptoms, category_id, evidence_level, benefits')
       .eq('is_active', true);
+
+    const { data: assessments } = await supabase
+      .from('assessments')
+      .select('id, name, description, pillar')
+      .limit(20);
 
     // Create comprehensive system prompt
     const systemPrompt = `You are a women's health expert assistant for Biohackher, a science-backed women's longevity platform.
@@ -53,19 +58,26 @@ serve(async (req) => {
 Your role is to:
 - Provide evidence-based, empathetic answers about women's health
 - Focus on the four pillars: Brain, Body, Balance, and Beauty
+- ALWAYS recommend 2-4 specific toolkit items that can help with their concern
+- ALWAYS recommend 1-2 relevant assessments they should take
 - Extract health concerns from questions and recommend relevant tools
-- Always include a medical disclaimer to consult healthcare providers
+- Encourage them to explore these tools and assessments in the app
+- Include a medical disclaimer to consult healthcare providers
+
+Available assessments: ${assessments?.map(a => `${a.name} (${a.pillar} pillar)`).join(', ') || 'various health assessments'}
 
 Available toolkit categories: ${toolkitCategories?.map(c => c.name).join(', ') || 'supplements, therapies, nutrition, sleep, stress management'}
 
-When responding, be warm, supportive, and science-based. Keep answers concise but helpful.
+Available toolkit items include: ${toolkitItems?.slice(0, 20).map(t => t.name).join(', ')}
 
-IMPORTANT: You must use the provided tool to structure your response with:
-1. A clear, helpful answer to the user's question
-2. Extracted health concerns/symptoms mentioned
-3. Recommended toolkit items with relevance explanations
-4. Suggested assessments if applicable
-5. Optional follow-up questions`;
+When responding:
+1. Give a warm, helpful answer (2-3 sentences)
+2. ALWAYS recommend specific toolkit items from our available items
+3. ALWAYS suggest assessments to help them track progress
+4. Be enthusiastic about how these tools can help them
+5. Keep it conversational and encouraging
+
+IMPORTANT: You must use the provided tool to structure your response. Be specific with item names that match our database.`;
 
     // Call Lovable AI with tool calling
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -171,11 +183,35 @@ IMPORTANT: You must use the provided tool to structure your response with:
           aiRec.name.toLowerCase().includes(item.name.toLowerCase())
         );
         if (matchedItem) {
+          // Find category for this item
+          const category = toolkitCategories?.find(c => c.id === matchedItem.category_id);
           recommendedTools.push({
             id: matchedItem.id,
             name: matchedItem.name,
             description: matchedItem.description,
-            relevance_reason: aiRec.relevance_reason
+            relevance_reason: aiRec.relevance_reason,
+            evidence_level: matchedItem.evidence_level,
+            benefits: matchedItem.benefits,
+            category_slug: category?.slug || 'biohacking-toolkit'
+          });
+        }
+      }
+    }
+
+    // Match assessments
+    const recommendedAssessments = [];
+    if (assessments && structuredResponse.recommended_assessments) {
+      for (const aiAssessment of structuredResponse.recommended_assessments) {
+        const matchedAssessment = assessments.find(a => 
+          a.name.toLowerCase().includes(aiAssessment.toLowerCase()) ||
+          aiAssessment.toLowerCase().includes(a.name.toLowerCase())
+        );
+        if (matchedAssessment) {
+          recommendedAssessments.push({
+            id: matchedAssessment.id,
+            name: matchedAssessment.name,
+            description: matchedAssessment.description,
+            pillar: matchedAssessment.pillar
           });
         }
       }
@@ -191,7 +227,7 @@ IMPORTANT: You must use the provided tool to structure your response with:
         ai_answer: structuredResponse.answer,
         extracted_concerns: structuredResponse.extracted_concerns,
         recommended_tools: recommendedTools,
-        recommended_assessments: structuredResponse.recommended_assessments || []
+        recommended_assessments: recommendedAssessments
       });
 
     if (dbError) {
@@ -204,7 +240,7 @@ IMPORTANT: You must use the provided tool to structure your response with:
         answer: structuredResponse.answer,
         extracted_concerns: structuredResponse.extracted_concerns,
         recommended_tools: recommendedTools,
-        recommended_assessments: structuredResponse.recommended_assessments || [],
+        recommended_assessments: recommendedAssessments,
         follow_up_questions: structuredResponse.follow_up_questions || []
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
