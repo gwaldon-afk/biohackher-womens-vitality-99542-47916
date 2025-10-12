@@ -193,7 +193,12 @@ const HealthAssistant = () => {
                                   className="cursor-pointer hover:border-primary hover:shadow-lg transition-all group"
                                   onClick={() => {
                                     if (user) {
-                                      navigate('/symptoms');
+                                      // Navigate to specific assessment if we have an ID
+                                      if (assessment.id) {
+                                        navigate(`/assessment/${assessment.id}`);
+                                      } else {
+                                        navigate('/symptoms');
+                                      }
                                     } else {
                                       navigate('/auth');
                                     }
