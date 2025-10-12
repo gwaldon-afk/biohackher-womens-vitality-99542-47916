@@ -8,8 +8,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Scale, Cigarette, Users, Calendar, Sparkles } from "lucide-react";
+import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export const LIS2InitialAssessment = () => {
   const navigate = useNavigate();
@@ -17,6 +27,7 @@ export const LIS2InitialAssessment = () => {
   const { createOrUpdateProfile } = useHealthProfile();
 
   const [step, setStep] = useState(1);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   const [formData, setFormData] = useState({
     date_of_birth: "",
     height_cm: "",
@@ -265,6 +276,44 @@ export const LIS2InitialAssessment = () => {
 
   return (
     <div className="container max-w-2xl mx-auto py-8 px-4">
+      {/* Exit Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Exit LIS 2.0 Setup?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress will not be saved. You can complete this setup anytime from your dashboard to start tracking your longevity score.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continue Setup</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate('/dashboard')}>
+              Exit to Dashboard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Header with Exit Button */}
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowExitDialog(true)}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Dashboard
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowExitDialog(true)}
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
+
       {/* Welcome Banner */}
       <Alert className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
         <Sparkles className="h-5 w-5 text-primary" />
