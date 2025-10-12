@@ -84,33 +84,81 @@ const HealthAssistant = () => {
         )}
 
         {/* Chat Container */}
-        <Card className="mb-6">
+        <Card className="mb-6 border-2 border-primary/20">
           <CardContent className="p-6">
             {/* Messages Area */}
             <div className="space-y-6 mb-6 min-h-[400px] max-h-[600px] overflow-y-auto">
               {messages.length === 0 ? (
-                <div className="text-center py-12">
-                  <MessageCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Start a Conversation</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Ask any question about women's health, hormones, nutrition, sleep, stress, or wellness
-                  </p>
-                  <div className="flex flex-wrap gap-2 justify-center max-w-2xl mx-auto">
-                    {[
-                      "I'm experiencing brain fog and low energy",
-                      "How can I improve my sleep quality?",
-                      "What supplements help with hormonal balance?",
-                      "I'm feeling stressed and anxious"
-                    ].map((suggestion) => (
-                      <Button
-                        key={suggestion}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setInput(suggestion)}
+                <div className="space-y-6 py-8">
+                  {/* Welcome Message */}
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center gap-3 mb-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full">
+                      <MessageCircle className="h-12 w-12 text-primary" />
+                      <Sparkles className="h-8 w-8 text-secondary" />
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                      Welcome! Let's Start Your Health Journey
+                    </h3>
+                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+                      I'm your AI health assistant, here to provide science-backed answers about women's health, hormones, nutrition, sleep, stress, and wellness.
+                    </p>
+                  </div>
+
+                  {/* Ask Statement */}
+                  <div className="text-center mb-4">
+                    <p className="text-base font-medium text-foreground">
+                      Ask me anything about your health concerns
+                    </p>
+                  </div>
+
+                  {/* Large Input Box */}
+                  <form onSubmit={handleSubmit} className="max-w-3xl mx-auto mb-8">
+                    <div className="relative">
+                      <Input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type your health question here..."
+                        disabled={isLoading}
+                        className="h-16 text-lg pl-6 pr-16 border-2 border-primary/30 focus:border-primary shadow-lg"
+                      />
+                      <Button 
+                        type="submit" 
+                        disabled={isLoading || !input.trim()}
+                        size="lg"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-12"
                       >
-                        {suggestion}
+                        {isLoading ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <Send className="h-5 w-5" />
+                        )}
                       </Button>
-                    ))}
+                    </div>
+                  </form>
+
+                  {/* Sample Questions */}
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Not sure what to ask? Try one of these:
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center max-w-3xl mx-auto">
+                      {[
+                        "I'm experiencing brain fog and low energy",
+                        "How can I improve my sleep quality?",
+                        "What supplements help with hormonal balance?",
+                        "I'm feeling stressed and anxious"
+                      ].map((suggestion) => (
+                        <Button
+                          key={suggestion}
+                          variant="outline"
+                          size="default"
+                          onClick={() => setInput(suggestion)}
+                          className="h-auto py-3 px-4 bg-gradient-to-r from-primary/5 to-secondary/5 hover:from-primary/10 hover:to-secondary/10 border-primary/20"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -283,16 +331,16 @@ const HealthAssistant = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Form */}
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            {/* Input Form - Active Conversation */}
+            <form onSubmit={handleSubmit} className="flex gap-3">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask your health question..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 h-12 border-2 border-primary/20 focus:border-primary"
               />
-              <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Button type="submit" disabled={isLoading || !input.trim()} size="lg">
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
@@ -304,15 +352,30 @@ const HealthAssistant = () => {
         </Card>
 
         {/* Info Card */}
-        <Card>
+        <Card className="border-2 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
           <CardHeader>
-            <CardTitle className="text-lg">How This Works</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              How This Works
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>• Ask any question about women's health, wellness, or longevity</p>
-            <p>• Get evidence-based answers from our AI health assistant</p>
-            <p>• Receive personalized recommendations from our toolkit</p>
-            <p>• Discover relevant assessments to track your progress</p>
+          <CardContent className="space-y-3 text-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+              <p className="text-foreground">Ask any question about women's health, wellness, or longevity</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 h-2 w-2 rounded-full bg-secondary flex-shrink-0" />
+              <p className="text-foreground">Get evidence-based answers from our AI health assistant</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+              <p className="text-foreground">Receive personalized recommendations from our toolkit</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 h-2 w-2 rounded-full bg-secondary flex-shrink-0" />
+              <p className="text-foreground">Discover relevant assessments to track your progress</p>
+            </div>
           </CardContent>
         </Card>
       </div>
