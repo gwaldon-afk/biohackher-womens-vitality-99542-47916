@@ -468,6 +468,42 @@ export type Database = {
           },
         ]
       }
+      health_questions: {
+        Row: {
+          ai_answer: string
+          created_at: string | null
+          extracted_concerns: Json | null
+          id: string
+          question: string
+          recommended_assessments: Json | null
+          recommended_tools: Json | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_answer: string
+          created_at?: string | null
+          extracted_concerns?: Json | null
+          id?: string
+          question: string
+          recommended_assessments?: Json | null
+          recommended_tools?: Json | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_answer?: string
+          created_at?: string | null
+          extracted_concerns?: Json | null
+          id?: string
+          question?: string
+          recommended_assessments?: Json | null
+          recommended_tools?: Json | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       mindset_quiz_leads: {
         Row: {
           answers: Json

@@ -48,6 +48,7 @@ import ToolkitCategory from "./pages/ToolkitCategory";
 import Achievements from "./pages/Achievements";
 import SymptomTrends from "./pages/SymptomTrends";
 import WearableIntegrations from "./pages/WearableIntegrations";
+import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -101,6 +102,7 @@ const App = () => (
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
             <Route path="/about" element={<About />} />
+            <Route path="/health-assistant" element={<HealthAssistant />} />
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -35,15 +35,24 @@ const Index = () => {
                   </p>
                 </div>
 
-                {/* Primary CTA */}
-                <div>
+                {/* Primary CTAs - Two Button Layout */}
+                <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto flex-1"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
                     <Target className="h-6 w-6 mr-2" />
                     {t('home.hero.ctaPrimary')}
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="bg-white/10 text-white border-white/30 hover:bg-white/20 text-lg px-8 py-6 h-auto flex-1"
+                    onClick={() => navigate("/health-assistant")}
+                  >
+                    <Sparkles className="h-6 w-6 mr-2" />
+                    Ask Us Anything
                   </Button>
                 </div>
 
