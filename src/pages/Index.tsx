@@ -35,7 +35,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                {/* Primary CTAs - Two Button Layout */}
+                {/* Primary CTAs - Two Button Layout aligned with cards below */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button 
                     size="lg"
@@ -47,8 +47,7 @@ const Index = () => {
                   </Button>
                   <Button 
                     size="lg"
-                    variant="outline"
-                    className="bg-white/10 text-white border-white/30 hover:bg-white/20 text-lg px-8 py-6 h-auto flex-1"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto flex-1"
                     onClick={() => navigate("/health-assistant")}
                   >
                     <Sparkles className="h-6 w-6 mr-2" />
