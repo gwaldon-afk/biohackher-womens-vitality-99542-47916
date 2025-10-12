@@ -119,35 +119,107 @@ const AssessmentResults = () => {
   const getRecommendations = () => {
     const recs = [];
     
+    // Generate category-specific recommendations based on areas for improvement
+    areasForImprovement.forEach(area => {
+      const areaLower = area.toLowerCase();
+      
+      // Memory-related recommendations
+      if (areaLower.includes('memory')) {
+        recs.push({
+          title: 'Enhance Memory Function',
+          description: 'Try cognitive exercises like learning a new language or musical instrument. Consider omega-3 supplementation and prioritise 7-9 hours of quality sleep, as memory consolidation occurs during deep sleep stages.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Focus/Attention recommendations
+      if (areaLower.includes('focus') || areaLower.includes('attention') || areaLower.includes('concentration')) {
+        recs.push({
+          title: 'Improve Focus and Attention',
+          description: 'Implement the Pomodoro Technique (25-minute focused work sessions). Reduce screen time before tasks requiring concentration. Consider meditation practice starting with 5-10 minutes daily to build attention span.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Anxiety/Stress recommendations
+      if (areaLower.includes('anxiety') || areaLower.includes('stress') || areaLower.includes('worry') || areaLower.includes('tension')) {
+        recs.push({
+          title: 'Manage Anxiety and Stress',
+          description: 'Practice daily breathing exercises (4-7-8 technique). Consider cognitive behavioural therapy (CBT) for lasting change. Regular aerobic exercise (30 mins, 5x/week) significantly reduces anxiety symptoms. Limit caffeine intake after midday.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Mood/Emotional recommendations
+      if (areaLower.includes('mood') || areaLower.includes('emotion') || areaLower.includes('feeling')) {
+        recs.push({
+          title: 'Support Emotional Wellbeing',
+          description: 'Maintain consistent sleep-wake times to regulate mood. Ensure daily sunlight exposure, especially in morning. Regular social connection is crucial - schedule weekly catch-ups. Consider journalling to process emotions.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Sleep recommendations
+      if (areaLower.includes('sleep') || areaLower.includes('rest') || areaLower.includes('fatigue')) {
+        recs.push({
+          title: 'Optimise Sleep Quality',
+          description: 'Establish a consistent sleep schedule (same bedtime/wake time daily). Create a cool, dark bedroom (18-20°C). Avoid screens 1 hour before bed. Consider magnesium glycinate supplementation 1-2 hours before sleep.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Energy recommendations
+      if (areaLower.includes('energy') || areaLower.includes('vitality') || areaLower.includes('tiredness')) {
+        recs.push({
+          title: 'Boost Energy Levels',
+          description: 'Check iron and B12 levels through bloodwork. Eat balanced meals every 3-4 hours to maintain stable blood sugar. Take short walking breaks every 90 minutes. Stay hydrated (aim for 2-3L water daily).',
+          priority: 'high' as const
+        });
+      }
+      
+      // Physical/Pain recommendations  
+      if (areaLower.includes('pain') || areaLower.includes('physical') || areaLower.includes('discomfort') || areaLower.includes('mobility')) {
+        recs.push({
+          title: 'Address Physical Discomfort',
+          description: 'Incorporate daily gentle stretching or yoga. Consider physiotherapy assessment for persistent pain. Anti-inflammatory diet (increase omega-3s, reduce processed foods). Apply heat/cold therapy as appropriate.',
+          priority: 'high' as const
+        });
+      }
+      
+      // Cognitive/Processing recommendations
+      if (areaLower.includes('processing') || areaLower.includes('thinking') || areaLower.includes('clarity') || areaLower.includes('fog')) {
+        recs.push({
+          title: 'Enhance Cognitive Processing',
+          description: 'Stay mentally active with puzzles, reading, or learning new skills. Ensure adequate hydration throughout the day. Consider checking thyroid function and vitamin D levels. Regular aerobic exercise improves processing speed.',
+          priority: 'high' as const
+        });
+      }
+    });
+
+    // Professional support recommendation for poor/fair scores
     if (scoreCategory === 'poor' || scoreCategory === 'fair') {
       recs.push({
-        title: 'Comprehensive Assessment',
-        description: 'Consider consulting with a healthcare professional for a detailed evaluation and personalized treatment plan.',
+        title: 'Seek Professional Guidance',
+        description: 'Given your current results, consulting with a healthcare professional can provide personalised assessment and treatment options. They can rule out underlying conditions and create a tailored intervention plan.',
         priority: 'high' as const
       });
     }
 
-    areasForImprovement.forEach(area => {
+    // Maintenance recommendation for strengths
+    if (strengths.length > 0) {
       recs.push({
-        title: `Focus on ${area}`,
-        description: `This area shows the most room for improvement. Targeted interventions could significantly enhance your overall score.`,
-        priority: 'high' as const
-      });
-    });
-
-    if (scoreCategory === 'good' || scoreCategory === 'fair') {
-      recs.push({
-        title: 'Lifestyle Optimization',
-        description: 'Small consistent changes in daily habits can lead to significant improvements over time.',
+        title: 'Maintain Your Strengths',
+        description: `You're performing well in: ${strengths.join(', ')}. Continue these positive habits whilst addressing other areas. Your success here demonstrates your capacity for positive health changes.`,
         priority: 'medium' as const
       });
     }
 
-    if (strengths.length > 0) {
+    // If no specific recs were added, provide general guidance
+    if (recs.length === 0) {
       recs.push({
-        title: 'Maintain Your Strengths',
-        description: `You're doing well in: ${strengths.join(', ')}. Continue these positive habits to maintain your progress.`,
-        priority: 'low' as const
+        title: 'Continue Your Health Journey',
+        description: 'Explore our evidence-based toolkit for science-backed interventions tailored to your specific needs. Small, consistent changes compound over time for significant improvements.',
+        priority: 'medium' as const
       });
     }
 
@@ -177,7 +249,7 @@ const AssessmentResults = () => {
     enabled: symptomTags.length > 0
   });
 
-  // Generate and save personalized recommendations for authenticated users
+  // Generate and save personalised recommendations for authenticated users
   useEffect(() => {
     if (user && toolkitItems && toolkitItems.length > 0 && !savingRecommendations) {
       setSavingRecommendations(true);
@@ -188,7 +260,7 @@ const AssessmentResults = () => {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Failed to save personalized recommendations"
+            description: "Failed to save personalised recommendations"
           });
         })
         .finally(() => setSavingRecommendations(false));
@@ -262,12 +334,12 @@ const AssessmentResults = () => {
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
                       Your results show that {assessmentName.toLowerCase()} is affecting various aspects of your life to a moderate degree. 
-                      While you're managing some areas well, there's meaningful room for improvement that could significantly enhance your daily experience.
+                      Whilst you're managing some areas well, there's meaningful room for improvement that could significantly enhance your daily experience.
                     </p>
                     {areasForImprovement.length > 0 && (
                       <p className="text-base leading-relaxed">
                         Focus particularly on: <strong>{areasForImprovement.join(', ')}</strong>. 
-                        Targeted interventions in these areas, combined with the toolkit recommendations below, can help you move toward optimal wellbeing.
+                        Targeted interventions in these areas, combined with the toolkit recommendations below, can help you move towards optimal wellbeing.
                       </p>
                     )}
                     {strengths.length > 0 && (
@@ -283,12 +355,12 @@ const AssessmentResults = () => {
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
                       Your assessment shows that you're managing {assessmentName.toLowerCase()} well overall. 
-                      You've developed effective strategies that are working for you, though there are still opportunities for optimization.
+                      You've developed effective strategies that are working for you, though there are still opportunities for optimisation.
                     </p>
                     {strengths.length > 0 && (
                       <p className="text-base leading-relaxed">
                         Your particular strengths lie in: <strong>{strengths.join(', ')}</strong>. 
-                        Maintaining these positive habits while addressing minor areas for improvement can help you reach excellent outcomes.
+                        Maintaining these positive habits whilst addressing minor areas for improvement can help you reach excellent outcomes.
                       </p>
                     )}
                     {areasForImprovement.length > 0 && (
@@ -308,7 +380,7 @@ const AssessmentResults = () => {
                     {strengths.length > 0 && (
                       <p className="text-base leading-relaxed">
                         You excel particularly in: <strong>{strengths.join(', ')}</strong>. 
-                        These successful strategies could be valuable templates for optimizing other areas of your health journey.
+                        These successful strategies could be valuable templates for optimising other areas of your health journey.
                       </p>
                     )}
                     <p className="text-base leading-relaxed">
@@ -364,10 +436,10 @@ const AssessmentResults = () => {
             </CardContent>
           </Card>
 
-          {/* Personalized Recommendations */}
+          {/* Personalised Recommendations */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Personalized Action Plan</CardTitle>
+              <CardTitle>Personalised Action Plan</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -601,7 +673,7 @@ const AssessmentResults = () => {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium">Personalized Protocol Recommendations</p>
+                      <p className="font-medium">Personalised Protocol Recommendations</p>
                       <p className="text-sm text-muted-foreground">Get AI-powered insights tailored to your results</p>
                     </div>
                   </div>
@@ -616,7 +688,7 @@ const AssessmentResults = () => {
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-medium">Access Your Health Assistant</p>
-                      <p className="text-sm text-muted-foreground">Get personalized guidance and recommendations</p>
+                      <p className="text-sm text-muted-foreground">Get personalised guidance and recommendations</p>
                     </div>
                   </div>
                 </div>

@@ -20,7 +20,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en-GB',
+    fallbackLng: 'en-AU',
+    lng: 'en-AU', // Set AU English as default
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
