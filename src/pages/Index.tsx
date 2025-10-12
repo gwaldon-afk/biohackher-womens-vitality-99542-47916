@@ -36,10 +36,10 @@ const Index = () => {
                 </div>
 
                 {/* Primary CTAs - Two Button Layout aligned with cards below */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 mb-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto flex-1"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
                     <Target className="h-6 w-6 mr-2" />
@@ -47,7 +47,7 @@ const Index = () => {
                   </Button>
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto flex-1"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2"
                     onClick={() => navigate("/health-assistant")}
                   >
                     <Sparkles className="h-6 w-6 mr-2" />
