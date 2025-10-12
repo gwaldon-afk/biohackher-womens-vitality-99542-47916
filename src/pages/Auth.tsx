@@ -56,9 +56,10 @@ const Auth = () => {
   });
 
   // Redirect if already authenticated and check for health profile
+  // BUT: Don't redirect if coming from guest session - let them complete signup
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
-      if (user) {
+      if (user && !guestSessionId) {
         // Check if user has completed LIS 2.0 setup
         const { data: healthProfile } = await supabase
           .from('user_health_profile')
@@ -75,7 +76,7 @@ const Auth = () => {
     };
     
     checkProfileAndRedirect();
-  }, [user, navigate]);
+  }, [user, navigate, guestSessionId]);
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(true);

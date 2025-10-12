@@ -107,21 +107,22 @@ export default function GuestLISResults() {
     const chronologicalAge = assessmentData.baselineData.age;
     const lisScore = results.finalScore;
     
-    // Research-backed coefficients (Bryan Johnson, Horvath Clock, CALERIE Trial)
+    // Research-backed coefficients - CORRECTED FORMULA
     const baselineScore = 50; // Average population
     const scoreDelta = lisScore - baselineScore;
-    const biologicalAgeDelta = (scoreDelta / 5) * -1; // Doubled impact for realistic projections
+    const biologicalAgeDelta = (scoreDelta / 5) * -1; // Higher LIS = younger biological age
     
     const biologicalAge = chronologicalAge + biologicalAgeDelta;
-    const annualDeceleration = (lisScore / 100) * -0.40; // Research-backed coefficient
     
-    // Current aging rate (1 year chronological + deceleration effect)
-    const currentAgingRate = 1 + annualDeceleration;
+    // FIXED: Low scores should ACCELERATE aging (>1.0), high scores should DECELERATE (<1.0)
+    // Formula: 1.5 at LIS=0, 1.0 at LIS=50, 0.7 at LIS=100
+    const annualDeceleration = 1.0 - ((lisScore - 50) / 100); // Corrected coefficient
+    const currentAgingRate = annualDeceleration;
     
     // Optimized scenario: LIS score of 85 (achievable with biohacking)
     const optimizedLIS = 85;
-    const optimizedDeceleration = (optimizedLIS / 100) * -0.40; // Research-backed coefficient
-    const optimizedAgingRate = 1 + optimizedDeceleration;
+    const optimizedDeceleration = 1.0 - ((optimizedLIS - 50) / 100);
+    const optimizedAgingRate = optimizedDeceleration;
     
     // Future projections
     const current5yr = biologicalAge + (currentAgingRate * 5);
@@ -204,10 +205,10 @@ export default function GuestLISResults() {
         results.finalScore >= 40 ? 'moderate habits that could be enhanced to dramatically improve your healthspan' :
         'lifestyle patterns that need attention to reverse accelerated aging'
       }.`,
-      biologicalAge: `Based on your habits, you're aging at approximately ${ageingRate.toFixed(2)} biological years per calendar year, which means you could ${
-        ageingRate < 1 ? `effectively gain ${Math.round((1 - ageingRate) * 30)} healthy years over the next 30 years` :
-        ageingRate > 1 ? `lose ${Math.round((ageingRate - 1) * 30)} potential healthy years over the next 30 years without intervention` :
-        'age at a standard rate with room for optimization'
+      biologicalAge: `Based on your habits, you're aging at approximately ${ageingRate.toFixed(2)}x the normal rate, which means ${
+        ageingRate < 1 ? `you could effectively gain ${Math.round((1 - ageingRate) * 30)} healthy years over the next 30 years` :
+        ageingRate > 1 ? `you could lose ${Math.round((ageingRate - 1) * 30)} potential healthy years over the next 30 years without intervention` :
+        'you\'re aging at a standard rate with room for optimization'
       }.`,
       strengths: `Your ${topStrength[0]} score of ${Math.round(topStrength[1])}% shows strong habits in this pillar. This provides a solid foundation - maintaining this while improving other areas will compound your longevity gains.`,
       priorities: `${topWeakness[0]} (${Math.round(topWeakness[1])}%) represents your highest-impact improvement opportunity. Research shows that targeted interventions in your weakest pillar can shift your overall aging trajectory within 4-6 weeks and add years to your healthspan.`
@@ -337,10 +338,9 @@ export default function GuestLISResults() {
                 <p className="text-sm text-muted-foreground mb-2">
                   Based on your LIS score of {results.finalScore}, your lifestyle is causing you to age approximately{' '}
                   <span className="font-bold text-foreground">
-                    {Math.abs(bioAgeData.annualDeceleration)} years per year{' '}
-                    {bioAgeData.annualDeceleration < 0 ? 'slower' : 'faster'}
+                    {bioAgeData.annualDeceleration.toFixed(2)}x
                   </span>{' '}
-                  than average.
+                  the normal rate ({bioAgeData.annualDeceleration < 1 ? 'slower than' : bioAgeData.annualDeceleration > 1 ? 'faster than' : 'same as'} average).
                 </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   {bioAgeData.delta < 0 
@@ -386,9 +386,12 @@ export default function GuestLISResults() {
                     </div>
                   </div>
                   
-                  <div className="mt-3 p-2 bg-green-500/10 rounded border border-green-500/20">
-                    <p className="text-sm font-medium text-green-700">
-                      💡 Potential improvement: <span className="font-bold">{bioAgeData.projections.improvementGap5yr} years younger</span> with optimized lifestyle
+                  <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded border border-green-500/20">
+                    <p className="text-sm font-medium text-green-700 mb-1">
+                      💡 <span className="font-bold">Improvement Potential: {bioAgeData.projections.improvementGap5yr} years younger biological age</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      That's a {((bioAgeData.projections.current5yr - bioAgeData.projections.optimized5yr) / bioAgeData.projections.current5yr * 100).toFixed(0)}% reduction in biological aging over 5 years!
                     </p>
                   </div>
                 </div>
@@ -436,7 +439,7 @@ export default function GuestLISResults() {
 
                 <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
                   <p className="text-xs text-muted-foreground mb-2">
-                    <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {(1 + bioAgeData.annualDeceleration).toFixed(3)}x per year.
+                    <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {bioAgeData.annualDeceleration.toFixed(2)}x per year.
                   </p>
                 </div>
               </div>
