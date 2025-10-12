@@ -76,12 +76,11 @@ When responding:
 2. ALWAYS recommend specific toolkit items from our available items (match exact names)
 3. ALWAYS suggest assessments to help them track progress (ONLY from the list above)
 4. If relevant, mention clinical tests they could discuss with their doctor (e.g., hormone panels, vitamin levels)
-5. Suggest follow-up questions the USER might want to ask next (not clarification questions from you)
-
-Follow-up questions should be:
-- Related health topics they might explore
-- Different aspects of their concern
-- Examples: "How can I improve my sleep naturally?", "What supplements support hormone balance?", "How does stress affect aging?"
+5. Provide follow-up questions:
+   - If their question was broad/vague: Ask 2-3 clarification questions to better understand their situation
+   - If their question was specific: Suggest 2-3 related topics they might want to explore
+   - Examples of clarification: "How long have you been experiencing this?", "Is this worse at certain times of day?"
+   - Examples of exploration: "How can I improve my sleep naturally?", "What supplements support hormone balance?"
 
 CRITICAL: Only recommend assessments that are in the available assessments list above. Do not make up assessment names.`;
 
@@ -140,7 +139,7 @@ CRITICAL: Only recommend assessments that are in the available assessments list 
                   follow_up_questions: {
                     type: 'array',
                     items: { type: 'string' },
-                    description: 'Suggested questions the USER might want to ask next (not clarification questions from the assistant)'
+                    description: 'If the question was broad/vague, ask clarification questions. If specific, suggest related topics they might explore. Mix of both is okay.'
                   }
                 },
                 required: ['answer', 'extracted_concerns', 'recommended_toolkit_items']

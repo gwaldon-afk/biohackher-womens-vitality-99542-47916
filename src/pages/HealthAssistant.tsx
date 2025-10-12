@@ -243,7 +243,7 @@ const HealthAssistant = () => {
                         {/* Follow-up Questions */}
                         {message.follow_up_questions && message.follow_up_questions.length > 0 && (
                           <div className="mt-4">
-                            <p className="text-sm text-muted-foreground mb-2">You might also want to ask:</p>
+                            <p className="text-sm text-muted-foreground mb-2">Questions to help us understand better or explore further:</p>
                             <div className="flex flex-wrap gap-2">
                               {message.follow_up_questions.map((question: string) => (
                                 <Button
