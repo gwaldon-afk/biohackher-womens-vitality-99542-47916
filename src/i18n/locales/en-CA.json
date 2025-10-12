@@ -109,5 +109,130 @@
     "assessments": "Assessments",
     "progress": "Progress",
     "insights": "Insights"
+  },
+  "assessmentResults": {
+    "backToPillars": "Back to Pillars",
+    "whatResultsMean": "What Your Results Mean",
+    "detailedAnalysis": "Detailed Analysis",
+    "personalisedActionPlan": "Personalised Action Plan",
+    "understandingYourScore": "Understanding Your Score",
+    "recommendedToolkitItems": "Recommended Toolkit Items",
+    "recommendedProducts": "Recommended Products",
+    "nextSteps": "Next Steps",
+    "strengths": "Strengths",
+    "priorityFocusAreas": "Priority Focus Areas",
+    "categories": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor"
+    },
+    "priority": {
+      "high": "high priority",
+      "medium": "medium priority",
+      "low": "low priority"
+    },
+    "categoryDescriptions": {
+      "poor": "Your assessment indicates significant challenges with {{assessmentName}} that are likely impacting your daily quality of life. These results suggest that professional support could be highly beneficial in developing targeted strategies for improvement.",
+      "poorAreas": "The areas showing the greatest impact are: {{areas}}. Addressing these specific aspects could lead to substantial improvements in your overall wellbeing.",
+      "fair": "Your results show that {{assessmentName}} is affecting various aspects of your life to a moderate degree. While you're managing some areas well, there's meaningful room for improvement that could significantly enhance your daily experience.",
+      "fairFocus": "Focus particularly on: {{areas}}. Targeted interventions in these areas, combined with the toolkit recommendations below, can help you move toward optimal wellbeing.",
+      "fairStrengths": "You're already doing well with: {{strengths}}. These strengths can serve as a foundation as you work on other areas.",
+      "good": "Your assessment shows that you're managing {{assessmentName}} well overall. You've developed effective strategies that are working for you, though there are still opportunities for optimisation.",
+      "goodStrengths": "Your particular strengths lie in: {{strengths}}. Maintaining these positive habits while addressing minor areas for improvement can help you reach excellent outcomes.",
+      "goodAreas": "Small refinements in: {{areas}} could elevate your results to the excellent range.",
+      "excellent": "Outstanding results! You've developed highly effective strategies for managing {{assessmentName}}. Your approach is working exceptionally well, and you're experiencing optimal outcomes in this area of health.",
+      "excellentStrengths": "You excel particularly in: {{strengths}}. These successful strategies could be valuable templates for optimising other areas of your health journey.",
+      "excellentMaintain": "Focus on maintaining these positive habits and consider exploring the evidence-based tools below to sustain and further enhance your wellbeing."
+    },
+    "recommendations": {
+      "memory": {
+        "title": "Enhance Memory Function",
+        "description": "Try cognitive exercises like learning a new language or musical instrument. Consider omega-3 supplementation and prioritise 7-9 hours of quality sleep, as memory consolidation occurs during deep sleep stages."
+      },
+      "focus": {
+        "title": "Improve Focus and Attention",
+        "description": "Implement the Pomodoro Technique (25-minute focused work sessions). Reduce screen time before tasks requiring concentration. Consider meditation practice starting with 5-10 minutes daily to build attention span."
+      },
+      "anxiety": {
+        "title": "Manage Anxiety and Stress",
+        "description": "Practice daily breathing exercises (4-7-8 technique). Consider cognitive behavioural therapy (CBT) for lasting change. Regular aerobic exercise (30 mins, 5x/week) significantly reduces anxiety symptoms. Limit caffeine intake after midday."
+      },
+      "mood": {
+        "title": "Support Emotional Wellbeing",
+        "description": "Maintain consistent sleep-wake times to regulate mood. Ensure daily sunlight exposure, especially in morning. Regular social connection is crucial - schedule weekly catch-ups. Consider journalling to process emotions."
+      },
+      "sleep": {
+        "title": "Optimise Sleep Quality",
+        "description": "Establish a consistent sleep schedule (same bedtime/wake time daily). Create a cool, dark bedroom (18-20°C). Avoid screens 1 hour before bed. Consider magnesium glycinate supplementation 1-2 hours before sleep."
+      },
+      "energy": {
+        "title": "Boost Energy Levels",
+        "description": "Check iron and B12 levels through bloodwork. Eat balanced meals every 3-4 hours to maintain stable blood sugar. Take short walking breaks every 90 minutes. Stay hydrated (aim for 2-3L water daily)."
+      },
+      "pain": {
+        "title": "Address Physical Discomfort",
+        "description": "Incorporate daily gentle stretching or yoga. Consider physiotherapy assessment for persistent pain. Anti-inflammatory diet (increase omega-3s, reduce processed foods). Apply heat/cold therapy as appropriate."
+      },
+      "cognitive": {
+        "title": "Enhance Cognitive Processing",
+        "description": "Stay mentally active with puzzles, reading, or learning new skills. Ensure adequate hydration throughout the day. Consider checking thyroid function and vitamin D levels. Regular aerobic exercise improves processing speed."
+      },
+      "professional": {
+        "title": "Seek Professional Guidance",
+        "description": "Given your current results, consulting with a healthcare professional can provide personalised assessment and treatment options. They can rule out underlying conditions and create a tailored intervention plan."
+      },
+      "maintain": {
+        "title": "Maintain Your Strengths",
+        "description": "You're performing well in: {{strengths}}. Continue these positive habits while addressing other areas. Your success here demonstrates your capacity for positive health changes."
+      },
+      "general": {
+        "title": "Continue Your Health Journey",
+        "description": "Explore our evidence-based toolkit for science-backed interventions tailored to your specific needs. Small, consistent changes compound over time for significant improvements."
+      }
+    },
+    "toolkit": {
+      "description": "Evidence-based biohacking tools tailored to your assessment results",
+      "learnMore": "Learn More",
+      "viewAll": "View All {{count}} Recommendations",
+      "noResults": "No specific recommendations found. Explore our full toolkit for general solutions."
+    },
+    "products": {
+      "description": "Supplements and products that may support your health goals",
+      "viewInShop": "View in Shop",
+      "viewAll": "View All Products"
+    },
+    "guestCTA": {
+      "title": "Track Your Progress & Unlock Full Analysis",
+      "subtitle": "You've completed one assessment. Create a free account to unlock:",
+      "features": {
+        "history": {
+          "title": "Save Your Assessment History",
+          "description": "Track changes over time and see your progress"
+        },
+        "protocols": {
+          "title": "Personalised Protocol Recommendations",
+          "description": "Get AI-powered insights tailored to your results"
+        },
+        "metrics": {
+          "title": "Track Multiple Health Metrics",
+          "description": "Monitor your journey across all health pillars"
+        },
+        "assistant": {
+          "title": "Access Your Health Assistant",
+          "description": "Get personalised guidance and recommendations"
+        }
+      },
+      "createAccount": "Create Free Account",
+      "signIn": "Already have an account? Sign In"
+    },
+    "nextStepsButtons": {
+      "exploreAssessments": "Explore Other Assessments",
+      "viewHistory": "View Assessment History",
+      "exploreToolkit": "Explore Full Toolkit"
+    },
+    "errors": {
+      "saveFailed": "Failed to save personalised recommendations"
+    }
   }
 }

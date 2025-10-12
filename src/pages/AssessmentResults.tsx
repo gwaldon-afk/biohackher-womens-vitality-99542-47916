@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { getAssessment } = useAssessments();
   const { toast } = useToast();
@@ -126,8 +128,8 @@ const AssessmentResults = () => {
       // Memory-related recommendations
       if (areaLower.includes('memory')) {
         recs.push({
-          title: 'Enhance Memory Function',
-          description: 'Try cognitive exercises like learning a new language or musical instrument. Consider omega-3 supplementation and prioritise 7-9 hours of quality sleep, as memory consolidation occurs during deep sleep stages.',
+          title: t('assessmentResults.recommendations.memory.title'),
+          description: t('assessmentResults.recommendations.memory.description'),
           priority: 'high' as const
         });
       }
@@ -135,8 +137,8 @@ const AssessmentResults = () => {
       // Focus/Attention recommendations
       if (areaLower.includes('focus') || areaLower.includes('attention') || areaLower.includes('concentration')) {
         recs.push({
-          title: 'Improve Focus and Attention',
-          description: 'Implement the Pomodoro Technique (25-minute focused work sessions). Reduce screen time before tasks requiring concentration. Consider meditation practice starting with 5-10 minutes daily to build attention span.',
+          title: t('assessmentResults.recommendations.focus.title'),
+          description: t('assessmentResults.recommendations.focus.description'),
           priority: 'high' as const
         });
       }
@@ -144,8 +146,8 @@ const AssessmentResults = () => {
       // Anxiety/Stress recommendations
       if (areaLower.includes('anxiety') || areaLower.includes('stress') || areaLower.includes('worry') || areaLower.includes('tension')) {
         recs.push({
-          title: 'Manage Anxiety and Stress',
-          description: 'Practice daily breathing exercises (4-7-8 technique). Consider cognitive behavioural therapy (CBT) for lasting change. Regular aerobic exercise (30 mins, 5x/week) significantly reduces anxiety symptoms. Limit caffeine intake after midday.',
+          title: t('assessmentResults.recommendations.anxiety.title'),
+          description: t('assessmentResults.recommendations.anxiety.description'),
           priority: 'high' as const
         });
       }
@@ -153,8 +155,8 @@ const AssessmentResults = () => {
       // Mood/Emotional recommendations
       if (areaLower.includes('mood') || areaLower.includes('emotion') || areaLower.includes('feeling')) {
         recs.push({
-          title: 'Support Emotional Wellbeing',
-          description: 'Maintain consistent sleep-wake times to regulate mood. Ensure daily sunlight exposure, especially in morning. Regular social connection is crucial - schedule weekly catch-ups. Consider journalling to process emotions.',
+          title: t('assessmentResults.recommendations.mood.title'),
+          description: t('assessmentResults.recommendations.mood.description'),
           priority: 'high' as const
         });
       }
@@ -162,8 +164,8 @@ const AssessmentResults = () => {
       // Sleep recommendations
       if (areaLower.includes('sleep') || areaLower.includes('rest') || areaLower.includes('fatigue')) {
         recs.push({
-          title: 'Optimise Sleep Quality',
-          description: 'Establish a consistent sleep schedule (same bedtime/wake time daily). Create a cool, dark bedroom (18-20°C). Avoid screens 1 hour before bed. Consider magnesium glycinate supplementation 1-2 hours before sleep.',
+          title: t('assessmentResults.recommendations.sleep.title'),
+          description: t('assessmentResults.recommendations.sleep.description'),
           priority: 'high' as const
         });
       }
@@ -171,8 +173,8 @@ const AssessmentResults = () => {
       // Energy recommendations
       if (areaLower.includes('energy') || areaLower.includes('vitality') || areaLower.includes('tiredness')) {
         recs.push({
-          title: 'Boost Energy Levels',
-          description: 'Check iron and B12 levels through bloodwork. Eat balanced meals every 3-4 hours to maintain stable blood sugar. Take short walking breaks every 90 minutes. Stay hydrated (aim for 2-3L water daily).',
+          title: t('assessmentResults.recommendations.energy.title'),
+          description: t('assessmentResults.recommendations.energy.description'),
           priority: 'high' as const
         });
       }
@@ -180,8 +182,8 @@ const AssessmentResults = () => {
       // Physical/Pain recommendations  
       if (areaLower.includes('pain') || areaLower.includes('physical') || areaLower.includes('discomfort') || areaLower.includes('mobility')) {
         recs.push({
-          title: 'Address Physical Discomfort',
-          description: 'Incorporate daily gentle stretching or yoga. Consider physiotherapy assessment for persistent pain. Anti-inflammatory diet (increase omega-3s, reduce processed foods). Apply heat/cold therapy as appropriate.',
+          title: t('assessmentResults.recommendations.pain.title'),
+          description: t('assessmentResults.recommendations.pain.description'),
           priority: 'high' as const
         });
       }
@@ -189,8 +191,8 @@ const AssessmentResults = () => {
       // Cognitive/Processing recommendations
       if (areaLower.includes('processing') || areaLower.includes('thinking') || areaLower.includes('clarity') || areaLower.includes('fog')) {
         recs.push({
-          title: 'Enhance Cognitive Processing',
-          description: 'Stay mentally active with puzzles, reading, or learning new skills. Ensure adequate hydration throughout the day. Consider checking thyroid function and vitamin D levels. Regular aerobic exercise improves processing speed.',
+          title: t('assessmentResults.recommendations.cognitive.title'),
+          description: t('assessmentResults.recommendations.cognitive.description'),
           priority: 'high' as const
         });
       }
@@ -199,8 +201,8 @@ const AssessmentResults = () => {
     // Professional support recommendation for poor/fair scores
     if (scoreCategory === 'poor' || scoreCategory === 'fair') {
       recs.push({
-        title: 'Seek Professional Guidance',
-        description: 'Given your current results, consulting with a healthcare professional can provide personalised assessment and treatment options. They can rule out underlying conditions and create a tailored intervention plan.',
+        title: t('assessmentResults.recommendations.professional.title'),
+        description: t('assessmentResults.recommendations.professional.description'),
         priority: 'high' as const
       });
     }
@@ -208,8 +210,8 @@ const AssessmentResults = () => {
     // Maintenance recommendation for strengths
     if (strengths.length > 0) {
       recs.push({
-        title: 'Maintain Your Strengths',
-        description: `You're performing well in: ${strengths.join(', ')}. Continue these positive habits whilst addressing other areas. Your success here demonstrates your capacity for positive health changes.`,
+        title: t('assessmentResults.recommendations.maintain.title'),
+        description: t('assessmentResults.recommendations.maintain.description', { strengths: strengths.join(', ') }),
         priority: 'medium' as const
       });
     }
@@ -217,8 +219,8 @@ const AssessmentResults = () => {
     // If no specific recs were added, provide general guidance
     if (recs.length === 0) {
       recs.push({
-        title: 'Continue Your Health Journey',
-        description: 'Explore our evidence-based toolkit for science-backed interventions tailored to your specific needs. Small, consistent changes compound over time for significant improvements.',
+        title: t('assessmentResults.recommendations.general.title'),
+        description: t('assessmentResults.recommendations.general.description'),
         priority: 'medium' as const
       });
     }
@@ -260,7 +262,7 @@ const AssessmentResults = () => {
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Failed to save personalised recommendations"
+            description: t('assessmentResults.errors.saveFailed')
           });
         })
         .finally(() => setSavingRecommendations(false));
@@ -278,7 +280,7 @@ const AssessmentResults = () => {
             className="mb-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Pillars
+            {t('assessmentResults.backToPillars')}
           </Button>
 
           {/* Overall Score Card */}
@@ -300,7 +302,7 @@ const AssessmentResults = () => {
                 variant="secondary" 
                 className={`text-lg px-4 py-1 mb-4 ${getCategoryColor(scoreCategory)} text-white`}
               >
-                {scoreCategory.charAt(0).toUpperCase() + scoreCategory.slice(1)}
+                {t(`assessmentResults.categories.${scoreCategory}`)}
               </Badge>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 {categoryDescription}
@@ -311,20 +313,18 @@ const AssessmentResults = () => {
           {/* What Your Results Mean */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>What Your Results Mean</CardTitle>
+              <CardTitle>{t('assessmentResults.whatResultsMean')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="prose prose-sm max-w-none dark:prose-invert">
                 {scoreCategory === 'poor' && (
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
-                      Your assessment indicates significant challenges with {assessmentName.toLowerCase()} that are likely impacting your daily quality of life. 
-                      These results suggest that professional support could be highly beneficial in developing targeted strategies for improvement.
+                      {t('assessmentResults.categoryDescriptions.poor', { assessmentName: assessmentName.toLowerCase() })}
                     </p>
                     {areasForImprovement.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        The areas showing the greatest impact are: <strong>{areasForImprovement.join(', ')}</strong>. 
-                        Addressing these specific aspects could lead to substantial improvements in your overall wellbeing.
+                        {t('assessmentResults.categoryDescriptions.poorAreas', { areas: areasForImprovement.join(', ') })}
                       </p>
                     )}
                   </div>
@@ -333,19 +333,16 @@ const AssessmentResults = () => {
                 {scoreCategory === 'fair' && (
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
-                      Your results show that {assessmentName.toLowerCase()} is affecting various aspects of your life to a moderate degree. 
-                      Whilst you're managing some areas well, there's meaningful room for improvement that could significantly enhance your daily experience.
+                      {t('assessmentResults.categoryDescriptions.fair', { assessmentName: assessmentName.toLowerCase() })}
                     </p>
                     {areasForImprovement.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        Focus particularly on: <strong>{areasForImprovement.join(', ')}</strong>. 
-                        Targeted interventions in these areas, combined with the toolkit recommendations below, can help you move towards optimal wellbeing.
+                        {t('assessmentResults.categoryDescriptions.fairFocus', { areas: areasForImprovement.join(', ') })}
                       </p>
                     )}
                     {strengths.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        You're already doing well with: <strong>{strengths.join(', ')}</strong>. 
-                        These strengths can serve as a foundation as you work on other areas.
+                        {t('assessmentResults.categoryDescriptions.fairStrengths', { strengths: strengths.join(', ') })}
                       </p>
                     )}
                   </div>
@@ -354,18 +351,16 @@ const AssessmentResults = () => {
                 {scoreCategory === 'good' && (
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
-                      Your assessment shows that you're managing {assessmentName.toLowerCase()} well overall. 
-                      You've developed effective strategies that are working for you, though there are still opportunities for optimisation.
+                      {t('assessmentResults.categoryDescriptions.good', { assessmentName: assessmentName.toLowerCase() })}
                     </p>
                     {strengths.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        Your particular strengths lie in: <strong>{strengths.join(', ')}</strong>. 
-                        Maintaining these positive habits whilst addressing minor areas for improvement can help you reach excellent outcomes.
+                        {t('assessmentResults.categoryDescriptions.goodStrengths', { strengths: strengths.join(', ') })}
                       </p>
                     )}
                     {areasForImprovement.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        Small refinements in: <strong>{areasForImprovement.join(', ')}</strong> could elevate your results to the excellent range.
+                        {t('assessmentResults.categoryDescriptions.goodAreas', { areas: areasForImprovement.join(', ') })}
                       </p>
                     )}
                   </div>
@@ -374,17 +369,15 @@ const AssessmentResults = () => {
                 {scoreCategory === 'excellent' && (
                   <div className="space-y-4">
                     <p className="text-base leading-relaxed">
-                      Outstanding results! You've developed highly effective strategies for managing {assessmentName.toLowerCase()}. 
-                      Your approach is working exceptionally well, and you're experiencing optimal outcomes in this area of health.
+                      {t('assessmentResults.categoryDescriptions.excellent', { assessmentName: assessmentName.toLowerCase() })}
                     </p>
                     {strengths.length > 0 && (
                       <p className="text-base leading-relaxed">
-                        You excel particularly in: <strong>{strengths.join(', ')}</strong>. 
-                        These successful strategies could be valuable templates for optimising other areas of your health journey.
+                        {t('assessmentResults.categoryDescriptions.excellentStrengths', { strengths: strengths.join(', ') })}
                       </p>
                     )}
                     <p className="text-base leading-relaxed">
-                      Focus on maintaining these positive habits and consider exploring the evidence-based tools below to sustain and further enhance your wellbeing.
+                      {t('assessmentResults.categoryDescriptions.excellentMaintain')}
                     </p>
                   </div>
                 )}
@@ -395,7 +388,7 @@ const AssessmentResults = () => {
           {/* Detailed Analysis */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Detailed Analysis</CardTitle>
+              <CardTitle>{t('assessmentResults.detailedAnalysis')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
@@ -403,7 +396,7 @@ const AssessmentResults = () => {
                   <div>
                     <h3 className="font-semibold text-lg mb-3 flex items-center text-green-600">
                       <CheckCircle2 className="mr-2 h-5 w-5" />
-                      Strengths
+                      {t('assessmentResults.strengths')}
                     </h3>
                     <ul className="space-y-2">
                       {strengths.map(strength => (
@@ -420,8 +413,21 @@ const AssessmentResults = () => {
                   <div>
                     <h3 className="font-semibold text-lg mb-3 flex items-center text-yellow-600">
                       <TrendingUp className="mr-2 h-5 w-5" />
-                      Priority Focus Areas
+                      {t('assessmentResults.priorityFocusAreas')}
                     </h3>
+                    <ul className="space-y-2">
+                      {areasForImprovement.map(area => (
+                        <li key={area} className="flex items-start">
+                          <span className="text-yellow-500 mr-2">•</span>
+                          <span>{area}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
                     <ul className="space-y-2">
                       {areasForImprovement.map(area => (
                         <li key={area} className="flex items-start">
@@ -439,7 +445,7 @@ const AssessmentResults = () => {
           {/* Personalised Recommendations */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Personalised Action Plan</CardTitle>
+              <CardTitle>{t('assessmentResults.personalisedActionPlan')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -459,7 +465,7 @@ const AssessmentResults = () => {
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-semibold">{rec.title}</h4>
                           <Badge variant="outline" className="text-xs">
-                            {rec.priority} priority
+                            {t(`assessmentResults.priority.${rec.priority}`)}
                           </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">{rec.description}</p>
@@ -474,7 +480,7 @@ const AssessmentResults = () => {
           {/* Scoring Guide */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Understanding Your Score</CardTitle>
+              <CardTitle>{t('assessmentResults.understandingYourScore')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
@@ -518,9 +524,9 @@ const AssessmentResults = () => {
             <>
               <Card className="mb-8">
                 <CardHeader>
-                  <CardTitle>Recommended Toolkit Items</CardTitle>
+                  <CardTitle>{t('assessmentResults.recommendedToolkitItems')}</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Evidence-based biohacking tools tailored to your assessment results
+                    {t('assessmentResults.toolkit.description')}
                   </p>
                 </CardHeader>
                 <CardContent>
@@ -559,7 +565,7 @@ const AssessmentResults = () => {
                             </div>
                           )}
                           <Button variant="outline" size="sm" className="w-full">
-                            Learn More <ExternalLink className="ml-2 h-3 w-3" />
+                            {t('assessmentResults.toolkit.learnMore')} <ExternalLink className="ml-2 h-3 w-3" />
                           </Button>
                         </div>
                       ))}
@@ -715,7 +721,7 @@ const AssessmentResults = () => {
           {/* Next Steps */}
           <Card>
             <CardHeader>
-              <CardTitle>Next Steps</CardTitle>
+              <CardTitle>{t('assessmentResults.nextSteps')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -723,7 +729,7 @@ const AssessmentResults = () => {
                   onClick={() => navigate('/pillars')}
                   className="w-full"
                 >
-                  Explore Other Assessments
+                  {t('assessmentResults.nextStepsButtons.exploreAssessments')}
                 </Button>
                 {user && (
                   <Button 
@@ -731,7 +737,7 @@ const AssessmentResults = () => {
                     variant="outline"
                     className="w-full"
                   >
-                    View Assessment History
+                    {t('assessmentResults.nextStepsButtons.viewHistory')}
                   </Button>
                 )}
                 <Button 
@@ -739,7 +745,7 @@ const AssessmentResults = () => {
                   variant="outline"
                   className="w-full"
                 >
-                  Explore Full Toolkit
+                  {t('assessmentResults.nextStepsButtons.exploreToolkit')}
                 </Button>
               </div>
             </CardContent>
