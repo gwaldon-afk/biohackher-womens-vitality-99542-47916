@@ -37,6 +37,7 @@ import LISAssessment from "./pages/LISAssessment";
 import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
+import MyGoals from "./pages/MyGoals";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
@@ -103,6 +104,7 @@ const App = () => (
             <Route path="/advisory-board" element={<AdvisoryBoard />} />
             <Route path="/about" element={<About />} />
             <Route path="/health-assistant" element={<HealthAssistant />} />
+            <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

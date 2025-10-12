@@ -39,6 +39,7 @@ const Navigation = () => {
   const myJourneyItems = [
     { href: "/dashboard", label: t('navigation.dashboard'), icon: BarChart3 },
     { href: "/analytics", label: t('navigation.analytics'), icon: TrendingUp },
+    { href: "/my-goals", label: t('navigation.myGoals'), icon: Target },
     { href: "/symptom-trends", label: t('navigation.symptomTrends'), icon: Heart },
     { href: "/achievements", label: t('navigation.achievements'), icon: Award },
     { href: "/progress", label: t('navigation.progressTracking'), icon: Target },

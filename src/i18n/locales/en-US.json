@@ -51,7 +51,8 @@
     "achievements": "Achievements",
     "progressTracking": "Progress Tracking",
     "biohackingTools": "Biohacking Tools",
-    "wearables": "Wearables"
+    "wearables": "Wearables",
+    "myGoals": "My Goals"
   },
   "health": {
     "gp": "Doctor",
@@ -233,6 +234,25 @@
     },
     "errors": {
       "saveFailed": "Failed to save personalized recommendations"
+    }
+  },
+  "goals": {
+    "pageTitle": "My Health Goals",
+    "pageSubtitle": "Design and track science-backed goals using the H.A.C.K. Protocol™",
+    "newGoal": "New Goal",
+    "createGoal": "Create Goal",
+    "activeGoals": "Active",
+    "completedGoals": "Completed",
+    "archivedGoals": "Archived",
+    "limitReached": "You've reached your limit of {count} active goals. Upgrade for unlimited goals.",
+    "upgradeForMore": "Upgrade for Unlimited Goals",
+    "wizard": {
+      "title": "Create Your Health Goal",
+      "subtitle": "Using the H.A.C.K. Protocol™"
+    },
+    "checkIn": {
+      "title": "Goal Check-In",
+      "submit": "Save Check-In"
     }
   }
 }
