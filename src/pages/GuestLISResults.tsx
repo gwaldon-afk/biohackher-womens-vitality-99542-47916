@@ -196,7 +196,7 @@ export default function GuestLISResults() {
     const topWeakness = getTopImprovements()[0];
     const topStrength = getTopStrengths()[0];
     const bioAgeData = calculateBiologicalAge();
-    const ageingRate = 1 + bioAgeData.annualDeceleration; // Current aging rate
+    const ageingRate = bioAgeData.annualDeceleration; // Current aging rate (already calculated correctly)
 
     return {
       overview: `Your Longevity Impact Score of ${results.finalScore} places you in the ${riskCategory.label} category, suggesting ${
