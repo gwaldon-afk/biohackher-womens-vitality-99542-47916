@@ -703,6 +703,7 @@ export default function GuestLISAssessment() {
             </div>
 
             <RadioGroup
+              key={question?.question_id || currentQuestion}
               value={selectedAnswer?.text || ''}
               onValueChange={(value) => {
                 const option = question?.options.find(opt => opt.text === value);

@@ -696,7 +696,11 @@ const BrainAssessment = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <RadioGroup value={answers[currentQuestion]} onValueChange={handleAnswerChange}>
+            <RadioGroup 
+              key={currentQuestion}
+              value={answers[currentQuestion]} 
+              onValueChange={handleAnswerChange}
+            >
               {currentQ.options.map((option) => (
                 <div
                   key={option.value}

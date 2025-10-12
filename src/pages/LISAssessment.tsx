@@ -838,6 +838,7 @@ const LISAssessment = () => {
           </CardHeader>
           <CardContent>
             <RadioGroup
+              key={currentQuestion}
               value={answers[currentQuestion] || ""}
               onValueChange={handleAnswerChange}
               className="space-y-3"

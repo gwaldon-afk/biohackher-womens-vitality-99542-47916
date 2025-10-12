@@ -201,6 +201,7 @@ const SymptomAssessment = () => {
               <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
 
               <RadioGroup
+                key={currentQ.id}
                 value={answers[currentQ.id]?.toString()}
                 onValueChange={(value) => handleAnswerChange(currentQ.id, parseInt(value))}
               >
