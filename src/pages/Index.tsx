@@ -39,19 +39,19 @@ const Index = () => {
                 <div className="flex flex-col sm:flex-row gap-4 mb-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2 whitespace-normal"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
-                    <Target className="h-6 w-6 mr-2" />
-                    {t('home.hero.ctaPrimary')}
+                    <Target className="h-6 w-6 mr-2 flex-shrink-0" />
+                    <span className="text-center flex-1">{t('home.hero.ctaPrimary')}</span>
                   </Button>
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2 whitespace-normal"
                     onClick={() => navigate("/health-assistant")}
                   >
-                    <Sparkles className="h-6 w-6 mr-2" />
-                    Ask Us Anything
+                    <Sparkles className="h-6 w-6 mr-2 flex-shrink-0" />
+                    <span className="text-center flex-1">Ask Us Anything</span>
                   </Button>
                 </div>
 
