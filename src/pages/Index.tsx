@@ -51,7 +51,7 @@ const Index = () => {
                     onClick={() => navigate("/health-assistant")}
                   >
                     <Sparkles className="h-6 w-6 mr-2 flex-shrink-0" />
-                    <span className="text-center flex-1">Ask Us Anything</span>
+                    <span className="text-center flex-1">Ask Us Anything About Women's Health</span>
                   </Button>
                 </div>
 
