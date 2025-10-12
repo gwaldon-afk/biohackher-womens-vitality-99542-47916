@@ -236,27 +236,89 @@ const AssessmentResults = () => {
             </CardContent>
           </Card>
 
-          {/* Category Breakdown */}
-          {categoryAverages.length > 0 && (
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle>Category Breakdown</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {categoryAverages.map(({ category, score: catScore }) => (
-                    <div key={category}>
-                      <div className="flex justify-between mb-2">
-                        <span className="font-medium">{category}</span>
-                        <span className="text-muted-foreground">{Math.round(catScore)}/100</span>
-                      </div>
-                      <Progress value={catScore} className="h-2" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* What Your Results Mean */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>What Your Results Mean</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-sm max-w-none dark:prose-invert">
+                {scoreCategory === 'poor' && (
+                  <div className="space-y-4">
+                    <p className="text-base leading-relaxed">
+                      Your assessment indicates significant challenges with {assessmentName.toLowerCase()} that are likely impacting your daily quality of life. 
+                      These results suggest that professional support could be highly beneficial in developing targeted strategies for improvement.
+                    </p>
+                    {areasForImprovement.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        The areas showing the greatest impact are: <strong>{areasForImprovement.join(', ')}</strong>. 
+                        Addressing these specific aspects could lead to substantial improvements in your overall wellbeing.
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                {scoreCategory === 'fair' && (
+                  <div className="space-y-4">
+                    <p className="text-base leading-relaxed">
+                      Your results show that {assessmentName.toLowerCase()} is affecting various aspects of your life to a moderate degree. 
+                      While you're managing some areas well, there's meaningful room for improvement that could significantly enhance your daily experience.
+                    </p>
+                    {areasForImprovement.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        Focus particularly on: <strong>{areasForImprovement.join(', ')}</strong>. 
+                        Targeted interventions in these areas, combined with the toolkit recommendations below, can help you move toward optimal wellbeing.
+                      </p>
+                    )}
+                    {strengths.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        You're already doing well with: <strong>{strengths.join(', ')}</strong>. 
+                        These strengths can serve as a foundation as you work on other areas.
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                {scoreCategory === 'good' && (
+                  <div className="space-y-4">
+                    <p className="text-base leading-relaxed">
+                      Your assessment shows that you're managing {assessmentName.toLowerCase()} well overall. 
+                      You've developed effective strategies that are working for you, though there are still opportunities for optimization.
+                    </p>
+                    {strengths.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        Your particular strengths lie in: <strong>{strengths.join(', ')}</strong>. 
+                        Maintaining these positive habits while addressing minor areas for improvement can help you reach excellent outcomes.
+                      </p>
+                    )}
+                    {areasForImprovement.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        Small refinements in: <strong>{areasForImprovement.join(', ')}</strong> could elevate your results to the excellent range.
+                      </p>
+                    )}
+                  </div>
+                )}
+                
+                {scoreCategory === 'excellent' && (
+                  <div className="space-y-4">
+                    <p className="text-base leading-relaxed">
+                      Outstanding results! You've developed highly effective strategies for managing {assessmentName.toLowerCase()}. 
+                      Your approach is working exceptionally well, and you're experiencing optimal outcomes in this area of health.
+                    </p>
+                    {strengths.length > 0 && (
+                      <p className="text-base leading-relaxed">
+                        You excel particularly in: <strong>{strengths.join(', ')}</strong>. 
+                        These successful strategies could be valuable templates for optimizing other areas of your health journey.
+                      </p>
+                    )}
+                    <p className="text-base leading-relaxed">
+                      Focus on maintaining these positive habits and consider exploring the evidence-based tools below to sustain and further enhance your wellbeing.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Detailed Analysis */}
           <Card className="mb-8">
