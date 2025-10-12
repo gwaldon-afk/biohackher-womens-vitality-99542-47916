@@ -56,28 +56,34 @@ serve(async (req) => {
     const systemPrompt = `You are a women's health expert assistant for Biohackher, a science-backed women's longevity platform.
 
 Your role is to:
-- Provide evidence-based, empathetic answers about women's health
+- Provide evidence-based, empathetic answers about women's health (2-3 sentences)
 - Focus on the four pillars: Brain, Body, Balance, and Beauty
-- ALWAYS recommend 2-4 specific toolkit items that can help with their concern
-- ALWAYS recommend 1-2 relevant assessments they should take
-- Extract health concerns from questions and recommend relevant tools
+- ALWAYS recommend 2-4 specific toolkit items that can help (from our available items below)
+- ALWAYS recommend 1-2 relevant assessments they should take (ONLY from our available assessments below)
+- Mention clinical tests they could discuss with their healthcare provider separately
 - Encourage them to explore these tools and assessments in the app
 - Include a medical disclaimer to consult healthcare providers
 
-Available assessments: ${assessments?.map(a => `${a.name} (${a.pillar} pillar)`).join(', ') || 'various health assessments'}
+IMPORTANT - ONLY recommend from these available assessments:
+${assessments?.map(a => `- ${a.name} (${a.pillar} pillar): ${a.description}`).join('\n') || 'No assessments available'}
 
 Available toolkit categories: ${toolkitCategories?.map(c => c.name).join(', ') || 'supplements, therapies, nutrition, sleep, stress management'}
 
-Available toolkit items include: ${toolkitItems?.slice(0, 20).map(t => t.name).join(', ')}
+Available toolkit items include: ${toolkitItems?.slice(0, 30).map(t => t.name).join(', ')}
 
 When responding:
 1. Give a warm, helpful answer (2-3 sentences)
-2. ALWAYS recommend specific toolkit items from our available items
-3. ALWAYS suggest assessments to help them track progress
-4. Be enthusiastic about how these tools can help them
-5. Keep it conversational and encouraging
+2. ALWAYS recommend specific toolkit items from our available items (match exact names)
+3. ALWAYS suggest assessments to help them track progress (ONLY from the list above)
+4. If relevant, mention clinical tests they could discuss with their doctor (e.g., hormone panels, vitamin levels)
+5. Suggest follow-up questions the USER might want to ask next (not clarification questions from you)
 
-IMPORTANT: You must use the provided tool to structure your response. Be specific with item names that match our database.`;
+Follow-up questions should be:
+- Related health topics they might explore
+- Different aspects of their concern
+- Examples: "How can I improve my sleep naturally?", "What supplements support hormone balance?", "How does stress affect aging?"
+
+CRITICAL: Only recommend assessments that are in the available assessments list above. Do not make up assessment names.`;
 
     // Call Lovable AI with tool calling
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -124,12 +130,17 @@ IMPORTANT: You must use the provided tool to structure your response. Be specifi
                   recommended_assessments: {
                     type: 'array',
                     items: { type: 'string' },
-                    description: 'Assessment types that would be helpful'
+                    description: 'Assessment names from Biohackher platform that would be helpful (ONLY use exact names from available assessments list)'
+                  },
+                  clinical_tests: {
+                    type: 'array',
+                    items: { type: 'string' },
+                    description: 'Optional clinical tests they could discuss with their healthcare provider (e.g., hormone panels, vitamin D levels)'
                   },
                   follow_up_questions: {
                     type: 'array',
                     items: { type: 'string' },
-                    description: 'Suggested follow-up questions'
+                    description: 'Suggested questions the USER might want to ask next (not clarification questions from the assistant)'
                   }
                 },
                 required: ['answer', 'extracted_concerns', 'recommended_toolkit_items']
@@ -227,7 +238,10 @@ IMPORTANT: You must use the provided tool to structure your response. Be specifi
         ai_answer: structuredResponse.answer,
         extracted_concerns: structuredResponse.extracted_concerns,
         recommended_tools: recommendedTools,
-        recommended_assessments: recommendedAssessments
+        recommended_assessments: {
+          assessments: recommendedAssessments,
+          clinical_tests: structuredResponse.clinical_tests || []
+        }
       });
 
     if (dbError) {
@@ -241,6 +255,7 @@ IMPORTANT: You must use the provided tool to structure your response. Be specifi
         extracted_concerns: structuredResponse.extracted_concerns,
         recommended_tools: recommendedTools,
         recommended_assessments: recommendedAssessments,
+        clinical_tests: structuredResponse.clinical_tests || [],
         follow_up_questions: structuredResponse.follow_up_questions || []
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

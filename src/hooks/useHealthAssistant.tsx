@@ -8,7 +8,8 @@ export interface HealthMessage {
   role: 'user' | 'assistant';
   content: string;
   recommended_tools?: any[];
-  recommended_assessments?: string[];
+  recommended_assessments?: any[];
+  clinical_tests?: string[];
   follow_up_questions?: string[];
   timestamp: Date;
 }
@@ -57,6 +58,7 @@ export const useHealthAssistant = () => {
         content: data.answer,
         recommended_tools: data.recommended_tools || [],
         recommended_assessments: data.recommended_assessments || [],
+        clinical_tests: data.clinical_tests || [],
         follow_up_questions: data.follow_up_questions || [],
         timestamp: new Date()
       };

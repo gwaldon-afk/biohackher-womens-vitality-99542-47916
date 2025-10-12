@@ -223,6 +223,23 @@ const HealthAssistant = () => {
                           </div>
                         )}
 
+                        {/* Clinical Tests to Discuss with Doctor */}
+                        {message.clinical_tests && message.clinical_tests.length > 0 && (
+                          <div className="mt-4">
+                            <Alert>
+                              <AlertTriangle className="h-4 w-4" />
+                              <AlertDescription>
+                                <p className="font-medium mb-2">Clinical Tests to Discuss with Your Healthcare Provider:</p>
+                                <ul className="list-disc list-inside space-y-1 text-sm">
+                                  {message.clinical_tests.map((test: string, idx: number) => (
+                                    <li key={idx}>{test}</li>
+                                  ))}
+                                </ul>
+                              </AlertDescription>
+                            </Alert>
+                          </div>
+                        )}
+
                         {/* Follow-up Questions */}
                         {message.follow_up_questions && message.follow_up_questions.length > 0 && (
                           <div className="mt-4">
@@ -231,9 +248,10 @@ const HealthAssistant = () => {
                               {message.follow_up_questions.map((question: string) => (
                                 <Button
                                   key={question}
-                                  variant="ghost"
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => setInput(question)}
+                                  className="text-left h-auto py-2 whitespace-normal"
                                 >
                                   {question}
                                 </Button>
