@@ -51,7 +51,8 @@
     "achievements": "Achievements",
     "progressTracking": "Progress Tracking",
     "biohackingTools": "Biohacking Tools",
-    "wearables": "Wearables"
+    "wearables": "Wearables",
+    "myGoals": "My Goals"
   },
   "health": {
     "gp": "GP",
