@@ -182,7 +182,7 @@ const HealthAssistant = () => {
                         {/* Recommended Assessments */}
                         {message.recommended_assessments && message.recommended_assessments.length > 0 && (
                           <div className="mt-4">
-                            <h4 className="font-semibold mb-3 text-lg">Understand What's Influencing Your Health:</h4>
+                            <h4 className="font-semibold mb-3 text-lg">Understand What's Influencing Your Health Issues:</h4>
                             <p className="text-sm text-muted-foreground mb-3">
                               These assessments will help you identify the key factors affecting your health and track your progress over time.
                             </p>
