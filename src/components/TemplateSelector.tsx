@@ -159,6 +159,11 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     const mealPlan = templateMealPlans[template.id as keyof typeof templateMealPlans];
     if (!mealPlan) return;
 
+    // Check if this template has ingredient data
+    const firstDay = Object.values(mealPlan)[0];
+    const firstMeal = Object.values(firstDay)[0];
+    const hasIngredientData = firstMeal && 'ingredients' in firstMeal;
+
     // Collect and consolidate ingredients
     interface IngredientData {
       quantity: number;
@@ -257,7 +262,7 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const hasIngredients = ingredientsMap.size > 0;
+    const hasIngredients = ingredientsMap.size > 0 && hasIngredientData;
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -342,7 +347,15 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
                 `;
               }).join('')}
             </div>
-          ` : ''}
+          ` : `
+            <div class="section">
+              <h2>Shopping List Not Available</h2>
+              <p style="color: #666; font-size: 14px; margin-bottom: 15px; padding: 20px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
+                <strong>Note:</strong> This meal template doesn't include detailed ingredient lists yet. 
+                Please refer to the meal descriptions below to create your shopping list, or try the <strong>High Protein Athlete</strong> template which includes a complete consolidated shopping list.
+              </p>
+            </div>
+          `}
 
           <div class="section">
             <h2>Meal Plan Overview</h2>
