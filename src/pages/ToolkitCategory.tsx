@@ -17,58 +17,27 @@ import { toast } from "sonner";
 
 const ToolkitCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
-  
-  console.log('=== ToolkitCategory RENDER ===');
-  console.log('categorySlug:', categorySlug);
-  
-  // Early return test
-  if (!categorySlug) {
-    console.log('NO categorySlug - returning early');
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <main className="container mx-auto px-4 py-8">
-          <p>No category slug found in URL</p>
-        </main>
-      </div>
-    );
-  }
-  
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Fetch category
   const { data: category, isLoading: categoryLoading, error: categoryError } = useQuery({
     queryKey: ['toolkit-category', categorySlug],
-    queryFn: async () => {
-      console.log('Fetching category with slug:', categorySlug);
-      const result = await getToolkitCategoryBySlug(categorySlug!);
-      console.log('Category result:', result);
-      return result;
-    },
+    queryFn: () => getToolkitCategoryBySlug(categorySlug!),
     enabled: !!categorySlug,
-    retry: 1,
   });
 
   // Fetch items for this category
   const { data: items, isLoading: itemsLoading, error: itemsError } = useQuery({
     queryKey: ['toolkit-items', category?.id],
-    queryFn: async () => {
-      console.log('Fetching items for category:', category?.id);
-      const result = await getToolkitItemsByCategory(category!.id);
-      console.log('Items result:', result);
-      return result;
-    },
+    queryFn: () => getToolkitItemsByCategory(category!.id),
     enabled: !!category?.id,
-    retry: 1,
   });
 
   if (categoryError) {
-    console.error('Category error:', categoryError);
     toast.error("Failed to load category.");
   }
 
   if (itemsError) {
-    console.error('Items error:', itemsError);
     toast.error("Failed to load toolkit items.");
   }
 
