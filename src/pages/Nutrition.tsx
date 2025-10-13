@@ -13,6 +13,9 @@ import Navigation from "@/components/Navigation";
 import SampleDailyPreview from "@/components/SampleDailyPreview";
 import TemplateSelector from "@/components/TemplateSelector";
 import LongevityFoodInsights from "@/components/LongevityFoodInsights";
+import FoodDatabaseSearch from "@/components/FoodDatabaseSearch";
+import FoodPreferencesSidebar from "@/components/FoodPreferencesSidebar";
+import { useFoodPreferences } from "@/hooks/useFoodPreferences";
 import { templateMealPlans } from "@/data/mealTemplates";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
@@ -33,6 +36,7 @@ const Nutrition = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { preferences: foodPreferences } = useFoodPreferences();
   
   // Form state
   const [weight, setWeight] = useState("");
@@ -1658,10 +1662,9 @@ const Nutrition = () => {
         )}
 
         <Tabs defaultValue="calculator" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="calculator">Protein Calculator</TabsTrigger>
-            <TabsTrigger value="leucine">Leucine Content</TabsTrigger>
-            <TabsTrigger value="fodmap">FODMAP Guide</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="calculator">Nutrition Calculator</TabsTrigger>
+            <TabsTrigger value="food-science">Food Science</TabsTrigger>
             <TabsTrigger value="meals">Meal Plans</TabsTrigger>
           </TabsList>
           
@@ -1770,7 +1773,29 @@ const Nutrition = () => {
             </div>
           </TabsContent>
           
-          <TabsContent value="leucine" className="mt-6">
+          <TabsContent value="food-science" className="mt-6">
+            <div className="space-y-6">
+              {/* Food Preferences Sidebar */}
+              <FoodPreferencesSidebar />
+
+              {/* Tabs for Food Science Sub-sections */}
+              <Tabs defaultValue="database" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="database">Food Database</TabsTrigger>
+                  <TabsTrigger value="insights">Longevity Foods</TabsTrigger>
+                  <TabsTrigger value="leucine">Leucine Content</TabsTrigger>
+                  <TabsTrigger value="fodmap">FODMAP Guide</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="database" className="mt-6">
+                  <FoodDatabaseSearch />
+                </TabsContent>
+
+                <TabsContent value="insights" className="mt-6">
+                  <LongevityFoodInsights />
+                </TabsContent>
+
+                <TabsContent value="leucine" className="mt-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1825,9 +1850,9 @@ const Nutrition = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-          
-          <TabsContent value="fodmap" className="mt-6">
+                </TabsContent>
+
+                <TabsContent value="fodmap" className="mt-6">
               <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -1915,6 +1940,9 @@ const Nutrition = () => {
                 </Card>
               </div>
             </div>
+                </TabsContent>
+              </Tabs>
+            </div>
           </TabsContent>
           
           <TabsContent value="meals" className="mt-6">
@@ -1926,14 +1954,14 @@ const Nutrition = () => {
                 </CardTitle>
                 <CardDescription>
                   Protein-optimised meals {isLowFODMAP ? "suitable for IBS management" : "for general wellness"}
+                  {foodPreferences.likedFoods.length > 0 && (
+                    <span className="ml-2 text-primary font-medium">
+                      ✓ Incorporating your {foodPreferences.likedFoods.length} preferred longevity food{foodPreferences.likedFoods.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Longevity Food Insights */}
-                <div className="mb-8">
-                  <LongevityFoodInsights />
-                </div>
-
                 {/* Template Selector - shown first */}
                 {!showCustomization && (
                   <TemplateSelector
