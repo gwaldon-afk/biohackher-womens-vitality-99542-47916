@@ -2196,7 +2196,10 @@ const Nutrition = () => {
                     Shopping List
                   </Button>
                 </div>
+                   </>
+                )}
                 
+                {/* Weekly Plan Display - shown for both templates and custom plans */}
                 {showWeeklyPlan && weeklyPlan && (
                   <div className="mt-8">
                     <div className="flex items-center justify-between mb-4">
@@ -2473,8 +2476,6 @@ const Nutrition = () => {
                       ))}
                     </div>
                   </div>
-                )}
-                  </>
                 )}
               </CardContent>
             </Card>
