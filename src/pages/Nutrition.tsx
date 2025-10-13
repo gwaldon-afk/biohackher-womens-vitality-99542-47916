@@ -1977,7 +1977,7 @@ const Nutrition = () => {
               {/* Tabs for Food Science Sub-sections */}
               <Tabs defaultValue="database" className="w-full">
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="database">Food Database</TabsTrigger>
+                  <TabsTrigger value="database">Longevity Foods Database</TabsTrigger>
                   <TabsTrigger value="insights">Longevity Foods</TabsTrigger>
                   <TabsTrigger value="leucine">Leucine Content</TabsTrigger>
                   <TabsTrigger value="fodmap">FODMAP Guide</TabsTrigger>
