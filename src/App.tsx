@@ -53,6 +53,7 @@ import WearableIntegrations from "./pages/WearableIntegrations";
 import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
+import ImportResearch from "./pages/ImportResearch";
 
 const queryClient = new QueryClient();
 
@@ -105,6 +106,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/health-assistant" element={<HealthAssistant />} />
             <Route path="/symptom-tracking" element={<Symptoms />} />
+            <Route path="/import-research" element={<ImportResearch />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             <Route path="/my-goals/wizard" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />

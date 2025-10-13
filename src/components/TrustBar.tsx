@@ -56,7 +56,7 @@ const TrustBarWithSecurity = () => {
         <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap text-xs">
           <Link to="/about?tab=research" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
             <ScienceBackedIcon className="h-3.5 w-3.5" showTooltip={false} />
-            <span className="font-medium">Science-Backed</span>
+            <span className="font-medium">Research-Backed</span>
           </Link>
           <Link to="/about?tab=faq#data-privacy" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
             <Shield className="h-3.5 w-3.5 text-primary" />
