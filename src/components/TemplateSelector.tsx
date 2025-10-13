@@ -30,60 +30,234 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     return day.charAt(0).toUpperCase() + day.slice(1);
   };
 
+  // Helper function to safely parse fractions and decimals
+  const parseFraction = (str: string): number => {
+    if (str.includes('/')) {
+      const [num, denom] = str.split('/').map(Number);
+      return num / denom;
+    }
+    return parseFloat(str);
+  };
+
+  // Helper function to parse ingredient strings
+  const parseIngredient = (ingredient: string) => {
+    // Pattern 1: "200g chicken breast"
+    const pattern1 = /^(\d+(?:\.\d+)?)\s*(g|kg|oz|lb|lbs|mg)\s+(.+)$/i;
+    // Pattern 2: "2 cups oats"
+    const pattern2 = /^([\d.\/\s]+)\s*(cup|cups|tbsp|tsp|tablespoon|teaspoon|tablespoons|teaspoons)\s+(.+)$/i;
+    // Pattern 3: "2 chicken breasts (300g)"
+    const pattern3 = /^(\d+)\s+([^(]+)\s*\((\d+)\s*(g|kg|oz|lb)\s*\)$/i;
+    // Pattern 4: "1/2 avocado"
+    const pattern4 = /^([\d\/]+)\s+(.+)$/;
+    
+    let match = ingredient.match(pattern1);
+    if (match) {
+      return { quantity: parseFloat(match[1]), unit: match[2].toLowerCase(), item: match[3].trim() };
+    }
+    
+    match = ingredient.match(pattern2);
+    if (match) {
+      return { quantity: parseFraction(match[1].trim()), unit: match[2].toLowerCase(), item: match[3].trim() };
+    }
+    
+    match = ingredient.match(pattern3);
+    if (match) {
+      return { quantity: parseFloat(match[3]), unit: match[4].toLowerCase(), item: match[2].trim() };
+    }
+    
+    match = ingredient.match(pattern4);
+    if (match) {
+      const qty = match[1].includes('/') ? parseFraction(match[1]) : parseFloat(match[1]);
+      return { quantity: qty, unit: '', item: match[2].trim() };
+    }
+    
+    // No quantity found
+    return { quantity: 1, unit: '', item: ingredient.trim() };
+  };
+
+  // Helper function to normalize ingredient names
+  const normalizeIngredientName = (name: string): string => {
+    let normalized = name.toLowerCase().trim();
+    
+    // Remove common descriptors
+    const descriptors = ['fresh', 'frozen', 'dried', 'raw', 'cooked', 'grilled', 'baked', 'chopped', 'sliced', 'diced', 'minced', 'whole', 'large', 'small', 'medium'];
+    descriptors.forEach(desc => {
+      normalized = normalized.replace(new RegExp(`\\b${desc}\\b`, 'gi'), '').trim();
+    });
+    
+    // Handle plurals - convert to singular
+    if (normalized.endsWith('ies')) {
+      normalized = normalized.slice(0, -3) + 'y';
+    } else if (normalized.endsWith('ves')) {
+      normalized = normalized.slice(0, -3) + 'f';
+    } else if (normalized.endsWith('ses') || normalized.endsWith('ches') || normalized.endsWith('shes')) {
+      normalized = normalized.slice(0, -2);
+    } else if (normalized.endsWith('s') && !normalized.endsWith('ss')) {
+      normalized = normalized.slice(0, -1);
+    }
+    
+    return normalized.replace(/\s+/g, ' ').trim();
+  };
+
+  // Helper function to convert units to base units
+  const convertToBaseUnit = (quantity: number, unit: string): { quantity: number; unit: string } => {
+    const unitLower = unit.toLowerCase();
+    
+    // Weight conversions to grams
+    if (unitLower === 'kg') return { quantity: quantity * 1000, unit: 'g' };
+    if (unitLower === 'oz') return { quantity: quantity * 28.35, unit: 'g' };
+    if (unitLower === 'lb' || unitLower === 'lbs') return { quantity: quantity * 453.592, unit: 'g' };
+    if (unitLower === 'mg') return { quantity: quantity / 1000, unit: 'g' };
+    
+    // Volume conversions to cups
+    if (unitLower === 'tbsp' || unitLower === 'tablespoon' || unitLower === 'tablespoons') {
+      return { quantity: quantity / 16, unit: 'cup' };
+    }
+    if (unitLower === 'tsp' || unitLower === 'teaspoon' || unitLower === 'teaspoons') {
+      return { quantity: quantity / 48, unit: 'cup' };
+    }
+    if (unitLower === 'cups') return { quantity, unit: 'cup' };
+    
+    return { quantity, unit: unitLower };
+  };
+
+  // Helper function to categorize ingredients
+  const categorizeIngredient = (item: string): string => {
+    const itemLower = item.toLowerCase();
+    
+    if (/(chicken|beef|pork|lamb|turkey|steak|sausage|bacon|meat|prawns|shrimp|salmon|tuna|fish|tempeh|tofu)/i.test(itemLower)) {
+      return 'Proteins';
+    }
+    if (/(egg|white)/i.test(itemLower)) {
+      return 'Eggs & Dairy';
+    }
+    if (/(rice|quinoa|oat|pasta|bread|couscous|lentil|chickpea|bean)/i.test(itemLower)) {
+      return 'Grains & Legumes';
+    }
+    if (/(spinach|kale|broccoli|asparagus|green|lettuce|tomato|zucchini|pepper|carrot|cucumber|celery|onion|garlic|ginger|vegetable)/i.test(itemLower)) {
+      return 'Vegetables';
+    }
+    if (/(banana|berry|berries|apple|orange|fruit|avocado|lemon)/i.test(itemLower)) {
+      return 'Fruits';
+    }
+    if (/(yogurt|milk|cheese|cottage)/i.test(itemLower)) {
+      return 'Dairy';
+    }
+    if (/(almond|nut|seed|sesame|tahini|peanut)/i.test(itemLower)) {
+      return 'Nuts & Seeds';
+    }
+    if (/(oil|sauce|dressing|spice|herb|salt|pepper|honey|syrup|butter|glaze)/i.test(itemLower)) {
+      return 'Condiments & Seasonings';
+    }
+    if (/(protein powder|whey|supplement)/i.test(itemLower)) {
+      return 'Supplements';
+    }
+    return 'Other';
+  };
+
   const generateShoppingList = (template: MealPlanTemplate) => {
     const mealPlan = templateMealPlans[template.id as keyof typeof templateMealPlans];
     if (!mealPlan) return;
 
     // Collect and consolidate ingredients
-    const ingredientsMap = new Map<string, { quantity: number; unit: string }>();
+    interface IngredientData {
+      quantity: number;
+      unit: string;
+      category: string;
+      originalItem: string;
+    }
+    
+    const ingredientsMap = new Map<string, IngredientData>();
     
     Object.entries(mealPlan).forEach(([day, meals]: [string, any]) => {
       Object.entries(meals).forEach(([mealType, meal]: [string, any]) => {
         if (meal.ingredients) {
           meal.ingredients.forEach((ingredient: string) => {
-            // Parse ingredient: "2 cups oats" -> quantity: 2, unit: cups, item: oats
-            const match = ingredient.match(/^([\d.\/]+)?\s*([a-zA-Z]+)?\s+(.+)$/);
-            if (match) {
-              const [, qty, unit, item] = match;
-              const quantity = qty ? eval(qty) : 1; // Handle fractions like 1/2
-              const key = item.toLowerCase().trim();
-              
-              if (ingredientsMap.has(key)) {
-                const existing = ingredientsMap.get(key)!;
-                if (existing.unit === unit) {
-                  existing.quantity += quantity;
-                } else {
-                  // Different units, just list separately
-                  ingredientsMap.set(`${key} (${unit})`, { quantity, unit: unit || '' });
-                }
+            const parsed = parseIngredient(ingredient);
+            const normalized = normalizeIngredientName(parsed.item);
+            const converted = convertToBaseUnit(parsed.quantity, parsed.unit);
+            const category = categorizeIngredient(parsed.item);
+            
+            if (ingredientsMap.has(normalized)) {
+              const existing = ingredientsMap.get(normalized)!;
+              // Only consolidate if same unit
+              if (existing.unit === converted.unit) {
+                existing.quantity += converted.quantity;
               } else {
-                ingredientsMap.set(key, { quantity, unit: unit || '' });
+                // Different units - create a separate entry with unit suffix
+                const key = `${normalized}_${converted.unit}`;
+                if (ingredientsMap.has(key)) {
+                  ingredientsMap.get(key)!.quantity += converted.quantity;
+                } else {
+                  ingredientsMap.set(key, {
+                    quantity: converted.quantity,
+                    unit: converted.unit,
+                    category,
+                    originalItem: parsed.item
+                  });
+                }
               }
             } else {
-              // No quantity specified, just add as-is
-              const key = ingredient.toLowerCase().trim();
-              if (!ingredientsMap.has(key)) {
-                ingredientsMap.set(key, { quantity: 1, unit: '' });
-              }
+              ingredientsMap.set(normalized, {
+                quantity: converted.quantity,
+                unit: converted.unit,
+                category,
+                originalItem: parsed.item
+              });
             }
           });
         }
       });
     });
 
-    // Convert to sorted list
-    const consolidatedList = Array.from(ingredientsMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([item, { quantity, unit }]) => {
-        const qtyStr = quantity > 1 || quantity % 1 !== 0 ? quantity.toString() : '';
-        return `${qtyStr} ${unit} ${item}`.trim();
-      });
+    // Group by category and format
+    const categorized = new Map<string, Array<{ item: string; display: string }>>();
+    
+    ingredientsMap.forEach((data, key) => {
+      const displayName = key.includes('_') ? key.split('_')[0] : key;
+      let display = '';
+      
+      if (data.unit) {
+        // Format quantity nicely
+        const qty = Math.round(data.quantity * 100) / 100;
+        const qtyStr = qty % 1 === 0 ? qty.toString() : qty.toFixed(1);
+        display = `${qtyStr}${data.unit} ${displayName}`;
+      } else {
+        const qty = Math.ceil(data.quantity);
+        display = qty > 1 ? `${qty} ${displayName}` : displayName;
+      }
+      
+      if (!categorized.has(data.category)) {
+        categorized.set(data.category, []);
+      }
+      categorized.get(data.category)!.push({ item: displayName, display });
+    });
+    
+    // Sort categories in logical order
+    const categoryOrder = [
+      'Proteins',
+      'Eggs & Dairy',
+      'Dairy',
+      'Grains & Legumes',
+      'Vegetables',
+      'Fruits',
+      'Nuts & Seeds',
+      'Condiments & Seasonings',
+      'Supplements',
+      'Other'
+    ];
+    
+    const sortedCategories = Array.from(categorized.keys()).sort((a, b) => {
+      const aIndex = categoryOrder.indexOf(a);
+      const bIndex = categoryOrder.indexOf(b);
+      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    });
 
     // Create printable HTML
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const hasIngredients = consolidatedList.length > 0;
+    const hasIngredients = ingredientsMap.size > 0;
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -154,13 +328,19 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
             <div class="section">
               <h2>Consolidated Shopping List</h2>
               <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                Quantities have been combined across all meals for the week
+                Quantities combined and organized by category for the week
               </p>
-              <ul>
-                ${consolidatedList.map(ingredient => 
-                  `<li>${ingredient}</li>`
-                ).join('')}
-              </ul>
+              ${sortedCategories.map(category => {
+                const items = categorized.get(category)!.sort((a, b) => a.item.localeCompare(b.item));
+                return `
+                  <h3 style="color: #333; font-size: 16px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; border-bottom: 2px solid #ddd; padding-bottom: 5px;">
+                    ${category}
+                  </h3>
+                  <ul>
+                    ${items.map(({ display }) => `<li>${display}</li>`).join('')}
+                  </ul>
+                `;
+              }).join('')}
             </div>
           ` : ''}
 
