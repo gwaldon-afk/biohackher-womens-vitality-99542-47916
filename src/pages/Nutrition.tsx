@@ -813,9 +813,11 @@ const Nutrition = () => {
     }
 
     setIsGeneratingAI(true);
+    console.log('Starting AI meal plan generation...');
     
     try {
       const macros = calculateMacros();
+      console.log('Calling AI with macros:', macros);
       
       const { data, error } = await supabase.functions.invoke('generate-meal-plan', {
         body: {
@@ -855,7 +857,6 @@ const Nutrition = () => {
           toast({
             title: "AI generation unavailable",
             description: "Using algorithmic meal plan instead.",
-            variant: "destructive",
           });
         }
         return null;
@@ -876,6 +877,7 @@ const Nutrition = () => {
         return data.mealPlan;
       }
 
+      console.log('AI returned no meal plan, falling back to algorithmic');
       return null;
     } catch (err) {
       console.error('Error calling AI:', err);
@@ -883,13 +885,13 @@ const Nutrition = () => {
       toast({
         title: "Generation error",
         description: "Falling back to algorithmic meal plan.",
-        variant: "destructive",
       });
       return null;
     }
   };
 
   const generateWeeklyPlan = async (useExistingVariety: boolean = false) => {
+    console.log('generateWeeklyPlan called');
     if (!weight) {
       toast({
         title: "Missing information",
@@ -900,9 +902,11 @@ const Nutrition = () => {
     }
 
     // Try AI generation first
+    console.log('Attempting AI generation...');
     const aiPlan = await generateAIMealPlan();
     
     if (aiPlan) {
+      console.log('Using AI-generated plan');
       // Transform AI plan to match expected format
       const transformedPlan = aiPlan.map((dayPlan: any) => ({
         day: dayPlan.day,
@@ -922,6 +926,7 @@ const Nutrition = () => {
     }
 
     // Fallback to algorithmic generation
+    console.log('Using algorithmic generation');
     setGenerationMethod('algorithmic');
 
     const macros = calculateMacros();
@@ -1218,6 +1223,12 @@ const Nutrition = () => {
 
     setWeeklyPlan(weekPlan);
     setShowWeeklyPlan(true);
+    console.log('Algorithmic meal plan generated:', weekPlan);
+    
+    toast({
+      title: "Meal Plan Generated",
+      description: "Your personalized 7-day meal plan is ready!",
+    });
   };
 
   const leucineRichFoods = [
