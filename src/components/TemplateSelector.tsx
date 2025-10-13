@@ -186,6 +186,18 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     return 'Other';
   };
 
+  // Common pantry items that most people have
+  const pantryItems = new Set([
+    'salt', 'pepper', 'black pepper', 'sea salt', 'kosher salt',
+    'olive oil', 'oil', 'vegetable oil', 'coconut oil', 'cooking oil',
+    'garlic', 'onion', 'ginger',
+    'cumin', 'paprika', 'oregano', 'basil', 'thyme', 'rosemary', 'parsley', 'coriander', 'turmeric',
+    'soy sauce', 'vinegar', 'balsamic vinegar', 'lemon juice', 'lime juice',
+    'honey', 'sugar', 'brown sugar',
+    'flour', 'baking powder', 'baking soda',
+    'stock', 'broth', 'bouillon'
+  ]);
+
   const generateShoppingList = (template: MealPlanTemplate) => {
     const mealPlan = templateMealPlans[template.id as keyof typeof templateMealPlans];
     if (!mealPlan) return;
@@ -204,6 +216,7 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     }
     
     const ingredientsMap = new Map<string, IngredientData>();
+    const pantryItemsFound = new Map<string, IngredientData>();
     
     Object.entries(mealPlan).forEach(([day, meals]: [string, any]) => {
       Object.entries(meals).forEach(([mealType, meal]: [string, any]) => {
@@ -214,25 +227,18 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
             const converted = convertToBaseUnit(parsed.quantity, parsed.unit);
             const category = categorizeIngredient(parsed.item);
             
-            // Create a key that includes unit to handle different measurements
-            const baseKey = normalized;
+            // Check if this is a pantry item
+            const isPantryItem = pantryItems.has(normalized) || 
+                                 Array.from(pantryItems).some(item => normalized.includes(item));
+            
+            const targetMap = isPantryItem ? pantryItemsFound : ingredientsMap;
             const unitKey = converted.unit ? `${normalized}__${converted.unit}` : normalized;
             
-            // Check if we have this ingredient with this unit
-            if (ingredientsMap.has(unitKey)) {
-              ingredientsMap.get(unitKey)!.quantity += converted.quantity;
+            // Add or update ingredient
+            if (targetMap.has(unitKey)) {
+              targetMap.get(unitKey)!.quantity += converted.quantity;
             } else {
-              // Check if we have this ingredient with a different unit
-              let foundDifferentUnit = false;
-              ingredientsMap.forEach((value, key) => {
-                if (key.startsWith(baseKey + '__') || key === baseKey) {
-                  // Found same ingredient with different unit - keep separate
-                  foundDifferentUnit = true;
-                }
-              });
-              
-              // Add new entry
-              ingredientsMap.set(unitKey, {
+              targetMap.set(unitKey, {
                 quantity: converted.quantity,
                 unit: converted.unit,
                 category,
@@ -244,29 +250,36 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
       });
     });
 
-    // Group by category and format
-    const categorized = new Map<string, Array<{ item: string; display: string }>>();
-    
-    ingredientsMap.forEach((data, key) => {
-      // Extract display name by removing unit suffix if present
+    // Helper to format items
+    const formatItem = (data: IngredientData, key: string): string => {
       const displayName = key.includes('__') ? key.split('__')[0] : key;
-      let display = '';
-      
       if (data.unit) {
-        // Format quantity nicely
         const qty = Math.round(data.quantity * 100) / 100;
         const qtyStr = qty % 1 === 0 ? qty.toString() : qty.toFixed(1);
-        display = `${qtyStr}${data.unit} ${displayName}`;
+        return `${qtyStr}${data.unit} ${displayName}`;
       } else {
         const qty = Math.ceil(data.quantity);
-        display = qty > 1 ? `${qty} ${displayName}` : displayName;
+        return qty > 1 ? `${qty} ${displayName}` : displayName;
       }
+    };
+
+    // Group shopping items by category
+    const categorized = new Map<string, Array<{ item: string; display: string }>>();
+    ingredientsMap.forEach((data, key) => {
+      const displayName = key.includes('__') ? key.split('__')[0] : key;
+      const display = formatItem(data, key);
       
       if (!categorized.has(data.category)) {
         categorized.set(data.category, []);
       }
       categorized.get(data.category)!.push({ item: displayName, display });
     });
+
+    // Format pantry items
+    const pantryList = Array.from(pantryItemsFound.entries()).map(([key, data]) => ({
+      item: key.includes('__') ? key.split('__')[0] : key,
+      display: formatItem(data, key)
+    })).sort((a, b) => a.item.localeCompare(b.item));
     
     // Sort categories in logical order
     const categoryOrder = [
@@ -361,9 +374,9 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
 
           ${hasIngredients ? `
             <div class="section">
-              <h2>Consolidated Shopping List</h2>
+              <h2>Shopping List</h2>
               <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-                Quantities combined and organized by category for the week
+                Quantities consolidated for the full week
               </p>
               ${sortedCategories.map(category => {
                 const items = categorized.get(category)!.sort((a, b) => a.item.localeCompare(b.item));
@@ -376,6 +389,18 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
                   </ul>
                 `;
               }).join('')}
+              
+              ${pantryList.length > 0 ? `
+                <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #6c757d;">
+                  <h2 style="font-size: 18px; margin-bottom: 10px;">Pantry Check</h2>
+                  <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                    Common items you probably have - just verify you have enough
+                  </p>
+                  <ul>
+                    ${pantryList.map(({ display }) => `<li>${display}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
             </div>
           ` : `
             <div class="section">
