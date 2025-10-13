@@ -11,6 +11,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SampleDailyPreview from "@/components/SampleDailyPreview";
+import TemplateSelector from "@/components/TemplateSelector";
+import { templateMealPlans } from "@/data/mealTemplates";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
 import ResearchCitation from "@/components/ResearchCitation";
@@ -55,6 +57,8 @@ const Nutrition = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [generationMethod, setGenerationMethod] = useState<'ai' | 'algorithmic'>('ai');
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [showCustomization, setShowCustomization] = useState(false);
 
   // Recipe instructions for common meals
   const recipeInstructions: { [key: string]: { ingredients: string[], steps: string[] } } = {
@@ -1235,6 +1239,88 @@ const Nutrition = () => {
     });
   };
 
+  const handleSelectTemplate = (templateId: string) => {
+    setSelectedTemplate(templateId);
+    
+    // Load the template meal plan
+    const templateData = templateMealPlans[templateId as keyof typeof templateMealPlans];
+    
+    if (!templateData) {
+      toast({
+        title: "Error",
+        description: "Template not found",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Convert template data to weeklyPlan format
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    
+    const weekPlan = days.map((day, index) => {
+      const dayData = templateData[dayKeys[index] as keyof typeof templateData];
+      
+      return {
+        day,
+        breakfast: {
+          name: dayData.breakfast.name,
+          description: dayData.breakfast.description,
+          foods: [],
+          totals: {
+            calories: dayData.breakfast.calories,
+            protein: dayData.breakfast.protein,
+            carbs: dayData.breakfast.carbs,
+            fat: dayData.breakfast.fat
+          },
+          instructions: `Prepared according to ${templateId} template guidelines`
+        },
+        lunch: {
+          name: dayData.lunch.name,
+          description: dayData.lunch.description,
+          foods: [],
+          totals: {
+            calories: dayData.lunch.calories,
+            protein: dayData.lunch.protein,
+            carbs: dayData.lunch.carbs,
+            fat: dayData.lunch.fat
+          },
+          instructions: `Prepared according to ${templateId} template guidelines`
+        },
+        dinner: {
+          name: dayData.dinner.name,
+          description: dayData.dinner.description,
+          foods: [],
+          totals: {
+            calories: dayData.dinner.calories,
+            protein: dayData.dinner.protein,
+            carbs: dayData.dinner.carbs,
+            fat: dayData.dinner.fat
+          },
+          instructions: `Prepared according to ${templateId} template guidelines`
+        },
+        dailyTotals: {
+          calories: dayData.breakfast.calories + dayData.lunch.calories + dayData.dinner.calories,
+          protein: dayData.breakfast.protein + dayData.lunch.protein + dayData.dinner.protein,
+          carbs: dayData.breakfast.carbs + dayData.lunch.carbs + dayData.dinner.carbs,
+          fat: dayData.breakfast.fat + dayData.lunch.fat + dayData.dinner.fat
+        }
+      };
+    });
+
+    setWeeklyPlan(weekPlan);
+    setShowWeeklyPlan(true);
+    
+    toast({
+      title: "Template Applied",
+      description: `Your ${templateId} meal plan is ready!`,
+    });
+  };
+
+  const handleCustomize = () => {
+    setShowCustomization(true);
+  };
+
   const leucineRichFoods = [
     { name: "Chicken Breast (100g)", protein: 31, leucine: 2.5, score: "Excellent" },
     { name: "Salmon (100g)", protein: 25, leucine: 2.0, score: "Excellent" },
@@ -1842,17 +1928,28 @@ const Nutrition = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Sample Daily Preview */}
-                <SampleDailyPreview 
-                  onCustomize={() => {
-                    // Scroll to recipe selection
-                    const element = document.getElementById('recipe-selection');
-                    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }}
-                />
+                {/* Template Selector - shown first */}
+                {!showCustomization && (
+                  <TemplateSelector
+                    onSelectTemplate={handleSelectTemplate}
+                    onCustomize={handleCustomize}
+                  />
+                )}
 
-                {/* Recipe Category Selection */}
-                <div id="recipe-selection" className="mb-6">
+                {/* Customization UI - shown after user clicks customize */}
+                {showCustomization && (
+                  <>
+                    {/* Sample Daily Preview */}
+                    <SampleDailyPreview 
+                      onCustomize={() => {
+                        // Scroll to recipe selection
+                        const element = document.getElementById('recipe-selection');
+                        element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    />
+
+                    {/* Recipe Category Selection */}
+                    <div id="recipe-selection" className="mb-6">
                   <h3 className="text-lg font-semibold mb-4">Choose Your Recipe Style</h3>
                   <div className="flex gap-4 mb-6">
                     {Object.entries(recipeCategories).map(([key, category]) => (
@@ -2275,6 +2372,8 @@ const Nutrition = () => {
                       ))}
                     </div>
                   </div>
+                )}
+                  </>
                 )}
               </CardContent>
             </Card>
