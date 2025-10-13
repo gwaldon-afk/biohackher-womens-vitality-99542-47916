@@ -1272,37 +1272,40 @@ const Nutrition = () => {
           name: dayData.breakfast.name,
           description: dayData.breakfast.description,
           foods: [],
+          ingredients: (dayData.breakfast as any).ingredients || [],
+          instructions: (dayData.breakfast as any).instructions || "",
           totals: {
             calories: dayData.breakfast.calories,
             protein: dayData.breakfast.protein,
             carbs: dayData.breakfast.carbs,
             fat: dayData.breakfast.fat
-          },
-          instructions: `Prepared according to ${templateId} template guidelines`
+          }
         },
         lunch: {
           name: dayData.lunch.name,
           description: dayData.lunch.description,
           foods: [],
+          ingredients: (dayData.lunch as any).ingredients || [],
+          instructions: (dayData.lunch as any).instructions || "",
           totals: {
             calories: dayData.lunch.calories,
             protein: dayData.lunch.protein,
             carbs: dayData.lunch.carbs,
             fat: dayData.lunch.fat
-          },
-          instructions: `Prepared according to ${templateId} template guidelines`
+          }
         },
         dinner: {
           name: dayData.dinner.name,
           description: dayData.dinner.description,
           foods: [],
+          ingredients: (dayData.dinner as any).ingredients || [],
+          instructions: (dayData.dinner as any).instructions || "",
           totals: {
             calories: dayData.dinner.calories,
             protein: dayData.dinner.protein,
             carbs: dayData.dinner.carbs,
             fat: dayData.dinner.fat
-          },
-          instructions: `Prepared according to ${templateId} template guidelines`
+          }
         },
         dailyTotals: {
           calories: dayData.breakfast.calories + dayData.lunch.calories + dayData.dinner.calories,
@@ -2320,11 +2323,14 @@ const Nutrition = () => {
                                 <button 
                                                   className="font-bold text-xl text-foreground bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-left shadow-sm"
                                                   onClick={() => {
-                                                    // Generate recipe from actual meal foods
-                                                    const mealFoods = meal.foods?.map((f: any) => `${f.amount} ${f.name}`) || [];
-                                                    const mealName = meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`;
-                                                    
-                                                    // Generate cooking instructions based on the foods in this meal
+                                                    setSelectedRecipe({
+                                                      name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                      ingredients: meal.ingredients || (meal.foods?.length > 0 ? meal.foods.map((f: any) => `${f.amount} ${f.name}`) : []),
+                                                      steps: meal.instructions 
+                                                        ? (typeof meal.instructions === 'string' 
+                                                          ? meal.instructions.split(/\.\s+/).filter(s => s.length > 0).map(s => s.trim() + (s.endsWith('.') ? '' : '.'))
+                                                          : [meal.instructions])
+                                                        : (meal.foods?.length > 0 ? (() => {
                                                     const steps: string[] = [];
                                                     const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
                                                     const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
@@ -2397,10 +2403,8 @@ const Nutrition = () => {
                                                       steps.push("Serve fresh and enjoy");
                                                     }
                                                     
-                                                    setSelectedRecipe({
-                                                      name: mealName,
-                                                      ingredients: mealFoods,
-                                                      steps: steps
+                                                    return steps;
+                                                  })() : ["Follow your preferred cooking method for these ingredients"])
                                                     });
                                                   }}
                                                 >
