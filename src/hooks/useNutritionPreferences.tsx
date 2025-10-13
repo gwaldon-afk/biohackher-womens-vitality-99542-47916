@@ -19,9 +19,12 @@ export interface NutritionPreferences {
 }
 
 export const useNutritionPreferences = () => {
+  console.log('[useNutritionPreferences] Hook called');
   const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
+  
+  console.log('[useNutritionPreferences] User:', user);
   
   const [preferences, setPreferences] = useState<NutritionPreferences>({
     weight: "",
@@ -42,8 +45,13 @@ export const useNutritionPreferences = () => {
   const [hasPreferences, setHasPreferences] = useState(false);
 
   useEffect(() => {
+    console.log('[useNutritionPreferences] useEffect triggered, user:', user);
     if (user) {
+      console.log('[useNutritionPreferences] Loading preferences for user');
       loadPreferences();
+    } else {
+      console.log('[useNutritionPreferences] No user, setting isLoading to false');
+      setIsLoading(false);
     }
   }, [user]);
 

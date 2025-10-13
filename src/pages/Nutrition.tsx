@@ -10,6 +10,7 @@ import FoodScienceTab from "@/components/nutrition/FoodScienceTab";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
 
 const Nutrition = () => {
+  console.log('[Nutrition] Component rendering');
   const { t } = useTranslation();
   const {
     preferences,
@@ -19,6 +20,8 @@ const Nutrition = () => {
     hasPreferences,
     savePreferences,
   } = useNutritionPreferences();
+  
+  console.log('[Nutrition] State:', { preferences, isLoading, hasPreferences });
 
   const [isEditing, setIsEditing] = useState(false);
 
