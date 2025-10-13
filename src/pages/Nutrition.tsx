@@ -16,6 +16,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from 'react-i18next';
+import { 
+  validateNutritionalCompleteness, 
+  validateCulinarySense, 
+  checkSafetyContraindications,
+  validatePortionRealism 
+} from '@/utils/nutritionValidation';
+import { transformAIMeal } from '@/utils/nutritionHelpers';
 
 const Nutrition = () => {
   const { t } = useTranslation();
@@ -44,6 +51,8 @@ const Nutrition = () => {
   const [hasPreferences, setHasPreferences] = useState(false);
   const [weekIndex, setWeekIndex] = useState(0);
   const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [generationMethod, setGenerationMethod] = useState<'ai' | 'algorithmic'>('ai');
 
   // Recipe instructions for common meals
   const recipeInstructions: { [key: string]: { ingredients: string[], steps: string[] } } = {
@@ -437,28 +446,53 @@ const Nutrition = () => {
 
   const foodDatabase = {
     proteins: {
-      "Chicken Breast": { protein: 31, carbs: 0, fat: 3.6, calories: 165, serving: "100g" },
-      "Salmon": { protein: 25, carbs: 0, fat: 12, calories: 208, serving: "100g" },
-      "Greek Yogurt": { protein: 10, carbs: 4, fat: 0, calories: 59, serving: "100g" },
-      "Eggs": { protein: 6, carbs: 0.6, fat: 5, calories: 78, serving: "1 large" },
-      "Tofu": { protein: 8, carbs: 2, fat: 4, calories: 76, serving: "100g" },
-      "Cottage Cheese": { protein: 11, carbs: 3.4, fat: 4.3, calories: 98, serving: "100g" }
+      "Chicken Breast": { protein: 31, carbs: 0, fat: 3.6, calories: 165, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Turkey": { protein: 29, carbs: 0, fat: 7, calories: 189, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Lean Beef": { protein: 26, carbs: 0, fat: 15, calories: 250, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Salmon": { protein: 25, carbs: 0, fat: 12, calories: 208, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Tuna": { protein: 26, carbs: 0, fat: 1, calories: 116, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Shrimp": { protein: 24, carbs: 0, fat: 0.3, calories: 99, fiber: 0, serving: "100g", category: "protein", fodmap: "low" },
+      "Greek Yogurt": { protein: 10, carbs: 4, fat: 0, calories: 59, fiber: 0, serving: "100g", category: "protein", fodmap: "moderate" },
+      "Eggs": { protein: 6, carbs: 0.6, fat: 5, calories: 78, fiber: 0, serving: "1 large", category: "protein", fodmap: "low" },
+      "Tofu": { protein: 8, carbs: 2, fat: 4, calories: 76, fiber: 1, serving: "100g", category: "protein", fodmap: "low" },
+      "Tempeh": { protein: 19, carbs: 9, fat: 11, calories: 193, fiber: 5, serving: "100g", category: "protein", fodmap: "high" },
+      "Cottage Cheese": { protein: 11, carbs: 3.4, fat: 4.3, calories: 98, fiber: 0, serving: "100g", category: "protein", fodmap: "moderate" },
+      "Lentils": { protein: 9, carbs: 20, fat: 0.4, calories: 116, fiber: 8, serving: "100g cooked", category: "protein", fodmap: "high" }
     },
     carbs: {
-      "Brown Rice": { protein: 2.6, carbs: 23, fat: 0.9, calories: 111, serving: "100g cooked" },
-      "Quinoa": { protein: 4.4, carbs: 22, fat: 1.9, calories: 120, serving: "100g cooked" },
-      "Sweet Potato": { protein: 2, carbs: 20, fat: 0.1, calories: 86, serving: "100g" },
-      "Oats": { protein: 2.4, carbs: 12, fat: 1.4, calories: 68, serving: "100g cooked" }
+      "Brown Rice": { protein: 2.6, carbs: 23, fat: 0.9, calories: 111, fiber: 1.8, serving: "100g cooked", category: "carb", fodmap: "low" },
+      "Quinoa": { protein: 4.4, carbs: 22, fat: 1.9, calories: 120, fiber: 2.8, serving: "100g cooked", category: "carb", fodmap: "moderate" },
+      "Wild Rice": { protein: 4, carbs: 21, fat: 0.3, calories: 101, fiber: 1.8, serving: "100g cooked", category: "carb", fodmap: "low" },
+      "Buckwheat": { protein: 3.4, carbs: 20, fat: 0.6, calories: 92, fiber: 2.7, serving: "100g cooked", category: "carb", fodmap: "low" },
+      "Sweet Potato": { protein: 2, carbs: 20, fat: 0.1, calories: 86, fiber: 3, serving: "100g", category: "carb", fodmap: "low" },
+      "Oats": { protein: 2.4, carbs: 12, fat: 1.4, calories: 68, fiber: 1.7, serving: "100g cooked", category: "carb", fodmap: "moderate" },
+      "Barley": { protein: 2.3, carbs: 28, fat: 0.4, calories: 123, fiber: 3.8, serving: "100g cooked", category: "carb", fodmap: "high" },
+      "Whole Grain Pasta": { protein: 5, carbs: 25, fat: 0.9, calories: 124, fiber: 3.2, serving: "100g cooked", category: "carb", fodmap: "high" }
     },
     vegetables: {
-      "Spinach": { protein: 2.9, carbs: 3.6, fat: 0.4, calories: 23, serving: "100g" },
-      "Broccoli": { protein: 2.8, carbs: 7, fat: 0.4, calories: 34, serving: "100g" },
-      "Carrots": { protein: 0.9, carbs: 10, fat: 0.2, calories: 41, serving: "100g" }
+      "Spinach": { protein: 2.9, carbs: 3.6, fat: 0.4, calories: 23, fiber: 2.2, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Kale": { protein: 4.3, carbs: 9, fat: 0.9, calories: 49, fiber: 3.6, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Broccoli": { protein: 2.8, carbs: 7, fat: 0.4, calories: 34, fiber: 2.6, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Carrots": { protein: 0.9, carbs: 10, fat: 0.2, calories: 41, fiber: 2.8, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Bell Peppers": { protein: 1, carbs: 6, fat: 0.3, calories: 31, fiber: 2.1, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Zucchini": { protein: 1.2, carbs: 3, fat: 0.3, calories: 17, fiber: 1, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Asparagus": { protein: 2.2, carbs: 4, fat: 0.2, calories: 20, fiber: 2.1, serving: "100g", category: "vegetable", fodmap: "high" },
+      "Cauliflower": { protein: 1.9, carbs: 5, fat: 0.3, calories: 25, fiber: 2, serving: "100g", category: "vegetable", fodmap: "moderate" },
+      "Cucumber": { protein: 0.7, carbs: 3.6, fat: 0.1, calories: 15, fiber: 0.5, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Tomatoes": { protein: 0.9, carbs: 3.9, fat: 0.2, calories: 18, fiber: 1.2, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Green Beans": { protein: 1.8, carbs: 7, fat: 0.2, calories: 31, fiber: 2.7, serving: "100g", category: "vegetable", fodmap: "low" },
+      "Bok Choy": { protein: 1.5, carbs: 2.2, fat: 0.2, calories: 13, fiber: 1, serving: "100g", category: "vegetable", fodmap: "low" }
     },
     fats: {
-      "Avocado": { protein: 2, carbs: 9, fat: 15, calories: 160, serving: "100g" },
-      "Almonds": { protein: 21, carbs: 22, fat: 50, calories: 579, serving: "100g" },
-      "Olive Oil": { protein: 0, carbs: 0, fat: 14, calories: 119, serving: "1 tbsp" }
+      "Avocado": { protein: 2, carbs: 9, fat: 15, calories: 160, fiber: 7, serving: "100g", category: "fat", fodmap: "low" },
+      "Almonds": { protein: 21, carbs: 22, fat: 50, calories: 579, fiber: 12.5, serving: "100g", category: "fat", fodmap: "high" },
+      "Walnuts": { protein: 15, carbs: 14, fat: 65, calories: 654, fiber: 6.7, serving: "100g", category: "fat", fodmap: "moderate" },
+      "Chia Seeds": { protein: 17, carbs: 42, fat: 31, calories: 486, fiber: 34, serving: "100g", category: "fat", fodmap: "low" },
+      "Flax Seeds": { protein: 18, carbs: 29, fat: 42, calories: 534, fiber: 27, serving: "100g", category: "fat", fodmap: "low" },
+      "Tahini": { protein: 17, carbs: 21, fat: 54, calories: 595, fiber: 9.3, serving: "100g", category: "fat", fodmap: "low" },
+      "Olive Oil": { protein: 0, carbs: 0, fat: 14, calories: 119, fiber: 0, serving: "1 tbsp", category: "fat", fodmap: "low" },
+      "Cashews": { protein: 18, carbs: 33, fat: 44, calories: 553, fiber: 3.3, serving: "100g", category: "fat", fodmap: "high" },
+      "Peanut Butter": { protein: 25, carbs: 20, fat: 50, calories: 588, fiber: 6, serving: "100g", category: "fat", fodmap: "moderate" }
     }
   };
 
@@ -768,7 +802,94 @@ const Nutrition = () => {
 
   const currentMealPlan = isLowFODMAP ? mealPlans.lowFODMAP : mealPlans.regular;
 
-  const generateWeeklyPlan = (useExistingVariety: boolean = false) => {
+  const generateAIMealPlan = async () => {
+    if (!weight) {
+      toast({
+        title: "Missing information",
+        description: "Please set your weight in your preferences first.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    setIsGeneratingAI(true);
+    
+    try {
+      const macros = calculateMacros();
+      
+      const { data, error } = await supabase.functions.invoke('generate-meal-plan', {
+        body: {
+          weight: parseFloat(weight),
+          activityLevel,
+          fitnessGoal: goal,
+          allergies,
+          dislikes,
+          isLowFODMAP,
+          hasIBS,
+          calories: macros.calories,
+          protein: macros.protein,
+          carbs: macros.carbs,
+          fat: macros.fat,
+          recipeStyle: selectedRecipeStyle
+        }
+      });
+
+      setIsGeneratingAI(false);
+
+      if (error) {
+        console.error('AI meal generation error:', error);
+        
+        if (error.message?.includes('Rate limits')) {
+          toast({
+            title: "Rate limit reached",
+            description: "Please try again in a moment. Falling back to algorithmic generation.",
+            variant: "destructive",
+          });
+        } else if (error.message?.includes('Payment required')) {
+          toast({
+            title: "Credits required",
+            description: "AI credits needed. Falling back to algorithmic generation.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "AI generation unavailable",
+            description: "Using algorithmic meal plan instead.",
+            variant: "destructive",
+          });
+        }
+        return null;
+      }
+
+      if (data?.fallbackRequired) {
+        console.log('AI validation failed, using algorithmic fallback');
+        toast({
+          title: "Validation issue",
+          description: "Using algorithmic meal plan to ensure safety.",
+        });
+        return null;
+      }
+
+      if (data?.mealPlan) {
+        console.log('AI meal plan generated successfully');
+        setGenerationMethod('ai');
+        return data.mealPlan;
+      }
+
+      return null;
+    } catch (err) {
+      console.error('Error calling AI:', err);
+      setIsGeneratingAI(false);
+      toast({
+        title: "Generation error",
+        description: "Falling back to algorithmic meal plan.",
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+
+  const generateWeeklyPlan = async (useExistingVariety: boolean = false) => {
     if (!weight) {
       toast({
         title: "Missing information",
@@ -777,6 +898,31 @@ const Nutrition = () => {
       });
       return;
     }
+
+    // Try AI generation first
+    const aiPlan = await generateAIMealPlan();
+    
+    if (aiPlan) {
+      // Transform AI plan to match expected format
+      const transformedPlan = aiPlan.map((dayPlan: any) => ({
+        day: dayPlan.day,
+        breakfast: transformAIMeal(dayPlan.breakfast, 'breakfast'),
+        lunch: transformAIMeal(dayPlan.lunch, 'lunch'),
+        dinner: transformAIMeal(dayPlan.dinner, 'dinner')
+      }));
+      
+      setWeeklyPlan(transformedPlan);
+      setShowWeeklyPlan(true);
+      
+      toast({
+        title: "AI Meal Plan Generated",
+        description: "Your personalized 7-day meal plan is ready!",
+      });
+      return;
+    }
+
+    // Fallback to algorithmic generation
+    setGenerationMethod('algorithmic');
 
     const macros = calculateMacros();
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
