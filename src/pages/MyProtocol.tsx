@@ -194,7 +194,7 @@ const MyProtocol = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="today" className="space-y-6">
+        <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "today"} className="space-y-6">
           <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="today">Today</TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>

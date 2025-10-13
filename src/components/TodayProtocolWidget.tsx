@@ -151,16 +151,16 @@ export const TodayProtocolWidget = () => {
             className="flex-1"
             onClick={() => navigate("/my-protocol")}
           >
-            View Full 7-Day Plan
+            View Full Protocol
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
           <Button
             variant="default"
             className="flex-1"
-            onClick={() => navigate("/shop")}
+            onClick={() => navigate("/my-protocol?tab=recommendations")}
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
-            Buy Today's Stack
+            Buy Your 30-Day Stack
           </Button>
         </div>
       </CardContent>
