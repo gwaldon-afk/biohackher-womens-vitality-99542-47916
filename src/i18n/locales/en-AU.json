@@ -254,5 +254,87 @@
       "title": "Goal Check-In",
       "submit": "Save Check-In"
     }
+  },
+  "nutrition": {
+    "title": "Nutrition Optimisation",
+    "subtitle": "AI-Powered Meal Planning for Longevity",
+    "description": "Get a personalised 7-day meal plan designed to optimise your nutrition, support your fitness goals, and promote longevity.",
+    "yourDetails": "Your Details",
+    "preferences": "Preferences",
+    "generatePlan": "Generate Your Personalised Plan",
+    "savingPreferences": "Saving preferences...",
+    "savePreferences": "Save Preferences",
+    "savedMessage": "Preferences saved",
+    "savedDescription": "Your nutrition preferences have been updated successfully.",
+    "errorSaving": "Error saving preferences",
+    "errorDescription": "There was an error saving your preferences. Please try again.",
+    "weight": "Weight (kg)",
+    "activityLevel": "Activity Level",
+    "goal": "Goal",
+    "proteinNeeds": "Daily Protein Target",
+    "estimatedCalories": "Estimated Daily Calories",
+    "macros": "Macronutrients",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "calories": "Calories",
+    "lowFODMAP": "Low FODMAP Diet",
+    "hasIBS": "I have IBS",
+    "foodAllergies": "Food Allergies & Intolerances",
+    "foodDislikes": "Foods You Avoid",
+    "recipeStyle": "Recipe Complexity",
+    "breakfastRecipe": "Breakfast Style",
+    "lunchRecipe": "Lunch Style",
+    "dinnerRecipe": "Dinner Style",
+    "activityLevels": {
+      "sedentary": "Sedentary (little or no exercise)",
+      "moderate": "Moderate (exercise 3-5 days/week)",
+      "active": "Active (exercise 6-7 days/week)",
+      "athlete": "Athlete (intense daily training)"
+    },
+    "goals": {
+      "maintenance": "Maintain Weight",
+      "weightLoss": "Weight Loss",
+      "muscleGain": "Muscle Gain"
+    },
+    "recipeStyles": {
+      "simple": "Simple (30 mins or less)",
+      "moderate": "Moderate (30-45 mins)",
+      "advanced": "Gourmet (45+ mins)"
+    },
+    "breakfastOptions": {
+      "high-protein": "High Protein",
+      "quick-easy": "Quick & Easy",
+      "mediterranean": "Mediterranean Style"
+    },
+    "lunchOptions": {
+      "salads": "Fresh Salads",
+      "warm-bowls": "Warm Bowls",
+      "wraps": "Wraps & Sandwiches"
+    },
+    "dinnerOptions": {
+      "fish": "Fish & Seafood",
+      "chicken": "Chicken & Poultry",
+      "plant-based": "Plant-Based"
+    },
+    "yourPlan": "Your 7-Day Meal Plan",
+    "weeklyPlan": "Weekly Plan",
+    "shoppingList": "Shopping List",
+    "printPlan": "Print Plan",
+    "printList": "Print Shopping List",
+    "regenerate": "Regenerate Plan",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "dailyTotals": "Daily Totals",
+    "longevityScore": "Longevity Score",
+    "benefits": "Benefits",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "viewRecipe": "View Recipe",
+    "mealDetails": "Meal Details",
+    "nutritionInfo": "Nutrition Information",
+    "week": "Week",
+    "day": "Day"
   }
 }

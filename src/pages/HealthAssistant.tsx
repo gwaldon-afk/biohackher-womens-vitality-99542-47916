@@ -188,12 +188,11 @@ const HealthAssistant = () => {
                               {message.recommended_tools.map((tool: any) => (
                                 <Card 
                                   key={tool.id} 
-                                  className="cursor-pointer hover:border-primary hover:shadow-lg transition-all group"
-                                  onClick={() => navigate(`/${tool.category_slug || 'biohacking-toolkit'}`)}
+                                  className="border-primary/30"
                                 >
                                   <CardHeader className="pb-3">
                                     <div className="flex items-start justify-between gap-2">
-                                      <CardTitle className="text-base group-hover:text-primary transition-colors">
+                                      <CardTitle className="text-base">
                                         {tool.name}
                                       </CardTitle>
                                       {tool.evidence_level && (
@@ -203,24 +202,41 @@ const HealthAssistant = () => {
                                         />
                                       )}
                                     </div>
-                                    <CardDescription className="text-sm">
-                                      <span className="font-medium text-primary">Why this helps: </span>
+                                    {tool.description && (
+                                      <p className="text-sm text-muted-foreground mt-2">
+                                        {tool.description}
+                                      </p>
+                                    )}
+                                    <CardDescription className="text-sm mt-2">
+                                      <span className="font-medium text-primary">Why this could help: </span>
                                       {tool.relevance_reason}
                                     </CardDescription>
                                     {tool.benefits && tool.benefits.length > 0 && (
-                                      <div className="mt-2 flex flex-wrap gap-1">
-                                        {tool.benefits.slice(0, 3).map((benefit: string, idx: number) => (
-                                          <Badge key={idx} variant="secondary" className="text-xs">
-                                            <CheckCircle className="h-3 w-3 mr-1" />
-                                            {benefit}
-                                          </Badge>
-                                        ))}
+                                      <div className="mt-3">
+                                        <p className="text-xs font-medium text-muted-foreground mb-1">Key Benefits:</p>
+                                        <ul className="space-y-1">
+                                          {tool.benefits.slice(0, 3).map((benefit: string, idx: number) => (
+                                            <li key={idx} className="text-sm flex items-center gap-2">
+                                              <CheckCircle className="h-3 w-3 text-primary shrink-0" />
+                                              <span>{benefit}</span>
+                                            </li>
+                                          ))}
+                                        </ul>
                                       </div>
                                     )}
                                   </CardHeader>
                                   <CardContent className="pt-0">
-                                    <Button variant="ghost" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground">
-                                      Explore This Tool
+                                    <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+                                      <span>Explore more in</span>
+                                      <Badge variant="outline" className="text-xs">{tool.category_name || 'Toolkit'}</Badge>
+                                    </div>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm" 
+                                      className="w-full border-primary/50 hover:bg-primary hover:text-primary-foreground"
+                                      onClick={() => navigate(`/${tool.category_slug || 'biohacking-toolkit'}`)}
+                                    >
+                                      View in {tool.category_name || 'Toolkit'}
                                       <ArrowRight className="h-4 w-4 ml-2" />
                                     </Button>
                                   </CardContent>

@@ -15,8 +15,10 @@ import ResearchCitation from "@/components/ResearchCitation";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 const Nutrition = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -285,14 +287,14 @@ const Nutrition = () => {
       setHasPreferences(true);
       setIsEditing(false);
       toast({
-        title: "Preferences saved",
-        description: "Your nutrition preferences have been updated successfully.",
+        title: t('nutrition.savedMessage'),
+        description: t('nutrition.savedDescription'),
       });
     } catch (error) {
       console.error('Error saving preferences:', error);
       toast({
-        title: "Error saving preferences",
-        description: "There was an error saving your preferences. Please try again.",
+        title: t('nutrition.errorSaving'),
+        description: t('nutrition.errorDescription'),
         variant: "destructive",
       });
     } finally {
@@ -1109,11 +1111,11 @@ const Nutrition = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <h1 className="text-3xl font-bold gradient-text">Nutrition Optimization</h1>
+            <h1 className="text-3xl font-bold gradient-text">{t('nutrition.title')}</h1>
             <ScienceBackedIcon className="h-6 w-6" />
           </div>
           <p className="text-muted-foreground text-center">
-            Calculate your personalised protein needs and explore leucine-rich foods for optimal muscle protein synthesis
+            {t('nutrition.description')}
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 max-w-3xl mx-auto">
             <p className="text-sm text-blue-800">
@@ -1382,7 +1384,7 @@ const Nutrition = () => {
                     className="flex items-center gap-2"
                   >
                     <Save className="h-4 w-4" />
-                    {isSaving ? "Saving..." : "Save Preferences"}
+                    {isSaving ? t('nutrition.savingPreferences') : t('nutrition.savePreferences')}
                   </Button>
                   {hasPreferences && (
                     <Button 
