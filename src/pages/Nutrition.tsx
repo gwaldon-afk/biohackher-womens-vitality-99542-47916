@@ -8,7 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat, Sparkles } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat, Sparkles, MoreVertical, Download, FileText, Dna, ChevronDown, EyeOff } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SampleDailyPreview from "@/components/SampleDailyPreview";
 import TemplateSelector from "@/components/TemplateSelector";
@@ -2396,286 +2397,282 @@ const Nutrition = () => {
                 
                 {/* Weekly Plan Display - shown for both templates and custom plans */}
                 {showWeeklyPlan && weeklyPlan && (
-                  <div className="mt-8">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">Your Personalised 7-Day Meal Plan</h3>
+                  <div className="mt-8 space-y-4">
+                    {/* Header with Actions */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-2xl font-bold gradient-text">Your 7-Day Meal Plan</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Click any meal name to view full recipe with instructions</p>
+                      </div>
                       <div className="flex gap-2">
+                        {/* Regenerate Dropdown */}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-2">
+                              <RefreshCw className="h-4 w-4" />
+                              Regenerate
+                              <ChevronDown className="h-3 w-3 opacity-50" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 bg-background z-50">
+                            <DropdownMenuItem onClick={() => generateWeeklyPlan(true)}>
+                              <Repeat className="mr-2 h-4 w-4" />
+                              Keep Same Meals
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => generateWeeklyPlan(false)}>
+                              <Sparkles className="mr-2 h-4 w-4" />
+                              Generate New Variety
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* Export Dropdown */}
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-2">
+                              <Download className="h-4 w-4" />
+                              Export
+                              <ChevronDown className="h-3 w-3 opacity-50" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-56 bg-background z-50">
+                            <DropdownMenuItem onClick={printWeeklyPlan}>
+                              <FileText className="mr-2 h-4 w-4" />
+                              Print Meal Plan
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={printShoppingList}>
+                              <Utensils className="mr-2 h-4 w-4" />
+                              Print Shopping List
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={printLongevityBenefits}>
+                              <Dna className="mr-2 h-4 w-4" />
+                              View Longevity Benefits
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* Hide Button */}
                         <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => generateWeeklyPlan(true)}
-                          className="flex items-center gap-2"
-                        >
-                          <Repeat className="h-4 w-4" />
-                          Same Plan
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => generateWeeklyPlan(false)}
-                          className="flex items-center gap-2"
-                        >
-                          <RefreshCw className="h-4 w-4" />
-                          New Variety
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={printWeeklyPlan}
-                        >
-                          🖨️ Print Plan
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={printShoppingList}
-                        >
-                          📋 Print Shopping List
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={printLongevityBenefits}
-                        >
-                          🧬 Longevity Benefits
-                        </Button>
-                        <Button 
-                          variant="outline" 
+                          variant="ghost" 
                           size="sm"
                           onClick={() => setShowWeeklyPlan(false)}
+                          className="gap-2"
                         >
-                          Hide Plan
+                          <EyeOff className="h-4 w-4" />
+                          Hide
                         </Button>
                       </div>
                     </div>
                     
-                    <div className="mb-4 p-4 bg-primary/10 rounded-lg">
-                      <h4 className="font-semibold mb-2">Your Daily Targets:</h4>
-                      <div className="grid grid-cols-4 gap-4 text-sm">
-                        <div className="text-center">
-                          <div className="font-bold">{dailyMacros.calories}</div>
-                          <div className="text-muted-foreground">Calories</div>
+                    {/* Daily Targets - Compact Version */}
+                    <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-muted-foreground">Daily Targets:</span>
+                          <div className="flex gap-6 text-sm">
+                            <div className="text-center">
+                              <div className="font-bold text-lg">{dailyMacros.calories}</div>
+                              <div className="text-xs text-muted-foreground">Cal</div>
+                            </div>
+                            <div className="h-10 w-px bg-border" />
+                            <div className="text-center">
+                              <div className="font-bold text-lg text-primary">{dailyMacros.protein}g</div>
+                              <div className="text-xs text-muted-foreground">Protein</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-bold text-lg">{dailyMacros.carbs}g</div>
+                              <div className="text-xs text-muted-foreground">Carbs</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="font-bold text-lg">{dailyMacros.fat}g</div>
+                              <div className="text-xs text-muted-foreground">Fat</div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-center">
-                          <div className="font-bold">{dailyMacros.protein}g</div>
-                          <div className="text-muted-foreground">Protein</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold">{dailyMacros.carbs}g</div>
-                          <div className="text-muted-foreground">Carbs</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="font-bold">{dailyMacros.fat}g</div>
-                          <div className="text-muted-foreground">Fat</div>
-                        </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                     
-                    <div id="weekly-plan-print" className="space-y-6">
+                    {/* Daily Meal Plans */}
+                    <div id="weekly-plan-print" className="space-y-4">
                       {weeklyPlan.map((dayPlan: any, index: number) => (
-                        <Card key={index} className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md hover:shadow-lg transition-shadow">
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4 pb-4 border-b-2 border-primary/20">
-                              <div className="flex items-center gap-3">
-                                <div className="w-2 h-10 bg-primary rounded-full" />
-                                <h4 className="text-2xl font-bold text-foreground">{dayPlan.day}</h4>
-                              </div>
-                              <div className="text-right text-sm bg-secondary/30 px-4 py-2 rounded-lg">
-                                <div className="font-semibold text-foreground">Daily Total:</div>
-                                <div className="text-muted-foreground">{dayPlan.dailyTotals.calories} cal | {dayPlan.dailyTotals.protein}p | {dayPlan.dailyTotals.carbs}c | {dayPlan.dailyTotals.fat}f</div>
+                        <Card key={index} className="overflow-hidden border-l-4 border-l-primary hover:shadow-md transition-shadow">
+                          <CardContent className="p-5">
+                            {/* Day Header */}
+                            <div className="flex items-center justify-between mb-4 pb-3 border-b">
+                              <h4 className="text-xl font-bold">{dayPlan.day}</h4>
+                              <div className="text-sm bg-muted px-3 py-1.5 rounded-full">
+                                <span className="font-semibold">{dayPlan.dailyTotals.calories}</span> cal • 
+                                <span className="font-semibold text-primary ml-1">{dayPlan.dailyTotals.protein}p</span> • 
+                                <span className="ml-1">{dayPlan.dailyTotals.carbs}c • {dayPlan.dailyTotals.fat}f</span>
                               </div>
                             </div>
                             
-                            <div className="grid gap-4">
+                            {/* Meals Grid */}
+                            <div className="space-y-3">
                               {['breakfast', 'lunch', 'dinner'].map((mealType) => {
                                 const meal = dayPlan[mealType];
-                                const mealColors = {
-                                  breakfast: 'bg-primary/10 border-primary/40 hover:bg-primary/15',
-                                  lunch: 'bg-secondary/20 border-secondary/50 hover:bg-secondary/25',
-                                  dinner: 'bg-accent/30 border-accent-foreground/20 hover:bg-accent/35'
+                                const mealIcons = {
+                                  breakfast: '🌅',
+                                  lunch: '☀️',
+                                  dinner: '🌙'
                                 };
                                 return (
-                                  <div key={mealType} className={`border-2 rounded-lg p-4 transition-colors ${mealColors[mealType as keyof typeof mealColors]}`}>
-                                    <div className="mb-3">
-                                       <div className="flex items-center gap-2 mb-3">
-                                        <span className="text-lg">
-                                          {mealType === 'breakfast' && '🌅'}
-                                          {mealType === 'lunch' && '☀️'}
-                                          {mealType === 'dinner' && '🌙'}
-                                        </span>
-                                        <span className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
+                                  <div key={mealType} className="bg-muted/30 rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                                    {/* Meal Header */}
+                                    <div className="flex items-center justify-between mb-2">
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xl">{mealIcons[mealType as keyof typeof mealIcons]}</span>
+                                        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                                           {mealType}
                                         </span>
-                                        <span className="ml-auto text-xs text-primary bg-primary/10 px-2 py-1 rounded">
-                                          👆 Click meal name for recipe
-                                        </span>
                                       </div>
-                                       <div className="flex items-center justify-between mb-2">
-                                         <div>
-                                            <Dialog>
-                                              <DialogTrigger asChild>
-                                <button 
-                                                  className="font-bold text-xl text-foreground bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-left shadow-sm"
-                                                  onClick={() => {
-                                                    // For template meals, use the provided ingredients and instructions
-                                                    if (meal.ingredients && meal.ingredients.length > 0) {
-                                                      setSelectedRecipe({
-                                                        name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
-                                                        ingredients: meal.ingredients,
-                                                        steps: meal.instructions && typeof meal.instructions === 'string' && meal.instructions.trim().length > 0
-                                                          ? meal.instructions.split(/\.\s+/).filter(s => s.trim().length > 0).map(s => s.trim() + (s.endsWith('.') ? '' : '.'))
-                                                          : ["Prepare ingredients as listed above"]
-                                                      });
-                                                    } else {
-                                                      // For generated meals, use the foods array
-                                                      setSelectedRecipe({
-                                                        name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
-                                                        ingredients: meal.foods?.length > 0 ? meal.foods.map((f: any) => `${f.amount} ${f.name}`) : [],
-                                                        steps: meal.foods?.length > 0 ? (() => {
-                                                          const steps: string[] = [];
-                                                          const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
-                                                          const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
-                                                          const hasOats = meal.foods.some((f: any) => f.name === 'Oats');
-                                                          const hasProtein = meal.foods.some((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
-                                                          const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
-                                                          const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
-                                                          
-                                                          if (mealType === 'breakfast') {
-                                                            if (hasEggs) {
-                                                              steps.push(
-                                                                "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
-                                                                "Crack eggs into a bowl and whisk with a pinch of salt and pepper",
-                                                                "Pour eggs into pan and gently stir with a spatula as they cook until just set (2-3 minutes)",
-                                                                "Remove from heat while still slightly soft - they'll continue cooking"
-                                                              );
-                                                              if (hasOats) {
-                                                                steps.push("Meanwhile, cook oats: combine oats with double the amount of water, simmer 5-7 minutes until creamy");
-                                                              }
-                                                            } else if (hasYogurt) {
-                                                              steps.push("Place yogurt or cottage cheese in a serving bowl");
-                                                              if (hasOats) {
-                                                                steps.push("Stir in oats (can be served cold as overnight oats or warmed if preferred)");
-                                                              }
-                                                              steps.push("Add fresh berries or fruit if available, drizzle with honey if desired");
-                                                            }
-                                                            steps.push("Serve immediately and enjoy!");
-                                                          } else if (hasProtein) {
-                                                            const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
-                                                            steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
-                                                            
-                                                            if (proteinFood.name === 'Salmon' || proteinFood.name === 'Chicken Breast') {
-                                                              steps.push(`Heat a pan or grill to medium-high heat with a small amount of oil`);
-                                                              steps.push(`Cook ${proteinFood.name.toLowerCase()} for 4-6 minutes per side until cooked through`);
-                                                            } else if (proteinFood.name === 'Tofu') {
-                                                              steps.push("Press tofu to remove excess water, then cut into cubes");
-                                                              steps.push("Pan-fry tofu in oil over medium-high heat until golden on all sides (8-10 minutes)");
-                                                            }
-                                                            
-                                                            if (hasRice) {
-                                                              const grain = meal.foods.find((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
-                                                              steps.push(`Cook ${grain.name.toLowerCase()} according to package instructions`);
-                                                            }
-                                                            
-                                                            if (hasVeg) {
-                                                              const veggies = meal.foods.filter((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name)).map((f: any) => f.name.toLowerCase()).join(', ');
-                                                              steps.push(`Steam or lightly sauté ${veggies} until tender`);
-                                                            }
-                                                            
-                                                            steps.push("Arrange all components on a plate and serve hot");
-                                                          } else {
-                                                            steps.push("Gather all ingredients listed above");
-                                                            steps.push("Prepare ingredients by washing and chopping as needed");
-                                                            steps.push("Follow your preferred cooking method for these ingredients");
-                                                          }
-                                                          
-                                                          return steps;
-                                                        })() : ["Follow your preferred cooking method for these ingredients"]
-                                                      });
-                                                    }
-                                                  }}
-                                                >
-                                                  {meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
-                                                </button>
-                                              </DialogTrigger>
-                                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                                                <DialogHeader>
-                                                  <DialogTitle className="gradient-text text-left text-2xl">
-                                                    👩‍🍳 {selectedRecipe?.name || 'Recipe'}
-                                                  </DialogTitle>
-                                                </DialogHeader>
-                                                <div className="space-y-6">
-                                                  <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
-                                                    <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
-                                                      <span>🥗</span> {t('nutrition.ingredients')}
-                                                    </h4>
-                                                    <ul className="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                                      {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
-                                                        <li key={idx} className="text-sm flex items-start gap-2 bg-background/50 p-2 rounded">
-                                                          <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5"></span>
-                                                          <span>{ingredient}</span>
-                                                        </li>
-                                                      ))}
-                                                    </ul>
-                                                  </div>
-                                                  <div className="bg-secondary/5 rounded-lg p-4 border border-secondary/20">
-                                                    <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
-                                                      <span>📋</span> Cooking Instructions
-                                                    </h4>
-                                                    <ol className="space-y-3">
-                                                      {selectedRecipe?.steps?.map((step: string, idx: number) => (
-                                                        <li key={idx} className="text-sm flex gap-3 bg-background/50 p-3 rounded">
-                                                          <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                                                            {idx + 1}
-                                                          </span>
-                                                          <span className="flex-1">{step}</span>
-                                                        </li>
-                                                      ))}
-                                                    </ol>
-                                                  </div>
-                                                  <div className="text-xs text-muted-foreground italic bg-muted/30 p-3 rounded">
-                                                    💡 <strong>Tip:</strong> All ingredients for this recipe are included in your weekly shopping list. Feel free to adjust seasonings and cooking methods to your preference!
-                                                  </div>
-                                                </div>
-                                              </DialogContent>
-                                            </Dialog>
-                                           {(meal.description || meal.recipeDescription) && (
-                                             <p className="text-sm text-muted-foreground italic">{meal.description || meal.recipeDescription}</p>
-                                           )}
-                                         </div>
-                                        <div className="text-sm font-medium text-right">
-                                          {meal.totals.calories} cal | {meal.totals.protein}p | {meal.totals.carbs}c | {meal.totals.fat}f
-                                        </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        {meal.totals.calories} cal • <span className="font-semibold text-primary">{meal.totals.protein}p</span> • {meal.totals.carbs}c • {meal.totals.fat}f
                                       </div>
                                     </div>
-                                    
-                                    {meal.foods && meal.foods.length > 0 && (
-                                      <div className="flex flex-wrap gap-2 justify-center">
-                                        {meal.foods.map((food: any, foodIndex: number) => {
-                                          const foodCalories = Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100));
-                                          const foodKj = Math.round(foodCalories * 4.184);
-                                          return (
-                                            <div key={foodIndex} className="bg-muted/30 p-2 rounded text-center min-w-[120px]">
-                                              <div className="font-medium text-sm mb-1">{food.name}</div>
-                                              <div className="text-primary-dark font-bold text-lg">{food.amount}</div>
-                                              <div className="text-xs text-muted-foreground">
-                                                <div>{foodCalories} cal</div>
-                                                <div>{foodKj} kJ</div>
-                                              </div>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )}
+
+                                     {/* Meal Name (Clickable) */}
+                                     <Dialog>
+                                       <DialogTrigger asChild>
+                                         <button
+                                           className="w-full text-left font-semibold text-lg hover:text-primary transition-colors mb-1 flex items-center gap-2 group"
+                                           onClick={() => {
+                                             // For template meals, use the provided ingredients and instructions
+                                             if (meal.ingredients && meal.ingredients.length > 0) {
+                                               setSelectedRecipe({
+                                                 name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                 ingredients: meal.ingredients,
+                                                 steps: meal.instructions && typeof meal.instructions === 'string' && meal.instructions.trim().length > 0
+                                                   ? meal.instructions.split(/\.\s+/).filter(s => s.trim().length > 0).map(s => s.trim() + (s.endsWith('.') ? '' : '.'))
+                                                   : ["Prepare ingredients as listed above"]
+                                               });
+                                             } else {
+                                               // For generated meals, use the foods array
+                                               setSelectedRecipe({
+                                                 name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                 ingredients: meal.foods?.length > 0 ? meal.foods.map((f: any) => `${f.amount} ${f.name}`) : [],
+                                                 steps: meal.foods?.length > 0 ? (() => {
+                                                   const steps: string[] = [];
+                                                   const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
+                                                   const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
+                                                   const hasOats = meal.foods.some((f: any) => f.name === 'Oats');
+                                                   const hasProtein = meal.foods.some((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                   const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                   const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
+                                                   
+                                                   if (mealType === 'breakfast') {
+                                                     if (hasEggs) {
+                                                       steps.push(
+                                                         "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
+                                                         "Crack eggs into a bowl and whisk with a pinch of salt and pepper",
+                                                         "Pour eggs into pan and gently stir with a spatula as they cook until just set (2-3 minutes)",
+                                                         "Remove from heat while still slightly soft - they'll continue cooking"
+                                                       );
+                                                       if (hasOats) {
+                                                         steps.push("Meanwhile, cook oats: combine oats with double the amount of water, simmer 5-7 minutes until creamy");
+                                                       }
+                                                     } else if (hasYogurt) {
+                                                       steps.push("Place yogurt or cottage cheese in a serving bowl");
+                                                       if (hasOats) {
+                                                         steps.push("Stir in oats (can be served cold as overnight oats or warmed if preferred)");
+                                                       }
+                                                       steps.push("Add fresh berries or fruit if available, drizzle with honey if desired");
+                                                     }
+                                                     steps.push("Serve immediately and enjoy!");
+                                                   } else if (hasProtein) {
+                                                     const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                     steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
+                                                     
+                                                     if (proteinFood.name === 'Salmon' || proteinFood.name === 'Chicken Breast') {
+                                                       steps.push(`Heat a pan or grill to medium-high heat with a small amount of oil`);
+                                                       steps.push(`Cook ${proteinFood.name.toLowerCase()} for 4-6 minutes per side until cooked through`);
+                                                     } else if (proteinFood.name === 'Tofu') {
+                                                       steps.push("Press tofu to remove excess water, then cut into cubes");
+                                                       steps.push("Pan-fry tofu in oil over medium-high heat until golden on all sides (8-10 minutes)");
+                                                     }
+                                                     
+                                                     if (hasRice) {
+                                                       const grain = meal.foods.find((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                       steps.push(`Cook ${grain.name.toLowerCase()} according to package instructions`);
+                                                     }
+                                                     
+                                                     if (hasVeg) {
+                                                       const veggies = meal.foods.filter((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name)).map((f: any) => f.name.toLowerCase()).join(', ');
+                                                       steps.push(`Steam or lightly sauté ${veggies} until tender`);
+                                                     }
+                                                     
+                                                     steps.push("Arrange all components on a plate and serve hot");
+                                                   } else {
+                                                     steps.push("Gather all ingredients listed above");
+                                                     steps.push("Prepare ingredients by washing and chopping as needed");
+                                                     steps.push("Follow your preferred cooking method for these ingredients");
+                                                   }
+                                                   
+                                                   return steps;
+                                                 })() : ["Follow your preferred cooking method for these ingredients"]
+                                               });
+                                             }
+                                           }}
+                                         >
+                                           <span className="group-hover:underline">{meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}</span>
+                                           <span className="text-xs text-primary opacity-70">→ View Recipe</span>
+                                         </button>
+                                       </DialogTrigger>
+                                       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                                         <DialogHeader>
+                                           <DialogTitle className="gradient-text text-left text-2xl">
+                                             👩‍🍳 {selectedRecipe?.name || 'Recipe'}
+                                           </DialogTitle>
+                                         </DialogHeader>
+                                         <div className="space-y-6">
+                                           <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
+                                             <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
+                                               <span>🥗</span> {t('nutrition.ingredients')}
+                                             </h4>
+                                             <ul className="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                               {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
+                                                 <li key={idx} className="text-sm flex items-start gap-2 bg-background/50 p-2 rounded">
+                                                   <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5"></span>
+                                                   <span>{ingredient}</span>
+                                                 </li>
+                                               ))}
+                                             </ul>
+                                           </div>
+                                           <div className="bg-secondary/5 rounded-lg p-4 border border-secondary/20">
+                                             <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
+                                               <span>📋</span> Cooking Instructions
+                                             </h4>
+                                             <ol className="space-y-3">
+                                               {selectedRecipe?.steps?.map((step: string, idx: number) => (
+                                                 <li key={idx} className="text-sm flex gap-3 bg-background/50 p-3 rounded">
+                                                   <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+                                                     {idx + 1}
+                                                   </span>
+                                                   <span className="flex-1">{step}</span>
+                                                 </li>
+                                               ))}
+                                             </ol>
+                                           </div>
+                                           <div className="text-xs text-muted-foreground italic bg-muted/30 p-3 rounded">
+                                             💡 <strong>Tip:</strong> All ingredients for this recipe are included in your weekly shopping list. Feel free to adjust seasonings and cooking methods to your preference!
+                                           </div>
+                                         </div>
+                                       </DialogContent>
+                                     </Dialog>
+
+                                     {(meal.description || meal.recipeDescription) && (
+                                       <p className="text-sm text-muted-foreground italic mt-1">{meal.description || meal.recipeDescription}</p>
+                                     )}
+                                   </div>
+                                 );
+                               })}
+                             </div>
+                           </CardContent>
+                         </Card>
+                       ))}
+                     </div>
+                   </div>
+                 )}
               </CardContent>
             </Card>
           </TabsContent>
