@@ -932,9 +932,12 @@ const Nutrition = () => {
     const macros = calculateMacros();
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     
-    // If creating new variety, increment week index
+    // Calculate the current week index for variety
+    const currentWeekIndex = useExistingVariety ? weekIndex : weekIndex + 1;
+    
+    // Update week index for next time if creating new variety
     if (!useExistingVariety) {
-      setWeekIndex(prev => prev + 1);
+      setWeekIndex(currentWeekIndex);
     }
     
     // Calculate portions based on macros with realistic meal distribution
@@ -961,7 +964,6 @@ const Nutrition = () => {
       let protein, carb, vegetable, fat, recipeName, recipeDescription;
       
       const currentRecipes = recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories];
-      const currentWeekIndex = useExistingVariety ? weekIndex - 1 : weekIndex;
       const proteinPerMeal = getProteinTarget(mealType);
       
       // Create variety by using different combinations and cooking methods
