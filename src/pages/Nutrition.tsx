@@ -2323,89 +2323,81 @@ const Nutrition = () => {
                                 <button 
                                                   className="font-bold text-xl text-foreground bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-left shadow-sm"
                                                   onClick={() => {
-                                                    setSelectedRecipe({
-                                                      name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
-                                                      ingredients: meal.ingredients || (meal.foods?.length > 0 ? meal.foods.map((f: any) => `${f.amount} ${f.name}`) : []),
-                                                      steps: meal.instructions 
-                                                        ? (typeof meal.instructions === 'string' 
-                                                          ? meal.instructions.split(/\.\s+/).filter(s => s.length > 0).map(s => s.trim() + (s.endsWith('.') ? '' : '.'))
-                                                          : [meal.instructions])
-                                                        : (meal.foods?.length > 0 ? (() => {
-                                                    const steps: string[] = [];
-                                                    const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
-                                                    const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
-                                                    const hasOats = meal.foods.some((f: any) => f.name === 'Oats');
-                                                    const hasProtein = meal.foods.some((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
-                                                    const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
-                                                    const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
-                                                    
-                                                     if (mealType === 'breakfast') {
-                                                       if (hasEggs) {
-                                                         steps.push(
-                                                           "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
-                                                           "Crack eggs into a bowl and whisk with a pinch of salt and pepper",
-                                                           "Pour eggs into pan and gently stir with a spatula as they cook until just set (2-3 minutes)",
-                                                           "Remove from heat while still slightly soft - they'll continue cooking"
-                                                         );
-                                                         if (hasOats) {
-                                                           steps.push("Meanwhile, cook oats: combine oats with double the amount of water, simmer 5-7 minutes until creamy");
-                                                         }
-                                                         if (meal.foods.some((f: any) => f.name === 'Quinoa')) {
-                                                           steps.push("Cook quinoa: rinse well, then simmer in water (1:2 ratio) for 12-15 minutes until fluffy");
-                                                         }
-                                                       } else if (hasYogurt) {
-                                                         steps.push(
-                                                           "Place yogurt or cottage cheese in a serving bowl"
-                                                         );
-                                                         if (hasOats) {
-                                                           steps.push("Stir in oats (can be served cold as overnight oats or warmed if preferred)");
-                                                         }
-                                                         if (meal.foods.some((f: any) => f.name === 'Quinoa')) {
-                                                           steps.push("Mix in cooked quinoa for added protein and texture");
-                                                         }
-                                                         if (meal.foods.some((f: any) => f.name === 'Almonds')) {
-                                                           steps.push("Top with sliced almonds for healthy fats and crunch");
-                                                         }
-                                                         if (meal.foods.some((f: any) => f.name === 'Avocado')) {
-                                                           steps.push("Add sliced avocado for creamy texture and healthy fats");
-                                                         }
-                                                         steps.push("Add fresh berries or fruit if available, drizzle with honey if desired");
-                                                       }
-                                                       steps.push("Serve immediately and enjoy!");
-                                                    } else if (hasProtein) {
-                                                      const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
-                                                      steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
-                                                      
-                                                      if (proteinFood.name === 'Salmon' || proteinFood.name === 'Chicken Breast') {
-                                                        steps.push(`Heat a pan or grill to medium-high heat with a small amount of oil`);
-                                                        steps.push(`Cook ${proteinFood.name.toLowerCase()} for 4-6 minutes per side until cooked through`);
-                                                      } else if (proteinFood.name === 'Tofu') {
-                                                        steps.push("Press tofu to remove excess water, then cut into cubes");
-                                                        steps.push("Pan-fry tofu in oil over medium-high heat until golden on all sides (8-10 minutes)");
-                                                      }
-                                                      
-                                                      if (hasRice) {
-                                                        const grain = meal.foods.find((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
-                                                        steps.push(`Cook ${grain.name.toLowerCase()} according to package instructions (usually 1 cup grain to 2 cups water)`);
-                                                      }
-                                                      
-                                                      if (hasVeg) {
-                                                        const veggies = meal.foods.filter((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name)).map((f: any) => f.name.toLowerCase()).join(', ');
-                                                        steps.push(`Steam or lightly sauté ${veggies} until tender (3-5 minutes for spinach, 5-7 for broccoli/carrots)`);
-                                                      }
-                                                      
-                                                      steps.push("Arrange all components on a plate and serve hot");
+                                                    // For template meals, use the provided ingredients and instructions
+                                                    if (meal.ingredients && meal.ingredients.length > 0) {
+                                                      setSelectedRecipe({
+                                                        name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                        ingredients: meal.ingredients,
+                                                        steps: meal.instructions && typeof meal.instructions === 'string' && meal.instructions.trim().length > 0
+                                                          ? meal.instructions.split(/\.\s+/).filter(s => s.trim().length > 0).map(s => s.trim() + (s.endsWith('.') ? '' : '.'))
+                                                          : ["Prepare ingredients as listed above"]
+                                                      });
                                                     } else {
-                                                      steps.push("Gather all ingredients listed above");
-                                                      steps.push("Prepare ingredients by washing and chopping as needed");
-                                                      steps.push("Cook using healthy methods: steaming, grilling, or light sautéing");
-                                                      steps.push("Season with herbs and spices for flavour");
-                                                      steps.push("Serve fresh and enjoy");
+                                                      // For generated meals, use the foods array
+                                                      setSelectedRecipe({
+                                                        name: meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
+                                                        ingredients: meal.foods?.length > 0 ? meal.foods.map((f: any) => `${f.amount} ${f.name}`) : [],
+                                                        steps: meal.foods?.length > 0 ? (() => {
+                                                          const steps: string[] = [];
+                                                          const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
+                                                          const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
+                                                          const hasOats = meal.foods.some((f: any) => f.name === 'Oats');
+                                                          const hasProtein = meal.foods.some((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                          const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                          const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
+                                                          
+                                                          if (mealType === 'breakfast') {
+                                                            if (hasEggs) {
+                                                              steps.push(
+                                                                "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
+                                                                "Crack eggs into a bowl and whisk with a pinch of salt and pepper",
+                                                                "Pour eggs into pan and gently stir with a spatula as they cook until just set (2-3 minutes)",
+                                                                "Remove from heat while still slightly soft - they'll continue cooking"
+                                                              );
+                                                              if (hasOats) {
+                                                                steps.push("Meanwhile, cook oats: combine oats with double the amount of water, simmer 5-7 minutes until creamy");
+                                                              }
+                                                            } else if (hasYogurt) {
+                                                              steps.push("Place yogurt or cottage cheese in a serving bowl");
+                                                              if (hasOats) {
+                                                                steps.push("Stir in oats (can be served cold as overnight oats or warmed if preferred)");
+                                                              }
+                                                              steps.push("Add fresh berries or fruit if available, drizzle with honey if desired");
+                                                            }
+                                                            steps.push("Serve immediately and enjoy!");
+                                                          } else if (hasProtein) {
+                                                            const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                            steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
+                                                            
+                                                            if (proteinFood.name === 'Salmon' || proteinFood.name === 'Chicken Breast') {
+                                                              steps.push(`Heat a pan or grill to medium-high heat with a small amount of oil`);
+                                                              steps.push(`Cook ${proteinFood.name.toLowerCase()} for 4-6 minutes per side until cooked through`);
+                                                            } else if (proteinFood.name === 'Tofu') {
+                                                              steps.push("Press tofu to remove excess water, then cut into cubes");
+                                                              steps.push("Pan-fry tofu in oil over medium-high heat until golden on all sides (8-10 minutes)");
+                                                            }
+                                                            
+                                                            if (hasRice) {
+                                                              const grain = meal.foods.find((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                              steps.push(`Cook ${grain.name.toLowerCase()} according to package instructions`);
+                                                            }
+                                                            
+                                                            if (hasVeg) {
+                                                              const veggies = meal.foods.filter((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name)).map((f: any) => f.name.toLowerCase()).join(', ');
+                                                              steps.push(`Steam or lightly sauté ${veggies} until tender`);
+                                                            }
+                                                            
+                                                            steps.push("Arrange all components on a plate and serve hot");
+                                                          } else {
+                                                            steps.push("Gather all ingredients listed above");
+                                                            steps.push("Prepare ingredients by washing and chopping as needed");
+                                                            steps.push("Follow your preferred cooking method for these ingredients");
+                                                          }
+                                                          
+                                                          return steps;
+                                                        })() : ["Follow your preferred cooking method for these ingredients"]
+                                                      });
                                                     }
-                                                    
-                                                    return steps;
-                                                  })() : ["Follow your preferred cooking method for these ingredients"])
-                                                    });
                                                   }}
                                                 >
                                                   {meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
