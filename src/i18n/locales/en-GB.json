@@ -336,5 +336,40 @@
     "nutritionInfo": "Nutrition Information",
     "week": "Week",
     "day": "Day"
+  },
+  "dashboard": {
+    "title": "My Health Journey",
+    "welcome": "Welcome to Your Journey",
+    "comprehensiveAnalysis": "Your Comprehensive Health Analysis",
+    "overallScore": "Overall Score",
+    "viewFullAnalysis": "View Full Analysis",
+    "getStarted": "Get Started with Your First Assessment",
+    "personalizedInsights": "Personalised Insights",
+    "detailedAnalysis": "See detailed aggregated analysis and comprehensive recommendations",
+    "optimizeHealthspan": "Optimising your healthspan and lifespan"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your profile, notifications, and privacy preferences",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "legal": "Legal",
+    "integrations": "Integrations",
+    "healthProfile": "Health Profile",
+    "personalInfo": "Personal Information",
+    "saveChanges": "Save Changes",
+    "savingChanges": "Saving changes..."
+  },
+  "brainAssessment": {
+    "title": "Brain Health Assessment",
+    "cognitiveProfile": "Your Cognitive Profile Analysis",
+    "personalizedActionPlan": "Your Personalised Action Plan",
+    "sleepOptimization": "Sleep Optimisation",
+    "memoryOptimization": "Memory Optimisation",
+    "focusOptimization": "Focus Optimisation",
+    "goodFunction": "Good cognitive function",
+    "excellentPerformance": "Excellent performance across all categories! Focus on maintenance and continued optimisation.",
+    "targetedOptimization": "targeted optimisation could elevate your cognitive performance"
   }
 }
