@@ -17,8 +17,6 @@ import SymptomAssessment from "./pages/SymptomAssessment";
 import AssessmentResults from "./pages/AssessmentResults";
 import AssessmentHistory from "./pages/AssessmentHistory";
 import BiohackingToolkit from "./pages/BiohackingToolkit";
-import Therapies from "./pages/Therapies";
-import Supplements from "./pages/Supplements";
 import ResearchEvidence from "./pages/ResearchEvidence";
 import LISResults from "./pages/LISResults";
 import DailyScoreResults from "./pages/DailyScoreResults";
@@ -79,10 +77,7 @@ const App = () => (
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />
             <Route path="/biohacking-toolkit" element={<BiohackingToolkit />} />
-            {/* Legacy routes - keep for backward compatibility */}
-          <Route path="/therapies" element={<Therapies />} />
-          <Route path="/supplements" element={<Supplements />} />
-          <Route path="/research-evidence" element={<ResearchEvidence />} />
+            <Route path="/research-evidence" element={<ResearchEvidence />} />
             <Route path="/sleep" element={<Sleep />} />
             <Route path="/nutrition" element={<Nutrition />} />
             <Route path="/coaching" element={<Coaching />} />
