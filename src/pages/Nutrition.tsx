@@ -577,29 +577,74 @@ const Nutrition = () => {
   const generateShoppingList = () => {
     if (!weeklyPlan) return [];
     
-    const ingredientQuantities: Record<string, number> = {};
+    const ingredientQuantities: Record<string, { quantity: number; unit: string }> = {};
     
     weeklyPlan.forEach((dayPlan: any) => {
       ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
         const meal = dayPlan[mealType];
-        meal.foods.forEach((food: any) => {
-          const baseAmount = food.amount.includes('tbsp') ? 
-            parseFloat(food.amount) : 
-            parseFloat(food.amount.replace('g', ''));
-          
-          if (ingredientQuantities[food.name]) {
-            ingredientQuantities[food.name] += baseAmount;
-          } else {
-            ingredientQuantities[food.name] = baseAmount;
-          }
-        });
+        
+        // Handle template meals with ingredients array
+        if (meal.ingredients && meal.ingredients.length > 0) {
+          meal.ingredients.forEach((ingredient: string) => {
+            // Parse ingredient string like "200g chicken breast" or "1 cup oats"
+            const match = ingredient.match(/^([\d.]+)\s*(g|kg|cup|cups|tbsp|tsp|ml|l|piece|pieces|slice|slices|bunch)?\s*(.+)$/i);
+            if (match) {
+              const quantity = parseFloat(match[1]);
+              const unit = match[2]?.toLowerCase() || 'piece';
+              const name = match[3].trim();
+              
+              // Normalize the name (capitalize first letter of each word)
+              const normalizedName = name.split(' ').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              ).join(' ');
+              
+              // Convert to base units for aggregation
+              let baseQuantity = quantity;
+              let baseUnit = unit;
+              
+              // Convert cups to ml for better aggregation
+              if (unit === 'cup' || unit === 'cups') {
+                baseQuantity = quantity * 240; // 1 cup = 240ml
+                baseUnit = 'ml';
+              } else if (unit === 'kg') {
+                baseQuantity = quantity * 1000;
+                baseUnit = 'g';
+              } else if (unit === 'l') {
+                baseQuantity = quantity * 1000;
+                baseUnit = 'ml';
+              }
+              
+              if (ingredientQuantities[normalizedName]) {
+                ingredientQuantities[normalizedName].quantity += baseQuantity;
+              } else {
+                ingredientQuantities[normalizedName] = { quantity: baseQuantity, unit: baseUnit };
+              }
+            }
+          });
+        }
+        // Handle custom generated meals with foods array
+        else if (meal.foods && meal.foods.length > 0) {
+          meal.foods.forEach((food: any) => {
+            const baseAmount = food.amount.includes('tbsp') ? 
+              parseFloat(food.amount) : 
+              parseFloat(food.amount.replace('g', ''));
+            
+            const unit = food.amount.includes('tbsp') ? 'tbsp' : 'g';
+            
+            if (ingredientQuantities[food.name]) {
+              ingredientQuantities[food.name].quantity += baseAmount;
+            } else {
+              ingredientQuantities[food.name] = { quantity: baseAmount, unit };
+            }
+          });
+        }
       });
     });
     
-    return Object.entries(ingredientQuantities).map(([name, quantity]) => ({
+    return Object.entries(ingredientQuantities).map(([name, data]) => ({
       name,
-      quantity: Math.round(quantity),
-      unit: name === "Olive Oil" ? "tbsp" : "g"
+      quantity: Math.round(data.quantity * 10) / 10, // Round to 1 decimal
+      unit: data.unit
     }));
   };
 
@@ -653,18 +698,10 @@ const Nutrition = () => {
           </head>
           <body>
             <h1>Shopping List - 7-Day Nutrition Plan</h1>
-            <h3>Proteins:</h3>
-            ${shoppingList.filter(item => ['Chicken Breast', 'Salmon', 'Greek Yogurt', 'Eggs', 'Tofu', 'Cottage Cheese'].includes(item.name))
-              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
-            <h3>Carbohydrates:</h3>
-            ${shoppingList.filter(item => ['Brown Rice', 'Quinoa', 'Sweet Potato', 'Oats'].includes(item.name))
-              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
-            <h3>Vegetables:</h3>
-            ${shoppingList.filter(item => ['Spinach', 'Broccoli', 'Carrots'].includes(item.name))
-              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
-            <h3>Fats & Oils:</h3>
-            ${shoppingList.filter(item => ['Avocado', 'Almonds', 'Olive Oil'].includes(item.name))
-              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity}${item.unit}</span></div>`).join('')}
+            <h3>All Ingredients:</h3>
+            ${shoppingList
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity} ${item.unit}</span></div>`).join('')}
           </body>
         </html>
       `);
