@@ -1887,22 +1887,41 @@ const Nutrition = () => {
                     
                     <div id="weekly-plan-print" className="space-y-6">
                       {weeklyPlan.map((dayPlan: any, index: number) => (
-                        <Card key={index} className="border-l-4 border-l-primary">
+                        <Card key={index} className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5 shadow-md hover:shadow-lg transition-shadow">
                           <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                              <h4 className="text-xl font-semibold gradient-text">{dayPlan.day}</h4>
-                              <div className="text-right text-sm">
-                                <div className="font-semibold">Daily Total:</div>
-                                <div>{dayPlan.dailyTotals.calories} cal | {dayPlan.dailyTotals.protein}p | {dayPlan.dailyTotals.carbs}c | {dayPlan.dailyTotals.fat}f</div>
+                            <div className="flex items-center justify-between mb-4 pb-4 border-b-2 border-primary/20">
+                              <div className="flex items-center gap-3">
+                                <div className="w-2 h-10 bg-primary rounded-full" />
+                                <h4 className="text-2xl font-bold text-foreground">{dayPlan.day}</h4>
+                              </div>
+                              <div className="text-right text-sm bg-secondary/30 px-4 py-2 rounded-lg">
+                                <div className="font-semibold text-foreground">Daily Total:</div>
+                                <div className="text-muted-foreground">{dayPlan.dailyTotals.calories} cal | {dayPlan.dailyTotals.protein}p | {dayPlan.dailyTotals.carbs}c | {dayPlan.dailyTotals.fat}f</div>
                               </div>
                             </div>
                             
                             <div className="grid gap-4">
                               {['breakfast', 'lunch', 'dinner'].map((mealType) => {
                                 const meal = dayPlan[mealType];
+                                const mealColors = {
+                                  breakfast: 'bg-primary/10 border-primary/40 hover:bg-primary/15',
+                                  lunch: 'bg-secondary/20 border-secondary/50 hover:bg-secondary/25',
+                                  dinner: 'bg-accent/30 border-accent-foreground/20 hover:bg-accent/35'
+                                };
                                 return (
-                                  <div key={mealType} className="border rounded-lg p-4">
+                                  <div key={mealType} className={`border-2 rounded-lg p-4 transition-colors ${mealColors[mealType as keyof typeof mealColors]}`}>
                                     <div className="mb-3">
+                                      {/* Meal Type Header */}
+                                      <div className="flex items-center gap-2 mb-3">
+                                        <span className="text-lg">
+                                          {mealType === 'breakfast' && '🌅'}
+                                          {mealType === 'lunch' && '☀️'}
+                                          {mealType === 'dinner' && '🌙'}
+                                        </span>
+                                        <span className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
+                                          {mealType}
+                                        </span>
+                                      </div>
                                        <div className="flex items-center justify-between mb-2">
                                          <div>
                                             <Dialog>
