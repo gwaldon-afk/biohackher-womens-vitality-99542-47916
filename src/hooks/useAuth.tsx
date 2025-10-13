@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
 import { detectUserLocale, updateUserLocale, getUserLocale } from '@/services/localeService';
 import { getAuthRedirectUrl } from '@/utils/capacitor';
+import { TEST_MODE_ENABLED, MOCK_USER, MOCK_PROFILE } from '@/config/testMode';
 
 interface Profile {
   id: string;
@@ -51,6 +52,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { i18n } = useTranslation();
+
+  // TEST MODE: Return mock data if test mode is enabled
+  if (TEST_MODE_ENABLED) {
+    return (
+      <AuthContext.Provider
+        value={{
+          user: MOCK_USER as User,
+          session: null,
+          profile: MOCK_PROFILE,
+          loading: false,
+          signUp: async () => ({ error: null }),
+          signIn: async () => ({ error: null }),
+          signOut: async () => {},
+        }}
+      >
+        {children}
+      </AuthContext.Provider>
+    );
+  }
 
   const fetchProfile = async (userId: string) => {
     try {

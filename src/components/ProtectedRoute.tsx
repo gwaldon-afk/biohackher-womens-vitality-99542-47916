@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,6 +10,11 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  // TEST MODE: Bypass authentication checks
+  if (TEST_MODE_ENABLED) {
+    return <>{children}</>;
+  }
 
   useEffect(() => {
     if (!loading && !user) {
