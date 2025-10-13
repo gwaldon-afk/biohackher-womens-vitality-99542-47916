@@ -579,6 +579,42 @@ const Nutrition = () => {
     
     const ingredientQuantities: Record<string, { quantity: number; unit: string }> = {};
     
+    // Helper function to normalize ingredient names for better consolidation
+    const normalizeIngredientName = (name: string): string => {
+      // Convert to lowercase for comparison
+      let normalized = name.toLowerCase().trim();
+      
+      // Remove common descriptors that don't affect the base ingredient
+      normalized = normalized
+        .replace(/\b(fresh|organic|raw|cooked|diced|chopped|sliced|minced)\b/gi, '')
+        .trim();
+      
+      // Normalize plural forms
+      const pluralMappings: Record<string, string> = {
+        'blueberries': 'blueberry',
+        'strawberries': 'strawberry',
+        'raspberries': 'raspberry',
+        'tomatoes': 'tomato',
+        'avocados': 'avocado',
+        'eggs': 'egg',
+        'almonds': 'almond',
+        'walnuts': 'walnut',
+        'cashews': 'cashew',
+        'carrots': 'carrot',
+      };
+      
+      for (const [plural, singular] of Object.entries(pluralMappings)) {
+        if (normalized.includes(plural)) {
+          normalized = normalized.replace(plural, singular);
+        }
+      }
+      
+      // Capitalize first letter of each word for display
+      return normalized.split(' ').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
+    };
+    
     weeklyPlan.forEach((dayPlan: any) => {
       ['breakfast', 'lunch', 'dinner'].forEach((mealType) => {
         const meal = dayPlan[mealType];
@@ -587,24 +623,22 @@ const Nutrition = () => {
         if (meal.ingredients && meal.ingredients.length > 0) {
           meal.ingredients.forEach((ingredient: string) => {
             // Parse ingredient string like "200g chicken breast" or "1 cup oats"
-            const match = ingredient.match(/^([\d.]+)\s*(g|kg|cup|cups|tbsp|tsp|ml|l|piece|pieces|slice|slices|bunch)?\s*(.+)$/i);
+            const match = ingredient.match(/^([\d.]+)\s*(g|kg|cup|cups|tbsp|tsp|ml|l|piece|pieces|slice|slices|bunch|oz)?\s*(.+)$/i);
             if (match) {
               const quantity = parseFloat(match[1]);
               const unit = match[2]?.toLowerCase() || 'piece';
               const name = match[3].trim();
               
-              // Normalize the name (capitalize first letter of each word)
-              const normalizedName = name.split(' ').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-              ).join(' ');
+              // Normalize the name for consolidation
+              const normalizedName = normalizeIngredientName(name);
               
               // Convert to base units for aggregation
               let baseQuantity = quantity;
               let baseUnit = unit;
               
-              // Convert cups to ml for better aggregation
+              // Convert all measurements to base units
               if (unit === 'cup' || unit === 'cups') {
-                baseQuantity = quantity * 240; // 1 cup = 240ml
+                baseQuantity = quantity * 240;
                 baseUnit = 'ml';
               } else if (unit === 'kg') {
                 baseQuantity = quantity * 1000;
@@ -612,10 +646,30 @@ const Nutrition = () => {
               } else if (unit === 'l') {
                 baseQuantity = quantity * 1000;
                 baseUnit = 'ml';
+              } else if (unit === 'oz') {
+                baseQuantity = quantity * 28.35;
+                baseUnit = 'g';
+              } else if (unit === 'tbsp') {
+                baseQuantity = quantity * 15;
+                baseUnit = 'ml';
+              } else if (unit === 'tsp') {
+                baseQuantity = quantity * 5;
+                baseUnit = 'ml';
               }
               
               if (ingredientQuantities[normalizedName]) {
-                ingredientQuantities[normalizedName].quantity += baseQuantity;
+                // Only add if units match or can be converted
+                if (ingredientQuantities[normalizedName].unit === baseUnit) {
+                  ingredientQuantities[normalizedName].quantity += baseQuantity;
+                } else {
+                  // Create a new entry with a clarifying suffix if units don't match
+                  const key = `${normalizedName} (${baseUnit})`;
+                  if (ingredientQuantities[key]) {
+                    ingredientQuantities[key].quantity += baseQuantity;
+                  } else {
+                    ingredientQuantities[key] = { quantity: baseQuantity, unit: baseUnit };
+                  }
+                }
               } else {
                 ingredientQuantities[normalizedName] = { quantity: baseQuantity, unit: baseUnit };
               }
@@ -625,27 +679,54 @@ const Nutrition = () => {
         // Handle custom generated meals with foods array
         else if (meal.foods && meal.foods.length > 0) {
           meal.foods.forEach((food: any) => {
+            const normalizedName = normalizeIngredientName(food.name);
             const baseAmount = food.amount.includes('tbsp') ? 
-              parseFloat(food.amount) : 
+              parseFloat(food.amount) * 15 : // Convert tbsp to ml
               parseFloat(food.amount.replace('g', ''));
             
-            const unit = food.amount.includes('tbsp') ? 'tbsp' : 'g';
+            const unit = food.amount.includes('tbsp') ? 'ml' : 'g';
             
-            if (ingredientQuantities[food.name]) {
-              ingredientQuantities[food.name].quantity += baseAmount;
+            if (ingredientQuantities[normalizedName]) {
+              if (ingredientQuantities[normalizedName].unit === unit) {
+                ingredientQuantities[normalizedName].quantity += baseAmount;
+              } else {
+                const key = `${normalizedName} (${unit})`;
+                if (ingredientQuantities[key]) {
+                  ingredientQuantities[key].quantity += baseAmount;
+                } else {
+                  ingredientQuantities[key] = { quantity: baseAmount, unit };
+                }
+              }
             } else {
-              ingredientQuantities[food.name] = { quantity: baseAmount, unit };
+              ingredientQuantities[normalizedName] = { quantity: baseAmount, unit };
             }
           });
         }
       });
     });
     
-    return Object.entries(ingredientQuantities).map(([name, data]) => ({
-      name,
-      quantity: Math.round(data.quantity * 10) / 10, // Round to 1 decimal
-      unit: data.unit
-    }));
+    // Convert back to friendly units for display
+    return Object.entries(ingredientQuantities).map(([name, data]) => {
+      let displayQuantity = data.quantity;
+      let displayUnit = data.unit;
+      
+      // Convert large ml amounts back to liters
+      if (data.unit === 'ml' && data.quantity >= 1000) {
+        displayQuantity = data.quantity / 1000;
+        displayUnit = 'L';
+      }
+      // Convert large g amounts back to kg
+      else if (data.unit === 'g' && data.quantity >= 1000) {
+        displayQuantity = data.quantity / 1000;
+        displayUnit = 'kg';
+      }
+      
+      return {
+        name,
+        quantity: Math.round(displayQuantity * 10) / 10,
+        unit: displayUnit
+      };
+    });
   };
 
   const printWeeklyPlan = () => {
@@ -689,19 +770,39 @@ const Nutrition = () => {
           <head>
             <title>Shopping List - 7-Day Nutrition Plan</title>
             <style>
-              body { font-family: Arial, sans-serif; margin: 20px; }
-              h1 { color: #007bff; }
-              .ingredient { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
-              .category { font-weight: bold; margin-top: 20px; color: #333; }
-              @media print { body { margin: 0; } }
+              body { font-family: Arial, sans-serif; margin: 30px; max-width: 800px; }
+              h1 { color: #007bff; border-bottom: 3px solid #007bff; padding-bottom: 10px; }
+              h3 { color: #555; margin-top: 30px; }
+              .intro { background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0; }
+              .ingredient { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+              .ingredient:hover { background: #f8f9fa; }
+              .ingredient-name { flex: 1; font-weight: 500; }
+              .ingredient-amount { font-weight: bold; color: #007bff; min-width: 80px; text-align: right; }
+              .note { margin-top: 30px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; font-size: 14px; }
+              @media print { 
+                body { margin: 20px; }
+                .ingredient:hover { background: none; }
+              }
             </style>
           </head>
           <body>
-            <h1>Shopping List - 7-Day Nutrition Plan</h1>
-            <h3>All Ingredients:</h3>
+            <h1>🛒 Weekly Shopping List</h1>
+            <div class="intro">
+              <strong>Your Consolidated 7-Day Meal Plan Ingredients</strong>
+              <p style="margin: 10px 0 0 0; font-size: 14px;">This list combines all ingredients needed for your entire week, with quantities already totaled for you.</p>
+            </div>
+            <h3>📋 All Ingredients (${shoppingList.length} items):</h3>
             ${shoppingList
               .sort((a, b) => a.name.localeCompare(b.name))
-              .map(item => `<div class="ingredient"><span>${item.name}</span><span>${item.quantity} ${item.unit}</span></div>`).join('')}
+              .map(item => `
+                <div class="ingredient">
+                  <span class="ingredient-name">${item.name}</span>
+                  <span class="ingredient-amount">${item.quantity} ${item.unit}</span>
+                </div>
+              `).join('')}
+            <div class="note">
+              <strong>💡 Tip:</strong> For detailed cooking instructions, refer to your meal plan. Click on any meal name in your weekly plan to see step-by-step preparation guidance.
+            </div>
           </body>
         </html>
       `);
@@ -2342,8 +2443,7 @@ const Nutrition = () => {
                                 return (
                                   <div key={mealType} className={`border-2 rounded-lg p-4 transition-colors ${mealColors[mealType as keyof typeof mealColors]}`}>
                                     <div className="mb-3">
-                                      {/* Meal Type Header */}
-                                      <div className="flex items-center gap-2 mb-3">
+                                       <div className="flex items-center gap-2 mb-3">
                                         <span className="text-lg">
                                           {mealType === 'breakfast' && '🌅'}
                                           {mealType === 'lunch' && '☀️'}
@@ -2351,6 +2451,9 @@ const Nutrition = () => {
                                         </span>
                                         <span className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
                                           {mealType}
+                                        </span>
+                                        <span className="ml-auto text-xs text-primary bg-primary/10 px-2 py-1 rounded">
+                                          👆 Click meal name for recipe
                                         </span>
                                       </div>
                                        <div className="flex items-center justify-between mb-2">
@@ -2440,36 +2543,43 @@ const Nutrition = () => {
                                                   {meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
                                                 </button>
                                               </DialogTrigger>
-                                              <DialogContent className="max-w-md">
+                                              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                                                 <DialogHeader>
-                                                  <DialogTitle className="gradient-text text-left">
-                                                    {selectedRecipe?.name || 'Recipe'}
+                                                  <DialogTitle className="gradient-text text-left text-2xl">
+                                                    👩‍🍳 {selectedRecipe?.name || 'Recipe'}
                                                   </DialogTitle>
                                                 </DialogHeader>
-                                                <div className="space-y-4">
-                                                  <div>
-                                                    <h4 className="font-semibold text-primary mb-2">{t('nutrition.ingredients')}:</h4>
-                                                    <ul className="space-y-1">
+                                                <div className="space-y-6">
+                                                  <div className="bg-primary/5 rounded-lg p-4 border border-primary/20">
+                                                    <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
+                                                      <span>🥗</span> {t('nutrition.ingredients')}
+                                                    </h4>
+                                                    <ul className="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                       {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
-                                                        <li key={idx} className="text-sm flex items-center gap-2">
-                                                          <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span>
-                                                          {ingredient}
+                                                        <li key={idx} className="text-sm flex items-start gap-2 bg-background/50 p-2 rounded">
+                                                          <span className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5"></span>
+                                                          <span>{ingredient}</span>
                                                         </li>
                                                       ))}
                                                     </ul>
                                                   </div>
-                                                  <div>
-                                                    <h4 className="font-semibold text-primary mb-2">{t('nutrition.instructions')}:</h4>
-                                                    <ol className="space-y-2">
+                                                  <div className="bg-secondary/5 rounded-lg p-4 border border-secondary/20">
+                                                    <h4 className="font-bold text-lg text-primary mb-3 flex items-center gap-2">
+                                                      <span>📋</span> Cooking Instructions
+                                                    </h4>
+                                                    <ol className="space-y-3">
                                                       {selectedRecipe?.steps?.map((step: string, idx: number) => (
-                                                        <li key={idx} className="text-sm flex gap-3">
-                                                          <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
+                                                        <li key={idx} className="text-sm flex gap-3 bg-background/50 p-3 rounded">
+                                                          <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
                                                             {idx + 1}
                                                           </span>
-                                                          {step}
+                                                          <span className="flex-1">{step}</span>
                                                         </li>
                                                       ))}
                                                     </ol>
+                                                  </div>
+                                                  <div className="text-xs text-muted-foreground italic bg-muted/30 p-3 rounded">
+                                                    💡 <strong>Tip:</strong> All ingredients for this recipe are included in your weekly shopping list. Feel free to adjust seasonings and cooking methods to your preference!
                                                   </div>
                                                 </div>
                                               </DialogContent>
