@@ -75,39 +75,39 @@ export const mealTemplates: MealPlanTemplate[] = [
 export const templateMealPlans = {
   mediterranean: {
     monday: {
-      breakfast: { name: "Greek Yogurt Bowl", description: "Greek yogurt, honey, walnuts, berries", calories: 380, protein: 25, carbs: 42, fat: 12 },
-      lunch: { name: "Grilled Fish Plate", description: "Salmon, quinoa, roasted vegetables, olive oil", calories: 620, protein: 48, carbs: 52, fat: 24 },
-      dinner: { name: "Mediterranean Chicken", description: "Chicken breast, olives, tomatoes, feta, whole wheat couscous", calories: 580, protein: 52, carbs: 48, fat: 18 }
+      breakfast: { name: "Greek Yogurt Bowl", description: "Greek yogurt, honey, walnuts, berries", calories: 380, protein: 25, carbs: 42, fat: 12, ingredients: ["200g Greek yogurt", "2 tbsp honey", "30g walnuts", "1 cup mixed berries"] },
+      lunch: { name: "Grilled Fish Plate", description: "Salmon, quinoa, roasted vegetables, olive oil", calories: 620, protein: 48, carbs: 52, fat: 24, ingredients: ["200g salmon fillet", "1 cup quinoa", "2 cups mixed vegetables", "2 tbsp olive oil", "Lemon", "Herbs"] },
+      dinner: { name: "Mediterranean Chicken", description: "Chicken breast, olives, tomatoes, feta, whole wheat couscous", calories: 580, protein: 52, carbs: 48, fat: 18, ingredients: ["200g chicken breast", "1/2 cup olives", "2 tomatoes", "50g feta cheese", "1 cup couscous", "Olive oil", "Garlic"] }
     },
     tuesday: {
-      breakfast: { name: "Avocado Toast", description: "Whole grain bread, avocado, poached eggs, tomatoes", calories: 420, protein: 22, carbs: 38, fat: 20 },
-      lunch: { name: "Tuna Nicoise Salad", description: "Tuna, green beans, potatoes, olives, egg", calories: 580, protein: 42, carbs: 48, fat: 22 },
-      dinner: { name: "Lamb & Chickpea Stew", description: "Lean lamb, chickpeas, vegetables, spices", calories: 640, protein: 48, carbs: 58, fat: 24 }
+      breakfast: { name: "Avocado Toast", description: "Whole grain bread, avocado, poached eggs, tomatoes", calories: 420, protein: 22, carbs: 38, fat: 20, ingredients: ["2 slices whole grain bread", "1 avocado", "2 eggs", "1 tomato", "Salt & pepper"] },
+      lunch: { name: "Tuna Nicoise Salad", description: "Tuna, green beans, potatoes, olives, egg", calories: 580, protein: 42, carbs: 48, fat: 22, ingredients: ["200g tuna steak", "150g green beans", "200g baby potatoes", "1/4 cup olives", "2 eggs", "Mixed greens", "Olive oil dressing"] },
+      dinner: { name: "Lamb & Chickpea Stew", description: "Lean lamb, chickpeas, vegetables, spices", calories: 640, protein: 48, carbs: 58, fat: 24, ingredients: ["250g lean lamb", "1 cup chickpeas", "2 carrots", "2 tomatoes", "1 onion", "Garlic", "Cumin", "Coriander"] }
     },
     wednesday: {
-      breakfast: { name: "Mediterranean Omelette", description: "Eggs, spinach, feta, tomatoes, olives", calories: 360, protein: 28, carbs: 18, fat: 20 },
-      lunch: { name: "Sardine Pasta", description: "Whole wheat pasta, sardines, tomatoes, capers", calories: 620, protein: 38, carbs: 72, fat: 18 },
-      dinner: { name: "Grilled Prawns", description: "Prawns, lemon, garlic, quinoa, asparagus", calories: 540, protein: 52, carbs: 48, fat: 14 }
+      breakfast: { name: "Mediterranean Omelette", description: "Eggs, spinach, feta, tomatoes, olives", calories: 360, protein: 28, carbs: 18, fat: 20, ingredients: ["3 eggs", "1 cup spinach", "30g feta cheese", "1 tomato", "5 olives", "Olive oil"] },
+      lunch: { name: "Sardine Pasta", description: "Whole wheat pasta, sardines, tomatoes, capers", calories: 620, protein: 38, carbs: 72, fat: 18, ingredients: ["150g whole wheat pasta", "1 can sardines", "3 tomatoes", "2 tbsp capers", "Garlic", "Olive oil", "Parsley"] },
+      dinner: { name: "Grilled Prawns", description: "Prawns, lemon, garlic, quinoa, asparagus", calories: 540, protein: 52, carbs: 48, fat: 14, ingredients: ["300g prawns", "1 lemon", "3 cloves garlic", "1 cup quinoa", "1 bunch asparagus", "Olive oil", "Herbs"] }
     },
     thursday: {
-      breakfast: { name: "Fig & Almond Porridge", description: "Oats, almonds, fresh figs, honey", calories: 400, protein: 18, carbs: 58, fat: 14 },
-      lunch: { name: "Chicken Souvlaki Bowl", description: "Chicken skewers, tzatziki, rice, salad", calories: 600, protein: 48, carbs: 54, fat: 20 },
-      dinner: { name: "Baked White Fish", description: "Sea bass, herbs, potatoes, green beans", calories: 520, protein: 46, carbs: 52, fat: 16 }
+      breakfast: { name: "Fig & Almond Porridge", description: "Oats, almonds, fresh figs, honey", calories: 400, protein: 18, carbs: 58, fat: 14, ingredients: ["1 cup rolled oats", "30g sliced almonds", "3 fresh figs", "2 tbsp honey", "1 cup almond milk"] },
+      lunch: { name: "Chicken Souvlaki Bowl", description: "Chicken skewers, tzatziki, rice, salad", calories: 600, protein: 48, carbs: 54, fat: 20, ingredients: ["200g chicken breast", "1 cup rice", "1/2 cup Greek yogurt", "1 cucumber", "Mixed greens", "Lemon", "Oregano", "Garlic"] },
+      dinner: { name: "Baked White Fish", description: "Sea bass, herbs, potatoes, green beans", calories: 520, protein: 46, carbs: 52, fat: 16, ingredients: ["200g sea bass", "300g baby potatoes", "150g green beans", "Fresh herbs", "Olive oil", "Lemon"] }
     },
     friday: {
-      breakfast: { name: "Shakshuka", description: "Eggs in tomato sauce, whole grain bread", calories: 380, protein: 24, carbs: 42, fat: 16 },
-      lunch: { name: "Greek Salad with Chicken", description: "Grilled chicken, feta, olives, cucumber, tomatoes", calories: 560, protein: 48, carbs: 32, fat: 28 },
-      dinner: { name: "Seafood Paella", description: "Mixed seafood, saffron rice, vegetables", calories: 640, protein: 52, carbs: 68, fat: 18 }
+      breakfast: { name: "Shakshuka", description: "Eggs in tomato sauce, whole grain bread", calories: 380, protein: 24, carbs: 42, fat: 16, ingredients: ["3 eggs", "3 tomatoes", "1 bell pepper", "1 onion", "Cumin", "Paprika", "2 slices whole grain bread"] },
+      lunch: { name: "Greek Salad with Chicken", description: "Grilled chicken, feta, olives, cucumber, tomatoes", calories: 560, protein: 48, carbs: 32, fat: 28, ingredients: ["200g grilled chicken breast", "100g feta cheese", "1/4 cup olives", "1 cucumber", "2 tomatoes", "1 red onion", "Olive oil", "Oregano"] },
+      dinner: { name: "Seafood Paella", description: "Mixed seafood, saffron rice, vegetables", calories: 640, protein: 52, carbs: 68, fat: 18, ingredients: ["150g prawns", "100g mussels", "100g squid", "1 cup rice", "Saffron", "1 bell pepper", "1 tomato", "Peas", "Garlic"] }
     },
     saturday: {
-      breakfast: { name: "Smoked Salmon Bagel", description: "Whole grain bagel, cream cheese, salmon, capers", calories: 440, protein: 28, carbs: 48, fat: 16 },
-      lunch: { name: "Falafel Wrap", description: "Chickpea falafel, hummus, vegetables, whole wheat wrap", calories: 580, protein: 24, carbs: 72, fat: 22 },
-      dinner: { name: "Herb-Crusted Cod", description: "Cod fillet, herbs, roasted vegetables, wild rice", calories: 560, protein: 48, carbs: 52, fat: 16 }
+      breakfast: { name: "Smoked Salmon Bagel", description: "Whole grain bagel, cream cheese, salmon, capers", calories: 440, protein: 28, carbs: 48, fat: 16, ingredients: ["1 whole grain bagel", "50g cream cheese", "100g smoked salmon", "1 tbsp capers", "Red onion", "Dill"] },
+      lunch: { name: "Falafel Wrap", description: "Chickpea falafel, hummus, vegetables, whole wheat wrap", calories: 580, protein: 24, carbs: 72, fat: 22, ingredients: ["1 cup chickpeas", "1 whole wheat wrap", "1/2 cup hummus", "1 tomato", "1 cucumber", "Lettuce", "Tahini sauce"] },
+      dinner: { name: "Herb-Crusted Cod", description: "Cod fillet, herbs, roasted vegetables, wild rice", calories: 560, protein: 48, carbs: 52, fat: 16, ingredients: ["200g cod fillet", "Fresh herbs", "1 cup wild rice", "1 zucchini", "1 bell pepper", "Cherry tomatoes", "Olive oil"] }
     },
     sunday: {
-      breakfast: { name: "Turkish Menemen", description: "Scrambled eggs, peppers, tomatoes, olives", calories: 360, protein: 22, carbs: 28, fat: 18 },
-      lunch: { name: "Moussaka", description: "Eggplant, lean beef, tomatoes, bechamel", calories: 620, protein: 42, carbs: 48, fat: 26 },
-      dinner: { name: "Grilled Octopus", description: "Octopus, lemon, olive oil, roasted potatoes, arugula", calories: 540, protein: 52, carbs: 46, fat: 16 }
+      breakfast: { name: "Turkish Menemen", description: "Scrambled eggs, peppers, tomatoes, olives", calories: 360, protein: 22, carbs: 28, fat: 18, ingredients: ["3 eggs", "2 bell peppers", "2 tomatoes", "10 olives", "Olive oil", "Paprika"] },
+      lunch: { name: "Moussaka", description: "Eggplant, lean beef, tomatoes, bechamel", calories: 620, protein: 42, carbs: 48, fat: 26, ingredients: ["200g lean ground beef", "1 large eggplant", "3 tomatoes", "1 onion", "Garlic", "Cinnamon", "Bechamel sauce ingredients"] },
+      dinner: { name: "Grilled Octopus", description: "Octopus, lemon, olive oil, roasted potatoes, arugula", calories: 540, protein: 52, carbs: 46, fat: 16, ingredients: ["300g octopus", "2 lemons", "300g baby potatoes", "2 cups arugula", "Olive oil", "Oregano"] }
     }
   },
   "high-protein": {
