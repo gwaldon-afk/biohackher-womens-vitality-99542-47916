@@ -831,30 +831,26 @@ const Nutrition = () => {
         if (isLowFODMAP) {
           let proteinOptions = ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p));
           let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
-          let vegOptions = ["Spinach"].filter(v => !isExcluded(v));
           
           // Fallbacks if all options are excluded
           if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
           if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
-          if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
           protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
           carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
-          vegetable = vegOptions[0];
+          vegetable = null; // Breakfast typically doesn't include vegetables
           fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : "Olive Oil";
         } else {
           let proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"].filter(p => !isExcluded(p));
           let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
-          let vegOptions = ["Spinach"].filter(v => !isExcluded(v));
           
           // Fallbacks
           if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
           if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
-          if (vegOptions.length === 0) vegOptions = ["Carrots"];
           
           protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
           carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
-          vegetable = vegOptions[0];
+          vegetable = null; // Breakfast typically doesn't include vegetables
           fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : 
                 (!isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
         }
@@ -871,7 +867,7 @@ const Nutrition = () => {
             const cottageStyle = cookingMethods.breakfast.cottage[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.cottage.length];
             recipeName = `${cottageStyle} with ${carb}`;
           }
-          recipeDescription = `Protein-rich breakfast featuring ${protein.toLowerCase()} with ${carb.toLowerCase()} and ${vegetable.toLowerCase()}`;
+          recipeDescription = `Protein-rich breakfast with ${protein.toLowerCase()}, ${carb.toLowerCase()}, and ${fat.toLowerCase()}`;
         }
       } else if (mealType === "lunch") {
         // Use selected lunch recipe if available
@@ -986,53 +982,60 @@ const Nutrition = () => {
       // Calculate portions to meet macro targets
       const proteinFood = foodDatabase.proteins[protein as keyof typeof foodDatabase.proteins];
       const carbFood = foodDatabase.carbs[carb as keyof typeof foodDatabase.carbs];
-      const vegFood = foodDatabase.vegetables[vegetable as keyof typeof foodDatabase.vegetables];
+      const vegFood = vegetable ? foodDatabase.vegetables[vegetable as keyof typeof foodDatabase.vegetables] : null;
       const fatFood = foodDatabase.fats[fat as keyof typeof foodDatabase.fats];
       
       // Calculate serving sizes to hit macro targets (simplified)
       const proteinServing = Math.round((proteinPerMeal / proteinFood.protein) * 100);
       const carbServing = Math.round((carbsPerMeal / carbFood.carbs) * 100);
-      const vegServing = 100; // Standard serving
+      const vegServing = vegetable ? 100 : 0; // Standard serving or none
       const fatServing = fat === "Olive Oil" ? 1 : Math.round((fatPerMeal / fatFood.fat) * 100);
       
       // Calculate meal totals
       const mealCalories = Math.round(
         (proteinFood.calories * proteinServing / 100) +
         (carbFood.calories * carbServing / 100) +
-        (vegFood.calories * vegServing / 100) +
+        (vegFood ? vegFood.calories * vegServing / 100 : 0) +
         (fatFood.calories * (fat === "Olive Oil" ? fatServing : fatServing / 100))
       );
       
       const mealProtein = Math.round(
         (proteinFood.protein * proteinServing / 100) +
         (carbFood.protein * carbServing / 100) +
-        (vegFood.protein * vegServing / 100) +
+        (vegFood ? vegFood.protein * vegServing / 100 : 0) +
         (fatFood.protein * (fat === "Olive Oil" ? fatServing : fatServing / 100))
       );
       
       const mealCarbs = Math.round(
         (proteinFood.carbs * proteinServing / 100) +
         (carbFood.carbs * carbServing / 100) +
-        (vegFood.carbs * vegServing / 100) +
+        (vegFood ? vegFood.carbs * vegServing / 100 : 0) +
         (fatFood.carbs * (fat === "Olive Oil" ? fatServing : fatServing / 100))
       );
       
       const mealFat = Math.round(
         (proteinFood.fat * proteinServing / 100) +
         (carbFood.fat * carbServing / 100) +
-        (vegFood.fat * vegServing / 100) +
+        (vegFood ? vegFood.fat * vegServing / 100 : 0) +
         (fatFood.fat * (fat === "Olive Oil" ? fatServing : fatServing / 100))
       );
+      
+      // Build foods array with only included ingredients
+      const foods = [
+        { name: protein, amount: `${proteinServing}g`, nutrition: proteinFood },
+        { name: carb, amount: `${carbServing}g`, nutrition: carbFood }
+      ];
+      
+      if (vegetable && vegFood) {
+        foods.push({ name: vegetable, amount: `${vegServing}g`, nutrition: vegFood });
+      }
+      
+      foods.push({ name: fat, amount: fat === "Olive Oil" ? `${fatServing} tbsp` : `${fatServing}g`, nutrition: fatFood });
       
       return {
         recipeName,
         recipeDescription,
-        foods: [
-          { name: protein, amount: `${proteinServing}g`, nutrition: proteinFood },
-          { name: carb, amount: `${carbServing}g`, nutrition: carbFood },
-          { name: vegetable, amount: `${vegServing}g`, nutrition: vegFood },
-          { name: fat, amount: fat === "Olive Oil" ? `${fatServing} tbsp` : `${fatServing}g`, nutrition: fatFood }
-        ],
+        foods,
         totals: {
           calories: mealCalories,
           protein: mealProtein,
