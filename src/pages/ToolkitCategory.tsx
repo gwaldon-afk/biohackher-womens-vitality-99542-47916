@@ -17,6 +17,23 @@ import { toast } from "sonner";
 
 const ToolkitCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
+  
+  console.log('=== ToolkitCategory RENDER ===');
+  console.log('categorySlug:', categorySlug);
+  
+  // Early return test
+  if (!categorySlug) {
+    console.log('NO categorySlug - returning early');
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main className="container mx-auto px-4 py-8">
+          <p>No category slug found in URL</p>
+        </main>
+      </div>
+    );
+  }
+  
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Fetch category
