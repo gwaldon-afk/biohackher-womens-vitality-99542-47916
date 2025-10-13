@@ -23,6 +23,8 @@ import { useLISData } from "@/hooks/useLISData";
 import { format } from "date-fns";
 import LISInputForm from "@/components/LISInputForm";
 import FirstTimeDailyScoreWelcome from "@/components/FirstTimeDailyScoreWelcome";
+import { TodayProtocolWidget } from "@/components/TodayProtocolWidget";
+import { MemberProgressCard } from "@/components/MemberProgressCard";
 
 interface DashboardData {
   currentScore: number;
@@ -454,13 +456,19 @@ const Dashboard = () => {
           /* Full Dashboard View for Users with Data */
           <>
         {/* Welcome Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Welcome Back to Your <span className="text-primary">Health Journey</span>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome Back, <span className="text-primary">Sarah</span>!
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Track your progress, view comprehensive reports, and access your complete health data
-          </p>
+          <p className="text-muted-foreground">Today is Day 3 of your Brain Optimization</p>
+        </div>
+
+        {/* Today's Protocol Widget */}
+        <TodayProtocolWidget />
+
+        {/* Member Progress Card */}
+        <div className="mt-6">
+          <MemberProgressCard />
         </div>
 
         {/* Tabs for My Journey */}

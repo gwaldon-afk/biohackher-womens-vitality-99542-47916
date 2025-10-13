@@ -51,6 +51,7 @@ import SymptomTrends from "./pages/SymptomTrends";
 import WearableIntegrations from "./pages/WearableIntegrations";
 import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { FloatingAIAssistant } from "./components/FloatingAIAssistant";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <FloatingAIAssistant />
         </BrowserRouter>
         </TooltipProvider>
       </CartProvider>

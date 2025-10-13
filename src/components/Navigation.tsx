@@ -29,34 +29,16 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const simpleNavItems = [
+  // Simplified core navigation - 8 key pages
+  const coreNavItems = [
     { href: "/", label: t('navigation.home') },
-    { href: "/about", label: t('navigation.about') },
-    { href: "/pillars", label: t('navigation.pillars') },
-    { href: "/symptoms", label: t('navigation.assessments') },
+    { href: "/dashboard", label: t('navigation.dashboard') },
+    { href: "/my-protocol", label: "7-Day Plan" },
+    { href: "/symptoms", label: "Symptom Tracking" },
+    { href: "/shop", label: t('navigation.shop') },
+    { href: "/about", label: "About & Science" },
+    { href: "/health-assistant", label: "AI Assistant" },
   ];
-
-  const myJourneyItems = [
-    { href: "/dashboard", label: t('navigation.dashboard'), icon: BarChart3 },
-    { href: "/analytics", label: t('navigation.analytics'), icon: TrendingUp },
-    { href: "/my-goals", label: t('navigation.myGoals'), icon: Target },
-    { href: "/symptom-trends", label: t('navigation.symptomTrends'), icon: Heart },
-    { href: "/achievements", label: t('navigation.achievements'), icon: Award },
-    { href: "/progress", label: t('navigation.progressTracking'), icon: Target },
-    { href: "/reports", label: t('navigation.reports'), icon: Trophy },
-  ];
-
-  const toolkitItems = [
-    { href: "/biohacking-toolkit", label: t('navigation.biohackingTools'), icon: Sparkles },
-    { href: "/wearables", label: t('navigation.wearables'), icon: Watch },
-    { href: "/supplements", label: t('navigation.supplements'), icon: Pill },
-    { href: "/therapies", label: t('navigation.therapies'), icon: Dumbbell },
-    { href: "/sleep", label: t('navigation.sleep'), icon: Moon },
-    { href: "/nutrition", label: t('navigation.nutrition'), icon: Utensils },
-  ];
-
-  const [myJourneyOpen, setMyJourneyOpen] = useState(false);
-  const [toolkitOpen, setToolkitOpen] = useState(false);
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -79,118 +61,24 @@ const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex">
-            <NavigationMenuList>
-              {simpleNavItems.map((item) => (
-                <NavigationMenuItem key={item.href}>
-                  <Link to={item.href}>
-                    <NavigationMenuLink
-                      className={cn(
-                        "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-                        isActive(item.href)
-                          ? "text-primary bg-accent/50"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      {item.label}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              ))}
-
-              {/* My Journey Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-muted-foreground hover:text-primary">
-                  {t('navigation.myJourney')}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 bg-popover border border-border shadow-lg z-50">
-                    {myJourneyItems.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <li key={item.href}>
-                          <Link to={item.href}>
-                            <NavigationMenuLink
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                isActive(item.href) && "bg-accent/50 text-primary"
-                              )}
-                            >
-                              <div className="flex items-center gap-2">
-                                <Icon className="h-4 w-4" />
-                                <div className="text-sm font-medium leading-none">{item.label}</div>
-                              </div>
-                            </NavigationMenuLink>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              {/* Toolkit Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-muted-foreground hover:text-primary">
-                  {t('navigation.toolkit')}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 bg-popover border border-border shadow-lg z-50">
-                    {toolkitItems.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <li key={item.href}>
-                          <Link to={item.href}>
-                            <NavigationMenuLink
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                                isActive(item.href) && "bg-accent/50 text-primary"
-                              )}
-                            >
-                              <div className="flex items-center gap-2">
-                                <Icon className="h-4 w-4" />
-                                <div className="text-sm font-medium leading-none">{item.label}</div>
-                              </div>
-                            </NavigationMenuLink>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Link to="/shop">
-                  <NavigationMenuLink
-                    className={cn(
-                      "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                      isActive("/shop")
-                        ? "text-primary bg-accent/50"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {t('navigation.shop')}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Link to="/faq">
-                  <NavigationMenuLink
-                    className={cn(
-                      "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
-                      isActive("/faq")
-                        ? "text-primary bg-accent/50"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {t('navigation.faq')}
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <div className="hidden lg:flex items-center space-x-1">
+            {coreNavItems.map((item) => (
+              <Link key={item.href} to={item.href}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    isActive(item.href)
+                      ? "text-primary bg-accent"
+                      : "text-muted-foreground hover:text-primary"
+                  )}
+                >
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
+          </div>
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-3">
@@ -209,7 +97,7 @@ const Navigation = () => {
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-popover border border-border shadow-lg z-50">
+              <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
                 <DropdownMenuItem asChild>
                   <Link to="/settings" className="flex items-center cursor-pointer">
                     <Settings className="h-4 w-4 mr-2" />
@@ -217,9 +105,24 @@ const Navigation = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center cursor-pointer">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
+                <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
+                <DropdownMenuItem asChild>
+                  <Link to="/my-goals" className="flex items-center cursor-pointer text-xs">
+                    <Target className="h-3 w-3 mr-2" />
+                    My Goals
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
+                    <Award className="h-3 w-3 mr-2" />
+                    Achievements
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
+                    <Sparkles className="h-3 w-3 mr-2" />
+                    Toolkit
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -242,7 +145,7 @@ const Navigation = () => {
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-2">
-              {simpleNavItems.map((item) => (
+              {coreNavItems.map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
@@ -257,90 +160,6 @@ const Navigation = () => {
                   {item.label}
                 </Link>
               ))}
-
-              {/* My Journey Collapsible */}
-              <Collapsible open={myJourneyOpen} onOpenChange={setMyJourneyOpen}>
-                <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  {t('navigation.myJourney')}
-                  <ChevronDown className={cn("h-4 w-4 transition-transform", myJourneyOpen && "rotate-180")} />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pl-4">
-                  {myJourneyItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className={cn(
-                          "flex items-center gap-2 text-sm transition-colors hover:text-primary px-4 py-2 rounded-md",
-                          isActive(item.href)
-                            ? "text-primary bg-primary/10"
-                            : "text-muted-foreground"
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </CollapsibleContent>
-              </Collapsible>
-
-              {/* Toolkit Collapsible */}
-              <Collapsible open={toolkitOpen} onOpenChange={setToolkitOpen}>
-                <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  {t('navigation.toolkit')}
-                  <ChevronDown className={cn("h-4 w-4 transition-transform", toolkitOpen && "rotate-180")} />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pl-4">
-                  {toolkitItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className={cn(
-                          "flex items-center gap-2 text-sm transition-colors hover:text-primary px-4 py-2 rounded-md",
-                          isActive(item.href)
-                            ? "text-primary bg-primary/10"
-                            : "text-muted-foreground"
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </CollapsibleContent>
-              </Collapsible>
-
-              <Link
-                to="/shop"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md",
-                  isActive("/shop")
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                {t('navigation.shop')}
-              </Link>
-
-              <Link
-                to="/faq"
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md",
-                  isActive("/faq")
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsOpen(false)}
-              >
-                {t('navigation.faq')}
-              </Link>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
                 <div className="px-2">

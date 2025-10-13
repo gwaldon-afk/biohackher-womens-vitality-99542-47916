@@ -48,23 +48,24 @@ const DataSecurityBadge = () => {
 };
 
 const TrustBarWithSecurity = () => {
+  const { t } = useTranslation();
+  
   return (
-    <div className="w-full bg-primary/5 border-b border-primary/10 py-2">
+    <div className="w-full bg-primary/5 border-b border-primary/10 py-1.5">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-center gap-6 md:gap-12 flex-wrap text-xs md:text-sm">
-          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-            <ScienceBackedIcon className="h-4 w-4" showTooltip={false} />
-            <span className="font-medium">Evidence-Based</span>
+        <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap text-xs">
+          <Link to="/about?tab=research" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <ScienceBackedIcon className="h-3.5 w-3.5" showTooltip={false} />
+            <span className="font-medium">500+ Studies</span>
           </Link>
-          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-            <FileText className="h-4 w-4 text-primary" />
-            <span className="font-medium">Peer-Reviewed</span>
+          <Link to="/about?tab=faq#data-privacy" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <Shield className="h-3.5 w-3.5 text-primary" />
+            <span className="font-medium">Privacy Protected</span>
           </Link>
-          <Link to="/research-evidence" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
-            <Award className="h-4 w-4 text-primary" />
-            <span className="font-medium">Science-Backed</span>
+          <Link to="/about?tab=advisory" className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">
+            <Award className="h-3.5 w-3.5 text-primary" />
+            <span className="font-medium">Expert Approved</span>
           </Link>
-          <DataSecurityBadge />
         </div>
       </div>
     </div>

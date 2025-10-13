@@ -19,7 +19,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section - Dual Path Messaging */}
+      {/* Hero Section - Problem-First Approach */}
       <section className="relative overflow-hidden">
         <div className="hero-gradient">
           <div className="container mx-auto px-4 py-20 lg:py-32">
@@ -27,70 +27,39 @@ const Index = () => {
               <div className="text-center lg:text-left space-y-8">
                 <div>
                   <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-                    {t('home.hero.title')}<br />
-                    <span className="text-white/90">{t('home.hero.subtitle')}</span>
+                    Feeling Exhausted, Foggy, and <span className="text-white/90">Frustrated</span> with Generic Health Advice?
                   </h1>
                   <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
-                    {t('home.hero.description')}
+                    Get your personalized longevity score in 5 minutes
                   </p>
                 </div>
 
-                {/* Primary CTAs - Two Button Layout aligned with cards below */}
-                <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                {/* Primary CTA */}
+                <div className="flex flex-col gap-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2 whitespace-normal"
+                    className="bg-white text-primary hover:bg-white/90 text-xl px-10 py-8 h-auto shadow-xl"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
-                    <Target className="h-6 w-6 mr-2 flex-shrink-0" />
-                    <span className="text-center flex-1">{t('home.hero.ctaPrimary')}</span>
+                    <Target className="h-7 w-7 mr-3" />
+                    Get Your Free Longevity Assessment
                   </Button>
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 h-auto w-full sm:w-1/2 whitespace-normal"
+                    variant="outline"
+                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 text-lg px-8 py-6 h-auto backdrop-blur"
                     onClick={() => navigate("/health-assistant")}
                   >
-                    <Sparkles className="h-6 w-6 mr-2 flex-shrink-0" />
-                    <span className="text-center flex-1">Ask Us Anything About Women's Health</span>
+                    <Sparkles className="h-6 w-6 mr-2" />
+                    Ask AI About Your Health
                   </Button>
-                </div>
-
-                {/* Secondary CTAs - Dual Path */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Card className="flex-1 bg-white/10 backdrop-blur border-white/20 hover:bg-white/20 transition-all cursor-pointer group" onClick={() => navigate("/pillars?path=performance")}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-lg">
-                          <TrendingUp className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">{t('home.hero.ctaPerformance')}</h3>
-                          <p className="text-white/70 text-sm">{t('home.hero.ctaPerformanceDesc')}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="flex-1 bg-white/10 backdrop-blur border-white/20 hover:bg-white/20 transition-all cursor-pointer group" onClick={() => navigate("/pillars?path=menopause")}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-lg">
-                          <Activity className="h-6 w-6 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-white font-bold text-lg mb-1 group-hover:translate-x-1 transition-transform">{t('home.hero.ctaMenopause')}</h3>
-                          <p className="text-white/70 text-sm">{t('home.hero.ctaMenopauseDesc')}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
               
               <div className="relative">
                 <img 
                   src={heroImage} 
-                  alt="Women's longevity and wellness optimization" 
+                  alt="Women's health and longevity optimization" 
                   className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
                 />
               </div>
@@ -99,120 +68,110 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Four Pillars Section */}
-      <section className="py-20 lg:py-28 bg-background">
+      {/* How It Works - 3 Steps */}
+      <section className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-                {t('home.pillars.title')}
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
+                How It <span className="text-primary">Works</span>
               </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                {t('home.pillars.subtitle')}
-              </p>
+              <p className="text-lg text-muted-foreground">Science-backed protocols designed for women's biology</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {[
-                {
-                  title: "Brain",
-                  subtitle: "Mental clarity & cognitive optimization",
-                  image: brainPillar,
-                  icon: Brain,
-                  color: "from-primary to-primary-light",
-                  path: "/pillars?pillar=brain"
-                },
-                {
-                  title: "Body",
-                  subtitle: "Strength, vitality & metabolic health",
-                  image: bodyPillar,
-                  icon: Activity,
-                  color: "from-primary-dark to-primary",
-                  path: "/pillars?pillar=body"
-                },
-                {
-                  title: "Balance",
-                  subtitle: "Hormonal harmony & stress resilience",
-                  image: balancePillar,
-                  icon: Zap,
-                  color: "from-secondary to-secondary-light",
-                  path: "/pillars?pillar=balance"
-                },
-                {
-                  title: "Beauty",
-                  subtitle: "Cellular regeneration & radiant aging",
-                  image: beautyPillar,
-                  icon: Sparkles,
-                  color: "from-secondary-dark to-secondary",
-                  path: "/pillars?pillar=beauty"
-                }
-              ].map((pillar, index) => (
-                <Card 
-                  key={index}
-                  className="card-elevated hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group" 
-                  onClick={() => navigate(pillar.path)}
-                >
-                  <div className="relative h-48">
-                    <img 
-                      src={pillar.image} 
-                      alt={`${pillar.title} pillar for women's longevity`} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${pillar.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
-                    <div className="absolute top-4 left-4">
-                      <pillar.icon className="h-8 w-8 text-white" />
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <div className="mb-4 flex justify-center">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Activity className="h-8 w-8 text-primary" />
                   </div>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-xl font-bold">{pillar.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-base">
-                      {pillar.subtitle}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              ))}
+                </div>
+                <h3 className="text-xl font-bold mb-3">1. Take 5-Minute Assessment</h3>
+                <p className="text-muted-foreground">Quick, science-based questions about your health and symptoms</p>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <div className="mb-4 flex justify-center">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Brain className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">2. Get Your Personalized Plan</h3>
+                <p className="text-muted-foreground">AI-powered recommendations based on 500+ research studies</p>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <div className="mb-4 flex justify-center">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <TrendingUp className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">3. Track & Optimize</h3>
+                <p className="text-muted-foreground">Monitor progress and refine your protocol for best results</p>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What You'll Get */}
+      <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-primary/5">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">What You'll Get</h2>
             </div>
 
-            <div className="text-center">
-              <CTAButton
-                text="Explore All Pillars"
-                href="/pillars"
-                variant="default"
-              />
+            <div className="grid gap-4 max-w-2xl mx-auto">
+              {[
+                "Personalized 7-Day Protocol",
+                "Science-Backed Supplement Recommendations",
+                "Daily Progress Tracking & Insights",
+                "AI Health Assistant Available 24/7"
+              ].map((benefit, idx) => (
+                <div key={idx} className="flex items-center gap-3 p-4 bg-background rounded-lg border">
+                  <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
+                  <span className="text-lg">{benefit}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-24 lg:py-32 bg-gradient-to-b from-background to-primary/5">
+      <section className="py-20 lg:py-28 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl lg:text-5xl font-bold">
-              Ready to Optimize Your <span className="gradient-text">Longevity</span>?
+              Ready to Optimize Your <span className="text-primary">Health</span>?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of women taking control of their health with science-backed biohacking protocols designed for your unique biology.
+              Join 10,000+ women taking control of their health with science-backed protocols
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-4">
-              <Button 
-                size="lg" 
-                className="text-lg px-8 py-6 h-auto"
-                onClick={() => navigate("/guest-lis-assessment")}
-              >
-                <Target className="h-5 w-5 mr-2" />
-                Start Your Free Assessment
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="text-lg px-8 py-6 h-auto"
-                onClick={() => navigate("/about")}
-              >
-                Learn More About Biohackher
-              </Button>
+            <Button 
+              size="lg" 
+              className="text-xl px-10 py-8 h-auto shadow-lg"
+              onClick={() => navigate("/guest-lis-assessment")}
+            >
+              <Target className="h-6 w-6 mr-2" />
+              Start Your Free Assessment
+            </Button>
+            
+            {/* Trust Signals */}
+            <div className="flex items-center justify-center gap-8 pt-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span>500+ Peer-Reviewed Studies</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" />
+                <span>10,000+ Women Trust Us</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-4 w-4 text-primary" />
+                <span>Privacy Protected</span>
+              </div>
             </div>
           </div>
         </div>
