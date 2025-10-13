@@ -584,35 +584,71 @@ const Nutrition = () => {
       // Convert to lowercase for comparison
       let normalized = name.toLowerCase().trim();
       
+      // Remove any trailing quantity info in parentheses (e.g., "(300g)")
+      normalized = normalized.replace(/\s*\([^)]*\)\s*$/, '');
+      
       // Remove common descriptors that don't affect the base ingredient
       normalized = normalized
-        .replace(/\b(fresh|organic|raw|cooked|diced|chopped|sliced|minced)\b/gi, '')
+        .replace(/\b(fresh|organic|raw|cooked|diced|chopped|sliced|minced|skinless|boneless)\b/gi, '')
         .trim();
       
-      // Normalize plural forms
-      const pluralMappings: Record<string, string> = {
+      // Handle specific plural forms that need special attention
+      const specificPluralMappings: Record<string, string> = {
         'blueberries': 'blueberry',
         'strawberries': 'strawberry',
         'raspberries': 'raspberry',
+        'blackberries': 'blackberry',
         'tomatoes': 'tomato',
+        'potatoes': 'potato',
         'avocados': 'avocado',
-        'eggs': 'egg',
-        'almonds': 'almond',
-        'walnuts': 'walnut',
-        'cashews': 'cashew',
-        'carrots': 'carrot',
+        'mangoes': 'mango',
       };
       
-      for (const [plural, singular] of Object.entries(pluralMappings)) {
+      for (const [plural, singular] of Object.entries(specificPluralMappings)) {
         if (normalized.includes(plural)) {
           normalized = normalized.replace(plural, singular);
         }
       }
       
+      // Generic plural normalization for most words ending in 's' or 'es'
+      // Split into words to normalize each one
+      const words = normalized.split(' ');
+      const normalizedWords = words.map(word => {
+        // Skip short words and words that should stay plural
+        if (word.length <= 2 || ['less', 'grass', 'mass', 'class', 'glass'].includes(word)) {
+          return word;
+        }
+        
+        // Handle -ies -> -y (e.g., berries -> berry)
+        if (word.endsWith('ies') && word.length > 4) {
+          return word.slice(0, -3) + 'y';
+        }
+        
+        // Handle -es -> remove es for certain endings
+        if (word.endsWith('ches') || word.endsWith('shes') || word.endsWith('sses') || word.endsWith('xes')) {
+          return word.slice(0, -2);
+        }
+        
+        // Handle regular plural -s
+        if (word.endsWith('s') && word.length > 3 && !word.endsWith('ss')) {
+          // Check if removing 's' creates a valid-looking word
+          const withoutS = word.slice(0, -1);
+          // Only remove 's' if it doesn't end in vowel + s (like 'peas', 'lentils')
+          if (!['a', 'e', 'i', 'o', 'u'].includes(withoutS[withoutS.length - 1])) {
+            return withoutS;
+          }
+        }
+        
+        return word;
+      });
+      
+      normalized = normalizedWords.join(' ');
+      
       // Capitalize first letter of each word for display
-      return normalized.split(' ').map(word => 
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
+      return normalized.split(' ')
+        .filter(word => word.length > 0)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
     };
     
     weeklyPlan.forEach((dayPlan: any) => {
@@ -622,11 +658,29 @@ const Nutrition = () => {
         // Handle template meals with ingredients array
         if (meal.ingredients && meal.ingredients.length > 0) {
           meal.ingredients.forEach((ingredient: string) => {
-            // Parse ingredient string like "200g chicken breast" or "1 cup oats"
-            const match = ingredient.match(/^([\d.]+)\s*(g|kg|cup|cups|tbsp|tsp|ml|l|piece|pieces|slice|slices|bunch|oz)?\s*(.+)$/i);
+            // Clean up the ingredient string first
+            let cleanIngredient = ingredient.trim();
+            
+            // Try multiple regex patterns to handle different formats
+            // Pattern 1: "200g chicken breast" or "200 g chicken breast"
+            let match = cleanIngredient.match(/^([\d.]+)\s*(g|kg|cup|cups|tbsp|tsp|ml|l|piece|pieces|slice|slices|bunch|oz)\s+(.+)$/i);
+            
+            // Pattern 2: "1 cup oats" (without unit directly attached)
+            if (!match) {
+              match = cleanIngredient.match(/^([\d.]+)\s+(cup|cups|tbsp|tsp|piece|pieces|slice|slices|bunch)\s+(.+)$/i);
+            }
+            
+            // Pattern 3: Just number and name "2 eggs" (assume pieces)
+            if (!match) {
+              match = cleanIngredient.match(/^([\d.]+)\s+(.+)$/i);
+              if (match) {
+                match = [match[0], match[1], 'piece', match[2]];
+              }
+            }
+            
             if (match) {
               const quantity = parseFloat(match[1]);
-              const unit = match[2]?.toLowerCase() || 'piece';
+              const unit = (match[2]?.toLowerCase() || 'piece').replace(/s$/, ''); // Normalize plural units
               const name = match[3].trim();
               
               // Normalize the name for consolidation
@@ -637,7 +691,7 @@ const Nutrition = () => {
               let baseUnit = unit;
               
               // Convert all measurements to base units
-              if (unit === 'cup' || unit === 'cups') {
+              if (unit === 'cup') {
                 baseQuantity = quantity * 240;
                 baseUnit = 'ml';
               } else if (unit === 'kg') {
