@@ -863,19 +863,15 @@ const Nutrition = () => {
         if (!recipeName) {
           if (protein === "Eggs") {
             const eggStyle = cookingMethods.breakfast.eggs[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.eggs.length];
-            if (carb === "Quinoa") {
-              recipeName = `${eggStyle} with Ancient Grain Quinoa`;
-            } else {
-              recipeName = `${eggStyle} with Hearty Oats`;
-            }
+            recipeName = `${eggStyle} with ${carb}`;
           } else if (protein === "Greek Yogurt") {
             const yogurtStyle = cookingMethods.breakfast.yogurt[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.yogurt.length];
-            recipeName = `${yogurtStyle} with ${fat === "Almonds" ? "Crunchy Almonds" : "Fresh Berries"}`;
+            recipeName = `${yogurtStyle} with ${carb}`;
           } else if (protein === "Cottage Cheese") {
             const cottageStyle = cookingMethods.breakfast.cottage[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.cottage.length];
-            recipeName = `${cottageStyle} with ${carb === "Oats" ? "Steel-Cut Oats" : "Quinoa Crunch"}`;
+            recipeName = `${cottageStyle} with ${carb}`;
           }
-          recipeDescription = `Protein-rich breakfast featuring ${protein.toLowerCase()} with nutritious ${carb.toLowerCase()}`;
+          recipeDescription = `Protein-rich breakfast featuring ${protein.toLowerCase()} with ${carb.toLowerCase()} and ${vegetable.toLowerCase()}`;
         }
       } else if (mealType === "lunch") {
         // Use selected lunch recipe if available
@@ -921,15 +917,15 @@ const Nutrition = () => {
         if (!recipeName) {
           if (protein === "Chicken Breast") {
             const chickenStyle = cookingMethods.lunch.chicken[(dayIndex + currentWeekIndex) % cookingMethods.lunch.chicken.length];
-            recipeName = `${chickenStyle} with ${carb === "Quinoa" ? "Fluffy Quinoa" : carb === "Sweet Potato" ? "Roasted Sweet Potato" : "Brown Rice Pilaf"}`;
+            recipeName = `${chickenStyle} with ${carb} and ${vegetable}`;
           } else if (protein === "Salmon") {
             const salmonStyle = cookingMethods.lunch.salmon[(dayIndex + currentWeekIndex) % cookingMethods.lunch.salmon.length];
-            recipeName = `${salmonStyle} over ${vegetable === "Spinach" ? "Fresh Spinach" : "Steamed Broccoli"}`;
+            recipeName = `${salmonStyle} with ${carb} and ${vegetable}`;
           } else if (protein === "Tofu") {
             const tofuStyle = cookingMethods.lunch.tofu[(dayIndex + currentWeekIndex) % cookingMethods.lunch.tofu.length];
-            recipeName = `${tofuStyle} with ${carb === "Brown Rice" ? "Jasmine Brown Rice" : "Ancient Grain Quinoa"}`;
+            recipeName = `${tofuStyle} with ${carb} and ${vegetable}`;
           }
-          recipeDescription = `Balanced midday meal with lean ${protein.toLowerCase()} and fresh vegetables`;
+          recipeDescription = `Balanced midday meal with ${protein.toLowerCase()}, ${carb.toLowerCase()}, and ${vegetable.toLowerCase()}`;
         }
       } else { // dinner
         // Use selected dinner recipe if available
@@ -975,15 +971,15 @@ const Nutrition = () => {
         if (!recipeName) {
           if (protein === "Salmon") {
             const salmonStyle = cookingMethods.dinner.salmon[(dayIndex + currentWeekIndex) % cookingMethods.dinner.salmon.length];
-            recipeName = `${salmonStyle} with ${carb === "Sweet Potato" ? "Roasted Sweet Potato Wedges" : "Wild Rice Pilaf"}`;
+            recipeName = `${salmonStyle} with ${carb} and ${vegetable}`;
           } else if (protein === "Chicken Breast") {
             const chickenStyle = cookingMethods.dinner.chicken[(dayIndex + currentWeekIndex) % cookingMethods.dinner.chicken.length];
-            recipeName = `${chickenStyle} with ${vegetable === "Broccoli" ? "Garlic Roasted Broccoli" : "Honey Glazed Carrots"}`;
+            recipeName = `${chickenStyle} with ${carb} and ${vegetable}`;
           } else if (protein === "Tofu") {
             const tofuStyle = cookingMethods.dinner.tofu[(dayIndex + currentWeekIndex) % cookingMethods.dinner.tofu.length];
-            recipeName = `${tofuStyle} with ${carb === "Quinoa" ? "Herbed Quinoa" : "Coconut Brown Rice"}`;
+            recipeName = `${tofuStyle} with ${carb} and ${vegetable}`;
           }
-          recipeDescription = `Satisfying evening meal with premium ${protein.toLowerCase()} and seasonal vegetables`;
+          recipeDescription = `Satisfying evening meal with ${protein.toLowerCase()}, ${carb.toLowerCase()}, and ${vegetable.toLowerCase()}`;
         }
       }
       
