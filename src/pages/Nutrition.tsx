@@ -1909,52 +1909,127 @@ const Nutrition = () => {
                                     <div className="mb-3">
                                        <div className="flex items-center justify-between mb-2">
                                          <div>
-                                           <Dialog>
-                                             <DialogTrigger asChild>
-                                               <button 
-                                                 className="font-bold text-xl gradient-text hover:opacity-80 transition-opacity text-left underline decoration-dotted underline-offset-4"
-                                                 onClick={() => setSelectedRecipe({
-                                                   name: meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`,
-                                                   ...getRecipeForMeal(meal.recipeName || mealType)
-                                                 })}
-                                               >
-                                                 {meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
-                                               </button>
-                                             </DialogTrigger>
-                                             <DialogContent className="max-w-md">
-                                               <DialogHeader>
-                                                 <DialogTitle className="gradient-text text-left">
-                                                   {selectedRecipe?.name || 'Recipe'}
-                                                 </DialogTitle>
-                                               </DialogHeader>
-                                               <div className="space-y-4">
-                                                 <div>
-                                                   <h4 className="font-semibold text-primary mb-2">Ingredients:</h4>
-                                                   <ul className="space-y-1">
-                                                     {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
-                                                       <li key={idx} className="text-sm flex items-center gap-2">
-                                                         <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span>
-                                                         {ingredient}
-                                                       </li>
-                                                     ))}
-                                                   </ul>
-                                                 </div>
-                                                 <div>
-                                                   <h4 className="font-semibold text-primary mb-2">Instructions:</h4>
-                                                   <ol className="space-y-2">
-                                                     {selectedRecipe?.steps?.map((step: string, idx: number) => (
-                                                       <li key={idx} className="text-sm flex gap-3">
-                                                         <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
-                                                           {idx + 1}
-                                                         </span>
-                                                         {step}
-                                                       </li>
-                                                     ))}
-                                                   </ol>
-                                                 </div>
-                                               </div>
-                                             </DialogContent>
-                                           </Dialog>
+                                            <Dialog>
+                                              <DialogTrigger asChild>
+                                                <button 
+                                                  className="font-bold text-xl gradient-text hover:opacity-80 transition-opacity text-left underline decoration-dotted underline-offset-4"
+                                                  onClick={() => {
+                                                    // Generate recipe from actual meal foods
+                                                    const mealFoods = meal.foods.map((f: any) => `${f.amount} ${f.name}`);
+                                                    const mealName = meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`;
+                                                    
+                                                    // Generate cooking instructions based on the foods in this meal
+                                                    const steps: string[] = [];
+                                                    const hasEggs = meal.foods.some((f: any) => f.name === 'Eggs');
+                                                    const hasYogurt = meal.foods.some((f: any) => f.name === 'Greek Yogurt' || f.name === 'Cottage Cheese');
+                                                    const hasOats = meal.foods.some((f: any) => f.name === 'Oats');
+                                                    const hasProtein = meal.foods.some((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                    const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                    const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
+                                                    
+                                                    if (mealType === 'breakfast') {
+                                                      if (hasEggs && hasOats) {
+                                                        steps.push(
+                                                          "Cook oats according to package instructions (typically 1 part oats to 2 parts water, simmer 5-7 minutes)",
+                                                          "While oats are cooking, crack eggs into a bowl and whisk with a pinch of salt and pepper",
+                                                          "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
+                                                          "Pour eggs into pan and gently stir with a spatula as they cook until just set",
+                                                          "Serve eggs alongside the cooked oats"
+                                                        );
+                                                        if (meal.foods.some((f: any) => f.name === 'Almonds')) {
+                                                          steps.push("Top oats with sliced or chopped almonds for healthy fats and crunch");
+                                                        }
+                                                        if (meal.foods.some((f: any) => f.name === 'Spinach')) {
+                                                          steps.push("Stir fresh spinach into eggs during the last minute of cooking until wilted");
+                                                        }
+                                                      } else if (hasYogurt) {
+                                                        steps.push(
+                                                          "Place yogurt in a serving bowl",
+                                                          "Top with fresh berries or fruit if available"
+                                                        );
+                                                        if (hasOats) {
+                                                          steps.push("Add oats or granola for texture and sustained energy");
+                                                        }
+                                                        if (meal.foods.some((f: any) => f.name === 'Almonds')) {
+                                                          steps.push("Sprinkle with sliced almonds for healthy fats and protein");
+                                                        }
+                                                        steps.push("Drizzle with honey if desired and serve immediately");
+                                                      }
+                                                    } else if (hasProtein) {
+                                                      const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
+                                                      steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
+                                                      
+                                                      if (proteinFood.name === 'Salmon' || proteinFood.name === 'Chicken Breast') {
+                                                        steps.push(`Heat a pan or grill to medium-high heat with a small amount of oil`);
+                                                        steps.push(`Cook ${proteinFood.name.toLowerCase()} for 4-6 minutes per side until cooked through`);
+                                                      } else if (proteinFood.name === 'Tofu') {
+                                                        steps.push("Press tofu to remove excess water, then cut into cubes");
+                                                        steps.push("Pan-fry tofu in oil over medium-high heat until golden on all sides (8-10 minutes)");
+                                                      }
+                                                      
+                                                      if (hasRice) {
+                                                        const grain = meal.foods.find((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
+                                                        steps.push(`Cook ${grain.name.toLowerCase()} according to package instructions (usually 1 cup grain to 2 cups water)`);
+                                                      }
+                                                      
+                                                      if (hasVeg) {
+                                                        const veggies = meal.foods.filter((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name)).map((f: any) => f.name.toLowerCase()).join(', ');
+                                                        steps.push(`Steam or lightly sauté ${veggies} until tender (3-5 minutes for spinach, 5-7 for broccoli/carrots)`);
+                                                      }
+                                                      
+                                                      steps.push("Arrange all components on a plate and serve hot");
+                                                    } else {
+                                                      steps.push("Gather all ingredients listed above");
+                                                      steps.push("Prepare ingredients by washing and chopping as needed");
+                                                      steps.push("Cook using healthy methods: steaming, grilling, or light sautéing");
+                                                      steps.push("Season with herbs and spices for flavour");
+                                                      steps.push("Serve fresh and enjoy");
+                                                    }
+                                                    
+                                                    setSelectedRecipe({
+                                                      name: mealName,
+                                                      ingredients: mealFoods,
+                                                      steps: steps
+                                                    });
+                                                  }}
+                                                >
+                                                  {meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
+                                                </button>
+                                              </DialogTrigger>
+                                              <DialogContent className="max-w-md">
+                                                <DialogHeader>
+                                                  <DialogTitle className="gradient-text text-left">
+                                                    {selectedRecipe?.name || 'Recipe'}
+                                                  </DialogTitle>
+                                                </DialogHeader>
+                                                <div className="space-y-4">
+                                                  <div>
+                                                    <h4 className="font-semibold text-primary mb-2">{t('nutrition.ingredients')}:</h4>
+                                                    <ul className="space-y-1">
+                                                      {selectedRecipe?.ingredients?.map((ingredient: string, idx: number) => (
+                                                        <li key={idx} className="text-sm flex items-center gap-2">
+                                                          <span className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></span>
+                                                          {ingredient}
+                                                        </li>
+                                                      ))}
+                                                    </ul>
+                                                  </div>
+                                                  <div>
+                                                    <h4 className="font-semibold text-primary mb-2">{t('nutrition.instructions')}:</h4>
+                                                    <ol className="space-y-2">
+                                                      {selectedRecipe?.steps?.map((step: string, idx: number) => (
+                                                        <li key={idx} className="text-sm flex gap-3">
+                                                          <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5">
+                                                            {idx + 1}
+                                                          </span>
+                                                          {step}
+                                                        </li>
+                                                      ))}
+                                                    </ol>
+                                                  </div>
+                                                </div>
+                                              </DialogContent>
+                                            </Dialog>
                                            {meal.recipeDescription && (
                                              <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
                                            )}
