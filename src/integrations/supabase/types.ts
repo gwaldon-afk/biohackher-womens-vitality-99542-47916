@@ -679,11 +679,13 @@ export type Database = {
           activity_level: string | null
           allergies: string[] | null
           created_at: string
+          disliked_foods: string[] | null
           dislikes: string[] | null
           fitness_goal: string | null
           has_ibs: boolean | null
           id: string
           is_low_fodmap: boolean | null
+          liked_foods: string[] | null
           selected_breakfast_recipe: string | null
           selected_dinner_recipe: string | null
           selected_lunch_recipe: string | null
@@ -696,11 +698,13 @@ export type Database = {
           activity_level?: string | null
           allergies?: string[] | null
           created_at?: string
+          disliked_foods?: string[] | null
           dislikes?: string[] | null
           fitness_goal?: string | null
           has_ibs?: boolean | null
           id?: string
           is_low_fodmap?: boolean | null
+          liked_foods?: string[] | null
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null
@@ -713,11 +717,13 @@ export type Database = {
           activity_level?: string | null
           allergies?: string[] | null
           created_at?: string
+          disliked_foods?: string[] | null
           dislikes?: string[] | null
           fitness_goal?: string | null
           has_ibs?: boolean | null
           id?: string
           is_low_fodmap?: boolean | null
+          liked_foods?: string[] | null
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null

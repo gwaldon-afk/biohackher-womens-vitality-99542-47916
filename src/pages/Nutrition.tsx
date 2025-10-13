@@ -1954,14 +1954,81 @@ const Nutrition = () => {
                 </CardTitle>
                 <CardDescription>
                   Protein-optimised meals {isLowFODMAP ? "suitable for IBS management" : "for general wellness"}
-                  {foodPreferences.likedFoods.length > 0 && (
-                    <span className="ml-2 text-primary font-medium">
-                      ✓ Incorporating your {foodPreferences.likedFoods.length} preferred longevity food{foodPreferences.likedFoods.length !== 1 ? 's' : ''}
-                    </span>
-                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Food Preferences Summary */}
+                {(foodPreferences.likedFoods.length > 0 || foodPreferences.dislikedFoods.length > 0) && (
+                  <Card className="mb-6 bg-primary/5 border-primary/20">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base">Your Food Preferences</CardTitle>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            // Switch to food-science tab
+                            const foodScienceTab = document.querySelector('[value="food-science"]') as HTMLElement;
+                            foodScienceTab?.click();
+                          }}
+                          className="h-8"
+                        >
+                          <Edit className="h-3.5 w-3.5 mr-1" />
+                          Edit Preferences
+                        </Button>
+                      </div>
+                      <CardDescription className="text-xs">
+                        These preferences will be incorporated into your meal plan
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {foodPreferences.likedFoods.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1.5 text-green-700 dark:text-green-400">
+                            ✓ Preferred Foods ({foodPreferences.likedFoods.length})
+                          </h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {foodPreferences.likedFoods.slice(0, 10).map((foodId) => {
+                              const food = require('@/data/longevityFoodDatabase').longevityFoodDatabase.find((f: any) => f.id === foodId);
+                              return food ? (
+                                <Badge key={foodId} variant="secondary" className="text-xs bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
+                                  {food.icon} {food.name}
+                                </Badge>
+                              ) : null;
+                            })}
+                            {foodPreferences.likedFoods.length > 10 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{foodPreferences.likedFoods.length - 10} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      {foodPreferences.dislikedFoods.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1.5 text-red-700 dark:text-red-400">
+                            ⚠ Foods to Avoid ({foodPreferences.dislikedFoods.length})
+                          </h4>
+                          <div className="flex flex-wrap gap-1.5">
+                            {foodPreferences.dislikedFoods.slice(0, 10).map((foodId) => {
+                              const food = require('@/data/longevityFoodDatabase').longevityFoodDatabase.find((f: any) => f.id === foodId);
+                              return food ? (
+                                <Badge key={foodId} variant="secondary" className="text-xs bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
+                                  {food.icon} {food.name}
+                                </Badge>
+                              ) : null;
+                            })}
+                            {foodPreferences.dislikedFoods.length > 10 && (
+                              <Badge variant="secondary" className="text-xs">
+                                +{foodPreferences.dislikedFoods.length - 10} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
                 {/* Template Selector - shown first */}
                 {!showCustomization && (
                   <TemplateSelector
