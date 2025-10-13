@@ -30,6 +30,131 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     return day.charAt(0).toUpperCase() + day.slice(1);
   };
 
+  const generateShoppingList = (template: MealPlanTemplate) => {
+    const mealPlan = templateMealPlans[template.id as keyof typeof templateMealPlans];
+    if (!mealPlan) return;
+
+    // Collect all ingredients
+    const ingredientsList: string[] = [];
+    const mealsList: { day: string; mealType: string; meal: any }[] = [];
+
+    Object.entries(mealPlan).forEach(([day, meals]: [string, any]) => {
+      Object.entries(meals).forEach(([mealType, meal]: [string, any]) => {
+        if (meal.ingredients) {
+          ingredientsList.push(...meal.ingredients);
+        }
+        mealsList.push({ day: getDayName(day), mealType, meal });
+      });
+    });
+
+    // Create printable HTML
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const hasIngredients = ingredientsList.length > 0;
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${template.name} - Shopping List</title>
+          <style>
+            body {
+              font-family: system-ui, -apple-system, sans-serif;
+              max-width: 800px;
+              margin: 40px auto;
+              padding: 20px;
+              line-height: 1.6;
+            }
+            h1 {
+              color: #333;
+              border-bottom: 3px solid #000;
+              padding-bottom: 10px;
+            }
+            h2 {
+              color: #555;
+              margin-top: 30px;
+            }
+            .header {
+              margin-bottom: 30px;
+            }
+            .section {
+              margin: 30px 0;
+            }
+            ul {
+              list-style: none;
+              padding: 0;
+            }
+            li {
+              padding: 8px 0;
+              border-bottom: 1px solid #eee;
+            }
+            li:before {
+              content: "☐ ";
+              margin-right: 10px;
+              font-size: 18px;
+            }
+            .meal-item {
+              margin: 15px 0;
+              padding: 10px;
+              background: #f9f9f9;
+            }
+            .meal-title {
+              font-weight: bold;
+              color: #333;
+            }
+            @media print {
+              body {
+                margin: 0;
+                padding: 20px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>${template.icon} ${template.name}</h1>
+            <p><strong>7-Day Shopping List</strong></p>
+            <p>${template.description}</p>
+          </div>
+
+          ${hasIngredients ? `
+            <div class="section">
+              <h2>Shopping List</h2>
+              <ul>
+                ${[...new Set(ingredientsList)].map(ingredient => 
+                  `<li>${ingredient}</li>`
+                ).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          <div class="section">
+            <h2>Meal Plan Overview</h2>
+            ${Object.entries(mealPlan).map(([day, meals]: [string, any]) => `
+              <h3>${getDayName(day)}</h3>
+              ${Object.entries(meals).map(([mealType, meal]: [string, any]) => `
+                <div class="meal-item">
+                  <div class="meal-title">${mealType.charAt(0).toUpperCase() + mealType.slice(1)}: ${meal.name}</div>
+                  <div>${meal.description}</div>
+                  <div style="margin-top: 5px; font-size: 14px; color: #666;">
+                    ${meal.calories} cal | ${meal.protein}g protein | ${meal.carbs}g carbs | ${meal.fat}g fat
+                  </div>
+                </div>
+              `).join('')}
+            `).join('')}
+          </div>
+
+          <script>
+            window.onload = () => window.print();
+          </script>
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+  };
+
   return (
     <>
       <div className="mb-8 p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl border-2 border-primary/20">
@@ -161,8 +286,9 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
                   </Button>
                   <Button
                     onClick={() => {
-                      // TODO: Implement print shopping list
-                      console.log('Print shopping list');
+                      if (previewTemplate) {
+                        generateShoppingList(previewTemplate);
+                      }
                     }}
                     size="lg"
                     variant="secondary"
