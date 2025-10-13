@@ -5,9 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Calendar, CheckCircle2, PlayCircle, Timer, Utensils, Activity, Brain, Heart, Sparkles, Pill } from "lucide-react";
+import { ArrowLeft, Calendar, CheckCircle2, PlayCircle, Timer, Utensils, Activity, Brain, Heart, Sparkles, Pill, ShoppingCart } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { SupplementProductCard } from "@/components/SupplementProductCard";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "@/services/productService";
+import { matchSupplementToProduct } from "@/utils/supplementMatcher";
+import { useCart } from "@/hooks/useCart";
 
 interface DayPlan {
   day: number;
@@ -41,8 +46,15 @@ const SevenDayPlan = () => {
   const { pillar } = useParams<{ pillar: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { addToCart } = useCart();
   const [currentDay, setCurrentDay] = useState(1);
   const [completedActivities, setCompletedActivities] = useState<Set<string>>(new Set());
+
+  // Fetch products for supplement matching
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
 
   const pillarInfo = {
     brain: {
@@ -1218,22 +1230,57 @@ const SevenDayPlan = () => {
                 </CardContent>
               </Card>
 
-              {/* Supplements */}
+              {/* Supplements with Product Cards */}
               {day.supplements && day.supplements.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Pill className="h-5 w-5" />
-                      Today's Supplements
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <Pill className="h-5 w-5" />
+                        Today's Supplement Stack
+                      </CardTitle>
+                      <Button
+                        size="sm"
+                        onClick={() => navigate('/shop?category=supplement')}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-1" />
+                        Buy Complete Stack
+                      </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Science-backed supplements for optimal results
+                    </p>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {day.supplements.map((supplement, index) => (
-                        <div key={index} className="p-3 border rounded-lg">
-                          <span className="font-medium">{supplement}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-3">
+                      {day.supplements.map((supplement, index) => {
+                        // Match each supplement to a product
+                        const match = products.find((p) => {
+                          const suppLower = supplement.toLowerCase();
+                          const prodLower = p.name.toLowerCase();
+                          return (
+                            prodLower.includes(suppLower.split(' ')[0]) ||
+                            suppLower.includes(prodLower.split(' ')[0])
+                          );
+                        });
+
+                        return (
+                          <SupplementProductCard
+                            key={index}
+                            supplementText={supplement}
+                            matchedProduct={match}
+                            onAddToCart={(product) => {
+                              addToCart({
+                                id: product.id,
+                                name: product.name,
+                                price: product.price_gbp || 0,
+                                image: product.image_url || '',
+                                quantity: 1,
+                              });
+                            }}
+                          />
+                        );
+                      })}
                     </div>
                   </CardContent>
                 </Card>

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
+import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -51,7 +52,7 @@ import SymptomTrends from "./pages/SymptomTrends";
 import WearableIntegrations from "./pages/WearableIntegrations";
 import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { FloatingAIAssistant } from "./components/FloatingAIAssistant";
+import { RedirectToAbout } from "./pages/RedirectToAbout";
 
 const queryClient = new QueryClient();
 
@@ -86,7 +87,7 @@ const App = () => (
             <Route path="/reports" element={<Reports />} />
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/faq" element={<FAQ />} />
+            <Route path="/faq" element={<RedirectToAbout tab="faq" />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/pillars" element={<Pillars />} />
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
@@ -99,9 +100,11 @@ const App = () => (
             <Route path="/lis2-research" element={<LIS2Research />} />
             <Route path="/my-protocol" element={<MyProtocol />} />
             <Route path="/progress" element={<ProgressTracking />} />
-            <Route path="/advisory-board" element={<AdvisoryBoard />} />
+            <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
+            <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
             <Route path="/about" element={<About />} />
             <Route path="/health-assistant" element={<HealthAssistant />} />
+            <Route path="/symptom-tracking" element={<Symptoms />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             <Route path="/my-goals/wizard" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />
