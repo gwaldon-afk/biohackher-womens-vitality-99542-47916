@@ -46,6 +46,9 @@ export const ProgressTracker = () => {
             {totalCompleted}/{pillars.length} Complete
           </span>
         </CardTitle>
+        <p className="text-sm text-muted-foreground mt-2">
+          Track your progress across our four health pillars. Visit the Symptoms page to complete assessments within each pillar and build your personalized 30-day supplement stack.
+        </p>
       </CardHeader>
       <CardContent className="space-y-4">
         <Progress value={progressPercentage} className="h-2" />
@@ -75,7 +78,7 @@ export const ProgressTracker = () => {
 
         {totalCompleted === 0 && (
           <p className="text-sm text-muted-foreground text-center pt-2">
-            Complete your first pillar assessment to start tracking your progress
+            Visit the Symptoms page to complete assessments from each pillar
           </p>
         )}
 
@@ -83,7 +86,7 @@ export const ProgressTracker = () => {
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 text-center">
             <p className="text-sm font-semibold text-primary">🎉 All Pillars Complete!</p>
             <p className="text-xs text-muted-foreground mt-1">
-              You've completed assessments for all four pillars
+              You've completed assessments for all four pillars. Continue to add more assessments or update your supplement stack!
             </p>
           </div>
         )}

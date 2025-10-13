@@ -286,26 +286,33 @@ const MyProtocol = () => {
           </CardContent>
         </Card>
 
-        {/* Recommended Supplements by Pillar */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {assessments.map((assessment) => {
-            const products = matchProductsToAssessment(assessment.symptom_type, assessment.overall_score);
-            if (products.length === 0) return null;
+        {/* Supplements Recommended for Your Symptoms */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Supplements in Your 30-Day Stack</CardTitle>
+            <CardDescription>
+              Based on your completed symptom assessments
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              {assessments.map((assessment) => {
+                const products = matchProductsToAssessment(assessment.symptom_type, assessment.overall_score);
+                if (products.length === 0) return null;
 
-            return (
-              <Card key={assessment.id}>
-                <CardHeader>
-                  <CardTitle className="text-lg">{getSymptomName(assessment.symptom_type)}</CardTitle>
-                  <CardDescription>
-                    Based on your score of {assessment.overall_score}/100
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
+                return (
+                  <div key={assessment.id} className="space-y-3">
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                      <div className="h-2 w-2 rounded-full bg-primary"></div>
+                      <h3 className="font-semibold text-sm">{getSymptomName(assessment.symptom_type)}</h3>
+                      <Badge variant="outline" className="text-xs ml-auto">
+                        Score: {assessment.overall_score}/100
+                      </Badge>
+                    </div>
                     {products.map((product) => (
                       <div 
                         key={product.id}
-                        className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                        className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg"
                       >
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
@@ -316,76 +323,85 @@ const MyProtocol = () => {
                           </div>
                           <p className="text-xs text-muted-foreground">{product.dosage}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-primary">${product.price}</span>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleAddToCart(product.id)}
-                          >
-                            <ShoppingCart className="h-4 w-4" />
-                          </Button>
-                        </div>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Complete Protocol Bundle */}
+        {/* 30-Day Supplement Stack */}
         <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/10">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Package className="h-6 w-6 text-primary" />
-              <CardTitle className="text-2xl">Complete Protocol Bundle</CardTitle>
+              <CardTitle className="text-2xl">Your 30-Day Supplement Stack</CardTitle>
             </div>
             <CardDescription>
-              Save time and money with your complete personalized protocol
+              Complete personalized stack based on your symptom profile
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {/* Pricing Summary */}
+              {/* What's Included */}
               <div className="p-6 bg-background/60 rounded-lg border border-primary/10">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-semibold">${bundlePricing.subtotal.toFixed(2)}</span>
+                <h3 className="font-semibold mb-4 text-lg">What's Included in Your Stack:</h3>
+                <div className="space-y-2 mb-4">
+                  {uniqueRecommendations.map((product, index) => (
+                    <div key={product.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                      <div className="flex-1">
+                        <p className="font-medium text-sm">{product.name}</p>
+                        <p className="text-xs text-muted-foreground">{product.dosage} • 30-day supply</p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">{product.tier}</Badge>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-success">Bundle Discount (10%)</span>
-                  <span className="font-semibold text-success">-${bundlePricing.savings.toFixed(2)}</span>
-                </div>
-                <div className="h-px bg-border my-4"></div>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold">Total</span>
-                  <span className="text-3xl font-bold text-primary">${bundlePricing.total.toFixed(2)}</span>
+                
+                {/* Pricing */}
+                <div className="mt-6 pt-4 border-t border-border">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-muted-foreground">30-Day Supply Subtotal</span>
+                    <span className="font-semibold">${bundlePricing.subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-success">Bundle Discount (10%)</span>
+                    <span className="font-semibold text-success">-${bundlePricing.savings.toFixed(2)}</span>
+                  </div>
+                  <div className="h-px bg-border my-4"></div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold">30-Day Stack Total</span>
+                    <span className="text-3xl font-bold text-primary">${bundlePricing.total.toFixed(2)}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                    Based on {assessments.length} symptom assessment{assessments.length > 1 ? 's' : ''}
+                  </p>
                 </div>
               </div>
 
-              {/* Bundle Benefits */}
+              {/* Stack Benefits */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-sm">Save 10%</p>
-                    <p className="text-xs text-muted-foreground">Bundle discount applied</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-sm">Science-Backed</p>
-                    <p className="text-xs text-muted-foreground">Evidence-based selection</p>
+                    <p className="font-medium text-sm">30-Day Supply</p>
+                    <p className="text-xs text-muted-foreground">Complete month's worth</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="font-medium text-sm">Personalized</p>
-                    <p className="text-xs text-muted-foreground">Based on your assessments</p>
+                    <p className="text-xs text-muted-foreground">Based on your profile</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-sm">Save 10%</p>
+                    <p className="text-xs text-muted-foreground">Bundle discount</p>
                   </div>
                 </div>
               </div>
@@ -397,18 +413,24 @@ const MyProtocol = () => {
                 onClick={handleAddAllToCart}
               >
                 <Package className="h-5 w-5 mr-2" />
-                Add Complete Protocol to Cart
+                Purchase 30-Day Stack - ${bundlePricing.total.toFixed(2)}
               </Button>
 
               {/* Subscription Option */}
               <div className="text-center p-4 bg-secondary/10 rounded-lg">
                 <p className="text-sm font-medium mb-1">Subscribe & Save 15%</p>
-                <p className="text-xs text-muted-foreground">
-                  Get your protocol delivered monthly for ${(bundlePricing.total * 0.85).toFixed(2)}/month
+                <p className="text-xs text-muted-foreground mb-2">
+                  Automatically receive your personalized stack monthly
                 </p>
-                <Button variant="outline" size="sm" className="mt-3">
-                  Learn More About Subscriptions
+                <div className="text-2xl font-bold text-primary mb-3">
+                  ${(bundlePricing.total * 0.85).toFixed(2)}/month
+                </div>
+                <Button variant="outline" size="sm">
+                  Start Monthly Subscription
                 </Button>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Cancel anytime • Stack updates as you complete more assessments
+                </p>
               </div>
             </div>
           </CardContent>
