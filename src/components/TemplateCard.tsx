@@ -84,23 +84,29 @@ const TemplateCard = ({ template, onPreview, onUse, isSelected }: TemplateCardPr
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={onPreview}
-            className="flex-1"
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button 
-            size="sm" 
-            onClick={onUse}
-            className="flex-1"
-          >
-            Use Template
-          </Button>
+        <div className="space-y-2 pt-2">
+          <div className="text-xs text-muted-foreground text-center">
+            View full details or generate your meal plan
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onPreview}
+              className="flex-1"
+            >
+              <Eye className="h-4 w-4 mr-1" />
+              View Full Plan
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={onUse}
+              className="flex-1"
+            >
+              <Check className="h-4 w-4 mr-1" />
+              Generate Plan
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
