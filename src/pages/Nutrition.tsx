@@ -1450,7 +1450,7 @@ const Nutrition = () => {
                 )}
                 {(isLowFODMAP || hasIBS) && (
                   <div className="p-3 bg-background rounded-lg border">
-                    <div className="text-sm text-muted-foreground">Dietary Requirements</div>
+                    <div className="text-sm text-muted-foreground">Dietary Requirements And Allergies</div>
                     <div className="flex gap-1 mt-1">
                       {isLowFODMAP && (
                         <Badge variant="outline" className="text-xs">Low FODMAP</Badge>
