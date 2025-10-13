@@ -149,76 +149,76 @@ export const templateMealPlans = {
   },
   "plant-based": {
     monday: {
-      breakfast: { name: "Tofu Scramble", description: "Tofu, nutritional yeast, vegetables, whole grain toast", calories: 420, protein: 28, carbs: 48, fat: 16 },
-      lunch: { name: "Lentil Buddha Bowl", description: "Lentils, quinoa, tahini, roasted vegetables", calories: 580, protein: 32, carbs: 78, fat: 18 },
-      dinner: { name: "Chickpea Curry", description: "Chickpeas, coconut milk, spinach, brown rice", calories: 620, protein: 28, carbs: 88, fat: 20 }
+      breakfast: { name: "Tofu Scramble", description: "Tofu, nutritional yeast, vegetables, whole grain toast", calories: 420, protein: 28, carbs: 48, fat: 16, ingredients: ["200g firm tofu", "2 tbsp nutritional yeast", "1 cup mixed vegetables", "2 slices whole grain bread", "Turmeric", "Olive oil"] },
+      lunch: { name: "Lentil Buddha Bowl", description: "Lentils, quinoa, tahini, roasted vegetables", calories: 580, protein: 32, carbs: 78, fat: 18, ingredients: ["1 cup cooked lentils", "1 cup quinoa", "3 tbsp tahini", "2 cups mixed vegetables", "Lemon juice", "Cumin"] },
+      dinner: { name: "Chickpea Curry", description: "Chickpeas, coconut milk, spinach, brown rice", calories: 620, protein: 28, carbs: 88, fat: 20, ingredients: ["1.5 cups chickpeas", "1 cup coconut milk", "2 cups spinach", "1 cup brown rice", "Curry powder", "Garlic", "Ginger"] }
     },
     tuesday: {
-      breakfast: { name: "Chia Protein Bowl", description: "Chia pudding, plant protein powder, berries, almonds", calories: 440, protein: 32, carbs: 52, fat: 16 },
-      lunch: { name: "Black Bean Burrito Bowl", description: "Black beans, rice, avocado, salsa, corn", calories: 600, protein: 26, carbs: 92, fat: 18 },
-      dinner: { name: "Tempeh Stir Fry", description: "Tempeh, mixed vegetables, cashews, brown rice", calories: 640, protein: 34, carbs: 82, fat: 20 }
+      breakfast: { name: "Chia Protein Bowl", description: "Chia pudding, plant protein powder, berries, almonds", calories: 440, protein: 32, carbs: 52, fat: 16, ingredients: ["3 tbsp chia seeds", "1 scoop plant protein powder", "1 cup mixed berries", "30g sliced almonds", "1 cup almond milk"] },
+      lunch: { name: "Black Bean Burrito Bowl", description: "Black beans, rice, avocado, salsa, corn", calories: 600, protein: 26, carbs: 92, fat: 18, ingredients: ["1.5 cups black beans", "1 cup rice", "1 avocado", "1/2 cup salsa", "1/2 cup corn", "Lime", "Cilantro"] },
+      dinner: { name: "Tempeh Stir Fry", description: "Tempeh, mixed vegetables, cashews, brown rice", calories: 640, protein: 34, carbs: 82, fat: 20, ingredients: ["200g tempeh", "3 cups mixed vegetables", "30g cashews", "1 cup brown rice", "Soy sauce", "Ginger", "Garlic"] }
     },
     wednesday: {
-      breakfast: { name: "Peanut Butter Oatmeal", description: "Oats, peanut butter, banana, hemp seeds", calories: 460, protein: 22, carbs: 68, fat: 16 },
-      lunch: { name: "Falafel Plate", description: "Falafel, hummus, quinoa tabbouleh, vegetables", calories: 620, protein: 28, carbs: 84, fat: 22 },
-      dinner: { name: "Seitan & Mushroom Stew", description: "Seitan, mushrooms, potatoes, vegetables", calories: 580, protein: 42, carbs: 72, fat: 14 }
+      breakfast: { name: "Peanut Butter Oatmeal", description: "Oats, peanut butter, banana, hemp seeds", calories: 460, protein: 22, carbs: 68, fat: 16, ingredients: ["1 cup rolled oats", "2 tbsp peanut butter", "1 banana", "2 tbsp hemp seeds", "1 cup plant milk", "Cinnamon"] },
+      lunch: { name: "Falafel Plate", description: "Falafel, hummus, quinoa tabbouleh, vegetables", calories: 620, protein: 28, carbs: 84, fat: 22, ingredients: ["1 cup chickpeas", "1/2 cup hummus", "1 cup quinoa", "2 tomatoes", "1 cucumber", "Parsley", "Lemon", "Spices"] },
+      dinner: { name: "Seitan & Mushroom Stew", description: "Seitan, mushrooms, potatoes, vegetables", calories: 580, protein: 42, carbs: 72, fat: 14, ingredients: ["200g seitan", "200g mushrooms", "2 potatoes", "2 carrots", "1 onion", "Vegetable broth", "Herbs"] }
     },
     thursday: {
-      breakfast: { name: "Green Smoothie Bowl", description: "Spinach, banana, plant protein, granola, seeds", calories: 440, protein: 28, carbs: 62, fat: 14 },
-      lunch: { name: "Quinoa Power Salad", description: "Quinoa, edamame, chickpeas, vegetables, tahini", calories: 600, protein: 32, carbs: 76, fat: 20 },
-      dinner: { name: "Lentil Bolognese", description: "Red lentils, whole wheat pasta, tomato sauce", calories: 640, protein: 32, carbs: 98, fat: 16 }
+      breakfast: { name: "Green Smoothie Bowl", description: "Spinach, banana, plant protein, granola, seeds", calories: 440, protein: 28, carbs: 62, fat: 14, ingredients: ["2 cups spinach", "2 bananas", "1 scoop plant protein powder", "1/4 cup granola", "2 tbsp mixed seeds", "1 cup almond milk"] },
+      lunch: { name: "Quinoa Power Salad", description: "Quinoa, edamame, chickpeas, vegetables, tahini", calories: 600, protein: 32, carbs: 76, fat: 20, ingredients: ["1 cup quinoa", "1 cup edamame", "1 cup chickpeas", "2 cups mixed vegetables", "3 tbsp tahini", "Lemon juice"] },
+      dinner: { name: "Lentil Bolognese", description: "Red lentils, whole wheat pasta, tomato sauce", calories: 640, protein: 32, carbs: 98, fat: 16, ingredients: ["1.5 cups red lentils", "150g whole wheat pasta", "2 cups tomato sauce", "1 onion", "Garlic", "Italian herbs", "Olive oil"] }
     },
     friday: {
-      breakfast: { name: "Almond Butter Toast", description: "Whole grain bread, almond butter, chia seeds, banana", calories: 420, protein: 18, carbs: 58, fat: 16 },
-      lunch: { name: "Bean & Rice Bowl", description: "Mixed beans, brown rice, avocado, salsa", calories: 620, protein: 28, carbs: 92, fat: 18 },
-      dinner: { name: "Tofu Pad Thai", description: "Tofu, rice noodles, peanuts, vegetables", calories: 660, protein: 32, carbs: 88, fat: 22 }
+      breakfast: { name: "Almond Butter Toast", description: "Whole grain bread, almond butter, chia seeds, banana", calories: 420, protein: 18, carbs: 58, fat: 16, ingredients: ["2 slices whole grain bread", "3 tbsp almond butter", "1 tbsp chia seeds", "1 banana", "Cinnamon"] },
+      lunch: { name: "Bean & Rice Bowl", description: "Mixed beans, brown rice, avocado, salsa", calories: 620, protein: 28, carbs: 92, fat: 18, ingredients: ["1.5 cups mixed beans", "1 cup brown rice", "1 avocado", "1/2 cup salsa", "Lime", "Cilantro", "Cumin"] },
+      dinner: { name: "Tofu Pad Thai", description: "Tofu, rice noodles, peanuts, vegetables", calories: 660, protein: 32, carbs: 88, fat: 22, ingredients: ["200g firm tofu", "150g rice noodles", "30g peanuts", "2 cups mixed vegetables", "Tamarind paste", "Soy sauce", "Lime"] }
     },
     saturday: {
-      breakfast: { name: "Protein Pancakes", description: "Plant protein pancakes, berries, maple syrup", calories: 480, protein: 28, carbs: 72, fat: 12 },
-      lunch: { name: "Chickpea Salad Sandwich", description: "Mashed chickpeas, vegetables, whole grain bread", calories: 560, protein: 24, carbs: 82, fat: 18 },
-      dinner: { name: "Mushroom Stroganoff", description: "Mushrooms, cashew cream, pasta, vegetables", calories: 640, protein: 28, carbs: 92, fat: 20 }
+      breakfast: { name: "Protein Pancakes", description: "Plant protein pancakes, berries, maple syrup", calories: 480, protein: 28, carbs: 72, fat: 12, ingredients: ["1 cup oat flour", "1 scoop plant protein powder", "1 cup berries", "2 tbsp maple syrup", "Plant milk", "Baking powder"] },
+      lunch: { name: "Chickpea Salad Sandwich", description: "Mashed chickpeas, vegetables, whole grain bread", calories: 560, protein: 24, carbs: 82, fat: 18, ingredients: ["1.5 cups chickpeas", "2 slices whole grain bread", "1/4 cup vegan mayo", "Celery", "Red onion", "Lettuce", "Tomato"] },
+      dinner: { name: "Mushroom Stroganoff", description: "Mushrooms, cashew cream, pasta, vegetables", calories: 640, protein: 28, carbs: 92, fat: 20, ingredients: ["300g mushrooms", "1/2 cup cashew cream", "150g pasta", "1 onion", "2 cups vegetables", "Vegetable broth", "Paprika"] }
     },
     sunday: {
-      breakfast: { name: "Açai Bowl", description: "Açai, plant protein, granola, fruits, coconut", calories: 460, protein: 24, carbs: 68, fat: 16 },
-      lunch: { name: "Three Bean Chili", description: "Mixed beans, tomatoes, quinoa, avocado", calories: 600, protein: 32, carbs: 88, fat: 16 },
-      dinner: { name: "Seitan Stir Fry", description: "Seitan, vegetables, peanut sauce, rice noodles", calories: 640, protein: 38, carbs: 82, fat: 18 }
+      breakfast: { name: "Açai Bowl", description: "Açai, plant protein, granola, fruits, coconut", calories: 460, protein: 24, carbs: 68, fat: 16, ingredients: ["100g açai puree", "1 scoop plant protein powder", "1/4 cup granola", "1 cup mixed fruits", "2 tbsp coconut flakes", "Plant milk"] },
+      lunch: { name: "Three Bean Chili", description: "Mixed beans, tomatoes, quinoa, avocado", calories: 600, protein: 32, carbs: 88, fat: 16, ingredients: ["1/2 cup kidney beans", "1/2 cup black beans", "1/2 cup pinto beans", "2 cups tomatoes", "1 cup quinoa", "1 avocado", "Chili powder", "Cumin"] },
+      dinner: { name: "Seitan Stir Fry", description: "Seitan, vegetables, peanut sauce, rice noodles", calories: 640, protein: 38, carbs: 82, fat: 18, ingredients: ["200g seitan", "3 cups mixed vegetables", "150g rice noodles", "3 tbsp peanut butter", "Soy sauce", "Ginger", "Garlic"] }
     }
   },
   "low-fodmap": {
     monday: {
-      breakfast: { name: "Rice Porridge Bowl", description: "Rice porridge, lactose-free yogurt, blueberries, walnuts", calories: 380, protein: 22, carbs: 52, fat: 14 },
-      lunch: { name: "Grilled Chicken & Rice", description: "Chicken breast, white rice, carrots, green beans", calories: 580, protein: 48, carbs: 58, fat: 16 },
-      dinner: { name: "Salmon with Potatoes", description: "Salmon, roasted potatoes, zucchini, olive oil", calories: 620, protein: 46, carbs: 52, fat: 24 }
+      breakfast: { name: "Rice Porridge Bowl", description: "Rice porridge, lactose-free yogurt, blueberries, walnuts", calories: 380, protein: 22, carbs: 52, fat: 14, ingredients: ["1 cup rice", "1/2 cup lactose-free yogurt", "1/2 cup blueberries", "30g walnuts", "Cinnamon"] },
+      lunch: { name: "Grilled Chicken & Rice", description: "Chicken breast, white rice, carrots, green beans", calories: 580, protein: 48, carbs: 58, fat: 16, ingredients: ["200g chicken breast", "1 cup white rice", "2 carrots", "150g green beans", "Olive oil", "Herbs"] },
+      dinner: { name: "Salmon with Potatoes", description: "Salmon, roasted potatoes, zucchini, olive oil", calories: 620, protein: 46, carbs: 52, fat: 24, ingredients: ["200g salmon fillet", "300g potatoes", "1 zucchini", "2 tbsp olive oil", "Lemon", "Dill"] }
     },
     tuesday: {
-      breakfast: { name: "Scrambled Eggs & Toast", description: "Eggs, gluten-free toast, spinach, tomatoes", calories: 360, protein: 24, carbs: 38, fat: 16 },
-      lunch: { name: "Turkey & Rice Bowl", description: "Turkey breast, brown rice, cucumber, carrots", calories: 560, protein: 42, carbs: 62, fat: 14 },
-      dinner: { name: "Baked Cod", description: "Cod fillet, quinoa, green beans, lemon", calories: 540, protein: 48, carbs: 52, fat: 14 }
+      breakfast: { name: "Scrambled Eggs & Toast", description: "Eggs, gluten-free toast, spinach, tomatoes", calories: 360, protein: 24, carbs: 38, fat: 16, ingredients: ["3 eggs", "2 slices GF bread", "1 cup spinach", "1 tomato", "Olive oil"] },
+      lunch: { name: "Turkey & Rice Bowl", description: "Turkey breast, brown rice, cucumber, carrots", calories: 560, protein: 42, carbs: 62, fat: 14, ingredients: ["200g turkey breast", "1 cup brown rice", "1 cucumber", "2 carrots", "Olive oil", "Herbs"] },
+      dinner: { name: "Baked Cod", description: "Cod fillet, quinoa, green beans, lemon", calories: 540, protein: 48, carbs: 52, fat: 14, ingredients: ["200g cod fillet", "1 cup quinoa", "150g green beans", "1 lemon", "Olive oil", "Herbs"] }
     },
     wednesday: {
-      breakfast: { name: "Omelette with Veggies", description: "Eggs, spinach, bell peppers, lactose-free cheese", calories: 380, protein: 28, carbs: 18, fat: 22 },
-      lunch: { name: "Chicken Noodle Bowl", description: "Chicken, rice noodles, bok choy, carrots", calories: 600, protein: 44, carbs: 68, fat: 16 },
-      dinner: { name: "Beef & Vegetable Stir Fry", description: "Lean beef, carrots, peppers, rice", calories: 640, protein: 48, carbs: 62, fat: 20 }
+      breakfast: { name: "Omelette with Veggies", description: "Eggs, spinach, bell peppers, lactose-free cheese", calories: 380, protein: 28, carbs: 18, fat: 22, ingredients: ["3 eggs", "1 cup spinach", "1 bell pepper", "30g lactose-free cheese", "Olive oil"] },
+      lunch: { name: "Chicken Noodle Bowl", description: "Chicken, rice noodles, bok choy, carrots", calories: 600, protein: 44, carbs: 68, fat: 16, ingredients: ["200g chicken breast", "150g rice noodles", "2 cups bok choy", "2 carrots", "Ginger", "Soy sauce"] },
+      dinner: { name: "Beef & Vegetable Stir Fry", description: "Lean beef, carrots, peppers, rice", calories: 640, protein: 48, carbs: 62, fat: 20, ingredients: ["200g lean beef", "2 carrots", "2 bell peppers", "1 cup rice", "Ginger", "Soy sauce", "Olive oil"] }
     },
     thursday: {
-      breakfast: { name: "Smoothie Bowl", description: "Banana, lactose-free protein powder, berries, seeds", calories: 420, protein: 32, carbs: 58, fat: 12 },
-      lunch: { name: "Tuna Rice Salad", description: "Tuna, white rice, cucumber, carrots, olive oil", calories: 580, protein: 42, carbs: 62, fat: 18 },
-      dinner: { name: "Chicken & Quinoa", description: "Grilled chicken, quinoa, zucchini, tomatoes", calories: 600, protein: 52, carbs: 54, fat: 16 }
+      breakfast: { name: "Smoothie Bowl", description: "Banana, lactose-free protein powder, berries, seeds", calories: 420, protein: 32, carbs: 58, fat: 12, ingredients: ["2 bananas", "1 scoop lactose-free protein", "1 cup berries", "2 tbsp mixed seeds", "1 cup lactose-free milk"] },
+      lunch: { name: "Tuna Rice Salad", description: "Tuna, white rice, cucumber, carrots, olive oil", calories: 580, protein: 42, carbs: 62, fat: 18, ingredients: ["200g tuna", "1 cup white rice", "1 cucumber", "2 carrots", "3 tbsp olive oil", "Lemon juice"] },
+      dinner: { name: "Chicken & Quinoa", description: "Grilled chicken, quinoa, zucchini, tomatoes", calories: 600, protein: 52, carbs: 54, fat: 16, ingredients: ["200g chicken breast", "1 cup quinoa", "1 zucchini", "2 tomatoes", "Olive oil", "Herbs"] }
     },
     friday: {
-      breakfast: { name: "Gluten-Free Pancakes", description: "GF pancakes, maple syrup, blueberries", calories: 400, protein: 18, carbs: 68, fat: 10 },
-      lunch: { name: "Salmon Sushi Bowl", description: "Salmon, sushi rice, cucumber, avocado", calories: 620, protein: 38, carbs: 72, fat: 20 },
-      dinner: { name: "Turkey Meatballs", description: "Turkey meatballs, rice pasta, tomato sauce", calories: 640, protein: 46, carbs: 74, fat: 18 }
+      breakfast: { name: "Gluten-Free Pancakes", description: "GF pancakes, maple syrup, blueberries", calories: 400, protein: 18, carbs: 68, fat: 10, ingredients: ["1 cup GF flour", "2 eggs", "1 cup lactose-free milk", "2 tbsp maple syrup", "1/2 cup blueberries", "Baking powder"] },
+      lunch: { name: "Salmon Sushi Bowl", description: "Salmon, sushi rice, cucumber, avocado", calories: 620, protein: 38, carbs: 72, fat: 20, ingredients: ["150g salmon", "1 cup sushi rice", "1 cucumber", "1/2 avocado", "Sesame seeds", "Soy sauce"] },
+      dinner: { name: "Turkey Meatballs", description: "Turkey meatballs, rice pasta, tomato sauce", calories: 640, protein: 46, carbs: 74, fat: 18, ingredients: ["300g ground turkey", "150g rice pasta", "2 cups tomato sauce", "Italian herbs", "Olive oil"] }
     },
     saturday: {
-      breakfast: { name: "Eggs Benedict (Modified)", description: "Poached eggs, GF bread, spinach, lactose-free hollandaise", calories: 440, protein: 28, carbs: 42, fat: 20 },
-      lunch: { name: "Chicken & Potato Salad", description: "Chicken, potatoes, green beans, olive oil dressing", calories: 600, protein: 44, carbs: 58, fat: 20 },
-      dinner: { name: "Grilled Prawns", description: "Prawns, rice, carrots, bok choy", calories: 560, protein: 52, carbs: 62, fat: 14 }
+      breakfast: { name: "Eggs Benedict (Modified)", description: "Poached eggs, GF bread, spinach, lactose-free hollandaise", calories: 440, protein: 28, carbs: 42, fat: 20, ingredients: ["2 eggs", "2 slices GF bread", "1 cup spinach", "Lactose-free hollandaise sauce", "Olive oil"] },
+      lunch: { name: "Chicken & Potato Salad", description: "Chicken, potatoes, green beans, olive oil dressing", calories: 600, protein: 44, carbs: 58, fat: 20, ingredients: ["200g chicken breast", "300g potatoes", "150g green beans", "3 tbsp olive oil", "Lemon juice", "Herbs"] },
+      dinner: { name: "Grilled Prawns", description: "Prawns, rice, carrots, bok choy", calories: 560, protein: 52, carbs: 62, fat: 14, ingredients: ["300g prawns", "1 cup rice", "2 carrots", "2 cups bok choy", "Ginger", "Soy sauce"] }
     },
     sunday: {
-      breakfast: { name: "Chia Seed Pudding", description: "Chia seeds, lactose-free milk, berries, almonds", calories: 380, protein: 20, carbs: 48, fat: 16 },
-      lunch: { name: "Beef & Rice Bowl", description: "Lean beef, brown rice, carrots, green beans", calories: 640, protein: 46, carbs: 68, fat: 20 },
-      dinner: { name: "Baked Chicken", description: "Herb chicken, roasted potatoes, zucchini", calories: 600, protein: 48, carbs: 58, fat: 18 }
+      breakfast: { name: "Chia Seed Pudding", description: "Chia seeds, lactose-free milk, berries, almonds", calories: 380, protein: 20, carbs: 48, fat: 16, ingredients: ["3 tbsp chia seeds", "1 cup lactose-free milk", "1 cup berries", "30g sliced almonds", "Vanilla extract"] },
+      lunch: { name: "Beef & Rice Bowl", description: "Lean beef, brown rice, carrots, green beans", calories: 640, protein: 46, carbs: 68, fat: 20, ingredients: ["200g lean beef", "1 cup brown rice", "2 carrots", "150g green beans", "Soy sauce", "Ginger"] },
+      dinner: { name: "Baked Chicken", description: "Herb chicken, roasted potatoes, zucchini", calories: 600, protein: 48, carbs: 58, fat: 18, ingredients: ["200g chicken breast", "300g potatoes", "1 zucchini", "Fresh herbs", "Olive oil", "Lemon"] }
     }
   }
 };
