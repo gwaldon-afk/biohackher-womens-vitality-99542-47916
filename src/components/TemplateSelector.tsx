@@ -156,7 +156,7 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
   const categorizeIngredient = (item: string): string => {
     const itemLower = item.toLowerCase();
     
-    if (/(chicken|beef|pork|lamb|turkey|steak|sausage|bacon|meat|prawns|shrimp|salmon|tuna|fish|tempeh|tofu)/i.test(itemLower)) {
+    if (/(chicken|beef|pork|lamb|turkey|duck|steak|sausage|bacon|meat|prawns|shrimp|salmon|tuna|fish|cod|haddock|mackerel|sardine|octopus|squid|calamari|crab|lobster|mussel|scallop|oyster|tempeh|tofu|seitan)/i.test(itemLower)) {
       return 'Proteins';
     }
     if (/(egg|white)/i.test(itemLower)) {
