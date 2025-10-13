@@ -1770,17 +1770,31 @@ const Nutrition = () => {
 
                 {/* Current Selected Recipes Summary */}
                 {(selectedBreakfastRecipe || selectedLunchRecipe || selectedDinnerRecipe) && (
-                  <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-                    <h4 className="font-semibold mb-3">Your Selected Recipes:</h4>
-                    <div className="grid gap-2 text-sm">
+                  <div className="mt-6 p-4 bg-primary/20 border-2 border-primary rounded-lg">
+                    <h4 className="font-semibold mb-2 flex items-center gap-2">
+                      ✓ Your Selected Recipe Preferences
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      These recipes will be used when generating your weekly meal plan. Click "Generate Weekly Plan" below to create your personalised 7-day plan.
+                    </p>
+                    <div className="grid gap-2 text-sm bg-background/50 p-3 rounded">
                       {selectedBreakfastRecipe && (
-                        <div><span className="font-medium">Breakfast:</span> {selectedBreakfastRecipe}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🌅</span>
+                          <span className="font-medium">Breakfast:</span> {selectedBreakfastRecipe}
+                        </div>
                       )}
                       {selectedLunchRecipe && (
-                        <div><span className="font-medium">Lunch:</span> {selectedLunchRecipe}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">☀️</span>
+                          <span className="font-medium">Lunch:</span> {selectedLunchRecipe}
+                        </div>
                       )}
                       {selectedDinnerRecipe && (
-                        <div><span className="font-medium">Dinner:</span> {selectedDinnerRecipe}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🌙</span>
+                          <span className="font-medium">Dinner:</span> {selectedDinnerRecipe}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -1926,8 +1940,8 @@ const Nutrition = () => {
                                          <div>
                                             <Dialog>
                                               <DialogTrigger asChild>
-                                                <button 
-                                                  className="font-bold text-xl gradient-text hover:opacity-80 transition-opacity text-left underline decoration-dotted underline-offset-4"
+                                <button 
+                                                  className="font-bold text-xl text-foreground bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-left shadow-sm"
                                                   onClick={() => {
                                                     // Generate recipe from actual meal foods
                                                     const mealFoods = meal.foods.map((f: any) => `${f.amount} ${f.name}`);
