@@ -12,6 +12,7 @@ import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, Ref
 import Navigation from "@/components/Navigation";
 import SampleDailyPreview from "@/components/SampleDailyPreview";
 import TemplateSelector from "@/components/TemplateSelector";
+import LongevityFoodInsights from "@/components/LongevityFoodInsights";
 import { templateMealPlans } from "@/data/mealTemplates";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
@@ -1928,6 +1929,11 @@ const Nutrition = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Longevity Food Insights */}
+                <div className="mb-8">
+                  <LongevityFoodInsights />
+                </div>
+
                 {/* Template Selector - shown first */}
                 {!showCustomization && (
                   <TemplateSelector
