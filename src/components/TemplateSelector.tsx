@@ -12,7 +12,6 @@ interface TemplateSelectorProps {
 }
 
 const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorProps) => {
-  console.log('[TemplateSelector] Component rendering');
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [previewTemplate, setPreviewTemplate] = useState<MealPlanTemplate | null>(null);
   const [showPreview, setShowPreview] = useState(false);
