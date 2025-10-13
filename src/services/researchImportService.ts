@@ -8,8 +8,22 @@ export const importResearchToDatabase = async () => {
     // Flatten research data into individual study records
     const studyRecords = [];
     
+    // Map study types to database-allowed values
+    const studyTypeMap: Record<string, string> = {
+      'rct': 'rct',
+      'meta-analysis': 'meta-analysis',
+      'cohort': 'cohort',
+      'case-control': 'case-control',
+      'review': 'review',
+      'systematic review': 'review',
+      'observational': 'other'
+    };
+
     for (const intervention of researchEvidence) {
       for (const study of intervention.studies) {
+        const studyTypeLower = study.studyType.toLowerCase();
+        const mappedStudyType = studyTypeMap[studyTypeLower] || 'other';
+        
         studyRecords.push({
           title: study.title,
           authors: `Study from ${intervention.intervention}`, // Placeholder since we don't have separate authors field
@@ -18,7 +32,7 @@ export const importResearchToDatabase = async () => {
           doi: study.doi || null,
           url: study.url,
           abstract: study.keyFindings || null,
-          study_type: study.studyType.toLowerCase().replace(/-/g, '_').replace(/ /g, '_'),
+          study_type: mappedStudyType,
           evidence_level: study.evidenceLevel.toLowerCase(),
           sample_size: study.sampleSize || null,
           key_findings: study.keyFindings ? [study.keyFindings] : null,
