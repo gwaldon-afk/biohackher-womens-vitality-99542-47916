@@ -99,7 +99,7 @@ const App = () => (
             <Route path="/lis-results" element={<LISResults />} />
             <Route path="/daily-score-results" element={<DailyScoreResults />} />
             <Route path="/lis2-research" element={<LIS2Research />} />
-            <Route path="/my-protocol" element={<MyProtocol />} />
+            <Route path="/my-protocol" element={<ProtectedRoute><MyProtocol /></ProtectedRoute>} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
             <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
