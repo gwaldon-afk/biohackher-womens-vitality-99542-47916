@@ -147,26 +147,48 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-4 border-t">
-                <Button
-                  onClick={() => {
-                    handleUseTemplate(previewTemplate.id);
-                    setShowPreview(false);
-                  }}
-                  size="lg"
-                  className="flex-1"
-                >
-                  <Check className="h-5 w-5 mr-2" />
-                  Generate This Plan
-                </Button>
-                <Button
-                  onClick={() => setShowPreview(false)}
-                  variant="outline"
-                  size="lg"
-                  className="flex-1"
-                >
-                  Close Preview
-                </Button>
+              <div className="space-y-3 pt-4 border-t">
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={() => {
+                      // TODO: Implement save as file functionality
+                      console.log('Generate saveable file');
+                    }}
+                    size="lg"
+                  >
+                    <Check className="h-5 w-5 mr-2" />
+                    Generate Saveable File
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      // TODO: Implement print shopping list
+                      console.log('Print shopping list');
+                    }}
+                    size="lg"
+                    variant="secondary"
+                  >
+                    Print Shopping List
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={() => {
+                      handleUseTemplate(previewTemplate.id);
+                      setShowPreview(false);
+                    }}
+                    size="lg"
+                    variant="secondary"
+                  >
+                    Add To Nutrition Tracker
+                  </Button>
+                  <Button
+                    onClick={() => setShowPreview(false)}
+                    variant="outline"
+                    size="lg"
+                  >
+                    Close Preview
+                  </Button>
+                </div>
               </div>
             </div>
           )}
