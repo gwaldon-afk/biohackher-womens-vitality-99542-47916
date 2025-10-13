@@ -34,24 +34,56 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     const mealPlan = templateMealPlans[template.id as keyof typeof templateMealPlans];
     if (!mealPlan) return;
 
-    // Collect all ingredients
-    const ingredientsList: string[] = [];
-    const mealsList: { day: string; mealType: string; meal: any }[] = [];
-
+    // Collect and consolidate ingredients
+    const ingredientsMap = new Map<string, { quantity: number; unit: string }>();
+    
     Object.entries(mealPlan).forEach(([day, meals]: [string, any]) => {
       Object.entries(meals).forEach(([mealType, meal]: [string, any]) => {
         if (meal.ingredients) {
-          ingredientsList.push(...meal.ingredients);
+          meal.ingredients.forEach((ingredient: string) => {
+            // Parse ingredient: "2 cups oats" -> quantity: 2, unit: cups, item: oats
+            const match = ingredient.match(/^([\d.\/]+)?\s*([a-zA-Z]+)?\s+(.+)$/);
+            if (match) {
+              const [, qty, unit, item] = match;
+              const quantity = qty ? eval(qty) : 1; // Handle fractions like 1/2
+              const key = item.toLowerCase().trim();
+              
+              if (ingredientsMap.has(key)) {
+                const existing = ingredientsMap.get(key)!;
+                if (existing.unit === unit) {
+                  existing.quantity += quantity;
+                } else {
+                  // Different units, just list separately
+                  ingredientsMap.set(`${key} (${unit})`, { quantity, unit: unit || '' });
+                }
+              } else {
+                ingredientsMap.set(key, { quantity, unit: unit || '' });
+              }
+            } else {
+              // No quantity specified, just add as-is
+              const key = ingredient.toLowerCase().trim();
+              if (!ingredientsMap.has(key)) {
+                ingredientsMap.set(key, { quantity: 1, unit: '' });
+              }
+            }
+          });
         }
-        mealsList.push({ day: getDayName(day), mealType, meal });
       });
     });
+
+    // Convert to sorted list
+    const consolidatedList = Array.from(ingredientsMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([item, { quantity, unit }]) => {
+        const qtyStr = quantity > 1 || quantity % 1 !== 0 ? quantity.toString() : '';
+        return `${qtyStr} ${unit} ${item}`.trim();
+      });
 
     // Create printable HTML
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const hasIngredients = ingredientsList.length > 0;
+    const hasIngredients = consolidatedList.length > 0;
     
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -120,9 +152,12 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
 
           ${hasIngredients ? `
             <div class="section">
-              <h2>Shopping List</h2>
+              <h2>Consolidated Shopping List</h2>
+              <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                Quantities have been combined across all meals for the week
+              </p>
               <ul>
-                ${[...new Set(ingredientsList)].map(ingredient => 
+                ${consolidatedList.map(ingredient => 
                   `<li>${ingredient}</li>`
                 ).join('')}
               </ul>
