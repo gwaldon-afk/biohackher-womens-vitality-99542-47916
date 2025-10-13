@@ -53,7 +53,7 @@ interface UserSymptom {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [data, setData] = useState<DashboardData>({
@@ -78,8 +78,11 @@ const Dashboard = () => {
   useEffect(() => {
     if (user) {
       fetchDailyScoreCount();
+    } else if (!authLoading) {
+      // Auth finished loading but no user - stop loading
+      setLoadingScoreCount(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   const fetchDailyScoreCount = async () => {
     if (!user) return;
@@ -361,7 +364,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
 
         {/* Loading State */}
-        {loadingScoreCount ? (
+        {(authLoading || loadingScoreCount) ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center space-y-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
