@@ -79,11 +79,42 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
   const normalizeIngredientName = (name: string): string => {
     let normalized = name.toLowerCase().trim();
     
-    // Remove common descriptors
-    const descriptors = ['fresh', 'frozen', 'dried', 'raw', 'cooked', 'grilled', 'baked', 'chopped', 'sliced', 'diced', 'minced', 'whole', 'large', 'small', 'medium'];
+    // Remove common descriptors and cooking methods
+    const descriptors = [
+      'fresh', 'frozen', 'dried', 'raw', 'cooked', 'grilled', 'baked', 'roasted', 'steamed',
+      'chopped', 'sliced', 'diced', 'minced', 'shredded', 'grated',
+      'whole', 'large', 'small', 'medium', 'extra', 'super',
+      'boneless', 'skinless', 'lean', 'trimmed', 'filleted', 'ground',
+      'organic', 'free-range', 'grass-fed', 'wild-caught'
+    ];
     descriptors.forEach(desc => {
       normalized = normalized.replace(new RegExp(`\\b${desc}\\b`, 'gi'), '').trim();
     });
+    
+    // Simplify protein names to base type
+    const proteinSimplifications: { [key: string]: string } = {
+      'chicken breast': 'chicken',
+      'chicken thigh': 'chicken',
+      'chicken leg': 'chicken',
+      'chicken wing': 'chicken',
+      'beef steak': 'beef',
+      'beef mince': 'beef',
+      'ground beef': 'beef',
+      'pork chop': 'pork',
+      'pork loin': 'pork',
+      'salmon fillet': 'salmon',
+      'tuna steak': 'tuna',
+      'white fish': 'white fish fillet',
+      'egg white': 'egg white',
+    };
+    
+    // Apply protein simplifications
+    for (const [pattern, replacement] of Object.entries(proteinSimplifications)) {
+      if (normalized.includes(pattern)) {
+        normalized = replacement;
+        break;
+      }
+    }
     
     // Handle plurals - convert to singular
     if (normalized.endsWith('ies')) {
@@ -92,7 +123,7 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
       normalized = normalized.slice(0, -3) + 'f';
     } else if (normalized.endsWith('ses') || normalized.endsWith('ches') || normalized.endsWith('shes')) {
       normalized = normalized.slice(0, -2);
-    } else if (normalized.endsWith('s') && !normalized.endsWith('ss')) {
+    } else if (normalized.endsWith('s') && !normalized.endsWith('ss') && !normalized.endsWith('lentils')) {
       normalized = normalized.slice(0, -1);
     }
     
@@ -183,27 +214,25 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
             const converted = convertToBaseUnit(parsed.quantity, parsed.unit);
             const category = categorizeIngredient(parsed.item);
             
-            if (ingredientsMap.has(normalized)) {
-              const existing = ingredientsMap.get(normalized)!;
-              // Only consolidate if same unit
-              if (existing.unit === converted.unit) {
-                existing.quantity += converted.quantity;
-              } else {
-                // Different units - create a separate entry with unit suffix
-                const key = `${normalized}_${converted.unit}`;
-                if (ingredientsMap.has(key)) {
-                  ingredientsMap.get(key)!.quantity += converted.quantity;
-                } else {
-                  ingredientsMap.set(key, {
-                    quantity: converted.quantity,
-                    unit: converted.unit,
-                    category,
-                    originalItem: parsed.item
-                  });
-                }
-              }
+            // Create a key that includes unit to handle different measurements
+            const baseKey = normalized;
+            const unitKey = converted.unit ? `${normalized}__${converted.unit}` : normalized;
+            
+            // Check if we have this ingredient with this unit
+            if (ingredientsMap.has(unitKey)) {
+              ingredientsMap.get(unitKey)!.quantity += converted.quantity;
             } else {
-              ingredientsMap.set(normalized, {
+              // Check if we have this ingredient with a different unit
+              let foundDifferentUnit = false;
+              ingredientsMap.forEach((value, key) => {
+                if (key.startsWith(baseKey + '__') || key === baseKey) {
+                  // Found same ingredient with different unit - keep separate
+                  foundDifferentUnit = true;
+                }
+              });
+              
+              // Add new entry
+              ingredientsMap.set(unitKey, {
                 quantity: converted.quantity,
                 unit: converted.unit,
                 category,
@@ -219,7 +248,8 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
     const categorized = new Map<string, Array<{ item: string; display: string }>>();
     
     ingredientsMap.forEach((data, key) => {
-      const displayName = key.includes('_') ? key.split('_')[0] : key;
+      // Extract display name by removing unit suffix if present
+      const displayName = key.includes('__') ? key.split('__')[0] : key;
       let display = '';
       
       if (data.unit) {
