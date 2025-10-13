@@ -10,6 +10,7 @@ interface MealPlansTabProps {
 }
 
 const MealPlansTab = ({ preferences, setPreferences }: MealPlansTabProps) => {
+  console.log('[MealPlansTab] Rendering, preferences:', preferences);
   const [showCustomization, setShowCustomization] = useState(false);
 
   const handleSelectTemplate = (templateId: string) => {
@@ -18,6 +19,7 @@ const MealPlansTab = ({ preferences, setPreferences }: MealPlansTabProps) => {
   };
 
   const handleCustomize = () => {
+    console.log('[MealPlansTab] Starting customization');
     setShowCustomization(true);
   };
 
