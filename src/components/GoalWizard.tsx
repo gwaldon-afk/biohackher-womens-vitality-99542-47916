@@ -9,12 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { Target, Brain, Dumbbell, Heart, Sparkles, ArrowLeft, ArrowRight, Check, X, Eye } from "lucide-react";
+import { Target, Brain, Dumbbell, Heart, Sparkles, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import GoalTemplatePreview from "@/components/GoalTemplatePreview";
-import { GoalTemplate } from "@/services/goalTemplateService";
 
 const PILLAR_ICONS = {
   brain: Brain,
@@ -31,8 +28,6 @@ const GoalWizard = () => {
   const { templates, loading } = useGoalTemplates();
   
   const [step, setStep] = useState(1);
-  const [previewTemplate, setPreviewTemplate] = useState<GoalTemplate | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
   const [goalData, setGoalData] = useState({
     pillar_category: "",
     template_id: "",
@@ -57,18 +52,6 @@ const GoalWizard = () => {
       aging_blueprint: template.default_interventions?.protocols || [],
     });
     setStep(3);
-  };
-
-  const handlePreviewTemplate = (template: GoalTemplate) => {
-    setPreviewTemplate(template);
-    setShowPreview(true);
-  };
-
-  const handleChooseFromPreview = () => {
-    if (previewTemplate) {
-      handleTemplateSelect(previewTemplate);
-      setShowPreview(false);
-    }
   };
 
   const handleCreateGoal = async () => {
@@ -98,24 +81,6 @@ const GoalWizard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Breadcrumbs & Exit */}
-      <div className="flex items-center justify-between mb-6">
-        <Breadcrumbs
-          items={[
-            { label: "My Goals", href: "/my-goals" },
-            { label: "Create Goal", href: "/my-goals/wizard" },
-          ]}
-        />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/my-goals")}
-          title="Exit wizard"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-
       {/* Progress indicator */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -169,16 +134,6 @@ const GoalWizard = () => {
               );
             })}
           </CardContent>
-          <CardContent>
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/my-goals")}
-              className="w-full"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to My Goals
-            </Button>
-          </CardContent>
         </Card>
       )}
 
@@ -217,32 +172,20 @@ const GoalWizard = () => {
                 {pillarTemplates.map((template) => (
                   <Card
                     key={template.id}
-                    className="hover:border-primary transition-all"
+                    className="cursor-pointer hover:border-primary transition-all"
+                    onClick={() => handleTemplateSelect(template)}
                   >
                     <CardHeader>
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 cursor-pointer" onClick={() => handleTemplateSelect(template)}>
+                      <div className="flex items-start justify-between">
+                        <div>
                           <CardTitle className="text-lg">{template.name}</CardTitle>
                           <CardDescription className="mt-1">
                             {template.description}
                           </CardDescription>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {template.is_premium_only && (
-                            <Badge variant="secondary">Premium</Badge>
-                          )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePreviewTemplate(template);
-                            }}
-                          >
-                            <Eye className="h-4 w-4 mr-2" />
-                            Preview
-                          </Button>
-                        </div>
+                        {template.is_premium_only && (
+                          <Badge variant="secondary">Premium</Badge>
+                        )}
                       </div>
                     </CardHeader>
                   </Card>
@@ -396,14 +339,6 @@ const GoalWizard = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* Template Preview Dialog */}
-      <GoalTemplatePreview
-        template={previewTemplate}
-        open={showPreview}
-        onOpenChange={setShowPreview}
-        onChooseTemplate={handleChooseFromPreview}
-      />
     </div>
   );
 };
