@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowRight, ChefHat } from "lucide-react";
+import { ArrowRight, ChefHat, Check } from "lucide-react";
 import TemplateCard, { MealPlanTemplate } from "./TemplateCard";
 import { mealTemplates, templateMealPlans } from "@/data/mealTemplates";
 
@@ -153,13 +153,16 @@ const TemplateSelector = ({ onSelectTemplate, onCustomize }: TemplateSelectorPro
                     handleUseTemplate(previewTemplate.id);
                     setShowPreview(false);
                   }}
+                  size="lg"
                   className="flex-1"
                 >
-                  Use This Template
+                  <Check className="h-5 w-5 mr-2" />
+                  Generate This Plan
                 </Button>
                 <Button
                   onClick={() => setShowPreview(false)}
                   variant="outline"
+                  size="lg"
                   className="flex-1"
                 >
                   Close Preview
