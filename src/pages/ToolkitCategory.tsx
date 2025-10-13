@@ -20,20 +20,38 @@ const ToolkitCategory = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   // Fetch category
-  const { data: category, isLoading: categoryLoading } = useQuery({
+  const { data: category, isLoading: categoryLoading, error: categoryError } = useQuery({
     queryKey: ['toolkit-category', categorySlug],
-    queryFn: () => getToolkitCategoryBySlug(categorySlug!),
+    queryFn: async () => {
+      console.log('Fetching category with slug:', categorySlug);
+      const result = await getToolkitCategoryBySlug(categorySlug!);
+      console.log('Category result:', result);
+      return result;
+    },
     enabled: !!categorySlug,
+    retry: 1,
   });
 
   // Fetch items for this category
-  const { data: items, isLoading: itemsLoading, error } = useQuery({
+  const { data: items, isLoading: itemsLoading, error: itemsError } = useQuery({
     queryKey: ['toolkit-items', category?.id],
-    queryFn: () => getToolkitItemsByCategory(category!.id),
+    queryFn: async () => {
+      console.log('Fetching items for category:', category?.id);
+      const result = await getToolkitItemsByCategory(category!.id);
+      console.log('Items result:', result);
+      return result;
+    },
     enabled: !!category?.id,
+    retry: 1,
   });
 
-  if (error) {
+  if (categoryError) {
+    console.error('Category error:', categoryError);
+    toast.error("Failed to load category.");
+  }
+
+  if (itemsError) {
+    console.error('Items error:', itemsError);
     toast.error("Failed to load toolkit items.");
   }
 
