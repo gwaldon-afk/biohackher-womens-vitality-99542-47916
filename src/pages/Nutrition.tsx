@@ -1975,20 +1975,28 @@ const Nutrition = () => {
               <FoodPreferencesSidebar />
 
               {/* Tabs for Food Science Sub-sections */}
-              <Tabs defaultValue="database" className="w-full">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="database">Longevity Foods Database</TabsTrigger>
-                  <TabsTrigger value="insights">Longevity Foods</TabsTrigger>
+              <Tabs defaultValue="longevity" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="longevity">Longevity Foods</TabsTrigger>
                   <TabsTrigger value="leucine">Leucine Content</TabsTrigger>
                   <TabsTrigger value="fodmap">FODMAP Guide</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="database" className="mt-6">
-                  <FoodDatabaseSearch />
-                </TabsContent>
+                <TabsContent value="longevity" className="mt-6">
+                  <Tabs defaultValue="search" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="search">Search Foods</TabsTrigger>
+                      <TabsTrigger value="research">Research Insights</TabsTrigger>
+                    </TabsList>
 
-                <TabsContent value="insights" className="mt-6">
-                  <LongevityFoodInsights />
+                    <TabsContent value="search" className="mt-6">
+                      <FoodDatabaseSearch />
+                    </TabsContent>
+
+                    <TabsContent value="research" className="mt-6">
+                      <LongevityFoodInsights />
+                    </TabsContent>
+                  </Tabs>
                 </TabsContent>
 
                 <TabsContent value="leucine" className="mt-6">
