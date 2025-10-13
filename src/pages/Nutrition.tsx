@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Calculator, Utensils, Activity, AlertCircle, Target, Edit, Save, X, RefreshCw, Repeat, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import SampleDailyPreview from "@/components/SampleDailyPreview";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
 import ResearchCitation from "@/components/ResearchCitation";
@@ -1840,8 +1842,17 @@ const Nutrition = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Sample Daily Preview */}
+                <SampleDailyPreview 
+                  onCustomize={() => {
+                    // Scroll to recipe selection
+                    const element = document.getElementById('recipe-selection');
+                    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                />
+
                 {/* Recipe Category Selection */}
-                <div className="mb-6">
+                <div id="recipe-selection" className="mb-6">
                   <h3 className="text-lg font-semibold mb-4">Choose Your Recipe Style</h3>
                   <div className="flex gap-4 mb-6">
                     {Object.entries(recipeCategories).map(([key, category]) => (
@@ -1964,24 +1975,25 @@ const Nutrition = () => {
                   </div>
                 )}
 
-                {/* Original meal plan - now showing as a simplified view */}
-                <div className="mt-6 pt-6 border-t">
-                  <h4 className="font-semibold mb-4">Standard {isLowFODMAP ? "Low-FODMAP" : "Balanced"} Meal Template:</h4>
-                  <div className="grid gap-4">
-                    {Object.entries(currentMealPlan).map(([meal, description]) => (
-                      <div key={meal} className="p-4 border rounded-lg">
-                        <h3 className="font-semibold capitalize mb-2">{meal}</h3>
-                        <p className="text-muted-foreground">{description as string}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
                 <div className="mt-6 flex gap-4">
-                  <Button onClick={() => generateWeeklyPlan(false)}>
-                    <Activity className="h-4 w-4 mr-2" />
-                    Generate Weekly Plan
-                  </Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button 
+                          onClick={() => generateWeeklyPlan(false)}
+                          size="lg"
+                          className="flex items-center gap-2"
+                        >
+                          <Sparkles className="h-5 w-5" />
+                          Generate 7-Day Personalized Plan
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-sm">
+                        <p className="font-semibold mb-1">Creates 7 unique days with variety</p>
+                        <p className="text-xs">Each day will feature different ingredient combinations while respecting your recipe preferences and dietary requirements</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button variant="outline">
                     Shopping List
                   </Button>
