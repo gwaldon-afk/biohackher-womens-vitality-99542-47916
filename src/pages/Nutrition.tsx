@@ -786,17 +786,32 @@ const Nutrition = () => {
       setWeekIndex(prev => prev + 1);
     }
     
-    // Calculate portions based on macros
+    // Calculate portions based on macros with realistic meal distribution
     const mealsPerDay = 3; // breakfast, lunch, dinner
-    const proteinPerMeal = Math.round(macros.protein / mealsPerDay);
+    // Breakfast gets 25%, Lunch 35%, Dinner 40% of daily protein
+    const dailyProtein = macros.protein;
+    const breakfastProtein = Math.round(dailyProtein * 0.25);
+    const lunchProtein = Math.round(dailyProtein * 0.35);
+    const dinnerProtein = Math.round(dailyProtein * 0.40);
+    
     const carbsPerMeal = Math.round(macros.carbs / mealsPerDay);
     const fatPerMeal = Math.round(macros.fat / mealsPerDay);
+    
+    const getProteinTarget = (mealType: string) => {
+      switch(mealType) {
+        case 'breakfast': return breakfastProtein;
+        case 'lunch': return lunchProtein;
+        case 'dinner': return dinnerProtein;
+        default: return Math.round(dailyProtein / 3);
+      }
+    };
     
     const generateMeal = (mealType: string, dayIndex: number) => {
       let protein, carb, vegetable, fat, recipeName, recipeDescription;
       
       const currentRecipes = recipeCategories[selectedRecipeStyle as keyof typeof recipeCategories];
       const currentWeekIndex = useExistingVariety ? weekIndex - 1 : weekIndex;
+      const proteinPerMeal = getProteinTarget(mealType);
       
       // Create variety by using different combinations and cooking methods
       const cookingMethods = {
@@ -819,55 +834,31 @@ const Nutrition = () => {
 
       // Meal-specific food selections with allergy/dislike filtering
       if (mealType === "breakfast") {
-        // Use selected breakfast recipe if available, otherwise rotate through options
-        if (selectedBreakfastRecipe) {
-          const selectedRecipe = currentRecipes.breakfast.find(r => r.name === selectedBreakfastRecipe);
-          if (selectedRecipe) {
-            recipeName = selectedRecipe.name;
-            recipeDescription = selectedRecipe.description;
-          }
-        }
-
-        if (isLowFODMAP) {
-          let proteinOptions = ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p));
-          let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
-          
-          // Fallbacks if all options are excluded
-          if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
-          if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
-          
-          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
-          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
-          vegetable = null; // Breakfast typically doesn't include vegetables
-          fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : "Olive Oil";
-        } else {
-          let proteinOptions = ["Eggs", "Greek Yogurt", "Cottage Cheese"].filter(p => !isExcluded(p));
-          let carbOptions = ["Oats", "Quinoa"].filter(c => !isExcluded(c));
-          
-          // Fallbacks
-          if (proteinOptions.length === 0) proteinOptions = ["Chicken Breast"];
-          if (carbOptions.length === 0) carbOptions = ["Brown Rice"];
-          
-          protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
-          carb = carbOptions[(dayIndex + currentWeekIndex) % carbOptions.length];
-          vegetable = null; // Breakfast typically doesn't include vegetables
-          fat = ((dayIndex + currentWeekIndex) % 2 === 0 && !isExcluded("Almonds")) ? "Almonds" : 
-                (!isExcluded("Avocado")) ? "Avocado" : "Olive Oil";
-        }
+        // Determine which protein to use based on rotation
+        let proteinOptions = isLowFODMAP 
+          ? ["Eggs", "Greek Yogurt"].filter(p => !isExcluded(p))
+          : ["Eggs", "Greek Yogurt", "Cottage Cheese"].filter(p => !isExcluded(p));
         
-        // Create specific breakfast name if not using selected recipe
-        if (!recipeName) {
-          if (protein === "Eggs") {
-            const eggStyle = cookingMethods.breakfast.eggs[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.eggs.length];
-            recipeName = `${eggStyle} with ${carb}`;
-          } else if (protein === "Greek Yogurt") {
-            const yogurtStyle = cookingMethods.breakfast.yogurt[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.yogurt.length];
-            recipeName = `${yogurtStyle} with ${carb}`;
-          } else if (protein === "Cottage Cheese") {
-            const cottageStyle = cookingMethods.breakfast.cottage[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.cottage.length];
-            recipeName = `${cottageStyle} with ${carb}`;
-          }
-          recipeDescription = `Protein-rich breakfast with ${protein.toLowerCase()}, ${carb.toLowerCase()}, and ${fat.toLowerCase()}`;
+        if (proteinOptions.length === 0) proteinOptions = ["Eggs"];
+        protein = proteinOptions[(dayIndex + currentWeekIndex) % proteinOptions.length];
+
+        // Set ingredients based on protein type (realistic breakfast combinations)
+        if (protein === "Eggs") {
+          carb = !isExcluded("Oats") ? "Oats" : "Quinoa";
+          fat = !isExcluded("Avocado") ? "Avocado" : "Olive Oil";
+          vegetable = null;
+          const eggStyle = cookingMethods.breakfast.eggs[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.eggs.length];
+          recipeName = selectedBreakfastRecipe || `${eggStyle} with ${carb}`;
+          recipeDescription = `Protein-rich eggs with ${carb.toLowerCase()}`;
+        } else if (protein === "Greek Yogurt" || protein === "Cottage Cheese") {
+          carb = !isExcluded("Oats") ? "Oats" : "Quinoa";
+          fat = !isExcluded("Almonds") ? "Almonds" : "Olive Oil";
+          vegetable = null;
+          const yogurtStyle = protein === "Greek Yogurt" 
+            ? cookingMethods.breakfast.yogurt[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.yogurt.length]
+            : cookingMethods.breakfast.cottage[(dayIndex + currentWeekIndex) % cookingMethods.breakfast.cottage.length];
+          recipeName = selectedBreakfastRecipe || `${yogurtStyle} with ${carb}`;
+          recipeDescription = `Creamy ${protein.toLowerCase()} with ${carb.toLowerCase()} and ${fat.toLowerCase()}`;
         }
       } else if (mealType === "lunch") {
         // Use selected lunch recipe if available
@@ -985,11 +976,22 @@ const Nutrition = () => {
       const vegFood = vegetable ? foodDatabase.vegetables[vegetable as keyof typeof foodDatabase.vegetables] : null;
       const fatFood = foodDatabase.fats[fat as keyof typeof foodDatabase.fats];
       
-      // Calculate serving sizes to hit macro targets (simplified)
-      const proteinServing = Math.round((proteinPerMeal / proteinFood.protein) * 100);
-      const carbServing = Math.round((carbsPerMeal / carbFood.carbs) * 100);
-      const vegServing = vegetable ? 100 : 0; // Standard serving or none
-      const fatServing = fat === "Olive Oil" ? 1 : Math.round((fatPerMeal / fatFood.fat) * 100);
+      // Calculate serving sizes to hit macro targets with realistic caps
+      const maxProteinServing = protein === "Eggs" ? 300 : 250; // Max 5 eggs or 250g other protein
+      const maxCarbServing = 150; // Max 150g carbs per meal
+      const maxVegServing = 150; // Max 150g vegetables
+      
+      const proteinServing = Math.min(
+        Math.round((proteinPerMeal / proteinFood.protein) * 100),
+        maxProteinServing
+      );
+      const carbServing = Math.min(
+        Math.round((carbsPerMeal / carbFood.carbs) * 100),
+        maxCarbServing
+      );
+      const vegServing = vegetable ? Math.min(100, maxVegServing) : 0;
+      const fatServing = fat === "Olive Oil" ? Math.min(2, Math.round(fatPerMeal / 10)) : 
+                         Math.min(30, Math.round((fatPerMeal / fatFood.fat) * 100));
       
       // Calculate meal totals
       const mealCalories = Math.round(
@@ -1959,34 +1961,39 @@ const Nutrition = () => {
                                                     const hasRice = meal.foods.some((f: any) => ['Brown Rice', 'Quinoa'].includes(f.name));
                                                     const hasVeg = meal.foods.some((f: any) => ['Spinach', 'Broccoli', 'Carrots'].includes(f.name));
                                                     
-                                                    if (mealType === 'breakfast') {
-                                                      if (hasEggs && hasOats) {
-                                                        steps.push(
-                                                          "Cook oats according to package instructions (typically 1 part oats to 2 parts water, simmer 5-7 minutes)",
-                                                          "While oats are cooking, crack eggs into a bowl and whisk with a pinch of salt and pepper",
-                                                          "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
-                                                          "Pour eggs into pan and gently stir with a spatula as they cook until just set",
-                                                          "Serve eggs alongside the cooked oats"
-                                                        );
-                                                        if (meal.foods.some((f: any) => f.name === 'Almonds')) {
-                                                          steps.push("Top oats with sliced or chopped almonds for healthy fats and crunch");
-                                                        }
-                                                        if (meal.foods.some((f: any) => f.name === 'Spinach')) {
-                                                          steps.push("Stir fresh spinach into eggs during the last minute of cooking until wilted");
-                                                        }
-                                                      } else if (hasYogurt) {
-                                                        steps.push(
-                                                          "Place yogurt in a serving bowl",
-                                                          "Top with fresh berries or fruit if available"
-                                                        );
-                                                        if (hasOats) {
-                                                          steps.push("Add oats or granola for texture and sustained energy");
-                                                        }
-                                                        if (meal.foods.some((f: any) => f.name === 'Almonds')) {
-                                                          steps.push("Sprinkle with sliced almonds for healthy fats and protein");
-                                                        }
-                                                        steps.push("Drizzle with honey if desired and serve immediately");
-                                                      }
+                                                     if (mealType === 'breakfast') {
+                                                       if (hasEggs) {
+                                                         steps.push(
+                                                           "Heat a non-stick pan over medium-low heat with a small amount of butter or oil",
+                                                           "Crack eggs into a bowl and whisk with a pinch of salt and pepper",
+                                                           "Pour eggs into pan and gently stir with a spatula as they cook until just set (2-3 minutes)",
+                                                           "Remove from heat while still slightly soft - they'll continue cooking"
+                                                         );
+                                                         if (hasOats) {
+                                                           steps.push("Meanwhile, cook oats: combine oats with double the amount of water, simmer 5-7 minutes until creamy");
+                                                         }
+                                                         if (meal.foods.some((f: any) => f.name === 'Quinoa')) {
+                                                           steps.push("Cook quinoa: rinse well, then simmer in water (1:2 ratio) for 12-15 minutes until fluffy");
+                                                         }
+                                                       } else if (hasYogurt) {
+                                                         steps.push(
+                                                           "Place yogurt or cottage cheese in a serving bowl"
+                                                         );
+                                                         if (hasOats) {
+                                                           steps.push("Stir in oats (can be served cold as overnight oats or warmed if preferred)");
+                                                         }
+                                                         if (meal.foods.some((f: any) => f.name === 'Quinoa')) {
+                                                           steps.push("Mix in cooked quinoa for added protein and texture");
+                                                         }
+                                                         if (meal.foods.some((f: any) => f.name === 'Almonds')) {
+                                                           steps.push("Top with sliced almonds for healthy fats and crunch");
+                                                         }
+                                                         if (meal.foods.some((f: any) => f.name === 'Avocado')) {
+                                                           steps.push("Add sliced avocado for creamy texture and healthy fats");
+                                                         }
+                                                         steps.push("Add fresh berries or fruit if available, drizzle with honey if desired");
+                                                       }
+                                                       steps.push("Serve immediately and enjoy!");
                                                     } else if (hasProtein) {
                                                       const proteinFood = meal.foods.find((f: any) => ['Chicken Breast', 'Salmon', 'Tofu'].includes(f.name));
                                                       steps.push(`Season ${proteinFood.name.toLowerCase()} with salt, pepper, and your choice of herbs or spices`);
