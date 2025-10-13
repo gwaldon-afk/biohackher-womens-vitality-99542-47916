@@ -2321,8 +2321,8 @@ const Nutrition = () => {
                                                   className="font-bold text-xl text-foreground bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-left shadow-sm"
                                                   onClick={() => {
                                                     // Generate recipe from actual meal foods
-                                                    const mealFoods = meal.foods.map((f: any) => `${f.amount} ${f.name}`);
-                                                    const mealName = meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`;
+                                                    const mealFoods = meal.foods?.map((f: any) => `${f.amount} ${f.name}`) || [];
+                                                    const mealName = meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`;
                                                     
                                                     // Generate cooking instructions based on the foods in this meal
                                                     const steps: string[] = [];
@@ -2404,7 +2404,7 @@ const Nutrition = () => {
                                                     });
                                                   }}
                                                 >
-                                                  {meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
+                                                  {meal.name || meal.recipeName || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)}`}
                                                 </button>
                                               </DialogTrigger>
                                               <DialogContent className="max-w-md">
@@ -2441,8 +2441,8 @@ const Nutrition = () => {
                                                 </div>
                                               </DialogContent>
                                             </Dialog>
-                                           {meal.recipeDescription && (
-                                             <p className="text-sm text-muted-foreground italic">{meal.recipeDescription}</p>
+                                           {(meal.description || meal.recipeDescription) && (
+                                             <p className="text-sm text-muted-foreground italic">{meal.description || meal.recipeDescription}</p>
                                            )}
                                          </div>
                                         <div className="text-sm font-medium text-right">
@@ -2451,22 +2451,24 @@ const Nutrition = () => {
                                       </div>
                                     </div>
                                     
-                                    <div className="flex flex-wrap gap-2 justify-center">
-                                      {meal.foods.map((food: any, foodIndex: number) => {
-                                        const foodCalories = Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100));
-                                        const foodKj = Math.round(foodCalories * 4.184);
-                                        return (
-                                          <div key={foodIndex} className="bg-muted/30 p-2 rounded text-center min-w-[120px]">
-                                            <div className="font-medium text-sm mb-1">{food.name}</div>
-                                            <div className="text-primary-dark font-bold text-lg">{food.amount}</div>
-                                            <div className="text-xs text-muted-foreground">
-                                              <div>{foodCalories} cal</div>
-                                              <div>{foodKj} kJ</div>
+                                    {meal.foods && meal.foods.length > 0 && (
+                                      <div className="flex flex-wrap gap-2 justify-center">
+                                        {meal.foods.map((food: any, foodIndex: number) => {
+                                          const foodCalories = Math.round(food.nutrition.calories * (food.amount.includes('tbsp') ? 1 : parseInt(food.amount) / 100));
+                                          const foodKj = Math.round(foodCalories * 4.184);
+                                          return (
+                                            <div key={foodIndex} className="bg-muted/30 p-2 rounded text-center min-w-[120px]">
+                                              <div className="font-medium text-sm mb-1">{food.name}</div>
+                                              <div className="text-primary-dark font-bold text-lg">{food.amount}</div>
+                                              <div className="text-xs text-muted-foreground">
+                                                <div>{foodCalories} cal</div>
+                                                <div>{foodKj} kJ</div>
+                                              </div>
                                             </div>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
+                                          );
+                                        })}
+                                      </div>
+                                    )}
                                   </div>
                                 );
                               })}
