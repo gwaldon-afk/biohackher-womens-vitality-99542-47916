@@ -210,33 +210,12 @@ export default function AIGoalWizard() {
                   placeholder="Example: I want to improve my sleep quality because I've been waking up feeling tired..."
                   className="min-h-[120px] resize-none"
                 />
+                <p className="text-sm text-muted-foreground mt-2">
+                  The AI will automatically analyze and assign the relevant health pillar(s) for your goal.
+                </p>
               </div>
 
-              <div className="space-y-3">
-                <Label>Which health pillar does this relate to? (Optional - AI will detect automatically)</Label>
-                <RadioGroup value={selectedPillar} onValueChange={setSelectedPillar}>
-                  {PILLAR_OPTIONS.map((pillar) => {
-                    const Icon = pillar.icon;
-                    return (
-                      <div key={pillar.value} className="flex items-center space-x-3 border rounded-lg p-4 hover:bg-accent/50 transition-colors">
-                        <RadioGroupItem value={pillar.value} id={pillar.value} />
-                        <Label 
-                          htmlFor={pillar.value} 
-                          className="flex items-start gap-3 flex-1 cursor-pointer"
-                        >
-                          <Icon className="h-5 w-5 text-primary mt-0.5" />
-                          <div>
-                            <div className="font-semibold">{pillar.label}</div>
-                            <div className="text-sm text-muted-foreground">{pillar.description}</div>
-                          </div>
-                        </Label>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
-              </div>
-
-              <Button 
+              <Button
                 onClick={handleGenerateSuggestion} 
                 className="w-full"
                 size="lg"
