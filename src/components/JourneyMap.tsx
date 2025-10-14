@@ -101,7 +101,7 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
       <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
         Your Health Journey
       </h4>
-      <div className="grid grid-cols-5 gap-2">
+      <div className="flex gap-2 w-full">
         {steps.map((step, index) => {
           const StepIcon = step.icon;
           const isCurrent = step.id === currentStep;
@@ -112,7 +112,7 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
             <div
               key={step.id}
               className={cn(
-                "relative flex flex-col items-center text-center p-3 rounded-lg border-2 transition-all",
+                "relative flex flex-col items-center text-center p-3 rounded-lg border-2 transition-all flex-1",
                 isCurrent && "border-primary bg-primary/5 shadow-sm",
                 !isCurrent && isCompleted && "border-green-500 bg-green-50",
                 !isCurrent && !isCompleted && isPast && "border-amber-500 bg-amber-50",
