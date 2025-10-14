@@ -62,20 +62,23 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+      <div className="flex items-center justify-between gap-2 w-full">
         {steps.map((step, index) => {
           const StepIcon = step.icon;
           const isCurrent = step.id === currentStep;
           const isCompleted = step.completed;
           
           return (
-            <div key={step.id} className="flex items-center gap-2">
-              <div className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all",
-                isCurrent && "bg-primary text-primary-foreground shadow-sm",
-                !isCurrent && isCompleted && "bg-green-100 text-green-700",
-                !isCurrent && !isCompleted && "bg-muted text-muted-foreground"
-              )}>
+            <>
+              <div 
+                key={step.id} 
+                className={cn(
+                  "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex-1",
+                  isCurrent && "bg-primary text-primary-foreground shadow-sm",
+                  !isCurrent && isCompleted && "bg-green-100 text-green-700",
+                  !isCurrent && !isCompleted && "bg-muted text-muted-foreground"
+                )}
+              >
                 {isCompleted ? (
                   <CheckCircle2 className="h-3 w-3" />
                 ) : (
@@ -85,11 +88,11 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
               </div>
               {index < steps.length - 1 && (
                 <div className={cn(
-                  "w-4 h-0.5",
+                  "w-3 h-0.5 flex-shrink-0",
                   index < currentStepIndex ? "bg-green-500" : "bg-muted"
                 )} />
               )}
-            </div>
+            </>
           );
         })}
       </div>
