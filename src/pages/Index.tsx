@@ -51,7 +51,7 @@ const Index = () => {
                     onClick={() => navigate("/health-assistant")}
                   >
                     <Sparkles className="h-5 w-5 mr-2" />
-                    Ask AI Assistant
+                    Ask Your Health Questions
                   </Button>
                   <Button 
                     size="lg"
