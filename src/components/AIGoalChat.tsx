@@ -44,6 +44,7 @@ export function AIGoalChat({ currentSuggestion, onSuggestionUpdate }: AIGoalChat
           currentGoal: currentSuggestion,
           refinementRequest: input.trim(),
           conversationHistory: messages,
+          stage: 'expand' // Always refining the full plan
         },
       });
 

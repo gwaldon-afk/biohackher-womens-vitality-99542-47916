@@ -19,7 +19,8 @@ serve(async (req) => {
       assessmentData,
       currentGoal,
       refinementRequest,
-      conversationHistory 
+      conversationHistory,
+      stage = 'expand' // 'reframe' or 'expand'
     } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -39,8 +40,24 @@ serve(async (req) => {
 
     // Build context for AI
     const isRefinement = !!refinementRequest && !!currentGoal;
+    const isReframe = stage === 'reframe';
     
-    const contextPrompt = isRefinement ? `
+    const contextPrompt = isReframe ? `
+User wants to create a health goal: "${goalDescription}"
+${pillar ? `Suggested Health Pillar: ${pillar}` : 'Please analyze and determine which health pillar(s) this goal relates to'}
+${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
+
+TASK: Reframe this goal using the HACK Protocol framework for the user to review and accept.
+
+Return a simplified JSON structure with:
+{
+  "title": "Clear, actionable goal title (1 sentence)",
+  "description": "2-3 sentence explanation of what this goal means in HACK terms",
+  "pillar": "brain|body|balance|beauty (choose the PRIMARY pillar)",
+  "healthspanTarget": "Brief target outcome statement"
+}
+
+Keep it concise - this is just for the user to approve the basic reframing before generating the full detailed plan.` : isRefinement ? `
 The user wants to refine their existing health goal following the HACK Protocol framework.
 
 CURRENT GOAL (HACK Structure):
@@ -148,7 +165,10 @@ When generating or refining goals:
 10. When users request clarification, explain which pillars are affected and why
 11. When users request changes, preserve the HACK framework while incorporating their feedback
 
-Always respond with valid JSON only, no markdown formatting.` 
+For reframe requests: Return simplified JSON with just title, description, pillar, and healthspanTarget.
+For full plans: Return complete JSON with all HACK elements.
+
+Always respond with valid JSON only, no markdown formatting.`
           },
           { role: 'user', content: contextPrompt }
         ],

@@ -12,10 +12,13 @@ import { ArrowLeft, Sparkles, Loader2, Brain, Zap, Heart, Flower2 } from "lucide
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GoalSuggestionCard } from "./GoalSuggestionCard";
+import { GoalReframeCard } from "./GoalReframeCard";
 import { AIGoalChat } from "./AIGoalChat";
 import { ToolkitSelectionDialog } from "./ToolkitSelectionDialog";
 import { ToolkitItemWithCategory } from "@/services/toolkitService";
 import { HACKProtocolInfo } from "./HACKProtocolInfo";
+
+type WizardStep = 'input' | 'generating-reframe' | 'reframe-review' | 'generating-plan' | 'suggestion';
 
 const PILLAR_OPTIONS = [
   { value: 'brain', label: 'Brain', icon: Brain, description: 'Cognitive health, focus, memory' },
@@ -38,9 +41,10 @@ export default function AIGoalWizard() {
   const { profile } = useHealthProfile();
   const { toast } = useToast();
 
-  const [step, setStep] = useState<'input' | 'generating' | 'suggestion'>("input");
+  const [step, setStep] = useState<WizardStep>("input");
   const [goalDescription, setGoalDescription] = useState("");
   const [selectedPillar, setSelectedPillar] = useState<string>("");
+  const [goalReframe, setGoalReframe] = useState<any>(null);
   const [aiSuggestion, setAiSuggestion] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showToolkitDialog, setShowToolkitDialog] = useState(false);
@@ -61,34 +65,85 @@ export default function AIGoalWizard() {
     }
 
     setIsGenerating(true);
-    setStep("generating");
+    setStep("generating-reframe");
 
     try {
+      // Stage 1: Generate just the reframed goal
       const { data, error } = await supabase.functions.invoke('generate-goal-suggestions', {
         body: {
           goalDescription,
           pillar: selectedPillar,
           userProfile: profile,
-          assessmentData: null, // Could fetch recent assessment data here
+          assessmentData: null,
+          stage: 'reframe'
         },
       });
 
       if (error) throw error;
 
-      console.log('AI Suggestion:', data.suggestion);
-      setAiSuggestion(data.suggestion);
-      setStep("suggestion");
+      console.log('Goal Reframe:', data.suggestion);
+      setGoalReframe(data.suggestion);
+      setStep("reframe-review");
+      toast({
+        title: "Goal reframed!",
+        description: "Review and continue to generate your full plan",
+      });
     } catch (error: any) {
-      console.error('Error generating goal:', error);
+      console.error('Error generating reframe:', error);
       toast({
         title: "Generation failed",
-        description: error.message || "Could not generate goal suggestion. Please try again.",
+        description: error.message || "Could not reframe goal. Please try again.",
         variant: "destructive",
       });
       setStep("input");
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleAcceptReframe = async () => {
+    if (!goalReframe) return;
+
+    setIsGenerating(true);
+    setStep("generating-plan");
+
+    try {
+      // Stage 2: Generate full plan
+      const { data, error } = await supabase.functions.invoke('generate-goal-suggestions', {
+        body: {
+          goalDescription: `${goalReframe.title}. ${goalReframe.description}`,
+          pillar: goalReframe.pillar,
+          userProfile: profile,
+          assessmentData: null,
+          stage: 'expand'
+        },
+      });
+
+      if (error) throw error;
+
+      console.log('Full Plan:', data.suggestion);
+      setAiSuggestion(data.suggestion);
+      setStep("suggestion");
+      toast({
+        title: "Plan ready!",
+        description: "Your personalized HACK Protocol plan is complete",
+      });
+    } catch (error: any) {
+      console.error('Error generating full plan:', error);
+      toast({
+        title: "Generation failed",
+        description: error.message || "Could not generate full plan. Please try again.",
+        variant: "destructive",
+      });
+      setStep("reframe-review");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRegenerateReframe = () => {
+    setGoalReframe(null);
+    setStep("input");
   };
 
   const handleCreateGoal = async () => {
@@ -118,6 +173,7 @@ export default function AIGoalWizard() {
 
   const handleRegenerate = () => {
     setStep("input");
+    setGoalReframe(null);
     setAiSuggestion(null);
   };
 
@@ -233,12 +289,31 @@ export default function AIGoalWizard() {
         </div>
       )}
 
-      {step === "generating" && (
+      {step === "generating-reframe" && (
         <div className="flex flex-col items-center justify-center py-20">
           <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">Creating Your Personalized Plan</h2>
+          <h2 className="text-2xl font-semibold mb-2">Reframing Your Goal</h2>
           <p className="text-muted-foreground text-center max-w-md">
-            Analyzing your health profile and generating evidence-based interventions tailored to your goal...
+            Using the HACK Protocol framework to structure your health goal...
+          </p>
+        </div>
+      )}
+
+      {step === "reframe-review" && goalReframe && (
+        <GoalReframeCard
+          reframe={goalReframe}
+          onAccept={handleAcceptReframe}
+          onRegenerate={handleRegenerateReframe}
+          isLoading={isGenerating}
+        />
+      )}
+
+      {step === "generating-plan" && (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+          <h2 className="text-2xl font-semibold mb-2">Generating Your Full Plan</h2>
+          <p className="text-muted-foreground text-center max-w-md">
+            Creating detailed interventions, barriers analysis, and check-in schedule...
           </p>
         </div>
       )}
