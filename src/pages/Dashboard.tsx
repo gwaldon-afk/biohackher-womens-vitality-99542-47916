@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users } from "lucide-react";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -509,27 +509,97 @@ const Dashboard = () => {
 
             {/* Protocols Tab - Protocol Management */}
             <TabsContent value="protocols" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Wellness Protocols</CardTitle>
-                <CardDescription>
-                  Manage your personalized health protocols and recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => navigate('/my-protocol')}
-                  className="w-full"
-                  size="lg"
-                >
-                  <Pill className="mr-2 h-5 w-5" />
-                  View Full Protocol Manager
-                </Button>
-                <p className="text-sm text-muted-foreground mt-4 text-center">
-                  Access your complete protocol suite, supplement recommendations, and adherence tracking
-                </p>
-              </CardContent>
-            </Card>
+              {/* My Personalized Protocol */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>My Personalized Protocol</CardTitle>
+                  <CardDescription>
+                    Daily tracking, supplement adherence, and personalized recommendations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    onClick={() => navigate('/my-protocol')}
+                    className="w-full"
+                    size="lg"
+                  >
+                    <Pill className="mr-2 h-5 w-5" />
+                    View My Protocol Manager
+                  </Button>
+                  <p className="text-sm text-muted-foreground mt-4 text-center">
+                    Access your supplement schedule, adherence calendar, and product recommendations
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* 4 Pillar Protocols */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>4 Pillar Protocols</CardTitle>
+                  <CardDescription>
+                    Explore Brain, Body, Balance & Beauty - complete with assessments and science-backed guidance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/pillars?pillar=brain')}
+                      className="h-auto p-4 flex flex-col items-start gap-2"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <Brain className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">Brain</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground text-left">
+                        Cognitive optimization & mental clarity
+                      </p>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/pillars?pillar=body')}
+                      className="h-auto p-4 flex flex-col items-start gap-2"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <Activity className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">Body</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground text-left">
+                        Physical strength & vitality
+                      </p>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/pillars?pillar=balance')}
+                      className="h-auto p-4 flex flex-col items-start gap-2"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <Heart className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">Balance</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground text-left">
+                        Stress management & inner peace
+                      </p>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/pillars?pillar=beauty')}
+                      className="h-auto p-4 flex flex-col items-start gap-2"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">Beauty</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground text-left">
+                        Radiant skin & cellular rejuvenation
+                      </p>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
           </TabsContent>
         </Tabs>
         </>
