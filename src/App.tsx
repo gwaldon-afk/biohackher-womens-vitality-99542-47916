@@ -39,6 +39,7 @@ import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
+import AIGoalWizard from "./components/AIGoalWizard";
 import GoalWizard from "./components/GoalWizard";
 import GoalDetail from "./pages/GoalDetail";
 import GuestGoalsPreview from "./pages/GuestGoalsPreview";
@@ -117,7 +118,8 @@ const App = () => (
             <Route path="/import-research" element={<ImportResearch />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
-            <Route path="/my-goals/wizard" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />
+            <Route path="/my-goals/wizard" element={<ProtectedRoute><AIGoalWizard /></ProtectedRoute>} />
+            <Route path="/my-goals/wizard-manual" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />
             <Route path="/my-goals/:goalId" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
