@@ -272,7 +272,7 @@ const MyProtocol = () => {
               </div>
               <Progress value={protocolCompletion} className="h-3" />
               <p className="text-sm text-muted-foreground">
-                {uniqueRecommendations.length} supplements recommended across {assessments.length} health area{assessments.length > 1 ? 's' : ''}
+                {uniqueRecommendations.length} supplements recommended across {uniqueAssessments.length} health area{uniqueAssessments.length > 1 ? 's' : ''}
               </p>
             </div>
           </CardContent>
