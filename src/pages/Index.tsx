@@ -97,7 +97,7 @@ const Index = () => {
                   </div>
                 </div>
                 <h3 className="text-xl font-bold mb-3">2. Get Your Personalized Plan</h3>
-                <p className="text-muted-foreground">AI-powered recommendations based on 500+ research studies</p>
+                <p className="text-muted-foreground">AI-powered recommendations based on scientific evidence</p>
               </Card>
 
               <Card className="text-center p-6 hover:shadow-lg transition-shadow">
