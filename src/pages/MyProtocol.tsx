@@ -184,16 +184,16 @@ const MyProtocol = () => {
             Protocol <span className="text-primary">Manager</span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Complete protocol suite with adherence tracking and recommendations
+            Your complete wellness protocol: supplements, nutrition, exercise, therapies & daily habits
           </p>
         </div>
 
         <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "today"} className="space-y-6">
           <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="by-type">By Type</TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
-            <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-            <TabsTrigger value="protocols">Protocols</TabsTrigger>
+            <TabsTrigger value="builder">Builder</TabsTrigger>
           </TabsList>
 
           {/* Today's Protocol Tab */}
@@ -204,7 +204,7 @@ const MyProtocol = () => {
                   <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                   <h2 className="text-2xl font-bold mb-2">No Active Protocol</h2>
                   <p className="text-muted-foreground mb-6">
-                    Create your first protocol to start tracking your wellness routine.
+                    Build your complete wellness protocol including supplements, nutrition, exercise, therapies, and daily habits.
                   </p>
                   <Button onClick={() => navigate('/symptoms')}>
                     Start with an Assessment
@@ -215,34 +215,65 @@ const MyProtocol = () => {
               <>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Today's Protocol</CardTitle>
+                    <CardTitle>Today's Complete Protocol</CardTitle>
                     <CardDescription>
-                      Complete your daily wellness routine
+                      Your daily wellness routine - supplements, nutrition, exercise, therapies & habits
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-4">
                     {loadingItems ? (
                       <p className="text-muted-foreground">Loading protocol items...</p>
                     ) : allProtocolItems.length === 0 ? (
-                      <p className="text-muted-foreground">No items in your active protocols yet.</p>
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground mb-4">No items in your protocol yet.</p>
+                        <p className="text-sm text-muted-foreground">
+                          Use the Builder tab to add supplements, nutrition plans, exercises, and wellness practices.
+                        </p>
+                      </div>
                     ) : (
-                      allProtocolItems
-                        .filter(item => item.is_active)
-                        .map((item) => (
-                          <ProtocolItemCard
-                            key={item.id}
-                            item={item}
-                            completed={adherence[item.id]?.completed || false}
-                            onToggleComplete={() => toggleAdherence(item.id)}
-                            showActions
-                            onDelete={async () => {
-                              toast({
-                                title: "Item Removed",
-                                description: "Protocol item has been deleted."
-                              });
-                            }}
-                          />
-                        ))
+                      <>
+                        {/* Organize by item type */}
+                        {['supplement', 'diet', 'exercise', 'therapy', 'habit'].map((type) => {
+                          const itemsOfType = allProtocolItems.filter(
+                            item => item.is_active && item.item_type === type
+                          );
+                          
+                          if (itemsOfType.length === 0) return null;
+                          
+                          const typeLabels: Record<string, { label: string; icon: any }> = {
+                            supplement: { label: '💊 Supplements', icon: Package },
+                            diet: { label: '🥗 Nutrition', icon: Package },
+                            exercise: { label: '🏃 Exercise', icon: Package },
+                            therapy: { label: '✨ Therapies', icon: Package },
+                            habit: { label: '🌟 Habits', icon: Package }
+                          };
+                          
+                          return (
+                            <div key={type} className="space-y-2">
+                              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                                {typeLabels[type]?.label || type}
+                              </h3>
+                              <div className="space-y-2">
+                                {itemsOfType.map((item) => (
+                                  <ProtocolItemCard
+                                    key={item.id}
+                                    item={item}
+                                    completed={adherence[item.id]?.completed || false}
+                                    onToggleComplete={() => toggleAdherence(item.id)}
+                                    showActions
+                                    onDelete={async () => {
+                                      toast({
+                                        title: "Item Removed",
+                                        description: "Protocol item has been deleted."
+                                      });
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </>
                     )}
                   </CardContent>
                 </Card>
@@ -250,19 +281,90 @@ const MyProtocol = () => {
             )}
           </TabsContent>
 
+          {/* By Type Tab - Organized view */}
+          <TabsContent value="by-type" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Protocol by Category</CardTitle>
+                <CardDescription>
+                  View all your wellness interventions organized by type
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="supplements" className="w-full">
+                  <TabsList className="grid w-full grid-cols-5">
+                    <TabsTrigger value="supplements">Supplements</TabsTrigger>
+                    <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
+                    <TabsTrigger value="exercise">Exercise</TabsTrigger>
+                    <TabsTrigger value="therapies">Therapies</TabsTrigger>
+                    <TabsTrigger value="habits">Habits</TabsTrigger>
+                  </TabsList>
+
+                  {['supplement', 'diet', 'exercise', 'therapy', 'habit'].map((type, idx) => {
+                    const typeValues = ['supplements', 'nutrition', 'exercise', 'therapies', 'habits'];
+                    const itemsOfType = allProtocolItems.filter(
+                      item => item.is_active && item.item_type === type
+                    );
+
+                    return (
+                      <TabsContent key={type} value={typeValues[idx]} className="space-y-3 mt-4">
+                        {itemsOfType.length === 0 ? (
+                          <p className="text-center text-muted-foreground py-8">
+                            No {typeValues[idx]} in your protocol yet. Use the Builder tab to add some.
+                          </p>
+                        ) : (
+                          itemsOfType.map((item) => (
+                            <ProtocolItemCard
+                              key={item.id}
+                              item={item}
+                              completed={adherence[item.id]?.completed || false}
+                              onToggleComplete={() => toggleAdherence(item.id)}
+                              showActions
+                              onDelete={async () => {
+                                toast({
+                                  title: "Item Removed",
+                                  description: "Protocol item has been deleted."
+                                });
+                              }}
+                            />
+                          ))
+                        )}
+                      </TabsContent>
+                    );
+                  })}
+                </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Calendar Tab */}
           <TabsContent value="calendar" className="space-y-6">
             <AdherenceCalendar />
           </TabsContent>
 
-          {/* Recommendations Tab */}
-          <TabsContent value="recommendations" className="space-y-6">
+          {/* Builder Tab */}
+          <TabsContent value="builder" className="space-y-6">
 
-        {/* Protocol Completion Status */}
-        <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5">
+            <Card>
+              <CardHeader>
+                <CardTitle>Protocol Builder</CardTitle>
+                <CardDescription>
+                  Create your personalized wellness protocol with templates or build from scratch
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ProtocolBuilderDialog />
+                <p className="text-sm text-muted-foreground mt-4">
+                  Build protocols that include: Supplements, Nutrition plans, Exercise routines, Therapies (red light, cold plunge, sauna), and Daily habits
+                </p>
+              </CardContent>
+            </Card>
+
+          {/* Supplement Recommendations */}
+          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
           <CardHeader>
-            <CardTitle>Protocol Completion</CardTitle>
-            <CardDescription>Track your wellness supplement protocol</CardDescription>
+            <CardTitle>Supplement Recommendations</CardTitle>
+            <CardDescription>Based on your symptom assessments</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -276,7 +378,7 @@ const MyProtocol = () => {
               </p>
             </div>
           </CardContent>
-        </Card>
+            </Card>
 
         {/* Supplements Recommended for Your Symptoms */}
         <Card className="mb-8">
