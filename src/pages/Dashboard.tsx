@@ -324,7 +324,20 @@ const Dashboard = () => {
           <>
         {/* Journey Map */}
         <div className="mb-6">
-          <JourneyMap currentStep={activeTab as any} compact />
+          <JourneyMap 
+            currentStep={activeTab as any} 
+            compact 
+            onStepClick={(step) => {
+              const stepToTabMap = {
+                'goals': 'goals',
+                'assess': 'today',
+                'plan': 'protocols',
+                'track': 'progress',
+                'review': 'insights'
+              };
+              setActiveTab(stepToTabMap[step]);
+            }}
+          />
         </div>
 
         {/* Tabs for My Health Hub */}

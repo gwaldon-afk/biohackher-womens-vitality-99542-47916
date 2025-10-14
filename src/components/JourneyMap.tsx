@@ -7,9 +7,10 @@ import { useProtocols } from "@/hooks/useProtocols";
 interface JourneyMapProps {
   currentStep?: 'goals' | 'assess' | 'plan' | 'track' | 'review';
   compact?: boolean;
+  onStepClick?: (step: 'goals' | 'assess' | 'plan' | 'track' | 'review') => void;
 }
 
-export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMapProps) => {
+export const JourneyMap = ({ currentStep = 'goals', compact = false, onStepClick }: JourneyMapProps) => {
   const { goals } = useGoals();
   const { dailyScores } = useLISData();
   const { protocols } = useProtocols();
@@ -71,9 +72,11 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
           return (
             <>
               <div 
-                key={step.id} 
+                key={step.id}
+                onClick={() => onStepClick?.(step.id as any)}
                 className={cn(
                   "flex items-center justify-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all flex-1",
+                  onStepClick && "cursor-pointer hover:opacity-80",
                   isCurrent && "bg-primary text-primary-foreground shadow-sm",
                   !isCurrent && isCompleted && "bg-green-100 text-green-700",
                   !isCurrent && !isCompleted && "bg-muted text-muted-foreground"
@@ -114,8 +117,10 @@ export const JourneyMap = ({ currentStep = 'goals', compact = false }: JourneyMa
           return (
             <div
               key={step.id}
+              onClick={() => onStepClick?.(step.id as any)}
               className={cn(
                 "relative flex flex-col items-center text-center p-3 rounded-lg border-2 transition-all flex-1",
+                onStepClick && "cursor-pointer hover:opacity-80",
                 isCurrent && "border-primary bg-primary/5 shadow-sm",
                 !isCurrent && isCompleted && "border-green-500 bg-green-50",
                 !isCurrent && !isCompleted && isPast && "border-amber-500 bg-amber-50",
