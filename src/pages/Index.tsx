@@ -114,26 +114,51 @@ const Index = () => {
         </div>
       </section>
 
-      {/* What You'll Get */}
+      {/* Your Free Assessment Includes */}
       <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-primary/5">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">What You'll Get</h2>
+              <h2 className="text-4xl font-bold mb-4">Your Free Assessment Includes</h2>
+              <p className="text-muted-foreground">See exactly where you stand—no signup required</p>
             </div>
 
-            <div className="grid gap-4 max-w-2xl mx-auto">
+            <div className="grid gap-4 max-w-2xl mx-auto mb-16">
               {[
-                "Personalized 7-Day Protocol",
-                "Science-Backed Supplement Recommendations",
-                "Daily Progress Tracking & Insights",
-                "AI Health Assistant Available 24/7"
+                "Your Longevity Impact Score (0-100)",
+                "Risk Category Assessment (Optimal/Protective/Moderate/High Risk)",
+                "Biological Age Estimation",
+                "Top 3 Strengths & Areas for Improvement",
+                "Future Aging Trajectory Projections (5 & 20 year)"
               ].map((benefit, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-4 bg-background rounded-lg border">
-                  <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
+                  <Target className="h-5 w-5 text-primary flex-shrink-0" />
                   <span className="text-lg">{benefit}</span>
                 </div>
               ))}
+            </div>
+
+            {/* Create Account to Unlock */}
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">Create Free Account to Unlock</h3>
+                <p className="text-muted-foreground">Save your results and access personalized protocols</p>
+              </div>
+              
+              <div className="grid gap-4">
+                {[
+                  "Save & Track Your Progress",
+                  "Personalized 7-Day Protocol",
+                  "Science-Backed Supplement Recommendations",
+                  "AI Health Assistant (5 free questions/day)",
+                  "Monthly Reassessments"
+                ].map((benefit, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span className="text-lg">{benefit}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -144,29 +169,30 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl lg:text-5xl font-bold">
-              Ready to Optimize Your <span className="text-primary">Health</span>?
+              Get Your Free Longevity Score in <span className="text-primary">5 Minutes</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join 10,000+ women taking control of their health with science-backed protocols
+              See exactly where you stand on Brain, Body, Balance & Beauty
             </p>
-            <Button 
-              size="lg" 
-              className="text-xl px-10 py-8 h-auto shadow-lg"
-              onClick={() => navigate("/guest-lis-assessment")}
-            >
-              <Target className="h-6 w-6 mr-2" />
-              Start Your Free Assessment
-            </Button>
+            <div className="space-y-4">
+              <Button 
+                size="lg" 
+                className="text-xl px-10 py-8 h-auto shadow-lg"
+                onClick={() => navigate("/guest-lis-assessment")}
+              >
+                <Target className="h-6 w-6 mr-2" />
+                Start Free Assessment →
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                No signup required • See results instantly • Create account later to save progress
+              </p>
+            </div>
             
-            {/* Trust Signals */}
+            {/* Trust Signals - Only Factual */}
             <div className="flex items-center justify-center gap-8 pt-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
-                <span>500+ Peer-Reviewed Studies</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary" />
-                <span>10,000+ Women Trust Us</span>
+                <span>Evidence-Based Protocols</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" />
