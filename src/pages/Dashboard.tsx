@@ -10,7 +10,6 @@ import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { getOverallHealthAnalysis, getSymptomName, getTopRecommendations } from "@/utils/healthAnalysis";
@@ -25,6 +24,9 @@ import LISInputForm from "@/components/LISInputForm";
 import FirstTimeDailyScoreWelcome from "@/components/FirstTimeDailyScoreWelcome";
 import { TodayProtocolWidget } from "@/components/TodayProtocolWidget";
 import { MemberProgressCard } from "@/components/MemberProgressCard";
+import { useAssessments, useDailyScores, useUserSymptoms } from "@/queries";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 interface DashboardData {
   currentScore: number;
@@ -56,100 +58,30 @@ const Dashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
-  const [data, setData] = useState<DashboardData>({
-    currentScore: 72.5,
-    weeklyTrend: 'up',
-    lastAssessment: '3 days ago',
-    totalAssessments: 8
-  });
   const [loading, setLoading] = useState(false);
-  const [recentAssessments, setRecentAssessments] = useState<SymptomAssessment[]>([]);
-  const [activeSymptoms, setActiveSymptoms] = useState<UserSymptom[]>([]);
-  const [loadingSymptoms, setLoadingSymptoms] = useState(false);
-  const [dailyScoreCount, setDailyScoreCount] = useState<number | null>(null);
-  const [loadingScoreCount, setLoadingScoreCount] = useState(true);
   
   const lisData = useLISData();
+
+  // Use React Query hooks
+  const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
+  const { data: dailyScores = [], isLoading: loadingDailyScores } = useDailyScores(user?.id);
+  const { data: userSymptoms = [], isLoading: loadingSymptoms } = useUserSymptoms(user?.id);
 
   // Check if we should auto-open the daily submission modal
   const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
 
-  // Fetch daily score count to determine if user is new
-  useEffect(() => {
-    if (user) {
-      fetchDailyScoreCount();
-    } else if (!authLoading) {
-      // Auth finished loading but no user - stop loading
-      setLoadingScoreCount(false);
+  // Get unique assessments by symptom type (most recent for each type)
+  const recentAssessments = assessments?.reduce((acc: SymptomAssessment[], current) => {
+    if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+      acc.push(current);
     }
-  }, [user, authLoading]);
+    return acc;
+  }, []).slice(0, 5) || [];
 
-  const fetchDailyScoreCount = async () => {
-    if (!user) return;
-    
-    setLoadingScoreCount(true);
-    try {
-      const { count, error } = await supabase
-        .from('daily_scores')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id);
+  const activeSymptoms = userSymptoms?.filter(s => s.is_active) || [];
+  const dailyScoreCount = dailyScores?.length || 0;
 
-      if (error) throw error;
-      setDailyScoreCount(count || 0);
-    } catch (error) {
-      console.error('Error fetching daily score count:', error);
-      setDailyScoreCount(0);
-    } finally {
-      setLoadingScoreCount(false);
-    }
-  };
-
-  // Fetch user's symptoms and assessments
-  useEffect(() => {
-    if (user) {
-      fetchSymptomData();
-    }
-  }, [user]);
-
-  const fetchSymptomData = async () => {
-    if (!user) return;
-    
-    setLoadingSymptoms(true);
-    try {
-      // Fetch recent symptom assessments - one per symptom type for variety
-      const { data: assessments, error: assessmentError } = await supabase
-        .from('symptom_assessments')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false });
-
-      if (assessmentError) throw assessmentError;
-      
-      // Get unique assessments by symptom type (most recent for each type)
-      const uniqueAssessments = assessments?.reduce((acc: SymptomAssessment[], current) => {
-        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
-          acc.push(current);
-        }
-        return acc;
-      }, []).slice(0, 5) || [];
-      
-      setRecentAssessments(uniqueAssessments);
-
-      // Fetch active symptoms
-      const { data: symptoms, error: symptomsError } = await supabase
-        .from('user_symptoms')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('is_active', true);
-
-      if (symptomsError) throw symptomsError;
-      setActiveSymptoms(symptoms || []);
-    } catch (error) {
-      console.error('Error fetching symptom data:', error);
-    } finally {
-      setLoadingSymptoms(false);
-    }
-  };
+  const isLoading = authLoading || loadingAssessments || loadingDailyScores || loadingSymptoms;
 
   const getSymptomIcon = (symptomId: string) => {
     const iconMap: Record<string, any> = {
@@ -358,20 +290,16 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        
+        <main className="container mx-auto px-4 py-8 max-w-6xl">
 
-        {/* Loading State */}
-        {(authLoading || loadingScoreCount) ? (
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="text-center space-y-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground">Loading your dashboard...</p>
-            </div>
-          </div>
-        ) : dailyScoreCount === 0 ? (
+          {/* Loading State */}
+          {isLoading ? (
+            <DashboardSkeleton />
+          ) : dailyScoreCount === 0 ? (
           /* First-Time User Simplified View */
           <>
             <div className="text-center mb-8">
@@ -975,6 +903,7 @@ const Dashboard = () => {
         )}
       </main>
     </div>
+    </ErrorBoundary>
   );
 };
 

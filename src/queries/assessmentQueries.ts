@@ -9,7 +9,55 @@ export const assessmentKeys = {
   all: ['assessments'] as const,
   completions: (userId: string) => [...assessmentKeys.all, 'completions', userId] as const,
   symptoms: (userId: string) => [...assessmentKeys.all, 'symptoms', userId] as const,
+  dailyScores: (userId: string) => [...assessmentKeys.all, 'dailyScores', userId] as const,
+  userSymptoms: (userId: string) => [...assessmentKeys.all, 'userSymptoms', userId] as const,
 };
+
+// Fetch symptom assessments (alias for convenience)
+export function useAssessments(userId?: string) {
+  return useSymptomAssessments(userId);
+}
+
+// Fetch daily scores
+export function useDailyScores(userId?: string) {
+  return useQuery({
+    queryKey: assessmentKeys.dailyScores(userId || ''),
+    queryFn: async () => {
+      if (!userId) return [];
+      
+      const { data, error } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', userId)
+        .order('score_date', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!userId,
+    staleTime: 60000,
+  });
+}
+
+// Fetch user symptoms
+export function useUserSymptoms(userId?: string) {
+  return useQuery({
+    queryKey: assessmentKeys.userSymptoms(userId || ''),
+    queryFn: async () => {
+      if (!userId) return [];
+      
+      const { data, error } = await supabase
+        .from('user_symptoms')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!userId,
+    staleTime: 60000,
+  });
+}
 
 // Fetch assessment completions
 export function useAssessmentCompletions(userId: string | undefined) {

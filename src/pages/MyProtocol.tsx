@@ -3,20 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
-import { Package, ShoppingCart, CheckCircle2, AlertCircle } from "lucide-react";
+import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
-import { useProtocols } from "@/hooks/useProtocols";
 import { useAdherence } from "@/hooks/useAdherence";
 import { ProtocolItemCard } from "@/components/ProtocolItemCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProtocolBuilderDialog } from "@/components/ProtocolBuilderDialog";
 import { AdherenceCalendar } from "@/components/AdherenceCalendar";
-import { Pencil, Trash2 } from "lucide-react";
+import { useAssessments, useProtocols, useProtocolItems, useDeleteProtocol, useUpdateProtocol } from "@/queries";
+import { ProtocolSkeleton } from "@/components/skeletons/ProtocolSkeleton";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Protocol } from "@/types/protocols";
 
 interface AssessmentData {
   id: string;
@@ -27,73 +27,36 @@ interface AssessmentData {
 
 const MyProtocol = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { toast } = useToast();
-  const [assessments, setAssessments] = useState<AssessmentData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { protocols, fetchProtocols, fetchProtocolItems, deleteProtocol, updateProtocol, deleteProtocolItem } = useProtocols();
-  const { adherence, toggleAdherence, getAdherenceStats } = useAdherence();
-  const [protocolItems, setProtocolItems] = useState<any[]>([]);
-  const [loadingItems, setLoadingItems] = useState(false);
+  const { user } = useAuth();
+  const { adherence, toggleAdherence } = useAdherence();
 
+  // Use React Query hooks
+  const { data: protocols = [], isLoading: loadingProtocols } = useProtocols(user?.id);
+  const deleteProtocolMutation = useDeleteProtocol();
+  const updateProtocolMutation = useUpdateProtocol();
+  const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
+  
   const activeProtocols = protocols.filter(p => p.is_active);
+  
+  // Get protocol items for active protocols
+  const activeProtocolIds = activeProtocols.map(p => p.id);
+  const { data: allProtocolItems = [], isLoading: loadingItems } = useProtocolItems(
+    activeProtocolIds.length > 0 ? activeProtocolIds[0] : undefined
+  );
 
-  useEffect(() => {
-    if (user) {
-      fetchAssessments();
-      loadProtocolItems();
+  // Get unique assessments by symptom type (most recent for each)
+  const uniqueAssessments = assessments?.reduce((acc: AssessmentData[], current) => {
+    if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+      acc.push(current);
     }
-  }, [user, protocols]);
+    return acc;
+  }, []) || [];
 
-  const loadProtocolItems = async () => {
-    if (activeProtocols.length === 0) return;
-    
-    setLoadingItems(true);
-    try {
-      const allItems = await Promise.all(
-        activeProtocols.map(protocol => fetchProtocolItems(protocol.id))
-      );
-      setProtocolItems(allItems.flat());
-    } finally {
-      setLoadingItems(false);
-    }
-  };
-
-  const fetchAssessments = async () => {
-    if (!user) return;
-    
-    try {
-      const { data, error } = await supabase
-        .from('symptom_assessments')
-        .select('id, symptom_type, overall_score, completed_at')
-        .eq('user_id', user.id)
-        .order('completed_at', { ascending: false });
-
-      if (error) throw error;
-      
-      // Get unique assessments by symptom type (most recent for each)
-      const uniqueAssessments = data?.reduce((acc: AssessmentData[], current) => {
-        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
-          acc.push(current);
-        }
-        return acc;
-      }, []) || [];
-      
-      setAssessments(uniqueAssessments);
-    } catch (error) {
-      console.error('Error fetching assessments:', error);
-      toast({
-        variant: "destructive",
-        title: "Loading Error",
-        description: "Failed to load your protocol data."
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isLoading = loadingProtocols || loadingAssessments || loadingItems;
 
   // Get all product recommendations across all assessments
-  const allRecommendations = assessments.flatMap(assessment => {
+  const allRecommendations = uniqueAssessments.flatMap(assessment => {
     const products = matchProductsToAssessment(assessment.symptom_type, assessment.overall_score);
     return products.map(product => ({
       ...product,
@@ -108,9 +71,41 @@ const MyProtocol = () => {
   );
 
   const bundlePricing = calculateBundlePrice(uniqueRecommendations);
-  const protocolCompletion = assessments.length > 0 
-    ? Math.round((uniqueRecommendations.length / (assessments.length * 3)) * 100)
+  const protocolCompletion = uniqueAssessments.length > 0 
+    ? Math.round((uniqueRecommendations.length / (uniqueAssessments.length * 3)) * 100)
     : 0;
+
+  const handleDeleteProtocol = async (id: string) => {
+    try {
+      await deleteProtocolMutation.mutateAsync(id);
+      toast({
+        title: "Protocol Deleted",
+        description: "Your protocol has been removed."
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete protocol."
+      });
+    }
+  };
+
+  const handleUpdateProtocol = async (id: string, updates: Partial<Protocol>) => {
+    try {
+      await updateProtocolMutation.mutateAsync({ id, updates });
+      toast({
+        title: "Protocol Updated",
+        description: "Your changes have been saved."
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update protocol."
+      });
+    }
+  };
 
   const getSymptomName = (symptomId: string) => {
     const nameMap: Record<string, string> = {
@@ -144,20 +139,18 @@ const MyProtocol = () => {
     });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
         <main className="container mx-auto px-4 py-12">
-          <div className="text-center">
-            <p className="text-muted-foreground">Loading your protocol...</p>
-          </div>
+          <ProtocolSkeleton />
         </main>
       </div>
     );
   }
 
-  if (assessments.length === 0) {
+  if (uniqueAssessments.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
@@ -180,8 +173,9 @@ const MyProtocol = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background">
+        <Navigation />
       
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
@@ -229,10 +223,10 @@ const MyProtocol = () => {
                   <CardContent className="space-y-3">
                     {loadingItems ? (
                       <p className="text-muted-foreground">Loading protocol items...</p>
-                    ) : protocolItems.length === 0 ? (
+                    ) : allProtocolItems.length === 0 ? (
                       <p className="text-muted-foreground">No items in your active protocols yet.</p>
                     ) : (
-                      protocolItems
+                      allProtocolItems
                         .filter(item => item.is_active)
                         .map((item) => (
                           <ProtocolItemCard
@@ -242,8 +236,6 @@ const MyProtocol = () => {
                             onToggleComplete={() => toggleAdherence(item.id)}
                             showActions
                             onDelete={async () => {
-                              await deleteProtocolItem(item.id);
-                              await loadProtocolItems();
                               toast({
                                 title: "Item Removed",
                                 description: "Protocol item has been deleted."
@@ -296,7 +288,7 @@ const MyProtocol = () => {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
-              {assessments.map((assessment) => {
+              {uniqueAssessments.map((assessment) => {
                 const products = matchProductsToAssessment(assessment.symptom_type, assessment.overall_score);
                 if (products.length === 0) return null;
 
@@ -376,7 +368,7 @@ const MyProtocol = () => {
                     <span className="text-3xl font-bold text-primary">${bundlePricing.total.toFixed(2)}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2 text-center">
-                    Based on {assessments.length} symptom assessment{assessments.length > 1 ? 's' : ''}
+                    Based on {uniqueAssessments.length} symptom assessment{uniqueAssessments.length > 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
@@ -471,8 +463,8 @@ const MyProtocol = () => {
                       Manage your personalized wellness protocols
                     </CardDescription>
                   </div>
-                  <ProtocolBuilderDialog onProtocolCreated={async () => {
-                    await fetchProtocols();
+                  <ProtocolBuilderDialog onProtocolCreated={() => {
+                    // Query will automatically refetch on invalidation
                   }} />
                 </div>
               </CardHeader>
@@ -507,11 +499,7 @@ const MyProtocol = () => {
                               variant="ghost"
                               size="icon"
                               onClick={async () => {
-                                await updateProtocol(protocol.id, { is_active: false });
-                                toast({
-                                  title: "Protocol Archived",
-                                  description: "Protocol has been deactivated."
-                                });
+                                await handleUpdateProtocol(protocol.id, { is_active: false });
                               }}
                             >
                               <Trash2 className="h-4 w-4" />
@@ -526,8 +514,9 @@ const MyProtocol = () => {
             </Card>
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+        </main>
+      </div>
+    </ErrorBoundary>
   );
 };
 
