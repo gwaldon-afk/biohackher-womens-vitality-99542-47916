@@ -1,7 +1,19 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { 
   Target, 
   Pill, 
@@ -13,7 +25,9 @@ import {
   CheckCircle2,
   RefreshCw,
   Sparkles,
-  Info
+  Info,
+  Edit,
+  Plus
 } from "lucide-react";
 import {
   Tooltip,
@@ -55,6 +69,8 @@ interface GoalSuggestionCardProps {
   suggestion: GoalSuggestion;
   onCreateGoal: () => void;
   onRegenerate: () => void;
+  onSuggestionUpdate?: (updatedSuggestion: GoalSuggestion) => void;
+  onAddToolkitItems?: () => void;
 }
 
 const INTERVENTION_ICONS = {
@@ -70,14 +86,72 @@ const PRIORITY_COLORS = {
   low: 'bg-green-500/10 text-green-700 dark:text-green-400',
 };
 
-export function GoalSuggestionCard({ suggestion, onCreateGoal, onRegenerate }: GoalSuggestionCardProps) {
+export function GoalSuggestionCard({ 
+  suggestion, 
+  onCreateGoal, 
+  onRegenerate,
+  onSuggestionUpdate,
+  onAddToolkitItems 
+}: GoalSuggestionCardProps) {
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [tempTitle, setTempTitle] = useState(suggestion.title);
+  const [tempTarget, setTempTarget] = useState(suggestion.healthspan_target);
+
+  const handleTitleSave = () => {
+    if (onSuggestionUpdate) {
+      onSuggestionUpdate({ ...suggestion, title: tempTitle });
+    }
+    setEditingTitle(false);
+  };
+
+  const handleTargetSave = () => {
+    if (onSuggestionUpdate) {
+      onSuggestionUpdate({ 
+        ...suggestion, 
+        healthspan_target: tempTarget 
+      });
+    }
+    setEditingTarget(false);
+  };
+
   return (
     <Card className="border-2">
       <CardHeader className="space-y-4">
         <div className="flex items-start justify-between">
           <div className="space-y-1 flex-1">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-2xl">{suggestion.title}</CardTitle>
+              <Dialog open={editingTitle} onOpenChange={setEditingTitle}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                    <CardTitle className="text-2xl hover:text-primary transition-colors">
+                      {suggestion.title}
+                    </CardTitle>
+                    <Edit className="h-4 w-4 ml-2 text-muted-foreground" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Goal Title</DialogTitle>
+                    <DialogDescription>
+                      Make this goal title more personal to you
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Goal Title</Label>
+                      <Input 
+                        value={tempTitle}
+                        onChange={(e) => setTempTitle(e.target.value)}
+                        placeholder="Enter goal title"
+                      />
+                    </div>
+                    <Button onClick={handleTitleSave} className="w-full">
+                      Save Changes
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Badge variant="secondary" className="capitalize">
                 {suggestion.pillar_category}
               </Badge>
@@ -104,19 +178,63 @@ export function GoalSuggestionCard({ suggestion, onCreateGoal, onRegenerate }: G
       <CardContent className="space-y-6">
         {/* Healthspan Target */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-lg">Your Target</h3>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p className="text-sm">{suggestion.healthspan_target.reasoning}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Target className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-lg">Your Target</h3>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-sm">{suggestion.healthspan_target.reasoning}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <Dialog open={editingTarget} onOpenChange={setEditingTarget}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Target</DialogTitle>
+                  <DialogDescription>
+                    Adjust your goal target to match your preferences
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Metric</Label>
+                    <Input 
+                      value={tempTarget.metric}
+                      onChange={(e) => setTempTarget({ ...tempTarget, metric: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Target Value</Label>
+                    <Input 
+                      value={tempTarget.target_value}
+                      onChange={(e) => setTempTarget({ ...tempTarget, target_value: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Timeframe (days)</Label>
+                    <Input 
+                      type="number"
+                      value={tempTarget.timeframe_days}
+                      onChange={(e) => setTempTarget({ ...tempTarget, timeframe_days: parseInt(e.target.value) })}
+                    />
+                  </div>
+                  <Button onClick={handleTargetSave} className="w-full">
+                    Save Changes
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           <Card className="bg-primary/5 border-primary/20">
             <CardContent className="pt-6">
@@ -137,9 +255,17 @@ export function GoalSuggestionCard({ suggestion, onCreateGoal, onRegenerate }: G
 
         {/* Interventions */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Activity className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-lg">Your Action Plan</h3>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold text-lg">Your Action Plan</h3>
+            </div>
+            {onAddToolkitItems && (
+              <Button variant="outline" size="sm" onClick={onAddToolkitItems}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add from Toolkit
+              </Button>
+            )}
           </div>
           <div className="space-y-3">
             {suggestion.interventions.map((intervention, index) => {

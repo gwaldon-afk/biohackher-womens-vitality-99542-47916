@@ -12,6 +12,9 @@ import { ArrowLeft, Sparkles, Loader2, Brain, Zap, Heart, Flower2 } from "lucide
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GoalSuggestionCard } from "./GoalSuggestionCard";
+import { AIGoalChat } from "./AIGoalChat";
+import { ToolkitSelectionDialog } from "./ToolkitSelectionDialog";
+import { ToolkitItemWithCategory } from "@/services/toolkitService";
 
 const PILLAR_OPTIONS = [
   { value: 'brain', label: 'Brain', icon: Brain, description: 'Cognitive health, focus, memory' },
@@ -39,6 +42,7 @@ export default function AIGoalWizard() {
   const [selectedPillar, setSelectedPillar] = useState<string>("");
   const [aiSuggestion, setAiSuggestion] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showToolkitDialog, setShowToolkitDialog] = useState(false);
 
   const handleExampleClick = (example: typeof GOAL_EXAMPLES[0]) => {
     setGoalDescription(example.text);
@@ -123,6 +127,33 @@ export default function AIGoalWizard() {
   const handleRegenerate = () => {
     setStep("input");
     setAiSuggestion(null);
+  };
+
+  const handleSuggestionUpdate = (updatedSuggestion: any) => {
+    setAiSuggestion(updatedSuggestion);
+  };
+
+  const handleToolkitItemsSelected = (items: ToolkitItemWithCategory[]) => {
+    // Convert toolkit items to interventions format
+    const newInterventions = items.map(item => ({
+      name: item.name,
+      type: item.category.name.toLowerCase().includes('supplement') ? 'supplement' : 
+            item.category.name.toLowerCase().includes('nutrition') ? 'nutrition' : 'lifestyle',
+      dosage: item.protocols?.[0]?.dosage || 'As recommended',
+      reasoning: item.description,
+      timing: item.protocols?.[0]?.timing || 'Daily',
+      priority: 'medium' as const,
+    }));
+
+    setAiSuggestion({
+      ...aiSuggestion,
+      interventions: [...aiSuggestion.interventions, ...newInterventions],
+    });
+
+    toast({
+      title: "Interventions added",
+      description: `Added ${items.length} item${items.length !== 1 ? 's' : ''} to your goal`,
+    });
   };
 
   return (
@@ -251,6 +282,20 @@ export default function AIGoalWizard() {
             suggestion={aiSuggestion}
             onCreateGoal={handleCreateGoal}
             onRegenerate={handleRegenerate}
+            onSuggestionUpdate={handleSuggestionUpdate}
+            onAddToolkitItems={() => setShowToolkitDialog(true)}
+          />
+
+          <AIGoalChat 
+            currentSuggestion={aiSuggestion}
+            onSuggestionUpdate={handleSuggestionUpdate}
+          />
+
+          <ToolkitSelectionDialog
+            open={showToolkitDialog}
+            onOpenChange={setShowToolkitDialog}
+            pillarFilter={selectedPillar}
+            onItemsSelected={handleToolkitItemsSelected}
           />
         </div>
       )}

@@ -12,7 +12,15 @@ serve(async (req) => {
   }
 
   try {
-    const { goalDescription, pillar, userProfile, assessmentData } = await req.json();
+    const { 
+      goalDescription, 
+      pillar, 
+      userProfile, 
+      assessmentData,
+      currentGoal,
+      refinementRequest,
+      conversationHistory 
+    } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -30,7 +38,20 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Build context for AI
-    const contextPrompt = `
+    const isRefinement = !!refinementRequest && !!currentGoal;
+    
+    const contextPrompt = isRefinement ? `
+The user wants to refine their existing health goal.
+
+CURRENT GOAL:
+${JSON.stringify(currentGoal, null, 2)}
+
+USER'S REFINEMENT REQUEST:
+"${refinementRequest}"
+
+${conversationHistory ? `CONVERSATION HISTORY:\n${conversationHistory.map((m: any) => `${m.role}: ${m.content}`).join('\n')}` : ''}
+
+Please update the goal plan based on the user's request. Keep the same structure and only modify what they asked for. Make sure the changes are clear and maintain the quality of the plan.` : `
 User wants to create a health goal: "${goalDescription}"
 Health Pillar: ${pillar || 'Not specified'}
 ${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
