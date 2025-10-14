@@ -29,11 +29,10 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simplified core navigation - 8 key pages
+  // Simplified core navigation - 7 key pages
   const coreNavItems = [
     { href: "/", label: t('navigation.home') },
-    { href: "/dashboard", label: t('navigation.dashboard') },
-    { href: "/my-protocol", label: "7-Day Plan" },
+    { href: "/dashboard", label: "My Health" },
     { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },

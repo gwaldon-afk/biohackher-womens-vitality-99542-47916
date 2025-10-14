@@ -296,6 +296,16 @@ const Dashboard = () => {
         
         <main className="container mx-auto px-4 py-8 max-w-6xl">
 
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">
+              My <span className="text-primary">Health Hub</span>
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              Your complete wellness dashboard - track progress, manage protocols, and get insights
+            </p>
+          </div>
+
           {/* Loading State */}
           {isLoading ? (
             <DashboardSkeleton />
@@ -410,8 +420,47 @@ const Dashboard = () => {
             <TabsTrigger value="history">History</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-8">
+            {/* Today Tab - Daily Actions */}
+            <TabsContent value="today" className="space-y-6">
+              {/* Daily LIS Input */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Today's Health Check</CardTitle>
+                  <CardDescription>
+                    Track your daily wellness score in 6 key areas
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <LISInputForm onScoreCalculated={() => lisData.refetch()}>
+                    <Button size="lg" className="w-full">
+                      <Activity className="mr-2 h-5 w-5" />
+                      Submit Today's Score
+                    </Button>
+                  </LISInputForm>
+                </CardContent>
+              </Card>
+
+              {/* Today's Protocol Widget */}
+              <TodayProtocolWidget />
+            </TabsContent>
+
+            {/* Progress Tab - Tracking & Streaks */}
+            <TabsContent value="progress" className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                <ProgressTracker />
+                <StreakCard 
+                  activityType="daily_score"
+                  title="Daily Check-In Streak"
+                  description="Keep up your daily wellness tracking"
+                />
+              </div>
+              
+              {/* Member Progress Card */}
+              <MemberProgressCard />
+            </TabsContent>
+
+            {/* Insights Tab - Analysis & Reports */}
+            <TabsContent value="insights" className="space-y-8">
 
         {/* Baseline Reassessment Prompt */}
         <BaselineReassessmentPrompt />
@@ -875,26 +924,27 @@ const Dashboard = () => {
         </div>
           </TabsContent>
 
-          {/* Reports Tab */}
-          <TabsContent value="reports">
-            <Reports />
-          </TabsContent>
-
-          {/* History Tab */}
-          <TabsContent value="history">
+          {/* Protocols Tab - Protocol Management */}
+          <TabsContent value="protocols" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Assessment History</CardTitle>
-                <CardDescription>View all your past assessments and track changes over time</CardDescription>
+                <CardTitle>My Wellness Protocols</CardTitle>
+                <CardDescription>
+                  Manage your personalized health protocols and recommendations
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8">
-                  <History className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground mb-4">Your detailed assessment history</p>
-                  <Button onClick={() => navigate('/assessment-history')}>
-                    View Full History
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => navigate('/my-protocol')}
+                  className="w-full"
+                  size="lg"
+                >
+                  <Pill className="mr-2 h-5 w-5" />
+                  View Full Protocol Manager
+                </Button>
+                <p className="text-sm text-muted-foreground mt-4 text-center">
+                  Access your complete protocol suite, supplement recommendations, and adherence tracking
+                </p>
               </CardContent>
             </Card>
           </TabsContent>

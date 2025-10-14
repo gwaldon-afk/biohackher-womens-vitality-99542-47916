@@ -181,10 +181,10 @@ const MyProtocol = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">
-            My <span className="text-primary">Personalized Protocol</span>
+            Protocol <span className="text-primary">Manager</span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Your complete wellness protocol and daily tracking
+            Complete protocol suite with adherence tracking and recommendations
           </p>
         </div>
 
