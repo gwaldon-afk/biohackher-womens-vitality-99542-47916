@@ -165,6 +165,12 @@ When generating or refining goals:
 10. When users request clarification, explain which pillars are affected and why
 11. When users request changes, preserve the HACK framework while incorporating their feedback
 
+CRITICAL: If a goal seems broad or unclear, NEVER just say "this is too broad" or reject it. Instead:
+- Make an intelligent interpretation of what the user likely means
+- Reframe it into something specific and actionable
+- If multiple interpretations are possible, choose the most common/beneficial one
+- Focus on creating a practical, evidence-based plan they can actually follow
+
 For reframe requests: Return simplified JSON with just title, description, pillar, and healthspanTarget.
 For full plans: Return complete JSON with all HACK elements.
 
