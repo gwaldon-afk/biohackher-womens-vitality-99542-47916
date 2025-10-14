@@ -40,6 +40,7 @@ import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
 import GoalWizard from "./components/GoalWizard";
+import GoalDetail from "./pages/GoalDetail";
 import GuestGoalsPreview from "./pages/GuestGoalsPreview";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
@@ -117,6 +118,7 @@ const App = () => (
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             <Route path="/my-goals/wizard" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />
+            <Route path="/my-goals/:goalId" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

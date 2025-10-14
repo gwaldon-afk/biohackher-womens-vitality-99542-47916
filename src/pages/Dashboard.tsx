@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles } from "lucide-react";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles, Target } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -28,6 +28,12 @@ import { MemberProgressCard } from "@/components/MemberProgressCard";
 import { useAssessments, useDailyScores, useUserSymptoms } from "@/queries";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { GoalsSummaryView } from "@/components/GoalsSummaryView";
+import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
+import { JourneyMap } from "@/components/JourneyMap";
+import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
+import { useGoals } from "@/hooks/useGoals";
+import { GoalInsightsCard } from "@/components/GoalInsightsCard";
 
 interface DashboardData {
   currentScore: number;
@@ -58,7 +64,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'today');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'goals');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -67,6 +73,10 @@ const Dashboard = () => {
   const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
   const { data: dailyScores = [], isLoading: loadingDailyScores } = useDailyScores(user?.id);
   const { data: userSymptoms = [], isLoading: loadingSymptoms } = useUserSymptoms(user?.id);
+
+  // Fetch goals data
+  const { goals } = useGoals();
+  const activeGoals = goals.filter((g) => g.status === "active");
 
   // Check if we should auto-open the daily submission modal
   const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
@@ -312,17 +322,37 @@ const Dashboard = () => {
             <DashboardSkeleton />
           ) : (
           <>
+        {/* Journey Map */}
+        <div className="mb-6">
+          <JourneyMap currentStep={activeTab as any} compact />
+        </div>
+
         {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsTrigger value="goals">
+              <Target className="h-4 w-4 mr-2" />
+              Goals
+            </TabsTrigger>
             <TabsTrigger value="today">Today</TabsTrigger>
             <TabsTrigger value="progress">Progress</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
             <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
+            {/* Goals Tab - Foundation of Journey */}
+            <TabsContent value="goals" className="space-y-6">
+              <GoalsSummaryView />
+            </TabsContent>
+
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
+              {/* Goal check-in alerts */}
+              <GoalCheckInAlert />
+
+              {/* Working towards goals widget */}
+              <GoalWorkingTowards />
+
               {/* First-time user welcome message */}
               {dailyScoreCount === 0 && (
                 <Alert className="border-primary/20 bg-primary/5">
@@ -441,11 +471,49 @@ const Dashboard = () => {
                 </Card>
               )}
 
+              {/* Goal Progress Report */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Goal Progress Report
+                  </CardTitle>
+                  <CardDescription>
+                    How your daily tracking correlates with your health goals
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    {activeGoals.length > 0 
+                      ? `Tracking ${activeGoals.length} active goal${activeGoals.length > 1 ? 's' : ''}. Continue your daily LIS submissions to see progress correlations.`
+                      : 'Set goals to see how your daily actions drive progress.'}
+                  </p>
+                  <div className="flex gap-2 mt-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate('/my-goals')}
+                    >
+                      {activeGoals.length > 0 ? 'View Goals' : 'Create Goal'}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate('/reports')}
+                    >
+                      View Reports
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* AI Insights & Reports Section */}
               <div className="grid md:grid-cols-2 gap-6">
+                <GoalInsightsCard />
                 <AIInsightsCard />
-                <MonthlyReportCard isPremium={false} />
               </div>
+
+              <MonthlyReportCard isPremium={false} />
 
               {/* Personalised Health Assessment */}
               <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">

@@ -345,8 +345,8 @@ const Onboarding = () => {
         description: `Your baseline Longevity Impact Score: ${scoreData.finalScore}`,
       });
 
-      // Navigate to dashboard
-      navigate("/dashboard");
+      // Navigate to dashboard Goals tab to set first goals
+      navigate("/dashboard?tab=goals");
     } catch (error) {
       console.error('Error completing onboarding:', error);
       toast({

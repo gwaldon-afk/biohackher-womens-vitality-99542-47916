@@ -29,10 +29,11 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simplified core navigation - 7 key pages
+  // Simplified core navigation - 8 key pages with Goals prominent
   const coreNavItems = [
     { href: "/", label: t('navigation.home') },
     { href: "/dashboard", label: "My Health" },
+    { href: "/my-goals", label: "My Goals" },
     { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },
@@ -105,12 +106,6 @@ const Navigation = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
-                <DropdownMenuItem asChild>
-                  <Link to="/my-goals" className="flex items-center cursor-pointer text-xs">
-                    <Target className="h-3 w-3 mr-2" />
-                    My Goals
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
                     <Award className="h-3 w-3 mr-2" />
