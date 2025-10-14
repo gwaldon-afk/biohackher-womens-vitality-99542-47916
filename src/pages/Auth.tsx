@@ -55,11 +55,24 @@ const Auth = () => {
     },
   });
 
-  // Redirect if already authenticated and check for health profile
+  // Redirect if already authenticated and check for health profile AND onboarding
   // BUT: Don't redirect if coming from guest session - let them complete signup
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
       if (user && !guestSessionId) {
+        // Check onboarding status first
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        // If onboarding not completed, redirect to onboarding
+        if (profile && !profile.onboarding_completed) {
+          navigate('/onboarding');
+          return;
+        }
+
         // Check if user has completed LIS 2.0 setup
         const { data: healthProfile } = await supabase
           .from('user_health_profile')
@@ -83,10 +96,23 @@ const Auth = () => {
     const { error } = await signIn(data.email, data.password);
     
     if (!error) {
-      // Check if user has completed LIS 2.0 setup
+      // Check onboarding and profile status
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
+        // Check onboarding first
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
+        
+        if (profile && !profile.onboarding_completed) {
+          navigate('/onboarding');
+          return;
+        }
+
+        // Then check health profile
         const { data: healthProfile } = await supabase
           .from('user_health_profile')
           .select('id')
@@ -141,13 +167,14 @@ const Auth = () => {
             })
             .eq('session_id', guestSessionId);
           
-          // Redirect to full results instead of setup
-          toast.success('Welcome! Your assessment has been saved.');
+          toast.success("Welcome! Your assessment has been saved.");
           navigate('/lis-results');
-          setIsLoading(false);
-          return;
         }
       }
+    } else if (!error) {
+      // New user without guest session - redirect to onboarding
+      toast.success("Welcome! Let's set up your health profile.");
+      navigate('/onboarding');
     }
     
     setIsLoading(false);

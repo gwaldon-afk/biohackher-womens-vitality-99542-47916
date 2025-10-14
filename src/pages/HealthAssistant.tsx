@@ -4,19 +4,38 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles, ArrowRight, Star, CheckCircle } from 'lucide-react';
+import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles, ArrowRight, Star, CheckCircle, Package } from 'lucide-react';
 import { useHealthAssistant } from '@/hooks/useHealthAssistant';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import Navigation from '@/components/Navigation';
 import EvidenceBadge from '@/components/EvidenceBadge';
+import { RecommendationCard } from '@/components/RecommendationCard';
+import { extractHealthTopicsFromText, getRelevantProducts } from '@/services/recommendationEngine';
 
 const HealthAssistant = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { messages, isLoading, askQuestion } = useHealthAssistant();
   const [input, setInput] = useState('');
+  const [relevantProducts, setRelevantProducts] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Extract topics from latest assistant message and fetch relevant products
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      const lastAssistantMessage = messages.filter(m => m.role === 'assistant').pop();
+      if (lastAssistantMessage) {
+        const topics = extractHealthTopicsFromText(lastAssistantMessage.content);
+        if (topics.length > 0) {
+          const products = await getRelevantProducts(topics, 3);
+          setRelevantProducts(products);
+        }
+      }
+    };
+    
+    fetchRecommendations();
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -241,6 +260,31 @@ const HealthAssistant = () => {
                                     </Button>
                                   </CardContent>
                                 </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Relevant Products Based on Conversation */}
+                        {message.role === 'assistant' && relevantProducts.length > 0 && (
+                          <div className="mt-4">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2 text-lg">
+                              <Package className="h-5 w-5 text-primary" />
+                              Products That May Help:
+                            </h4>
+                            <div className="grid gap-3">
+                              {relevantProducts.map((product: any) => (
+                                <RecommendationCard
+                                  key={product.id}
+                                  id={product.id}
+                                  name={product.name}
+                                  description={product.description}
+                                  category={product.category}
+                                  relevanceScore={product.relevanceScore}
+                                  image_url={product.image_url}
+                                  affiliate_link={product.affiliate_link}
+                                  onViewDetails={(id) => navigate('/shop')}
+                                />
                               ))}
                             </div>
                           </div>

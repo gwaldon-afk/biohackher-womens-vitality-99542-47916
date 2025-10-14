@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -62,21 +64,26 @@ const App = () => (
     <AuthProvider>
       <CartProvider>
         <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
-            <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/analytics" element={<AnalyticsDashboard />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/symptom-trends" element={<SymptomTrends />} />
-            <Route path="/wearables" element={<ProtectedRoute><WearableIntegrations /></ProtectedRoute>} />
-            <Route path="/symptoms" element={<Symptoms />} />
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
+                <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/onboarding" element={<OnboardingFlow />} />
+                <Route path="/dashboard" element={
+                  <ErrorBoundary>
+                    <Dashboard />
+                  </ErrorBoundary>
+                } />
+                <Route path="/analytics" element={<AnalyticsDashboard />} />
+                <Route path="/achievements" element={<Achievements />} />
+                <Route path="/symptom-trends" element={<SymptomTrends />} />
+                <Route path="/wearables" element={<ProtectedRoute><WearableIntegrations /></ProtectedRoute>} />
+                <Route path="/symptoms" element={<Symptoms />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />
@@ -116,11 +123,12 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <FloatingAIAssistant />
-        </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+        </ErrorBoundary>
+      </BrowserRouter>
+      </TooltipProvider>
+    </CartProvider>
+  </AuthProvider>
+</QueryClientProvider>
 );
 
 export default App;

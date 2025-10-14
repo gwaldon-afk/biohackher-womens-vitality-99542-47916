@@ -5,7 +5,7 @@ import bodyPillar from "@/assets/body-pillar.png";
 import balancePillar from "@/assets/balance-pillar.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Brain, Sparkles, Zap, Target, TrendingUp } from "lucide-react";
+import { Activity, Brain, Sparkles, Zap, Target, TrendingUp, Package, MessageSquare, BookOpen, FileText, Heart, Moon, Scale } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import CTAButton from "@/components/CTAButton";
@@ -19,7 +19,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section - Problem-First Approach */}
+      {/* Hero Section - Complete Health Hub */}
       <section className="relative overflow-hidden">
         <div className="hero-gradient">
           <div className="container mx-auto px-4 py-20 lg:py-32">
@@ -27,31 +27,49 @@ const Index = () => {
               <div className="text-center lg:text-left space-y-8">
                 <div>
                   <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-                    Feeling Exhausted, Foggy, and <span className="text-white/90">Frustrated</span> with Generic Health Advice?
+                    Your Complete <span className="text-white/90">Health & Performance Hub</span>
                   </h1>
                   <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
-                    Get your personalized longevity score in 5 minutes
+                    Track your health, get AI-powered insights, shop evidence-based products, and access research—all in one place
                   </p>
                 </div>
 
-                {/* Primary CTA */}
-                <div className="flex flex-col gap-4">
+                {/* Multiple Entry Point CTAs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 text-xl px-10 py-8 h-auto shadow-xl"
+                    className="bg-white text-primary hover:bg-white/90 text-lg px-6 py-6 h-auto shadow-xl"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
-                    <Target className="h-7 w-7 mr-3" />
-                    Get Your Free Longevity Assessment
+                    <Target className="h-5 w-5 mr-2" />
+                    Take Free Assessment
                   </Button>
                   <Button 
                     size="lg"
                     variant="outline"
-                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 text-lg px-8 py-6 h-auto backdrop-blur"
+                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
                     onClick={() => navigate("/health-assistant")}
                   >
-                    <Sparkles className="h-6 w-6 mr-2" />
-                    Ask AI About Your Health
+                    <Sparkles className="h-5 w-5 mr-2" />
+                    Ask AI Assistant
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
+                    onClick={() => navigate("/shop")}
+                  >
+                    <Package className="h-5 w-5 mr-2" />
+                    Browse Products
+                  </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
+                    onClick={() => navigate("/research-evidence")}
+                  >
+                    <BookOpen className="h-5 w-5 mr-2" />
+                    Explore Research
                   </Button>
                 </div>
               </div>
@@ -68,36 +86,186 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works - 3 Steps */}
+      {/* What You Can Do Here Section */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              What You Can Do Here
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Your all-in-one platform for health optimization
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <CardHeader>
+                <Activity className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Track & Optimize</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  Monitor daily health scores, track symptoms, and see how lifestyle changes impact longevity
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/shop')}>
+              <CardHeader>
+                <Package className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Shop Smart</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  Get personalized supplement recommendations based on your assessments and goals
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/health-assistant')}>
+              <CardHeader>
+                <MessageSquare className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Get Answers</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  Ask our AI assistant about symptoms, protocols, or wellness strategies
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/research-evidence')}>
+              <CardHeader>
+                <BookOpen className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>Learn & Grow</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground text-sm">
+                  Access curated research, evidence-based protocols, and longevity science
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* For Every Health Goal Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              For Every Health Goal
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Whether optimizing one area or transforming your entire healthspan
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <Card>
+              <CardHeader>
+                <Zap className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Energy & Vitality</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Combat fatigue, boost mitochondrial function, feel energized
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Brain className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Cognitive Performance</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Enhance focus, memory, and mental clarity with targeted interventions
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Scale className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Body Composition</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Build lean muscle, optimize metabolism, sustainable weight management
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Heart className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Hormonal Balance</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Address perimenopause, menopause, restore hormonal equilibrium
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Moon className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Sleep Quality</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Improve sleep duration, depth, wake feeling refreshed every morning
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <TrendingUp className="h-6 w-6 text-primary mb-2" />
+                <CardTitle className="text-lg">Longevity Optimization</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground">
+                Extend healthspan, reduce biological age, maximize quality of life
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It All Connects - 4 Steps */}
       <section className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-                How It <span className="text-primary">Works</span>
+                How It All <span className="text-primary">Connects</span>
               </h2>
-              <p className="text-lg text-muted-foreground">Science-backed protocols designed for women's biology</p>
+              <p className="text-lg text-muted-foreground">From assessment to optimization, everything works together</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                 <div className="mb-4 flex justify-center">
                   <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Activity className="h-8 w-8 text-primary" />
+                    <FileText className="h-8 w-8 text-primary" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-3">1. Take 5-Minute Assessment</h3>
-                <p className="text-muted-foreground">Quick, science-based questions about your health and symptoms</p>
+                <h3 className="text-xl font-bold mb-3">Assess</h3>
+                <p className="text-muted-foreground text-sm">Take assessments to understand your current health status</p>
               </Card>
 
               <Card className="text-center p-6 hover:shadow-lg transition-shadow">
                 <div className="mb-4 flex justify-center">
                   <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Brain className="h-8 w-8 text-primary" />
+                    <Target className="h-8 w-8 text-primary" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-3">2. Get Your Personalized Plan</h3>
-                <p className="text-muted-foreground">AI-powered recommendations based on scientific evidence</p>
+                <h3 className="text-xl font-bold mb-3">Discover</h3>
+                <p className="text-muted-foreground text-sm">Get personalized product and protocol recommendations</p>
+              </Card>
+
+              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <div className="mb-4 flex justify-center">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Package className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-3">Implement</h3>
+                <p className="text-muted-foreground text-sm">Shop evidence-based solutions and build your protocol</p>
               </Card>
 
               <Card className="text-center p-6 hover:shadow-lg transition-shadow">
@@ -106,9 +274,15 @@ const Index = () => {
                     <TrendingUp className="h-8 w-8 text-primary" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-3">3. Track & Optimize</h3>
-                <p className="text-muted-foreground">Monitor progress and refine your protocol for best results</p>
+                <h3 className="text-xl font-bold mb-3">Optimize</h3>
+                <p className="text-muted-foreground text-sm">Track progress and refine your approach with AI guidance</p>
               </Card>
+            </div>
+
+            <div className="text-center">
+              <p className="text-muted-foreground">
+                Plus, ask our AI assistant anytime for guidance, research, or personalized recommendations
+              </p>
             </div>
           </div>
         </div>
