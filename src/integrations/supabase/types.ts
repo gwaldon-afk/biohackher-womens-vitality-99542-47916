@@ -856,6 +856,7 @@ export type Database = {
           id: string
           language: string | null
           measurement_system: string | null
+          onboarding_completed: boolean | null
           preferred_name: string
           timezone: string | null
           updated_at: string
@@ -869,6 +870,7 @@ export type Database = {
           id?: string
           language?: string | null
           measurement_system?: string | null
+          onboarding_completed?: boolean | null
           preferred_name: string
           timezone?: string | null
           updated_at?: string
@@ -882,6 +884,7 @@ export type Database = {
           id?: string
           language?: string | null
           measurement_system?: string | null
+          onboarding_completed?: boolean | null
           preferred_name?: string
           timezone?: string | null
           updated_at?: string
@@ -2083,6 +2086,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      validate_contraindications: {
+        Args: { data: Json }
+        Returns: boolean
+      }
+      validate_target_symptoms: {
+        Args: { data: Json }
         Returns: boolean
       }
     }
