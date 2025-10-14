@@ -473,7 +473,6 @@ const MyProtocol = () => {
                   </div>
                   <ProtocolBuilderDialog onProtocolCreated={async () => {
                     await fetchProtocols();
-                    await loadProtocolItems();
                   }} />
                 </div>
               </CardHeader>
