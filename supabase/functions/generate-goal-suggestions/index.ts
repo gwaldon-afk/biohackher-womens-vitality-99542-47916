@@ -59,7 +59,7 @@ Please update the goal plan based on the user's request while maintaining the HA
 
 Make sure the changes are clear and maintain the quality of the plan.` : `
 User wants to create a health goal: "${goalDescription}"
-Health Pillar: ${pillar || 'Not specified'}
+${pillar ? `Suggested Health Pillar: ${pillar} (please analyze if this is correct or if other pillars are more relevant)` : 'Please analyze and determine which health pillar(s) this goal relates to'}
 ${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
 ${assessmentData ? `Recent Assessment Data: ${JSON.stringify(assessmentData)}` : ''}
 
@@ -137,14 +137,16 @@ Health Pillars:
 
 When generating or refining goals:
 1. ALWAYS maintain the HACK structure
-2. ANALYZE and CONFIRM which pillar(s) the goal relates to and explain the connection
-3. If a goal impacts multiple pillars, identify all relevant pillars and explain how
-4. Ensure the Healthspan target (H) is specific and measurable
-5. Provide evidence-based Aging blueprint interventions (A) with clear reasoning
-6. Set appropriate Check-in frequency (C) based on the goal's nature
-7. Identify realistic barriers and solutions (K)
-8. When users request clarification, explain which pillars are affected and why
-9. When users request changes, preserve the HACK framework while incorporating their feedback
+2. AUTOMATICALLY DETECT AND ASSIGN the primary pillar based on the goal description
+3. ANALYZE and list ALL related pillars (a goal can impact multiple pillars)
+4. Provide detailed pillar_analysis explaining which pillars are affected and how
+5. If a suggested pillar is provided, verify if it's correct or suggest a better fit
+6. Ensure the Healthspan target (H) is specific and measurable
+7. Provide evidence-based Aging blueprint interventions (A) with clear reasoning
+8. Set appropriate Check-in frequency (C) based on the goal's nature
+9. Identify realistic barriers and solutions (K)
+10. When users request clarification, explain which pillars are affected and why
+11. When users request changes, preserve the HACK framework while incorporating their feedback
 
 Always respond with valid JSON only, no markdown formatting.` 
           },

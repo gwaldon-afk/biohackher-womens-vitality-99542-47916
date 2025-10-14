@@ -60,15 +60,6 @@ export default function AIGoalWizard() {
       return;
     }
 
-    if (!selectedPillar) {
-      toast({
-        title: "Pillar required",
-        description: "Please select a health pillar",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsGenerating(true);
     setStep("generating");
 
@@ -222,7 +213,7 @@ export default function AIGoalWizard() {
               </div>
 
               <div className="space-y-3">
-                <Label>Which health pillar does this relate to?</Label>
+                <Label>Which health pillar does this relate to? (Optional - AI will detect automatically)</Label>
                 <RadioGroup value={selectedPillar} onValueChange={setSelectedPillar}>
                   {PILLAR_OPTIONS.map((pillar) => {
                     const Icon = pillar.icon;
@@ -249,7 +240,7 @@ export default function AIGoalWizard() {
                 onClick={handleGenerateSuggestion} 
                 className="w-full"
                 size="lg"
-                disabled={!goalDescription.trim() || !selectedPillar}
+                disabled={!goalDescription.trim()}
               >
                 <Sparkles className="h-4 w-4 mr-2" />
                 Generate My Personalized Plan
