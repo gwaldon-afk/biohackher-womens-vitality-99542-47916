@@ -307,7 +307,7 @@ const Dashboard = () => {
                 Welcome to Your <span className="text-primary">Health Journey</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                You're about to take your first step toward optimizing your healthspan and lifespan
+                Get personalized health insights based on your unique biology, AI-powered recommendations tailored to your goals, and science-backed protocols to help you thrive at every life stage
               </p>
             </div>
 
