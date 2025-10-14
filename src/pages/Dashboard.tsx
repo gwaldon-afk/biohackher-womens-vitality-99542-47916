@@ -310,109 +310,8 @@ const Dashboard = () => {
           {/* Loading State */}
           {isLoading ? (
             <DashboardSkeleton />
-          ) : dailyScoreCount === 0 ? (
-          /* First-Time User Simplified View */
+          ) : (
           <>
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-2">
-                Welcome to Your <span className="text-primary">Health Journey</span>
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Get personalized health insights based on your unique biology, AI-powered recommendations tailored to your goals, and science-backed protocols to help you thrive at every life stage
-              </p>
-            </div>
-
-            <div className="max-w-2xl mx-auto space-y-6">
-              {/* Explanation Section */}
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="pt-6 space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <Activity className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">What You'll Track Daily</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Track 6 key areas: Sleep Quality, Stress Levels, Physical Activity, Nutrition, Social Connection, and Mental Wellness
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <TrendingUp className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">What You'll Get</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Personalized insights, clear progress tracking, and actionable recommendations to improve your healthspan
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-2">Time Commitment</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Just 2-3 minutes per day. Even faster with a connected wearable device.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* CTA Card */}
-              <Card className="border-2 border-primary shadow-xl">
-                <CardHeader className="text-center space-y-4 pb-6">
-                  <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Activity className="h-8 w-8 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-2xl mb-2">
-                      Ready to Get Started?
-                    </CardTitle>
-                    <CardDescription className="text-base">
-                      Click below to open your daily tracking form
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <LISInputForm onScoreCalculated={() => {
-                    // Don't need to do anything here - form will navigate to results page
-                  }}>
-                    <Button className="w-full" size="lg">
-                      <Zap className="h-5 w-5 mr-2" />
-                      Complete Your First Daily Score
-                    </Button>
-                  </LISInputForm>
-
-                  <p className="text-center text-sm text-muted-foreground">
-                    Your health journey starts here
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </>
-        ) : (
-          /* Full Dashboard View for Users with Data */
-          <>
-        {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome Back, <span className="text-primary">Sarah</span>!
-          </h1>
-          <p className="text-muted-foreground">Today is Day 3 of your Brain Optimization</p>
-        </div>
-
-        {/* Today's Protocol Widget */}
-        <TodayProtocolWidget />
-
-        {/* Member Progress Card */}
-        <div className="mt-6">
-          <MemberProgressCard />
-        </div>
-
         {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8">
@@ -424,6 +323,17 @@ const Dashboard = () => {
 
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
+              {/* First-time user welcome message */}
+              {dailyScoreCount === 0 && (
+                <Alert className="border-primary/20 bg-primary/5">
+                  <Activity className="h-4 w-4" />
+                  <AlertTitle>Welcome to Your Health Hub! 👋</AlertTitle>
+                  <AlertDescription>
+                    Start by submitting your first daily score below. Track 6 key areas: Sleep Quality, Stress Levels, Physical Activity, Nutrition, Social Connection, and Mental Wellness. Just 2-3 minutes per day!
+                  </AlertDescription>
+                </Alert>
+              )}
+
               {/* Daily LIS Input */}
               <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
                 <CardHeader>
@@ -431,7 +341,7 @@ const Dashboard = () => {
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <Activity className="h-5 w-5 text-primary" />
-                        Submit Today's LIS 2.0 Data
+                        {dailyScoreCount === 0 ? "Submit Your First Daily Score" : "Submit Today's LIS 2.0 Data"}
                         <Badge variant="secondary" className="ml-2">Daily Tracking</Badge>
                       </CardTitle>
                       <CardDescription className="mt-2">
@@ -445,14 +355,14 @@ const Dashboard = () => {
                   <LISInputForm onScoreCalculated={() => lisData.refetch()}>
                     <Button size="lg" className="w-full">
                       <Zap className="h-5 w-5 mr-2" />
-                      Submit Today's Score
+                      {dailyScoreCount === 0 ? "Complete Your First Daily Score" : "Submit Today's Score"}
                     </Button>
                   </LISInputForm>
                 </CardContent>
               </Card>
 
               {/* Today's Protocol Widget */}
-              <TodayProtocolWidget />
+              {dailyScoreCount > 0 && <TodayProtocolWidget />}
             </TabsContent>
 
             {/* Progress Tab - Tracking & Streaks */}
