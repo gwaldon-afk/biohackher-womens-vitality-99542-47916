@@ -256,7 +256,7 @@ export default function AIGoalWizard() {
                 disabled={!goalDescription.trim()}
               >
                 <Sparkles className="h-4 w-4 mr-2" />
-                Generate My Personalized Plan
+                Review Goal and Generate My Personalised Plan
               </Button>
             </CardContent>
           </Card>
