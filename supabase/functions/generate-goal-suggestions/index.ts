@@ -80,6 +80,8 @@ Return the response in this exact JSON structure:
 {
   "title": "Goal title",
   "pillar_category": "brain|body|balance|beauty",
+  "related_pillars": ["array of all pillars this goal impacts"],
+  "pillar_analysis": "Detailed explanation of which pillars are affected and how this goal relates to each one",
   "healthspan_target": {
     "metric": "what to measure",
     "target_value": "specific target",
@@ -127,13 +129,22 @@ HACK Protocol Framework:
 - C (Check-in Frequency): How often the user should review progress and adjust their approach (daily, weekly, or biweekly based on goal complexity).
 - K (Knowledge of Barriers): Common obstacles that might prevent success and practical solutions to overcome them.
 
+Health Pillars:
+- Body: Physical health, fitness, strength, mobility, cardiovascular health
+- Brain: Cognitive function, mental clarity, focus, memory, neuroplasticity
+- Balance: Hormonal health, metabolic health, stress management, sleep, recovery
+- Beauty: Skin health, aging appearance, cellular health, aesthetic wellness
+
 When generating or refining goals:
 1. ALWAYS maintain the HACK structure
-2. Ensure the Healthspan target (H) is specific and measurable
-3. Provide evidence-based Aging blueprint interventions (A) with clear reasoning
-4. Set appropriate Check-in frequency (C) based on the goal's nature
-5. Identify realistic barriers and solutions (K)
-6. When users request changes, preserve the HACK framework while incorporating their feedback
+2. ANALYZE and CONFIRM which pillar(s) the goal relates to and explain the connection
+3. If a goal impacts multiple pillars, identify all relevant pillars and explain how
+4. Ensure the Healthspan target (H) is specific and measurable
+5. Provide evidence-based Aging blueprint interventions (A) with clear reasoning
+6. Set appropriate Check-in frequency (C) based on the goal's nature
+7. Identify realistic barriers and solutions (K)
+8. When users request clarification, explain which pillars are affected and why
+9. When users request changes, preserve the HACK framework while incorporating their feedback
 
 Always respond with valid JSON only, no markdown formatting.` 
           },

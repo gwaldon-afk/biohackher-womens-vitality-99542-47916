@@ -48,6 +48,8 @@ interface Intervention {
 interface GoalSuggestion {
   title: string;
   pillar_category: string;
+  related_pillars?: string[];
+  pillar_analysis?: string;
   healthspan_target: {
     metric: string;
     target_value: string;
@@ -159,6 +161,30 @@ export function GoalSuggestionCard({
             <CardDescription className="text-base">
               {suggestion.ai_reasoning}
             </CardDescription>
+            
+            {/* Pillar Analysis Section */}
+            {suggestion.pillar_analysis && (
+              <div className="mt-3 p-3 bg-muted/50 rounded-lg border">
+                <div className="flex items-start gap-2">
+                  <Info className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <p className="text-sm font-medium">Pillar Impact Analysis</p>
+                    {suggestion.related_pillars && suggestion.related_pillars.length > 1 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {suggestion.related_pillars.map((pillar) => (
+                          <Badge key={pillar} variant="outline" className="text-xs capitalize">
+                            {pillar}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      {suggestion.pillar_analysis}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <TooltipProvider>
             <Tooltip>
