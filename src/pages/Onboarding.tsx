@@ -1,53 +1,305 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, ArrowLeft, X, CheckCircle, Brain, Heart, Zap, Sparkles, Activity } from "lucide-react";
+import { ArrowRight, ArrowLeft, X, Brain, Heart, Activity, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-interface FormData {
-  age: string;
-  stage: string;
-  goals: string[];
-  symptoms: string[];
-  lifestyle: {
-    sleepHours: string;
-    activityLevel: string;
-    stressLevel: string;
-  };
+interface QuestionOption {
+  text: string;
+  score_value: number;
+  ai_analysis: string;
 }
 
+interface Question {
+  question_id: string;
+  pillar: string;
+  text: string;
+  options: QuestionOption[];
+}
+
+interface BaselineData {
+  dateOfBirth: string;
+  heightCm: string;
+  weightKg: string;
+}
+
+const ASSESSMENT_QUESTIONS: Question[] = [
+  {
+    question_id: "Q1_SleepDuration",
+    pillar: "Body",
+    text: "On average over the past week, how many hours of sleep did you get per night?",
+    options: [
+      { text: "Less than 5 hours or more than 10 hours", score_value: 0, ai_analysis: "Critical Risk" },
+      { text: "5.1–6.0 hours or 9.1–10.0 hours", score_value: 30, ai_analysis: "High Risk" },
+      { text: "6.1–6.9 hours or 8.1–9.0 hours", score_value: 70, ai_analysis: "Near Optimal" },
+      { text: "7.0–8.0 hours", score_value: 100, ai_analysis: "Optimal Range" }
+    ]
+  },
+  {
+    question_id: "Q2_SubjectiveSleepQuality",
+    pillar: "Body",
+    text: "How would you rate the quality of your sleep over the past week?",
+    options: [
+      { text: "Poor (Restless, unrefreshing)", score_value: 0, ai_analysis: "Critical" },
+      { text: "Fair (Occasionally restless)", score_value: 30, ai_analysis: "Suboptimal" },
+      { text: "Good (Generally refreshed)", score_value: 70, ai_analysis: "Protective" },
+      { text: "Excellent (Deeply restorative)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q3_Activity",
+    pillar: "Body",
+    text: "What best describes your daily physical activity level?",
+    options: [
+      { text: "Less than 2,000 steps or minimal movement", score_value: 0, ai_analysis: "Critical Risk" },
+      { text: "2,000–4,000 steps or less than 15 minutes of activity", score_value: 30, ai_analysis: "High Risk" },
+      { text: "4,000–7,999 steps or 15–29 minutes of moderate activity", score_value: 70, ai_analysis: "Protective" },
+      { text: "8,000+ steps or ≥ 30 minutes of moderate exercise", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q4_NutritionQuality",
+    pillar: "Body",
+    text: "What proportion of your diet comes from whole, unprocessed foods?",
+    options: [
+      { text: "Less than 30% whole foods (Mostly processed)", score_value: 0, ai_analysis: "Critical Risk" },
+      { text: "30–50% whole foods (Mixed intake)", score_value: 30, ai_analysis: "Insufficient" },
+      { text: "50–70% whole foods (Balanced)", score_value: 70, ai_analysis: "Protective" },
+      { text: "> 70% whole foods (Strict adherence)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q11_SmokingStatus",
+    pillar: "Body",
+    text: "What is your current smoking status? (Includes vaping)",
+    options: [
+      { text: "Current Smoker (Daily or occasional)", score_value: 0, ai_analysis: "Maximum Penalty" },
+      { text: "Former Smoker (Quit less than 1 year ago)", score_value: 30, ai_analysis: "High Penalty" },
+      { text: "Former Smoker (Quit more than 1 year ago)", score_value: 70, ai_analysis: "Minimal Penalty" },
+      { text: "Never Smoked", score_value: 100, ai_analysis: "Zero Penalty" }
+    ]
+  },
+  {
+    question_id: "Q5_SubjectiveAge",
+    pillar: "Balance",
+    text: "How old do you feel compared to your chronological age?",
+    options: [
+      { text: "More than 5 years older", score_value: 0, ai_analysis: "Critical Risk" },
+      { text: "1–4 years older", score_value: 40, ai_analysis: "Increased Risk" },
+      { text: "My age or slightly younger (0-4 years)", score_value: 80, ai_analysis: "Protective" },
+      { text: "≥ 5 years younger", score_value: 100, ai_analysis: "Major Protective Factor" }
+    ]
+  },
+  {
+    question_id: "Q6_SubjectiveCalmness",
+    pillar: "Balance",
+    text: "How mentally recovered and calm do you feel this morning? (0-10 scale)",
+    options: [
+      { text: "0–3 (Extremely stressed)", score_value: 0, ai_analysis: "Critical" },
+      { text: "4–5 (Moderately stressed)", score_value: 30, ai_analysis: "Elevated Risk" },
+      { text: "6–7 (Generally calm)", score_value: 70, ai_analysis: "Protective" },
+      { text: "8–10 (Highly calm and recovered)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q7_SocialConnection",
+    pillar: "Balance",
+    text: "How often do you feel connected and supported by others?",
+    options: [
+      { text: "Rarely or Never (Often feel isolated)", score_value: 0, ai_analysis: "Critical Risk" },
+      { text: "Sometimes (Periods of loneliness)", score_value: 30, ai_analysis: "Moderate Risk" },
+      { text: "Generally Supported (Connected most of the time)", score_value: 70, ai_analysis: "Protective" },
+      { text: "Highly Engaged (Consistently supported)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q8_EmotionalResilience",
+    pillar: "Balance",
+    text: "How do you handle unexpected challenges?",
+    options: [
+      { text: "Often overwhelmed and pessimistic", score_value: 0, ai_analysis: "Critical" },
+      { text: "Sometimes struggle and become reactive", score_value: 30, ai_analysis: "Moderate" },
+      { text: "Generally resilient with measured responses", score_value: 70, ai_analysis: "Protective" },
+      { text: "Highly resilient with positive outlook", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q9_CognitiveEngagement",
+    pillar: "Brain",
+    text: "How much time daily do you dedicate to focused cognitive tasks?",
+    options: [
+      { text: "Less than 15 minutes", score_value: 0, ai_analysis: "Critical" },
+      { text: "15–30 minutes", score_value: 30, ai_analysis: "Minimal" },
+      { text: "30–60 minutes", score_value: 70, ai_analysis: "Moderate" },
+      { text: "≥ 60 minutes", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q10_MeditationAdherence",
+    pillar: "Brain",
+    text: "What's your average daily meditation or mindfulness practice?",
+    options: [
+      { text: "0 minutes (None)", score_value: 0, ai_analysis: "None" },
+      { text: "1–9 minutes (Inconsistent)", score_value: 25, ai_analysis: "Minimal" },
+      { text: "10–19 minutes (Daily adherence)", score_value: 70, ai_analysis: "Protective" },
+      { text: "≥ 20 minutes (Deep practice)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  },
+  {
+    question_id: "Q12_SkinHealth",
+    pillar: "Beauty",
+    text: "How would you describe your skin and hair health?",
+    options: [
+      { text: "Poor (Dull, inflamed, significant issues)", score_value: 0, ai_analysis: "Critical" },
+      { text: "Fair (Occasional issues, lacks vitality)", score_value: 30, ai_analysis: "Suboptimal" },
+      { text: "Good (Generally healthy, minor concerns)", score_value: 70, ai_analysis: "Protective" },
+      { text: "Excellent (Vibrant, clear, healthy)", score_value: 100, ai_analysis: "Optimal" }
+    ]
+  }
+];
+
+const PILLAR_ICONS: Record<string, any> = {
+  Body: Activity,
+  Balance: Heart,
+  Brain: Brain,
+  Beauty: Sparkles
+};
+
 const Onboarding = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>({
-    age: "",
-    stage: "",
-    goals: [],
-    symptoms: [],
-    lifestyle: {
-      sleepHours: "",
-      activityLevel: "",
-      stressLevel: ""
-    }
+  const [currentStep, setCurrentStep] = useState(0); // 0 for baseline, 1-12 for questions, 13 for completion
+  const [baselineData, setBaselineData] = useState<BaselineData>({
+    dateOfBirth: '',
+    heightCm: '',
+    weightKg: ''
   });
+  const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const navigate = useNavigate();
   const { user } = useAuth();
   const { completeOnboarding, updateProgress } = useUserProgress();
   const { toast } = useToast();
 
-  const totalSteps = 7;
+  const totalSteps = 14; // 1 baseline + 12 questions + 1 completion
   const progress = (currentStep / totalSteps) * 100;
 
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const calculateBMI = (): number => {
+    const height = parseFloat(baselineData.heightCm);
+    const weight = parseFloat(baselineData.weightKg);
+    if (height && weight) {
+      return parseFloat((weight / Math.pow(height / 100, 2)).toFixed(1));
+    }
+    return 0;
+  };
+
+  const calculateScore = () => {
+    let smokingPenaltyPercent = 0;
+
+    const pillarScores: Record<string, { score: number; count: number }> = {
+      Body: { score: 0, count: 0 },
+      Balance: { score: 0, count: 0 },
+      Brain: { score: 0, count: 0 },
+      Beauty: { score: 0, count: 0 }
+    };
+
+    Object.entries(answers).forEach(([questionId, option]) => {
+      const q = ASSESSMENT_QUESTIONS.find(q => q.question_id === questionId);
+      if (q) {
+        const pillar = q.pillar;
+        if (pillarScores[pillar]) {
+          pillarScores[pillar].score += option.score_value;
+          pillarScores[pillar].count += 1;
+        }
+      }
+
+      // Apply smoking penalties
+      if (questionId === 'Q11_SmokingStatus') {
+        if (option.text.includes('Current Smoker')) {
+          smokingPenaltyPercent = 0.60;
+        } else if (option.text.includes('less than 1 year')) {
+          smokingPenaltyPercent = 0.30;
+        } else if (option.text.includes('more than 1 year')) {
+          smokingPenaltyPercent = 0.15;
+        }
+      }
+    });
+
+    // Calculate average pillar scores
+    const pillarAverages: Record<string, number> = {};
+    Object.entries(pillarScores).forEach(([pillar, data]) => {
+      pillarAverages[pillar] = data.count > 0 ? Math.round(data.score / data.count) : 0;
+    });
+
+    // Final score is average of pillar scores
+    const pillarValues = Object.values(pillarAverages);
+    const averagePillarScore = pillarValues.length > 0 
+      ? pillarValues.reduce((sum, score) => sum + score, 0) / pillarValues.length 
+      : 0;
+    
+    // Apply smoking penalty
+    const scoreAfterPenalty = averagePillarScore * (1 - smokingPenaltyPercent);
+    const finalScore = Math.max(0, Math.round(scoreAfterPenalty));
+
+    return {
+      finalScore,
+      pillarScores: pillarAverages,
+      smokingPenalty: Math.round(averagePillarScore * smokingPenaltyPercent)
+    };
+  };
+
   const handleNext = async () => {
-    if (currentStep < totalSteps) {
+    if (currentStep === 0) {
+      // Validate baseline data
+      if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
+        toast({ title: "Please fill in all baseline information", variant: "destructive" });
+        return;
+      }
+      
+      const age = calculateAge(baselineData.dateOfBirth);
+      if (age < 18 || age > 120) {
+        toast({ title: "Please enter a valid date of birth", variant: "destructive" });
+        return;
+      }
+
+      if (parseFloat(baselineData.heightCm) < 100 || parseFloat(baselineData.heightCm) > 250) {
+        toast({ title: "Please enter a valid height (100-250 cm)", variant: "destructive" });
+        return;
+      }
+
+      if (parseFloat(baselineData.weightKg) < 30 || parseFloat(baselineData.weightKg) > 300) {
+        toast({ title: "Please enter a valid weight (30-300 kg)", variant: "destructive" });
+        return;
+      }
+    }
+
+    if (currentStep >= 1 && currentStep <= 12) {
+      // Check if current question is answered
+      const questionIndex = currentStep - 1;
+      const question = ASSESSMENT_QUESTIONS[questionIndex];
+      if (!answers[question.question_id]) {
+        toast({ title: "Please select an answer", variant: "destructive" });
+        return;
+      }
+    }
+
+    if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
       if (user) {
         await updateProgress({ onboarding_step: currentStep + 1 });
@@ -59,452 +311,276 @@ const Onboarding = () => {
 
   const handleComplete = async () => {
     if (!user) {
-      navigate("/dashboard");
+      navigate("/auth");
       return;
     }
 
     try {
-      // Save onboarding data to profile
-      await supabase
-        .from('profiles')
-        .update({
-          preferred_name: formData.age || 'User'
-        })
-        .eq('user_id', user.id);
+      const scoreData = calculateScore();
+      const age = calculateAge(baselineData.dateOfBirth);
+
+      // Save baseline assessment to daily_scores
+      await supabase.from('daily_scores').insert({
+        user_id: user.id,
+        date: new Date().toISOString().split('T')[0],
+        longevity_impact_score: scoreData.finalScore,
+        biological_age_impact: scoreData.finalScore,
+        is_baseline: true,
+        assessment_type: 'onboarding_baseline',
+        user_chronological_age: age,
+        lis_version: 'LIS 2.0',
+        color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
+      });
+
+      // Save baseline data to profile
+      await supabase.from('profiles').update({
+        measurement_system: 'metric'
+      }).eq('user_id', user.id);
 
       // Mark onboarding as complete
       await completeOnboarding();
 
       toast({
         title: "Welcome to BiohackHer! 🎉",
-        description: "Your personalized health journey begins now.",
+        description: `Your baseline Longevity Impact Score: ${scoreData.finalScore}`,
       });
 
+      // Navigate to dashboard
       navigate("/dashboard");
     } catch (error) {
       console.error('Error completing onboarding:', error);
       toast({
-        title: "Setup complete",
-        description: "Welcome to your health journey!",
+        title: "Error saving assessment",
+        description: "Please try again or contact support.",
+        variant: "destructive"
       });
-      navigate("/dashboard");
     }
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
+  const handleAnswerSelect = (option: QuestionOption) => {
+    if (currentStep === 0 || currentStep > 12) return;
+    const questionIndex = currentStep - 1;
+    const question = ASSESSMENT_QUESTIONS[questionIndex];
+    setAnswers(prev => ({
+      ...prev,
+      [question.question_id]: option
+    }));
+  };
+
   const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">What's your age range?</CardTitle>
-              <CardDescription>
-                This helps us personalise your biohacking journey
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup 
-                value={formData.age} 
-                onValueChange={(value) => setFormData({...formData, age: value})}
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="25-35" id="age-1" />
-                  <Label htmlFor="age-1">25-35 years</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="35-45" id="age-2" />
-                  <Label htmlFor="age-2">35-45 years</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="45-55" id="age-3" />
-                  <Label htmlFor="age-3">45-55 years</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="55+" id="age-4" />
-                  <Label htmlFor="age-4">55+ years</Label>
-                </div>
-              </RadioGroup>
-            </CardContent>
-          </Card>
-        );
-      
-      case 2:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">What's your current stage?</CardTitle>
-              <CardDescription>
-                Understanding your hormonal stage helps us provide targeted recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup 
-                value={formData.stage} 
-                onValueChange={(value) => setFormData({...formData, stage: value})}
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="regular-cycles" id="stage-1" />
-                  <Label htmlFor="stage-1">Regular cycles</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="perimenopause" id="stage-2" />
-                  <Label htmlFor="stage-2">Perimenopause</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="menopause" id="stage-3" />
-                  <Label htmlFor="stage-3">Menopause (12+ months no period)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="postmenopause" id="stage-4" />
-                  <Label htmlFor="stage-4">Postmenopause</Label>
-                </div>
-              </RadioGroup>
-            </CardContent>
-          </Card>
-        );
-      
-      case 3:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">What are your main goals?</CardTitle>
-              <CardDescription>
-                Select all that apply - we'll customize your experience
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  "Improve sleep quality",
-                  "Manage symptoms naturally",
-                  "Increase energy levels",
-                  "Optimise nutrition",
-                  "Build resilience",
-                  "Track biomarkers"
-                ].map((goal) => (
-                  <div key={goal} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={goal}
-                      checked={formData.goals.includes(goal)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFormData({
-                            ...formData,
-                            goals: [...formData.goals, goal]
-                          });
-                        } else {
-                          setFormData({
-                            ...formData,
-                            goals: formData.goals.filter((g) => g !== goal)
-                          });
-                        }
-                      }}
-                    />
-                    <Label htmlFor={goal} className="cursor-pointer">
-                      {goal}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      
-      case 4:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">Current Symptoms</CardTitle>
-              <CardDescription>
-                What symptoms are you currently experiencing?
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  "Brain fog",
-                  "Low energy",
-                  "Sleep issues",
-                  "Anxiety/Stress",
-                  "Hormonal imbalance",
-                  "Digestive issues",
-                  "Joint pain",
-                  "Skin concerns"
-                ].map((symptom) => (
-                  <div key={symptom} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={symptom}
-                      checked={formData.symptoms.includes(symptom)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFormData({
-                            ...formData,
-                            symptoms: [...formData.symptoms, symptom]
-                          });
-                        } else {
-                          setFormData({
-                            ...formData,
-                            symptoms: formData.symptoms.filter((s) => s !== symptom)
-                          });
-                        }
-                      }}
-                    />
-                    <Label htmlFor={symptom} className="cursor-pointer">
-                      {symptom}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      
-      case 5:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">Lifestyle Baseline</CardTitle>
-              <CardDescription>
-                Help us understand your current routine
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+    // Baseline data collection
+    if (currentStep === 0) {
+      return (
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl gradient-text">Let's Start With Your Baseline</CardTitle>
+            <CardDescription>
+              This information helps us calculate your personalized Longevity Impact Score
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="dob">Date of Birth</Label>
+              <Input
+                id="dob"
+                type="date"
+                value={baselineData.dateOfBirth}
+                onChange={(e) => setBaselineData({ ...baselineData, dateOfBirth: e.target.value })}
+                max={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Average sleep per night</Label>
-                <RadioGroup
-                  value={formData.lifestyle.sleepHours}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      lifestyle: { ...formData.lifestyle, sleepHours: value }
-                    })
-                  }
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="<5" id="sleep-1" />
-                    <Label htmlFor="sleep-1">Less than 5 hours</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="5-7" id="sleep-2" />
-                    <Label htmlFor="sleep-2">5-7 hours</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="7-9" id="sleep-3" />
-                    <Label htmlFor="sleep-3">7-9 hours</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value=">9" id="sleep-4" />
-                    <Label htmlFor="sleep-4">More than 9 hours</Label>
-                  </div>
-                </RadioGroup>
+                <Label htmlFor="height">Height (cm)</Label>
+                <Input
+                  id="height"
+                  type="number"
+                  placeholder="170"
+                  value={baselineData.heightCm}
+                  onChange={(e) => setBaselineData({ ...baselineData, heightCm: e.target.value })}
+                  min="100"
+                  max="250"
+                />
               </div>
-
               <div className="space-y-2">
-                <Label>Activity level</Label>
-                <RadioGroup
-                  value={formData.lifestyle.activityLevel}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      lifestyle: { ...formData.lifestyle, activityLevel: value }
-                    })
-                  }
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="sedentary" id="activity-1" />
-                    <Label htmlFor="activity-1">Sedentary (little to no exercise)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="light" id="activity-2" />
-                    <Label htmlFor="activity-2">Light (1-3 days/week)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="moderate" id="activity-3" />
-                    <Label htmlFor="activity-3">Moderate (3-5 days/week)</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="active" id="activity-4" />
-                    <Label htmlFor="activity-4">Very Active (6-7 days/week)</Label>
-                  </div>
-                </RadioGroup>
+                <Label htmlFor="weight">Weight (kg)</Label>
+                <Input
+                  id="weight"
+                  type="number"
+                  placeholder="65"
+                  value={baselineData.weightKg}
+                  onChange={(e) => setBaselineData({ ...baselineData, weightKg: e.target.value })}
+                  min="30"
+                  max="300"
+                />
               </div>
-
-              <div className="space-y-2">
-                <Label>Current stress level</Label>
-                <RadioGroup
-                  value={formData.lifestyle.stressLevel}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      lifestyle: { ...formData.lifestyle, stressLevel: value }
-                    })
-                  }
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="low" id="stress-1" />
-                    <Label htmlFor="stress-1">Low</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="moderate" id="stress-2" />
-                    <Label htmlFor="stress-2">Moderate</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="high" id="stress-3" />
-                    <Label htmlFor="stress-3">High</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="very-high" id="stress-4" />
-                    <Label htmlFor="stress-4">Very High</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case 6:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">Meet the 4 Pillars</CardTitle>
-              <CardDescription>
-                Your personalized health journey is organized around four key areas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg border bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
-                  <Brain className="h-8 w-8 text-purple-600 mb-2" />
-                  <h3 className="font-semibold">Brain</h3>
-                  <p className="text-xs text-muted-foreground">Mental clarity & focus</p>
-                </div>
-                <div className="p-4 rounded-lg border bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
-                  <Heart className="h-8 w-8 text-blue-600 mb-2" />
-                  <h3 className="font-semibold">Body</h3>
-                  <p className="text-xs text-muted-foreground">Physical vitality</p>
-                </div>
-                <div className="p-4 rounded-lg border bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
-                  <Zap className="h-8 w-8 text-green-600 mb-2" />
-                  <h3 className="font-semibold">Balance</h3>
-                  <p className="text-xs text-muted-foreground">Inner calm & peace</p>
-                </div>
-                <div className="p-4 rounded-lg border bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950 dark:to-pink-900">
-                  <Sparkles className="h-8 w-8 text-pink-600 mb-2" />
-                  <h3 className="font-semibold">Beauty</h3>
-                  <p className="text-xs text-muted-foreground">Radiant appearance</p>
-                </div>
-              </div>
+            </div>
+            {baselineData.heightCm && baselineData.weightKg && (
               <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 text-center">
-                <p className="text-sm font-medium">Next: Establish Your Baseline</p>
-                <p className="text-xs text-muted-foreground">
-                  Take a quick assessment to set your starting point
+                <p className="text-sm text-muted-foreground">
+                  Your BMI: <span className="font-semibold text-foreground">{calculateBMI()}</span>
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        );
-
-      case 7:
-        return (
-          <Card className="w-full max-w-md mx-auto">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl gradient-text">
-                Your Lifestyle Baseline Assessment
-              </CardTitle>
-              <CardDescription>
-                This creates your starting point to track improvements over time
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
-                <Activity className="h-12 w-12 text-primary mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground mb-4">
-                  You'll now complete a brief assessment to establish your baseline Longevity Impact Score.
-                  This takes about 3-5 minutes.
-                </p>
-                <Button 
-                  onClick={() => navigate('/lis-assessment?mode=onboarding')}
-                  className="w-full"
-                >
-                  Start Baseline Assessment
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        );
-      
-      default:
-        return null;
+            )}
+          </CardContent>
+        </Card>
+      );
     }
+
+    // Questions
+    if (currentStep >= 1 && currentStep <= 12) {
+      const questionIndex = currentStep - 1;
+      const question = ASSESSMENT_QUESTIONS[questionIndex];
+      const PillarIcon = PILLAR_ICONS[question.pillar] || Activity;
+      const selectedAnswer = answers[question.question_id];
+
+      return (
+        <Card className="w-full max-w-2xl mx-auto">
+          <CardHeader className="text-center">
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-3 rounded-full bg-primary/10">
+                <PillarIcon className="h-6 w-6 text-primary" />
+              </div>
+            </div>
+            <div className="text-xs font-semibold text-primary mb-2">
+              {question.pillar.toUpperCase()} PILLAR
+            </div>
+            <CardTitle className="text-xl">{question.text}</CardTitle>
+            <CardDescription>
+              Question {currentStep} of {ASSESSMENT_QUESTIONS.length}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup 
+              value={selectedAnswer?.text} 
+              onValueChange={(value) => {
+                const option = question.options.find(o => o.text === value);
+                if (option) handleAnswerSelect(option);
+              }}
+            >
+              {question.options.map((option, idx) => (
+                <div key={idx} className="flex items-start space-x-3 mb-4 p-4 rounded-lg border hover:bg-accent/50 transition-colors">
+                  <RadioGroupItem value={option.text} id={`option-${idx}`} className="mt-1" />
+                  <Label htmlFor={`option-${idx}`} className="cursor-pointer flex-1">
+                    <div className="font-medium">{option.text}</div>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    // Completion screen
+    return (
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl gradient-text">Assessment Complete!</CardTitle>
+          <CardDescription>
+            We're calculating your personalized Longevity Impact Score
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-lg border bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+              <Brain className="h-8 w-8 text-purple-600 mb-2" />
+              <h3 className="font-semibold">Brain</h3>
+              <p className="text-xs text-muted-foreground">Mental clarity & focus</p>
+            </div>
+            <div className="p-4 rounded-lg border bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+              <Activity className="h-8 w-8 text-blue-600 mb-2" />
+              <h3 className="font-semibold">Body</h3>
+              <p className="text-xs text-muted-foreground">Physical vitality</p>
+            </div>
+            <div className="p-4 rounded-lg border bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+              <Heart className="h-8 w-8 text-green-600 mb-2" />
+              <h3 className="font-semibold">Balance</h3>
+              <p className="text-xs text-muted-foreground">Inner calm & peace</p>
+            </div>
+            <div className="p-4 rounded-lg border bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950 dark:to-pink-900">
+              <Sparkles className="h-8 w-8 text-pink-600 mb-2" />
+              <h3 className="font-semibold">Beauty</h3>
+              <p className="text-xs text-muted-foreground">Radiant appearance</p>
+            </div>
+          </div>
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 text-center space-y-2">
+            <p className="font-semibold">Your personalized health journey starts now</p>
+            <p className="text-sm text-muted-foreground">
+              You'll see your baseline score and get personalized recommendations
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const isNextDisabled = () => {
+    if (currentStep === 0) {
+      return !baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg;
+    }
+    if (currentStep >= 1 && currentStep <= 12) {
+      const questionIndex = currentStep - 1;
+      const question = ASSESSMENT_QUESTIONS[questionIndex];
+      return !answers[question.question_id];
+    }
+    return false;
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-      {/* Header with logo and close button */}
-      <div className="absolute top-4 left-0 right-0 flex justify-between items-center px-4 max-w-4xl mx-auto">
-        <button 
-          onClick={() => navigate("/")}
-          className="text-2xl font-bold gradient-text hover:opacity-80 transition-opacity"
-        >
-          Biohack<em>her</em>
-        </button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/")}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <X className="h-5 w-5" />
-        </Button>
-      </div>
-
-      <div className="w-full max-w-lg">
-        <div className="mb-8">
-          <Progress value={progress} className="w-full" />
-          <p className="text-sm text-muted-foreground text-center mt-2">
-            Step {currentStep} of {totalSteps}
-          </p>
+    <div className="min-h-screen bg-background py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="text-sm font-semibold text-primary">BH</span>
+            </div>
+            <span className="font-semibold">BiohackHer</span>
+          </div>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-        
-        {renderStep()}
-        
-        <div className="flex justify-between mt-8">
+
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-muted-foreground">
+              {currentStep === 0 ? "Baseline Information" : currentStep > 12 ? "Complete" : `Question ${currentStep} of ${ASSESSMENT_QUESTIONS.length}`}
+            </span>
+            <span className="text-sm font-semibold text-primary">{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+
+        {/* Step Content */}
+        <div className="mb-8">
+          {renderStep()}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between gap-4">
           <Button
             variant="outline"
             onClick={handlePrevious}
-            disabled={currentStep === 1}
+            disabled={currentStep === 0}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Previous
           </Button>
-          
           <Button
             onClick={handleNext}
-            disabled={
-              (currentStep === 1 && !formData.age) ||
-              (currentStep === 2 && !formData.stage) ||
-              (currentStep === 5 && (!formData.lifestyle.sleepHours || !formData.lifestyle.activityLevel || !formData.lifestyle.stressLevel))
-            }
-            className="primary-gradient"
+            disabled={isNextDisabled()}
           >
-            {currentStep === totalSteps ? "Start My Journey" : "Next"}
+            {currentStep === totalSteps - 1 ? "Complete" : "Next"}
             <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </div>
-        
-        <div className="text-center mt-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/")}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
-            Skip for now
           </Button>
         </div>
       </div>
