@@ -42,7 +42,7 @@ const Index = () => {
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
                     <Target className="h-5 w-5 mr-2" />
-                    Take Free Assessment
+                    Take Free Longevity Assessment
                   </Button>
                   <Button 
                     size="lg"
