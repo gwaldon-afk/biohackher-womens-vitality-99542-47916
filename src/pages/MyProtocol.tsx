@@ -31,7 +31,7 @@ const MyProtocol = () => {
   const { toast } = useToast();
   const [assessments, setAssessments] = useState<AssessmentData[]>([]);
   const [loading, setLoading] = useState(true);
-  const { protocols, fetchProtocolItems, deleteProtocol, updateProtocol, deleteProtocolItem } = useProtocols();
+  const { protocols, fetchProtocols, fetchProtocolItems, deleteProtocol, updateProtocol, deleteProtocolItem } = useProtocols();
   const { adherence, toggleAdherence, getAdherenceStats } = useAdherence();
   const [protocolItems, setProtocolItems] = useState<any[]>([]);
   const [loadingItems, setLoadingItems] = useState(false);
@@ -471,7 +471,10 @@ const MyProtocol = () => {
                       Manage your personalized wellness protocols
                     </CardDescription>
                   </div>
-                  <ProtocolBuilderDialog />
+                  <ProtocolBuilderDialog onProtocolCreated={async () => {
+                    await fetchProtocols();
+                    await loadProtocolItems();
+                  }} />
                 </div>
               </CardHeader>
               <CardContent>

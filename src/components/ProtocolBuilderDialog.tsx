@@ -18,6 +18,7 @@ interface ProtocolItem {
   dosage: string;
   frequency: 'daily' | 'twice_daily' | 'three_times_daily' | 'weekly' | 'as_needed';
   time_of_day: string[];
+  selected?: boolean;
 }
 
 const PROTOCOL_TEMPLATES = {
@@ -63,7 +64,7 @@ const PROTOCOL_TEMPLATES = {
   }
 };
 
-export const ProtocolBuilderDialog = ({ trigger }: { trigger?: React.ReactNode }) => {
+export const ProtocolBuilderDialog = ({ trigger, onProtocolCreated }: { trigger?: React.ReactNode; onProtocolCreated?: () => void }) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'basic' | 'template' | 'items'>('basic');
   const [protocolData, setProtocolData] = useState({
@@ -85,8 +86,15 @@ export const ProtocolBuilderDialog = ({ trigger }: { trigger?: React.ReactNode }
       description: template.description,
       start_date: new Date().toISOString().split('T')[0]
     });
-    setItems(template.items as ProtocolItem[]);
+    // Mark all template items as selected by default
+    setItems(template.items.map(item => ({ ...item, selected: true })) as ProtocolItem[]);
     setStep('items');
+  };
+
+  const toggleItemSelection = (index: number) => {
+    setItems(prev => prev.map((item, i) => 
+      i === index ? { ...item, selected: !item.selected } : item
+    ));
   };
 
   const handleCreateProtocol = async () => {
@@ -98,27 +106,36 @@ export const ProtocolBuilderDialog = ({ trigger }: { trigger?: React.ReactNode }
         created_from_pillar: selectedTemplate
       });
 
-      if (protocol && items.length > 0) {
+      // Only add selected items
+      const selectedItems = items.filter(item => item.selected !== false);
+      
+      if (protocol && selectedItems.length > 0) {
         await Promise.all(
-          items.map(item =>
-            addProtocolItem({
+          selectedItems.map(item => {
+            const { selected, ...itemData } = item;
+            return addProtocolItem({
               protocol_id: protocol.id,
-              ...item,
+              ...itemData,
               notes: null,
               product_link: null,
               is_active: true
-            })
-          )
+            });
+          })
         );
       }
 
       toast({
         title: "Protocol Created!",
-        description: `${protocolData.name} with ${items.length} items has been added.`
+        description: `${protocolData.name} with ${selectedItems.length} items has been added.`
       });
       
       setOpen(false);
       resetForm();
+      
+      // Trigger refresh in parent component
+      if (onProtocolCreated) {
+        onProtocolCreated();
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -213,17 +230,30 @@ export const ProtocolBuilderDialog = ({ trigger }: { trigger?: React.ReactNode }
 
         {step === 'items' && (
           <div className="space-y-4">
+            <div className="mb-4">
+              <p className="text-sm text-muted-foreground">
+                Select the items you want to include in your protocol ({items.filter(i => i.selected !== false).length} of {items.length} selected)
+              </p>
+            </div>
             <div className="space-y-3">
               {items.map((item, index) => (
-                <Card key={index}>
+                <Card 
+                  key={index}
+                  className={`cursor-pointer transition-colors ${item.selected === false ? 'opacity-50' : ''}`}
+                  onClick={() => toggleItemSelection(index)}
+                >
                   <CardContent className="p-3">
                     <div className="flex items-start gap-3">
-                      <Checkbox checked={true} />
+                      <Checkbox 
+                        checked={item.selected !== false} 
+                        onCheckedChange={() => toggleItemSelection(index)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                       <div className="flex-1">
                         <p className="font-medium text-sm">{item.name}</p>
                         <p className="text-xs text-muted-foreground">{item.description}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {item.dosage} • {item.frequency.replace('_', ' ')} • {item.time_of_day.join(', ')}
+                          {item.dosage} • {item.frequency.replace(/_/g, ' ')} • {item.time_of_day.join(', ')}
                         </p>
                       </div>
                     </div>
@@ -236,8 +266,12 @@ export const ProtocolBuilderDialog = ({ trigger }: { trigger?: React.ReactNode }
               <Button variant="outline" onClick={() => setStep(selectedTemplate ? 'template' : 'basic')}>
                 Back
               </Button>
-              <Button onClick={handleCreateProtocol} className="flex-1" disabled={items.length === 0}>
-                Create Protocol
+              <Button 
+                onClick={handleCreateProtocol} 
+                className="flex-1" 
+                disabled={items.filter(i => i.selected !== false).length === 0}
+              >
+                Create Protocol with {items.filter(i => i.selected !== false).length} Items
               </Button>
             </div>
           </div>
