@@ -27,10 +27,10 @@ const Index = () => {
               <div className="text-center lg:text-left space-y-8">
                 <div>
                   <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-                    Your Complete <span className="text-white/90">Health & Performance Hub</span>
+                    {t('home.hero.title')}
                   </h1>
                   <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
-                    Track your health, get AI-powered insights, shop evidence-based products, and access research—all in one place
+                    {t('home.hero.description')}
                   </p>
                 </div>
 
