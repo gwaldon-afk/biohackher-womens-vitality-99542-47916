@@ -43,86 +43,86 @@ serve(async (req) => {
     const isReframe = stage === 'reframe';
     
     const contextPrompt = isReframe ? `
-User wants to create a health goal: "${goalDescription}"
+You want to create a health goal: "${goalDescription}"
 ${pillar ? `Suggested Health Pillar: ${pillar}` : 'Please analyze and determine which health pillar(s) this goal relates to'}
-${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
+${userProfile ? `Your Profile: ${JSON.stringify(userProfile)}` : ''}
 
-TASK: Reframe this goal using the HACK Protocol framework for the user to review and accept.
+TASK: Reframe this goal using the HACK Protocol framework for you to review and accept.
 
 Return a simplified JSON structure with:
 {
   "title": "Clear, actionable goal title (1 sentence)",
-  "description": "2-3 sentence explanation of what this goal means in HACK terms",
+  "description": "2-3 sentence explanation of what this goal means in HACK terms, written directly to you",
   "pillar": "brain|body|balance|beauty (choose the PRIMARY pillar)",
-  "healthspanTarget": "Brief target outcome statement"
+  "healthspanTarget": "Brief target outcome statement for you"
 }
 
-Keep it concise - this is just for the user to approve the basic reframing before generating the full detailed plan.` : isRefinement ? `
-The user wants to refine their existing health goal following the HACK Protocol framework.
+Keep it concise - this is just for you to approve the basic reframing before generating the full detailed plan.` : isRefinement ? `
+You want to refine your existing health goal following the HACK Protocol framework.
 
 CURRENT GOAL (HACK Structure):
 ${JSON.stringify(currentGoal, null, 2)}
 
-USER'S REFINEMENT REQUEST:
+YOUR REFINEMENT REQUEST:
 "${refinementRequest}"
 
 ${conversationHistory ? `CONVERSATION HISTORY:\n${conversationHistory.map((m: any) => `${m.role}: ${m.content}`).join('\n')}` : ''}
 
-Please update the goal plan based on the user's request while maintaining the HACK Protocol structure:
-- H (Healthspan Target): Keep specific and measurable
+Please update the goal plan based on your request while maintaining the HACK Protocol structure:
+- H (Healthspan Target): Keep specific and measurable for you
 - A (Aging Blueprint): Update interventions as requested while maintaining evidence-based reasoning
 - C (Check-in Frequency): Adjust if requested
 - K (Knowledge of Barriers): Update barriers/solutions as needed
 
 Make sure the changes are clear and maintain the quality of the plan.` : `
-User wants to create a health goal: "${goalDescription}"
+You want to create a health goal: "${goalDescription}"
 ${pillar ? `Suggested Health Pillar: ${pillar} (please analyze if this is correct or if other pillars are more relevant)` : 'Please analyze and determine which health pillar(s) this goal relates to'}
-${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
-${assessmentData ? `Recent Assessment Data: ${JSON.stringify(assessmentData)}` : ''}
+${userProfile ? `Your Profile: ${JSON.stringify(userProfile)}` : ''}
+${assessmentData ? `Your Recent Assessment Data: ${JSON.stringify(assessmentData)}` : ''}
 
 Generate a comprehensive, personalized health goal plan using the HACK Protocol framework:
 
-**H - Healthspan Target:** A specific, measurable outcome within 30-90 days
-**A - Aging Blueprint:** 3-5 evidence-based interventions with clear reasoning
-**C - Check-in Frequency:** Appropriate review cadence (daily/weekly/biweekly)
-**K - Knowledge of Barriers:** Common obstacles and practical solutions
+**H - Healthspan Target:** A specific, measurable outcome for you within 30-90 days
+**A - Aging Blueprint:** 3-5 evidence-based interventions with clear reasoning for you
+**C - Check-in Frequency:** Appropriate review cadence for you (daily/weekly/biweekly)
+**K - Knowledge of Barriers:** Common obstacles you might face and practical solutions
 
 For each intervention in the Aging Blueprint (A), provide:
-- The specific action/item
-- Why it's recommended (scientific reasoning)
-- How it relates to their goal
-- Any important considerations
+- The specific action/item for you
+- Why it's recommended for you (scientific reasoning)
+- How it relates to your goal
+- Any important considerations for you
 
 Return the response in this exact JSON structure:
 {
   "title": "Goal title",
   "pillar_category": "brain|body|balance|beauty",
   "related_pillars": ["array of all pillars this goal impacts"],
-  "pillar_analysis": "Detailed explanation of which pillars are affected and how this goal relates to each one",
+  "pillar_analysis": "Detailed explanation of which pillars are affected and how this goal relates to each one for you",
   "healthspan_target": {
-    "metric": "what to measure",
-    "target_value": "specific target",
+    "metric": "what you will measure",
+    "target_value": "your specific target",
     "timeframe_days": 60,
-    "reasoning": "why this target makes sense"
+    "reasoning": "why this target makes sense for you"
   },
   "interventions": [
     {
       "name": "Intervention name",
       "type": "supplement|lifestyle|practice|nutrition",
-      "dosage": "specific dosage/frequency",
-      "reasoning": "why this helps",
-      "timing": "when to do it",
+      "dosage": "specific dosage/frequency for you",
+      "reasoning": "why this helps you",
+      "timing": "when you should do it",
       "priority": "high|medium|low"
     }
   ],
   "barriers_plan": {
-    "common_barriers": ["barrier1", "barrier2"],
-    "solutions": ["solution1", "solution2"],
-    "support_needed": "what kind of support helps"
+    "common_barriers": ["barrier1 you might face", "barrier2 you might face"],
+    "solutions": ["solution1 for you", "solution2 for you"],
+    "support_needed": "what kind of support helps you"
   },
   "check_in_frequency": "daily|weekly|biweekly",
   "biological_age_impact_predicted": -0.5,
-  "ai_reasoning": "Overall explanation of the plan and why it's personalized for this user"
+  "ai_reasoning": "Overall explanation of the plan and why it's personalized for you"
 }
 `;
 
