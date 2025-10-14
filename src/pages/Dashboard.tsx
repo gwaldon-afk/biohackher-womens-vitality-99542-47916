@@ -18,6 +18,7 @@ import { StreakCard } from "@/components/StreakCard";
 import { AIInsightsCard } from "@/components/AIInsightsCard";
 import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 import { BaselineReassessmentPrompt } from "@/components/BaselineReassessmentPrompt";
+import { AdherenceCalendar } from "@/components/AdherenceCalendar";
 import { useLISData } from "@/hooks/useLISData";
 import { format } from "date-fns";
 import LISInputForm from "@/components/LISInputForm";
@@ -57,7 +58,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'today');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -412,28 +413,38 @@ const Dashboard = () => {
           <MemberProgressCard />
         </div>
 
-        {/* Tabs for My Journey */}
+        {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="progress">Progress</TabsTrigger>
+            <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
               {/* Daily LIS Input */}
-              <Card>
+              <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
                 <CardHeader>
-                  <CardTitle>Today's Health Check</CardTitle>
-                  <CardDescription>
-                    Track your daily wellness score in 6 key areas
-                  </CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Activity className="h-5 w-5 text-primary" />
+                        Submit Today's LIS 2.0 Data
+                        <Badge variant="secondary" className="ml-2">Daily Tracking</Badge>
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        LIS 2.0 tracks 6 pillars daily: Stress & Subjective Age (30%), Activity (20%), Sleep (15%), 
+                        Nutrition (15%), Social (10%), Cognitive (10%)
+                      </CardDescription>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <LISInputForm onScoreCalculated={() => lisData.refetch()}>
                     <Button size="lg" className="w-full">
-                      <Activity className="mr-2 h-5 w-5" />
+                      <Zap className="h-5 w-5 mr-2" />
                       Submit Today's Score
                     </Button>
                   </LISInputForm>
@@ -446,486 +457,148 @@ const Dashboard = () => {
 
             {/* Progress Tab - Tracking & Streaks */}
             <TabsContent value="progress" className="space-y-6">
-              <div className="grid lg:grid-cols-2 gap-6">
+              {/* Progress Tracker & Streaks */}
+              <div className="grid md:grid-cols-2 gap-6">
                 <ProgressTracker />
-                <StreakCard 
-                  activityType="daily_score"
-                  title="Daily Check-In Streak"
-                  description="Keep up your daily wellness tracking"
-                />
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Your Streaks</h3>
+                  <div className="space-y-3">
+                    <StreakCard
+                      activityType="daily_check_in"
+                      title="Daily Check-In"
+                      description="Log your daily wellness metrics"
+                    />
+                    <StreakCard
+                      activityType="assessments"
+                      title="Assessments"
+                      description="Complete health assessments"
+                    />
+                  </div>
+                </div>
               </div>
               
               {/* Member Progress Card */}
               <MemberProgressCard />
+
+              {/* Adherence Calendar */}
+              <AdherenceCalendar />
             </TabsContent>
 
             {/* Insights Tab - Analysis & Reports */}
             <TabsContent value="insights" className="space-y-8">
+              {/* Baseline Reassessment Prompt */}
+              <BaselineReassessmentPrompt />
 
-        {/* Baseline Reassessment Prompt */}
-        <BaselineReassessmentPrompt />
-
-        {/* LIS 2.0 Daily Input Card */}
-        <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
-                  Submit Today's LIS 2.0 Data
-                  <Badge variant="secondary" className="ml-2">Daily Tracking</Badge>
-                </CardTitle>
-                <CardDescription className="mt-2">
-                  LIS 2.0 tracks 6 pillars daily: Stress & Subjective Age (30%), Activity (20%), Sleep (15%), 
-                  Nutrition (15%), Social (10%), Cognitive (10%)
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-background/80 rounded-lg border border-primary/10">
-                <p className="text-sm font-medium text-primary mb-2">How LIS 2.0 Works:</p>
-                <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• <strong>One-time setup</strong>: Baseline health profile (completed at /lis2-setup)</li>
-                  <li>• <strong>Daily tracking</strong>: Submit metrics across 6 pillars for continuous monitoring</li>
-                  <li>• <strong>30-day calmness baseline</strong>: Your scores improve as you build consistency</li>
-                  <li>• <strong>Age-stratified targets</strong>: Personalized to your chronological age</li>
-                </ul>
-              </div>
-              <LISInputForm onScoreCalculated={() => {
-                lisData.refetch();
-                toast({
-                  title: "LIS 2.0 Score Updated",
-                  description: "Your daily data has been submitted and score calculated.",
-                });
-              }}>
-                <Button className="w-full" size="lg">
-                  <Zap className="h-5 w-5 mr-2" />
-                  Submit Today's LIS 2.0 Data
-                </Button>
-              </LISInputForm>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* LIS Baseline Comparison Card */}
-        {lisData.baselineScore && (
-          <Card className="col-span-2 bg-gradient-to-r from-primary/5 to-secondary/5">
-            <CardHeader>
-              <CardTitle>Your Longevity Impact Score</CardTitle>
-              <CardDescription>Baseline vs Current Performance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Baseline Score */}
-                <div className="text-center p-6 bg-background/80 rounded-lg border">
-                  <p className="text-sm text-muted-foreground mb-2">Baseline (Onboarding)</p>
-                  <p className="text-4xl font-bold text-primary">{lisData.baselineScore}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {lisData.baselineDate && format(lisData.baselineDate, 'MMM d, yyyy')}
-                  </p>
-                </div>
-
-                {/* Current Score */}
-                <div className="text-center p-6 bg-background/80 rounded-lg border">
-                  <p className="text-sm text-muted-foreground mb-2">Current (30-day avg)</p>
-                  <p className="text-4xl font-bold text-secondary">
-                    {lisData.currentScore || 'No data'}
-                  </p>
-                  {lisData.improvement !== 0 && (
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      {lisData.improvement >= 0 ? (
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <TrendingDown className="h-4 w-4 text-red-600" />
-                      )}
-                      <span className={lisData.improvement >= 0 ? "text-green-600" : "text-red-600"}>
-                        {lisData.improvement >= 0 ? '+' : ''}{lisData.improvement} points
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Data Sources Indicator */}
-              <div className="mt-6 p-4 bg-background/80 rounded-lg border">
-                <h4 className="font-medium mb-3">Data Sources</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Wearable Sync</span>
-                    <Badge variant={lisData.hasWearableData ? "default" : "outline"}>
-                      {lisData.hasWearableData ? "Active" : "Not connected"}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Manual Entry</span>
-                    <Badge variant={lisData.hasManualData ? "default" : "outline"}>
-                      {lisData.manualEntryCount} entries
-                    </Badge>
-                  </div>
-                </div>
-                {lisData.lastSyncTime && (
-                  <p className="text-xs text-muted-foreground mt-3">
-                    Last synced: {format(new Date(lisData.lastSyncTime), 'MMM d, h:mm a')}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Progress & Streaks Section */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <ProgressTracker />
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Your Streaks</h3>
-            <div className="space-y-3">
-              <StreakCard
-                activityType="daily_check_in"
-                title="Daily Check-In"
-                description="Log your daily wellness metrics"
-              />
-              <StreakCard
-                activityType="assessments"
-                title="Assessments"
-                description="Complete health assessments"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* AI Insights & Reports Section - Premium Features */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <AIInsightsCard />
-          <MonthlyReportCard isPremium={false} />
-        </div>
-
-        {/* Personalised Health Assessment */}
-        <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
-          <CardContent className="p-6">
-            <div className="space-y-6">
-              {/* Comprehensive Health Analysis */}
-              <div className="text-center">
-                <h2 className="text-xl font-bold text-primary mb-4">Your Comprehensive Health Analysis</h2>
-                <p className="text-base text-muted-foreground leading-relaxed mb-4">
-                  {getOverallHealthAnalysis(recentAssessments).analysis}
-                </p>
-              </div>
-
-              {/* Top Recommendations */}
-              {recentAssessments.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-primary">Priority Recommendations</h3>
-                  {getTopRecommendations(recentAssessments).map((rec, index) => (
-                    <div key={index} className="flex items-start gap-3 p-4 bg-background/80 rounded-lg border border-primary/10">
-                      <div className={`h-2 w-2 rounded-full mt-2 ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
-                      <div>
-                        <p className="text-sm font-medium text-primary">{rec.area}</p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {rec.recommendation}
+              {/* LIS Baseline Comparison Card */}
+              {lisData.baselineScore && (
+                <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
+                  <CardHeader>
+                    <CardTitle>Your Longevity Impact Score</CardTitle>
+                    <CardDescription>Baseline vs Current Performance</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      {/* Baseline Score */}
+                      <div className="text-center p-6 bg-background/80 rounded-lg border">
+                        <p className="text-sm text-muted-foreground mb-2">Baseline (Onboarding)</p>
+                        <p className="text-4xl font-bold text-primary">{lisData.baselineScore}</p>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {lisData.baselineDate && format(lisData.baselineDate, 'MMM d, yyyy')}
                         </p>
                       </div>
+
+                      {/* Current Score */}
+                      <div className="text-center p-6 bg-background/80 rounded-lg border">
+                        <p className="text-sm text-muted-foreground mb-2">Current (30-day avg)</p>
+                        <p className="text-4xl font-bold text-secondary">
+                          {lisData.currentScore || 'No data'}
+                        </p>
+                        {lisData.improvement !== 0 && (
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            {lisData.improvement >= 0 ? (
+                              <TrendingUp className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <TrendingDown className="h-4 w-4 text-red-600" />
+                            )}
+                            <span className={lisData.improvement >= 0 ? "text-green-600" : "text-red-600"}>
+                              {lisData.improvement >= 0 ? '+' : ''}{lisData.improvement} points
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  ))}
-                </div>
+                  </CardContent>
+                </Card>
               )}
 
-              {/* Health Score and Actions */}
-              <div className="flex items-center justify-between pt-4 border-t border-primary/10">
-                <div className="flex items-center gap-6">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="cursor-help">
-                          <ProgressCircle 
-                            value={lisData.currentScore || lisData.baselineScore || 0} 
-                            size="lg" 
-                            className="text-primary"
-                          >
-                            <div className="text-center">
-                              <div className="text-xl font-bold">
-                                {lisData.currentScore || lisData.baselineScore || 0}
-                              </div>
-                              <div className="text-xs text-muted-foreground">LIS 2.0</div>
-                            </div>
-                          </ProgressCircle>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs p-3">
-                        <p className="text-sm font-medium mb-2">Longevity Impact Score 2.0</p>
-                        <p className="text-xs">
-                          LIS 2.0 uses your subjective age delta, activity patterns, sleep quality, 
-                          calmness improvement, nutrition, and social engagement to calculate your 
-                          daily impact on biological aging with personalized age-stratified targets.
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  
-                  <div className="space-y-2">
-                    <div className={`text-2xl font-bold ${getOverallHealthAnalysis(recentAssessments).status === 'Excellent' ? 'text-green-600' : getOverallHealthAnalysis(recentAssessments).status === 'Good' ? 'text-blue-600' : getOverallHealthAnalysis(recentAssessments).status === 'Fair' ? 'text-amber-600' : 'text-red-600'}`}>
-                      {getOverallHealthAnalysis(recentAssessments).status}
+              {/* AI Insights & Reports Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <AIInsightsCard />
+                <MonthlyReportCard isPremium={false} />
+              </div>
+
+              {/* Personalised Health Assessment */}
+              <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
+                <CardContent className="p-6">
+                  <div className="space-y-6">
+                    {/* Comprehensive Health Analysis */}
+                    <div className="text-center">
+                      <h2 className="text-xl font-bold text-primary mb-4">Your Comprehensive Health Analysis</h2>
+                      <p className="text-base text-muted-foreground leading-relaxed mb-4">
+                        {getOverallHealthAnalysis(recentAssessments).analysis}
+                      </p>
                     </div>
-                    {getOverallHealthAnalysis(recentAssessments).score > 0 && (
-                      <div className="text-sm text-muted-foreground">
-                        Overall Score: {getOverallHealthAnalysis(recentAssessments).score}/100
+
+                    {/* Top Recommendations */}
+                    {recentAssessments.length > 0 && (
+                      <div className="space-y-3">
+                        <h3 className="font-semibold text-primary">Priority Recommendations</h3>
+                        {getTopRecommendations(recentAssessments).map((rec, index) => (
+                          <div key={index} className="flex items-start gap-3 p-4 bg-background/80 rounded-lg border border-primary/10">
+                            <div className={`h-2 w-2 rounded-full mt-2 ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
+                            <div>
+                              <p className="text-sm font-medium text-primary">{rec.area}</p>
+                              <p className="text-sm text-muted-foreground leading-relaxed">
+                                {rec.recommendation}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                <div className="flex flex-col gap-3">
-                  <Button 
-                    onClick={() => navigate('/reports?view=comprehensive')}
-                    className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    size="sm"
-                  >
-                    <History className="h-4 w-4 mr-2" />
-                    View Full Analysis
-                  </Button>
-
-                  <Button 
-                    onClick={() => navigate('/symptoms')}
-                    variant="outline"
-                    className="border-primary/20 text-primary hover:bg-primary/5"
-                    size="sm"
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Update Assessment
-                  </Button>
-
-                  <Button 
-                    onClick={() => navigate('/symptoms')}
-                    variant="outline"
-                    className="border-primary/20 text-primary hover:bg-primary/5"
-                    size="sm"
-                  >
-                    <Activity className="h-4 w-4 mr-2" />
-                    New Assessment
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Complete Your Protocol Card */}
-        {recentAssessments.length > 0 && (
-          <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Pill className="h-5 w-5 text-primary" />
-                Complete Your Protocol
-              </CardTitle>
-              <CardDescription>
-                Recommended supplements based on your assessments
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-2xl font-bold text-primary">
-                    {recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair').length}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Areas need attention</p>
-                </div>
-                <Button onClick={() => navigate('/my-protocol')}>
-                  View My Protocol
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Based on your {recentAssessments.length} completed assessment{recentAssessments.length > 1 ? 's' : ''}, 
-                we've identified evidence-based supplements that may support your wellness goals.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* My Health Profile Section */}
-        <div className="mb-8">
-          {/* Symptoms Overview - Full Width */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
-                  <CardTitle>My Symptoms Overview</CardTitle>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
-                    {activeSymptoms.length}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Active Symptoms Tracked
-                  </div>
-                </div>
-              </div>
-              <CardDescription>Track your health across all areas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loadingSymptoms ? (
-                <div className="text-center py-8 text-muted-foreground">Loading symptoms...</div>
-              ) : recentAssessments.length > 0 ? (
-                <div className="space-y-4">
-                  {recentAssessments.map((assessment) => {
-                    const Icon = getSymptomIcon(assessment.symptom_type);
-                    const getSymptomInsight = (category: string, score: number) => {
-                      if (category === 'excellent') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} management is exemplary and well-optimised.`;
-                      if (category === 'good') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} shows positive management with room for fine-tuning.`;
-                      if (category === 'fair') return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} needs focused attention for improvement.`;
-                      return `Your ${getSymptomName(assessment.symptom_type).toLowerCase()} requires immediate intervention and support.`;
-                    };
-                    
-                    return (
-                      <div key={assessment.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
-                           onClick={() => navigate(`/assessment/${assessment.symptom_type}/results`)}>
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="bg-primary/10 p-2 rounded-lg">
-                            <Icon className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">{getSymptomName(assessment.symptom_type)}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {new Date(assessment.completed_at).toLocaleDateString()}
-                            </div>
-                          </div>
-                          <div className="flex-1 px-4">
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {getSymptomInsight(assessment.score_category, assessment.overall_score)}
-                            </p>
-                          </div>
+              {/* Priority Recommendations Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                    Priority Actions
+                  </CardTitle>
+                  <CardDescription>Based on your recent assessments</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {getPriorityRecommendations().map((rec, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 bg-background rounded border hover:bg-muted/50 cursor-pointer"
+                           onClick={rec.action}>
+                        <div className={`h-2 w-2 rounded-full ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{rec.title}</div>
+                          <div className="text-xs text-muted-foreground">{rec.description}</div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={getCategoryColor(assessment.score_category)}>
-                            {assessment.score_category}
-                          </Badge>
-                          <div className="text-sm font-medium">{assessment.overall_score}/100</div>
-                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground mb-4">No symptom assessments yet</p>
-                  <Button onClick={() => navigate('/symptoms')}>
-                    Take Your First Assessment
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Priority Recommendations */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-primary" />
-              Priority Recommendations
-            </CardTitle>
-            <CardDescription>Based on your recent assessments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {getPriorityRecommendations().map((rec, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-background rounded border hover:bg-muted/50 cursor-pointer"
-                     onClick={rec.action}>
-                  <div className={`h-2 w-2 rounded-full ${rec.priority === 'high' ? 'bg-red-500' : 'bg-amber-500'}`}></div>
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{rec.title}</div>
-                    <div className="text-xs text-muted-foreground">{rec.description}</div>
+                    ))}
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          {primaryActions.map((action, index) => (
-            <Button
-              key={action.title}
-              variant={action.variant}
-              onClick={action.onClick}
-              disabled={action.title === 'Sync Wearables' && loading}
-              className={`h-24 p-6 flex items-center gap-4 justify-start text-left ${action.className}`}
-            >
-              <action.icon className="h-6 w-6 shrink-0" />
-              <div className="flex-1">
-                <div className="font-semibold text-base">{action.title}</div>
-                <div className="text-sm opacity-80">{action.subtitle}</div>
-              </div>
-            </Button>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="text-center p-4">
-            <div className="text-2xl font-bold text-primary mb-1">8</div>
-            <div className="text-xs text-muted-foreground">Assessments</div>
-          </Card>
-          
-          <Card className="text-center p-4">
-            <div className="text-2xl font-bold text-green-600 mb-1">5</div>
-            <div className="text-xs text-muted-foreground">Good Days</div>
-          </Card>
-          
-          <Card className="text-center p-4">
-            <div className="text-2xl font-bold text-amber-600 mb-1">2</div>
-            <div className="text-xs text-muted-foreground">Focus Areas</div>
-          </Card>
-          
-          <Card className="text-center p-4">
-            <div className="text-2xl font-bold text-blue-600 mb-1">72%</div>
-            <div className="text-xs text-muted-foreground">Avg Score</div>
-          </Card>
-        </div>
-
-        {/* Next Steps */}
-        <Card className="bg-muted/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Recommended Next Steps</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-              <div className="h-2 w-2 bg-primary rounded-full"></div>
-              <span className="text-sm">Complete your weekly assessment to maintain tracking</span>
-            </div>
-            
-            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-              <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
-              <span className="text-sm">Review your sleep quality patterns in Reports</span>
-            </div>
-            
-            <div className="flex items-center gap-3 p-3 bg-background rounded border">
-              <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-              <span className="text-sm">Sync your fitness tracker for more accurate data</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Access Links */}
-        <div className="mt-8 flex flex-wrap gap-4 justify-center">
-          <Button variant="link" onClick={() => navigate('/symptoms')} className="text-sm">
-            Take New Assessment →
-          </Button>
-          <Button variant="link" onClick={() => navigate('/nutrition')} className="text-sm">
-            Nutrition Guidance →
-          </Button>
-          <Button variant="link" onClick={() => navigate('/sleep')} className="text-sm">
-            Sleep Optimization →
-          </Button>
-        </div>
-          </TabsContent>
-
-          {/* Protocols Tab - Protocol Management */}
-          <TabsContent value="protocols" className="space-y-6">
+            {/* Protocols Tab - Protocol Management */}
+            <TabsContent value="protocols" className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>My Wellness Protocols</CardTitle>
