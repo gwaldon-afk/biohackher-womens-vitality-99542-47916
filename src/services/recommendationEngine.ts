@@ -273,3 +273,179 @@ export const incrementRecommendationCompleted = async (
     }
   }
 };
+
+// ============= AI Assistant Recommendation Functions =============
+
+/**
+ * Extract health topics from AI response text for contextual recommendations
+ */
+export function extractHealthTopicsFromText(text: string): string[] {
+  const topics: string[] = [];
+  const lowerText = text.toLowerCase();
+  
+  // Health topics to detect
+  const topicKeywords = {
+    sleep: ['sleep', 'insomnia', 'rest', 'melatonin', 'circadian'],
+    energy: ['energy', 'fatigue', 'tired', 'exhaustion', 'vitality'],
+    cognitive: ['brain', 'memory', 'focus', 'concentration', 'mental', 'cognitive'],
+    stress: ['stress', 'anxiety', 'cortisol', 'relaxation', 'calm'],
+    gut: ['gut', 'digestion', 'microbiome', 'bloating', 'ibs'],
+    joint: ['joint', 'pain', 'inflammation', 'arthritis', 'mobility'],
+    hormonal: ['hormone', 'hormonal', 'menopause', 'perimenopause', 'testosterone', 'estrogen'],
+    immune: ['immune', 'immunity', 'infection', 'defense'],
+    cardiovascular: ['heart', 'cardiovascular', 'blood pressure', 'cholesterol'],
+    skin: ['skin', 'aging', 'wrinkles', 'collagen']
+  };
+
+  // Check for each topic
+  Object.entries(topicKeywords).forEach(([topic, keywords]) => {
+    if (keywords.some(keyword => lowerText.includes(keyword))) {
+      topics.push(topic);
+    }
+  });
+
+  return Array.from(new Set(topics)); // Remove duplicates
+}
+
+/**
+ * Get relevant products based on detected health topics
+ */
+export async function getRelevantProducts(topics: string[], limit: number = 5) {
+  if (topics.length === 0) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (error) throw error;
+
+    // Score products based on topic relevance
+    const scoredProducts = data.map(product => {
+      let relevanceScore = 0;
+      
+      // Check target_symptoms
+      if (product.target_symptoms) {
+        const symptoms = Array.isArray(product.target_symptoms) 
+          ? product.target_symptoms 
+          : [];
+        
+        topics.forEach(topic => {
+          if (symptoms.some((s: any) => 
+            typeof s === 'string' 
+              ? s.toLowerCase().includes(topic)
+              : s?.symptom?.toLowerCase().includes(topic)
+          )) {
+            relevanceScore += 3;
+          }
+        });
+      }
+
+      // Check category
+      if (product.category) {
+        topics.forEach(topic => {
+          if (product.category.toLowerCase().includes(topic)) {
+            relevanceScore += 2;
+          }
+        });
+      }
+
+      // Check name and description
+      const searchText = `${product.name} ${product.description}`.toLowerCase();
+      topics.forEach(topic => {
+        if (searchText.includes(topic)) {
+          relevanceScore += 1;
+        }
+      });
+
+      return { ...product, relevanceScore };
+    });
+
+    // Sort by relevance and return top results
+    return scoredProducts
+      .filter(p => p.relevanceScore > 0)
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .slice(0, limit);
+  } catch (error) {
+    console.error('Error fetching relevant products:', error);
+    return [];
+  }
+}
+
+/**
+ * Get relevant toolkit items based on health topics
+ */
+export async function getRelevantToolkitItems(topics: string[], limit: number = 5) {
+  if (topics.length === 0) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from('toolkit_items')
+      .select('*')
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
+
+    if (error) throw error;
+
+    // Score toolkit items based on topic relevance
+    const scoredItems = data.map(item => {
+      let relevanceScore = 0;
+
+      // Check target_symptoms
+      if (item.target_symptoms) {
+        topics.forEach(topic => {
+          const symptomsStr = JSON.stringify(item.target_symptoms).toLowerCase();
+          if (symptomsStr.includes(topic)) {
+            relevanceScore += 3;
+          }
+        });
+      }
+
+      // Check target_assessment_types
+      if (item.target_assessment_types) {
+        topics.forEach(topic => {
+          const assessmentsStr = JSON.stringify(item.target_assessment_types).toLowerCase();
+          if (assessmentsStr.includes(topic)) {
+            relevanceScore += 2;
+          }
+        });
+      }
+
+      // Check name and description
+      const searchText = `${item.name} ${item.description}`.toLowerCase();
+      topics.forEach(topic => {
+        if (searchText.includes(topic)) {
+          relevanceScore += 1;
+        }
+      });
+
+      return { ...item, relevanceScore };
+    });
+
+    return scoredItems
+      .filter(i => i.relevanceScore > 0)
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .slice(0, limit);
+  } catch (error) {
+    console.error('Error fetching relevant toolkit items:', error);
+    return [];
+  }
+}
+
+/**
+ * Score recommendations based on user profile and history
+ */
+export function scoreRecommendations(items: any[], userProfile: any): any[] {
+  // This can be expanded with more sophisticated scoring based on:
+  // - User's past purchases
+  // - Assessment scores
+  // - Current protocols
+  // - Subscription tier
+  
+  return items.map(item => ({
+    ...item,
+    personalizedScore: item.relevanceScore || 0
+  })).sort((a, b) => b.personalizedScore - a.personalizedScore);
+}
