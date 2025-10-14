@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ArrowLeft, Sparkles, Loader2, Brain, Zap, Heart, Flower2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ArrowLeft, Sparkles, Loader2, Brain, Zap, Heart, Flower2, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { GoalSuggestionCard } from "./GoalSuggestionCard";
@@ -227,29 +228,6 @@ export default function AIGoalWizard() {
             </p>
           </div>
 
-          {/* HACK Protocol Info */}
-          <HACKProtocolInfo />
-
-          {/* Goal Examples */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Start Examples</CardTitle>
-              <CardDescription>Click any example to get started</CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {GOAL_EXAMPLES.map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="h-auto py-3 px-4 text-left justify-start whitespace-normal"
-                  onClick={() => handleExampleClick(example)}
-                >
-                  <span className="text-sm">{example.text}</span>
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-
           {/* Goal Description Input */}
           <Card>
             <CardHeader>
@@ -282,6 +260,45 @@ export default function AIGoalWizard() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Goal Examples */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Quick Start Examples</CardTitle>
+              <CardDescription>Click any example to get started</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {GOAL_EXAMPLES.map((example, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="h-auto py-3 px-4 text-left justify-start whitespace-normal"
+                  onClick={() => handleExampleClick(example)}
+                >
+                  <span className="text-sm">{example.text}</span>
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* HACK Protocol Info - Collapsible */}
+          <Collapsible>
+            <Card>
+              <CollapsibleTrigger className="w-full">
+                <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">What is the HACK Protocol?</CardTitle>
+                    <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="pt-0">
+                  <HACKProtocolInfo />
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           <div className="text-center text-sm text-muted-foreground">
             <p>Powered by AI • Evidence-based recommendations • Personalized to your health profile</p>
