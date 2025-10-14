@@ -406,13 +406,28 @@ export function GoalSuggestionCard({
             </div>
           </div>
           {suggestion.biological_age_impact_predicted && (
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Predicted Impact</p>
-              <p className="font-semibold text-primary">
-                {suggestion.biological_age_impact_predicted > 0 ? '+' : ''}
-                {suggestion.biological_age_impact_predicted} years
-              </p>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-right cursor-help">
+                    <p className="text-sm text-muted-foreground">Predicted Impact</p>
+                    <p className="font-semibold text-primary">
+                      {suggestion.biological_age_impact_predicted > 0 ? '+' : ''}
+                      {suggestion.biological_age_impact_predicted} years
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      over {suggestion.healthspan_target.timeframe_days} days
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-sm">
+                    By completing this goal within {suggestion.healthspan_target.timeframe_days} days, 
+                    you could reduce your biological age by approximately {Math.abs(suggestion.biological_age_impact_predicted)} years.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
 
