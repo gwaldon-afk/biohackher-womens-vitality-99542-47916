@@ -179,20 +179,21 @@ export function GoalSuggestionCard({
         {/* Healthspan Target */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-lg">Your Target</h3>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p className="text-sm">{suggestion.healthspan_target.reasoning}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+          <div className="flex items-center gap-2">
+            <Target className="h-5 w-5 text-primary" />
+            <h3 className="font-semibold text-lg">Healthspan Target (H)</h3>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-sm font-semibold mb-1">HACK: Healthspan Target</p>
+                  <p className="text-sm">{suggestion.healthspan_target.reasoning}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
             <Dialog open={editingTarget} onOpenChange={setEditingTarget}>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="sm">
@@ -254,11 +255,22 @@ export function GoalSuggestionCard({
         <Separator />
 
         {/* Interventions */}
-        <div className="space-y-3">
+          <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-lg">Your Action Plan</h3>
+              <h3 className="font-semibold text-lg">Aging Blueprint (A)</h3>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-sm font-semibold mb-1">HACK: Aging Blueprint</p>
+                    <p className="text-sm">Evidence-based interventions to help you reach your target</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             {onAddToolkitItems && (
               <Button variant="outline" size="sm" onClick={onAddToolkitItems}>
@@ -320,7 +332,18 @@ export function GoalSuggestionCard({
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-primary" />
-            <h3 className="font-semibold text-lg">Staying on Track</h3>
+            <h3 className="font-semibold text-lg">Knowledge of Barriers (K)</h3>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="text-sm font-semibold mb-1">HACK: Knowledge of Barriers</p>
+                  <p className="text-sm">Anticipating obstacles and planning solutions increases success</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <Card className="bg-orange-500/5 border-orange-500/20">
@@ -362,11 +385,24 @@ export function GoalSuggestionCard({
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-3">
             <Calendar className="h-5 w-5 text-primary" />
-            <div>
-              <p className="font-semibold">Check-in Schedule</p>
-              <p className="text-sm text-muted-foreground capitalize">
-                {suggestion.check_in_frequency} progress tracking
-              </p>
+            <div className="flex items-center gap-2">
+              <div>
+                <p className="font-semibold">Check-in Schedule (C)</p>
+                <p className="text-sm text-muted-foreground capitalize">
+                  {suggestion.check_in_frequency} progress tracking
+                </p>
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs">
+                    <p className="text-sm font-semibold mb-1">HACK: Check-in Frequency</p>
+                    <p className="text-sm">Regular reviews help you stay on track and adjust as needed</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
           {suggestion.biological_age_impact_predicted && (

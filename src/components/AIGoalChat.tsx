@@ -21,7 +21,7 @@ export function AIGoalChat({ currentSuggestion, onSuggestionUpdate }: AIGoalChat
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "I've created your personalized goal plan! Want to make any changes? Just tell me what you'd like to adjust. For example:\n\n• \"Make check-ins weekly instead\"\n• \"Remove supplements and focus on lifestyle changes\"\n• \"Add meditation to the interventions\""
+      content: "I've created your personalized goal plan using the HACK Protocol framework!\n\n✓ H - Healthspan Target (your specific outcome)\n✓ A - Aging Blueprint (evidence-based interventions)\n✓ C - Check-in Frequency (progress reviews)\n✓ K - Knowledge of Barriers (anticipated obstacles)\n\nWant to make any changes? Just tell me what you'd like to adjust. For example:\n• \"Make check-ins weekly instead\"\n• \"Add meditation to the interventions\"\n• \"Change the healthspan target to 90 days\"\n\nI'll make sure to maintain the HACK structure while incorporating your changes."
     }
   ]);
   const [input, setInput] = useState("");

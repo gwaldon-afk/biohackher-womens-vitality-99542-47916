@@ -15,6 +15,7 @@ import { GoalSuggestionCard } from "./GoalSuggestionCard";
 import { AIGoalChat } from "./AIGoalChat";
 import { ToolkitSelectionDialog } from "./ToolkitSelectionDialog";
 import { ToolkitItemWithCategory } from "@/services/toolkitService";
+import { HACKProtocolInfo } from "./HACKProtocolInfo";
 
 const PILLAR_OPTIONS = [
   { value: 'brain', label: 'Brain', icon: Brain, description: 'Cognitive health, focus, memory' },
@@ -175,9 +176,12 @@ export default function AIGoalWizard() {
             </div>
             <h1 className="text-3xl font-bold mb-2">Create Your Health Goal</h1>
             <p className="text-muted-foreground">
-              Tell me what you want to achieve, and I'll create a personalized plan with evidence-based interventions
+              Tell me what you want to achieve, and I'll create a personalized plan using the HACK Protocol
             </p>
           </div>
+
+          {/* HACK Protocol Info */}
+          <HACKProtocolInfo />
 
           {/* Goal Examples */}
           <Card>

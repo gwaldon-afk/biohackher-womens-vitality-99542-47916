@@ -41,9 +41,9 @@ serve(async (req) => {
     const isRefinement = !!refinementRequest && !!currentGoal;
     
     const contextPrompt = isRefinement ? `
-The user wants to refine their existing health goal.
+The user wants to refine their existing health goal following the HACK Protocol framework.
 
-CURRENT GOAL:
+CURRENT GOAL (HACK Structure):
 ${JSON.stringify(currentGoal, null, 2)}
 
 USER'S REFINEMENT REQUEST:
@@ -51,21 +51,26 @@ USER'S REFINEMENT REQUEST:
 
 ${conversationHistory ? `CONVERSATION HISTORY:\n${conversationHistory.map((m: any) => `${m.role}: ${m.content}`).join('\n')}` : ''}
 
-Please update the goal plan based on the user's request. Keep the same structure and only modify what they asked for. Make sure the changes are clear and maintain the quality of the plan.` : `
+Please update the goal plan based on the user's request while maintaining the HACK Protocol structure:
+- H (Healthspan Target): Keep specific and measurable
+- A (Aging Blueprint): Update interventions as requested while maintaining evidence-based reasoning
+- C (Check-in Frequency): Adjust if requested
+- K (Knowledge of Barriers): Update barriers/solutions as needed
+
+Make sure the changes are clear and maintain the quality of the plan.` : `
 User wants to create a health goal: "${goalDescription}"
 Health Pillar: ${pillar || 'Not specified'}
 ${userProfile ? `User Profile: ${JSON.stringify(userProfile)}` : ''}
 ${assessmentData ? `Recent Assessment Data: ${JSON.stringify(assessmentData)}` : ''}
 
-Generate a comprehensive, personalized health goal plan that includes:
-1. A clear, motivating goal title
-2. Healthspan target (specific, measurable outcome within 30-90 days)
-3. 3-5 evidence-based interventions (mix of lifestyle, supplements, and practices)
-4. Anticipated barriers and solutions
-5. Recommended check-in frequency
-6. Predicted biological age impact (if applicable)
+Generate a comprehensive, personalized health goal plan using the HACK Protocol framework:
 
-For each intervention, provide:
+**H - Healthspan Target:** A specific, measurable outcome within 30-90 days
+**A - Aging Blueprint:** 3-5 evidence-based interventions with clear reasoning
+**C - Check-in Frequency:** Appropriate review cadence (daily/weekly/biweekly)
+**K - Knowledge of Barriers:** Common obstacles and practical solutions
+
+For each intervention in the Aging Blueprint (A), provide:
 - The specific action/item
 - Why it's recommended (scientific reasoning)
 - How it relates to their goal
@@ -114,7 +119,23 @@ Return the response in this exact JSON structure:
         messages: [
           { 
             role: 'system', 
-            content: 'You are an expert health coach specializing in personalized longevity and wellness planning. Generate evidence-based, actionable health goals with clear interventions. Always respond with valid JSON only, no markdown formatting.' 
+            content: `You are an expert health coach specializing in personalized longevity and wellness planning using the HACK Protocol framework.
+
+HACK Protocol Framework:
+- H (Healthspan Target): A specific, measurable health outcome the user wants to achieve within a defined timeframe (typically 30-90 days). This should be concrete and trackable.
+- A (Aging Blueprint): The evidence-based interventions and actions that will help achieve the healthspan target. Include 3-5 interventions with scientific reasoning, proper dosing, and timing.
+- C (Check-in Frequency): How often the user should review progress and adjust their approach (daily, weekly, or biweekly based on goal complexity).
+- K (Knowledge of Barriers): Common obstacles that might prevent success and practical solutions to overcome them.
+
+When generating or refining goals:
+1. ALWAYS maintain the HACK structure
+2. Ensure the Healthspan target (H) is specific and measurable
+3. Provide evidence-based Aging blueprint interventions (A) with clear reasoning
+4. Set appropriate Check-in frequency (C) based on the goal's nature
+5. Identify realistic barriers and solutions (K)
+6. When users request changes, preserve the HACK framework while incorporating their feedback
+
+Always respond with valid JSON only, no markdown formatting.` 
           },
           { role: 'user', content: contextPrompt }
         ],
