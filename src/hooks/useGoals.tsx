@@ -27,6 +27,7 @@ export interface HealthGoal {
   adaptive_recommendations: any;
   biological_age_impact_predicted: number | null;
   biological_age_impact_actual: number | null;
+  linked_protocol_id: string | null;
   created_at: string;
   updated_at: string;
   completed_at: string | null;

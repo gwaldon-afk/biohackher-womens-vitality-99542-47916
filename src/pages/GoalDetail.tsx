@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGoals } from "@/hooks/useGoals";
 import { useGoalCheckIns } from "@/hooks/useGoalCheckIns";
+import { useGoalInsights } from "@/hooks/useGoalInsights";
+import { GoalProtocolSync } from "@/components/goals/GoalProtocolSync";
+import { GoalDataIntegration } from "@/components/goals/GoalDataIntegration";
+import { GoalInsightsFeed } from "@/components/goals/GoalInsightsFeed";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,8 +22,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 const GoalDetail = () => {
   const { goalId } = useParams();
   const navigate = useNavigate();
-  const { goals, updateGoal, archiveGoal, completeGoal, loading: goalsLoading } = useGoals();
+  const { goals, updateGoal, archiveGoal, completeGoal, loading: goalsLoading, fetchGoals } = useGoals();
   const { checkIns, fetchCheckIns, loading: checkInsLoading } = useGoalCheckIns();
+  const { unacknowledgedCount } = useGoalInsights(goalId);
   
   const [activeTab, setActiveTab] = useState("overview");
   
@@ -207,10 +212,19 @@ const GoalDetail = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="checkins">Check-ins</TabsTrigger>
             <TabsTrigger value="plan">Action Plan</TabsTrigger>
+            <TabsTrigger value="insights">
+              AI Insights
+              {unacknowledgedCount > 0 && (
+                <Badge className="ml-2 h-4 w-4 p-0 flex items-center justify-center text-xs" variant="destructive">
+                  {unacknowledgedCount}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="integrations">Data</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -407,6 +421,23 @@ const GoalDetail = () => {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* AI Insights Tab */}
+          <TabsContent value="insights" className="space-y-6">
+            <GoalInsightsFeed goalId={goalId} />
+          </TabsContent>
+
+          {/* Integrations Tab */}
+          <TabsContent value="integrations" className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <GoalDataIntegration goal={goal} />
+              </div>
+              <div>
+                <GoalProtocolSync goal={goal} onSync={() => fetchGoals()} />
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </main>

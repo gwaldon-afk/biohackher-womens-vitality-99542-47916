@@ -287,6 +287,7 @@ export type Database = {
           nutritional_grade: string | null
           physical_activity_score: number | null
           questionnaire_data: Json | null
+          related_goal_ids: string[] | null
           rem_hours: number | null
           self_perceived_age: number | null
           self_reported_stress: number | null
@@ -329,6 +330,7 @@ export type Database = {
           nutritional_grade?: string | null
           physical_activity_score?: number | null
           questionnaire_data?: Json | null
+          related_goal_ids?: string[] | null
           rem_hours?: number | null
           self_perceived_age?: number | null
           self_reported_stress?: number | null
@@ -371,6 +373,7 @@ export type Database = {
           nutritional_grade?: string | null
           physical_activity_score?: number | null
           questionnaire_data?: Json | null
+          related_goal_ids?: string[] | null
           rem_hours?: number | null
           self_perceived_age?: number | null
           self_reported_stress?: number | null
@@ -527,11 +530,13 @@ export type Database = {
       }
       energy_loop_scores: {
         Row: {
+          active_goal_count: number | null
           composite_score: number | null
           created_at: string | null
           data_sources: Json | null
           date: string | null
           energy_variability_index: number | null
+          goal_alignment_score: number | null
           hormonal_rhythm_score: number | null
           id: string
           loop_completion_percent: number | null
@@ -543,11 +548,13 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          active_goal_count?: number | null
           composite_score?: number | null
           created_at?: string | null
           data_sources?: Json | null
           date?: string | null
           energy_variability_index?: number | null
+          goal_alignment_score?: number | null
           hormonal_rhythm_score?: number | null
           id?: string
           loop_completion_percent?: number | null
@@ -559,11 +566,13 @@ export type Database = {
           user_id: string
         }
         Update: {
+          active_goal_count?: number | null
           composite_score?: number | null
           created_at?: string | null
           data_sources?: Json | null
           date?: string | null
           energy_variability_index?: number | null
+          goal_alignment_score?: number | null
           hormonal_rhythm_score?: number | null
           id?: string
           loop_completion_percent?: number | null
@@ -1441,6 +1450,7 @@ export type Database = {
           description: string | null
           dosage: string | null
           frequency: Database["public"]["Enums"]["protocol_frequency"]
+          goal_id: string | null
           id: string
           is_active: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
@@ -1456,6 +1466,7 @@ export type Database = {
           description?: string | null
           dosage?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
+          goal_id?: string | null
           id?: string
           is_active?: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
@@ -1471,6 +1482,7 @@ export type Database = {
           description?: string | null
           dosage?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
+          goal_id?: string | null
           id?: string
           is_active?: boolean
           item_type?: Database["public"]["Enums"]["protocol_item_type"]
@@ -1482,6 +1494,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "protocol_items_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "protocol_items_protocol_id_fkey"
             columns: ["protocol_id"]
@@ -1953,6 +1972,7 @@ export type Database = {
           healthspan_target: Json
           id: string
           last_check_in_date: string | null
+          linked_protocol_id: string | null
           longevity_metrics: Json
           next_check_in_due: string | null
           pillar_category: string
@@ -1980,6 +2000,7 @@ export type Database = {
           healthspan_target: Json
           id?: string
           last_check_in_date?: string | null
+          linked_protocol_id?: string | null
           longevity_metrics: Json
           next_check_in_due?: string | null
           pillar_category: string
@@ -2007,6 +2028,7 @@ export type Database = {
           healthspan_target?: Json
           id?: string
           last_check_in_date?: string | null
+          linked_protocol_id?: string | null
           longevity_metrics?: Json
           next_check_in_due?: string | null
           pillar_category?: string
@@ -2019,6 +2041,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_health_goals_linked_protocol_id_fkey"
+            columns: ["linked_protocol_id"]
+            isOneToOne: false
+            referencedRelation: "user_protocols"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_health_goals_template_id_fkey"
             columns: ["template_id"]
