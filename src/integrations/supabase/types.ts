@@ -397,6 +397,215 @@ export type Database = {
           },
         ]
       }
+      energy_actions: {
+        Row: {
+          action_name: string
+          action_type: string
+          added_to_protocol: boolean | null
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          protocol_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_name: string
+          action_type: string
+          added_to_protocol?: boolean | null
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          protocol_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_name?: string
+          action_type?: string
+          added_to_protocol?: boolean | null
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          protocol_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_actions_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "user_protocols"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_check_ins: {
+        Row: {
+          check_in_date: string | null
+          created_at: string | null
+          energy_rating: number | null
+          id: string
+          movement_completed: boolean | null
+          notes: string | null
+          sleep_quality: number | null
+          stress_level: number | null
+          user_id: string
+        }
+        Insert: {
+          check_in_date?: string | null
+          created_at?: string | null
+          energy_rating?: number | null
+          id?: string
+          movement_completed?: boolean | null
+          notes?: string | null
+          sleep_quality?: number | null
+          stress_level?: number | null
+          user_id: string
+        }
+        Update: {
+          check_in_date?: string | null
+          created_at?: string | null
+          energy_rating?: number | null
+          id?: string
+          movement_completed?: boolean | null
+          notes?: string | null
+          sleep_quality?: number | null
+          stress_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      energy_insights: {
+        Row: {
+          acknowledged: boolean | null
+          action_suggestions: Json | null
+          ai_generated: boolean | null
+          created_at: string | null
+          description: string
+          dismissed_at: string | null
+          id: string
+          insight_type: string
+          severity: string | null
+          title: string
+          trigger_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          ai_generated?: boolean | null
+          created_at?: string | null
+          description: string
+          dismissed_at?: string | null
+          id?: string
+          insight_type: string
+          severity?: string | null
+          title: string
+          trigger_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          ai_generated?: boolean | null
+          created_at?: string | null
+          description?: string
+          dismissed_at?: string | null
+          id?: string
+          insight_type?: string
+          severity?: string | null
+          title?: string
+          trigger_data?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      energy_loop_scores: {
+        Row: {
+          composite_score: number | null
+          created_at: string | null
+          data_sources: Json | null
+          date: string | null
+          energy_variability_index: number | null
+          hormonal_rhythm_score: number | null
+          id: string
+          loop_completion_percent: number | null
+          movement_quality_score: number | null
+          nutrition_score: number | null
+          sleep_recovery_score: number | null
+          stress_load_score: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          composite_score?: number | null
+          created_at?: string | null
+          data_sources?: Json | null
+          date?: string | null
+          energy_variability_index?: number | null
+          hormonal_rhythm_score?: number | null
+          id?: string
+          loop_completion_percent?: number | null
+          movement_quality_score?: number | null
+          nutrition_score?: number | null
+          sleep_recovery_score?: number | null
+          stress_load_score?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          composite_score?: number | null
+          created_at?: string | null
+          data_sources?: Json | null
+          date?: string | null
+          energy_variability_index?: number | null
+          hormonal_rhythm_score?: number | null
+          id?: string
+          loop_completion_percent?: number | null
+          movement_quality_score?: number | null
+          nutrition_score?: number | null
+          sleep_recovery_score?: number | null
+          stress_load_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      energy_milestones: {
+        Row: {
+          achieved_at: string | null
+          badge_name: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          badge_name: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          badge_name?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goal_check_ins: {
         Row: {
           adjustments_needed: string | null
@@ -995,6 +1204,8 @@ export type Database = {
           currency: string | null
           current_menopause_stage: string | null
           email: string | null
+          energy_loop_enabled: boolean | null
+          energy_loop_onboarding_completed: boolean | null
           id: string
           language: string | null
           measurement_system: string | null
@@ -1012,6 +1223,8 @@ export type Database = {
           currency?: string | null
           current_menopause_stage?: string | null
           email?: string | null
+          energy_loop_enabled?: boolean | null
+          energy_loop_onboarding_completed?: boolean | null
           id?: string
           language?: string | null
           measurement_system?: string | null
@@ -1029,6 +1242,8 @@ export type Database = {
           currency?: string | null
           current_menopause_stage?: string | null
           email?: string | null
+          energy_loop_enabled?: boolean | null
+          energy_loop_onboarding_completed?: boolean | null
           id?: string
           language?: string | null
           measurement_system?: string | null

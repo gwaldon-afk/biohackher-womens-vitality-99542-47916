@@ -36,6 +36,8 @@ import { useGoals } from "@/hooks/useGoals";
 import { GoalInsightsCard } from "@/components/GoalInsightsCard";
 import { MenoMapDashboardWidget } from "@/components/menomap/MenoMapDashboardWidget";
 import { useMenoMap } from "@/hooks/useMenoMap";
+import { EnergyDashboardWidget } from "@/components/energy/EnergyDashboardWidget";
+import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useProtocols } from "@/hooks/useProtocols";
 
 interface DashboardData {
@@ -72,6 +74,7 @@ const Dashboard = () => {
   
   const lisData = useLISData();
   const { currentStage, isEnabled: menoMapEnabled } = useMenoMap();
+  const { isEnabled: energyLoopEnabled, currentScore } = useEnergyLoop();
 
   // Use React Query hooks
   const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
