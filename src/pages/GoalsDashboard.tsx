@@ -10,11 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Target, Plus, TrendingUp, Calendar, Home, List, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Navigation from "@/components/Navigation";
+import { CheckInScheduler } from "@/components/goals/CheckInScheduler";
 
 const GoalsDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { goals, loading, tierFeatures } = useGoals();
+  const { goals, loading, tierFeatures, fetchGoals } = useGoals();
   const { unacknowledgedCount } = useGoalInsights();
   const [selectedPillar, setSelectedPillar] = useState<string>("all");
 
@@ -106,6 +107,12 @@ const GoalsDashboard = () => {
             {t("goals.newGoal")}
           </Button>
         </div>
+
+        {/* Check-In Scheduler */}
+        <CheckInScheduler 
+          goals={activeGoals} 
+          onCheckInComplete={() => fetchGoals()}
+        />
 
         {/* Summary Stats */}
         <div className="grid gap-4 md:grid-cols-3">

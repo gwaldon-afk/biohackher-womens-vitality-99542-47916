@@ -6,6 +6,8 @@ import { useGoalInsights } from "@/hooks/useGoalInsights";
 import { GoalProtocolSync } from "@/components/goals/GoalProtocolSync";
 import { GoalDataIntegration } from "@/components/goals/GoalDataIntegration";
 import { GoalInsightsFeed } from "@/components/goals/GoalInsightsFeed";
+import { QuickCheckInDialog } from "@/components/goals/QuickCheckInDialog";
+import { CheckInHistory } from "@/components/goals/CheckInHistory";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +29,7 @@ const GoalDetail = () => {
   const { unacknowledgedCount } = useGoalInsights(goalId);
   
   const [activeTab, setActiveTab] = useState("overview");
+  const [showQuickCheckIn, setShowQuickCheckIn] = useState(false);
   
   const goal = goals.find((g) => g.id === goalId);
 
@@ -135,6 +138,10 @@ const GoalDetail = () => {
             </div>
 
             <div className="flex gap-2">
+              <Button onClick={() => setShowQuickCheckIn(true)}>
+                <Calendar className="h-4 w-4 mr-2" />
+                Quick Check-In
+              </Button>
               <Button variant="outline" size="sm">
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
@@ -285,72 +292,16 @@ const GoalDetail = () => {
           <TabsContent value="checkins" className="space-y-6 mt-6">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">Progress Check-ins</h3>
-              <Button size="sm">
+              <Button size="sm" onClick={() => setShowQuickCheckIn(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                New Check-in
+                Quick Check-in
               </Button>
             </div>
 
             {checkInsLoading ? (
               <p className="text-center text-muted-foreground py-8">Loading check-ins...</p>
-            ) : checkIns && checkIns.length > 0 ? (
-              <div className="space-y-4">
-                {checkIns.map((checkIn) => (
-                  <Card key={checkIn.id}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-base">
-                          {format(new Date(checkIn.check_in_date), 'MMMM d, yyyy')}
-                        </CardTitle>
-                        <Badge variant="outline">
-                          {Math.round(checkIn.progress_percentage || 0)}% Complete
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {checkIn.whats_working && (
-                        <div>
-                          <p className="text-sm font-semibold text-green-600 mb-1">What's Working</p>
-                          <p className="text-sm text-muted-foreground">{checkIn.whats_working}</p>
-                        </div>
-                      )}
-                      {checkIn.whats_not_working && (
-                        <div>
-                          <p className="text-sm font-semibold text-red-600 mb-1">What's Not Working</p>
-                          <p className="text-sm text-muted-foreground">{checkIn.whats_not_working}</p>
-                        </div>
-                      )}
-                      {checkIn.barriers_encountered && checkIn.barriers_encountered.length > 0 && (
-                        <div>
-                          <p className="text-sm font-semibold mb-1">Barriers</p>
-                          <div className="flex flex-wrap gap-2">
-                            {checkIn.barriers_encountered.map((barrier, idx) => (
-                              <Badge key={idx} variant="secondary">{barrier}</Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {checkIn.confidence_level !== null && (
-                        <div className="flex items-center gap-4 text-sm">
-                          <span>Confidence: {checkIn.confidence_level}/10</span>
-                          <span>Motivation: {checkIn.motivation_level}/10</span>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
             ) : (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground mb-4">No check-ins yet</p>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create First Check-in
-                  </Button>
-                </CardContent>
-              </Card>
+              <CheckInHistory checkIns={checkIns || []} />
             )}
           </TabsContent>
 
@@ -441,6 +392,20 @@ const GoalDetail = () => {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Quick Check-In Dialog */}
+      {goal && (
+        <QuickCheckInDialog
+          goal={goal}
+          open={showQuickCheckIn}
+          onOpenChange={setShowQuickCheckIn}
+          onSuccess={() => {
+            fetchCheckIns(goal.id);
+            fetchGoals();
+            setShowQuickCheckIn(false);
+          }}
+        />
+      )}
     </div>
   );
 };
