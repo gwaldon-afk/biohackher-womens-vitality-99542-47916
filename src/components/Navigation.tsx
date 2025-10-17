@@ -34,6 +34,7 @@ const Navigation = () => {
     { href: "/", label: t('navigation.home') },
     { href: "/dashboard", label: "My Health" },
     { href: "/my-goals", label: "My Goals" },
+    { href: "/menomap", label: "MenoMap™" },
     { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },

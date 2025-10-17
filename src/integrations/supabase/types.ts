@@ -638,6 +638,147 @@ export type Database = {
         }
         Relationships: []
       }
+      menopause_insights: {
+        Row: {
+          acknowledged: boolean | null
+          action_items: Json | null
+          ai_generated: boolean | null
+          created_at: string | null
+          description: string
+          dismissed_at: string | null
+          id: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          action_items?: Json | null
+          ai_generated?: boolean | null
+          created_at?: string | null
+          description: string
+          dismissed_at?: string | null
+          id?: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          action_items?: Json | null
+          ai_generated?: boolean | null
+          created_at?: string | null
+          description?: string
+          dismissed_at?: string | null
+          id?: string
+          insight_type?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      menopause_progress_milestones: {
+        Row: {
+          achieved_at: string | null
+          badge_name: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          badge_name: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          badge_name?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      menopause_stages: {
+        Row: {
+          assessment_id: string | null
+          calculated_at: string | null
+          confidence_score: number | null
+          created_at: string | null
+          hormone_indicators: Json | null
+          id: string
+          stage: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assessment_id?: string | null
+          calculated_at?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          hormone_indicators?: Json | null
+          id?: string
+          stage: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string | null
+          calculated_at?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          hormone_indicators?: Json | null
+          id?: string
+          stage?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      menopause_symptom_tracking: {
+        Row: {
+          created_at: string | null
+          id: string
+          notes: string | null
+          severity: number
+          symptom_category: string
+          symptom_name: string
+          tracked_date: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          severity: number
+          symptom_category: string
+          symptom_name: string
+          tracked_date?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          severity?: number
+          symptom_category?: string
+          symptom_name?: string
+          tracked_date?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mindset_quiz_leads: {
         Row: {
           answers: Json
@@ -852,10 +993,13 @@ export type Database = {
           country: string | null
           created_at: string
           currency: string | null
+          current_menopause_stage: string | null
           email: string | null
           id: string
           language: string | null
           measurement_system: string | null
+          menomap_enabled: boolean | null
+          menomap_onboarding_completed: boolean | null
           onboarding_completed: boolean | null
           preferred_name: string
           timezone: string | null
@@ -866,10 +1010,13 @@ export type Database = {
           country?: string | null
           created_at?: string
           currency?: string | null
+          current_menopause_stage?: string | null
           email?: string | null
           id?: string
           language?: string | null
           measurement_system?: string | null
+          menomap_enabled?: boolean | null
+          menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name: string
           timezone?: string | null
@@ -880,10 +1027,13 @@ export type Database = {
           country?: string | null
           created_at?: string
           currency?: string | null
+          current_menopause_stage?: string | null
           email?: string | null
           id?: string
           language?: string | null
           measurement_system?: string | null
+          menomap_enabled?: boolean | null
+          menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name?: string
           timezone?: string | null

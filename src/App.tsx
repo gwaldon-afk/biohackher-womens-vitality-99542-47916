@@ -46,6 +46,10 @@ import GuestGoalsPreview from "./pages/GuestGoalsPreview";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import MenoMapDashboard from "./pages/menomap/MenoMapDashboard";
+import MenoMapAssessment from "./pages/menomap/MenoMapAssessment";
+import MenoMapResults from "./pages/menomap/MenoMapResults";
+import MenoMapTracker from "./pages/menomap/MenoMapTracker";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
@@ -123,6 +127,12 @@ const App = () => (
             <Route path="/my-goals/:goalId" element={<ProtectedRoute><GoalDetail /></ProtectedRoute>} />
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
+            
+            {/* MenoMap Routes */}
+            <Route path="/menomap" element={<ProtectedRoute><MenoMapDashboard /></ProtectedRoute>} />
+            <Route path="/menomap/assessment" element={<ProtectedRoute><MenoMapAssessment /></ProtectedRoute>} />
+            <Route path="/menomap/results" element={<ProtectedRoute><MenoMapResults /></ProtectedRoute>} />
+            <Route path="/menomap/tracker" element={<ProtectedRoute><MenoMapTracker /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

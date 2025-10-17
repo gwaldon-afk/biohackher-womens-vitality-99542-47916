@@ -34,6 +34,9 @@ import { JourneyMap } from "@/components/JourneyMap";
 import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
 import { useGoals } from "@/hooks/useGoals";
 import { GoalInsightsCard } from "@/components/GoalInsightsCard";
+import { MenoMapDashboardWidget } from "@/components/menomap/MenoMapDashboardWidget";
+import { useMenoMap } from "@/hooks/useMenoMap";
+import { useProtocols } from "@/hooks/useProtocols";
 
 interface DashboardData {
   currentScore: number;
@@ -68,6 +71,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
+  const { currentStage, isEnabled: menoMapEnabled } = useMenoMap();
 
   // Use React Query hooks
   const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
@@ -339,6 +343,13 @@ const Dashboard = () => {
             }}
           />
         </div>
+
+        {/* MenoMap Widget - Show if enabled or if user has a stage */}
+        {(menoMapEnabled || currentStage) && (
+          <div className="mb-6">
+            <MenoMapDashboardWidget />
+          </div>
+        )}
 
         {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
