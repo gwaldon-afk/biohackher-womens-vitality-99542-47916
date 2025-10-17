@@ -8,6 +8,9 @@ import { GoalDataIntegration } from "@/components/goals/GoalDataIntegration";
 import { GoalInsightsFeed } from "@/components/goals/GoalInsightsFeed";
 import { QuickCheckInDialog } from "@/components/goals/QuickCheckInDialog";
 import { CheckInHistory } from "@/components/goals/CheckInHistory";
+import { GoalStreakTracker } from "@/components/goals/GoalStreakTracker";
+import { GoalAchievements } from "@/components/goals/GoalAchievements";
+import { MotivationalCard } from "@/components/goals/MotivationalCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -217,12 +220,20 @@ const GoalDetail = () => {
           </CardContent>
         </Card>
 
+        {/* Motivational Message */}
+        <MotivationalCard 
+          goalProgress={goal.current_progress}
+          streakDays={0}
+          recentCheckIn={daysSinceLastCheckIn !== null && daysSinceLastCheckIn <= 1}
+        />
+
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-2xl grid-cols-5">
+          <TabsList className="grid w-full max-w-3xl grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="checkins">Check-ins</TabsTrigger>
             <TabsTrigger value="plan">Action Plan</TabsTrigger>
+            <TabsTrigger value="achievements">Achievements</TabsTrigger>
             <TabsTrigger value="insights">
               AI Insights
               {unacknowledgedCount > 0 && (
@@ -298,11 +309,18 @@ const GoalDetail = () => {
               </Button>
             </div>
 
-            {checkInsLoading ? (
-              <p className="text-center text-muted-foreground py-8">Loading check-ins...</p>
-            ) : (
-              <CheckInHistory checkIns={checkIns || []} />
-            )}
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="md:col-span-2">
+                {checkInsLoading ? (
+                  <p className="text-center text-muted-foreground py-8">Loading check-ins...</p>
+                ) : (
+                  <CheckInHistory checkIns={checkIns || []} />
+                )}
+              </div>
+              <div>
+                <GoalStreakTracker goalId={goalId} />
+              </div>
+            </div>
           </TabsContent>
 
           {/* Action Plan Tab */}
@@ -372,6 +390,11 @@ const GoalDetail = () => {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          {/* Achievements Tab */}
+          <TabsContent value="achievements" className="space-y-6 mt-6">
+            <GoalAchievements goalId={goalId} />
           </TabsContent>
 
           {/* AI Insights Tab */}

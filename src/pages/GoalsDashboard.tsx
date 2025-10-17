@@ -11,6 +11,8 @@ import { Target, Plus, TrendingUp, Calendar, Home, List, Sparkles } from "lucide
 import { useTranslation } from "react-i18next";
 import Navigation from "@/components/Navigation";
 import { CheckInScheduler } from "@/components/goals/CheckInScheduler";
+import { GoalStreakTracker } from "@/components/goals/GoalStreakTracker";
+import { MotivationalCard } from "@/components/goals/MotivationalCard";
 
 const GoalsDashboard = () => {
   const { t } = useTranslation();
@@ -108,57 +110,69 @@ const GoalsDashboard = () => {
           </Button>
         </div>
 
+        {/* Motivational Message */}
+        <MotivationalCard 
+          goalProgress={totalProgress}
+          streakDays={0}
+          recentCheckIn={checkInsThisWeek > 0}
+        />
+
         {/* Check-In Scheduler */}
         <CheckInScheduler 
           goals={activeGoals} 
           onCheckInComplete={() => fetchGoals()}
         />
 
-        {/* Summary Stats */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Overall Progress</CardDescription>
-              <CardTitle className="text-3xl">{totalProgress}%</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Across {activeGoals.length} active {activeGoals.length === 1 ? 'goal' : 'goals'}
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Check-ins This Week</CardDescription>
-              <CardTitle className="text-3xl flex items-center gap-2">
-                <Calendar className="h-6 w-6 text-primary" />
-                {checkInsThisWeek}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Keep the momentum going!
-              </p>
-            </CardContent>
-          </Card>
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Summary Stats */}
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-3 md:col-span-2">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardDescription>Overall Progress</CardDescription>
+                <CardTitle className="text-3xl">{totalProgress}%</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Across {activeGoals.length} active {activeGoals.length === 1 ? 'goal' : 'goals'}
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardDescription>Check-ins This Week</CardDescription>
+                <CardTitle className="text-3xl flex items-center gap-2">
+                  <Calendar className="h-6 w-6 text-primary" />
+                  {checkInsThisWeek}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Keep the momentum going!
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>Active Goals</CardDescription>
-              <CardTitle className="text-3xl flex items-center gap-2">
-                <TrendingUp className="h-6 w-6 text-primary" />
-                {activeGoals.length}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                {tierFeatures?.isUnlimited 
-                  ? 'Unlimited goals' 
-                  : `${tierFeatures?.maxActiveGoals || 0 - activeGoals.length} slots remaining`}
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardDescription>Active Goals</CardDescription>
+                <CardTitle className="text-3xl flex items-center gap-2">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                  {activeGoals.length}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  {tierFeatures?.isUnlimited 
+                    ? 'Unlimited goals' 
+                    : `${tierFeatures?.maxActiveGoals || 0 - activeGoals.length} slots remaining`}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Streak Tracker */}
+          <GoalStreakTracker />
         </div>
 
         {/* Pillar Filter */}
