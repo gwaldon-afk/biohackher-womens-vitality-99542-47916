@@ -57,6 +57,7 @@ import EnergyLoopDashboard from "./pages/energy/EnergyLoopDashboard";
 import EnergyCheckIn from "./pages/energy/EnergyCheckIn";
 import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
+import EnergyOnboarding from "./pages/energy/EnergyOnboarding";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
@@ -145,6 +146,7 @@ const App = () => (
           <Route path="/menomap/tracker" element={<ProtectedRoute><MenoMapTracker /></ProtectedRoute>} />
           
           <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
+          <Route path="/energy-loop/onboarding" element={<ProtectedRoute><EnergyOnboarding /></ProtectedRoute>} />
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />
           <Route path="/energy-loop/actions" element={<ProtectedRoute><EnergyActions /></ProtectedRoute>} />
