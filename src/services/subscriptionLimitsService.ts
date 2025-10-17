@@ -39,7 +39,8 @@ export const getTierLimits = async (tierName: string): Promise<TierLimits | null
  */
 export const canCreateGoal = async (
   userId: string,
-  tierName: string
+  tierName: string,
+  requestedCount: number = 1
 ): Promise<{ allowed: boolean; reason?: string; message?: string }> => {
   // Fetch tier limits
   const limits = await getTierLimits(tierName);
@@ -74,12 +75,16 @@ export const canCreateGoal = async (
   }
 
   const activeCount = count || 0;
+  const totalAfterCreation = activeCount + requestedCount;
 
-  if (activeCount >= limits.max_active_goals) {
+  if (totalAfterCreation > limits.max_active_goals) {
+    const available = limits.max_active_goals - activeCount;
     return {
       allowed: false,
       reason: 'limit_reached',
-      message: `You've reached your limit of ${limits.max_active_goals} active goals. Upgrade for unlimited goals and AI optimization.`
+      message: available > 0 
+        ? `You can only create ${available} more goal${available !== 1 ? 's' : ''}. You have ${activeCount} of ${limits.max_active_goals} active goals.`
+        : `You've reached your limit of ${limits.max_active_goals} active goals. Upgrade for unlimited goals and AI optimization.`
     };
   }
 

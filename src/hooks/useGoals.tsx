@@ -144,6 +144,70 @@ export const useGoals = () => {
   };
 
   /**
+   * Create multiple goals at once (batch creation)
+   */
+  const createGoals = async (goalsData: Partial<HealthGoal>[]) => {
+    if (!user || !subscription) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please sign in to create goals',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    // Check if user can create all goals
+    const canCreate = await canCreateGoal(user.id, subscription.subscription_tier, goalsData.length);
+    if (!canCreate.allowed) {
+      toast({
+        title: 'Goal limit reached',
+        description: canCreate.message,
+        variant: 'destructive',
+      });
+      return false;
+    }
+
+    try {
+      const goalsToInsert = goalsData.map(goal => ({
+        user_id: user.id,
+        title: goal.title || '',
+        pillar_category: goal.pillar_category || 'body',
+        status: goal.status || 'active',
+        healthspan_target: goal.healthspan_target || {},
+        aging_blueprint: goal.aging_blueprint || {},
+        barriers_plan: goal.barriers_plan || {},
+        longevity_metrics: goal.longevity_metrics || {},
+        related_assessment_ids: goal.related_assessment_ids || [],
+        template_id: goal.template_id,
+        current_progress: goal.current_progress || 0,
+        check_in_frequency: goal.check_in_frequency || 'weekly',
+      }));
+
+      const { error } = await supabase
+        .from('user_health_goals')
+        .insert(goalsToInsert as any);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Goals created!',
+        description: `${goalsData.length} goals have been created successfully`,
+      });
+
+      await fetchGoals(); // Refresh list
+      return true;
+    } catch (error) {
+      console.error('Error creating goals:', error);
+      toast({
+        title: 'Error',
+        description: 'Could not create goals',
+        variant: 'destructive',
+      });
+      return false;
+    }
+  };
+
+  /**
    * Update goal
    */
   const updateGoal = async (goalId: string, updates: Partial<HealthGoal>) => {
@@ -271,6 +335,7 @@ export const useGoals = () => {
     tierFeatures,
     fetchGoals,
     createGoal,
+    createGoals,
     updateGoal,
     deleteGoal,
     completeGoal,
