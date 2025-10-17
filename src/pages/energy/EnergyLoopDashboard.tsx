@@ -94,6 +94,14 @@ export default function EnergyLoopDashboard() {
           <p className="text-sm text-muted-foreground mt-6">
             Loop Completion: {Math.round(currentScore.loop_completion_percent)}%
           </p>
+          <div className="flex gap-2 mt-4">
+            <Button variant="outline" onClick={() => navigate('/energy-loop/actions')}>
+              View Biohacks
+            </Button>
+            <Button onClick={() => navigate('/energy-loop/progress')}>
+              View Progress
+            </Button>
+          </div>
         </Card>
 
         <div className="space-y-4">

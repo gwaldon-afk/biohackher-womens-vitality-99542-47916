@@ -354,6 +354,17 @@ const Dashboard = () => {
           </div>
         )}
 
+        {/* Energy Loop Widget - Show if enabled and has score */}
+        {energyLoopEnabled && currentScore && (
+          <div className="mb-6">
+            <EnergyDashboardWidget
+              score={currentScore}
+              onViewDetails={() => navigate('/energy-loop')}
+              onCheckIn={() => navigate('/energy-loop/check-in')}
+            />
+          </div>
+        )}
+
         {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8">
