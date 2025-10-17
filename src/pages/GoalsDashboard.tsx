@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoals } from "@/hooks/useGoals";
+import { useGoalInsights } from "@/hooks/useGoalInsights";
 import { GoalRingVisualization } from "@/components/goals/GoalRingVisualization";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Target, Plus, TrendingUp, Calendar, Home, List } from "lucide-react";
+import { Target, Plus, TrendingUp, Calendar, Home, List, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Navigation from "@/components/Navigation";
 
@@ -14,6 +15,7 @@ const GoalsDashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { goals, loading, tierFeatures } = useGoals();
+  const { unacknowledgedCount } = useGoalInsights();
   const [selectedPillar, setSelectedPillar] = useState<string>("all");
 
   const activeGoals = goals.filter((g) => g.status === "active");
@@ -71,6 +73,20 @@ const GoalsDashboard = () => {
               >
                 <List className="h-4 w-4 mr-2" />
                 List View
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => navigate("/goals/insights")}
+                className="relative"
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+                Insights
+                {unacknowledgedCount > 0 && (
+                  <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center" variant="destructive">
+                    {unacknowledgedCount}
+                  </Badge>
+                )}
               </Button>
             </div>
             <h1 className="text-4xl font-bold flex items-center gap-2">

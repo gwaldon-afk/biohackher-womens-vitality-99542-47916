@@ -40,6 +40,7 @@ import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
 import GoalsDashboard from "./pages/GoalsDashboard";
+import GoalInsights from "./pages/GoalInsights";
 import { GoalDiscoveryWizard } from "./components/goals/GoalDiscoveryWizard";
 import AIGoalWizard from "./components/AIGoalWizard";
 import GoalWizard from "./components/GoalWizard";
@@ -129,6 +130,7 @@ const App = () => (
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
           <Route path="/goals-dashboard" element={<ProtectedRoute><GoalsDashboard /></ProtectedRoute>} />
           <Route path="/goals/discovery" element={<ProtectedRoute><GoalDiscoveryWizard /></ProtectedRoute>} />
+          <Route path="/goals/insights" element={<ProtectedRoute><GoalInsights /></ProtectedRoute>} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             <Route path="/my-goals/wizard" element={<ProtectedRoute><AIGoalWizard /></ProtectedRoute>} />
             <Route path="/my-goals/wizard-manual" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />

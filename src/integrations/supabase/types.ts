@@ -680,6 +680,62 @@ export type Database = {
           },
         ]
       }
+      goal_insights: {
+        Row: {
+          acknowledged: boolean | null
+          action_suggestions: Json | null
+          created_at: string | null
+          description: string
+          dismissed_at: string | null
+          goal_id: string | null
+          id: string
+          insight_type: string
+          severity: string | null
+          title: string
+          trigger_data: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          created_at?: string | null
+          description: string
+          dismissed_at?: string | null
+          goal_id?: string | null
+          id?: string
+          insight_type: string
+          severity?: string | null
+          title: string
+          trigger_data?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          created_at?: string | null
+          description?: string
+          dismissed_at?: string | null
+          goal_id?: string | null
+          id?: string
+          insight_type?: string
+          severity?: string | null
+          title?: string
+          trigger_data?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_insights_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goal_templates: {
         Row: {
           common_barriers: Json | null
