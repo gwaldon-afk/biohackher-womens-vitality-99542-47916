@@ -39,6 +39,7 @@ import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
+import GoalsDashboard from "./pages/GoalsDashboard";
 import AIGoalWizard from "./components/AIGoalWizard";
 import GoalWizard from "./components/GoalWizard";
 import GoalDetail from "./pages/GoalDetail";
@@ -125,6 +126,7 @@ const App = () => (
             <Route path="/symptom-tracking" element={<Symptoms />} />
             <Route path="/import-research" element={<ImportResearch />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
+            <Route path="/goals-dashboard" element={<ProtectedRoute><GoalsDashboard /></ProtectedRoute>} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
             <Route path="/my-goals/wizard" element={<ProtectedRoute><AIGoalWizard /></ProtectedRoute>} />
             <Route path="/my-goals/wizard-manual" element={<ProtectedRoute><GoalWizard /></ProtectedRoute>} />
