@@ -71,3 +71,42 @@ export const TRIAGE_OPTION_OTHER = {
   icon: Settings,
   action: 'browse-all'
 };
+
+export const ASSESSMENT_OUTCOMES: Record<string, string> = {
+  // Energy & Sleep theme
+  "energy-levels": "Identify energy patterns, discover root causes, get personalized energy protocols",
+  "sleep": "Track sleep quality, understand disruptions, receive targeted sleep solutions",
+  
+  // Brain & Cognitive theme
+  "brain-fog": "Assess cognitive clarity, identify triggers, get brain-boosting interventions",
+  "mood": "Track mood patterns, discover emotional triggers, receive mood-balancing protocols",
+  "anxiety": "Measure anxiety levels, identify stressors, get evidence-based calming strategies",
+  "headaches": "Map headache patterns, identify causes, receive prevention protocols",
+  "memory-issues": "Evaluate memory function, discover gaps, get cognitive enhancement strategies",
+  "cognitive-performance": "Assess mental sharpness, track performance metrics, optimize brain function",
+  
+  // Hormones & Menopause theme
+  "hot-flashes": "Track intensity patterns, identify triggers, get cooling protocols",
+  "night-sweats": "Monitor frequency, understand causes, receive temperature regulation strategies",
+  "irregular-periods": "Map cycle patterns, identify irregularities, get hormone-balancing protocols",
+  "weight-changes": "Track metabolic shifts, understand hormonal impact, receive weight optimization plans",
+  "sexual-function": "Assess intimacy challenges, identify factors, get personalized solutions",
+  "menopause-brain-health": "Evaluate cognitive changes, track menopause impact, optimize brain health",
+  
+  // Beauty & Aging theme
+  "hair-thinning": "Assess hair health, identify deficiencies, get hair restoration protocols",
+  "skin-changes": "Evaluate skin health, understand aging factors, receive rejuvenation strategies",
+  "skin-health": "Evaluate skin vitality, identify aging factors, receive cellular rejuvenation strategies",
+  "appearance-concerns": "Assess aging markers, understand skin science, get beauty-from-within protocols",
+  
+  // Stress & Resilience theme
+  "stress-levels": "Measure stress load, identify sources, get resilience-building protocols",
+  "burnout": "Assess exhaustion levels, identify causes, receive recovery strategies",
+  
+  // Gut & Digestion
+  "gut": "Map digestive health, identify issues, get gut-healing protocols",
+  "bloating": "Track bloating patterns, identify food triggers, receive digestive optimization plans",
+  
+  // Body & Physical
+  "joint-pain": "Assess pain levels, identify inflammation, get joint-supporting protocols",
+};

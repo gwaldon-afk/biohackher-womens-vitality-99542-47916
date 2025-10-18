@@ -3,11 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TRIAGE_THEMES } from "@/data/symptomTriageMapping";
+import { TRIAGE_THEMES, ASSESSMENT_OUTCOMES } from "@/data/symptomTriageMapping";
 import { Clock, CheckCircle2, ArrowLeft, PlayCircle, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 import { useToast } from "@/hooks/use-toast";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 
 interface Symptom {
   id: string;
@@ -105,6 +106,7 @@ const SymptomAssessmentSelection = ({
         {filteredSymptoms.slice(0, 5).map((symptom, index) => {
           const Icon = symptom.icon;
           const completed = isCompleted(symptom.id);
+          const outcomeText = ASSESSMENT_OUTCOMES[symptom.id] || "Complete this assessment to get personalized insights and protocols";
 
           return (
             <Card
@@ -114,25 +116,40 @@ const SymptomAssessmentSelection = ({
               <CardContent className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4 flex-1">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold flex-shrink-0">
                       {index + 1}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Icon className="h-5 w-5 text-primary" />
+                    
+                    <div className="flex-1 min-w-0">
+                      {/* Title Row with Icon and Badges */}
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <Icon className="h-5 w-5 text-primary flex-shrink-0" />
                         <h3 className="font-semibold text-lg">{symptom.name}</h3>
+                        
+                        {/* Completed Badge */}
                         {completed && (
                           <Badge variant="secondary" className="flex items-center gap-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
                             <CheckCircle2 className="h-3 w-3" />
                             Completed
                           </Badge>
                         )}
+                        
+                        {/* Science-Backed Badge */}
+                        <Badge variant="outline" className="flex items-center gap-1 text-xs">
+                          <ScienceBackedIcon className="h-3 w-3" showTooltip={false} />
+                          Evidence-Based
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          5-8 min
-                        </span>
+                      
+                      {/* Outcome Description */}
+                      <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                        {outcomeText}
+                      </p>
+                      
+                      {/* Time Estimate */}
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        <span>5-8 min</span>
                       </div>
                     </div>
                   </div>
