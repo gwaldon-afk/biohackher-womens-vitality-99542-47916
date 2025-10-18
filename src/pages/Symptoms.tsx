@@ -47,16 +47,6 @@ const Symptoms = () => {
     }
   }, [user]);
 
-  // Determine initial triage step based on user history
-  useEffect(() => {
-    if (!loading && userSymptoms.length > 0) {
-      // If user has completed assessments, show dashboard view
-      const hasActiveSymptoms = userSymptoms.some(us => us.is_active);
-      if (hasActiveSymptoms) {
-        setTriageStep('dashboard');
-      }
-    }
-  }, [loading, userSymptoms]);
 
   const loadUserSymptoms = async () => {
     try {
