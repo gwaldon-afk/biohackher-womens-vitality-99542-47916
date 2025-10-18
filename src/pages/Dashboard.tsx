@@ -30,7 +30,7 @@ import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoalsSummaryView } from "@/components/GoalsSummaryView";
 import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
-import { JourneyMap } from "@/components/JourneyMap";
+
 import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
 import { useGoals } from "@/hooks/useGoals";
 import { GoalInsightsCard } from "@/components/GoalInsightsCard";
@@ -344,23 +344,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Journey Map */}
-        <div className="mb-6">
-          <JourneyMap 
-            currentStep={activeTab as any} 
-            compact 
-            onStepClick={(step) => {
-              const stepToTabMap = {
-                'goals': 'goals',
-                'assess': 'today',
-                'plan': 'protocols',
-                'track': 'progress',
-                'review': 'insights'
-              };
-              setActiveTab(stepToTabMap[step]);
-            }}
-          />
-        </div>
 
         {/* MenoMap Widget - Show if enabled or if user has a stage */}
         {(menoMapEnabled || currentStage) && (
