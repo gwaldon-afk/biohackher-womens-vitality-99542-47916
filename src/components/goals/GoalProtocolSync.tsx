@@ -16,13 +16,11 @@ interface GoalProtocolSyncProps {
 
 export const GoalProtocolSync = ({ goal, onSync }: GoalProtocolSyncProps) => {
   const navigate = useNavigate();
-  const { protocols, loading, createProtocol: createProtocolFn } = useProtocols();
+  const { protocols, loading, createProtocol } = useProtocols();
   const [syncing, setSyncing] = useState(false);
 
   const linkedProtocol = protocols.find(p => p.id === goal.linked_protocol_id);
   const hasAgingBlueprint = goal.aging_blueprint && Object.keys(goal.aging_blueprint).length > 0;
-
-  const createProtocol = createProtocolFn;
 
   const syncToProtocol = async () => {
     if (!hasAgingBlueprint) {
@@ -38,10 +36,13 @@ export const GoalProtocolSync = ({ goal, onSync }: GoalProtocolSyncProps) => {
       if (!protocolId) {
         // Create new protocol using useProtocols hook
         const newProtocol = await createProtocol({
+          name: `${goal.title} Protocol`,
           description: `Auto-generated from goal: ${goal.title}`,
           is_active: true,
+          start_date: new Date().toISOString().split('T')[0],
+          end_date: null,
           created_from_pillar: goal.pillar_category,
-        } as any);
+        });
 
         if (!newProtocol) throw new Error('Failed to create protocol');
         protocolId = newProtocol.id;

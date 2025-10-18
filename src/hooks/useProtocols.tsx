@@ -52,7 +52,7 @@ export const useProtocols = () => {
     }
   };
 
-  const createProtocol = async (protocol: Omit<Protocol, 'id' | 'created_at'>) => {
+  const createProtocol = async (protocol: Omit<Protocol, 'id' | 'created_at' | 'user_id'>) => {
     if (!user) return;
 
     try {

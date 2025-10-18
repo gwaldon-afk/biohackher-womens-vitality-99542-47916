@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar, Clock, Bell } from "lucide-react";
 import { HealthGoal } from "@/hooks/useGoals";
 import { QuickCheckInDialog } from "./QuickCheckInDialog";
@@ -14,8 +15,10 @@ interface CheckInSchedulerProps {
 export const CheckInScheduler = ({ goals, onCheckInComplete }: CheckInSchedulerProps) => {
   const [dueGoals, setDueGoals] = useState<HealthGoal[]>([]);
   const [selectedGoal, setSelectedGoal] = useState<HealthGoal | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     // Calculate which goals are due for check-in
     const today = new Date();
     const due = goals.filter(goal => {
@@ -42,7 +45,22 @@ export const CheckInScheduler = ({ goals, onCheckInComplete }: CheckInSchedulerP
     });
 
     setDueGoals(due);
+    setLoading(false);
   }, [goals]);
+
+  if (loading) {
+    return (
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-4 w-64 mt-2" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-20 w-full" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (dueGoals.length === 0) {
     return null;

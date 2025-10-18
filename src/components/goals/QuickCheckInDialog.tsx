@@ -25,9 +25,11 @@ export const QuickCheckInDialog = ({ goal, open, onOpenChange, onSuccess }: Quic
 
   const handleSubmit = async () => {
     setLoading(true);
+    let checkInId: string | null = null;
+    
     try {
       // Create check-in
-      const { error: checkInError } = await supabase
+      const { data: checkInData, error: checkInError } = await supabase
         .from('goal_check_ins')
         .insert({
           goal_id: goal.id,
@@ -38,9 +40,13 @@ export const QuickCheckInDialog = ({ goal, open, onOpenChange, onSuccess }: Quic
           whats_working: notes,
           total_metrics: 3,
           metrics_achieved: Math.round((progress / 100) * 3),
-        });
+        })
+        .select('id')
+        .single();
 
-      if (checkInError) throw checkInError;
+      if (checkInError) throw new Error(`Check-in failed: ${checkInError.message}`);
+      
+      checkInId = checkInData?.id;
 
       // Update goal progress
       const { error: goalError } = await supabase
@@ -51,7 +57,13 @@ export const QuickCheckInDialog = ({ goal, open, onOpenChange, onSuccess }: Quic
         })
         .eq('id', goal.id);
 
-      if (goalError) throw goalError;
+      if (goalError) {
+        // Rollback check-in if goal update fails
+        if (checkInId) {
+          await supabase.from('goal_check_ins').delete().eq('id', checkInId);
+        }
+        throw new Error(`Goal update failed: ${goalError.message}`);
+      }
 
       toast({
         title: "Check-in recorded!",
@@ -61,11 +73,11 @@ export const QuickCheckInDialog = ({ goal, open, onOpenChange, onSuccess }: Quic
       onSuccess?.();
       onOpenChange(false);
       setNotes("");
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating check-in:', error);
       toast({
         title: "Error",
-        description: "Could not save check-in",
+        description: error?.message || "Could not save check-in",
         variant: "destructive",
       });
     } finally {

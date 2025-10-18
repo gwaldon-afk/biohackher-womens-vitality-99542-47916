@@ -34,7 +34,7 @@ export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
       <h3 className="text-lg font-semibold">Connected Health Data</h3>
       
       {/* Energy Loop Integration */}
-      {energyAlignment && energyScore && (
+      {energyAlignment && energyScore && energyScore.composite_score !== null && (
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -43,7 +43,7 @@ export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
                 <CardTitle className="text-base">Energy Loop</CardTitle>
               </div>
               <Badge variant="secondary">
-                Score: {Math.round(energyScore.composite_score || 0)}
+                Score: {Math.round(energyScore.composite_score)}
               </Badge>
             </div>
             <CardDescription>
@@ -51,20 +51,24 @@ export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">Sleep Recovery</span>
-                <span className="font-medium">{Math.round(energyScore.sleep_recovery_score || 0)}%</span>
+            {energyScore.sleep_recovery_score !== null && (
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-muted-foreground">Sleep Recovery</span>
+                  <span className="font-medium">{Math.round(energyScore.sleep_recovery_score)}%</span>
+                </div>
+                <Progress value={energyScore.sleep_recovery_score} className="h-2" />
               </div>
-              <Progress value={energyScore.sleep_recovery_score || 0} className="h-2" />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-muted-foreground">Stress Load</span>
-                <span className="font-medium">{Math.round(energyScore.stress_load_score || 0)}%</span>
+            )}
+            {energyScore.stress_load_score !== null && (
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-muted-foreground">Stress Load</span>
+                  <span className="font-medium">{Math.round(energyScore.stress_load_score)}%</span>
+                </div>
+                <Progress value={energyScore.stress_load_score} className="h-2" />
               </div>
-              <Progress value={energyScore.stress_load_score || 0} className="h-2" />
-            </div>
+            )}
           </CardContent>
         </Card>
       )}
