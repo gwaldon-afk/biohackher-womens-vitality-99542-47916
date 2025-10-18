@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { TRIAGE_THEMES } from "@/data/symptomTriageMapping";
 import { Clock, CheckCircle2, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 
 interface Symptom {
   id: string;
@@ -32,7 +32,7 @@ const SymptomAssessmentSelection = ({
   onBrowseAll
 }: SymptomAssessmentSelectionProps) => {
   const navigate = useNavigate();
-  const [selectedAssessments, setSelectedAssessments] = useState<string[]>([]);
+  const startFlow = useAssessmentFlowStore(state => state.startFlow);
 
   const theme = Object.values(TRIAGE_THEMES).find(t => t.id === themeId);
   if (!theme) return null;
@@ -48,19 +48,15 @@ const SymptomAssessmentSelection = ({
     return userSymptoms.some(us => us.symptom_id === symptomId && us.is_active);
   };
 
-  const toggleAssessment = (symptomId: string) => {
-    setSelectedAssessments(prev => 
-      prev.includes(symptomId)
-        ? prev.filter(id => id !== symptomId)
-        : [...prev, symptomId]
-    );
-  };
-
-  const handleStartAssessments = () => {
-    if (selectedAssessments.length === 0) return;
+  const handleStartFirstAssessment = () => {
+    // Get first 5 symptoms from filtered symptoms
+    const assessmentIds = filteredSymptoms.slice(0, 5).map(s => s.id);
     
-    // Navigate to first selected assessment
-    const firstSymptomId = selectedAssessments[0];
+    // Initialize the flow
+    startFlow(assessmentIds, themeId, 'suggested');
+    
+    // Navigate to first assessment
+    const firstSymptomId = assessmentIds[0];
     
     // Special routing for brain assessments
     if (firstSymptomId === "cognitive-performance" || firstSymptomId === "menopause-brain-health") {
@@ -100,26 +96,20 @@ const SymptomAssessmentSelection = ({
 
       {/* Assessment Selection */}
       <div className="space-y-4 mb-8">
-        {filteredSymptoms.map((symptom) => {
+        {filteredSymptoms.slice(0, 5).map((symptom, index) => {
           const Icon = symptom.icon;
           const completed = isCompleted(symptom.id);
-          const selected = selectedAssessments.includes(symptom.id);
 
           return (
             <Card
               key={symptom.id}
-              className={`cursor-pointer transition-all duration-200 ${
-                selected ? "border-primary shadow-md" : "hover:border-primary/50"
-              }`}
-              onClick={() => toggleAssessment(symptom.id)}
+              className="transition-all duration-200 hover:border-primary/50"
             >
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <Checkbox
-                    checked={selected}
-                    onCheckedChange={() => toggleAssessment(symptom.id)}
-                    className="mt-1"
-                  />
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
+                    {index + 1}
+                  </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <Icon className="h-5 w-5 text-primary" />
@@ -136,8 +126,6 @@ const SymptomAssessmentSelection = ({
                         <Clock className="h-3 w-3" />
                         5-8 min
                       </span>
-                      <span>Severity tracking: {symptom.severity}</span>
-                      <span>Frequency: {symptom.frequency}</span>
                     </div>
                   </div>
                 </div>
@@ -157,12 +145,11 @@ const SymptomAssessmentSelection = ({
           View all symptoms instead
         </Button>
         <Button
-          onClick={handleStartAssessments}
-          disabled={selectedAssessments.length === 0}
+          onClick={handleStartFirstAssessment}
           size="lg"
           className="w-full sm:w-auto"
         >
-          Start {selectedAssessments.length > 0 ? `${selectedAssessments.length} ` : ''}Assessment{selectedAssessments.length !== 1 ? 's' : ''}
+          Start with {filteredSymptoms[0]?.name || 'Assessment'}
         </Button>
       </div>
     </div>

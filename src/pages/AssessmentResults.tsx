@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles, ExternalLink } from "lucide-react";
+import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles, ExternalLink, Lock } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessments } from "@/hooks/useAssessments";
@@ -16,6 +16,7 @@ import { searchProductsBySymptoms } from "@/services/productService";
 import { generateUserRecommendations, saveUserRecommendations } from "@/services/recommendationEngine";
 import { useToast } from "@/hooks/use-toast";
 import EvidenceBadge from "@/components/EvidenceBadge";
+import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -36,6 +37,11 @@ const AssessmentResults = () => {
     scoreCategory: string;
     categoryDescription: string;
     pillar: string;
+    // New flow properties
+    isMultiAssessmentFlow?: boolean;
+    hasMoreAssessments?: boolean;
+    nextAssessmentId?: string;
+    sessionId?: string;
   };
 
   useEffect(() => {
@@ -50,6 +56,48 @@ const AssessmentResults = () => {
 
   const assessmentConfig = symptomId ? getAssessment(symptomId) : null;
   const { score, answers, assessmentName, scoringGuidance, scoreCategory, categoryDescription, pillar } = state;
+  
+  const flowStore = useAssessmentFlowStore();
+  const isMultiFlow = state.isMultiAssessmentFlow || false;
+  const hasMore = state.hasMoreAssessments || false;
+  const nextId = state.nextAssessmentId;
+  const sessionId = state.sessionId;
+  
+  const handleContinueToNext = () => {
+    if (!nextId) return;
+    
+    // Special routing for brain assessments
+    if (nextId === "cognitive-performance" || nextId === "menopause-brain-health") {
+      const context = nextId === "cognitive-performance" ? "performance" : "menopause";
+      navigate(`/brain-assessment?context=${context}&pillar=brain`);
+    } else {
+      navigate(`/assessment/${nextId}`);
+    }
+  };
+
+  const handleSaveAndExit = () => {
+    flowStore.clearFlow();
+    navigate('/symptoms');
+  };
+
+  const handleViewProfile = () => {
+    flowStore.clearFlow();
+    navigate('/dashboard');
+  };
+
+  const handleSetUpProfile = () => {
+    // Pass session ID to auth page for claiming assessments after signup
+    navigate(`/auth?assessmentSession=${sessionId}`);
+  };
+
+  const handleContinueWithoutSaving = () => {
+    if (hasMore && nextId) {
+      handleContinueToNext();
+    } else {
+      flowStore.clearFlow();
+      navigate('/symptoms');
+    }
+  };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -705,38 +753,147 @@ const AssessmentResults = () => {
             </Card>
           )}
 
-          {/* Next Steps */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('assessmentResults.nextSteps')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Button 
-                  onClick={() => navigate('/pillars')}
-                  className="w-full"
-                >
-                  {t('assessmentResults.nextStepsButtons.exploreAssessments')}
+          {/* Dynamic CTAs based on flow context */}
+          {isMultiFlow && hasMore && (
+            <>
+              {user ? (
+                // Authenticated user - show continue options
+                <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
+                  <div className="text-center space-y-4">
+                    <h3 className="text-xl font-semibold">Ready for your next assessment?</h3>
+                    <p className="text-muted-foreground">
+                      Continue building your complete health profile
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button size="lg" onClick={handleContinueToNext}>
+                        Continue to Next Assessment
+                      </Button>
+                      <Button size="lg" variant="outline" onClick={handleSaveAndExit}>
+                        Save & Return Later
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ) : (
+                // Guest user - show profile creation prompt
+                <Card className="p-8 border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-4">
+                      <Lock className="w-8 h-8 text-primary" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-3">Keep Your Results & Continue</h2>
+                    <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
+                      Set up a quick profile to save your assessment and continue to your next recommended one
+                    </p>
+
+                    <div className="grid md:grid-cols-3 gap-4 mb-8 text-left">
+                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold mb-1">Track All Assessments</div>
+                          <div className="text-sm text-muted-foreground">
+                            Save all your results in one place and track progress over time
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold mb-1">Personalized Insights</div>
+                          <div className="text-sm text-muted-foreground">
+                            Get AI-powered insights based on your complete health profile
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold mb-1">Build Your Protocol</div>
+                          <div className="text-sm text-muted-foreground">
+                            Create a personalized action plan based on your results
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <Button
+                        size="lg"
+                        onClick={handleSetUpProfile}
+                        className="text-lg px-8 py-6 h-auto w-full sm:w-auto"
+                      >
+                        Save & Continue
+                      </Button>
+                      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                        <Sparkles className="w-4 h-4" />
+                        <span>Just your email • No payment needed</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        onClick={handleContinueWithoutSaving}
+                        className="w-full sm:w-auto"
+                      >
+                        Continue Without Saving
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </>
+          )}
+
+          {isMultiFlow && !hasMore && (
+            // Last assessment - show completion
+            <Card className="p-6 bg-gradient-to-r from-green-500/10 to-green-500/5">
+              <div className="text-center space-y-4">
+                <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
+                <h3 className="text-2xl font-semibold">Assessment Series Complete!</h3>
+                <p className="text-muted-foreground">
+                  You've completed all recommended assessments for this theme
+                </p>
+                <Button size="lg" onClick={handleViewProfile}>
+                  View Your Complete Profile
                 </Button>
-                {user && (
+              </div>
+            </Card>
+          )}
+
+          {!isMultiFlow && (
+            // Single assessment (current behavior)
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('assessmentResults.nextSteps')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
                   <Button 
-                    onClick={() => navigate('/assessment-history')}
+                    onClick={() => navigate('/pillars')}
+                    className="w-full"
+                  >
+                    {t('assessmentResults.nextStepsButtons.exploreAssessments')}
+                  </Button>
+                  {user && (
+                    <Button 
+                      onClick={() => navigate('/assessment-history')}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      {t('assessmentResults.nextStepsButtons.viewHistory')}
+                    </Button>
+                  )}
+                  <Button 
+                    onClick={() => navigate('/biohacking-toolkit')}
                     variant="outline"
                     className="w-full"
                   >
-                    {t('assessmentResults.nextStepsButtons.viewHistory')}
+                    {t('assessmentResults.nextStepsButtons.exploreToolkit')}
                   </Button>
-                )}
-                <Button 
-                  onClick={() => navigate('/biohacking-toolkit')}
-                  variant="outline"
-                  className="w-full"
-                >
-                  {t('assessmentResults.nextStepsButtons.exploreToolkit')}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

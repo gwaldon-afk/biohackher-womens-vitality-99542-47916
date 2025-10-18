@@ -134,6 +134,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  const claimGuestAssessments = async (sessionId: string, userId: string) => {
+    try {
+      // Claim all guest assessments with this session ID
+      const { error } = await supabase
+        .from('guest_symptom_assessments')
+        .update({
+          claimed_by_user_id: userId,
+          claimed_at: new Date().toISOString()
+        })
+        .eq('session_id', sessionId)
+        .is('claimed_by_user_id', null);
+
+      if (error) throw error;
+
+      // Convert guest assessments to user symptom_assessments
+      const { data: guestAssessments, error: fetchError } = await supabase
+        .from('guest_symptom_assessments')
+        .select('*')
+        .eq('session_id', sessionId)
+        .eq('claimed_by_user_id', userId);
+
+      if (fetchError) throw fetchError;
+
+      if (guestAssessments && guestAssessments.length > 0) {
+        const userAssessments = guestAssessments.map(ga => ({
+          user_id: userId,
+          symptom_type: ga.symptom_id,
+          overall_score: ga.score,
+          score_category: ga.score_category,
+          answers: ga.answers,
+          recommendations: {
+            description: '',
+            scoringGuidance: {}
+          },
+          completed_at: ga.completed_at
+        }));
+
+        const { error: insertError } = await supabase
+          .from('symptom_assessments')
+          .insert(userAssessments);
+
+        if (insertError) throw insertError;
+        
+        toast({
+          title: "Results Saved!",
+          description: `${guestAssessments.length} assessment(s) have been added to your profile.`
+        });
+      }
+
+      return { success: true, count: guestAssessments?.length || 0 };
+    } catch (error) {
+      console.error('Error claiming guest assessments:', error);
+      return { success: false, count: 0 };
+    }
+  };
+
   const signUp = async (email: string, password: string, preferredName: string) => {
     if (TEST_MODE_ENABLED) {
       return { error: null };
@@ -160,6 +216,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           variant: "destructive",
         });
       } else {
+        // Check if there's a pending assessment session to claim
+        const urlParams = new URLSearchParams(window.location.search);
+        const assessmentSession = urlParams.get('assessmentSession');
+        
+        if (assessmentSession) {
+          // Get the new user ID
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await claimGuestAssessments(assessmentSession, user.id);
+          }
+        }
+        
         toast({
           title: "Check your email",
           description: "We've sent you a confirmation link to complete your registration.",

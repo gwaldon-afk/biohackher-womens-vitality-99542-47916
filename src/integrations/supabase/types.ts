@@ -1323,6 +1323,48 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_symptom_assessments: {
+        Row: {
+          answers: Json
+          assessment_data: Json
+          claimed_at: string | null
+          claimed_by_user_id: string | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          score: number
+          score_category: string
+          session_id: string
+          symptom_id: string
+        }
+        Insert: {
+          answers: Json
+          assessment_data: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          score: number
+          score_category: string
+          session_id: string
+          symptom_id: string
+        }
+        Update: {
+          answers?: Json
+          assessment_data?: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          score?: number
+          score_category?: string
+          session_id?: string
+          symptom_id?: string
+        }
+        Relationships: []
+      }
       habit_tracking: {
         Row: {
           created_at: string

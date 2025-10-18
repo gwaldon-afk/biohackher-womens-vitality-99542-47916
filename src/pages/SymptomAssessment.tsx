@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAssessments } from "@/hooks/useAssessments";
 import { ArrowLeft, X } from "lucide-react";
+import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +33,9 @@ const SymptomAssessment = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  
+  const flowState = useAssessmentFlowStore();
+  const isMultiAssessmentFlow = flowState.isActive && flowState.flowType === 'suggested';
 
   // Reset state when symptomId changes to prevent answer carryover
   useEffect(() => {
@@ -124,6 +128,7 @@ const SymptomAssessment = () => {
       categoryDescription = scoringGuidance.fair.description;
     }
 
+    // For authenticated users, save to symptom_assessments
     if (user) {
       try {
         const { error } = await supabase
@@ -145,8 +150,38 @@ const SymptomAssessment = () => {
         console.error('Error saving assessment:', error);
         toast.error('Failed to save assessment results');
       }
+    } 
+    // For guest users in multi-assessment flow, save to guest table
+    else if (isMultiAssessmentFlow && flowState.sessionId) {
+      try {
+        const { error } = await supabase
+          .from('guest_symptom_assessments')
+          .insert({
+            session_id: flowState.sessionId,
+            symptom_id: symptomId || 'unknown',
+            assessment_data: {
+              name: assessmentConfig.name,
+              description: assessmentConfig.description,
+              pillar: assessmentConfig.pillar
+            },
+            score: averageScore,
+            score_category: scoreCategory,
+            answers: answers
+          });
+
+        if (error) throw error;
+      } catch (error) {
+        console.error('Error saving guest assessment:', error);
+        // Don't block flow on error
+      }
     }
 
+    // Mark this assessment as complete in the flow
+    if (isMultiAssessmentFlow) {
+      flowState.completeCurrentAssessment();
+    }
+
+    // Navigate to results with flow context
     navigate(`/assessment/${symptomId}/results`, {
       state: { 
         score: averageScore, 
@@ -156,7 +191,12 @@ const SymptomAssessment = () => {
         scoringGuidance: scoringGuidance,
         scoreCategory: scoreCategory,
         categoryDescription: categoryDescription,
-        pillar: assessmentConfig.pillar
+        pillar: assessmentConfig.pillar,
+        // Pass flow context
+        isMultiAssessmentFlow,
+        hasMoreAssessments: flowState.hasMoreAssessments(),
+        nextAssessmentId: flowState.getNextAssessment(),
+        sessionId: flowState.sessionId
       }
     });
   };

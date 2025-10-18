@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -33,10 +34,11 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   // Get session ID from URL if user is registering from guest results
-  const searchParams = new URLSearchParams(window.location.search);
   const guestSessionId = searchParams.get('session');
+  const assessmentSession = searchParams.get('assessmentSession');
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
@@ -56,10 +58,10 @@ const Auth = () => {
   });
 
   // Redirect if already authenticated and check for health profile AND onboarding
-  // BUT: Don't redirect if coming from guest session - let them complete signup
+  // BUT: Don't redirect if coming from guest session or assessment session - let them complete signup
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
-      if (user && !guestSessionId) {
+      if (user && !guestSessionId && !assessmentSession) {
         // Check onboarding status first
         const { data: profile } = await supabase
           .from('profiles')
@@ -85,11 +87,23 @@ const Auth = () => {
         } else {
           navigate('/dashboard');
         }
+      } else if (user && assessmentSession) {
+        // User logged in with assessment session - continue flow
+        const flowStore = useAssessmentFlowStore.getState();
+        const nextAssessmentId = flowStore.getNextAssessment();
+        
+        if (nextAssessmentId) {
+          // Continue to next assessment
+          navigate(`/assessment/${nextAssessmentId}`);
+        } else {
+          // No more assessments, go to dashboard
+          navigate('/dashboard');
+        }
       }
     };
     
     checkProfileAndRedirect();
-  }, [user, navigate, guestSessionId]);
+  }, [user, navigate, guestSessionId, assessmentSession]);
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(true);
@@ -286,9 +300,9 @@ const Auth = () => {
               {/* Sign Up Tab */}
               <TabsContent value="signup" className="space-y-4 mt-0">
                 <div className="text-center mb-4">
-                  <CardTitle className="text-xl">Join Biohackher</CardTitle>
+                  <CardTitle className="text-xl">Set Up Your Profile</CardTitle>
                   <CardDescription>
-                    Create your account to start optimising your health
+                    Just your email and a password to get started
                   </CardDescription>
                 </div>
 
@@ -367,8 +381,13 @@ const Auth = () => {
                       className="w-full primary-gradient" 
                       disabled={isLoading}
                     >
-                      {isLoading ? 'Creating account...' : 'Create Account'}
+                      {isLoading ? 'Setting up...' : 'Get Started'}
                     </Button>
+                    
+                    <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
+                      <p>No payment required • Cancel anytime</p>
+                      <p>Your data is private and secure</p>
+                    </div>
                   </form>
                 </Form>
               </TabsContent>
