@@ -29,9 +29,8 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simplified core navigation - 8 key pages with Goals prominent
+  // Simplified core navigation - key pages with Goals prominent
   const coreNavItems = [
-    { href: "/", label: t('navigation.home') },
     { href: "/dashboard", label: "My Health" },
     { href: "/goals-dashboard", label: "My Goals" },
     { href: "/experts", label: "Find Experts" },
