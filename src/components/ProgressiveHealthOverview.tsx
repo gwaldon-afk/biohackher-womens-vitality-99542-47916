@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
+import { Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, Lightbulb } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { SymptomAssessment } from '@/types/assessments';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -89,11 +90,44 @@ export const ProgressiveHealthOverview = ({
 
   if (isLoading) {
     return (
-      <Card>
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-3 text-muted-foreground">Analyzing your health patterns...</span>
+          <div className="space-y-6">
+            {/* Animated Icon */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <Sparkles className="h-12 w-12 text-primary animate-pulse" />
+                <div className="absolute inset-0 h-12 w-12 bg-primary/20 rounded-full animate-ping" />
+              </div>
+            </div>
+            
+            {/* Clear Status */}
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-semibold">
+                Analyzing Your Health Patterns
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Our AI is detecting connections and generating insights from your {assessments.length} assessment{assessments.length !== 1 ? 's' : ''}...
+              </p>
+              <p className="text-xs text-muted-foreground">
+                This usually takes 5-10 seconds
+              </p>
+            </div>
+
+            {/* Skeleton Preview */}
+            <div className="space-y-3 mt-6">
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-48 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+
+            {/* Helpful Tip */}
+            <Alert className="bg-accent/50 border-accent">
+              <Lightbulb className="h-4 w-4" />
+              <AlertDescription>
+                💡 Complete more assessments for deeper pattern insights
+              </AlertDescription>
+            </Alert>
           </div>
         </CardContent>
       </Card>
