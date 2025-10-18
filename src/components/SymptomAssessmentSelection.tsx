@@ -94,7 +94,7 @@ const SymptomAssessmentSelection = ({
         <h2 className="text-3xl font-bold gradient-text">{theme.title}</h2>
         <p className="text-lg text-muted-foreground">{theme.subtitle}</p>
         <Badge variant="outline" className="text-sm">
-          {filteredSymptoms.length} assessments available
+          5 Suggested Assessments
         </Badge>
       </div>
 
