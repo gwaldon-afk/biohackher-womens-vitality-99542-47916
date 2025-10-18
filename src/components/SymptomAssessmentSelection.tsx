@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { TRIAGE_THEMES } from "@/data/symptomTriageMapping";
 import { Clock, CheckCircle2, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
+import { useToast } from "@/hooks/use-toast";
 
 interface Symptom {
   id: string;
@@ -33,6 +35,8 @@ const SymptomAssessmentSelection = ({
 }: SymptomAssessmentSelectionProps) => {
   const navigate = useNavigate();
   const startFlow = useAssessmentFlowStore(state => state.startFlow);
+  const { toast } = useToast();
+  const [includeCompleted, setIncludeCompleted] = useState(false);
 
   const theme = Object.values(TRIAGE_THEMES).find(t => t.id === themeId);
   if (!theme) return null;
@@ -48,9 +52,29 @@ const SymptomAssessmentSelection = ({
     return userSymptoms.some(us => us.symptom_id === symptomId && us.is_active);
   };
 
+  // Count new vs completed assessments
+  const completedCount = filteredSymptoms.slice(0, 5).filter(s => isCompleted(s.id)).length;
+  const newCount = 5 - completedCount;
+  const hasCompleted = completedCount > 0;
+  const hasNew = newCount > 0;
+
   const handleStartFirstAssessment = () => {
     // Get first 5 symptoms from filtered symptoms
-    const assessmentIds = filteredSymptoms.slice(0, 5).map(s => s.id);
+    let assessmentIds = filteredSymptoms.slice(0, 5).map(s => s.id);
+    
+    // If not including completed, filter them out
+    if (!includeCompleted) {
+      assessmentIds = assessmentIds.filter(id => !isCompleted(id));
+    }
+    
+    // If no assessments to do, show message and return
+    if (assessmentIds.length === 0) {
+      toast({
+        title: "All assessments completed!",
+        description: "Enable 'Update completed assessments' to retake them.",
+      });
+      return;
+    }
     
     // Initialize the flow
     startFlow(assessmentIds, themeId, 'suggested');
@@ -90,7 +114,9 @@ const SymptomAssessmentSelection = ({
         <h2 className="text-3xl font-bold gradient-text">{theme.title}</h2>
         <p className="text-lg text-muted-foreground">{theme.subtitle}</p>
         <Badge variant="outline" className="text-sm">
-          5 Suggested Assessments
+          {newCount > 0 && completedCount > 0 && `${newCount} New • ${completedCount} Completed`}
+          {newCount > 0 && completedCount === 0 && `${newCount} Assessments`}
+          {newCount === 0 && completedCount > 0 && `${completedCount} Completed`}
         </Badge>
       </div>
 
@@ -136,21 +162,53 @@ const SymptomAssessmentSelection = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <Button
-          variant="ghost"
-          onClick={onBrowseAll}
-          className="w-full sm:w-auto"
-        >
-          View all symptoms instead
-        </Button>
-        <Button
-          onClick={handleStartFirstAssessment}
-          size="lg"
-          className="w-full sm:w-auto"
-        >
-          Start with {filteredSymptoms[0]?.name || 'Assessment'}
-        </Button>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <Button
+            variant="ghost"
+            onClick={onBrowseAll}
+            className="w-full sm:w-auto"
+          >
+            View all symptoms instead
+          </Button>
+          <Button
+            onClick={handleStartFirstAssessment}
+            size="lg"
+            className="w-full sm:w-auto"
+            disabled={!hasNew && !includeCompleted}
+          >
+            {includeCompleted 
+              ? `Start Complete Series (${filteredSymptoms.slice(0, 5).length} Assessments)`
+              : hasNew
+              ? `Start ${newCount} New Assessment${newCount > 1 ? 's' : ''}`
+              : 'All Completed'
+            }
+          </Button>
+        </div>
+
+        {/* Opt-in Toggle - Only show if there are completed assessments */}
+        {hasCompleted && (
+          <div className="flex items-center justify-center gap-3 p-4 bg-muted/30 rounded-lg border border-dashed">
+            <Checkbox
+              id="include-completed"
+              checked={includeCompleted}
+              onCheckedChange={(checked) => setIncludeCompleted(checked === true)}
+            />
+            <label
+              htmlFor="include-completed"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+            >
+              Update all completed assessments ({completedCount})
+            </label>
+          </div>
+        )}
+
+        {/* Helper text when all are completed and toggle is off */}
+        {!hasNew && !includeCompleted && (
+          <p className="text-sm text-muted-foreground text-center">
+            You've completed all assessments in this theme. Enable the option above to retake them.
+          </p>
+        )}
       </div>
     </div>
   );
