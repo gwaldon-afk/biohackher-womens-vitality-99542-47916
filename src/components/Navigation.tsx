@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, TrendingUp, Target, Award, Trophy, Heart, Dumbbell, Watch, Pill, Moon, Utensils, Sparkles } from "lucide-react";
+import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, TrendingUp, Target, Award, Trophy, Heart, Dumbbell, Watch, Pill, Moon, Utensils, Sparkles, Brain, Stethoscope, BookOpen, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
 import { LocaleSelector } from "@/components/LocaleSelector";
@@ -29,18 +29,25 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simplified core navigation - 8 key pages with Goals prominent
+  // Streamlined core navigation - user journey focused
   const coreNavItems = [
-    { href: "/", label: t('navigation.home') },
-    { href: "/dashboard", label: "My Health" },
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/goals-dashboard", label: "My Goals" },
     { href: "/experts", label: "Find Experts" },
-    { href: "/menomap", label: "MenoMap™" },
-    { href: "/energy-loop", label: "Energy Loop" },
-    { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
-    { href: "/about", label: "About & Science" },
-    { href: "/health-assistant", label: "AI Assistant" },
+  ];
+
+  const assessmentItems = [
+    { href: "/menomap", label: "MenoMap™", icon: Heart, description: "Track menopause journey" },
+    { href: "/energy-loop", label: "Energy Loop", icon: Sparkles, description: "Optimize daily energy" },
+    { href: "/symptoms", label: "Symptom Tracker", icon: Activity, description: "Log and analyze symptoms" },
+    { href: "/lis-assessment", label: "Longevity Score", icon: TrendingUp, description: "Assess your health age" },
+  ];
+
+  const resourceItems = [
+    { href: "/about", label: "About", icon: BookOpen },
+    { href: "/research-evidence", label: "Science & Research", icon: Brain },
+    { href: "/faq", label: "FAQ", icon: MessageCircle },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -81,6 +88,75 @@ const Navigation = () => {
                 </Button>
               </Link>
             ))}
+            
+            {/* Assessments Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-9 text-sm font-medium text-muted-foreground hover:text-primary">
+                    <Stethoscope className="h-4 w-4 mr-1" />
+                    Assessments
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4">
+                      {assessmentItems.map((item) => (
+                        <li key={item.href}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={item.href}
+                              className={cn(
+                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                                isActive(item.href) && "bg-accent"
+                              )}
+                            >
+                              <div className="flex items-center gap-2">
+                                <item.icon className="h-4 w-4 text-primary" />
+                                <div className="text-sm font-medium leading-none">{item.label}</div>
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            {/* Resources Dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="h-9 text-sm font-medium text-muted-foreground hover:text-primary">
+                    <BookOpen className="h-4 w-4 mr-1" />
+                    Resources
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[200px] gap-2 p-3">
+                      {resourceItems.map((item) => (
+                        <li key={item.href}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={item.href}
+                              className={cn(
+                                "flex items-center gap-2 select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                                isActive(item.href) && "bg-accent"
+                              )}
+                            >
+                              <item.icon className="h-4 w-4 text-primary" />
+                              <span className="text-sm font-medium">{item.label}</span>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Desktop Actions */}
@@ -109,6 +185,12 @@ const Navigation = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
+                <DropdownMenuItem asChild>
+                  <Link to="/health-assistant" className="flex items-center cursor-pointer text-xs">
+                    <MessageCircle className="h-3 w-3 mr-2" />
+                    AI Health Assistant
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
                     <Award className="h-3 w-3 mr-2" />
@@ -177,6 +259,52 @@ const Navigation = () => {
                   {item.label}
                 </Link>
               ))}
+
+              {/* Assessments Group */}
+              <Collapsible className="px-4">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground py-2">
+                  <div className="flex items-center gap-2">
+                    <Stethoscope className="h-4 w-4" />
+                    Assessments
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="flex flex-col space-y-1 pl-6 pt-2">
+                  {assessmentItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className="text-sm text-muted-foreground hover:text-primary py-1.5"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Resources Group */}
+              <Collapsible className="px-4">
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground py-2">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Resources
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="flex flex-col space-y-1 pl-6 pt-2">
+                  {resourceItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className="text-sm text-muted-foreground hover:text-primary py-1.5"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
                 <div className="px-2">
