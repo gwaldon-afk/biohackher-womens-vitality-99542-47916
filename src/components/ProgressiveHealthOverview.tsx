@@ -197,7 +197,7 @@ export const ProgressiveHealthOverview = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            Patterns Identified from Your Assessments
+            Your Assessment Patterns
           </CardTitle>
           <CardDescription>
             Connections between your symptoms identified by our AI
