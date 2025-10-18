@@ -615,6 +615,494 @@ export type Database = {
         }
         Relationships: []
       }
+      expert_availability: {
+        Row: {
+          available: boolean | null
+          created_at: string | null
+          day_of_week: number
+          end_time: string
+          expert_id: string
+          id: string
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          created_at?: string | null
+          day_of_week: number
+          end_time: string
+          expert_id: string
+          id?: string
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          created_at?: string | null
+          day_of_week?: number
+          end_time?: string
+          expert_id?: string
+          id?: string
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_complaints: {
+        Row: {
+          assigned_to: string | null
+          complaint_type: string
+          created_at: string | null
+          description: string
+          expert_id: string
+          id: string
+          priority: string | null
+          reported_by: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          complaint_type: string
+          created_at?: string | null
+          description: string
+          expert_id: string
+          id?: string
+          priority?: string | null
+          reported_by: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          complaint_type?: string
+          created_at?: string | null
+          description?: string
+          expert_id?: string
+          id?: string
+          priority?: string | null
+          reported_by?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_complaints_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_credentials: {
+        Row: {
+          created_at: string | null
+          document_name: string
+          document_type: string
+          expert_id: string
+          expires_at: string | null
+          file_path: string
+          file_url: string | null
+          id: string
+          notes: string | null
+          updated_at: string | null
+          verified: boolean | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_name: string
+          document_type: string
+          expert_id: string
+          expires_at?: string | null
+          file_path: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_name?: string
+          document_type?: string
+          expert_id?: string
+          expires_at?: string | null
+          file_path?: string
+          file_url?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string | null
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_credentials_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_profiles: {
+        Row: {
+          accepts_insurance: boolean | null
+          auto_suspended: boolean | null
+          average_rating: number | null
+          bio: string | null
+          complaints_count: number | null
+          consultation_fee: number | null
+          created_at: string | null
+          email: string | null
+          expert_id: string
+          featured: boolean | null
+          id: string
+          insurance_number: string | null
+          insurance_verified: boolean | null
+          last_credential_check: string | null
+          license_number: string | null
+          listing_status: Database["public"]["Enums"]["listing_status"] | null
+          location: string | null
+          phone: string | null
+          practice_name: string | null
+          referral_rate: number | null
+          referrals_count: number | null
+          rejection_reason: string | null
+          revenue_total: number | null
+          specialties: string[] | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_ends_at: string | null
+          subscription_started_at: string | null
+          subscription_status: string | null
+          tier: Database["public"]["Enums"]["expert_tier"] | null
+          timezone: string | null
+          total_reviews: number | null
+          updated_at: string | null
+          user_id: string
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at: string | null
+          verified_by: string | null
+          website: string | null
+          years_of_practice: number | null
+        }
+        Insert: {
+          accepts_insurance?: boolean | null
+          auto_suspended?: boolean | null
+          average_rating?: number | null
+          bio?: string | null
+          complaints_count?: number | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          email?: string | null
+          expert_id: string
+          featured?: boolean | null
+          id?: string
+          insurance_number?: string | null
+          insurance_verified?: boolean | null
+          last_credential_check?: string | null
+          license_number?: string | null
+          listing_status?: Database["public"]["Enums"]["listing_status"] | null
+          location?: string | null
+          phone?: string | null
+          practice_name?: string | null
+          referral_rate?: number | null
+          referrals_count?: number | null
+          rejection_reason?: string | null
+          revenue_total?: number | null
+          specialties?: string[] | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_ends_at?: string | null
+          subscription_started_at?: string | null
+          subscription_status?: string | null
+          tier?: Database["public"]["Enums"]["expert_tier"] | null
+          timezone?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
+          years_of_practice?: number | null
+        }
+        Update: {
+          accepts_insurance?: boolean | null
+          auto_suspended?: boolean | null
+          average_rating?: number | null
+          bio?: string | null
+          complaints_count?: number | null
+          consultation_fee?: number | null
+          created_at?: string | null
+          email?: string | null
+          expert_id?: string
+          featured?: boolean | null
+          id?: string
+          insurance_number?: string | null
+          insurance_verified?: boolean | null
+          last_credential_check?: string | null
+          license_number?: string | null
+          listing_status?: Database["public"]["Enums"]["listing_status"] | null
+          location?: string | null
+          phone?: string | null
+          practice_name?: string | null
+          referral_rate?: number | null
+          referrals_count?: number | null
+          rejection_reason?: string | null
+          revenue_total?: number | null
+          specialties?: string[] | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_ends_at?: string | null
+          subscription_started_at?: string | null
+          subscription_status?: string | null
+          tier?: Database["public"]["Enums"]["expert_tier"] | null
+          timezone?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id?: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          verified_by?: string | null
+          website?: string | null
+          years_of_practice?: number | null
+        }
+        Relationships: []
+      }
+      expert_referrals: {
+        Row: {
+          amount: number
+          commission_amount: number
+          commission_rate: number
+          completed_at: string | null
+          created_at: string | null
+          expert_id: string
+          id: string
+          referral_type: string
+          status: string | null
+          stripe_charge_id: string | null
+          stripe_payment_intent_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          commission_amount: number
+          commission_rate: number
+          completed_at?: string | null
+          created_at?: string | null
+          expert_id: string
+          id?: string
+          referral_type: string
+          status?: string | null
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          commission_amount?: number
+          commission_rate?: number
+          completed_at?: string | null
+          created_at?: string | null
+          expert_id?: string
+          id?: string
+          referral_type?: string
+          status?: string | null
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_referrals_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_reviews: {
+        Row: {
+          created_at: string | null
+          expert_id: string
+          flagged: boolean | null
+          flagged_at: string | null
+          flagged_reason: string | null
+          id: string
+          rating: number
+          responded_at: string | null
+          response_text: string | null
+          review_text: string | null
+          updated_at: string | null
+          user_id: string
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          expert_id: string
+          flagged?: boolean | null
+          flagged_at?: string | null
+          flagged_reason?: string | null
+          id?: string
+          rating: number
+          responded_at?: string | null
+          response_text?: string | null
+          review_text?: string | null
+          updated_at?: string | null
+          user_id: string
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          expert_id?: string
+          flagged?: boolean | null
+          flagged_at?: string | null
+          flagged_reason?: string | null
+          id?: string
+          rating?: number
+          responded_at?: string | null
+          response_text?: string | null
+          review_text?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_reviews_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_services: {
+        Row: {
+          available: boolean | null
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          expert_id: string
+          id: string
+          price: number | null
+          service_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          available?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          expert_id: string
+          id?: string
+          price?: number | null
+          service_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          available?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          expert_id?: string
+          id?: string
+          price?: number | null
+          service_name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_services_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expert_verification_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          expert_id: string
+          id: string
+          new_status: Database["public"]["Enums"]["verification_status"] | null
+          notes: string | null
+          performed_by: string
+          previous_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          expert_id: string
+          id?: string
+          new_status?: Database["public"]["Enums"]["verification_status"] | null
+          notes?: string | null
+          performed_by: string
+          previous_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          expert_id?: string
+          id?: string
+          new_status?: Database["public"]["Enums"]["verification_status"] | null
+          notes?: string | null
+          performed_by?: string
+          previous_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expert_verification_log_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goal_check_ins: {
         Row: {
           adjustments_needed: string | null
@@ -2531,6 +3019,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_expert_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2549,6 +3041,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      expert_tier: "free" | "premium" | "elite"
+      listing_status: "active" | "inactive" | "suspended"
       protocol_frequency:
         | "daily"
         | "twice_daily"
@@ -2563,6 +3057,7 @@ export type Database = {
         | "diet"
       subscription_status: "active" | "trialing" | "canceled" | "expired"
       subscription_tier: "guest" | "registered" | "subscribed" | "premium"
+      verification_status: "pending" | "approved" | "rejected" | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2691,6 +3186,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      expert_tier: ["free", "premium", "elite"],
+      listing_status: ["active", "inactive", "suspended"],
       protocol_frequency: [
         "daily",
         "twice_daily",
@@ -2707,6 +3204,7 @@ export const Constants = {
       ],
       subscription_status: ["active", "trialing", "canceled", "expired"],
       subscription_tier: ["guest", "registered", "subscribed", "premium"],
+      verification_status: ["pending", "approved", "rejected", "suspended"],
     },
   },
 } as const
