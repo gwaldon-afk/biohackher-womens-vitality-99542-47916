@@ -29,11 +29,31 @@ export default function ExpertDirectory() {
   return (
     <div className="container py-8 space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2 mb-8">
+      <div className="text-center space-y-4 mb-8">
         <h1 className="text-4xl font-bold">Find Your Expert Partner</h1>
         <p className="text-muted-foreground text-lg">
           Connect with verified health professionals specializing in women's longevity
         </p>
+        
+        {/* CTA for Experts */}
+        <Card className="max-w-2xl mx-auto border-primary/30 bg-primary/5">
+          <CardContent className="py-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <h3 className="font-semibold text-lg mb-1">Are you a health professional?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Join our network of verified experts and connect with clients seeking your expertise
+                </p>
+              </div>
+              <Button 
+                onClick={() => navigate('/expert/register')}
+                className="shrink-0"
+              >
+                Register as an Expert
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Search & Filters */}
