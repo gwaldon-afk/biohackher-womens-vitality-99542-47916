@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TRIAGE_THEMES } from "@/data/symptomTriageMapping";
-import { Clock, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Clock, CheckCircle2, ArrowLeft, PlayCircle, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 import { useToast } from "@/hooks/use-toast";
@@ -58,36 +58,16 @@ const SymptomAssessmentSelection = ({
   const hasCompleted = completedCount > 0;
   const hasNew = newCount > 0;
 
-  const handleStartFirstAssessment = () => {
-    // Get first 5 symptoms from filtered symptoms
-    let assessmentIds = filteredSymptoms.slice(0, 5).map(s => s.id);
-    
-    // If not including completed, filter them out
-    if (!includeCompleted) {
-      assessmentIds = assessmentIds.filter(id => !isCompleted(id));
-    }
-    
-    // If no assessments to do, show message and return
-    if (assessmentIds.length === 0) {
-      toast({
-        title: "All assessments completed!",
-        description: "Enable 'Update completed assessments' to retake them.",
-      });
-      return;
-    }
-    
-    // Initialize the flow
-    startFlow(assessmentIds, themeId, 'suggested');
-    
-    // Navigate to first assessment
-    const firstSymptomId = assessmentIds[0];
+  const handleStartAssessment = (symptomId: string) => {
+    // Initialize a single-assessment flow
+    startFlow([symptomId], themeId, 'single');
     
     // Special routing for brain assessments
-    if (firstSymptomId === "cognitive-performance" || firstSymptomId === "menopause-brain-health") {
-      const context = firstSymptomId === "cognitive-performance" ? "performance" : "menopause";
+    if (symptomId === "cognitive-performance" || symptomId === "menopause-brain-health") {
+      const context = symptomId === "cognitive-performance" ? "performance" : "menopause";
       navigate(`/brain-assessment?context=${context}&pillar=brain`);
     } else {
-      navigate(`/assessment/${firstSymptomId}`);
+      navigate(`/assessment/${symptomId}`);
     }
   };
 
@@ -129,31 +109,53 @@ const SymptomAssessmentSelection = ({
           return (
             <Card
               key={symptom.id}
-              className="transition-all duration-200 hover:border-primary/50"
+              className="group hover:shadow-md transition-all duration-200"
             >
               <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <h3 className="font-semibold text-lg">{symptom.name}</h3>
-                      {completed && (
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" />
-                          Completed
-                        </Badge>
-                      )}
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold">
+                      {index + 1}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        5-8 min
-                      </span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Icon className="h-5 w-5 text-primary" />
+                        <h3 className="font-semibold text-lg">{symptom.name}</h3>
+                        {completed && (
+                          <Badge variant="secondary" className="flex items-center gap-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                            <CheckCircle2 className="h-3 w-3" />
+                            Completed
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          5-8 min
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Individual Start/Update Button */}
+                  <Button
+                    onClick={() => handleStartAssessment(symptom.id)}
+                    variant={completed ? "outline" : "default"}
+                    size="lg"
+                    className="flex-shrink-0"
+                  >
+                    {completed ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Update
+                      </>
+                    ) : (
+                      <>
+                        <PlayCircle className="h-4 w-4 mr-2" />
+                        Start
+                      </>
+                    )}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -161,54 +163,15 @@ const SymptomAssessmentSelection = ({
         })}
       </div>
 
-      {/* Action Buttons */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={onBrowseAll}
-            className="w-full sm:w-auto"
-          >
-            View all symptoms instead
-          </Button>
-          <Button
-            onClick={handleStartFirstAssessment}
-            size="lg"
-            className="w-full sm:w-auto"
-            disabled={!hasNew && !includeCompleted}
-          >
-            {includeCompleted 
-              ? `Start Complete Series (${filteredSymptoms.slice(0, 5).length} Assessments)`
-              : hasNew
-              ? `Start ${newCount} New Assessment${newCount > 1 ? 's' : ''}`
-              : 'All Completed'
-            }
-          </Button>
-        </div>
-
-        {/* Opt-in Toggle - Only show if there are completed assessments */}
-        {hasCompleted && (
-          <div className="flex items-center justify-center gap-3 p-4 bg-muted/30 rounded-lg border border-dashed">
-            <Checkbox
-              id="include-completed"
-              checked={includeCompleted}
-              onCheckedChange={(checked) => setIncludeCompleted(checked === true)}
-            />
-            <label
-              htmlFor="include-completed"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-            >
-              Update all completed assessments ({completedCount})
-            </label>
-          </div>
-        )}
-
-        {/* Helper text when all are completed and toggle is off */}
-        {!hasNew && !includeCompleted && (
-          <p className="text-sm text-muted-foreground text-center">
-            You've completed all assessments in this theme. Enable the option above to retake them.
-          </p>
-        )}
+      {/* Action Section */}
+      <div className="flex justify-center mt-8">
+        <Button
+          variant="outline"
+          onClick={onBrowseAll}
+          size="lg"
+        >
+          View all symptoms instead
+        </Button>
       </div>
     </div>
   );

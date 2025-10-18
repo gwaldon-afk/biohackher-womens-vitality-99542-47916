@@ -62,6 +62,7 @@ const AssessmentResults = () => {
   const hasMore = state.hasMoreAssessments || false;
   const nextId = state.nextAssessmentId;
   const sessionId = state.sessionId;
+  const isFirstAssessment = flowStore.completedIds.length === 1;
   
   const handleContinueToNext = () => {
     if (!nextId) return;
@@ -776,66 +777,103 @@ const AssessmentResults = () => {
                 </Card>
               ) : (
                 // Guest user - show profile creation prompt
-                <Card className="p-8 border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10">
+                <Card className="p-8 border-2 border-primary/50 bg-gradient-to-br from-primary/5 via-background to-primary/10">
                   <div className="text-center">
+                    {/* Icon */}
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-4">
-                      <Lock className="w-8 h-8 text-primary" />
+                      {isFirstAssessment ? (
+                        <Sparkles className="w-8 h-8 text-primary" />
+                      ) : (
+                        <Lock className="w-8 h-8 text-primary" />
+                      )}
                     </div>
-                    <h2 className="text-2xl font-bold mb-3">Keep Your Results & Continue</h2>
-                    <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-                      Set up a quick profile to save your assessment and continue to your next recommended one
+                    
+                    {/* Headline */}
+                    <h2 className="text-2xl font-bold mb-3">
+                      {isFirstAssessment 
+                        ? "Great start! Ready to continue?" 
+                        : "Save Your Progress & Continue"}
+                    </h2>
+                    
+                    {/* Key message */}
+                    <p className="text-lg text-muted-foreground mb-6 max-w-xl mx-auto">
+                      {isFirstAssessment 
+                        ? "To help build a full picture, let's save this to your profile before we continue." 
+                        : "Set up your profile to save all your assessments and get personalized insights."}
                     </p>
 
-                    <div className="grid md:grid-cols-3 gap-4 mb-8 text-left">
-                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
-                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                        <div>
-                          <div className="font-semibold mb-1">Track All Assessments</div>
-                          <div className="text-sm text-muted-foreground">
-                            Save all your results in one place and track progress over time
+                    {/* Value props - Compact version for first assessment */}
+                    {isFirstAssessment ? (
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          <span>Save your results</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          <span>Track over time</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-primary" />
+                          <span>Get insights</span>
+                        </div>
+                      </div>
+                    ) : (
+                      // Full value props for subsequent assessments
+                      <div className="grid md:grid-cols-3 gap-4 mb-8 text-left">
+                        <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                          <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <div className="font-semibold mb-1">Track All Assessments</div>
+                            <div className="text-sm text-muted-foreground">
+                              Save all your results in one place
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                          <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <div className="font-semibold mb-1">Personalized Insights</div>
+                            <div className="text-sm text-muted-foreground">
+                              Get AI-powered health recommendations
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
+                          <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                          <div>
+                            <div className="font-semibold mb-1">Build Your Protocol</div>
+                            <div className="text-sm text-muted-foreground">
+                              Create a personalized action plan
+                            </div>
                           </div>
                         </div>
                       </div>
+                    )}
 
-                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
-                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                        <div>
-                          <div className="font-semibold mb-1">Personalized Insights</div>
-                          <div className="text-sm text-muted-foreground">
-                            Get AI-powered insights based on your complete health profile
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3 p-4 bg-background rounded-lg">
-                        <Sparkles className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                        <div>
-                          <div className="font-semibold mb-1">Build Your Protocol</div>
-                          <div className="text-sm text-muted-foreground">
-                            Create a personalized action plan based on your results
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
+                    {/* CTAs */}
                     <div className="space-y-3">
                       <Button
                         size="lg"
                         onClick={handleSetUpProfile}
-                        className="text-lg px-8 py-6 h-auto w-full sm:w-auto"
+                        className="text-lg px-8 py-6 h-auto w-full sm:w-auto min-w-[200px]"
                       >
-                        Save & Continue
+                        {isFirstAssessment ? "Create Your Profile" : "Save & Continue"}
                       </Button>
+                      
                       <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                         <Sparkles className="w-4 h-4" />
-                        <span>Just your email • No payment needed</span>
+                        <span>Just your email • No payment required</span>
                       </div>
+                      
                       <Button
                         variant="ghost"
                         onClick={handleContinueWithoutSaving}
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto text-muted-foreground"
                       >
-                        Continue Without Saving
+                        Continue without saving
                       </Button>
                     </div>
                   </div>
