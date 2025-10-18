@@ -25,6 +25,7 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Analyzing health patterns - Request received');
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       throw new Error('Authorization required');
@@ -42,8 +43,10 @@ serve(async (req) => {
     }
 
     const { assessments } = await req.json() as AnalysisRequest;
+    console.log(`Processing ${assessments.length} assessments for user ${user.id}`);
 
     if (!assessments || assessments.length < 2) {
+      console.error('Insufficient assessments provided');
       throw new Error('At least 2 assessments required for progressive analysis');
     }
 
@@ -56,6 +59,9 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
+
+    console.log('Calling Lovable AI for analysis...');
+    const startTime = Date.now();
 
     const systemPrompt = `You are a health analysis AI specializing in women's health. Analyze symptom assessments and provide comprehensive insights.
 
@@ -180,6 +186,9 @@ Provide:
     }
 
     const aiResponse = await response.json();
+    const duration = Date.now() - startTime;
+    console.log(`AI analysis completed in ${duration}ms`);
+    
     const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
     
     if (!toolCall) {
