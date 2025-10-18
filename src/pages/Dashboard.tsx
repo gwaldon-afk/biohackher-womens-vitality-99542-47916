@@ -331,6 +331,19 @@ const Dashboard = () => {
             <DashboardSkeleton />
           ) : (
           <>
+        {/* Slim Welcome Banner */}
+        {user && (
+          <div className="flex items-center justify-between mb-6 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-lg border border-primary/20">
+            <div className="flex items-center gap-3">
+              <span className="text-lg">👋</span>
+              <div>
+                <p className="font-medium">Welcome back{user?.user_metadata?.preferred_name ? `, ${user.user_metadata.preferred_name}` : ''}!</p>
+                <p className="text-sm text-muted-foreground">Your health journey continues</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Journey Map */}
         <div className="mb-6">
           <JourneyMap 
@@ -367,53 +380,17 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Health Snapshot Widget - Show if 2+ assessments */}
-        {recentAssessments.length >= 2 && (
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  Health Snapshot
-                </CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => navigate('/symptoms?view=history&tab=overview')}
-                >
-                  View Full Analysis
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <ProgressiveHealthOverview 
-                assessments={recentAssessments.map(a => ({
-                  ...a,
-                  user_id: user?.id || '',
-                  answers: {},
-                  detail_scores: null,
-                  recommendations: {},
-                  created_at: a.completed_at,
-                  updated_at: a.completed_at
-                }))}
-                compact={true}
-                onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
-              />
-            </CardContent>
-          </Card>
-        )}
 
         {/* Tabs for My Health Hub */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="goals">
               <Target className="h-4 w-4 mr-2" />
-              Goals
+              My Goals
             </TabsTrigger>
-            <TabsTrigger value="today">Today</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="today">Daily Actions</TabsTrigger>
+            <TabsTrigger value="progress">Tracking</TabsTrigger>
+            <TabsTrigger value="insights">Health Analysis</TabsTrigger>
             <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
@@ -503,6 +480,48 @@ const Dashboard = () => {
 
             {/* Insights Tab - Analysis & Reports */}
             <TabsContent value="insights" className="space-y-8">
+              {/* Comprehensive Health Analysis - Show if 2+ assessments */}
+              {recentAssessments.length >= 2 && (
+                <Card className="border-primary/20">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          <Sparkles className="h-5 w-5 text-primary" />
+                          Comprehensive Health Analysis
+                        </CardTitle>
+                        <CardDescription>
+                          AI-powered insights from your {recentAssessments.length} assessments
+                        </CardDescription>
+                      </div>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => navigate('/symptoms?view=history&tab=overview')}
+                      >
+                        View Full Analysis
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ProgressiveHealthOverview 
+                      assessments={recentAssessments.map(a => ({
+                        ...a,
+                        user_id: user?.id || '',
+                        answers: {},
+                        detail_scores: null,
+                        recommendations: {},
+                        created_at: a.completed_at,
+                        updated_at: a.completed_at
+                      }))}
+                      compact={false}
+                      onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
+                    />
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Baseline Reassessment Prompt */}
               <BaselineReassessmentPrompt />
 
