@@ -11,8 +11,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
+import { SymptomAssessment } from "@/types/assessments";
 
-interface SymptomAssessment {
+interface LocalSymptomAssessment {
   id: string;
   symptom_type: string;
   overall_score: number;
@@ -25,7 +27,7 @@ interface SymptomAssessment {
 
 interface TrendData {
   symptom_type: string;
-  assessments: SymptomAssessment[];
+  assessments: LocalSymptomAssessment[];
   trend: 'improving' | 'stable' | 'declining';
   latestScore: number;
   previousScore?: number;
@@ -36,7 +38,7 @@ const AssessmentHistory = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
-  const [assessments, setAssessments] = useState<SymptomAssessment[]>([]);
+  const [assessments, setAssessments] = useState<LocalSymptomAssessment[]>([]);
   const [trendData, setTrendData] = useState<TrendData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedView, setSelectedView] = useState<'recent' | 'trends'>('recent');
@@ -274,11 +276,42 @@ const AssessmentHistory = () => {
             </CardContent>
           </Card>
         ) : (
-          <Tabs value={selectedView} onValueChange={(value) => setSelectedView(value as 'recent' | 'trends')}>
-            <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <Tabs value={selectedView} onValueChange={(value) => setSelectedView(value as 'recent' | 'trends')} defaultValue="overview">
+            <TabsList className="grid w-full grid-cols-3 max-w-2xl">
+              <TabsTrigger value="overview">Health Overview</TabsTrigger>
               <TabsTrigger value="recent">Recent Assessments</TabsTrigger>
               <TabsTrigger value="trends">Trends & Progress</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="overview" className="mt-6">
+              {assessments.length >= 2 ? (
+                <ProgressiveHealthOverview
+                  assessments={assessments.map(a => ({
+                    ...a,
+                    user_id: user?.id || '',
+                    answers: a.answers || {},
+                    detail_scores: null,
+                    created_at: a.completed_at,
+                    updated_at: a.completed_at
+                  }))}
+                  onViewFullAnalysis={() => setSelectedView('trends')}
+                  compact={false}
+                />
+              ) : (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Complete More Assessments</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Your comprehensive health overview will appear here after you complete at least 2 assessments.
+                    </p>
+                    <Button onClick={() => navigate('/symptoms')}>
+                      Take More Assessments
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
 
             <TabsContent value="recent" className="mt-6">
               <div className="space-y-4">

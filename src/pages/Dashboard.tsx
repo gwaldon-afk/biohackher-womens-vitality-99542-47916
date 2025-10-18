@@ -5,7 +5,7 @@ import { ProgressCircle } from "@/components/ui/progress-circle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, ChevronRight, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles, Target } from "lucide-react";
+import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles, Target, ChevronRight } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -39,6 +39,8 @@ import { useMenoMap } from "@/hooks/useMenoMap";
 import { EnergyDashboardWidget } from "@/components/energy/EnergyDashboardWidget";
 import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useProtocols } from "@/hooks/useProtocols";
+import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
+import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
 
 interface DashboardData {
   currentScore: number;
@@ -363,6 +365,43 @@ const Dashboard = () => {
               onCheckIn={() => navigate('/energy-loop/check-in')}
             />
           </div>
+        )}
+
+        {/* Health Snapshot Widget - Show if 2+ assessments */}
+        {recentAssessments.length >= 2 && (
+          <Card className="mb-6">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Health Snapshot
+                </CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/symptoms?view=history&tab=overview')}
+                >
+                  View Full Analysis
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ProgressiveHealthOverview 
+                assessments={recentAssessments.map(a => ({
+                  ...a,
+                  user_id: user?.id || '',
+                  answers: {},
+                  detail_scores: null,
+                  recommendations: {},
+                  created_at: a.completed_at,
+                  updated_at: a.completed_at
+                }))}
+                compact={true}
+                onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
+              />
+            </CardContent>
+          </Card>
         )}
 
         {/* Tabs for My Health Hub */}

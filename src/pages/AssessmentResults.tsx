@@ -11,12 +11,16 @@ import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { getAllToolkitItems, searchToolkitItemsBySymptoms } from "@/services/toolkitService";
 import { searchProductsBySymptoms } from "@/services/productService";
 import { generateUserRecommendations, saveUserRecommendations } from "@/services/recommendationEngine";
 import { useToast } from "@/hooks/use-toast";
 import EvidenceBadge from "@/components/EvidenceBadge";
 import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
+import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
+import { ProgressiveHealthOverviewLocked } from "@/components/ProgressiveHealthOverviewLocked";
+import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -63,6 +67,36 @@ const AssessmentResults = () => {
   const nextId = state.nextAssessmentId;
   const sessionId = state.sessionId;
   const isFirstAssessment = flowStore.completedIds.length === 1;
+  
+  // Fetch all assessments for progressive analysis (if user has completed 2+)
+  const { data: allUserAssessments = [] } = useQuery({
+    queryKey: ['user-assessments-for-flow', user?.id, flowStore.completedIds],
+    queryFn: async () => {
+      if (!user || flowStore.completedIds.length < 2) return [];
+      
+      const { data, error } = await supabase
+        .from('symptom_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('symptom_type', flowStore.completedIds)
+        .order('completed_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      // Get most recent assessment for each symptom type
+      const uniqueAssessments = data?.reduce((acc: SymptomAssessmentType[], current) => {
+        if (!acc.find(item => item.symptom_type === current.symptom_type)) {
+          acc.push(current as SymptomAssessmentType);
+        }
+        return acc;
+      }, []);
+      
+      return uniqueAssessments || [];
+    },
+    enabled: !!user && flowStore.completedIds.length >= 2,
+  });
+  
+  const showProgressiveAnalysis = flowStore.completedIds.length >= 2;
   
   const handleContinueToNext = () => {
     if (!nextId) return;
@@ -433,6 +467,26 @@ const AssessmentResults = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Progressive Health Analysis - Shows after 2+ assessments */}
+          {showProgressiveAnalysis && (
+            <div className="mb-8">
+              {user ? (
+                <ProgressiveHealthOverview
+                  assessments={allUserAssessments}
+                  totalInFlow={flowStore.assessmentQueue.length}
+                  onContinueToNext={hasMore ? handleContinueToNext : undefined}
+                  onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
+                />
+              ) : (
+                <ProgressiveHealthOverviewLocked
+                  assessmentCount={flowStore.completedIds.length}
+                  onCreateProfile={handleSetUpProfile}
+                  onContinueWithout={handleContinueWithoutSaving}
+                />
+              )}
+            </div>
+          )}
 
           {/* Detailed Analysis */}
           <Card className="mb-8">
