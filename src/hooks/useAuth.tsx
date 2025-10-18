@@ -46,31 +46,12 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(TEST_MODE_ENABLED ? (MOCK_USER as User) : null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(TEST_MODE_ENABLED ? MOCK_PROFILE : null);
+  const [loading, setLoading] = useState(!TEST_MODE_ENABLED);
   const { toast } = useToast();
   const { i18n } = useTranslation();
-
-  // TEST MODE: Return mock data if test mode is enabled
-  if (TEST_MODE_ENABLED) {
-    return (
-      <AuthContext.Provider
-        value={{
-          user: MOCK_USER as User,
-          session: null,
-          profile: MOCK_PROFILE,
-          loading: false,
-          signUp: async () => ({ error: null }),
-          signIn: async () => ({ error: null }),
-          signOut: async () => {},
-        }}
-      >
-        {children}
-      </AuthContext.Provider>
-    );
-  }
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -112,6 +93,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
+    // Skip auth setup if in test mode
+    if (TEST_MODE_ENABLED) {
+      return;
+    }
+
     // Check for existing session FIRST
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -149,6 +135,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUp = async (email: string, password: string, preferredName: string) => {
+    if (TEST_MODE_ENABLED) {
+      return { error: null };
+    }
+    
     try {
       const redirectUrl = `${getAuthRedirectUrl()}/`;
       
@@ -188,6 +178,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    if (TEST_MODE_ENABLED) {
+      return { error: null };
+    }
+    
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -214,6 +208,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
+    if (TEST_MODE_ENABLED) {
+      return;
+    }
+    
     try {
       const { error } = await supabase.auth.signOut();
       
