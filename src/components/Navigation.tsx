@@ -34,6 +34,7 @@ const Navigation = () => {
     { href: "/", label: t('navigation.home') },
     { href: "/dashboard", label: "My Health" },
     { href: "/goals-dashboard", label: "My Goals" },
+    { href: "/experts", label: "Find Experts" },
     { href: "/menomap", label: "MenoMap™" },
     { href: "/energy-loop", label: "Energy Loop" },
     { href: "/symptoms", label: "Symptom Tracking" },
@@ -118,6 +119,26 @@ const Navigation = () => {
                   <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
                     <Sparkles className="h-3 w-3 mr-2" />
                     Toolkit
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-1.5 text-xs text-muted-foreground">Expert Partners</div>
+                <DropdownMenuItem asChild>
+                  <Link to="/experts" className="flex items-center cursor-pointer text-xs">
+                    <User className="h-3 w-3 mr-2" />
+                    Find Experts
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/expert/register" className="flex items-center cursor-pointer text-xs">
+                    <Crown className="h-3 w-3 mr-2" />
+                    Become an Expert
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/admin/experts" className="flex items-center cursor-pointer text-xs">
+                    <Settings className="h-3 w-3 mr-2" />
+                    Admin: Verify Experts
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>

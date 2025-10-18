@@ -26,7 +26,7 @@ export const useExpertProfile = () => {
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'expert')
+      .eq('role', 'expert' as any)
       .single();
     
     setIsExpert(!!data);
@@ -81,7 +81,7 @@ export const useExpertProfile = () => {
         .from('user_roles')
         .insert({
           user_id: user.id,
-          role: 'expert',
+          role: 'expert' as any,
         });
 
       setProfile(newProfile);

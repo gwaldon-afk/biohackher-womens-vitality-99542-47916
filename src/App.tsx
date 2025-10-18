@@ -58,6 +58,11 @@ import EnergyCheckIn from "./pages/energy/EnergyCheckIn";
 import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
 import EnergyOnboarding from "./pages/energy/EnergyOnboarding";
+import ExpertRegistration from "./pages/expert/ExpertRegistration";
+import ExpertDashboard from "./pages/expert/ExpertDashboard";
+import ExpertDirectory from "./pages/expert/ExpertDirectory";
+import ExpertProfile from "./pages/expert/ExpertProfile";
+import ExpertVerification from "./pages/admin/ExpertVerification";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
@@ -150,6 +155,14 @@ const App = () => (
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />
           <Route path="/energy-loop/actions" element={<ProtectedRoute><EnergyActions /></ProtectedRoute>} />
+          
+          {/* Expert Partner Routes */}
+          <Route path="/experts" element={<ExpertDirectory />} />
+          <Route path="/expert/:id" element={<ExpertProfile />} />
+          <Route path="/expert/register" element={<ProtectedRoute><ExpertRegistration /></ProtectedRoute>} />
+          <Route path="/expert/dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
+          <Route path="/admin/experts" element={<ProtectedRoute><ExpertVerification /></ProtectedRoute>} />
+          
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -45,7 +45,7 @@ export const useExpertDirectory = () => {
       }
 
       if (filters.tier) {
-        query = query.eq('tier', filters.tier);
+        query = query.eq('tier', filters.tier as any);
       }
 
       const { data, error } = await query

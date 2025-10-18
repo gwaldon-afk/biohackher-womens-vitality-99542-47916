@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ExpertProfile, ExpertCredential } from "@/types/experts";
-import { CheckCircle, XCircle, Eye, FileText, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Eye, FileText, Clock, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ExpertVerification() {
