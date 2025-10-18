@@ -104,20 +104,25 @@ export const ProgressiveHealthOverview = ({
   return (
     <div className="space-y-6">
       {/* User Welcome Card */}
-      <Card>
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>
-                Welcome back, {profile?.preferred_name || 'there'}! 👋
+            <div className="space-y-2">
+              <CardTitle className="text-2xl">
+                {profile?.preferred_name 
+                  ? `Welcome back, ${profile.preferred_name}! 👋` 
+                  : 'Welcome to Your Health Hub! 👋'}
               </CardTitle>
-              <CardDescription className="mt-2">
-                {subscription && (
-                  <Badge variant={subscription.subscription_tier === 'premium' ? 'default' : 'outline'}>
-                    {subscription.subscription_tier === 'premium' ? '⭐ Premium Member' : '🎯 Free Trial'}
-                  </Badge>
-                )}
+              <CardDescription className="text-base">
+                {profile?.preferred_name 
+                  ? "Here's your personalized health overview" 
+                  : "Let's explore your health journey together"}
               </CardDescription>
+              {subscription && (
+                <Badge variant={subscription.subscription_tier === 'premium' ? 'default' : 'outline'} className="mt-2">
+                  {subscription.subscription_tier === 'premium' ? '⭐ Premium Member' : '🎯 Free Trial'}
+                </Badge>
+              )}
             </div>
           </div>
         </CardHeader>
