@@ -41,7 +41,7 @@ export const FloatingAIChatDrawer = ({ isOpen, onClose }: FloatingAIChatDrawerPr
           <CardHeader className="bg-gradient-to-r from-primary/10 to-secondary/10">
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
-              AI Health Assistant
+              Ask Us
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               Quick help for your current page
@@ -70,7 +70,7 @@ export const FloatingAIChatDrawer = ({ isOpen, onClose }: FloatingAIChatDrawerPr
                 onClick={handleFullAssistant}
               >
                 <Sparkles className="h-4 w-4 mr-2" />
-                Open Full AI Assistant
+                Ask Us Anything
               </Button>
             </div>
           </CardContent>

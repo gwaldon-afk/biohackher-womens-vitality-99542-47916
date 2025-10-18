@@ -122,7 +122,7 @@ const HealthAssistant = () => {
                       Welcome! Let's Start Your Health Journey
                     </h3>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-                      I'm your AI health assistant, here to provide science-backed answers about women's health, hormones, nutrition, sleep, stress, and wellness.
+                      I'm here to provide science-backed answers about women's health, hormones, nutrition, sleep, stress, and wellness.
                     </p>
                   </div>
 

@@ -39,7 +39,7 @@ const Navigation = () => {
     { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },
-    { href: "/health-assistant", label: "AI Assistant" },
+    { href: "/health-assistant", label: "Ask Us" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
