@@ -123,7 +123,7 @@ export const ProgressiveHealthOverview = ({
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                Your Health Picture So Far
+                Your Health Overview
               </CardTitle>
               {totalInFlow && (
                 <CardDescription className="mt-2">
