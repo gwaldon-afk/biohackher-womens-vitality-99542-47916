@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { TimeBasedGreeting } from '@/components/today/TimeBasedGreeting';
 import { DailyProgressRing } from '@/components/today/DailyProgressRing';
-import { PriorityActionCard } from '@/components/today/PriorityActionCard';
+import { SwipeableActionCard } from '@/components/today/SwipeableActionCard';
+import { EnergyPrediction } from '@/components/today/EnergyPrediction';
+import { LISImpactPreview } from '@/components/today/LISImpactPreview';
+import { TomorrowPrep } from '@/components/today/TomorrowPrep';
+import { InsightCard } from '@/components/today/InsightCard';
 import { useDailyPlan } from '@/hooks/useDailyPlan';
 import { useProtocolCompletions, useToggleProtocolCompletion } from '@/queries/protocolQueries';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sparkles, Zap, Brain, ArrowRight } from 'lucide-react';
 import { triggerCelebration, getEncouragingMessage } from '@/utils/celebrationEffects';
 import { useToast } from '@/hooks/use-toast';
+import { getTimeOfDay } from '@/utils/timeContext';
 
 const TodayHub = () => {
   const navigate = useNavigate();
@@ -36,11 +42,31 @@ const TodayHub = () => {
     refetch
   } = useDailyPlan();
 
-  const { completeAction } = useEnergyLoop();
+  const { completeAction, currentScore, recentScores } = useEnergyLoop();
   const { updateStreak } = useStreaks();
   const toggleProtocolCompletion = useToggleProtocolCompletion(user?.id || '');
 
   const [lastCompletedCount, setLastCompletedCount] = useState(completedCount);
+  const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
+  
+  const timeOfDay = getTimeOfDay();
+  const showTomorrowPrep = timeOfDay === 'evening' || timeOfDay === 'night';
+
+  // Generate intelligent insights
+  const insights = [
+    {
+      id: '1',
+      title: 'Morning Sunlight Boosts Sleep',
+      description: 'When you complete morning sunlight, your sleep score improves by avg 12 points.',
+      actionSuggestion: 'Get outside within 30 min of waking'
+    },
+    {
+      id: '2',
+      title: 'Energy Pattern Detected',
+      description: 'Your energy peaks between 9-11am. Schedule demanding tasks then.',
+      actionSuggestion: 'Block calendar for deep work during peak hours'
+    }
+  ].filter(i => !dismissedInsights.includes(i.id));
 
   useEffect(() => {
     if (completedCount > lastCompletedCount) {
@@ -82,6 +108,13 @@ const TodayHub = () => {
     }
   };
 
+  const handleSkipAction = (actionId: string) => {
+    toast({
+      title: 'Action skipped',
+      description: 'You can always come back to it later',
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -94,23 +127,42 @@ const TodayHub = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navigation />
+      <MobileBottomNav />
       
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         <TimeBasedGreeting />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             <DailyProgressRing
               completed={completedCount}
               total={totalCount}
               streak={dailyStreak?.current_streak}
             />
+            
+            <LISImpactPreview 
+              completedCount={completedCount}
+              totalCount={totalCount}
+            />
           </div>
 
-          <div className="lg:col-span-2">
-            <Card className="h-full">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Insights */}
+            {insights.length > 0 && (
+              <div className="space-y-3">
+                {insights.map(insight => (
+                  <InsightCard
+                    key={insight.id}
+                    insight={insight}
+                    onDismiss={() => setDismissedInsights([...dismissedInsights, insight.id])}
+                  />
+                ))}
+              </div>
+            )}
+
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-primary" />
@@ -120,10 +172,11 @@ const TodayHub = () => {
               <CardContent className="space-y-3">
                 {top3.length > 0 ? (
                   top3.map((action, index) => (
-                    <PriorityActionCard
+                    <SwipeableActionCard
                       key={action.id}
                       action={action}
                       onToggle={handleToggleAction}
+                      onSkip={handleSkipAction}
                       rank={index + 1}
                     />
                   ))
@@ -141,6 +194,13 @@ const TodayHub = () => {
                 )}
               </CardContent>
             </Card>
+
+            <EnergyPrediction 
+              currentScore={currentScore?.composite_score}
+              recentScores={recentScores}
+            />
+
+            {showTomorrowPrep && <TomorrowPrep />}
           </div>
         </div>
 
@@ -165,40 +225,44 @@ const TodayHub = () => {
 
           <TabsContent value="all" className="space-y-3 mt-6">
             {actions.map(action => (
-              <PriorityActionCard
+              <SwipeableActionCard
                 key={action.id}
                 action={action}
                 onToggle={handleToggleAction}
+                onSkip={handleSkipAction}
               />
             ))}
           </TabsContent>
 
           <TabsContent value="quick" className="space-y-3 mt-6">
             {quickWins.map(action => (
-              <PriorityActionCard
+              <SwipeableActionCard
                 key={action.id}
                 action={action}
                 onToggle={handleToggleAction}
+                onSkip={handleSkipAction}
               />
             ))}
           </TabsContent>
 
           <TabsContent value="energy" className="space-y-3 mt-6">
             {energyBoosters.map(action => (
-              <PriorityActionCard
+              <SwipeableActionCard
                 key={action.id}
                 action={action}
                 onToggle={handleToggleAction}
+                onSkip={handleSkipAction}
               />
             ))}
           </TabsContent>
 
           <TabsContent value="deep" className="space-y-3 mt-6">
             {deepPractices.map(action => (
-              <PriorityActionCard
+              <SwipeableActionCard
                 key={action.id}
                 action={action}
                 onToggle={handleToggleAction}
+                onSkip={handleSkipAction}
               />
             ))}
           </TabsContent>

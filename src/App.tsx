@@ -97,11 +97,11 @@ const App = () => (
             <ErrorBoundary>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/today" element={<ProtectedRoute><TodayHub /></ProtectedRoute>} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
                 <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
-                <Route path="/today" element={<ProtectedRoute><TodayHub /></ProtectedRoute>} />
                 <Route path="/dashboard" element={
                   <ErrorBoundary>
                     <Dashboard />

@@ -10,10 +10,20 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import CTAButton from "@/components/CTAButton";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
+
+  // Redirect authenticated users to Today hub
+  useEffect(() => {
+    if (user) {
+      navigate('/today');
+    }
+  }, [user, navigate]);
 
   return (
     <div className="min-h-screen bg-background">
