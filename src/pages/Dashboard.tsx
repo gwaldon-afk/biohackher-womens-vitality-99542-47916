@@ -371,9 +371,9 @@ const Dashboard = () => {
               <Target className="h-4 w-4 mr-2" />
               My Goals
             </TabsTrigger>
+            <TabsTrigger value="insights">Health Analysis</TabsTrigger>
             <TabsTrigger value="today">Daily Actions</TabsTrigger>
             <TabsTrigger value="progress">Tracking</TabsTrigger>
-            <TabsTrigger value="insights">Health Analysis</TabsTrigger>
             <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
