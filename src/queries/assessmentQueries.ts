@@ -150,9 +150,38 @@ export function useCreateSymptomAssessment(userId: string) {
       if (error) throw error;
       return data as SymptomAssessment;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: assessmentKeys.symptoms(userId) });
       addSymptomAssessment(data);
+      
+      // Auto-enable features based on symptom type
+      const menopauseSymptoms = [
+        'hot-flashes', 'night-sweats', 'irregular-periods', 
+        'mood-swings', 'vaginal-dryness', 'sleep-disturbances',
+        'menopause', 'perimenopause'
+      ];
+      
+      const energySymptoms = [
+        'fatigue', 'low-energy', 'brain-fog', 'exhaustion', 'energy'
+      ];
+      
+      const updates: any = {};
+      
+      if (menopauseSymptoms.includes(data.symptom_type)) {
+        updates.menomap_enabled = true;
+      }
+      
+      if (energySymptoms.includes(data.symptom_type)) {
+        updates.energy_loop_enabled = true;
+      }
+      
+      // Update profile if any flags need to be enabled
+      if (Object.keys(updates).length > 0) {
+        await supabase
+          .from('profiles')
+          .update(updates)
+          .eq('user_id', userId);
+      }
     },
   });
 }
