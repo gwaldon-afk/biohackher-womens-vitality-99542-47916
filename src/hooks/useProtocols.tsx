@@ -56,6 +56,21 @@ export const useProtocols = () => {
     if (!user) return;
 
     try {
+      // Check for existing active protocol with the same name
+      if (protocol.is_active) {
+        const { data: existing } = await supabase
+          .from('user_protocols')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('name', protocol.name)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (existing) {
+          throw new Error(`An active protocol named "${protocol.name}" already exists`);
+        }
+      }
+
       const { data, error } = await supabase
         .from('user_protocols')
         .insert({

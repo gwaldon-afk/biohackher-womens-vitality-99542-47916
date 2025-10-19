@@ -34,9 +34,27 @@ export const GoalProtocolSync = ({ goal, onSync }: GoalProtocolSyncProps) => {
       let protocolId = goal.linked_protocol_id;
 
       if (!protocolId) {
+        // Check if goal already has items to prevent duplicate creation
+        const protocolName = `${goal.title} Protocol`;
+        const existingProtocol = protocols.find(
+          p => p.name === protocolName && p.is_active
+        );
+
+        if (existingProtocol) {
+          // Link existing protocol to goal
+          await supabase
+            .from('user_health_goals')
+            .update({ linked_protocol_id: existingProtocol.id })
+            .eq('id', goal.id);
+          
+          toast.success('Linked to existing protocol');
+          onSync?.();
+          return;
+        }
+
         // Create new protocol using useProtocols hook
         const newProtocol = await createProtocol({
-          name: `${goal.title} Protocol`,
+          name: protocolName,
           description: `Auto-generated from goal: ${goal.title}`,
           is_active: true,
           start_date: new Date().toISOString().split('T')[0],
