@@ -72,6 +72,7 @@ import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
+import TodayHub from "./pages/TodayHub";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -100,6 +101,7 @@ const App = () => (
                 <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
+                <Route path="/today" element={<ProtectedRoute><TodayHub /></ProtectedRoute>} />
                 <Route path="/dashboard" element={
                   <ErrorBoundary>
                     <Dashboard />
