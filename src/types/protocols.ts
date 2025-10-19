@@ -55,3 +55,13 @@ export interface ProtocolItem {
   created_at: string;
   updated_at: string;
 }
+
+export interface ProtocolItemCompletion {
+  id: string;
+  user_id: string;
+  protocol_item_id: string;
+  completed_date: string;
+  completed_at: string;
+  notes: string | null;
+  created_at: string;
+}

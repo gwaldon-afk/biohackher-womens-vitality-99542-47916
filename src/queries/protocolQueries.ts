@@ -1,8 +1,9 @@
 // React Query hooks for protocols
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Protocol, ProtocolItem } from '@/types/protocols';
+import { Protocol, ProtocolItem, ProtocolItemCompletion } from '@/types/protocols';
 import { useProtocolStore } from '@/stores/protocolStore';
+import { toast } from "@/hooks/use-toast";
 
 // Query keys
 export const protocolKeys = {
@@ -10,6 +11,7 @@ export const protocolKeys = {
   lists: () => [...protocolKeys.all, 'list'] as const,
   list: (userId: string) => [...protocolKeys.lists(), userId] as const,
   items: (protocolId: string) => [...protocolKeys.all, 'items', protocolId] as const,
+  completions: (userId: string, date: string) => [...protocolKeys.all, 'completions', userId, date] as const,
 };
 
 // Fetch all protocols for a user
@@ -213,6 +215,80 @@ export function useDeleteProtocolItem(protocolId: string) {
     onSuccess: (id) => {
       queryClient.invalidateQueries({ queryKey: protocolKeys.items(protocolId) });
       removeProtocolItem(protocolId, id);
+    },
+  });
+}
+
+// Fetch protocol completions for a specific date
+export function useProtocolCompletions(userId: string | undefined, date: string = new Date().toISOString().split('T')[0]) {
+  return useQuery({
+    queryKey: protocolKeys.completions(userId || '', date),
+    queryFn: async () => {
+      if (!userId) return [];
+      
+      const { data, error } = await supabase
+        .from('protocol_item_completions')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('completed_date', date);
+      
+      if (error) throw error;
+      return data as ProtocolItemCompletion[];
+    },
+    enabled: !!userId,
+    staleTime: 30000,
+  });
+}
+
+// Toggle protocol item completion
+export function useToggleProtocolCompletion(userId: string) {
+  const queryClient = useQueryClient();
+  const today = new Date().toISOString().split('T')[0];
+  
+  return useMutation({
+    mutationFn: async ({ protocolItemId, notes }: { protocolItemId: string; notes?: string }) => {
+      // Check if already completed today
+      const { data: existing } = await supabase
+        .from('protocol_item_completions')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('protocol_item_id', protocolItemId)
+        .eq('completed_date', today)
+        .maybeSingle();
+      
+      if (existing) {
+        // Remove completion
+        const { error } = await supabase
+          .from('protocol_item_completions')
+          .delete()
+          .eq('id', existing.id);
+        
+        if (error) throw error;
+        return { action: 'uncompleted' };
+      } else {
+        // Add completion
+        const { error } = await supabase
+          .from('protocol_item_completions')
+          .insert({
+            user_id: userId,
+            protocol_item_id: protocolItemId,
+            completed_date: today,
+            notes: notes || null,
+          });
+        
+        if (error) throw error;
+        return { action: 'completed' };
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: protocolKeys.completions(userId, today) });
+    },
+    onError: (error) => {
+      console.error('Error toggling completion:', error);
+      toast({
+        variant: "destructive",
+        description: "Failed to update completion"
+      });
     },
   });
 }

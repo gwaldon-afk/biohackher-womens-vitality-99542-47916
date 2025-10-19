@@ -1,40 +1,146 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, Play, ChevronRight, Pill, ShoppingCart } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Pill, Dumbbell, Sun, Utensils, ChevronRight, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useProtocols, useProtocolItems, useProtocolCompletions, useToggleProtocolCompletion } from "@/queries/protocolQueries";
+import { useAuth } from "@/hooks/useAuth";
+import { ProtocolItem } from "@/types/protocols";
+import { useMemo } from "react";
 
-interface TodayActivity {
-  id: string;
-  name: string;
-  duration: string;
-  type: "morning" | "afternoon" | "evening";
-  completed: boolean;
-}
-
-interface TodaySupplement {
-  name: string;
-  dosage: string;
-  taken: boolean;
+interface GroupedItems {
+  morning: ProtocolItem[];
+  afternoon: ProtocolItem[];
+  evening: ProtocolItem[];
 }
 
 export const TodayProtocolWidget = () => {
   const navigate = useNavigate();
-  const [activities] = useState<TodayActivity[]>([
-    { id: "1", name: "Sunlight Exposure", duration: "15 mins", type: "morning", completed: false },
-    { id: "2", name: "Meditation", duration: "12 mins", type: "morning", completed: false },
-    { id: "3", name: "Zone 2 Cardio", duration: "30 mins", type: "afternoon", completed: false },
-  ]);
+  const { user } = useAuth();
+  const userId = user?.id;
 
-  const [supplements] = useState<TodaySupplement[]>([
-    { name: "Lion's Mane", dosage: "1000mg", taken: false },
-    { name: "Omega-3 Fish Oil", dosage: "1-3g", taken: false },
-  ]);
+  const { data: protocols } = useProtocols(userId);
+  const activeProtocol = protocols?.find(p => p.is_active);
+  
+  const { data: items = [] } = useProtocolItems(activeProtocol?.id);
+  const { data: completions = [] } = useProtocolCompletions(userId);
+  const toggleCompletion = useToggleProtocolCompletion(userId || '');
 
-  const morningActivities = activities.filter((a) => a.type === "morning");
-  const otherActivities = activities.filter((a) => a.type !== "morning");
+  const completedItemIds = useMemo(
+    () => new Set(completions.map(c => c.protocol_item_id)),
+    [completions]
+  );
+
+  const groupedItems = useMemo(() => {
+    const grouped: GroupedItems = {
+      morning: [],
+      afternoon: [],
+      evening: [],
+    };
+
+    items.forEach(item => {
+      if (!item.is_active) return;
+      
+      const timeOfDay = item.time_of_day || [];
+      if (timeOfDay.includes('morning') || timeOfDay.includes('Morning')) {
+        grouped.morning.push(item);
+      } else if (timeOfDay.includes('afternoon') || timeOfDay.includes('Afternoon')) {
+        grouped.afternoon.push(item);
+      } else if (timeOfDay.includes('evening') || timeOfDay.includes('Evening')) {
+        grouped.evening.push(item);
+      } else {
+        // Default to morning if no time specified
+        grouped.morning.push(item);
+      }
+    });
+
+    return grouped;
+  }, [items]);
+
+  const totalItems = items.filter(i => i.is_active).length;
+  const completedCount = items.filter(i => i.is_active && completedItemIds.has(i.id)).length;
+  const progressPercent = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
+
+  if (!activeProtocol || totalItems === 0) {
+    return null;
+  }
+
+  const getItemIcon = (type: string) => {
+    switch (type) {
+      case 'supplement':
+        return <Pill className="h-4 w-4" />;
+      case 'exercise':
+        return <Dumbbell className="h-4 w-4" />;
+      case 'habit':
+        return <Sun className="h-4 w-4" />;
+      case 'diet':
+        return <Utensils className="h-4 w-4" />;
+      default:
+        return <Sun className="h-4 w-4" />;
+    }
+  };
+
+  const handleToggle = (itemId: string) => {
+    toggleCompletion.mutate({ protocolItemId: itemId });
+  };
+
+  const renderItem = (item: ProtocolItem) => {
+    const isCompleted = completedItemIds.has(item.id);
+    
+    return (
+      <div
+        key={item.id}
+        className="flex items-center justify-between p-3 rounded-lg bg-background border border-border hover:border-primary/30 transition-colors"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <Checkbox
+            checked={isCompleted}
+            onCheckedChange={() => handleToggle(item.id)}
+            className="h-5 w-5"
+          />
+          <div className="flex items-center gap-2">
+            {getItemIcon(item.item_type)}
+            <div>
+              <p className={cn(
+                "font-medium text-sm",
+                isCompleted && "line-through text-muted-foreground"
+              )}>
+                {item.name}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {item.dosage || item.description || `${item.frequency} • ${item.item_type}`}
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex gap-2">
+          {item.item_type === 'supplement' && (
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="text-xs"
+              onClick={() => navigate('/shop')}
+            >
+              Buy
+            </Button>
+          )}
+          {!isCompleted && (item.item_type === 'exercise' || item.item_type === 'habit') && (
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              className="text-xs"
+              onClick={() => handleToggle(item.id)}
+            >
+              Start
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
@@ -42,104 +148,42 @@ export const TodayProtocolWidget = () => {
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl">Today's Protocol</CardTitle>
           <Badge variant="outline" className="text-primary border-primary/30">
-            Day 3 of Brain Optimization
+            {activeProtocol.name}
           </Badge>
         </div>
-        <p className="text-sm text-muted-foreground">You're on a 5-day streak 🔥</p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {completedCount} of {totalItems} completed ({progressPercent}%)
+          </p>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Morning Activities */}
-        <div>
-          <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Morning</h4>
-          <div className="space-y-2">
-            {morningActivities.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-background border border-border hover:border-primary/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  {activity.completed ? (
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <Circle className="h-5 w-5 text-muted-foreground" />
-                  )}
-                  <div>
-                    <p className={cn(
-                      "font-medium text-sm",
-                      activity.completed && "line-through text-muted-foreground"
-                    )}>
-                      {activity.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{activity.duration}</p>
-                  </div>
-                </div>
-                <Button size="sm" variant="ghost" className="gap-1">
-                  <Play className="h-3 w-3" />
-                  Start
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Today's Supplements */}
-        <div>
-          <h4 className="text-sm font-semibold mb-2 text-muted-foreground flex items-center gap-2">
-            <Pill className="h-4 w-4" />
-            Today's Supplements
-          </h4>
-          <div className="space-y-2">
-            {supplements.map((supplement, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between p-3 rounded-lg bg-background border border-border"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  {supplement.taken ? (
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  ) : (
-                    <Circle className="h-5 w-5 text-muted-foreground" />
-                  )}
-                  <div>
-                    <p className="font-medium text-sm">{supplement.name}</p>
-                    <p className="text-xs text-muted-foreground">{supplement.dosage}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="text-xs">
-                    Buy
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-xs">
-                    Mark Taken
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Afternoon & Evening */}
-        {otherActivities.length > 0 && (
+        {groupedItems.morning.length > 0 && (
           <div>
-            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Afternoon & Evening</h4>
+            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Morning</h4>
             <div className="space-y-2">
-              {otherActivities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-background border border-border"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <Circle className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium text-sm">{activity.name}</p>
-                      <p className="text-xs text-muted-foreground">{activity.duration}</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="ghost" className="text-xs">
-                    Start Later
-                  </Button>
-                </div>
-              ))}
+              {groupedItems.morning.map(renderItem)}
+            </div>
+          </div>
+        )}
+
+        {/* Afternoon Activities */}
+        {groupedItems.afternoon.length > 0 && (
+          <div>
+            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Afternoon</h4>
+            <div className="space-y-2">
+              {groupedItems.afternoon.map(renderItem)}
+            </div>
+          </div>
+        )}
+
+        {/* Evening Activities */}
+        {groupedItems.evening.length > 0 && (
+          <div>
+            <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Evening</h4>
+            <div className="space-y-2">
+              {groupedItems.evening.map(renderItem)}
             </div>
           </div>
         )}
@@ -157,10 +201,10 @@ export const TodayProtocolWidget = () => {
           <Button
             variant="default"
             className="flex-1"
-            onClick={() => navigate("/my-protocol?tab=recommendations")}
+            onClick={() => navigate("/shop")}
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
-            Buy Your 30-Day Stack
+            Shop Supplements
           </Button>
         </div>
       </CardContent>

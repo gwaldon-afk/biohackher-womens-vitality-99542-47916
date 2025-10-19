@@ -2037,6 +2037,44 @@ export type Database = {
           },
         ]
       }
+      protocol_item_completions: {
+        Row: {
+          completed_at: string
+          completed_date: string
+          created_at: string | null
+          id: string
+          notes: string | null
+          protocol_item_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          completed_date?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          protocol_item_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          completed_date?: string
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          protocol_item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_item_completions_protocol_item_id_fkey"
+            columns: ["protocol_item_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       protocol_items: {
         Row: {
           created_at: string
