@@ -773,17 +773,22 @@ export type Database = {
           auto_suspended: boolean | null
           average_rating: number | null
           bio: string | null
+          certifications: string[] | null
           city: string | null
           complaints_count: number | null
           consultation_fee: number | null
           country: string | null
+          cover_photo_url: string | null
           created_at: string | null
+          education: string | null
           email: string | null
           expert_id: string
           featured: boolean | null
+          gallery_photos: Json | null
           id: string
           insurance_number: string | null
           insurance_verified: boolean | null
+          intro_video_url: string | null
           last_credential_check: string | null
           latitude: number | null
           license_number: string | null
@@ -797,6 +802,8 @@ export type Database = {
           phone: string | null
           postal_code: string | null
           practice_name: string | null
+          professional_tagline: string | null
+          profile_photo_url: string | null
           referral_rate: number | null
           referrals_count: number | null
           rejection_reason: string | null
@@ -828,17 +835,22 @@ export type Database = {
           auto_suspended?: boolean | null
           average_rating?: number | null
           bio?: string | null
+          certifications?: string[] | null
           city?: string | null
           complaints_count?: number | null
           consultation_fee?: number | null
           country?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
+          education?: string | null
           email?: string | null
           expert_id: string
           featured?: boolean | null
+          gallery_photos?: Json | null
           id?: string
           insurance_number?: string | null
           insurance_verified?: boolean | null
+          intro_video_url?: string | null
           last_credential_check?: string | null
           latitude?: number | null
           license_number?: string | null
@@ -852,6 +864,8 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           practice_name?: string | null
+          professional_tagline?: string | null
+          profile_photo_url?: string | null
           referral_rate?: number | null
           referrals_count?: number | null
           rejection_reason?: string | null
@@ -883,17 +897,22 @@ export type Database = {
           auto_suspended?: boolean | null
           average_rating?: number | null
           bio?: string | null
+          certifications?: string[] | null
           city?: string | null
           complaints_count?: number | null
           consultation_fee?: number | null
           country?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
+          education?: string | null
           email?: string | null
           expert_id?: string
           featured?: boolean | null
+          gallery_photos?: Json | null
           id?: string
           insurance_number?: string | null
           insurance_verified?: boolean | null
+          intro_video_url?: string | null
           last_credential_check?: string | null
           latitude?: number | null
           license_number?: string | null
@@ -907,6 +926,8 @@ export type Database = {
           phone?: string | null
           postal_code?: string | null
           practice_name?: string | null
+          professional_tagline?: string | null
+          profile_photo_url?: string | null
           referral_rate?: number | null
           referrals_count?: number | null
           rejection_reason?: string | null

@@ -64,6 +64,15 @@ export interface ExpertProfile {
   consultation_fee: number | null;
   accepts_insurance: boolean;
   
+  // Profile Media
+  profile_photo_url: string | null;
+  cover_photo_url: string | null;
+  intro_video_url: string | null;
+  gallery_photos: string[] | null;
+  professional_tagline: string | null;
+  education: string | null;
+  certifications: string[] | null;
+  
   // Listing
   listing_status: ListingStatus;
   featured: boolean;

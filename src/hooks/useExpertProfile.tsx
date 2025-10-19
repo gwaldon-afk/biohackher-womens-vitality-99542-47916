@@ -44,7 +44,7 @@ export const useExpertProfile = () => {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
-      setProfile(data);
+      setProfile(data as ExpertProfile | null);
     } catch (error) {
       console.error('Error fetching expert profile:', error);
       toast.error('Failed to load expert profile');
@@ -84,7 +84,7 @@ export const useExpertProfile = () => {
           role: 'expert' as any,
         });
 
-      setProfile(newProfile);
+      setProfile(newProfile as ExpertProfile);
       setIsExpert(true);
       toast.success('Expert profile created successfully!');
       return newProfile;
@@ -156,6 +156,32 @@ export const useExpertProfile = () => {
     }
   };
 
+  const uploadProfileMedia = async (file: File, mediaType: 'profile' | 'cover' | 'video' | 'gallery') => {
+    if (!user) return null;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${mediaType}-${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('expert-profiles')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('expert-profiles')
+        .getPublicUrl(fileName);
+
+      toast.success('Media uploaded successfully!');
+      return publicUrl;
+    } catch (error: any) {
+      console.error('Error uploading media:', error);
+      toast.error(error?.message || 'Failed to upload media');
+      return null;
+    }
+  };
+
   return {
     profile,
     loading,
@@ -163,6 +189,7 @@ export const useExpertProfile = () => {
     createProfile,
     updateProfile,
     uploadCredential,
+    uploadProfileMedia,
     fetchProfile,
   };
 };

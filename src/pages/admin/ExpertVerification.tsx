@@ -53,7 +53,7 @@ export default function ExpertVerification() {
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setPendingExperts(data || []);
+      setPendingExperts((data || []) as ExpertProfile[]);
     } catch (error) {
       console.error('Error fetching pending experts:', error);
       toast.error('Failed to load pending applications');

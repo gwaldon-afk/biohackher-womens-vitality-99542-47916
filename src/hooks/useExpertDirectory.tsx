@@ -53,7 +53,7 @@ export const useExpertDirectory = () => {
         .order('average_rating', { ascending: false });
 
       if (error) throw error;
-      setExperts(data || []);
+      setExperts((data || []) as ExpertProfile[]);
     } catch (error) {
       console.error('Error fetching experts:', error);
       setExperts([]);
@@ -71,7 +71,7 @@ export const useExpertDirectory = () => {
         .maybeSingle();
 
       if (error) throw error;
-      return data;
+      return data as ExpertProfile | null;
     } catch (error) {
       console.error('Error fetching expert:', error);
       return null;
