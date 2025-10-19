@@ -133,6 +133,22 @@ export function ExpertRegistrationWizard() {
 
   return (
     <div className="container max-w-4xl py-8">
+      {/* Header with Exit Button */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">Expert Partner Registration</h1>
+          <p className="text-muted-foreground">Join our network of verified health professionals</p>
+        </div>
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/experts')}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Exit
+        </Button>
+      </div>
+
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between text-sm text-muted-foreground mb-2">
