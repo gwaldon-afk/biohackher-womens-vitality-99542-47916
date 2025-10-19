@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, CheckCircle, Lightbulb, TrendingUp, FlaskConical, Activity, ArrowRight } from "lucide-react";
+import { X, CheckCircle, Lightbulb, TrendingUp, FlaskConical, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MenoMapInsightCardProps {
@@ -98,24 +98,6 @@ export const MenoMapInsightCard = ({
           <p className="text-sm text-muted-foreground leading-relaxed">
             {insight.description}
           </p>
-
-          {/* Summary + Link to Plan */}
-          {insight.action_items && insight.action_items.length > 0 && (
-            <div className="pt-3 border-t space-y-2">
-              <p className="text-sm text-muted-foreground">
-                {insight.action_items.length} stage-specific recommendation{insight.action_items.length > 1 ? 's' : ''} available
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={() => window.location.href = '/today'}
-                className="gap-2"
-              >
-                View in My Plan
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
 
           {/* Actions */}
           {!insight.acknowledged && onAcknowledge && (
