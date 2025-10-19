@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MenoMapInsightCard } from "@/components/menomap/MenoMapInsightCard";
 import { useMenoMap } from "@/hooks/useMenoMap";
-import { Activity, TrendingUp, Calendar, Lightbulb, ArrowRight } from "lucide-react";
+import { Activity, TrendingUp, Calendar, Lightbulb, ArrowRight, Home } from "lucide-react";
 import { format } from "date-fns";
 
 export default function MenoMapDashboard() {
@@ -34,13 +34,23 @@ export default function MenoMapDashboard() {
               MenoMap helps you understand your hormonal stage, track symptoms, and get 
               biohacks tailored to your body's unique journey.
             </p>
-            <Button 
-              onClick={() => navigate('/menomap/assessment')}
-              className="w-full gap-2"
-            >
-              Start Your Assessment
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+                className="gap-2"
+              >
+                <Home className="w-4 h-4" />
+                Back to My Plan
+              </Button>
+              <Button 
+                onClick={() => navigate('/menomap/assessment')}
+                className="flex-1 gap-2"
+              >
+                Start Your Assessment
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
