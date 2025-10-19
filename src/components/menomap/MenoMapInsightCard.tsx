@@ -99,24 +99,25 @@ export const MenoMapInsightCard = ({
             {insight.description}
           </p>
 
-          {/* Action Items */}
+          {/* Action Items Summary */}
           {insight.action_items && insight.action_items.length > 0 && (
-            <div className="space-y-2 pt-2 border-t">
-              <p className="text-xs font-medium text-muted-foreground">Suggested Actions:</p>
-              <ul className="space-y-1">
-                {insight.action_items.map((item: any, index: number) => (
-                  <li key={index} className="text-sm flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span>{typeof item === 'string' ? item : item.action || item.title}</span>
-                  </li>
-                ))}
-              </ul>
+            <div className="pt-2 border-t">
+              <p className="text-xs text-muted-foreground">
+                💡 {insight.action_items.length} {insight.action_items.length === 1 ? 'recommendation' : 'recommendations'} available
+              </p>
             </div>
           )}
 
           {/* Actions */}
           {!insight.acknowledged && onAcknowledge && (
             <div className="flex gap-2 pt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => window.location.href = '/today'}
+              >
+                View in My Plan
+              </Button>
               <Button
                 size="sm"
                 onClick={() => onAcknowledge(insight.id)}

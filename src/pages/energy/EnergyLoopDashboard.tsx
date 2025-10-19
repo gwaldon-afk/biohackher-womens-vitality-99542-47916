@@ -73,6 +73,9 @@ export default function EnergyLoopDashboard() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Energy Loop</h1>
         <div className="flex gap-2">
+          <Button onClick={() => navigate('/today')}>
+            View Today's Plan
+          </Button>
           <Button variant="outline" onClick={() => navigate('/energy-loop/progress')}>
             <TrendingUp className="mr-2 h-4 w-4" />
             View Progress

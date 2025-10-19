@@ -43,19 +43,23 @@ export const EnergyInsightCard = ({ insight, onAcknowledge, onDismiss }: EnergyI
           <p className="text-sm text-muted-foreground">{insight.description}</p>
           
           {insight.action_suggestions && insight.action_suggestions.length > 0 && (
-            <div className="space-y-1 mt-3">
-              <p className="text-xs font-medium">Suggested Actions:</p>
-              <ul className="text-xs text-muted-foreground space-y-1">
-                {insight.action_suggestions.slice(0, 3).map((suggestion: string, idx: number) => (
-                  <li key={idx}>• {suggestion}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              💡 {insight.action_suggestions.length} energy {insight.action_suggestions.length === 1 ? 'boost' : 'boosts'} available
+            </p>
           )}
           
-          <Button size="sm" onClick={onAcknowledge} className="mt-3">
-            Got it
-          </Button>
+          <div className="flex gap-2 mt-3">
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => window.location.href = '/today'}
+            >
+              View in My Plan
+            </Button>
+            <Button size="sm" onClick={onAcknowledge}>
+              Got it
+            </Button>
+          </div>
         </div>
       </div>
     </Card>
