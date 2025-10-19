@@ -29,6 +29,7 @@ import { useAssessments, useDailyScores, useUserSymptoms } from "@/queries";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoalsSummaryView } from "@/components/GoalsSummaryView";
+import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
 
 import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
@@ -71,7 +72,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'goals');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -85,6 +86,7 @@ const Dashboard = () => {
 
   // Fetch goals data
   const { goals } = useGoals();
+  const { protocols } = useProtocols();
   const activeGoals = goals.filter((g) => g.status === "active");
 
   // Check if we should auto-open the daily submission modal
@@ -319,10 +321,10 @@ const Dashboard = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">
-              My <span className="text-primary">Health Hub</span>
+              My <span className="text-primary">Plan</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Your complete wellness dashboard - track progress, manage protocols, and get insights
+              Your personalised 90-day health transformation roadmap
             </p>
           </div>
 
@@ -364,9 +366,13 @@ const Dashboard = () => {
         )}
 
 
-        {/* Tabs for My Health Hub */}
+        {/* Tabs for My Plan */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsTrigger value="overview">
+              <Sparkles className="h-4 w-4 mr-2" />
+              90-Day Overview
+            </TabsTrigger>
             <TabsTrigger value="goals">
               <Target className="h-4 w-4 mr-2" />
               My Goals
@@ -377,6 +383,11 @@ const Dashboard = () => {
             <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
+          {/* 90-Day Overview Tab */}
+          <TabsContent value="overview">
+            <NinetyDayPlanOverview />
+          </TabsContent>
+
             {/* Goals Tab - Foundation of Journey */}
             <TabsContent value="goals" className="space-y-6">
               <GoalsSummaryView />
@@ -384,6 +395,49 @@ const Dashboard = () => {
 
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
+              {/* Today's Action Plan */}
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Today's Action Plan
+                  </CardTitle>
+                  <CardDescription>
+                    {format(new Date(), 'EEEE, MMMM d, yyyy')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {activeGoals && activeGoals.length > 0 ? (
+                      <div className="space-y-2">
+                        <div className="text-sm font-medium">Focus Areas Today:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {activeGoals.slice(0, 3).map((goal) => (
+                            <Badge key={goal.id} variant="outline" className="flex items-center gap-1">
+                              <Target className="h-3 w-3" />
+                              {goal.title}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        Complete your daily tracking below to build your personalised plan
+                      </div>
+                    )}
+                    
+                    {protocols && protocols.filter(p => p.is_active).length > 0 && (
+                      <div className="space-y-2 pt-4 border-t">
+                        <div className="text-sm font-medium">Active Interventions:</div>
+                        <div className="text-sm text-muted-foreground">
+                          {protocols.filter(p => p.is_active).length} protocol(s) in progress
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Goal check-in alerts */}
               <GoalCheckInAlert />
 
