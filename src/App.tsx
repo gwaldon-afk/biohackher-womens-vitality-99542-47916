@@ -39,7 +39,6 @@ import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
-import GoalsDashboard from "./pages/GoalsDashboard";
 import GoalInsights from "./pages/GoalInsights";
 import { GoalDiscoveryWizard } from "./components/goals/GoalDiscoveryWizard";
 import AIGoalWizard from "./components/AIGoalWizard";
@@ -49,11 +48,9 @@ import GuestGoalsPreview from "./pages/GuestGoalsPreview";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import MenoMapDashboard from "./pages/menomap/MenoMapDashboard";
 import MenoMapAssessment from "./pages/menomap/MenoMapAssessment";
 import MenoMapResults from "./pages/menomap/MenoMapResults";
 import MenoMapTracker from "./pages/menomap/MenoMapTracker";
-import EnergyLoopDashboard from "./pages/energy/EnergyLoopDashboard";
 import EnergyCheckIn from "./pages/energy/EnergyCheckIn";
 import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
@@ -144,7 +141,8 @@ const App = () => (
             <Route path="/symptom-tracking" element={<Symptoms />} />
             <Route path="/import-research" element={<ImportResearch />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
-          <Route path="/goals-dashboard" element={<ProtectedRoute><GoalsDashboard /></ProtectedRoute>} />
+          {/* Goals Dashboard - Redirect to main dashboard */}
+          <Route path="/goals-dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/goals/discovery" element={<ProtectedRoute><GoalDiscoveryWizard /></ProtectedRoute>} />
           <Route path="/goals/insights" element={<ProtectedRoute><GoalInsights /></ProtectedRoute>} />
             <Route path="/my-goals" element={<ProtectedRoute><MyGoals /></ProtectedRoute>} />
@@ -154,13 +152,14 @@ const App = () => (
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             
-            {/* MenoMap Routes */}
-          <Route path="/menomap" element={<ProtectedRoute><MenoMapDashboard /></ProtectedRoute>} />
+            {/* MenoMap Routes - Redirect main dashboard to /dashboard */}
+          <Route path="/menomap" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/menomap/assessment" element={<ProtectedRoute><MenoMapAssessment /></ProtectedRoute>} />
           <Route path="/menomap/results" element={<ProtectedRoute><MenoMapResults /></ProtectedRoute>} />
           <Route path="/menomap/tracker" element={<ProtectedRoute><MenoMapTracker /></ProtectedRoute>} />
           
-          <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
+          {/* Energy Loop Routes - Redirect main dashboard to /dashboard */}
+          <Route path="/energy-loop" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/energy-loop/onboarding" element={<ProtectedRoute><EnergyOnboarding /></ProtectedRoute>} />
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />

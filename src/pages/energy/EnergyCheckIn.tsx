@@ -10,18 +10,18 @@ export default function EnergyCheckIn() {
 
   const handleSubmit = async (data: any) => {
     await submitCheckIn(data);
-    navigate('/energy-loop');
+    navigate('/dashboard?tab=today');
   };
 
   return (
     <div className="container max-w-2xl mx-auto px-4 py-8">
       <Button
         variant="ghost"
-        onClick={() => navigate('/energy-loop')}
+        onClick={() => navigate('/dashboard')}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Energy Loop
+        Back to My Plan
       </Button>
 
       <div className="space-y-4 mb-8">

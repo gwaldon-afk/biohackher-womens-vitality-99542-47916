@@ -42,18 +42,11 @@ export const MenoMapDashboardWidget = () => {
   return (
     <Card className="overflow-hidden">
       <CardHeader className="bg-gradient-to-br from-purple-50 to-pink-50 border-b">
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <span className="text-2xl">🧭</span>
-              MenoMap™
-            </CardTitle>
-            <CardDescription>Your menopause journey insights</CardDescription>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate('/menomap')}>
-            View Dashboard
-          </Button>
-        </div>
+        <CardTitle className="flex items-center gap-2">
+          <span className="text-2xl">🧭</span>
+          MenoMap™
+        </CardTitle>
+        <CardDescription>Your menopause journey insights</CardDescription>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         {/* Current Stage */}

@@ -359,7 +359,6 @@ const Dashboard = () => {
           <div className="mb-6">
             <EnergyDashboardWidget
               score={currentScore}
-              onViewDetails={() => navigate('/energy-loop')}
               onCheckIn={() => navigate('/energy-loop/check-in')}
             />
           </div>
@@ -437,6 +436,58 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Quick Action Buttons for Special Features */}
+              {(menoMapEnabled || energyLoopEnabled) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {menoMapEnabled && (
+                    <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
+                      <CardContent className="pt-6">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl">🌸</span>
+                            <h3 className="font-semibold">MenoMap Tracker</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Log today's symptoms and track your hormonal journey
+                          </p>
+                          <Button 
+                            onClick={() => navigate('/menomap/tracker')}
+                            className="w-full"
+                            variant="outline"
+                          >
+                            Track Symptoms
+                            <ChevronRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  {energyLoopEnabled && (
+                    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                      <CardContent className="pt-6">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Zap className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold">Energy Check-In</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Update your daily energy loop with biometric data
+                          </p>
+                          <Button 
+                            onClick={() => navigate('/energy-loop/check-in')}
+                            className="w-full"
+                          >
+                            Daily Check-In
+                            <ChevronRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
 
               {/* Goal check-in alerts */}
               <GoalCheckInAlert />

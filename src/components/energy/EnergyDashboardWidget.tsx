@@ -6,11 +6,10 @@ import { Zap, TrendingUp } from "lucide-react";
 
 interface EnergyDashboardWidgetProps {
   score: EnergyLoopScore;
-  onViewDetails: () => void;
   onCheckIn: () => void;
 }
 
-export const EnergyDashboardWidget = ({ score, onViewDetails, onCheckIn }: EnergyDashboardWidgetProps) => {
+export const EnergyDashboardWidget = ({ score, onCheckIn }: EnergyDashboardWidgetProps) => {
   const segments = [
     { name: "Sleep", score: score.sleep_recovery_score, color: "#4A90E2", icon: "🌙" },
     { name: "Stress", score: score.stress_load_score, color: "#F5A623", icon: "💨" },
@@ -26,9 +25,9 @@ export const EnergyDashboardWidget = ({ score, onViewDetails, onCheckIn }: Energ
           <Zap className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold">Energy Loop</h2>
         </div>
-        <Button variant="ghost" size="sm" onClick={onViewDetails}>
+        <Button variant="ghost" size="sm" onClick={() => window.location.href = '/energy-loop/progress'}>
           <TrendingUp className="h-4 w-4 mr-2" />
-          View Details
+          View Progress
         </Button>
       </div>
 

@@ -109,11 +109,11 @@ export default function MenoMapAssessment() {
         <div className="space-y-4">
           <Button
             variant="ghost"
-            onClick={() => navigate('/menomap')}
+            onClick={() => navigate('/dashboard')}
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to MenoMap
+            Back to My Plan
           </Button>
           
           <div className="space-y-2">

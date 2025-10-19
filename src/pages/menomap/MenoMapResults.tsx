@@ -141,12 +141,12 @@ export default function MenoMapResults() {
           </Button>
           
           <Button 
-            onClick={() => navigate('/menomap')}
+            onClick={() => navigate('/dashboard?tab=insights')}
             variant="outline"
             className="w-full justify-between"
             size="lg"
           >
-            <span>View Your Dashboard</span>
+            <span>View My Plan Dashboard</span>
             <ArrowRight className="w-5 h-5" />
           </Button>
 
