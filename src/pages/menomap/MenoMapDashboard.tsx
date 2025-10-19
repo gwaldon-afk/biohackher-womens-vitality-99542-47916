@@ -63,17 +63,11 @@ export default function MenoMapDashboard() {
   return (
     <div className="container max-w-6xl py-8 space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">MenoMap™ Dashboard</h1>
-          <p className="text-muted-foreground">
-            Your personalized menopause journey intelligence
-          </p>
-        </div>
-        <Button onClick={() => navigate('/today')} className="gap-2">
-          <ArrowRight className="w-4 h-4" />
-          View Today's Plan
-        </Button>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">MenoMap™ Dashboard</h1>
+        <p className="text-muted-foreground">
+          Your personalized menopause journey intelligence
+        </p>
       </div>
 
       {/* Stage Overview */}
