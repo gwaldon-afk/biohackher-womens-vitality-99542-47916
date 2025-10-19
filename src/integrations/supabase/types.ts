@@ -260,6 +260,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_essentials_completions: {
+        Row: {
+          created_at: string | null
+          date: string
+          essential_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          essential_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          essential_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           active_minutes: number | null

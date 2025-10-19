@@ -8,29 +8,30 @@ export const NutritionSummaryCard = () => {
   const navigate = useNavigate();
   const { preferences } = useNutritionPreferences();
 
+  // Default meal plan suggestions based on goal
   const mealPlan = [
     {
       meal: "Breakfast",
-      suggestion: preferences?.dietary_preference === 'vegan' 
-        ? "Oatmeal with berries & seeds"
-        : preferences?.dietary_preference === 'keto'
-        ? "Eggs with avocado & spinach"
+      suggestion: preferences?.goal === 'weight_loss'
+        ? "Protein smoothie with berries"
+        : preferences?.goal === 'muscle_gain'
+        ? "Eggs with avocado & whole grain toast"
         : "Greek yogurt with fruit & nuts"
     },
     {
       meal: "Lunch",
-      suggestion: preferences?.dietary_preference === 'vegan'
-        ? "Buddha bowl with quinoa & vegetables"
-        : preferences?.dietary_preference === 'keto'
-        ? "Grilled salmon with leafy greens"
-        : "Grilled chicken salad"
+      suggestion: preferences?.goal === 'weight_loss'
+        ? "Large salad with grilled chicken"
+        : preferences?.goal === 'muscle_gain'
+        ? "Grilled salmon with quinoa & vegetables"
+        : "Balanced meal with protein & vegetables"
     },
     {
       meal: "Dinner",
-      suggestion: preferences?.dietary_preference === 'vegan'
-        ? "Lentil curry with brown rice"
-        : preferences?.dietary_preference === 'keto'
-        ? "Grass-fed beef with roasted vegetables"
+      suggestion: preferences?.goal === 'weight_loss'
+        ? "Grilled fish with roasted vegetables"
+        : preferences?.goal === 'muscle_gain'
+        ? "Lean beef with sweet potato & greens"
         : "Baked fish with roasted vegetables"
     }
   ];

@@ -72,7 +72,7 @@ import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
-import TodayHub from "./pages/TodayHub";
+import MyDailyPlan from "./pages/MyDailyPlan";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({

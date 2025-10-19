@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/Navigation";
+import Navigation from "@/components/Navigation";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { GoalStatementCard } from "@/components/today/GoalStatementCard";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
@@ -122,7 +122,7 @@ export default function MyDailyPlan() {
             completedCount={completedCount}
             totalCount={totalCount}
             estimatedMinutesRemaining={estimatedMinutesRemaining}
-            dailyStreak={dailyStreak}
+            dailyStreak={dailyStreak?.current_streak || 0}
           />
         </div>
       </main>

@@ -17,7 +17,7 @@ export const GoalStatementCard = () => {
   }
 
   const daysSinceStart = Math.floor((new Date().getTime() - new Date(primaryGoal.created_at).getTime()) / (1000 * 60 * 60 * 24));
-  const totalDays = primaryGoal.timeframe_days || 90;
+  const totalDays = 90; // Default 90-day goal
   const progress = Math.min(Math.round((daysSinceStart / totalDays) * 100), 100);
 
   return (
