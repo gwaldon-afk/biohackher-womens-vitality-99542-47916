@@ -72,7 +72,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'overview');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'today');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -368,6 +368,10 @@ const Dashboard = () => {
         {/* Tabs for My Plan */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsTrigger value="today">
+              <CheckCircle2 className="h-4 w-4 mr-2" />
+              Daily Actions
+            </TabsTrigger>
             <TabsTrigger value="overview">
               <Sparkles className="h-4 w-4 mr-2" />
               90-Day Overview
@@ -377,7 +381,6 @@ const Dashboard = () => {
               My Goals
             </TabsTrigger>
             <TabsTrigger value="insights">Health Analysis</TabsTrigger>
-            <TabsTrigger value="today">Daily Actions</TabsTrigger>
             <TabsTrigger value="progress">Tracking</TabsTrigger>
             <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
