@@ -20,6 +20,8 @@ export const ExpertServicesManager = ({ expertId }: ExpertServicesManagerProps) 
     description: "",
     duration_minutes: 60,
     price: 0,
+    service_type: "in_person",
+    is_virtual: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,6 +39,8 @@ export const ExpertServicesManager = ({ expertId }: ExpertServicesManagerProps) 
         description: "",
         duration_minutes: 60,
         price: 0,
+        service_type: "in_person",
+        is_virtual: false,
       });
     }
   };

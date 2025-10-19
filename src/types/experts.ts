@@ -16,6 +16,22 @@ export interface ExpertProfile {
   location: string | null;
   timezone: string;
   
+  // Structured Address
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state_province: string | null;
+  postal_code: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  
+  // Consultation Types
+  offers_in_person: boolean;
+  offers_virtual_video: boolean;
+  offers_virtual_phone: boolean;
+  offers_virtual_messaging: boolean;
+  
   // Verification
   verification_status: VerificationStatus;
   verified_at: string | null;
@@ -87,6 +103,8 @@ export interface ExpertService {
   duration_minutes: number | null;
   price: number | null;
   available: boolean;
+  service_type: string; // 'in_person', 'video', 'phone', 'messaging'
+  is_virtual: boolean;
   created_at: string;
   updated_at: string;
 }

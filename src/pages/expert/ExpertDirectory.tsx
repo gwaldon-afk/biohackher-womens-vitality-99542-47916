@@ -28,32 +28,32 @@ export default function ExpertDirectory() {
 
   return (
     <div className="container py-8 space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-4 mb-8">
-        <h1 className="text-4xl font-bold">Find Your Expert Partner</h1>
-        <p className="text-muted-foreground text-lg">
-          Connect with verified health professionals specializing in women's longevity
-        </p>
+      {/* Hero Section - User Focused */}
+      <div className="text-center space-y-6 mb-12">
+        <div className="space-y-3">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Find Your Trusted Health Partner
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Connect with verified experts specializing in women's longevity and preventive health
+          </p>
+        </div>
         
-        {/* CTA for Experts */}
-        <Card className="max-w-2xl mx-auto border-primary/30 bg-primary/5">
-          <CardContent className="py-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-left">
-                <h3 className="font-semibold text-lg mb-1">Are you a health professional?</h3>
-                <p className="text-sm text-muted-foreground">
-                  Join our network of verified experts and connect with clients seeking your expertise
-                </p>
-              </div>
-              <Button 
-                onClick={() => navigate('/expert/register')}
-                className="shrink-0"
-              >
-                Register as an Expert
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Key Benefits */}
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-8">
+          <div className="p-4 rounded-lg bg-card border">
+            <div className="font-semibold mb-1">🔬 Science-Backed</div>
+            <p className="text-sm text-muted-foreground">Evidence-based approaches to longevity</p>
+          </div>
+          <div className="p-4 rounded-lg bg-card border">
+            <div className="font-semibold mb-1">✓ Verified Credentials</div>
+            <p className="text-sm text-muted-foreground">All experts thoroughly vetted</p>
+          </div>
+          <div className="p-4 rounded-lg bg-card border">
+            <div className="font-semibold mb-1">💡 Personalized Care</div>
+            <p className="text-sm text-muted-foreground">Tailored to your unique needs</p>
+          </div>
+        </div>
       </div>
 
       {/* Search & Filters */}
@@ -149,7 +149,7 @@ export default function ExpertDirectory() {
                     <CardTitle>{expert.practice_name || 'Health Practice'}</CardTitle>
                     <CardDescription className="flex items-center gap-1 mt-1">
                       <MapPin className="h-3 w-3" />
-                      {expert.location || 'Location not specified'}
+                      {expert.location || expert.city ? `${expert.city || ''}, ${expert.state_province || ''}`.trim() : 'Location not specified'}
                     </CardDescription>
                   </div>
                   {expert.total_reviews > 0 && (
@@ -181,9 +181,17 @@ export default function ExpertDirectory() {
                   </div>
                 )}
 
+                {/* Consultation Types */}
+                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  {expert.offers_in_person && <span>• In-person</span>}
+                  {expert.offers_virtual_video && <span>• Video</span>}
+                  {expert.offers_virtual_phone && <span>• Phone</span>}
+                  {expert.offers_virtual_messaging && <span>• Messaging</span>}
+                </div>
+
                 {expert.consultation_fee && (
                   <p className="text-sm font-medium">
-                    Consultation: ${expert.consultation_fee}
+                    From ${expert.consultation_fee}
                   </p>
                 )}
 
@@ -199,6 +207,31 @@ export default function ExpertDirectory() {
           ))}
         </div>
       )}
+
+      {/* Secondary CTA for Experts */}
+      <Card className="mt-12 border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+        <CardContent className="py-8">
+          <div className="max-w-3xl mx-auto text-center space-y-4">
+            <h2 className="text-2xl font-bold">Are You a Health Professional?</h2>
+            <p className="text-muted-foreground">
+              Join our network of verified experts and connect with clients seeking your expertise. 
+              Earn referral commissions and grow your practice.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
+              <div>📊 Track your referrals</div>
+              <div>💰 Earn up to 30% commission</div>
+              <div>🎯 Featured placement options</div>
+            </div>
+            <Button 
+              onClick={() => navigate('/expert/register')}
+              size="lg"
+              className="mt-4"
+            >
+              Register as an Expert Partner
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

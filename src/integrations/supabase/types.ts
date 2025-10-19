@@ -768,11 +768,15 @@ export type Database = {
       expert_profiles: {
         Row: {
           accepts_insurance: boolean | null
+          address_line1: string | null
+          address_line2: string | null
           auto_suspended: boolean | null
           average_rating: number | null
           bio: string | null
+          city: string | null
           complaints_count: number | null
           consultation_fee: number | null
+          country: string | null
           created_at: string | null
           email: string | null
           expert_id: string
@@ -781,16 +785,24 @@ export type Database = {
           insurance_number: string | null
           insurance_verified: boolean | null
           last_credential_check: string | null
+          latitude: number | null
           license_number: string | null
           listing_status: Database["public"]["Enums"]["listing_status"] | null
           location: string | null
+          longitude: number | null
+          offers_in_person: boolean | null
+          offers_virtual_messaging: boolean | null
+          offers_virtual_phone: boolean | null
+          offers_virtual_video: boolean | null
           phone: string | null
+          postal_code: string | null
           practice_name: string | null
           referral_rate: number | null
           referrals_count: number | null
           rejection_reason: string | null
           revenue_total: number | null
           specialties: string[] | null
+          state_province: string | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_ends_at: string | null
@@ -811,11 +823,15 @@ export type Database = {
         }
         Insert: {
           accepts_insurance?: boolean | null
+          address_line1?: string | null
+          address_line2?: string | null
           auto_suspended?: boolean | null
           average_rating?: number | null
           bio?: string | null
+          city?: string | null
           complaints_count?: number | null
           consultation_fee?: number | null
+          country?: string | null
           created_at?: string | null
           email?: string | null
           expert_id: string
@@ -824,16 +840,24 @@ export type Database = {
           insurance_number?: string | null
           insurance_verified?: boolean | null
           last_credential_check?: string | null
+          latitude?: number | null
           license_number?: string | null
           listing_status?: Database["public"]["Enums"]["listing_status"] | null
           location?: string | null
+          longitude?: number | null
+          offers_in_person?: boolean | null
+          offers_virtual_messaging?: boolean | null
+          offers_virtual_phone?: boolean | null
+          offers_virtual_video?: boolean | null
           phone?: string | null
+          postal_code?: string | null
           practice_name?: string | null
           referral_rate?: number | null
           referrals_count?: number | null
           rejection_reason?: string | null
           revenue_total?: number | null
           specialties?: string[] | null
+          state_province?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_ends_at?: string | null
@@ -854,11 +878,15 @@ export type Database = {
         }
         Update: {
           accepts_insurance?: boolean | null
+          address_line1?: string | null
+          address_line2?: string | null
           auto_suspended?: boolean | null
           average_rating?: number | null
           bio?: string | null
+          city?: string | null
           complaints_count?: number | null
           consultation_fee?: number | null
+          country?: string | null
           created_at?: string | null
           email?: string | null
           expert_id?: string
@@ -867,16 +895,24 @@ export type Database = {
           insurance_number?: string | null
           insurance_verified?: boolean | null
           last_credential_check?: string | null
+          latitude?: number | null
           license_number?: string | null
           listing_status?: Database["public"]["Enums"]["listing_status"] | null
           location?: string | null
+          longitude?: number | null
+          offers_in_person?: boolean | null
+          offers_virtual_messaging?: boolean | null
+          offers_virtual_phone?: boolean | null
+          offers_virtual_video?: boolean | null
           phone?: string | null
+          postal_code?: string | null
           practice_name?: string | null
           referral_rate?: number | null
           referrals_count?: number | null
           rejection_reason?: string | null
           revenue_total?: number | null
           specialties?: string[] | null
+          state_province?: string | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_ends_at?: string | null
@@ -1017,8 +1053,10 @@ export type Database = {
           duration_minutes: number | null
           expert_id: string
           id: string
+          is_virtual: boolean | null
           price: number | null
           service_name: string
+          service_type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -1028,8 +1066,10 @@ export type Database = {
           duration_minutes?: number | null
           expert_id: string
           id?: string
+          is_virtual?: boolean | null
           price?: number | null
           service_name: string
+          service_type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -1039,8 +1079,10 @@ export type Database = {
           duration_minutes?: number | null
           expert_id?: string
           id?: string
+          is_virtual?: boolean | null
           price?: number | null
           service_name?: string
+          service_type?: string | null
           updated_at?: string | null
         }
         Relationships: [
