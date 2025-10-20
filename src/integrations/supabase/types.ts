@@ -475,10 +475,14 @@ export type Database = {
         Row: {
           check_in_date: string | null
           created_at: string | null
+          cycle_day: number | null
           energy_rating: number | null
+          hydrated: boolean | null
           id: string
           movement_completed: boolean | null
+          movement_quality: number | null
           notes: string | null
+          nutrition_quality: number | null
           sleep_quality: number | null
           stress_level: number | null
           user_id: string
@@ -486,10 +490,14 @@ export type Database = {
         Insert: {
           check_in_date?: string | null
           created_at?: string | null
+          cycle_day?: number | null
           energy_rating?: number | null
+          hydrated?: boolean | null
           id?: string
           movement_completed?: boolean | null
+          movement_quality?: number | null
           notes?: string | null
+          nutrition_quality?: number | null
           sleep_quality?: number | null
           stress_level?: number | null
           user_id: string
@@ -497,10 +505,14 @@ export type Database = {
         Update: {
           check_in_date?: string | null
           created_at?: string | null
+          cycle_day?: number | null
           energy_rating?: number | null
+          hydrated?: boolean | null
           id?: string
           movement_completed?: boolean | null
+          movement_quality?: number | null
           notes?: string | null
+          nutrition_quality?: number | null
           sleep_quality?: number | null
           stress_level?: number | null
           user_id?: string
