@@ -416,22 +416,6 @@ const Dashboard = () => {
         )}
 
 
-        {/* MenoMap Widget - Show if enabled or if user has a stage */}
-        {(menoMapEnabled || currentStage) && (
-          <div className="mb-6">
-            <MenoMapDashboardWidget />
-          </div>
-        )}
-
-        {/* Energy Loop Widget - Show if enabled and has score */}
-        {energyLoopEnabled && currentScore && (
-          <div className="mb-6">
-            <EnergyDashboardWidget
-              score={currentScore}
-              onCheckIn={() => navigate('/energy-loop/check-in')}
-            />
-          </div>
-        )}
 
 
         {/* Tabs for My Plan */}
