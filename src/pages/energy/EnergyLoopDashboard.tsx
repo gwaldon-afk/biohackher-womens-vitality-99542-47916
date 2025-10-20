@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EnergyLoopCircle } from "@/components/energy/EnergyLoopCircle";
 import { EnergyInsightCard } from "@/components/energy/EnergyInsightCard";
+import { EnergyLoopLegend } from "@/components/energy/EnergyLoopLegend";
+import { EnergyAnalysisCard } from "@/components/energy/EnergyAnalysisCard";
 import { Zap, Plus, TrendingUp } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -84,42 +86,53 @@ export default function EnergyLoopDashboard() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        <Card className="p-8 flex flex-col items-center justify-center">
-          <EnergyLoopCircle
-            segments={segments}
-            compositeScore={currentScore.composite_score}
-            size={320}
-          />
-          <p className="text-sm text-muted-foreground mt-6">
-            Loop Completion: {Math.round(currentScore.loop_completion_percent)}%
-          </p>
-          <div className="flex gap-2 mt-4">
-            <Button variant="outline" onClick={() => navigate('/energy-loop/actions')}>
-              View Biohacks
-            </Button>
-            <Button onClick={() => navigate('/energy-loop/progress')}>
-              View Progress
-            </Button>
-          </div>
-        </Card>
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1 space-y-6">
+          <Card className="p-8 flex flex-col items-center justify-center">
+            <EnergyLoopCircle
+              segments={segments}
+              compositeScore={currentScore.composite_score}
+              size={280}
+            />
+            <p className="text-sm text-muted-foreground mt-6">
+              Loop Completion: {Math.round(currentScore.loop_completion_percent)}%
+            </p>
+            <div className="flex flex-col gap-2 mt-4 w-full">
+              <Button onClick={() => navigate('/energy-loop/progress')} className="w-full">
+                <TrendingUp className="mr-2 h-4 w-4" />
+                View Progress
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/energy-loop/actions')} className="w-full">
+                View Biohacks
+              </Button>
+            </div>
+          </Card>
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Your Insights</h2>
-          {insights.length === 0 ? (
-            <Card className="p-6 text-center text-muted-foreground">
-              Keep tracking to unlock personalized insights!
-            </Card>
-          ) : (
-            insights.map(insight => (
-              <EnergyInsightCard
-                key={insight.id}
-                insight={insight}
-                onAcknowledge={() => acknowledgeInsight(insight.id)}
-                onDismiss={() => dismissInsight(insight.id)}
-              />
-            ))
-          )}
+          <EnergyLoopLegend />
+        </div>
+
+        <div className="lg:col-span-2 space-y-6">
+          <EnergyAnalysisCard score={currentScore} />
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Recent Insights</h2>
+            {insights.length === 0 ? (
+              <Card className="p-6 text-center text-muted-foreground">
+                Keep tracking to unlock personalized insights!
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {insights.map(insight => (
+                  <EnergyInsightCard
+                    key={insight.id}
+                    insight={insight}
+                    onAcknowledge={() => acknowledgeInsight(insight.id)}
+                    onDismiss={() => dismissInsight(insight.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
