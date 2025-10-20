@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, TrendingUp, Lightbulb, User } from 'lucide-react';
+import { Home, TrendingUp, Target, User } from 'lucide-react';
 
 export const MobileBottomNav = () => {
   const location = useLocation();
@@ -7,7 +7,7 @@ export const MobileBottomNav = () => {
   const navItems = [
     { path: '/today', icon: Home, label: 'Today' },
     { path: '/progress', icon: TrendingUp, label: 'Progress' },
-    { path: '/goals/insights', icon: Lightbulb, label: 'Insights' },
+    { path: '/my-goals', icon: Target, label: 'Goals' },
     { path: '/settings', icon: User, label: 'Profile' }
   ];
 

@@ -32,6 +32,7 @@ const Navigation = () => {
   // Simplified core navigation - key pages with Goals prominent
   const coreNavItems = [
     { href: "/dashboard", label: "My Plan" },
+    { href: "/my-goals", label: "My Goals" },
     { href: "/experts", label: "Find Experts" },
     { href: "/menomap", label: "MenoMap™" },
     { href: "/energy-loop", label: "Energy Loop" },
