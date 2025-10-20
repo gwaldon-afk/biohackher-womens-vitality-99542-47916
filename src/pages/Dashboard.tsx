@@ -370,11 +370,11 @@ const Dashboard = () => {
           <TabsList className="grid w-full grid-cols-6 mb-8">
             <TabsTrigger value="today">
               <CheckCircle2 className="h-4 w-4 mr-2" />
-              Daily Actions
+              My Daily Plan
             </TabsTrigger>
             <TabsTrigger value="overview">
               <Sparkles className="h-4 w-4 mr-2" />
-              90-Day Overview
+              90 Day Plan
             </TabsTrigger>
             <TabsTrigger value="goals">
               <Target className="h-4 w-4 mr-2" />
