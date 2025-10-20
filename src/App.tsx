@@ -51,10 +51,12 @@ import NotFound from "./pages/NotFound";
 import MenoMapAssessment from "./pages/menomap/MenoMapAssessment";
 import MenoMapResults from "./pages/menomap/MenoMapResults";
 import MenoMapTracker from "./pages/menomap/MenoMapTracker";
+import MenoMapDashboard from "./pages/menomap/MenoMapDashboard";
 import EnergyCheckIn from "./pages/energy/EnergyCheckIn";
 import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
 import EnergyOnboarding from "./pages/energy/EnergyOnboarding";
+import EnergyLoopDashboard from "./pages/energy/EnergyLoopDashboard";
 import ExpertRegistration from "./pages/expert/ExpertRegistration";
 import ExpertDashboard from "./pages/expert/ExpertDashboard";
 import ExpertDirectory from "./pages/expert/ExpertDirectory";
@@ -154,14 +156,14 @@ const App = () => (
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             
-            {/* MenoMap Routes - Redirect main dashboard to /dashboard */}
-          <Route path="/menomap" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            {/* MenoMap Routes */}
+          <Route path="/menomap" element={<ProtectedRoute><MenoMapDashboard /></ProtectedRoute>} />
           <Route path="/menomap/assessment" element={<ProtectedRoute><MenoMapAssessment /></ProtectedRoute>} />
           <Route path="/menomap/results" element={<ProtectedRoute><MenoMapResults /></ProtectedRoute>} />
           <Route path="/menomap/tracker" element={<ProtectedRoute><MenoMapTracker /></ProtectedRoute>} />
           
-          {/* Energy Loop Routes - Redirect main dashboard to /dashboard */}
-          <Route path="/energy-loop" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          {/* Energy Loop Routes */}
+          <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
           <Route path="/energy-loop/onboarding" element={<ProtectedRoute><EnergyOnboarding /></ProtectedRoute>} />
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />
