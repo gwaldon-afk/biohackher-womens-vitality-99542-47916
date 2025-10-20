@@ -3,7 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Progress } from '@/components/ui/progress';
 import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import LISInputForm from '@/components/LISInputForm';
@@ -11,6 +10,8 @@ import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome'
 import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
+import { LISRadarChart } from '@/components/LISRadarChart';
+import { LISRadarLegend } from '@/components/LISRadarLegend';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -39,21 +40,32 @@ const LISResults = () => {
       <Navigation />
       <div className="container max-w-4xl mx-auto py-8 px-4">
       <Card className="mb-6">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className={`text-6xl font-bold ${getScoreColor(score)}`}>
-              {score.toFixed(1)}
-            </div>
-          </div>
-          <CardTitle className="text-2xl">Your Longevity Impact Score</CardTitle>
-          <CardDescription>
-            <Badge variant="secondary" className="mt-2">
-              {getScoreCategory(score)}
-            </Badge>
+        <CardHeader className="text-center pb-2">
+          <CardTitle className="text-2xl mb-2">Your Longevity Impact Score</CardTitle>
+          <CardDescription className="text-sm">
+            A comprehensive view of your healthspan across 6 key pillars
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Progress value={score} className="h-3 mb-6" />
+        <CardContent className="pt-6">
+          {/* Radar Chart Visualization */}
+          <div className="flex justify-center mb-6">
+            <LISRadarChart 
+              pillarScores={user ? lisData.pillarScores : {
+                sleep: score * 0.9,
+                stress: score * 0.85,
+                activity: score * 0.95,
+                nutrition: score * 0.88,
+                social: score * 0.82,
+                cognitive: score * 0.91,
+              }}
+              compositeScore={user ? (lisData.currentScore || score) : score}
+            />
+          </div>
+
+          {/* Legend */}
+          {user && (
+            <LISRadarLegend pillarScores={lisData.pillarScores} />
+          )}
           
           {/* Comprehensive Analysis */}
           <div className="space-y-6">

@@ -2,6 +2,15 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
+interface PillarScores {
+  sleep: number | null;
+  stress: number | null;
+  activity: number | null;
+  nutrition: number | null;
+  social: number | null;
+  cognitive: number | null;
+}
+
 interface LISData {
   baselineScore: number | null;
   baselineDate: Date | null;
@@ -14,6 +23,7 @@ interface LISData {
   hasManualData: boolean;
   manualEntryCount: number;
   lastSyncTime: string | null;
+  pillarScores: PillarScores;
   refetch: () => Promise<void>;
 }
 
@@ -28,6 +38,14 @@ export const useLISData = (): LISData => {
   const [hasManualData, setHasManualData] = useState(false);
   const [manualEntryCount, setManualEntryCount] = useState(0);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+  const [pillarScores, setPillarScores] = useState<PillarScores>({
+    sleep: null,
+    stress: null,
+    activity: null,
+    nutrition: null,
+    social: null,
+    cognitive: null,
+  });
 
   const fetchLISData = useCallback(async () => {
     try {
@@ -65,6 +83,30 @@ export const useLISData = (): LISData => {
         const avg = scores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / scores.length;
         setCurrentScore(Math.round(avg));
         setDailyScores(scores);
+
+        // Calculate pillar score averages
+        const pillarAverages = {
+          sleep: scores.filter(s => s.sleep_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.sleep_score || 0), 0) / scores.filter(s => s.sleep_score !== null).length
+            : null,
+          stress: scores.filter(s => s.stress_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.stress_score || 0), 0) / scores.filter(s => s.stress_score !== null).length
+            : null,
+          activity: scores.filter(s => s.physical_activity_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.physical_activity_score || 0), 0) / scores.filter(s => s.physical_activity_score !== null).length
+            : null,
+          nutrition: scores.filter(s => s.nutrition_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.nutrition_score || 0), 0) / scores.filter(s => s.nutrition_score !== null).length
+            : null,
+          social: scores.filter(s => s.social_connections_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.social_connections_score || 0), 0) / scores.filter(s => s.social_connections_score !== null).length
+            : null,
+          cognitive: scores.filter(s => s.cognitive_engagement_score !== null).length > 0
+            ? scores.reduce((sum, s) => sum + (s.cognitive_engagement_score || 0), 0) / scores.filter(s => s.cognitive_engagement_score !== null).length
+            : null,
+        };
+        
+        setPillarScores(pillarAverages);
 
         // Check data sources
         const wearableData = scores.some(s => s.source_type === 'wearable_auto');
@@ -113,6 +155,7 @@ export const useLISData = (): LISData => {
     hasManualData,
     manualEntryCount,
     lastSyncTime,
+    pillarScores,
     refetch: fetchLISData
   };
 };
