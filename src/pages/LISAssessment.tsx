@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import LongevityProjection from "@/components/LongevityProjection";
+import { SmartSlider } from "@/components/assessments/SmartSlider";
 
 const LISAssessment = () => {
   const navigate = useNavigate();
@@ -154,67 +155,73 @@ const LISAssessment = () => {
       id: 0,
       category: "Sleep Quality",
       icon: Moon,
+      type: "slider" as const,
       question: "How many hours of quality sleep did you get last night?",
       options: [
-        { value: "less-than-5", label: "Less than 5 hours", score: 40, detail: "Significantly below optimal" },
-        { value: "5-6", label: "5-6 hours", score: 60, detail: "Below recommended range" },
-        { value: "6-7", label: "6-7 hours", score: 80, detail: "Adequate for some adults" },
-        { value: "7-9", label: "7-9 hours (optimal)", score: 100, detail: "Optimal sleep duration" },
-        { value: "more-than-9", label: "More than 9 hours", score: 70, detail: "May indicate oversleeping" }
+        { value: "1", label: "Less than 5 hours", score: 40, emoji: "😴" },
+        { value: "2", label: "5-6 hours", score: 60, emoji: "😪" },
+        { value: "3", label: "6-7 hours", score: 80, emoji: "😊" },
+        { value: "4", label: "7-9 hours", score: 100, emoji: "✨" },
+        { value: "5", label: "More than 9 hours", score: 70, emoji: "😌" }
       ]
     },
     {
       id: 1,
       category: "Sleep Recovery",
       icon: Moon,
+      type: "slider" as const,
       question: "How did you feel when you woke up this morning?",
       options: [
-        { value: "exhausted", label: "Exhausted - Needed to drag myself out of bed", score: 40 },
-        { value: "tired", label: "Tired - Could use more sleep", score: 60 },
-        { value: "okay", label: "Okay - Reasonably rested", score: 80 },
-        { value: "refreshed", label: "Refreshed - Ready to start the day", score: 100 }
+        { value: "1", label: "Exhausted", score: 40, emoji: "😫" },
+        { value: "2", label: "Tired", score: 60, emoji: "😪" },
+        { value: "3", label: "Okay", score: 80, emoji: "😊" },
+        { value: "4", label: "Refreshed", score: 100, emoji: "🌟" }
       ]
     },
     {
       id: 2,
       category: "Stress Management",
       icon: Heart,
+      type: "slider" as const,
       question: "How would you rate your stress level today?",
       options: [
-        { value: "very-high", label: "Very High - Overwhelming, hard to cope", score: 40 },
-        { value: "high", label: "High - Significant stress affecting daily life", score: 60 },
-        { value: "moderate", label: "Moderate - Manageable with effort", score: 80 },
-        { value: "low", label: "Low - Minimal stress, feeling balanced", score: 100 }
+        { value: "1", label: "Very High", score: 40, emoji: "😰" },
+        { value: "2", label: "High", score: 60, emoji: "😟" },
+        { value: "3", label: "Moderate", score: 80, emoji: "😌" },
+        { value: "4", label: "Low", score: 100, emoji: "😊" }
       ]
     },
     {
       id: 3,
       category: "Stress Recovery",
       icon: Heart,
+      type: "slider" as const,
       question: "Did you take time today for stress-reducing activities?",
       options: [
-        { value: "none", label: "No time for relaxation", score: 50 },
-        { value: "minimal", label: "Brief moments (5-10 min)", score: 70 },
-        { value: "some", label: "Moderate time (15-30 min)", score: 90 },
-        { value: "dedicated", label: "Dedicated practice (30+ min)", score: 100 }
+        { value: "1", label: "No time", score: 50, emoji: "⏰" },
+        { value: "2", label: "5-10 min", score: 70, emoji: "🧘" },
+        { value: "3", label: "15-30 min", score: 90, emoji: "🧘‍♀️" },
+        { value: "4", label: "30+ min", score: 100, emoji: "✨" }
       ]
     },
     {
       id: 4,
       category: "Physical Activity",
       icon: Activity,
+      type: "slider" as const,
       question: "How much physical activity did you do today?",
       options: [
-        { value: "none", label: "Sedentary - No intentional movement", score: 50 },
-        { value: "light", label: "Light - Walking, stretching (10-20 min)", score: 75 },
-        { value: "moderate", label: "Moderate - 30+ min exercise", score: 100 },
-        { value: "vigorous", label: "Vigorous - Intense workout", score: 95 }
+        { value: "1", label: "Sedentary", score: 50, emoji: "🛋️" },
+        { value: "2", label: "Light (10-20 min)", score: 75, emoji: "🚶" },
+        { value: "3", label: "Moderate (30+ min)", score: 100, emoji: "🏃" },
+        { value: "4", label: "Vigorous", score: 95, emoji: "💪" }
       ]
     },
     {
       id: 5,
       category: "Movement Variety",
       icon: Activity,
+      type: "radio" as const,
       question: "What types of movement did you include?",
       options: [
         { value: "none", label: "No variety, mostly sitting", score: 50 },
@@ -227,18 +234,20 @@ const LISAssessment = () => {
       id: 6,
       category: "Nutrition Quality",
       icon: Utensils,
+      type: "slider" as const,
       question: "How would you describe your nutrition today?",
       options: [
-        { value: "poor", label: "Poor - Mostly processed/fast food", score: 40 },
-        { value: "fair", label: "Fair - Some healthy choices mixed in", score: 65 },
-        { value: "good", label: "Good - Mostly whole, unprocessed foods", score: 85 },
-        { value: "excellent", label: "Excellent - Nutrient-dense, well-balanced", score: 100 }
+        { value: "1", label: "Poor", score: 40, emoji: "🍔" },
+        { value: "2", label: "Fair", score: 65, emoji: "🥗" },
+        { value: "3", label: "Good", score: 85, emoji: "🥑" },
+        { value: "4", label: "Excellent", score: 100, emoji: "✨" }
       ]
     },
     {
       id: 7,
       category: "Hydration & Habits",
       icon: Utensils,
+      type: "radio" as const,
       question: "How well did you hydrate and time your meals?",
       options: [
         { value: "poor", label: "Poor - Dehydrated, irregular eating", score: 50 },
@@ -251,6 +260,7 @@ const LISAssessment = () => {
       id: 8,
       category: "Social Connection",
       icon: Users,
+      type: "radio" as const,
       question: "How many meaningful social connections did you have today?",
       options: [
         { value: "none", label: "None - Isolated all day", score: 50 },
@@ -263,18 +273,20 @@ const LISAssessment = () => {
       id: 9,
       category: "Cognitive Engagement",
       icon: Brain,
+      type: "slider" as const,
       question: "How mentally engaged and focused were you today?",
       options: [
-        { value: "very-low", label: "Very Low - Brain fog, hard to concentrate", score: 40 },
-        { value: "low", label: "Low - Struggled to stay focused", score: 60 },
-        { value: "moderate", label: "Moderate - Normal focus and clarity", score: 80 },
-        { value: "high", label: "High - Sharp, clear, highly productive", score: 100 }
+        { value: "1", label: "Very Low", score: 40, emoji: "😵‍💫" },
+        { value: "2", label: "Low", score: 60, emoji: "😶" },
+        { value: "3", label: "Moderate", score: 80, emoji: "🙂" },
+        { value: "4", label: "High", score: 100, emoji: "🧠" }
       ]
     },
     {
       id: 10,
       category: "Learning & Growth",
       icon: Brain,
+      type: "radio" as const,
       question: "Did you engage in learning or mental stimulation today?",
       options: [
         { value: "none", label: "No new learning or challenges", score: 50 },
@@ -837,28 +849,45 @@ const LISAssessment = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RadioGroup
-              key={currentQuestion}
-              value={answers[currentQuestion] || ""}
-              onValueChange={handleAnswerChange}
-              className="space-y-3"
-            >
-              {questions[currentQuestion].options.map((option) => (
-                <div
-                  key={option.value}
-                  className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => handleAnswerChange(option.value)}
-                >
-                  <RadioGroupItem value={option.value} id={option.value} />
-                  <Label
-                    htmlFor={option.value}
-                    className="flex-1 cursor-pointer font-normal"
+            {questions[currentQuestion].type === "slider" ? (
+              <SmartSlider
+                key={currentQuestion}
+                value={parseInt(answers[currentQuestion] || "1")}
+                onChange={(value) => handleAnswerChange(value.toString())}
+                min={1}
+                max={questions[currentQuestion].options.length}
+                labels={questions[currentQuestion].options.map(opt => ({
+                  value: parseInt(opt.value),
+                  text: opt.label,
+                  emoji: opt.emoji,
+                  score: opt.score
+                }))}
+                className="py-8"
+              />
+            ) : (
+              <RadioGroup
+                key={currentQuestion}
+                value={answers[currentQuestion] || ""}
+                onValueChange={handleAnswerChange}
+                className="space-y-3"
+              >
+                {questions[currentQuestion].options.map((option) => (
+                  <div
+                    key={option.value}
+                    className="flex items-center space-x-3 p-4 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => handleAnswerChange(option.value)}
                   >
-                    {option.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+                    <RadioGroupItem value={option.value} id={option.value} />
+                    <Label
+                      htmlFor={option.value}
+                      className="flex-1 cursor-pointer font-normal"
+                    >
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            )}
 
             <div className="mt-6 flex justify-end">
               <Button
