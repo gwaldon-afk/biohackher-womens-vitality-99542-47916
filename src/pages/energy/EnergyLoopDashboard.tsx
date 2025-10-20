@@ -3,10 +3,10 @@ import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { EnergyLoopCircle } from "@/components/energy/EnergyLoopCircle";
-import { EnergyInsightCard } from "@/components/energy/EnergyInsightCard";
+import { EnergyInsightCards } from "@/components/energy/EnergyInsightCards";
 import { EnergyLoopLegend } from "@/components/energy/EnergyLoopLegend";
 import { EnergyAnalysisCard } from "@/components/energy/EnergyAnalysisCard";
-import { Zap, Plus, TrendingUp } from "lucide-react";
+import { Zap, Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function EnergyLoopDashboard() {
@@ -63,76 +63,128 @@ export default function EnergyLoopDashboard() {
   }
 
   const segments = [
-    { name: "Sleep Recovery", score: currentScore.sleep_recovery_score, color: "#4A90E2", icon: "🌙" },
-    { name: "Stress Load", score: currentScore.stress_load_score, color: "#F5A623", icon: "💨" },
-    { name: "Fuel & Nutrition", score: currentScore.nutrition_score, color: "#7ED321", icon: "🩸" },
-    { name: "Movement Quality", score: currentScore.movement_quality_score, color: "#E94B8E", icon: "🏃‍♀️" },
-    { name: "Hormonal Rhythm", score: currentScore.hormonal_rhythm_score, color: "#9B51E0", icon: "🌸" }
+    { name: "Rest", score: currentScore.sleep_recovery_score, color: "#4A90E2", icon: "🌙" },
+    { name: "Calm", score: currentScore.stress_load_score, color: "#F5A623", icon: "💨" },
+    { name: "Fuel", score: currentScore.nutrition_score, color: "#7ED321", icon: "🩸" },
+    { name: "Move", score: currentScore.movement_quality_score, color: "#E94B8E", icon: "🏃‍♀️" },
+    { name: "Flow", score: currentScore.hormonal_rhythm_score, color: "#9B51E0", icon: "🌸" }
   ];
 
+  const unacknowledgedInsights = insights.filter(i => !i.acknowledged && !i.dismissed_at);
+
+  const getEnergyMessage = (score: number) => {
+    if (score >= 80) return { text: "You're thriving!", color: "text-primary" };
+    if (score >= 60) return { text: "You're doing well", color: "text-primary" };
+    if (score >= 40) return { text: "Room to optimize", color: "text-warning" };
+    return { text: "Let's rebuild together", color: "text-muted-foreground" };
+  };
+
   return (
-    <div className="container max-w-6xl mx-auto px-4 py-8 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Energy Loop</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate('/energy-loop/progress')}>
-            <TrendingUp className="mr-2 h-4 w-4" />
-            View Progress
-          </Button>
-          <Button onClick={() => navigate('/energy-loop/check-in')}>
-            <Plus className="mr-2 h-4 w-4" />
-            Daily Check-In
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1 space-y-6">
-          <Card className="p-8 flex flex-col items-center justify-center">
-            <EnergyLoopCircle
-              segments={segments}
-              compositeScore={currentScore.composite_score}
-              size={280}
-            />
-            <p className="text-sm text-muted-foreground mt-6">
-              Loop Completion: {Math.round(currentScore.loop_completion_percent)}%
-            </p>
-            <div className="flex flex-col gap-2 mt-4 w-full">
-              <Button onClick={() => navigate('/energy-loop/progress')} className="w-full">
-                <TrendingUp className="mr-2 h-4 w-4" />
-                View Progress
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/energy-loop/actions')} className="w-full">
-                View Biohacks
-              </Button>
-            </div>
-          </Card>
-
-          <EnergyLoopLegend />
-        </div>
-
-        <div className="lg:col-span-2 space-y-6">
-          <EnergyAnalysisCard score={currentScore} />
-
+    <div className="container max-w-7xl mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <div className="mb-12">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-xl font-semibold mb-4">Recent Insights</h2>
-            {insights.length === 0 ? (
-              <Card className="p-6 text-center text-muted-foreground">
-                Keep tracking to unlock personalized insights!
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {insights.map(insight => (
-                  <EnergyInsightCard
-                    key={insight.id}
-                    insight={insight}
-                    onAcknowledge={() => acknowledgeInsight(insight.id)}
-                    onDismiss={() => dismissInsight(insight.id)}
-                  />
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Energy Loop
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Your holistic energy tracking system
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/energy-loop/onboarding')}
+          >
+            How It Works
+          </Button>
+        </div>
+
+        <Card className="p-8 bg-gradient-to-br from-background to-muted/20 border-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Energy Loop Circle */}
+            <div className="flex flex-col items-center">
+              <EnergyLoopCircle
+                segments={segments}
+                compositeScore={currentScore.composite_score}
+                size={280}
+              />
+              <div className="text-center mt-6">
+                <p className={`text-2xl font-semibold ${getEnergyMessage(currentScore.composite_score).color}`}>
+                  {getEnergyMessage(currentScore.composite_score).text}
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Loop Completion: {Math.round(currentScore.loop_completion_percent)}%
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Stats & CTA */}
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                {segments.map((segment) => (
+                  <div key={segment.name} className="bg-background/50 rounded-lg p-4 border hover:border-primary/50 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xl">{segment.icon}</span>
+                      <span className="text-sm font-medium">{segment.name}</span>
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-bold">{Math.round(segment.score)}</span>
+                      <span className="text-sm text-muted-foreground">/100</span>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
+              
+              <Button 
+                onClick={() => navigate('/energy-loop/check-in')}
+                size="lg"
+                className="w-full"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                Daily Check-In
+              </Button>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/energy-loop/progress')}
+                  className="flex-1"
+                >
+                  View Progress
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/energy-actions')}
+                  className="flex-1"
+                >
+                  Biohacks
+                </Button>
+              </div>
+            </div>
           </div>
+        </Card>
+      </div>
+
+      {/* Insights Section */}
+      {unacknowledgedInsights.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Your Insights</h2>
+          <EnergyInsightCards
+            insights={unacknowledgedInsights}
+            onAcknowledge={acknowledgeInsight}
+            onDismiss={dismissInsight}
+          />
+        </div>
+      )}
+
+      {/* Analysis & Legend Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <EnergyAnalysisCard score={currentScore} />
+        </div>
+        <div>
+          <EnergyLoopLegend />
         </div>
       </div>
     </div>

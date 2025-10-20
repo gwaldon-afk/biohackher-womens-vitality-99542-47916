@@ -10,64 +10,64 @@ interface LegendItem {
 
 const legendItems: LegendItem[] = [
   {
-    name: "Sleep Recovery",
+    name: "Rest & Recovery",
     color: "#4A90E2",
     icon: "🌙",
-    description: "Quality of rest and restoration"
+    description: "Your body's nightly restoration process"
   },
   {
-    name: "Stress Load",
+    name: "Calm & Resilience",
     color: "#F5A623",
     icon: "💨",
-    description: "Stress management and resilience"
+    description: "How well you're managing life's demands"
   },
   {
-    name: "Fuel & Nutrition",
+    name: "Nourishment",
     color: "#7ED321",
     icon: "🩸",
-    description: "Nutritional quality and blood sugar"
+    description: "Fueling your body with what it needs"
   },
   {
-    name: "Movement Quality",
+    name: "Movement & Vitality",
     color: "#E94B8E",
     icon: "🏃‍♀️",
-    description: "Activity and recovery balance"
+    description: "Physical activity that energizes you"
   },
   {
-    name: "Hormonal Rhythm",
+    name: "Hormonal Flow",
     color: "#9B51E0",
     icon: "🌸",
-    description: "Hormonal balance and cycle awareness"
+    description: "Your natural rhythms and cycles"
   }
 ];
 
 export const EnergyLoopLegend = () => {
   return (
-    <Card className="p-6">
-      <div className="flex items-center gap-2 mb-4">
+    <Card className="p-6 bg-gradient-to-br from-background to-muted/20">
+      <div className="flex items-center gap-2 mb-6">
         <Info className="h-5 w-5 text-primary" />
-        <h3 className="font-semibold">Understanding Your Energy Loop</h3>
+        <h3 className="font-semibold">Your Energy Dimensions</h3>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {legendItems.map((item) => (
-          <div key={item.name} className="flex items-start gap-3">
-            <div className="flex items-center gap-2 min-w-[140px]">
+          <div key={item.name} className="flex items-start gap-3 group hover:scale-105 transition-transform">
+            <div className="flex items-center gap-2 min-w-[50px]">
               <div 
-                className="w-4 h-4 rounded-full flex-shrink-0" 
+                className="w-3 h-3 rounded-full flex-shrink-0 shadow-sm" 
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-lg flex-shrink-0">{item.icon}</span>
+              <span className="text-xl flex-shrink-0">{item.icon}</span>
             </div>
             <div className="flex-1">
-              <p className="font-medium text-sm">{item.name}</p>
-              <p className="text-xs text-muted-foreground">{item.description}</p>
+              <p className="font-semibold text-sm mb-1">{item.name}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-4 pt-4 border-t">
-        <p className="text-xs text-muted-foreground">
-          Your composite score reflects the balance across all five dimensions. Each area impacts the others - improving one strengthens the whole loop.
+      <div className="mt-6 pt-6 border-t border-border/50">
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          💫 <strong>The Loop Effect:</strong> Each dimension influences the others. When you strengthen one, you elevate them all.
         </p>
       </div>
     </Card>

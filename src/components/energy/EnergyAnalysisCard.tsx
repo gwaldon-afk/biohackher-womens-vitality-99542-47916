@@ -80,7 +80,7 @@ export const EnergyAnalysisCard = ({ score }: EnergyAnalysisCardProps) => {
       )}
 
       {analysis && !loading && (
-        <div className="prose prose-sm max-w-none">
+        <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-h3:text-base prose-h3:mb-2 prose-h3:mt-4 prose-p:text-muted-foreground prose-ul:text-muted-foreground prose-strong:text-foreground">
           <ReactMarkdown>{analysis}</ReactMarkdown>
         </div>
       )}
