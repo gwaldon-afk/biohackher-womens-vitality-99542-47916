@@ -10,6 +10,9 @@ import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { ProtocolGenerationPrompt } from "@/components/ProtocolGenerationPrompt";
+import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
+import { useMemo } from "react";
 
 export default function MyDailyPlan() {
   const { user } = useAuth();
@@ -21,15 +24,18 @@ export default function MyDailyPlan() {
     dailyStreak,
     refetch 
   } = useDailyPlan();
+  const { completions } = useAssessmentCompletions();
 
-  // Separate actions by type
-  const movements = actions.filter(a => 
-    a.type === 'protocol' && (a.title.toLowerCase().includes('exercise') || a.title.toLowerCase().includes('workout') || a.title.toLowerCase().includes('walk'))
-  );
-  
-  const supplements = actions.filter(a => 
-    a.type === 'protocol' && (a.title.toLowerCase().includes('supplement') || a.title.toLowerCase().includes('vitamin'))
-  );
+  const assessmentsCompleted = useMemo(() => {
+    if (!completions) return 0;
+    return Object.values(completions).filter(c => c.completed).length;
+  }, [completions]);
+
+  const hasNoProtocol = actions.length === 0 && !loading;
+
+  // Categorize by item type for proper sections
+  const movements = actions.filter(a => a.category === 'deep_practice');
+  const supplements = actions.filter(a => a.category === 'quick_win' && a.type === 'protocol');
 
   // Calculate estimated time remaining
   const remainingActions = actions.filter(a => !a.completed);
@@ -96,6 +102,13 @@ export default function MyDailyPlan() {
         </div>
 
         <div className="space-y-6">
+          {hasNoProtocol && assessmentsCompleted > 0 && (
+            <ProtocolGenerationPrompt 
+              assessmentsCompleted={assessmentsCompleted}
+              onGenerate={refetch}
+            />
+          )}
+
           {/* Goal Statement */}
           <GoalStatementCard />
 

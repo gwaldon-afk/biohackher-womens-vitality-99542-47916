@@ -23,6 +23,7 @@ export interface DailyAction {
   protocolItemId?: string;
   goalId?: string;
   energyActionId?: string;
+  timeOfDay?: string[] | null;
 }
 
 export const useDailyPlan = () => {
@@ -48,13 +49,11 @@ export const useDailyPlan = () => {
     try {
       const dailyActions: DailyAction[] = [];
 
-      // 1. Get active protocol items
+      // 1. Get active protocol items (show all, don't filter by time)
       const activeProtocol = protocols.find(p => p.is_active);
       if (activeProtocol) {
         const items = await fetchProtocolItems(activeProtocol.id);
-        const relevantItems = items.filter(item => 
-          item.is_active && matchesTimeOfDay(item.time_of_day)
-        );
+        const relevantItems = items.filter(item => item.is_active);
 
         relevantItems.forEach((item: ProtocolItem) => {
           const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
@@ -64,12 +63,13 @@ export const useDailyPlan = () => {
             type: 'protocol',
             title: item.name,
             description: item.description || undefined,
-            category: categorizeAction(item.name, item.description),
+            category: categorizeActionByType(item.item_type),
             estimatedMinutes: estimateTime(item.item_type),
             priority: 0, // Will be calculated
             icon: getItemIcon(item.item_type),
             completed: isCompleted,
-            protocolItemId: item.id
+            protocolItemId: item.id,
+            timeOfDay: item.time_of_day
           });
         });
       }
@@ -144,23 +144,20 @@ export const useDailyPlan = () => {
     }).sort((a, b) => b.priority - a.priority);
   };
 
-  const categorizeAction = (name: string, description: string | null): DailyAction['category'] => {
-    const lowerName = name.toLowerCase();
-    const lowerDesc = (description || '').toLowerCase();
-    
-    if (lowerName.includes('supplement') || lowerName.includes('vitamin') || lowerDesc.includes('take')) {
-      return 'quick_win';
+  const categorizeActionByType = (itemType: string): DailyAction['category'] => {
+    switch (itemType) {
+      case 'supplement':
+        return 'quick_win';
+      case 'exercise':
+      case 'therapy':
+        return 'deep_practice';
+      case 'habit':
+        return 'energy_booster';
+      case 'diet':
+        return 'quick_win';
+      default:
+        return 'optional';
     }
-    
-    if (lowerName.includes('workout') || lowerName.includes('meditation') || lowerName.includes('yoga')) {
-      return 'deep_practice';
-    }
-    
-    if (lowerName.includes('walk') || lowerName.includes('stretch') || lowerName.includes('breathe')) {
-      return 'energy_booster';
-    }
-    
-    return 'optional';
   };
 
   const estimateTime = (itemType: string): number => {
