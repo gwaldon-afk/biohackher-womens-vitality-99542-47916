@@ -42,6 +42,16 @@ import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useProtocols } from "@/hooks/useProtocols";
 import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
 import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
+import { GoalStatementCard } from "@/components/today/GoalStatementCard";
+import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
+import { NutritionSummaryCard } from "@/components/today/NutritionSummaryCard";
+import { MovementCard } from "@/components/today/MovementCard";
+import { SupplementsCard } from "@/components/today/SupplementsCard";
+import { SimpleProgressTracker } from "@/components/today/SimpleProgressTracker";
+import { useDailyPlan } from "@/hooks/useDailyPlan";
+import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
+import { ProtocolGenerationPrompt } from "@/components/ProtocolGenerationPrompt";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DashboardData {
   currentScore: number;
@@ -88,6 +98,27 @@ const Dashboard = () => {
   const { goals } = useGoals();
   const { protocols } = useProtocols();
   const activeGoals = goals.filter((g) => g.status === "active");
+
+  // Daily plan hook
+  const { 
+    actions, 
+    loading: dailyPlanLoading, 
+    completedCount, 
+    totalCount, 
+    dailyStreak,
+    refetch: refetchDailyPlan 
+  } = useDailyPlan();
+
+  // Assessment completions
+  const { completions: assessmentCompletions } = useAssessmentCompletions();
+  const assessmentCompletedCount = Object.values(assessmentCompletions).filter(p => p.completed).length;
+
+  // Daily plan calculations
+  const movements = actions.filter(a => a.category === 'deep_practice');
+  const supplements = actions.filter(a => a.category === 'quick_win' && a.type === 'protocol');
+  const remainingActions = actions.filter(a => !a.completed);
+  const estimatedMinutesRemaining = remainingActions.reduce((sum, action) => sum + action.estimatedMinutes, 0);
+  const hasNoProtocol = actions.length === 0 && !dailyPlanLoading;
 
   // Check if we should auto-open the daily submission modal
   const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
@@ -311,6 +342,44 @@ const Dashboard = () => {
     }, 2000);
   };
 
+  const handleToggleAction = async (actionId: string) => {
+    const action = actions.find(a => a.id === actionId);
+    if (!action || !user) return;
+
+    try {
+      if (action.type === 'protocol' && action.protocolItemId) {
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (action.completed) {
+          await supabase.from('protocol_item_completions')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('protocol_item_id', action.protocolItemId)
+            .eq('completed_date', today);
+        } else {
+          await supabase.from('protocol_item_completions')
+            .insert({
+              user_id: user.id,
+              protocol_item_id: action.protocolItemId,
+              completed_date: today
+            });
+          toast({
+            title: "Great work!",
+            description: "Action completed successfully",
+          });
+        }
+        refetchDailyPlan();
+      }
+    } catch (error) {
+      console.error('Error toggling action:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update action",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
@@ -397,147 +466,28 @@ const Dashboard = () => {
 
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
-              {/* Today's Action Plan */}
-              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-primary" />
-                    Today's Action Plan
-                  </CardTitle>
-                  <CardDescription>
-                    {format(new Date(), 'EEEE, MMMM d, yyyy')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {activeGoals && activeGoals.length > 0 ? (
-                      <div className="space-y-2">
-                        <div className="text-sm font-medium">Focus Areas Today:</div>
-                        <div className="flex flex-wrap gap-2">
-                          {activeGoals.slice(0, 3).map((goal) => (
-                            <Badge key={goal.id} variant="outline" className="flex items-center gap-1">
-                              <Target className="h-3 w-3" />
-                              {goal.title}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-sm text-muted-foreground">
-                        Complete your daily tracking below to build your personalised plan
-                      </div>
-                    )}
-                    
-                    {protocols && protocols.filter(p => p.is_active).length > 0 && (
-                      <div className="space-y-2 pt-4 border-t">
-                        <div className="text-sm font-medium">Active Interventions:</div>
-                        <div className="text-sm text-muted-foreground">
-                          {protocols.filter(p => p.is_active).length} protocol(s) in progress
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Action Buttons for Special Features */}
-              {(menoMapEnabled || energyLoopEnabled) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {menoMapEnabled && (
-                    <Card className="border-purple-200/50 bg-gradient-to-br from-purple-50/50 to-pink-50/50">
-                      <CardContent className="pt-6">
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">🌸</span>
-                            <h3 className="font-semibold">MenoMap Tracker</h3>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Log today's symptoms and track your hormonal journey
-                          </p>
-                          <Button 
-                            onClick={() => navigate('/menomap/tracker')}
-                            className="w-full"
-                            variant="outline"
-                          >
-                            Track Symptoms
-                            <ChevronRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                  
-                  {energyLoopEnabled && (
-                    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-                      <CardContent className="pt-6">
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Zap className="h-5 w-5 text-primary" />
-                            <h3 className="font-semibold">Energy Check-In</h3>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Update your daily energy loop with biometric data
-                          </p>
-                          <Button 
-                            onClick={() => navigate('/energy-loop/check-in')}
-                            className="w-full"
-                          >
-                            Daily Check-In
-                            <ChevronRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
+              {hasNoProtocol && assessmentCompletedCount > 0 && (
+                <ProtocolGenerationPrompt 
+                  assessmentsCompleted={assessmentCompletedCount}
+                  onGenerate={refetchDailyPlan}
+                />
               )}
 
-              {/* Goal check-in alerts */}
-              <GoalCheckInAlert />
-
-              {/* Working towards goals widget */}
-              <GoalWorkingTowards />
-
-              {/* First-time user welcome message */}
-              {dailyScoreCount === 0 && (
-                <Alert className="border-primary/20 bg-primary/5">
-                  <Activity className="h-4 w-4" />
-                  <AlertTitle>Welcome to Your Health Hub! 👋</AlertTitle>
-                  <AlertDescription>
-                    Start by submitting your first daily score below. Track 6 key areas: Sleep Quality, Stress Levels, Physical Activity, Nutrition, Social Connection, and Mental Wellness. Just 2-3 minutes per day!
-                  </AlertDescription>
-                </Alert>
+              <GoalStatementCard />
+              <DailyEssentialsCard />
+              <NutritionSummaryCard />
+              {movements.length > 0 && (
+                <MovementCard movements={movements} onToggle={handleToggleAction} />
               )}
-
-              {/* Daily LIS Input */}
-              <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <Activity className="h-5 w-5 text-primary" />
-                        {dailyScoreCount === 0 ? "Submit Your First Daily Score" : "Submit Today's LIS 2.0 Data"}
-                        <Badge variant="secondary" className="ml-2">Daily Tracking</Badge>
-                      </CardTitle>
-                      <CardDescription className="mt-2">
-                        LIS 2.0 tracks 6 pillars daily: Stress & Subjective Age (30%), Activity (20%), Sleep (15%), 
-                        Nutrition (15%), Social (10%), Cognitive (10%)
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <LISInputForm onScoreCalculated={() => lisData.refetch()}>
-                    <Button size="lg" className="w-full">
-                      <Zap className="h-5 w-5 mr-2" />
-                      {dailyScoreCount === 0 ? "Complete Your First Daily Score" : "Submit Today's Score"}
-                    </Button>
-                  </LISInputForm>
-                </CardContent>
-              </Card>
-
-              {/* Today's Protocol Widget */}
-              {dailyScoreCount > 0 && <TodayProtocolWidget />}
+              {supplements.length > 0 && (
+                <SupplementsCard supplements={supplements} onToggle={handleToggleAction} />
+              )}
+              <SimpleProgressTracker 
+                completedCount={completedCount}
+                totalCount={totalCount}
+                estimatedMinutesRemaining={estimatedMinutesRemaining}
+                dailyStreak={dailyStreak?.current_streak || 0}
+              />
             </TabsContent>
 
             {/* Progress Tab - Tracking & Streaks */}
