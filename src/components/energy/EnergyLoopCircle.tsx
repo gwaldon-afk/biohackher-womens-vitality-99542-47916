@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
 
 interface SegmentData {
   name: string;
@@ -15,129 +16,115 @@ interface EnergyLoopCircleProps {
 }
 
 export const EnergyLoopCircle = ({ segments, compositeScore, size = 280 }: EnergyLoopCircleProps) => {
-  const centerX = size / 2;
-  const centerY = size / 2;
-  const radius = size * 0.35;
-  const strokeWidth = size * 0.12;
+  // Transform segments data for Recharts
+  const chartData = segments.map(segment => ({
+    dimension: `${segment.icon} ${segment.name}`,
+    score: Math.round(segment.score),
+    fullMark: 100,
+  }));
 
-  // Calculate circle circumference
-  const circumference = 2 * Math.PI * radius;
-  
-  // Each segment is 72 degrees (360 / 5)
-  const segmentAngle = 72;
-  const gapAngle = 2; // Small gap between segments
-
-  const createArc = (startAngle: number, endAngle: number, score: number) => {
-    const start = (startAngle * Math.PI) / 180;
-    const end = (endAngle * Math.PI) / 180;
-    
-    const x1 = centerX + radius * Math.cos(start);
-    const y1 = centerY + radius * Math.sin(start);
-    const x2 = centerX + radius * Math.cos(end);
-    const y2 = centerY + radius * Math.sin(end);
-    
-    const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
-    
-    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`;
-  };
+  // Brand color mapping for segments
+  const brandColors = [
+    "hsl(var(--primary))",      // Rest - brand peach
+    "hsl(var(--secondary))",     // Calm - brand stone
+    "hsl(var(--success))",       // Fuel - green
+    "hsl(var(--warning))",       // Move - warning/amber
+    "hsl(var(--primary-dark))",  // Flow - darker peach
+  ];
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return "hsl(var(--success))";
-    if (score >= 60) return "hsl(var(--warning))";
-    return "hsl(var(--destructive))";
+    if (score >= 60) return "hsl(var(--primary))";
+    return "hsl(var(--warning))";
+  };
+
+  const chartConfig = {
+    score: {
+      label: "Energy Score",
+      color: "hsl(var(--primary))",
+    },
   };
 
   return (
-    <TooltipProvider>
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg width={size} height={size} className="transform -rotate-90">
-          {/* Background circles */}
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r={radius}
-            fill="none"
-            stroke="hsl(var(--muted))"
-            strokeWidth={strokeWidth}
-            opacity={0.2}
-          />
-          
-          {/* Segment arcs */}
-          {segments.map((segment, index) => {
-            const startAngle = index * segmentAngle + (index * gapAngle);
-            const endAngle = startAngle + segmentAngle - gapAngle;
-            const arcPath = createArc(startAngle, endAngle, segment.score);
-            
-            // Calculate dash array for progress
-            const segmentCircumference = (segmentAngle / 360) * circumference;
-            const progress = (segment.score / 100) * segmentCircumference;
-            
-            return (
-              <Tooltip key={segment.name}>
-                <TooltipTrigger asChild>
-                  <motion.path
-                    d={arcPath}
-                    fill="none"
-                    stroke={segment.color}
-                    strokeWidth={strokeWidth}
-                    strokeLinecap="round"
-                    strokeDasharray={`${progress} ${segmentCircumference}`}
-                    initial={{ strokeDasharray: `0 ${segmentCircumference}` }}
-                    animate={{ strokeDasharray: `${progress} ${segmentCircumference}` }}
-                    transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
-                    className="cursor-pointer hover:opacity-80 transition-opacity"
-                    style={{
-                      filter: segment.score > 60 ? "drop-shadow(0 0 8px currentColor)" : "none"
-                    }}
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <div className="text-center">
-                    <div className="text-sm font-medium">{segment.icon} {segment.name}</div>
-                    <div className="text-lg font-bold">{Math.round(segment.score)}/100</div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
-        </svg>
-        
-        {/* Center score */}
-        <motion.div 
-          className="absolute inset-0 flex flex-col items-center justify-center"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <div className="text-sm text-muted-foreground mb-1">Today's Energy</div>
-          <div 
-            className="text-5xl font-bold"
+    <div className="relative" style={{ width: size, height: size }}>
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <ChartContainer config={chartConfig} className="h-full w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={chartData}>
+              <PolarGrid 
+                stroke="hsl(var(--border))" 
+                strokeWidth={1}
+                strokeDasharray="3 3"
+              />
+              <PolarAngleAxis
+                dataKey="dimension"
+                tick={{ 
+                  fill: "hsl(var(--foreground))", 
+                  fontSize: 12,
+                  fontWeight: 500,
+                }}
+                tickLine={false}
+              />
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, 100]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                tickCount={6}
+              />
+              <Radar
+                name="Energy Score"
+                dataKey="score"
+                stroke="hsl(var(--primary))"
+                fill="hsl(var(--primary))"
+                fillOpacity={0.3}
+                strokeWidth={2}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </motion.div>
+
+      {/* Center score overlay */}
+      <motion.div
+        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        <div className="bg-background/90 backdrop-blur-sm rounded-full px-6 py-4 border-2 border-border shadow-lg">
+          <div className="text-xs text-muted-foreground mb-1 text-center font-medium">Today's Energy</div>
+          <div
+            className="text-4xl font-bold text-center"
             style={{ color: getScoreColor(compositeScore) }}
           >
             {Math.round(compositeScore)}
           </div>
-          <div className="text-xl text-muted-foreground">/100</div>
-        </motion.div>
-        
-        {/* Pulsing glow effect when score is high */}
-        {compositeScore >= 80 && (
-          <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: `radial-gradient(circle, ${getScoreColor(compositeScore)}33 0%, transparent 70%)`,
-            }}
-            animate={{
-              scale: [1, 1.05, 1],
-              opacity: [0.5, 0.8, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        )}
-      </div>
-    </TooltipProvider>
+          <div className="text-sm text-muted-foreground text-center">/100</div>
+        </div>
+      </motion.div>
+
+      {/* Pulsing glow effect when score is high */}
+      {compositeScore >= 80 && (
+        <motion.div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle, hsl(var(--success) / 0.15) 0%, transparent 70%)`,
+          }}
+          animate={{
+            scale: [1, 1.05, 1],
+            opacity: [0.5, 0.8, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      )}
+    </div>
   );
 };
