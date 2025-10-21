@@ -14,9 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        'albra': ['Playfair Display', 'serif'],
-        'avenir': ['Inter', 'sans-serif'],
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+        'sans': ['Poppins', 'system-ui', 'sans-serif'],
         'serif': ['Playfair Display', 'serif'],
       },
       colors: {
@@ -90,8 +89,8 @@ export default {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down 0.3s ease-in-out",
+        "accordion-up": "accordion-up 0.3s ease-in-out",
       },
     },
   },

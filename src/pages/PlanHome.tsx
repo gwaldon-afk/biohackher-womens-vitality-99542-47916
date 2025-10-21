@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Brain, Dumbbell, Sparkles, Heart, Plus } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import CheckinMenu from "@/components/CheckinMenu";
+import GlowMeter_Ring from "@/components/GlowMeter_Ring";
 
 const pillarCards = [
   {
@@ -53,36 +54,7 @@ const PlanHome = () => {
           <h1 className="text-4xl font-bold">Your Vitality Plan</h1>
           
           <div className="flex justify-center">
-            <div className="relative w-32 h-32">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-muted"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${(bioScore / 100) * 352} 352`}
-                  className="text-primary"
-                  style={{
-                    filter: 'drop-shadow(0 0 8px hsl(var(--primary)))',
-                  }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold">{bioScore}</span>
-                <span className="text-xs text-muted-foreground">Glow Score</span>
-              </div>
-            </div>
+            <GlowMeter_Ring value={bioScore} size={200} strokeWidth={16} />
           </div>
         </div>
 

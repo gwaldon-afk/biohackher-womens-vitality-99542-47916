@@ -1,43 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Daily Longevity Design System - Authentic Brand Colors & Style
-All colors MUST be HSL. Warm, earthy, sophisticated feminine wellness aesthetic.
-Based on modern longevity and wellness brand identity.
+/* Glow Meter Design System
+All colors MUST be HSL. Theme based on user stream: coral for menopause, mint for performance.
 */
 
 @layer base {
   :root {
-    /* Base colors - Brand Stone foundation */
-    --background: 0 0% 100%;
+    /* Base colors - Soft gradient background */
+    --background: 10 100% 99%;
     --foreground: 0 0% 0%;
 
-    /* Card system - Brand Stone surfaces */
-    --card: 30 24% 95%;
+    /* Card system */
+    --card: 20 63% 96%;
     --card-foreground: 0 0% 0%;
 
-    --popover: 30 24% 95%;
+    --popover: 20 63% 96%;
     --popover-foreground: 0 0% 0%;
 
-  /* Primary - Brand Peach with darker variant for HER styling */
-  --primary: 20 86% 82%;
-  --primary-foreground: 0 0% 0%;
-  --primary-light: 20 86% 90%;
-  --primary-dark: 20 86% 68%; /* Darker peach like HER in logo */
+    /* Primary - Coral #F97E7E */
+    --primary: 0 91% 74%;
+    --primary-foreground: 0 0% 0%;
+    --primary-light: 0 91% 84%;
+    --primary-dark: 0 91% 64%;
 
-    /* Secondary - Brand Stone */
-    --secondary: 30 24% 87%;
+    /* Secondary - Mint #A6E3B9 */
+    --secondary: 142 57% 77%;
     --secondary-foreground: 0 0% 0%;
-    --secondary-light: 30 24% 92%;
-    --secondary-dark: 30 24% 82%;
+    --secondary-light: 142 57% 87%;
+    --secondary-dark: 142 57% 67%;
 
-    /* Muted - Brand Stone variants */
-    --muted: 30 24% 94%;
+    /* Muted */
+    --muted: 20 40% 94%;
     --muted-foreground: 0 0% 45%;
 
-    /* Accent - Brand Stone accent */
-    --accent: 30 24% 90%;
+    /* Accent - Cream #F8E6C1 */
+    --accent: 39 77% 86%;
     --accent-foreground: 0 0% 0%;
 
     /* Health status colors - brand aligned */
@@ -48,24 +49,24 @@ Based on modern longevity and wellness brand identity.
     --destructive: 0 65% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders and inputs - brand stone tones */
-    --border: 30 24% 82%;
-    --input: 30 24% 90%;
-    --ring: 20 86% 82%;
+    /* Borders and inputs */
+    --border: 20 40% 88%;
+    --input: 20 40% 94%;
+    --ring: 0 91% 74%;
 
-    /* Gradients - Brand Peach and Stone */
-    --gradient-primary: linear-gradient(135deg, hsl(20 86% 82%), hsl(20 86% 90%));
-    --gradient-secondary: linear-gradient(135deg, hsl(30 24% 87%), hsl(30 24% 92%));
-    --gradient-hero: linear-gradient(135deg, hsl(20 86% 82%) 0%, hsl(30 24% 87%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(30 24% 95%) 0%, hsl(30 24% 92%) 100%);
+    /* Gradients - Background gradient #FFF9F8 → #FDF1EE */
+    --gradient-background: linear-gradient(180deg, hsl(10 100% 99%), hsl(20 63% 96%));
+    --gradient-primary: linear-gradient(135deg, hsl(0 91% 74%), hsl(0 91% 84%));
+    --gradient-secondary: linear-gradient(135deg, hsl(142 57% 77%), hsl(142 57% 87%));
+    --gradient-card: linear-gradient(145deg, hsl(20 63% 96%) 0%, hsl(20 40% 94%) 100%);
 
-    /* Shadows - Brand aligned */
-    --shadow-sm: 0 1px 2px 0 hsl(30 24% 70% / 0.2);
-    --shadow-md: 0 4px 6px -1px hsl(30 24% 65% / 0.15), 0 2px 4px -1px hsl(30 24% 65% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(30 24% 65% / 0.15), 0 4px 6px -2px hsl(30 24% 65% / 0.08);
-    --shadow-glow: 0 0 25px hsl(20 86% 82% / 0.3);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
+    --shadow-glow: 0 0 25px hsl(0 91% 74% / 0.3);
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -139,11 +140,14 @@ Based on modern longevity and wellness brand identity.
   }
 
   body {
-    @apply bg-background text-foreground font-avenir antialiased;
+    @apply text-foreground antialiased;
+    background: var(--gradient-background);
+    font-family: 'Poppins', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-albra font-semibold tracking-tight;
+    @apply font-semibold tracking-tight;
+    font-family: 'Poppins', sans-serif;
   }
 }
 
