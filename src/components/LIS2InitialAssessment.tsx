@@ -32,7 +32,7 @@ export const LIS2InitialAssessment = () => {
     year_of_birth: "",
     height_cm: "",
     weight_kg: "",
-    smoking_cessation_category: "never" as "never" | "current" | "quit_under_5y" | "quit_5_10y" | "quit_over_10y",
+    smoking_cessation_category: "never" as "never" | "current" | "quit_within_1y" | "quit_1_5y" | "quit_over_5y",
     initial_subjective_age: "",
     social_engagement_baseline: 3,
   });
@@ -175,16 +175,16 @@ export const LIS2InitialAssessment = () => {
             <Label htmlFor="current" className="font-normal">Current smoker</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="quit_under_5y" id="quit_under_5y" />
-            <Label htmlFor="quit_under_5y" className="font-normal">Quit less than 5 years ago</Label>
+            <RadioGroupItem value="quit_within_1y" id="quit_within_1y" />
+            <Label htmlFor="quit_within_1y" className="font-normal">Within 1 year</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="quit_5_10y" id="quit_5_10y" />
-            <Label htmlFor="quit_5_10y" className="font-normal">Quit 5-10 years ago</Label>
+            <RadioGroupItem value="quit_1_5y" id="quit_1_5y" />
+            <Label htmlFor="quit_1_5y" className="font-normal">1-5 years ago</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="quit_over_10y" id="quit_over_10y" />
-            <Label htmlFor="quit_over_10y" className="font-normal">Quit more than 10 years ago</Label>
+            <RadioGroupItem value="quit_over_5y" id="quit_over_5y" />
+            <Label htmlFor="quit_over_5y" className="font-normal">5+ years ago</Label>
           </div>
         </RadioGroup>
       </div>

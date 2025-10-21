@@ -12,7 +12,7 @@ interface HealthProfile {
   is_current_smoker: boolean;
   is_former_smoker: boolean;
   date_quit_smoking?: string;
-  smoking_cessation_category?: "never" | "current" | "quit_under_5y" | "quit_5_10y" | "quit_over_10y";
+  smoking_cessation_category?: "never" | "current" | "quit_within_1y" | "quit_1_5y" | "quit_over_5y";
   initial_subjective_age_delta?: number;
   social_engagement_baseline?: number;
   created_at?: string;
