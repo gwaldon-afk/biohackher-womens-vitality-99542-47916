@@ -1,4 +1,5 @@
-// Main onboarding flow component
+// LEGACY onboarding flow component - New users should use /onboarding/welcome-stream-select
+// This flow is kept for backwards compatibility
 import { useState } from "react";
 import { OnboardingProgress } from "./OnboardingProgress";
 import { WelcomeStep } from "./WelcomeStep";
@@ -50,7 +51,7 @@ export function OnboardingFlow() {
           description: "Your health journey begins now.",
         });
 
-        navigate('/dashboard');
+        navigate('/plan-home');
       } catch (error) {
         console.error('Error completing onboarding:', error);
         toast({

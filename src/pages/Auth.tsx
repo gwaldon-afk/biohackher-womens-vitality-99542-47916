@@ -71,7 +71,7 @@ const Auth = () => {
         
         // If onboarding not completed, redirect to onboarding
         if (profile && !profile.onboarding_completed) {
-          navigate('/onboarding');
+          navigate('/onboarding/welcome-stream-select');
           return;
         }
 
@@ -122,7 +122,7 @@ const Auth = () => {
           .maybeSingle();
         
         if (profile && !profile.onboarding_completed) {
-          navigate('/onboarding');
+          navigate('/onboarding/welcome-stream-select');
           return;
         }
 
@@ -188,7 +188,7 @@ const Auth = () => {
     } else if (!error) {
       // New user without guest session - redirect to onboarding
       toast.success("Welcome! Let's set up your health profile.");
-      navigate('/onboarding');
+      navigate('/onboarding/welcome-stream-select');
     }
     
     setIsLoading(false);
