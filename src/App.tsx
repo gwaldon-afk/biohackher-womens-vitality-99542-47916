@@ -75,6 +75,23 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
 import MyDailyPlan from "./pages/MyDailyPlan";
+import WelcomeStreamSelect from "./pages/onboarding/WelcomeStreamSelect";
+import Intro3Step from "./pages/onboarding/Intro3Step";
+import PermissionSetup from "./pages/onboarding/PermissionSetup";
+import MenoMapEntry from "./pages/onboarding/MenoMapEntry";
+import MenoMapPerformance from "./pages/onboarding/MenoMapPerformance";
+import MenoMapMenopause from "./pages/onboarding/MenoMapMenopause";
+import MenoMapResultsOnboarding from "./pages/onboarding/MenoMapResults";
+import GoalSetupChat from "./pages/onboarding/GoalSetupChat";
+import GoalAffirmation from "./pages/onboarding/GoalAffirmation";
+import PlanHome from "./pages/PlanHome";
+import NutritionScan from "./pages/NutritionScan";
+import MoodCheckin from "./pages/MoodCheckin";
+import QuickLog from "./pages/QuickLog";
+import DashboardMain from "./pages/DashboardMain";
+import InsightsDetail from "./pages/InsightsDetail";
+import ExpertFinderMap from "./pages/ExpertFinderMap";
+import ProfileSettings from "./pages/ProfileSettings";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -175,6 +192,27 @@ const App = () => (
           <Route path="/expert/register" element={<ProtectedRoute><ExpertRegistration /></ProtectedRoute>} />
           <Route path="/expert/dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
           <Route path="/admin/experts" element={<ProtectedRoute><ExpertVerification /></ProtectedRoute>} />
+          
+          {/* New Onboarding Flow Routes */}
+          <Route path="/onboarding/welcome-stream-select" element={<WelcomeStreamSelect />} />
+          <Route path="/onboarding/intro-3step" element={<Intro3Step />} />
+          <Route path="/onboarding/permission-setup" element={<PermissionSetup />} />
+          <Route path="/onboarding/menomap-entry" element={<MenoMapEntry />} />
+          <Route path="/onboarding/menomap-performance" element={<MenoMapPerformance />} />
+          <Route path="/onboarding/menomap-menopause" element={<MenoMapMenopause />} />
+          <Route path="/onboarding/menomap-results" element={<MenoMapResultsOnboarding />} />
+          <Route path="/onboarding/goal-setup-chat" element={<GoalSetupChat />} />
+          <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
+          
+          {/* New User Journey Routes */}
+          <Route path="/plan-home" element={<ProtectedRoute><PlanHome /></ProtectedRoute>} />
+          <Route path="/nutrition-scan" element={<ProtectedRoute><NutritionScan /></ProtectedRoute>} />
+          <Route path="/mood-checkin" element={<ProtectedRoute><MoodCheckin /></ProtectedRoute>} />
+          <Route path="/quick-log" element={<ProtectedRoute><QuickLog /></ProtectedRoute>} />
+          <Route path="/dashboard-main" element={<ProtectedRoute><DashboardMain /></ProtectedRoute>} />
+          <Route path="/insights-detail" element={<ProtectedRoute><InsightsDetail /></ProtectedRoute>} />
+          <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
+          <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
