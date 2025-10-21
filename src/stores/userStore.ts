@@ -12,6 +12,13 @@ interface Profile {
   measurement_system: string | null;
   timezone: string | null;
   onboarding_completed: boolean;
+  user_stream: 'performance' | 'menopause';
+  device_permissions: {
+    camera: boolean;
+    microphone: boolean;
+    light_sensor: boolean;
+    motion: boolean;
+  };
   created_at: string;
   updated_at: string;
 }
