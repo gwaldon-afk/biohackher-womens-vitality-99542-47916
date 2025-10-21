@@ -32,9 +32,7 @@ export const LIS2InitialAssessment = () => {
     year_of_birth: "",
     height_cm: "",
     weight_kg: "",
-    is_current_smoker: false,
-    is_former_smoker: false,
-    date_quit_smoking: "",
+    smoking_cessation_category: "never" as "never" | "current" | "quit_under_5y" | "quit_5_10y" | "quit_over_10y",
     initial_subjective_age: "",
     social_engagement_baseline: 3,
   });
@@ -56,9 +54,9 @@ export const LIS2InitialAssessment = () => {
         date_of_birth: dateOfBirth,
         height_cm: parseFloat(formData.height_cm),
         weight_kg: parseFloat(formData.weight_kg),
-        is_current_smoker: formData.is_current_smoker,
-        is_former_smoker: formData.is_former_smoker,
-        date_quit_smoking: formData.date_quit_smoking || undefined,
+        smoking_cessation_category: formData.smoking_cessation_category,
+        is_current_smoker: formData.smoking_cessation_category === "current",
+        is_former_smoker: formData.smoking_cessation_category !== "never" && formData.smoking_cessation_category !== "current",
         initial_subjective_age_delta: subjectiveAgeDelta,
         social_engagement_baseline: formData.social_engagement_baseline,
       });
@@ -156,47 +154,39 @@ export const LIS2InitialAssessment = () => {
           <Cigarette className="h-4 w-4" />
           Smoking Status
         </Label>
+        <p className="text-xs text-muted-foreground">
+          Select the option that best describes your smoking history. These timeframes are based on cardiovascular research.
+        </p>
         <RadioGroup
-          value={
-            formData.is_current_smoker
-              ? "current"
-              : formData.is_former_smoker
-              ? "former"
-              : "never"
-          }
-          onValueChange={(value) => {
+          value={formData.smoking_cessation_category}
+          onValueChange={(value: any) => {
             setFormData({
               ...formData,
-              is_current_smoker: value === "current",
-              is_former_smoker: value === "former",
+              smoking_cessation_category: value,
             });
           }}
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="never" id="never" />
-            <Label htmlFor="never">Never smoked</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="former" id="former" />
-            <Label htmlFor="former">Former smoker</Label>
+            <Label htmlFor="never" className="font-normal">Never smoked</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="current" id="current" />
-            <Label htmlFor="current">Current smoker</Label>
+            <Label htmlFor="current" className="font-normal">Current smoker</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="quit_under_5y" id="quit_under_5y" />
+            <Label htmlFor="quit_under_5y" className="font-normal">Quit less than 5 years ago</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="quit_5_10y" id="quit_5_10y" />
+            <Label htmlFor="quit_5_10y" className="font-normal">Quit 5-10 years ago</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="quit_over_10y" id="quit_over_10y" />
+            <Label htmlFor="quit_over_10y" className="font-normal">Quit more than 10 years ago</Label>
           </div>
         </RadioGroup>
-
-        {formData.is_former_smoker && (
-          <div className="space-y-2 ml-6">
-            <Label htmlFor="quit-date">Date Quit Smoking</Label>
-            <Input
-              id="quit-date"
-              type="date"
-              value={formData.date_quit_smoking}
-              onChange={(e) => setFormData({ ...formData, date_quit_smoking: e.target.value })}
-            />
-          </div>
-        )}
       </div>
 
       <div className="flex gap-2">
