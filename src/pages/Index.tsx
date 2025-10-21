@@ -41,7 +41,7 @@ const Index = () => {
                   <Button 
                     size="lg"
                     className="bg-white text-primary hover:bg-white/90 px-6 py-6 h-auto shadow-xl"
-                    onClick={() => navigate("/guest-lis-assessment")}
+                    onClick={() => navigate("/lis2-setup")}
                   >
                     <Target className="h-5 w-5 mr-2" />
                     Take Free Longevity Assessment
@@ -354,7 +354,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="text-xl px-10 py-8 h-auto shadow-lg"
-                onClick={() => navigate("/guest-lis-assessment")}
+                onClick={() => navigate("/lis2-setup")}
               >
                 <Target className="h-6 w-6 mr-2" />
                 Start Free Assessment →
