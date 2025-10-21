@@ -29,7 +29,7 @@ export const LIS2InitialAssessment = () => {
   const [step, setStep] = useState(1);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [formData, setFormData] = useState({
-    date_of_birth: "",
+    year_of_birth: "",
     height_cm: "",
     weight_kg: "",
     is_current_smoker: false,
@@ -39,24 +39,21 @@ export const LIS2InitialAssessment = () => {
     social_engagement_baseline: 3,
   });
 
-  const calculateAge = (dob: string) => {
-    const birthDate = new Date(dob);
+  const calculateAge = (yearOfBirth: string) => {
     const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
+    return today.getFullYear() - parseInt(yearOfBirth);
   };
 
   const handleSubmit = async () => {
     try {
-      const chronologicalAge = calculateAge(formData.date_of_birth);
+      const chronologicalAge = calculateAge(formData.year_of_birth);
       const subjectiveAgeDelta = parseInt(formData.initial_subjective_age) - chronologicalAge;
 
+      // Convert year to date format (January 1st of birth year)
+      const dateOfBirth = `${formData.year_of_birth}-01-01`;
+
       await createOrUpdateProfile({
-        date_of_birth: formData.date_of_birth,
+        date_of_birth: dateOfBirth,
         height_cm: parseFloat(formData.height_cm),
         weight_kg: parseFloat(formData.weight_kg),
         is_current_smoker: formData.is_current_smoker,
@@ -87,14 +84,20 @@ export const LIS2InitialAssessment = () => {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="dob">Date of Birth</Label>
+        <Label htmlFor="yob">Year of Birth</Label>
+        <p className="text-xs text-muted-foreground">
+          We use this to calculate your longevity metrics. You can add your full birthday later for celebrations!
+        </p>
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <Input
-            id="dob"
-            type="date"
-            value={formData.date_of_birth}
-            onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+            id="yob"
+            type="number"
+            placeholder="1990"
+            min="1900"
+            max={new Date().getFullYear()}
+            value={formData.year_of_birth}
+            onChange={(e) => setFormData({ ...formData, year_of_birth: e.target.value })}
             required
           />
         </div>
@@ -138,7 +141,7 @@ export const LIS2InitialAssessment = () => {
 
       <Button
         onClick={() => setStep(2)}
-        disabled={!formData.date_of_birth || !formData.height_cm || !formData.weight_kg}
+        disabled={!formData.year_of_birth || !formData.height_cm || !formData.weight_kg}
         className="w-full"
       >
         Continue
@@ -208,7 +211,7 @@ export const LIS2InitialAssessment = () => {
   );
 
   const renderStep3 = () => {
-    const chronologicalAge = formData.date_of_birth ? calculateAge(formData.date_of_birth) : 0;
+    const chronologicalAge = formData.year_of_birth ? calculateAge(formData.year_of_birth) : 0;
 
     return (
       <div className="space-y-6">
@@ -322,7 +325,7 @@ export const LIS2InitialAssessment = () => {
           Before you can start tracking your daily longevity score, we need to establish your personal baseline. 
           This one-time setup takes about 2 minutes and includes:
           <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
-            <li>Basic health metrics (DOB, height, weight)</li>
+            <li>Basic health metrics (year of birth, height, weight)</li>
             <li>Lifestyle factors (smoking status)</li>
             <li>Initial subjective age assessment</li>
             <li>Social engagement baseline</li>
