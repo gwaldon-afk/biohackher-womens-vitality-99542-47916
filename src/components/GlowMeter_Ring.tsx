@@ -25,11 +25,11 @@ const GlowMeter_Ring = ({ value, size = 200, strokeWidth = 16 }: GlowMeterRingPr
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (value / 100) * circumference;
 
-  // Color based on user_stream
-  const color = profile?.user_stream === 'performance' ? '#A6E3B9' : '#F97E7E';
-  const glowColor = profile?.user_stream === 'performance' 
-    ? 'rgba(166, 227, 185, 0.5)' 
-    : 'rgba(249, 126, 126, 0.5)';
+  // Color based on user_stream - coral for menopause, brand peach for performance/default
+  const color = profile?.user_stream === 'menopause' ? '#F97E7E' : 'hsl(20, 86%, 82%)';
+  const glowColor = profile?.user_stream === 'menopause' 
+    ? 'rgba(249, 126, 126, 0.5)' 
+    : 'rgba(251, 207, 193, 0.5)';
 
   return (
     <div className="relative inline-flex items-center justify-center">
