@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 export interface SubscriptionData {
   id: string;
@@ -14,12 +15,30 @@ export interface SubscriptionData {
   last_submission_date?: string;
 }
 
+// Mock subscription for test mode
+const MOCK_SUBSCRIPTION: SubscriptionData = {
+  id: '00000000-0000-0000-0000-000000000003',
+  subscription_tier: 'premium',
+  subscription_status: 'active',
+  daily_submissions_count: 0,
+  subscription_start_date: new Date().toISOString(),
+};
+
 export const useSubscription = () => {
   const { user } = useAuth();
-  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(
+    TEST_MODE_ENABLED ? MOCK_SUBSCRIPTION : null
+  );
+  const [loading, setLoading] = useState(!TEST_MODE_ENABLED);
 
   const fetchSubscription = async () => {
+    // Skip fetching in test mode
+    if (TEST_MODE_ENABLED) {
+      setSubscription(MOCK_SUBSCRIPTION);
+      setLoading(false);
+      return;
+    }
+
     if (!user) {
       setSubscription(null);
       setLoading(false);
