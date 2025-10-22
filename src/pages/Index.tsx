@@ -41,7 +41,7 @@ const Index = () => {
                   <Button 
                     size="lg"
                     className="bg-white text-primary hover:bg-white/90 px-6 py-6 h-auto shadow-xl"
-                    onClick={() => navigate("/lis2-setup")}
+                    onClick={() => navigate("/guest-lis-assessment")}
                   >
                     <Target className="h-5 w-5 mr-2" />
                     Take Free Longevity Assessment
