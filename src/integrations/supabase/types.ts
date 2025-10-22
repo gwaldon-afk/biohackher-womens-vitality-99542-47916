@@ -117,6 +117,42 @@ export type Database = {
         }
         Relationships: []
       }
+      content_translations: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string | null
+          description: string | null
+          detailed_description: string | null
+          id: string
+          locale: string
+          name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          description?: string | null
+          detailed_description?: string | null
+          id?: string
+          locale: string
+          name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          description?: string | null
+          detailed_description?: string | null
+          id?: string
+          locale?: string
+          name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           biological_age_impact: number
@@ -440,6 +476,119 @@ export type Database = {
         }
         Relationships: []
       }
+      product_symptoms: {
+        Row: {
+          created_at: string | null
+          effectiveness_score: number | null
+          id: string
+          product_id: string | null
+          symptom_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          effectiveness_score?: number | null
+          id?: string
+          product_id?: string | null
+          symptom_type: string
+        }
+        Update: {
+          created_at?: string | null
+          effectiveness_score?: number | null
+          id?: string
+          product_id?: string | null
+          symptom_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_symptoms_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          affiliate_link: string | null
+          benefits: Json | null
+          brand: string | null
+          category: string
+          contraindications: Json | null
+          created_at: string | null
+          description: string
+          detailed_description: string | null
+          display_order: number | null
+          evidence_level: string | null
+          id: string
+          image_url: string | null
+          ingredients: Json | null
+          is_active: boolean | null
+          name: string
+          price_aud: number | null
+          price_cad: number | null
+          price_gbp: number | null
+          price_usd: number | null
+          research_citations: Json | null
+          target_pillars: Json | null
+          target_symptoms: Json | null
+          updated_at: string | null
+          usage_instructions: string | null
+        }
+        Insert: {
+          affiliate_link?: string | null
+          benefits?: Json | null
+          brand?: string | null
+          category: string
+          contraindications?: Json | null
+          created_at?: string | null
+          description: string
+          detailed_description?: string | null
+          display_order?: number | null
+          evidence_level?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json | null
+          is_active?: boolean | null
+          name: string
+          price_aud?: number | null
+          price_cad?: number | null
+          price_gbp?: number | null
+          price_usd?: number | null
+          research_citations?: Json | null
+          target_pillars?: Json | null
+          target_symptoms?: Json | null
+          updated_at?: string | null
+          usage_instructions?: string | null
+        }
+        Update: {
+          affiliate_link?: string | null
+          benefits?: Json | null
+          brand?: string | null
+          category?: string
+          contraindications?: Json | null
+          created_at?: string | null
+          description?: string
+          detailed_description?: string | null
+          display_order?: number | null
+          evidence_level?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json | null
+          is_active?: boolean | null
+          name?: string
+          price_aud?: number | null
+          price_cad?: number | null
+          price_gbp?: number | null
+          price_usd?: number | null
+          research_citations?: Json | null
+          target_pillars?: Json | null
+          target_symptoms?: Json | null
+          updated_at?: string | null
+          usage_instructions?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -645,6 +794,78 @@ export type Database = {
           },
         ]
       }
+      research_studies: {
+        Row: {
+          abstract: string | null
+          authors: string
+          created_at: string | null
+          display_order: number | null
+          doi: string | null
+          evidence_level: string | null
+          id: string
+          is_active: boolean | null
+          is_women_specific: boolean | null
+          journal: string | null
+          key_findings: Json | null
+          related_pillars: Json | null
+          related_products: string[] | null
+          related_symptoms: Json | null
+          related_toolkit_items: string[] | null
+          sample_size: number | null
+          study_type: string | null
+          title: string
+          updated_at: string | null
+          url: string | null
+          year: number | null
+        }
+        Insert: {
+          abstract?: string | null
+          authors: string
+          created_at?: string | null
+          display_order?: number | null
+          doi?: string | null
+          evidence_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_women_specific?: boolean | null
+          journal?: string | null
+          key_findings?: Json | null
+          related_pillars?: Json | null
+          related_products?: string[] | null
+          related_symptoms?: Json | null
+          related_toolkit_items?: string[] | null
+          sample_size?: number | null
+          study_type?: string | null
+          title: string
+          updated_at?: string | null
+          url?: string | null
+          year?: number | null
+        }
+        Update: {
+          abstract?: string | null
+          authors?: string
+          created_at?: string | null
+          display_order?: number | null
+          doi?: string | null
+          evidence_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_women_specific?: boolean | null
+          journal?: string | null
+          key_findings?: Json | null
+          related_pillars?: Json | null
+          related_products?: string[] | null
+          related_symptoms?: Json | null
+          related_toolkit_items?: string[] | null
+          sample_size?: number | null
+          study_type?: string | null
+          title?: string
+          updated_at?: string | null
+          url?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
       self_reported_metrics: {
         Row: {
           created_at: string
@@ -844,6 +1065,110 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      toolkit_categories: {
+        Row: {
+          created_at: string | null
+          description: string
+          display_order: number
+          icon_name: string
+          id: string
+          is_active: boolean | null
+          name: string
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          display_order: number
+          icon_name: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          display_order?: number
+          icon_name?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      toolkit_items: {
+        Row: {
+          benefits: Json | null
+          category_id: string | null
+          contraindications: Json | null
+          created_at: string | null
+          description: string
+          detailed_description: string | null
+          display_order: number | null
+          evidence_level: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          protocols: Json | null
+          research_citations: Json | null
+          slug: string
+          target_assessment_types: Json | null
+          target_symptoms: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          benefits?: Json | null
+          category_id?: string | null
+          contraindications?: Json | null
+          created_at?: string | null
+          description: string
+          detailed_description?: string | null
+          display_order?: number | null
+          evidence_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          protocols?: Json | null
+          research_citations?: Json | null
+          slug: string
+          target_assessment_types?: Json | null
+          target_symptoms?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          benefits?: Json | null
+          category_id?: string | null
+          contraindications?: Json | null
+          created_at?: string | null
+          description?: string
+          detailed_description?: string | null
+          display_order?: number | null
+          evidence_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          protocols?: Json | null
+          research_citations?: Json | null
+          slug?: string
+          target_assessment_types?: Json | null
+          target_symptoms?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_assessment_completions: {
         Row: {
@@ -1095,6 +1420,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_toolkit_recommendations: {
+        Row: {
+          applicability_score: number | null
+          completed_count: number | null
+          contraindication_flags: Json | null
+          created_at: string | null
+          id: string
+          last_used_at: string | null
+          matched_assessments: Json | null
+          matched_symptoms: Json | null
+          priority_rank: number | null
+          started_at: string | null
+          suitability_score: number | null
+          toolkit_item_id: string | null
+          updated_at: string | null
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          applicability_score?: number | null
+          completed_count?: number | null
+          contraindication_flags?: Json | null
+          created_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          matched_assessments?: Json | null
+          matched_symptoms?: Json | null
+          priority_rank?: number | null
+          started_at?: string | null
+          suitability_score?: number | null
+          toolkit_item_id?: string | null
+          updated_at?: string | null
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          applicability_score?: number | null
+          completed_count?: number | null
+          contraindication_flags?: Json | null
+          created_at?: string | null
+          id?: string
+          last_used_at?: string | null
+          matched_assessments?: Json | null
+          matched_symptoms?: Json | null
+          priority_rank?: number | null
+          started_at?: string | null
+          suitability_score?: number | null
+          toolkit_item_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_toolkit_recommendations_toolkit_item_id_fkey"
+            columns: ["toolkit_item_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wearable_data: {
         Row: {
