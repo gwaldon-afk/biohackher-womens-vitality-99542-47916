@@ -29,6 +29,11 @@ export function SmartSlider({
 }: SmartSliderProps) {
   const currentLabel = labels.find(l => l.value === value);
   
+  // Helper to strip letter prefixes (A., B., C., D., etc.)
+  const stripLetterPrefix = (text: string): string => {
+    return text.replace(/^[A-D]\.\s*/, '');
+  };
+  
   // Calculate color based on score
   const getTrackColor = () => {
     if (!currentLabel) return "bg-muted";
@@ -84,16 +89,16 @@ export function SmartSlider({
       </div>
 
       {/* Labels at extremes */}
-      <div className="flex justify-between items-start gap-4 text-xs text-muted-foreground px-1">
+      <div className="flex justify-between items-start gap-4 text-sm text-muted-foreground px-1">
         <div className="flex-1 text-left space-y-1">
           {labels[0].emoji && <span className="text-lg">{labels[0].emoji}</span>}
-          <p>{labels[0].text}</p>
+          <p>{stripLetterPrefix(labels[0].text)}</p>
         </div>
         <div className="flex-1 text-right space-y-1">
           {labels[labels.length - 1].emoji && (
             <span className="text-lg">{labels[labels.length - 1].emoji}</span>
           )}
-          <p>{labels[labels.length - 1].text}</p>
+          <p>{stripLetterPrefix(labels[labels.length - 1].text)}</p>
         </div>
       </div>
     </div>
