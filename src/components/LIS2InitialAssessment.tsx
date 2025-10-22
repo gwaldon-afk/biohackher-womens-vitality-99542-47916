@@ -283,7 +283,7 @@ export const LIS2InitialAssessment = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Continue Setup</AlertDialogCancel>
             <AlertDialogAction onClick={() => navigate('/dashboard')}>
-              Exit to Dashboard
+              Exit Setup
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
