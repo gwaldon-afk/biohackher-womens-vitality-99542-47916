@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Heart, Activity, Sparkles, User } from 'lucide-react';
+import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield } from 'lucide-react';
 import { SmartSlider } from '@/components/assessments/SmartSlider';
 
 interface QuestionOption {
@@ -672,81 +672,116 @@ export default function GuestLISAssessment() {
 
         {/* Baseline Data Collection or Question Card */}
         {showBaseline ? (
-          <Card className="p-8 mb-6 border-2">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="p-3 rounded-full bg-primary/10">
-                <User className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-xl font-semibold mb-2">Before We Begin</h2>
-                <p className="text-muted-foreground">
-                  We need a few baseline metrics to calculate your personalized Longevity Impact Score
+          <Card className="border-primary/20">
+            <div className="p-8">
+              {/* Centered Header */}
+              <div className="text-center mb-8">
+                <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="h-8 w-8 text-primary" />
+                </div>
+                <h2 className="text-3xl font-bold mb-3">Before We Begin</h2>
+                <p className="text-muted-foreground text-base max-w-2xl mx-auto">
+                  We need a few baseline metrics to calculate your personalized Longevity Impact Score based on peer-reviewed research
                 </p>
               </div>
-            </div>
 
-            <div className="space-y-6">
-              <div>
-                <Label htmlFor="dob" className="text-base mb-2 block">
-                  Date of Birth
-                </Label>
-                <Input
-                  id="dob"
-                  type="date"
-                  value={baselineData.dateOfBirth}
-                  onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                  max={new Date().toISOString().split('T')[0]}
-                  className="text-lg"
-                />
-                {baselineData.dateOfBirth && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Age: {calculateAge(baselineData.dateOfBirth)} years
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="height" className="text-base mb-2 block">
-                  Height (cm)
-                </Label>
-                <Input
-                  id="height"
-                  type="number"
-                  placeholder="e.g., 165"
-                  value={baselineData.heightCm}
-                  onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
-                  min="100"
-                  max="250"
-                  className="text-lg"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="weight" className="text-base mb-2 block">
-                  Weight (kg)
-                </Label>
-                <Input
-                  id="weight"
-                  type="number"
-                  placeholder="e.g., 65"
-                  value={baselineData.weightKg}
-                  onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
-                  min="30"
-                  max="300"
-                  step="0.1"
-                  className="text-lg"
-                />
-              </div>
-
-              {bmi > 0 && (
-                <div className="p-4 bg-primary/5 rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
-                  <p className="text-3xl font-bold text-primary">{bmi}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
-                  </p>
+              <div className="space-y-6 max-w-xl mx-auto">
+                {/* Date of Birth */}
+                <div className="space-y-2">
+                  <Label htmlFor="dob" className="text-base font-medium flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-primary" />
+                    Date of Birth
+                  </Label>
+                  <Input
+                    id="dob"
+                    type="date"
+                    value={baselineData.dateOfBirth}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="h-12 text-base"
+                    placeholder="Select your date of birth"
+                  />
+                  {baselineData.dateOfBirth && (
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <span className="font-medium">Age:</span> {calculateAge(baselineData.dateOfBirth)} years
+                    </p>
+                  )}
                 </div>
-              )}
+
+                {/* Height */}
+                <div className="space-y-2">
+                  <Label htmlFor="height" className="text-base font-medium flex items-center gap-2">
+                    <Ruler className="w-4 h-4 text-primary" />
+                    Height (cm)
+                  </Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    placeholder="e.g., 165"
+                    value={baselineData.heightCm}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
+                    min="100"
+                    max="250"
+                    className="h-12 text-base"
+                  />
+                  {baselineData.heightCm && parseFloat(baselineData.heightCm) > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      About {Math.floor(parseFloat(baselineData.heightCm) / 30.48 / 12)}'{Math.round((parseFloat(baselineData.heightCm) / 30.48) % 12)}" in feet
+                    </p>
+                  )}
+                </div>
+
+                {/* Weight */}
+                <div className="space-y-2">
+                  <Label htmlFor="weight" className="text-base font-medium flex items-center gap-2">
+                    <Scale className="w-4 h-4 text-primary" />
+                    Weight (kg)
+                  </Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    placeholder="e.g., 65"
+                    value={baselineData.weightKg}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
+                    min="30"
+                    max="300"
+                    step="0.1"
+                    className="h-12 text-base"
+                  />
+                  {baselineData.weightKg && parseFloat(baselineData.weightKg) > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      About {Math.round(parseFloat(baselineData.weightKg) * 2.20462)} lbs
+                    </p>
+                  )}
+                </div>
+
+                {/* BMI Display */}
+                {bmi > 0 && (
+                  <div className="p-5 bg-primary/5 rounded-lg border border-primary/10">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
+                        <p className="text-4xl font-bold text-primary">{bmi}</p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
+                        </p>
+                      </div>
+                      <Activity className="w-12 h-12 text-primary/20" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Privacy Notice */}
+                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg border">
+                  <Shield className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium mb-1">Your data is private and secure</p>
+                    <p className="text-xs text-muted-foreground">
+                      We use these metrics solely to personalize your assessment results
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </Card>
         ) : (
@@ -830,9 +865,11 @@ export default function GuestLISAssessment() {
               <Button
                 onClick={handleBaselineSubmit}
                 disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg}
-                className="min-w-32"
+                size="lg"
+                className="min-w-48"
               >
                 Start Assessment
+                <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </>
           ) : (
