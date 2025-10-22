@@ -12,9 +12,9 @@
 
 export const TEST_MODE_ENABLED = true;
 
-// Mock user data for testing
+// Mock user data for testing - using valid UUID format
 export const MOCK_USER = {
-  id: 'test-user-id-12345',
+  id: '00000000-0000-0000-0000-000000000001',
   email: 'test@example.com',
   user_metadata: {
     preferred_name: 'Test User',
@@ -26,8 +26,8 @@ export const MOCK_USER = {
 };
 
 export const MOCK_PROFILE = {
-  id: 'test-profile-id-12345',
-  user_id: 'test-user-id-12345',
+  id: '00000000-0000-0000-0000-000000000002',
+  user_id: '00000000-0000-0000-0000-000000000001',
   preferred_name: 'Test User',
   email: 'test@example.com',
   created_at: new Date().toISOString(),
