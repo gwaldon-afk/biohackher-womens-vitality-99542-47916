@@ -56,7 +56,7 @@ export function SmartSlider({
           )}
           <div className="space-y-1">
             <p className="text-2xl font-bold text-foreground">
-              {currentLabel.text}
+              {stripLetterPrefix(currentLabel.text)}
             </p>
             <p className="text-sm text-muted-foreground">
               Score: {currentLabel.score}/100
