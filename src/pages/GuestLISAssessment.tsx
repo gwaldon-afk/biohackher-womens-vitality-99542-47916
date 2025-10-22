@@ -765,35 +765,55 @@ export default function GuestLISAssessment() {
               </div>
             </div>
 
-            <RadioGroup
-              key={question?.question_id || currentQuestion}
-              value={selectedAnswer?.text || ''}
-              onValueChange={(value) => {
-                const option = question?.options.find(opt => opt.text === value);
-                if (option) handleAnswerSelect(option);
-              }}
-              className="space-y-3"
-            >
-              {question?.options.map((option, index) => (
-                <div
-                  key={index}
-                  className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                    selectedAnswer?.text === option.text
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border'
-                  }`}
-                  onClick={() => handleAnswerSelect(option)}
-                >
-                  <RadioGroupItem value={option.text} id={`option-${index}`} />
-                  <Label
-                    htmlFor={`option-${index}`}
-                    className="flex-1 cursor-pointer leading-relaxed"
+            {question?.type === 'slider' ? (
+              <SmartSlider
+                key={question.question_id}
+                value={selectedAnswer ? question.options.findIndex(opt => opt.text === selectedAnswer.text) : 0}
+                onChange={(sliderValue) => {
+                  const option = question?.options[sliderValue];
+                  if (option) handleAnswerSelect(option);
+                }}
+                min={0}
+                max={question.options.length - 1}
+                labels={question.options.map((opt, idx) => ({
+                  value: idx,
+                  text: opt.text,
+                  emoji: opt.emoji || '',
+                  score: opt.score_value
+                }))}
+              />
+            ) : (
+              <RadioGroup
+                key={question?.question_id || currentQuestion}
+                value={selectedAnswer?.text || ''}
+                onValueChange={(value) => {
+                  const option = question?.options.find(opt => opt.text === value);
+                  if (option) handleAnswerSelect(option);
+                }}
+                className="space-y-3"
+              >
+                {question?.options.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
+                      selectedAnswer?.text === option.text
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border'
+                    }`}
+                    onClick={() => handleAnswerSelect(option)}
                   >
-                    {option.text}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+                    <RadioGroupItem value={option.text} id={`option-${index}`} />
+                    <Label
+                      htmlFor={`option-${index}`}
+                      className="flex-1 cursor-pointer leading-relaxed"
+                    >
+                      {option.emoji && <span className="mr-2">{option.emoji}</span>}
+                      {option.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            )}
           </Card>
         )}
 
