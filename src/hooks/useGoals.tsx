@@ -77,12 +77,16 @@ export const useGoals = () => {
   const fetchGoals = async (status?: 'active' | 'completed' | 'paused' | 'archived') => {
     if (!user) return [];
 
-    // In test mode, skip database fetch and return current state
+    // In test mode, load from localStorage and update state
     if (TEST_MODE_ENABLED) {
+      const stored = localStorage.getItem('test_goals');
+      const storedGoals = stored ? JSON.parse(stored) : [];
+      setGoals(storedGoals);
+      
       if (status) {
-        return goals.filter(g => g.status === status);
+        return storedGoals.filter((g: HealthGoal) => g.status === status);
       }
-      return goals;
+      return storedGoals;
     }
 
     setLoading(true);
