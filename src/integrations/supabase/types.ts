@@ -14,6 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessment_question_options: {
+        Row: {
+          created_at: string | null
+          id: string
+          option_order: number
+          option_text: string
+          question_id: string
+          score_value: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          option_order: number
+          option_text: string
+          question_id: string
+          score_value: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          option_order?: number
+          option_text?: string
+          question_id?: string
+          score_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_questions: {
+        Row: {
+          assessment_id: string
+          category: string | null
+          created_at: string | null
+          id: string
+          question_order: number
+          question_text: string
+        }
+        Insert: {
+          assessment_id: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          question_order: number
+          question_text: string
+        }
+        Update: {
+          assessment_id?: string
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          question_order?: number
+          question_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessments: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          journey_path: string | null
+          name: string
+          pillar: string
+          scoring_guidance: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id: string
+          journey_path?: string | null
+          name: string
+          pillar: string
+          scoring_guidance: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          journey_path?: string | null
+          name?: string
+          pillar?: string
+          scoring_guidance?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           biological_age_impact: number
@@ -113,6 +216,39 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      nutrition_preferences: {
+        Row: {
+          allergies: string[] | null
+          created_at: string
+          dietary_restrictions: string[] | null
+          food_preferences: string[] | null
+          health_goals: string[] | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allergies?: string[] | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          food_preferences?: string[] | null
+          health_goals?: string[] | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allergies?: string[] | null
+          created_at?: string
+          dietary_restrictions?: string[] | null
+          food_preferences?: string[] | null
+          health_goals?: string[] | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -363,6 +499,171 @@ export type Database = {
           },
         ]
       }
+      streak_tracking: {
+        Row: {
+          activity_type: string
+          created_at: string
+          current_streak: number
+          id: string
+          last_activity_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_activity_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      symptom_assessments: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          notes: string | null
+          severity: string
+          symptom_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency: string
+          id?: string
+          notes?: string | null
+          severity: string
+          symptom_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          notes?: string | null
+          severity?: string
+          symptom_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      symptom_tracking: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          severity: number | null
+          symptom_id: string
+          triggers: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          severity?: number | null
+          symptom_id: string
+          triggers?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          severity?: number | null
+          symptom_id?: string
+          triggers?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_assessment_completions: {
+        Row: {
+          assessment_id: string
+          completed_at: string
+          created_at: string
+          id: string
+          pillar: string | null
+          score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessment_id: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          pillar?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          pillar?: string | null
+          score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          created_at: string
+          id: string
+          onboarding_completed: boolean
+          onboarding_step: number | null
+          pillars_visited: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number | null
+          pillars_visited?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          onboarding_completed?: boolean
+          onboarding_step?: number | null
+          pillars_visited?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_protocols: {
         Row: {
           created_at: string
@@ -419,6 +720,42 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_symptoms: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          is_active: boolean
+          notes: string | null
+          severity: string
+          symptom_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          severity?: string
+          symptom_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          severity?: string
+          symptom_id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
