@@ -4,6 +4,7 @@ import { useSubscription } from './useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { canCreateGoal, getTierFeatures } from '@/services/subscriptionLimitsService';
 import { useToast } from './use-toast';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 export interface HealthGoal {
   id: string;
@@ -115,6 +116,47 @@ export const useGoals = () => {
     }
 
     try {
+      // In test mode, return mock goal data without database insert
+      if (TEST_MODE_ENABLED) {
+        const mockGoal: HealthGoal = {
+          id: `00000000-0000-0000-0000-00000000000${goals.length + 1}`,
+          user_id: user.id,
+          template_id: goalData.template_id || null,
+          title: goalData.title || 'Test Goal',
+          pillar_category: goalData.pillar_category || 'body',
+          status: 'active',
+          healthspan_target: goalData.healthspan_target || {},
+          aging_blueprint: goalData.aging_blueprint || {},
+          barriers_plan: goalData.barriers_plan || {},
+          longevity_metrics: goalData.longevity_metrics || {},
+          triggered_by_assessment_id: goalData.triggered_by_assessment_id || null,
+          related_assessment_ids: goalData.related_assessment_ids || [],
+          current_progress: 0,
+          last_check_in_date: null,
+          next_check_in_due: null,
+          check_in_frequency: goalData.check_in_frequency || 'weekly',
+          ai_optimization_plan: null,
+          ai_generated_at: null,
+          adaptive_recommendations: {},
+          biological_age_impact_predicted: null,
+          biological_age_impact_actual: null,
+          linked_protocol_id: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          completed_at: null,
+          archived_at: null,
+        };
+
+        setGoals([mockGoal, ...goals]);
+        
+        toast({
+          title: 'Goal created!',
+          description: 'Your health goal has been created successfully (Test Mode)',
+        });
+
+        return mockGoal;
+      }
+
       const { data, error } = await supabase
         .from('user_health_goals')
         .insert([{

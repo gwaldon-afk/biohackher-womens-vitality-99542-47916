@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { TEST_MODE_ENABLED } from "@/config/testMode";
 
 export interface TierLimits {
   tier_name: 'guest' | 'registered' | 'subscribed' | 'premium';
@@ -20,6 +21,24 @@ export interface TierLimits {
  * NO HARDCODING - all limits from database
  */
 export const getTierLimits = async (tierName: string): Promise<TierLimits | null> => {
+  // In test mode, return mock premium limits
+  if (TEST_MODE_ENABLED) {
+    return {
+      tier_name: 'premium',
+      max_active_goals: null, // unlimited
+      max_total_goals: null,
+      can_use_ai_optimization: true,
+      can_use_adaptive_recommendations: true,
+      can_track_biological_age_impact: true,
+      can_access_advanced_analytics: true,
+      available_check_in_frequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
+      max_check_ins_per_month: null,
+      restricted_template_keys: [],
+      display_name: 'Premium (Test Mode)',
+      marketing_description: 'All features unlocked for testing',
+    };
+  }
+
   const { data, error } = await supabase
     .from('subscription_tier_limits')
     .select('*')
@@ -42,6 +61,11 @@ export const canCreateGoal = async (
   tierName: string,
   requestedCount: number = 1
 ): Promise<{ allowed: boolean; reason?: string; message?: string }> => {
+  // In test mode, always allow goal creation
+  if (TEST_MODE_ENABLED) {
+    return { allowed: true };
+  }
+
   // Fetch tier limits
   const limits = await getTierLimits(tierName);
   if (!limits) {
