@@ -310,7 +310,11 @@ export default function GuestLISResults() {
         {assessmentData?.baselineData && (
           <Card className="p-8 mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
             <div className="text-center">
-              <h3 className="text-2xl font-bold mb-6">Your Biological Age Estimate</h3>
+              <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
+              
+              <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
+                <strong>Biological age</strong> measures how well your body is functioning at a cellular level, while <strong>chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
+              </p>
               
               <div className="grid md:grid-cols-3 gap-6 mb-6">
                 <div className="p-4 bg-background rounded-lg">
