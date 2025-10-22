@@ -655,37 +655,31 @@ export type Database = {
       }
       guest_lis_assessments: {
         Row: {
-          biological_age_impact: number
-          completed_at: string
+          assessment_data: Json
+          brief_results: Json
+          claimed_at: string | null
+          claimed_by_user_id: string | null
           created_at: string | null
-          email: string
           id: string
-          insights: Json | null
-          longevity_impact_score: number
-          overall_score: number
-          pillar_scores: Json
+          session_id: string
         }
         Insert: {
-          biological_age_impact: number
-          completed_at?: string
+          assessment_data: Json
+          brief_results: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
           created_at?: string | null
-          email: string
           id?: string
-          insights?: Json | null
-          longevity_impact_score: number
-          overall_score: number
-          pillar_scores: Json
+          session_id: string
         }
         Update: {
-          biological_age_impact?: number
-          completed_at?: string
+          assessment_data?: Json
+          brief_results?: Json
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
           created_at?: string | null
-          email?: string
           id?: string
-          insights?: Json | null
-          longevity_impact_score?: number
-          overall_score?: number
-          pillar_scores?: Json
+          session_id?: string
         }
         Relationships: []
       }
