@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -26,6 +27,7 @@ export const LIS2InitialAssessment = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { createOrUpdateProfile } = useHealthProfile();
+  const { user } = useAuth();
 
   const [step, setStep] = useState(1);
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -41,6 +43,11 @@ export const LIS2InitialAssessment = () => {
   const calculateAge = (yearOfBirth: string) => {
     const today = new Date();
     return today.getFullYear() - parseInt(yearOfBirth);
+  };
+
+  const handleExit = () => {
+    // Navigate to home for guests, dashboard for authenticated users
+    navigate(user ? '/dashboard' : '/');
   };
 
   const handleSubmit = async () => {
@@ -277,12 +284,12 @@ export const LIS2InitialAssessment = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Exit LIS 2.0 Setup?</AlertDialogTitle>
             <AlertDialogDescription>
-              Your progress will not be saved. You can complete this setup anytime from your dashboard to start tracking your longevity score.
+              Your progress will not be saved. You can complete this setup anytime {user ? 'from your dashboard' : 'from the home page'} to start tracking your longevity score.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Continue Setup</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate('/dashboard')}>
+            <AlertDialogAction onClick={handleExit}>
               Exit Setup
             </AlertDialogAction>
           </AlertDialogFooter>
