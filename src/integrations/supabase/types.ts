@@ -176,6 +176,196 @@ export type Database = {
           },
         ]
       }
+      goal_check_ins: {
+        Row: {
+          adjustments_needed: string | null
+          ai_coaching_suggestions: string | null
+          barriers_encountered: string[] | null
+          check_in_date: string
+          confidence_level: number | null
+          created_at: string | null
+          external_biomarkers: Json | null
+          goal_id: string
+          id: string
+          lis_impact: Json | null
+          metrics_achieved: number
+          motivation_level: number | null
+          progress_percentage: number | null
+          self_reported_metrics: Json | null
+          total_metrics: number
+          updated_at: string | null
+          user_id: string
+          whats_not_working: string | null
+          whats_working: string | null
+        }
+        Insert: {
+          adjustments_needed?: string | null
+          ai_coaching_suggestions?: string | null
+          barriers_encountered?: string[] | null
+          check_in_date?: string
+          confidence_level?: number | null
+          created_at?: string | null
+          external_biomarkers?: Json | null
+          goal_id: string
+          id?: string
+          lis_impact?: Json | null
+          metrics_achieved?: number
+          motivation_level?: number | null
+          progress_percentage?: number | null
+          self_reported_metrics?: Json | null
+          total_metrics: number
+          updated_at?: string | null
+          user_id: string
+          whats_not_working?: string | null
+          whats_working?: string | null
+        }
+        Update: {
+          adjustments_needed?: string | null
+          ai_coaching_suggestions?: string | null
+          barriers_encountered?: string[] | null
+          check_in_date?: string
+          confidence_level?: number | null
+          created_at?: string | null
+          external_biomarkers?: Json | null
+          goal_id?: string
+          id?: string
+          lis_impact?: Json | null
+          metrics_achieved?: number
+          motivation_level?: number | null
+          progress_percentage?: number | null
+          self_reported_metrics?: Json | null
+          total_metrics?: number
+          updated_at?: string | null
+          user_id?: string
+          whats_not_working?: string | null
+          whats_working?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_check_ins_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goal_insights: {
+        Row: {
+          acknowledged: boolean | null
+          action_suggestions: Json | null
+          created_at: string | null
+          description: string
+          dismissed_at: string | null
+          goal_id: string | null
+          id: string
+          insight_type: string
+          severity: string | null
+          title: string
+          trigger_data: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          created_at?: string | null
+          description: string
+          dismissed_at?: string | null
+          goal_id?: string | null
+          id?: string
+          insight_type: string
+          severity?: string | null
+          title: string
+          trigger_data?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          acknowledged?: boolean | null
+          action_suggestions?: Json | null
+          created_at?: string | null
+          description?: string
+          dismissed_at?: string | null
+          goal_id?: string | null
+          id?: string
+          insight_type?: string
+          severity?: string | null
+          title?: string
+          trigger_data?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_insights_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goal_templates: {
+        Row: {
+          common_barriers: Json | null
+          created_at: string | null
+          default_healthspan_target: Json | null
+          default_interventions: Json | null
+          default_metrics: Json | null
+          description: string
+          detailed_description: string | null
+          display_order: number
+          icon_name: string
+          id: string
+          is_active: boolean
+          is_premium_only: boolean
+          name: string
+          pillar_category: string
+          target_assessment_types: string[] | null
+          template_key: string
+          updated_at: string | null
+        }
+        Insert: {
+          common_barriers?: Json | null
+          created_at?: string | null
+          default_healthspan_target?: Json | null
+          default_interventions?: Json | null
+          default_metrics?: Json | null
+          description: string
+          detailed_description?: string | null
+          display_order?: number
+          icon_name: string
+          id?: string
+          is_active?: boolean
+          is_premium_only?: boolean
+          name: string
+          pillar_category: string
+          target_assessment_types?: string[] | null
+          template_key: string
+          updated_at?: string | null
+        }
+        Update: {
+          common_barriers?: Json | null
+          created_at?: string | null
+          default_healthspan_target?: Json | null
+          default_interventions?: Json | null
+          default_metrics?: Json | null
+          description?: string
+          detailed_description?: string | null
+          display_order?: number
+          icon_name?: string
+          id?: string
+          is_active?: boolean
+          is_premium_only?: boolean
+          name?: string
+          pillar_category?: string
+          target_assessment_types?: string[] | null
+          template_key?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       habit_tracking: {
         Row: {
           created_at: string
@@ -532,6 +722,60 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_tier_limits: {
+        Row: {
+          available_check_in_frequencies: string[] | null
+          can_access_advanced_analytics: boolean
+          can_track_biological_age_impact: boolean
+          can_use_adaptive_recommendations: boolean
+          can_use_ai_optimization: boolean
+          created_at: string | null
+          display_name: string
+          id: string
+          marketing_description: string | null
+          max_active_goals: number | null
+          max_check_ins_per_month: number | null
+          max_total_goals: number | null
+          restricted_template_keys: string[] | null
+          tier_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          available_check_in_frequencies?: string[] | null
+          can_access_advanced_analytics?: boolean
+          can_track_biological_age_impact?: boolean
+          can_use_adaptive_recommendations?: boolean
+          can_use_ai_optimization?: boolean
+          created_at?: string | null
+          display_name: string
+          id?: string
+          marketing_description?: string | null
+          max_active_goals?: number | null
+          max_check_ins_per_month?: number | null
+          max_total_goals?: number | null
+          restricted_template_keys?: string[] | null
+          tier_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          available_check_in_frequencies?: string[] | null
+          can_access_advanced_analytics?: boolean
+          can_track_biological_age_impact?: boolean
+          can_use_adaptive_recommendations?: boolean
+          can_use_ai_optimization?: boolean
+          created_at?: string | null
+          display_name?: string
+          id?: string
+          marketing_description?: string | null
+          max_active_goals?: number | null
+          max_check_ins_per_month?: number | null
+          max_total_goals?: number | null
+          restricted_template_keys?: string[] | null
+          tier_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       symptom_assessments: {
         Row: {
           created_at: string
@@ -633,6 +877,98 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_health_goals: {
+        Row: {
+          adaptive_recommendations: Json | null
+          aging_blueprint: Json
+          ai_generated_at: string | null
+          ai_optimization_plan: string | null
+          archived_at: string | null
+          barriers_plan: Json
+          biological_age_impact_actual: number | null
+          biological_age_impact_predicted: number | null
+          check_in_frequency: string | null
+          completed_at: string | null
+          created_at: string | null
+          current_progress: number | null
+          healthspan_target: Json
+          id: string
+          last_check_in_date: string | null
+          longevity_metrics: Json
+          next_check_in_due: string | null
+          pillar_category: string
+          related_assessment_ids: string[] | null
+          status: string
+          template_id: string | null
+          title: string
+          triggered_by_assessment_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          adaptive_recommendations?: Json | null
+          aging_blueprint: Json
+          ai_generated_at?: string | null
+          ai_optimization_plan?: string | null
+          archived_at?: string | null
+          barriers_plan?: Json
+          biological_age_impact_actual?: number | null
+          biological_age_impact_predicted?: number | null
+          check_in_frequency?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          healthspan_target: Json
+          id?: string
+          last_check_in_date?: string | null
+          longevity_metrics: Json
+          next_check_in_due?: string | null
+          pillar_category: string
+          related_assessment_ids?: string[] | null
+          status?: string
+          template_id?: string | null
+          title: string
+          triggered_by_assessment_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          adaptive_recommendations?: Json | null
+          aging_blueprint?: Json
+          ai_generated_at?: string | null
+          ai_optimization_plan?: string | null
+          archived_at?: string | null
+          barriers_plan?: Json
+          biological_age_impact_actual?: number | null
+          biological_age_impact_predicted?: number | null
+          check_in_frequency?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          healthspan_target?: Json
+          id?: string
+          last_check_in_date?: string | null
+          longevity_metrics?: Json
+          next_check_in_due?: string | null
+          pillar_category?: string
+          related_assessment_ids?: string[] | null
+          status?: string
+          template_id?: string | null
+          title?: string
+          triggered_by_assessment_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_health_goals_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "goal_templates"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_progress: {
         Row: {
