@@ -121,17 +121,17 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 350 }: LISR
         </ChartContainer>
       </motion.div>
 
-      {/* Center score overlay - positioned much lower to avoid graph overlap */}
+      {/* Center score overlay */}
       <motion.div
-        className="absolute left-1/2 top-[65%] -translate-x-1/2 pointer-events-none"
+        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <div className="bg-background/95 backdrop-blur-sm rounded-full px-6 py-4 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
+        <div className="bg-background/95 backdrop-blur-sm rounded-full px-8 py-5 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
           <div className="text-xs text-muted-foreground mb-1 text-center font-medium">Longevity Score</div>
           <div
-            className="text-4xl font-bold text-center"
+            className="text-5xl font-bold text-center"
             style={{ color: getScoreColor(compositeScore) }}
           >
             {Math.round(compositeScore)}
