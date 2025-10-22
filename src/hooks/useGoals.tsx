@@ -39,9 +39,26 @@ export const useGoals = () => {
   const { user } = useAuth();
   const { subscription } = useSubscription();
   const { toast } = useToast();
-  const [goals, setGoals] = useState<HealthGoal[]>([]);
+  
+  // Initialize goals from localStorage in test mode
+  const getInitialGoals = (): HealthGoal[] => {
+    if (TEST_MODE_ENABLED) {
+      const stored = localStorage.getItem('test_goals');
+      return stored ? JSON.parse(stored) : [];
+    }
+    return [];
+  };
+  
+  const [goals, setGoals] = useState<HealthGoal[]>(getInitialGoals());
   const [loading, setLoading] = useState(false);
   const [tierFeatures, setTierFeatures] = useState<any>(null);
+
+  // Save to localStorage whenever goals change in test mode
+  useEffect(() => {
+    if (TEST_MODE_ENABLED && goals.length > 0) {
+      localStorage.setItem('test_goals', JSON.stringify(goals));
+    }
+  }, [goals]);
 
   // Fetch tier features on mount
   useEffect(() => {
@@ -59,6 +76,14 @@ export const useGoals = () => {
    */
   const fetchGoals = async (status?: 'active' | 'completed' | 'paused' | 'archived') => {
     if (!user) return [];
+
+    // In test mode, skip database fetch and return current state
+    if (TEST_MODE_ENABLED) {
+      if (status) {
+        return goals.filter(g => g.status === status);
+      }
+      return goals;
+    }
 
     setLoading(true);
     try {
@@ -257,6 +282,21 @@ export const useGoals = () => {
     if (!user) return null;
 
     try {
+      // In test mode, update in local state and localStorage
+      if (TEST_MODE_ENABLED) {
+        const updatedGoals = goals.map(g => 
+          g.id === goalId ? { ...g, ...updates, updated_at: new Date().toISOString() } : g
+        );
+        setGoals(updatedGoals);
+        
+        toast({
+          title: 'Goal updated',
+          description: 'Your changes have been saved (Test Mode)',
+        });
+
+        return updatedGoals.find(g => g.id === goalId) as HealthGoal;
+      }
+
       const { data, error } = await supabase
         .from('user_health_goals')
         .update(updates)
@@ -292,6 +332,20 @@ export const useGoals = () => {
     if (!user) return false;
 
     try {
+      // In test mode, remove from local state and localStorage
+      if (TEST_MODE_ENABLED) {
+        const filteredGoals = goals.filter(g => g.id !== goalId);
+        setGoals(filteredGoals);
+        localStorage.setItem('test_goals', JSON.stringify(filteredGoals));
+        
+        toast({
+          title: 'Goal deleted',
+          description: 'Your goal has been removed (Test Mode)',
+        });
+
+        return true;
+      }
+
       const { error } = await supabase
         .from('user_health_goals')
         .delete()
