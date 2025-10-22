@@ -61,8 +61,6 @@ export const useLISData = (): LISData => {
         .limit(1)
         .maybeSingle();
 
-      console.log('📊 LIS Data - Baseline:', baseline);
-
       if (baseline) {
         setBaselineScore(baseline.longevity_impact_score);
         setBaselineDate(new Date(baseline.created_at));
@@ -79,8 +77,6 @@ export const useLISData = (): LISData => {
         .eq('is_baseline', false)
         .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
         .order('date', { ascending: true });
-
-      console.log('📊 LIS Data - Daily Scores:', scores);
 
       if (scores && scores.length > 0) {
         // Calculate current average
@@ -128,20 +124,6 @@ export const useLISData = (): LISData => {
         if (lastWearableEntry) {
           setLastSyncTime(lastWearableEntry.created_at);
         }
-      } else if (baseline) {
-        // No daily scores yet - use baseline as current score for new users
-        console.log('📊 LIS Data - Using baseline as current score for new user');
-        setCurrentScore(baseline.longevity_impact_score);
-        
-        // Set pillar scores from baseline
-        setPillarScores({
-          sleep: baseline.sleep_score,
-          stress: baseline.stress_score,
-          activity: baseline.physical_activity_score,
-          nutrition: baseline.nutrition_score,
-          social: baseline.social_connections_score,
-          cognitive: baseline.cognitive_engagement_score,
-        });
       }
 
       setLoading(false);
