@@ -121,9 +121,9 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 350 }: LISR
         </ChartContainer>
       </motion.div>
 
-      {/* Center score overlay */}
+      {/* Center score overlay - positioned lower to avoid graph overlap */}
       <motion.div
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-8"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}

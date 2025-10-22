@@ -134,7 +134,7 @@ const Auth = () => {
               date_of_birth: baselineData.dateOfBirth,
               height_cm: baselineData.heightCm,
               weight_kg: baselineData.weightKg,
-              current_bmi: baselineData.bmi,
+              bmi: baselineData.bmi,
             });
             
             // Create baseline daily_score from guest assessment
@@ -268,7 +268,7 @@ const Auth = () => {
             date_of_birth: baselineData.dateOfBirth,
             height_cm: baselineData.heightCm,
             weight_kg: baselineData.weightKg,
-            current_bmi: baselineData.bmi,
+            bmi: baselineData.bmi,
           });
           
           // Create baseline daily_score from guest assessment
