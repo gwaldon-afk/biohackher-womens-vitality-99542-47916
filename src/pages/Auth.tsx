@@ -172,6 +172,43 @@ const Auth = () => {
             current_bmi: baselineData.bmi,
           });
           
+          // Create baseline daily_score from guest assessment
+          const briefResults = guestAssessment.brief_results as any;
+          
+          // Calculate user age
+          const calculateAge = (dateOfBirth: string): number => {
+            const birthDate = new Date(dateOfBirth);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+              age--;
+            }
+            return age;
+          };
+          
+          const userAge = calculateAge(baselineData.dateOfBirth);
+          
+          // Insert baseline daily score
+          await supabase.from('daily_scores').insert({
+            user_id: currentUser.id,
+            date: new Date().toISOString().split('T')[0],
+            longevity_impact_score: briefResults.finalScore,
+            biological_age_impact: briefResults.finalScore,
+            is_baseline: true,
+            assessment_type: 'guest_migration_baseline',
+            user_chronological_age: userAge,
+            lis_version: 'LIS 2.0',
+            source_type: 'manual_entry',
+            sleep_score: briefResults.pillarScores.Sleep || briefResults.pillarScores.sleep,
+            stress_score: briefResults.pillarScores.Stress || briefResults.pillarScores.stress,
+            physical_activity_score: briefResults.pillarScores.Body || briefResults.pillarScores.activity,
+            nutrition_score: briefResults.pillarScores.Nutrition || briefResults.pillarScores.nutrition,
+            social_connections_score: briefResults.pillarScores.Social || briefResults.pillarScores.social,
+            cognitive_engagement_score: briefResults.pillarScores.Brain || briefResults.pillarScores.cognitive,
+            color_code: briefResults.finalScore >= 75 ? 'green' : briefResults.finalScore >= 50 ? 'yellow' : 'red'
+          });
+          
           // Mark guest assessment as claimed
           await supabase
             .from('guest_lis_assessments')
