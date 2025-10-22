@@ -75,7 +75,7 @@ const Auth = () => {
           return;
         }
 
-        // Check if user has completed LIS 2.0 setup
+        // Check if user has completed initial assessment
         const { data: healthProfile } = await supabase
           .from('user_health_profile')
           .select('id')
@@ -83,7 +83,7 @@ const Auth = () => {
           .maybeSingle();
         
         if (!healthProfile) {
-          navigate('/lis2-setup');
+          navigate('/guest-lis-assessment');
         } else {
           navigate('/dashboard');
         }
@@ -134,7 +134,7 @@ const Auth = () => {
           .maybeSingle();
         
         if (!healthProfile) {
-          navigate('/lis2-setup');
+          navigate('/guest-lis-assessment');
         } else {
           navigate('/dashboard');
         }

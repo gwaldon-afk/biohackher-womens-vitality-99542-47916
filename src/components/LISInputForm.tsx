@@ -343,10 +343,10 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                   size="sm"
                   onClick={() => {
                     setOpen(false);
-                    navigate('/lis2-setup');
+                    navigate('/guest-lis-assessment');
                   }}
                 >
-                  Complete LIS 2.0 Setup (2 minutes)
+                  Complete Full Assessment (5 minutes)
                 </Button>
               </AlertDescription>
             </Alert>

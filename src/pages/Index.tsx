@@ -354,7 +354,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="text-xl px-10 py-8 h-auto shadow-lg"
-                onClick={() => navigate("/lis2-setup")}
+                onClick={() => navigate("/guest-lis-assessment")}
               >
                 <Target className="h-6 w-6 mr-2" />
                 Start Free Assessment →
