@@ -935,28 +935,52 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country: string | null
           created_at: string
+          currency: string | null
+          device_permissions: Json | null
           email: string | null
           id: string
+          language: string | null
+          measurement_system: string | null
+          onboarding_completed: boolean | null
           preferred_name: string
+          timezone: string | null
           updated_at: string
           user_id: string
+          user_stream: string | null
         }
         Insert: {
+          country?: string | null
           created_at?: string
+          currency?: string | null
+          device_permissions?: Json | null
           email?: string | null
           id?: string
+          language?: string | null
+          measurement_system?: string | null
+          onboarding_completed?: boolean | null
           preferred_name: string
+          timezone?: string | null
           updated_at?: string
           user_id: string
+          user_stream?: string | null
         }
         Update: {
+          country?: string | null
           created_at?: string
+          currency?: string | null
+          device_permissions?: Json | null
           email?: string | null
           id?: string
+          language?: string | null
+          measurement_system?: string | null
+          onboarding_completed?: boolean | null
           preferred_name?: string
+          timezone?: string | null
           updated_at?: string
           user_id?: string
+          user_stream?: string | null
         }
         Relationships: []
       }
