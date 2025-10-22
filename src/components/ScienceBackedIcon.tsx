@@ -5,14 +5,45 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useEvidenceStore } from "@/stores/evidenceStore";
+import { getEvidenceContext } from "@/data/evidenceMapping";
 
 interface ScienceBackedIconProps {
   className?: string;
   showTooltip?: boolean;
+  evidenceKey?: string;
+  onClick?: () => void;
 }
 
-const ScienceBackedIcon = ({ className = "h-4 w-4", showTooltip = true }: ScienceBackedIconProps) => {
-  const icon = <Microscope className={`text-primary ${className}`} />;
+const ScienceBackedIcon = ({ 
+  className = "h-4 w-4", 
+  showTooltip = true,
+  evidenceKey,
+  onClick
+}: ScienceBackedIconProps) => {
+  const { openEvidence } = useEvidenceStore();
+  
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (evidenceKey) {
+      const context = getEvidenceContext(evidenceKey);
+      if (context) {
+        openEvidence(evidenceKey, context.title, context.summary);
+      }
+    }
+  };
+
+  const isClickable = !!evidenceKey || !!onClick;
+  
+  const icon = (
+    <Microscope 
+      className={`text-primary transition-all ${className} ${
+        isClickable ? 'cursor-pointer hover:opacity-100 hover:scale-110' : ''
+      } ${isClickable ? 'opacity-70' : ''}`}
+      onClick={isClickable ? handleClick : undefined}
+    />
+  );
 
   if (!showTooltip) {
     return icon;

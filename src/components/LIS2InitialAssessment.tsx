@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 
 export const LIS2InitialAssessment = () => {
   const navigate = useNavigate();
@@ -153,6 +154,7 @@ export const LIS2InitialAssessment = () => {
         <Label className="flex items-center gap-2">
           <Cigarette className="h-4 w-4" />
           Smoking Status
+          <ScienceBackedIcon evidenceKey="assessment:smoking-cessation" />
         </Label>
         <p className="text-xs text-muted-foreground">
           Select the option that best describes your smoking history. These timeframes are based on cardiovascular research.

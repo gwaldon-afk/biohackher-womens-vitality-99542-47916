@@ -75,6 +75,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
 import MyDailyPlan from "./pages/MyDailyPlan";
+import EvidenceDrawer from "./components/EvidenceDrawer";
 import WelcomeStreamSelect from "./pages/onboarding/WelcomeStreamSelect";
 import Intro3Step from "./pages/onboarding/Intro3Step";
 import PermissionSetup from "./pages/onboarding/PermissionSetup";
@@ -112,6 +113,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <EvidenceDrawer />
           <BrowserRouter>
             <ErrorBoundary>
               <Routes>

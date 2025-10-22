@@ -87,7 +87,10 @@ const BiohackingToolkit = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <CardTitle className="text-lg">{category.name}</CardTitle>
-                              <ScienceBackedIcon className="h-4 w-4" />
+                              <ScienceBackedIcon 
+                                className="h-4 w-4" 
+                                evidenceKey={`toolkit:${category.slug}`}
+                              />
                             </div>
                           </div>
                         </div>
