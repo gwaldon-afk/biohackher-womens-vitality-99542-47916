@@ -298,7 +298,7 @@ export const LIS2InitialAssessment = () => {
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Dashboard
+          Cancel Setup
         </Button>
         <Button
           variant="ghost"
