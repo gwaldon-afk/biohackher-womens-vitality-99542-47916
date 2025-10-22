@@ -110,10 +110,105 @@ const Auth = () => {
     const { error } = await signIn(data.email, data.password);
     
     if (!error) {
-      // Check onboarding and profile status
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
+        // If user is signing in from guest results, claim their assessment
+        if (guestSessionId) {
+          const { data: guestAssessment } = await supabase
+            .from('guest_lis_assessments')
+            .select('*')
+            .eq('session_id', guestSessionId)
+            .maybeSingle();
+          
+          if (guestAssessment) {
+            console.log('🔍 Guest Assessment Data:', guestAssessment);
+            const assessmentData = guestAssessment.assessment_data as any;
+            const baselineData = assessmentData.baselineData;
+            console.log('🔍 Baseline Data:', baselineData);
+            console.log('🔍 Brief Results:', guestAssessment.brief_results);
+            
+            // Create health profile from guest data
+            await supabase.from('user_health_profile').insert({
+              user_id: currentUser.id,
+              date_of_birth: baselineData.dateOfBirth,
+              height_cm: baselineData.heightCm,
+              weight_kg: baselineData.weightKg,
+              current_bmi: baselineData.bmi,
+            });
+            
+            // Create baseline daily_score from guest assessment
+            const briefResults = guestAssessment.brief_results as any;
+            
+            // Calculate user age
+            const calculateAge = (dateOfBirth: string): number => {
+              const birthDate = new Date(dateOfBirth);
+              const today = new Date();
+              let age = today.getFullYear() - birthDate.getFullYear();
+              const monthDiff = today.getMonth() - birthDate.getMonth();
+              if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+              }
+              return age;
+            };
+            
+            const userAge = calculateAge(baselineData.dateOfBirth);
+            
+            // Get pillar scores - handle different possible formats
+            const pillarScores = briefResults.pillarScores || {};
+            const scoreData = {
+              sleep_score: pillarScores.Sleep || pillarScores.sleep || null,
+              stress_score: pillarScores.Stress || pillarScores.stress || null,
+              physical_activity_score: pillarScores.Body || pillarScores.activity || pillarScores['Physical Activity'] || null,
+              nutrition_score: pillarScores.Nutrition || pillarScores.nutrition || null,
+              social_connections_score: pillarScores.Social || pillarScores.social || pillarScores['Social Connection'] || null,
+              cognitive_engagement_score: pillarScores.Brain || pillarScores.cognitive || pillarScores['Cognitive Engagement'] || null,
+            };
+            
+            console.log('💾 Inserting daily score with data:', {
+              finalScore: briefResults.finalScore,
+              userAge,
+              pillarScores: scoreData
+            });
+            
+            // Insert baseline daily score
+            const { data: insertedScore, error: scoreError } = await supabase.from('daily_scores').insert({
+              user_id: currentUser.id,
+              date: new Date().toISOString().split('T')[0],
+              longevity_impact_score: briefResults.finalScore,
+              biological_age_impact: briefResults.finalScore,
+              is_baseline: true,
+              assessment_type: 'guest_migration_baseline',
+              user_chronological_age: userAge,
+              lis_version: 'LIS 2.0',
+              source_type: 'manual_entry',
+              ...scoreData,
+              color_code: briefResults.finalScore >= 75 ? 'green' : briefResults.finalScore >= 50 ? 'yellow' : 'red'
+            }).select();
+            
+            if (scoreError) {
+              console.error('❌ Error inserting daily score:', scoreError);
+            } else {
+              console.log('✅ Successfully inserted daily score:', insertedScore);
+            }
+            
+            // Mark guest assessment as claimed
+            await supabase
+              .from('guest_lis_assessments')
+              .update({ 
+                claimed_by_user_id: currentUser.id,
+                claimed_at: new Date().toISOString()
+              })
+              .eq('session_id', guestSessionId);
+            
+            toast.success("Welcome back! Your assessment has been saved.");
+            navigate('/lis-results');
+            setIsLoading(false);
+            return;
+          }
+        }
+        
+        // Normal sign-in flow without guest session
         // Check onboarding first
         const { data: profile } = await supabase
           .from('profiles')
@@ -123,6 +218,7 @@ const Auth = () => {
         
         if (profile && !profile.onboarding_completed) {
           navigate('/onboarding/welcome-stream-select');
+          setIsLoading(false);
           return;
         }
 
