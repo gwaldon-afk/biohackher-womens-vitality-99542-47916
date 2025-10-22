@@ -40,9 +40,8 @@ const Auth = () => {
   const guestSessionId = searchParams.get('session');
   const assessmentSession = searchParams.get('assessmentSession');
 
-  // Only call useAuth if not in test mode
-  const authContext = TEST_MODE_ENABLED ? null : useAuth();
-  const { signIn, signUp, user } = authContext || { signIn: async () => ({ error: null }), signUp: async () => ({ error: null }), user: null };
+  // Always call useAuth - it provides mock data in test mode
+  const { signIn, signUp, user } = useAuth();
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
