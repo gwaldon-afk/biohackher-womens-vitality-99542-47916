@@ -14,6 +14,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -32,13 +33,16 @@ type SignUpData = z.infer<typeof signUpSchema>;
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   // Get session ID from URL if user is registering from guest results
   const guestSessionId = searchParams.get('session');
   const assessmentSession = searchParams.get('assessmentSession');
+
+  // Only call useAuth if not in test mode
+  const authContext = TEST_MODE_ENABLED ? null : useAuth();
+  const { signIn, signUp, user } = authContext || { signIn: async () => ({ error: null }), signUp: async () => ({ error: null }), user: null };
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
@@ -56,6 +60,24 @@ const Auth = () => {
       preferredName: '',
     },
   });
+
+  // Redirect immediately if in test mode
+  useEffect(() => {
+    if (TEST_MODE_ENABLED) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
+  // Skip rendering auth form if in test mode
+  if (TEST_MODE_ENABLED) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Redirecting to dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Redirect if already authenticated and check for health profile AND onboarding
   // BUT: Don't redirect if coming from guest session or assessment session - let them complete signup
