@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { ArrowLeft, X } from "lucide-react";
 
 const questions = [
   { id: 'energy', label: 'Energy Levels', min: 0, max: 10 },
@@ -40,7 +41,27 @@ const MenoMapPerformance = () => {
   const canProceed = answers[question.id] !== undefined;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-gradient-to-b from-background to-muted/20">
+      <div className="fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-50 flex items-center justify-between px-4">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate('/onboarding/menomap-entry')}
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate('/')}
+          aria-label="Exit assessment"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
+
       <div className="max-w-xl w-full space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Performance Assessment</h1>
