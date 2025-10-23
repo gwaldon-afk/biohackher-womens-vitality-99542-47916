@@ -23,7 +23,13 @@ const PermissionSetup = () => {
 
   const handleContinue = () => {
     updateProfile({ device_permissions: permissions });
-    navigate('/onboarding/menomap-entry');
+    
+    // Route based on user stream
+    if (profile?.user_stream === 'performance') {
+      navigate('/onboarding/menomap-performance');
+    } else {
+      navigate('/onboarding/menomap-menopause');
+    }
   };
 
   const permissionItems = [
