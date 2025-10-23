@@ -36,43 +36,32 @@ const Index = () => {
                   </p>
                 </div>
 
-                {/* Multiple Entry Point CTAs */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Single Primary CTA + Secondary */}
+                <div className="space-y-4">
                   <Button 
                     size="lg"
-                    className="bg-white text-primary hover:bg-white/90 px-6 py-6 h-auto shadow-xl"
+                    className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 px-8 py-6 h-auto shadow-xl text-lg"
                     onClick={() => navigate("/guest-lis-assessment")}
                   >
-                    <Target className="h-5 w-5 mr-2" />
-                    Take Free Longevity Assessment
+                    <Target className="h-6 w-6 mr-2" />
+                    Get Your Free Longevity Score
                   </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
-                    onClick={() => navigate("/health-assistant")}
-                  >
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Ask Your Health Questions
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
-                    onClick={() => navigate("/shop")}
-                  >
-                    <Package className="h-5 w-5 mr-2" />
-                    Browse Products
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    className="border-white/40 bg-white/10 text-white hover:bg-white/20 px-6 py-6 h-auto backdrop-blur"
-                    onClick={() => navigate("/research-evidence")}
-                  >
-                    <BookOpen className="h-5 w-5 mr-2" />
-                    Explore Research
-                  </Button>
+                  
+                  <div className="flex items-center justify-center lg:justify-start gap-2 text-white/90 text-sm">
+                    <Sparkles className="h-4 w-4" />
+                    <span>5-minute assessment • No signup required • Instant results</span>
+                  </div>
+
+                  {/* Secondary Action - Subtle */}
+                  <div className="pt-4">
+                    <button
+                      onClick={() => navigate("/health-assistant")}
+                      className="text-white/80 hover:text-white underline text-sm flex items-center gap-2 mx-auto lg:mx-0"
+                    >
+                      <MessageSquare className="h-4 w-4" />
+                      Or ask our AI assistant a health question
+                    </button>
+                  </div>
                 </div>
               </div>
               
@@ -88,207 +77,147 @@ const Index = () => {
         </div>
       </section>
 
-      {/* What You Can Do Here Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Biohack Every Aspect of Your Health
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Track progress, get AI insights, shop smart, and access the science all in one place
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/dashboard')}>
-              <CardHeader>
-                <Activity className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Track & Optimize</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  Monitor daily health scores, track symptoms, and see how lifestyle changes impact longevity
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/shop')}>
-              <CardHeader>
-                <Package className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Shop Smart</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  Get personalized supplement recommendations based on your assessments and goals
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/health-assistant')}>
-              <CardHeader>
-                <MessageSquare className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Get Answers</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  Ask our AI assistant about symptoms, protocols, or wellness strategies
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/research-evidence')}>
-              <CardHeader>
-                <BookOpen className="h-8 w-8 text-primary mb-2" />
-                <CardTitle>Learn & Grow</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-sm">
-                  Access curated research, evidence-based protocols, and longevity science
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* For Every Health Goal Section */}
+      {/* What Are You Working On Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              For Every Health Goal
+              What Are You Working On?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Whether optimizing one area or transforming your entire healthspan
+              Start with a focused assessment for your primary health goal
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "energy" } })}
+            >
               <CardHeader>
-                <Zap className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Energy & Vitality</CardTitle>
+                <Zap className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Energy & Vitality</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Combat fatigue, boost mitochondrial function, feel energized
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Combat fatigue, boost mitochondrial function, feel energized
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "cognitive" } })}
+            >
               <CardHeader>
-                <Brain className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Cognitive Performance</CardTitle>
+                <Brain className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Cognitive Performance</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Enhance focus, memory, and mental clarity with targeted interventions
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Enhance focus, memory, and mental clarity with targeted interventions
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "body" } })}
+            >
               <CardHeader>
-                <Scale className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Body Composition</CardTitle>
+                <Scale className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Body Composition</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Build lean muscle, optimize metabolism, sustainable weight management
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Build lean muscle, optimize metabolism, sustainable weight management
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "hormonal" } })}
+            >
               <CardHeader>
-                <Heart className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Hormonal Balance</CardTitle>
+                <Heart className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Hormonal Balance</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Address perimenopause, menopause, restore hormonal equilibrium
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Address perimenopause, menopause, restore hormonal equilibrium
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "sleep" } })}
+            >
               <CardHeader>
-                <Moon className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Sleep Quality</CardTitle>
+                <Moon className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Sleep Quality</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Improve sleep duration, depth, wake feeling refreshed every morning
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Improve sleep duration, depth, wake feeling refreshed every morning
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card 
+              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "longevity" } })}
+            >
               <CardHeader>
-                <TrendingUp className="h-6 w-6 text-primary mb-2" />
-                <CardTitle className="text-lg">Longevity Optimization</CardTitle>
+                <TrendingUp className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Longevity Optimization</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm text-muted-foreground">
-                Extend healthspan, reduce biological age, maximize quality of life
+              <CardContent className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Extend healthspan, reduce biological age, maximize quality of life
+                </p>
+                <div className="flex items-center gap-2 text-primary text-sm font-medium">
+                  <span>Start Assessment</span>
+                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Alternative: Comprehensive Assessment */}
+          <div className="text-center mt-8">
+            <button
+              onClick={() => navigate("/guest-lis-assessment")}
+              className="text-muted-foreground hover:text-primary underline text-sm"
+            >
+              Or take the full comprehensive assessment →
+            </button>
           </div>
         </div>
       </section>
 
-      {/* How It All Connects - 4 Steps */}
-      <section className="py-16 lg:py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-4">
-                How It All <span className="text-primary">Connects</span>
-              </h2>
-              <p className="text-lg text-muted-foreground">From assessment to optimization, everything works together</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 flex justify-center">
-                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <FileText className="h-8 w-8 text-primary" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Assess</h3>
-                <p className="text-muted-foreground text-sm">Take assessments to understand your current health status</p>
-              </Card>
-
-              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 flex justify-center">
-                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Target className="h-8 w-8 text-primary" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Discover</h3>
-                <p className="text-muted-foreground text-sm">Get personalized product and protocol recommendations</p>
-              </Card>
-
-              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 flex justify-center">
-                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Package className="h-8 w-8 text-primary" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Implement</h3>
-                <p className="text-muted-foreground text-sm">Shop evidence-based solutions and build your protocol</p>
-              </Card>
-
-              <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-                <div className="mb-4 flex justify-center">
-                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <TrendingUp className="h-8 w-8 text-primary" />
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Optimize</h3>
-                <p className="text-muted-foreground text-sm">Track progress and refine your approach with AI guidance</p>
-              </Card>
-            </div>
-
-            <div className="text-center">
-              <p className="text-muted-foreground">
-                Plus, ask our AI assistant anytime for guidance, research, or personalized recommendations
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Your Free Assessment Includes */}
       <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-primary/5">
@@ -340,39 +269,104 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <h2 className="text-4xl lg:text-5xl font-bold">
-              Get Your Free Longevity Score in <span className="text-primary">5 Minutes</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              See exactly where you stand on Brain, Body, Balance & Beauty
-            </p>
-            <div className="space-y-4">
-              <Button 
-                size="lg" 
-                className="text-xl px-10 py-8 h-auto shadow-lg"
-                onClick={() => navigate("/guest-lis-assessment")}
-              >
-                <Target className="h-6 w-6 mr-2" />
-                Start Free Assessment →
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                No signup required • See results instantly • Create account later to save progress
+      {/* Your Personalized Longevity Journey */}
+      <section className="py-16 bg-muted/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Your Personalized Longevity Journey
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Here's what happens after your free assessment
               </p>
             </div>
+
+            <div className="space-y-6">
+              {/* Step 1 */}
+              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Get Your Longevity Score</h3>
+                  <p className="text-muted-foreground">
+                    See your score across Brain, Body, Balance & Beauty. Understand your biological age and risk factors.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Receive Your Custom Protocol</h3>
+                  <p className="text-muted-foreground">
+                    Create a free account to unlock your personalized 7-day plan with supplement recommendations and lifestyle optimizations.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Track Your Progress</h3>
+                  <p className="text-muted-foreground">
+                    Monitor daily scores, log symptoms, and see how your interventions impact your longevity metrics over time.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
+                  4
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Optimize with AI Guidance</h3>
+                  <p className="text-muted-foreground">
+                    Ask questions, refine protocols, and get research-backed answers from our AI health assistant.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-20 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <h2 className="text-3xl lg:text-4xl font-bold">
+              Ready to Optimize Your Healthspan?
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Your personalized longevity roadmap is 5 minutes away
+            </p>
             
-            {/* Trust Signals - Only Factual */}
-            <div className="flex items-center justify-center gap-8 pt-6 text-sm text-muted-foreground">
+            <Button 
+              size="lg" 
+              className="text-lg px-8 py-6 h-auto shadow-lg"
+              onClick={() => navigate("/guest-lis-assessment")}
+            >
+              <Target className="h-5 w-5 mr-2" />
+              Start Free Assessment
+            </Button>
+
+            <div className="flex items-center justify-center gap-6 pt-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
-                <span>Evidence-Based Protocols</span>
+                <span>No signup required</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" />
-                <span>Privacy Protected</span>
+                <span>Results in 5 minutes</span>
               </div>
             </div>
           </div>

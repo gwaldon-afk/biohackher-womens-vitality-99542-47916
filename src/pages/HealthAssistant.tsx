@@ -342,6 +342,29 @@ const HealthAssistant = () => {
                           </div>
                         )}
 
+                        {/* Next Steps CTA */}
+                        <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            Want personalized recommendations based on your health profile?
+                          </p>
+                          <div className="flex gap-3">
+                            <Button
+                              size="sm"
+                              onClick={() => navigate("/guest-lis-assessment")}
+                            >
+                              Take Free Assessment
+                              <ArrowRight className="h-4 w-4 ml-2" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate("/shop")}
+                            >
+                              Browse Solutions
+                            </Button>
+                          </div>
+                        </div>
+
                         {/* Clinical Tests to Discuss with Doctor */}
                         {message.clinical_tests && message.clinical_tests.length > 0 && (
                           <div className="mt-4">
