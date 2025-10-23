@@ -242,6 +242,21 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
+        {/* Educational Disclaimer - Early Placement */}
+        <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-900">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <div className="text-2xl">⚕️</div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">Important: Educational Purposes Only</h4>
+                <p className="text-sm text-muted-foreground">
+                  This analysis is based on your symptom responses and published research. It is for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, treatment protocol, or making significant health decisions.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Symptom Pattern Analysis - The Insight Value-Add */}
         {interconnections.length > 0 && (
           <Card>
