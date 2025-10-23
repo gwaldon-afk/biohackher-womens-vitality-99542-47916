@@ -27,42 +27,46 @@ const Index = () => {
           <div className="container mx-auto px-4 py-20 lg:py-32">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left space-y-8">
-                <div>
-                  <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-                    {t('home.hero.title')}
-                  </h1>
-                  <p className="text-xl lg:text-2xl text-white/80 leading-relaxed">
-                    {t('home.hero.description')}
-                  </p>
-                </div>
+          <div>
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
+              {t('home.hero.title')}
+            </h1>
+            <p className="text-xl lg:text-2xl text-white/80 leading-relaxed mb-2">
+              Get your personalized longevity assessment in 5 minutes. Discover your biological age, identify health risks, and receive a science-backed protocol to optimize your healthspan.
+            </p>
+            <p className="text-lg text-white/70 leading-relaxed">
+              Understand how fast you're aging—and exactly what to do about it.
+            </p>
+          </div>
 
-                {/* Single Primary CTA + Secondary */}
-                <div className="space-y-4">
-                  <Button 
-                    size="lg"
-                    className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 px-8 py-6 h-auto shadow-xl text-lg"
-                    onClick={() => navigate("/guest-lis-assessment")}
-                  >
-                    <Target className="h-6 w-6 mr-2" />
-                    Get Your Free Longevity Score
-                  </Button>
-                  
-                  <div className="flex items-center justify-center lg:justify-start gap-2 text-white/90 text-sm">
-                    <Sparkles className="h-4 w-4" />
-                    <span>5-minute assessment • No signup required • Instant results</span>
-                  </div>
+          {/* Single Primary CTA + Secondary */}
+          <div className="space-y-4">
+            <Button 
+              size="lg"
+              className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 px-8 py-6 h-auto shadow-xl text-lg"
+              onClick={() => navigate("/guest-lis-assessment")}
+            >
+              <Target className="h-6 w-6 mr-2" />
+              Get Your Free Longevity Score
+            </Button>
+            
+            <div className="flex items-center justify-center lg:justify-start gap-2 text-white/90 text-sm">
+              <Sparkles className="h-4 w-4" />
+              <span>5-minute assessment • No signup required • Instant results</span>
+            </div>
 
-                  {/* Secondary Action - Subtle */}
-                  <div className="pt-4">
-                    <button
-                      onClick={() => navigate("/health-assistant")}
-                      className="text-white/80 hover:text-white underline text-sm flex items-center gap-2 mx-auto lg:mx-0"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      Or ask our AI assistant a health question
-                    </button>
-                  </div>
-                </div>
+            {/* Secondary CTA - More Prominent */}
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/health-assistant")}
+                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 hover:border-white/50 px-6 py-5 h-auto text-base"
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Ask Our AI Health Assistant
+              </Button>
+            </div>
+          </div>
               </div>
               
               <div className="relative">
@@ -228,19 +232,27 @@ const Index = () => {
               <p className="text-muted-foreground">See exactly where you stand—no signup required</p>
             </div>
 
-            <div className="grid gap-4 max-w-2xl mx-auto mb-16">
-              {[
-                "Your Longevity Impact Score (0-100)",
-                "Risk Category Assessment (Optimal/Protective/Moderate/High Risk)",
-                "Biological Age Estimation",
-                "Top 3 Strengths & Areas for Improvement",
-                "Future Aging Trajectory Projections (5 & 20 year)"
-              ].map((benefit, idx) => (
-                <div key={idx} className="flex items-center gap-3 p-4 bg-background rounded-lg border">
-                  <Target className="h-5 w-5 text-primary flex-shrink-0" />
-                  <span className="text-lg">{benefit}</span>
-                </div>
-              ))}
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              <div className="p-6 bg-background rounded-lg border border-primary/10">
+                <Target className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-xl font-bold mb-2">Your Longevity Impact Score (0-100)</h3>
+                <p className="text-sm text-muted-foreground">Know exactly where you stand—and how much room you have to improve your healthspan and lifespan</p>
+              </div>
+              <div className="p-6 bg-background rounded-lg border border-primary/10">
+                <Activity className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-xl font-bold mb-2">Scores Across 4 Health Pillars</h3>
+                <p className="text-sm text-muted-foreground">See your Brain, Body, Balance & Beauty ratings so you know which areas need the most attention</p>
+              </div>
+              <div className="p-6 bg-background rounded-lg border border-primary/10">
+                <Brain className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-xl font-bold mb-2">Your Top Risk Categories</h3>
+                <p className="text-sm text-muted-foreground">Identify hidden health vulnerabilities before they become problems—early detection saves years</p>
+              </div>
+              <div className="p-6 bg-background rounded-lg border border-primary/10">
+                <TrendingUp className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-xl font-bold mb-2">Longevity Projections</h3>
+                <p className="text-sm text-muted-foreground">Understand your biological age vs. chronological age, and see how lifestyle changes could add years to your life</p>
+              </div>
             </div>
 
             {/* Create Account to Unlock */}
