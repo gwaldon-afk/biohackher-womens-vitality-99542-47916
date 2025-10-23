@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Home, ArrowLeft } from "lucide-react";
 
 const answerSchema = z.object({
   stage: z.string().min(1, "Please select a stage"),
@@ -198,6 +199,17 @@ const MenoMapMenopause = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-xl w-full space-y-8">
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+            <Home className="h-4 w-4 mr-2" />
+            Home
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+        
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold">{t('menomap.assessment.title')}</h1>
           <p className="text-muted-foreground" aria-live="polite">
