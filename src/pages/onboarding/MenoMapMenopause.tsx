@@ -257,7 +257,7 @@ const MenoMapMenopause = () => {
             )}
 
             {question.type === 'radio' && question.options && (
-              <RadioGroup value={currentValue as string} onValueChange={handleRadioAnswer}>
+              <RadioGroup value={currentValue as string || ""} onValueChange={handleRadioAnswer}>
                 <fieldset>
                   <legend className="sr-only">{question.label}</legend>
                   {question.options.map((option) => (
