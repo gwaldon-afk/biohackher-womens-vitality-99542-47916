@@ -2,12 +2,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
-import { CheckCircle, ArrowRight, Download } from "lucide-react";
+import { CheckCircle, ArrowRight, Download, ShoppingCart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { searchProductsBySymptoms, formatProductPrice, type Product } from "@/services/productService";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 const STAGE_INFO = {
   'pre': {
     title: 'Pre-Menopause',
     description: 'Your cycles are still regular, and you\'re not experiencing significant hormonal changes yet.',
+    targetSymptoms: ['energy', 'mood', 'cycle_support'],
     recommendations: [
       'Focus on establishing healthy habits now',
       'Track your cycles to establish a baseline',
@@ -18,6 +24,7 @@ const STAGE_INFO = {
   'early-peri': {
     title: 'Early Perimenopause',
     description: 'You\'re beginning to experience subtle hormonal shifts. Cycles may become slightly irregular.',
+    targetSymptoms: ['sleep', 'mood', 'hot_flashes', 'cycle_irregularity'],
     recommendations: [
       'Start tracking symptoms consistently',
       'Consider adaptogenic herbs for hormone support',
@@ -28,6 +35,7 @@ const STAGE_INFO = {
   'mid-peri': {
     title: 'Mid Perimenopause',
     description: 'Hormonal fluctuations are more pronounced. You may notice significant cycle changes and symptoms.',
+    targetSymptoms: ['hot_flashes', 'night_sweats', 'sleep', 'mood', 'brain_fog'],
     recommendations: [
       'Focus on stress management and cortisol regulation',
       'Consider magnesium for sleep and mood',
@@ -38,6 +46,7 @@ const STAGE_INFO = {
   'late-peri': {
     title: 'Late Perimenopause',
     description: 'You\'re approaching menopause. Periods may be very irregular or absent for months.',
+    targetSymptoms: ['hot_flashes', 'night_sweats', 'bone_health', 'heart_health', 'vaginal_dryness'],
     recommendations: [
       'Support bone health with vitamin D and K2',
       'Focus on cardiovascular exercise',
@@ -48,6 +57,7 @@ const STAGE_INFO = {
   'post': {
     title: 'Post-Menopause',
     description: 'It\'s been 12+ months since your last period. Focus shifts to long-term health optimization.',
+    targetSymptoms: ['bone_health', 'heart_health', 'brain_health', 'skin_aging', 'energy'],
     recommendations: [
       'Prioritize bone density and cardiovascular health',
       'Continue strength training',
@@ -60,6 +70,7 @@ const STAGE_INFO = {
 export default function MenoMapResults() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { addToCart, setIsCartOpen } = useCart();
   const { stage, confidence } = location.state || {};
 
   if (!stage) {
@@ -68,6 +79,27 @@ export default function MenoMapResults() {
   }
 
   const stageInfo = STAGE_INFO[stage as keyof typeof STAGE_INFO];
+
+  // Fetch products based on stage-specific symptoms
+  const { data: recommendedProducts, isLoading: productsLoading } = useQuery({
+    queryKey: ['stage-products', stage],
+    queryFn: () => searchProductsBySymptoms(stageInfo.targetSymptoms || []),
+    enabled: !!stage,
+  });
+
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price_gbp || 0,
+      image: product.image_url || '/placeholder.svg',
+      brand: product.brand || 'Unknown',
+      dosage: product.usage_instructions || 'As directed',
+    });
+    toast.success(`${product.name} added to cart`);
+  };
+
+  const topProducts = recommendedProducts?.slice(0, 3) || [];
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
@@ -121,6 +153,73 @@ export default function MenoMapResults() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Recommended Products */}
+      {topProducts.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recommended Supplements</CardTitle>
+            <CardDescription>
+              Based on your {stageInfo.title.toLowerCase()} profile, these products may support your wellness journey
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {productsLoading ? (
+              <p className="text-sm text-muted-foreground">Loading recommendations...</p>
+            ) : (
+              <>
+                {topProducts.map((product) => (
+                  <div key={product.id} className="flex gap-4 p-4 border rounded-lg">
+                    <img 
+                      src={product.image_url || '/placeholder.svg'} 
+                      alt={product.name}
+                      className="w-20 h-20 object-cover rounded-md flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div>
+                          <h4 className="font-semibold line-clamp-1">{product.name}</h4>
+                          {product.brand && (
+                            <p className="text-sm text-muted-foreground">{product.brand}</p>
+                          )}
+                        </div>
+                        {product.evidence_level && (
+                          <Badge variant="outline" className="flex-shrink-0 text-xs">
+                            {product.evidence_level}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        {product.description}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-lg">
+                          {formatProductPrice(product)}
+                        </span>
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleAddToCart(product)}
+                          className="ml-auto"
+                        >
+                          <ShoppingCart className="w-4 h-4 mr-2" />
+                          Add to Cart
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate('/shop')}
+                >
+                  View All Products
+                </Button>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* What's Next */}
       <Card>
