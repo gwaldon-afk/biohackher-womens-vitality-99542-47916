@@ -3,14 +3,39 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useUserStore } from "@/stores/userStore";
 import { Zap, Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const WelcomeStreamSelect = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const updateProfile = useUserStore((state) => state.updateProfile);
 
-  const handleStreamSelect = (stream: 'performance' | 'menopause') => {
-    updateProfile({ user_stream: stream });
-    navigate('/onboarding/intro-3step');
+  const handleStreamSelect = async (stream: 'performance' | 'menopause') => {
+    if (!user) return;
+
+    try {
+      // Update database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ user_stream: stream })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Update local state
+      updateProfile({ user_stream: stream });
+      navigate('/onboarding/intro-3step');
+    } catch (error) {
+      console.error('Error saving stream selection:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save your selection. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (

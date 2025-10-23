@@ -1910,6 +1910,7 @@ export type Database = {
           timezone: string | null
           updated_at: string
           user_id: string
+          user_stream: string | null
         }
         Insert: {
           country?: string | null
@@ -1929,6 +1930,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           user_id: string
+          user_stream?: string | null
         }
         Update: {
           country?: string | null
@@ -1948,6 +1950,7 @@ export type Database = {
           timezone?: string | null
           updated_at?: string
           user_id?: string
+          user_stream?: string | null
         }
         Relationships: []
       }
