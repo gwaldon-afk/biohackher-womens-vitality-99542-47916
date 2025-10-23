@@ -415,50 +415,79 @@ const MenoMapResults = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {protocolPreview.map((rec, idx) => (
-                <div key={idx} className="border rounded-lg p-4 space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-semibold">{rec.intervention}</h4>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="flex-shrink-0 text-xs">
-                        {rec.evidenceLevel}
-                      </Badge>
-                      {rec.researchLink && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 px-2"
-                          onClick={() => window.open(rec.researchLink, '_blank')}
-                        >
-                          <Microscope className="w-4 h-4" />
-                        </Button>
-                      )}
-                      {rec.intervention.toLowerCase().includes('oil') || 
-                       rec.intervention.toLowerCase().includes('magnesium') ||
-                       rec.intervention.toLowerCase().includes('ashwagandha') ||
-                       rec.intervention.toLowerCase().includes('coq10') ||
-                       rec.intervention.toLowerCase().includes('collagen') ? (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-7 px-2"
-                          onClick={() => {
-                            const searchTerm = rec.intervention.split(' ')[0];
-                            navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
-                          }}
-                        >
-                          <ShoppingCart className="w-4 h-4" />
-                        </Button>
-                      ) : null}
+              {protocolPreview.map((rec, idx) => {
+                // Check if this is a supplement (not a lifestyle/behavioral intervention)
+                const isSupplement = 
+                  rec.intervention.toLowerCase().includes('vitamin') ||
+                  rec.intervention.toLowerCase().includes('magnesium') ||
+                  rec.intervention.toLowerCase().includes('omega') ||
+                  rec.intervention.toLowerCase().includes('oil') ||
+                  rec.intervention.toLowerCase().includes('ashwagandha') ||
+                  rec.intervention.toLowerCase().includes('coq10') ||
+                  rec.intervention.toLowerCase().includes('collagen') ||
+                  rec.intervention.toLowerCase().includes('l-theanine') ||
+                  rec.intervention.toLowerCase().includes('gaba') ||
+                  rec.intervention.toLowerCase().includes('b-complex') ||
+                  rec.intervention.toLowerCase().includes('iron') ||
+                  rec.intervention.toLowerCase().includes('fish oil') ||
+                  !rec.intervention.toLowerCase().includes('protocol') &&
+                  !rec.intervention.toLowerCase().includes('training') &&
+                  !rec.intervention.toLowerCase().includes('breathing') &&
+                  !rec.intervention.toLowerCase().includes('therapy') &&
+                  !rec.intervention.toLowerCase().includes('testing');
+                
+                // Extract supplement name for search (before parentheses or "mg")
+                const extractSupplementName = (name: string) => {
+                  // Remove dosage info in parentheses
+                  let cleaned = name.split('(')[0].trim();
+                  // Remove anything after "+" to get first supplement
+                  cleaned = cleaned.split('+')[0].trim();
+                  // Remove trailing "mg" or "IU"
+                  cleaned = cleaned.replace(/\s*\d+\s*(mg|iu|mcg|g)?\s*$/i, '').trim();
+                  return cleaned;
+                };
+                
+                return (
+                  <div key={idx} className="border rounded-lg p-4 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="font-semibold">{rec.intervention}</h4>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="flex-shrink-0 text-xs">
+                          {rec.evidenceLevel}
+                        </Badge>
+                        {rec.researchLink && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7 px-2"
+                            onClick={() => window.open(rec.researchLink, '_blank')}
+                          >
+                            <Microscope className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {isSupplement && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7 px-2"
+                            onClick={() => {
+                              const searchTerm = extractSupplementName(rec.intervention);
+                              navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
+                            }}
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{rec.rationale}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                      <Clock className="w-3 h-3" />
+                      <span>{rec.timing}</span>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">{rec.rationale}</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{rec.timing}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
               <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
                 <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
                 <p>These recommendations are based on your symptom responses and published research. Always consult with qualified healthcare professionals before implementing any new health protocol.</p>
