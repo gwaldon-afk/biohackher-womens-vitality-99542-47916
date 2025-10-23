@@ -42,34 +42,19 @@ const GoalDetail = () => {
     }
   }, [goalId]);
 
-  if (goalsLoading) {
+  // Refetch goals if not found and not loading
+  useEffect(() => {
+    if (!goal && !goalsLoading && goalId) {
+      fetchGoals();
+    }
+  }, [goal, goalsLoading, goalId]);
+
+  if (goalsLoading || !goal) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8">
           <p className="text-center text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!goal) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 py-8">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>Goal not found</AlertDescription>
-          </Alert>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate("/my-goals")}
-            className="mt-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Goals
-          </Button>
         </div>
       </div>
     );
