@@ -44,7 +44,12 @@ const MenoMapMenopause = () => {
         .map(([_, v]) => v as number);
       const avgScore = numericAnswers.reduce((a, b) => a + b, 0) / numericAnswers.length;
       const bioScore = Math.round((avgScore / 10) * 100);
+      
+      // Save both bio_score for backward compatibility AND structured answers for insights
       localStorage.setItem('bio_score', bioScore.toString());
+      localStorage.setItem('menomap_answers', JSON.stringify(answers));
+      localStorage.setItem('menomap_assessment_type', 'quick');
+      
       navigate('/onboarding/menomap-results');
     }
   };

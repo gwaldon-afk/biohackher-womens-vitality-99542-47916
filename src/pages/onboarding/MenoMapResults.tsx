@@ -6,7 +6,17 @@ import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
-import { CheckCircle, TrendingUp, AlertCircle } from "lucide-react";
+import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock } from "lucide-react";
+import { 
+  analyzeSymptomInterconnections, 
+  identifyBiologicalMechanisms,
+  predictNextPhase,
+  generatePersonalizedProtocolPreview,
+  calculateDeficiencySignals,
+  generateComparativeContext,
+  type SymptomAnswers
+} from "@/utils/menoMapInsights";
+import { Badge } from "@/components/ui/badge";
 
 const STAGE_INFO = {
   'pre': {
@@ -72,36 +82,77 @@ const MenoMapResults = () => {
   } | null>(null);
 
   useEffect(() => {
+    // Add timeout safety - redirect if no data after 2 seconds
+    const timeoutId = setTimeout(() => {
+      const stored = localStorage.getItem('menomap_answers');
+      if (!stored) {
+        console.error('No MenoMap assessment data found');
+        navigate('/onboarding/menomap-menopause');
+      }
+    }, 2000);
+
     // Retrieve assessment answers from localStorage
     const storedAnswers = localStorage.getItem('menomap_answers');
+    const assessmentType = localStorage.getItem('menomap_assessment_type') || 'quick';
+    
     if (storedAnswers) {
-      const answers = JSON.parse(storedAnswers);
-      const stageResult = calculateMenoStage(answers);
+      clearTimeout(timeoutId);
+      const answers: SymptomAnswers = JSON.parse(storedAnswers);
       
-      // Calculate domain scores
-      const domainScores = MENOMAP_ASSESSMENT.domains.map(domain => {
-        const domainQuestions = domain.questions.map(q => q.id);
-        const domainAnswers = domainQuestions
-          .map(qId => answers[qId])
-          .filter(score => score !== undefined);
+      // For quick assessment, calculate simplified stage
+      let stageResult;
+      if (assessmentType === 'quick') {
+        // Map quick assessment to stage based on answers
+        const stageAnswer = answers.stage || 'Not sure';
+        const numericValues = [
+          answers.hot_flush || 5,
+          answers.sleep || 5, 
+          answers.mood || 5,
+          answers.energy || 5,
+          answers.skin || 5
+        ];
+        const avgScore = numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
         
-        const avgDomainScore = domainAnswers.length > 0
-          ? domainAnswers.reduce((sum, score) => sum + score, 0) / domainAnswers.length
-          : 0;
+        // Simple stage mapping for quick assessment
+        let mappedStage = 'pre';
+        if (stageAnswer.toLowerCase().includes('perimenopause')) mappedStage = 'mid-peri';
+        else if (stageAnswer.toLowerCase().includes('menopause') && !stageAnswer.toLowerCase().includes('post')) mappedStage = 'late-peri';
+        else if (stageAnswer.toLowerCase().includes('post')) mappedStage = 'post';
+        else if (avgScore < 5) mappedStage = 'early-peri';
         
-        return {
-          domain: domain.name,
-          score: avgDomainScore,
-          icon: domain.icon
+        stageResult = {
+          stage: mappedStage,
+          confidence: 75,
+          avgScore: avgScore
         };
-      });
+      } else {
+        // For detailed assessment, convert to the expected format
+        const numericAnswers: Record<string, number> = {};
+        Object.entries(answers).forEach(([key, value]) => {
+          if (typeof value === 'number') {
+            numericAnswers[key] = value;
+          }
+        });
+        stageResult = calculateMenoStage(numericAnswers);
+      }
+      
+      // For quick assessment, create simplified domain scores
+      const domainScores = [
+        { domain: 'Vasomotor', score: answers.hot_flush || 5, icon: '🔥' },
+        { domain: 'Sleep', score: answers.sleep || 5, icon: '😴' },
+        { domain: 'Mood', score: answers.mood || 5, icon: '😊' },
+        { domain: 'Energy', score: answers.energy || 5, icon: '⚡' },
+        { domain: 'Skin & Body', score: answers.skin || 5, icon: '✨' }
+      ];
 
       setAnalysisData({
         ...stageResult,
         domainScores
       });
     }
-  }, []);
+
+    return () => clearTimeout(timeoutId);
+  }, [navigate]);
 
   const handleContinue = () => {
     if (user) {
@@ -121,6 +172,15 @@ const MenoMapResults = () => {
 
   const stageInfo = STAGE_INFO[analysisData.stage as keyof typeof STAGE_INFO];
   const overallScore = Math.round(analysisData.avgScore * 20); // Convert to 0-100 scale
+  
+  // Get insights from utility functions
+  const storedAnswers: SymptomAnswers = JSON.parse(localStorage.getItem('menomap_answers') || '{}');
+  const interconnections = analyzeSymptomInterconnections(storedAnswers);
+  const biologicalInsight = identifyBiologicalMechanisms(storedAnswers, analysisData.stage);
+  const nextPhase = predictNextPhase(storedAnswers, analysisData.stage);
+  const protocolPreview = generatePersonalizedProtocolPreview(storedAnswers);
+  const deficiencySignals = calculateDeficiencySignals(storedAnswers);
+  const comparativeContext = generateComparativeContext(storedAnswers, analysisData.stage);
 
   return (
     <div className="min-h-screen p-4 bg-gradient-to-b from-background to-muted/20">
@@ -144,28 +204,110 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* What This Means */}
+        {/* Biological Context - What's Actually Happening */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
-              What This Means For You
+              <Activity className="w-5 h-5 text-primary" />
+              What's Actually Happening in Your Body
             </CardTitle>
-            <CardDescription className="text-base pt-2">
-              {stageInfo.description}
-            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Your Overall Score</span>
-                <span className="text-2xl font-bold text-primary">{overallScore}/100</span>
+            <div className="bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-lg p-4 space-y-3">
+              <div>
+                <h4 className="font-semibold mb-2">Biological Mechanism:</h4>
+                <p className="text-sm">{biologicalInsight.mechanism}</p>
               </div>
-              <Progress value={overallScore} className="h-2" />
-              <p className="text-sm text-muted-foreground">
-                This score reflects the overall pattern of your responses across all symptom domains. 
-                Higher scores indicate fewer symptoms, while lower scores suggest more active symptoms.
-              </p>
+              <div>
+                <h4 className="font-semibold mb-2">Timeline Context:</h4>
+                <p className="text-sm">{biologicalInsight.timeline}</p>
+              </div>
+              <div className="bg-background/50 rounded p-3">
+                <p className="text-sm font-medium">{biologicalInsight.context}</p>
+              </div>
+            </div>
+
+            {comparativeContext.statistics.length > 0 && (
+              <div className="border-t pt-4 space-y-2">
+                <h4 className="font-semibold text-sm">What Women Like You Experience:</h4>
+                {comparativeContext.statistics.map((stat, idx) => (
+                  <p key={idx} className="text-sm text-muted-foreground pl-4 border-l-2 border-primary/30">
+                    {stat}
+                  </p>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Symptom Pattern Analysis - The Insight Value-Add */}
+        {interconnections.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="w-5 h-5 text-primary" />
+                Your Symptom Pattern Analysis
+              </CardTitle>
+              <CardDescription>
+                How your symptoms interconnect and create feedback loops
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {interconnections.map((connection, idx) => (
+                <div key={idx} className="border rounded-lg p-4 space-y-2 bg-muted/30">
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-sm mb-1">
+                        {connection.primary} → {connection.secondary}
+                      </h4>
+                      <div className="space-y-1">
+                        <p className="text-sm"><span className="font-medium">Mechanism:</span> {connection.mechanism}</p>
+                        <p className="text-sm text-primary"><span className="font-medium">Impact:</span> {connection.impact}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Domain Breakdown */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-primary" />
+              Symptom Severity Breakdown
+            </CardTitle>
+            <CardDescription>
+              How your responses map across key health domains
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {analysisData.domainScores.map((domain, idx) => {
+                const domainPercent = Math.round(domain.score * 20);
+                const severity = 
+                  domainPercent >= 80 ? { label: 'Excellent', color: 'text-green-600 dark:text-green-400' } :
+                  domainPercent >= 60 ? { label: 'Good', color: 'text-blue-600 dark:text-blue-400' } :
+                  domainPercent >= 40 ? { label: 'Moderate', color: 'text-yellow-600 dark:text-yellow-400' } :
+                  { label: 'Needs Attention', color: 'text-orange-600 dark:text-orange-400' };
+
+                return (
+                  <div key={idx} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{domain.icon}</span>
+                        <span className="font-medium">{domain.domain}</span>
+                      </div>
+                      <span className={`text-sm font-semibold ${severity.color}`}>
+                        {severity.label}
+                      </span>
+                    </div>
+                    <Progress value={domainPercent} className="h-2" />
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -210,23 +352,96 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* Personalized Recommendations */}
+        {/* Protocol Preview - Specific Interventions */}
+        {protocolPreview.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5 text-primary" />
+                Your Personalized Protocol Preview
+              </CardTitle>
+              <CardDescription>
+                Specific, targeted interventions based on your symptom cluster
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {protocolPreview.map((rec, idx) => (
+                <div key={idx} className="border rounded-lg p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-semibold">{rec.intervention}</h4>
+                    <Badge variant="outline" className="flex-shrink-0 text-xs">
+                      {rec.evidenceLevel}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{rec.rationale}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                    <Clock className="w-3 h-3" />
+                    <span>{rec.timing}</span>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Deficiency Signals */}
+        {deficiencySignals.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-primary" />
+                Potential Nutrient Deficiency Signals
+              </CardTitle>
+              <CardDescription>
+                Your symptom pattern suggests these potential deficiencies
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {deficiencySignals.map((signal, idx) => (
+                <div key={idx} className="border rounded-lg p-3 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <h4 className="font-semibold text-sm">{signal.nutrient}</h4>
+                    <Badge variant="secondary" className="text-xs">{signal.confidence} confidence</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{signal.recommendation}</p>
+                </div>
+              ))}
+              <p className="text-xs text-muted-foreground pt-2">
+                Note: Always consult healthcare providers before starting supplementation
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* What's Coming Next */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Personalized Action Plan</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              What's Coming Next
+            </CardTitle>
             <CardDescription>
-              Evidence-based recommendations tailored to your {stageInfo.title.toLowerCase()} stage
+              Predictive insights about your symptom progression
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <ul className="space-y-3">
-              {stageInfo.recommendations.map((rec, index) => (
-                <li key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
+          <CardContent className="space-y-4">
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <div>
+                <h4 className="font-semibold text-sm mb-2">Timeline: {nextPhase.timeline}</h4>
+                <ul className="space-y-1">
+                  {nextPhase.likelySymptoms.map((symptom, idx) => (
+                    <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <span className="text-primary">•</span>
+                      <span>{symptom}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="border-t pt-3">
+                <h4 className="font-semibold text-sm mb-1">Optimal Preparation:</h4>
+                <p className="text-sm">{nextPhase.preparation}</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
