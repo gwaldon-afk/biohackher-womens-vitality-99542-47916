@@ -94,7 +94,7 @@ Format as detailed markdown.`;
     const optimizationPlan = aiResult.text || "AI optimization plan generated.";
 
     // Calculate predicted biological age impact (simplified model)
-    const predictedImpact = calculatePredictedImpact(goal_data, lisHistory, healthProfile);
+    const predictedImpact = calculatePredictedImpact(goal_data, lisHistory || [], healthProfile);
 
     // Generate milestones
     const milestones = generateMilestones(goal_data);
@@ -122,8 +122,9 @@ Format as detailed markdown.`;
     );
   } catch (error) {
     console.error("Error generating optimization:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
