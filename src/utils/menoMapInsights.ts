@@ -5,6 +5,7 @@
 
 export interface SymptomAnswers {
   stage?: string;
+  hrt?: string;
   hot_flush?: number;
   sleep?: number;
   mood?: number;
@@ -59,8 +60,8 @@ export function analyzeSymptomInterconnections(answers: SymptomAnswers): Symptom
   const mood = answers.mood || 5;
   const skin = answers.skin || 5;
 
-  // Sleep → Hot Flashes feedback loop
-  if (sleep < 5 && hotFlush > 5) {
+  // Sleep → Hot Flashes feedback loop (HIGH hot flush = frequent)
+  if (sleep < 5 && hotFlush >= 6) {
     interconnections.push({
       primary: 'Sleep disruption',
       secondary: 'Hot flashes',
@@ -69,8 +70,8 @@ export function analyzeSymptomInterconnections(answers: SymptomAnswers): Symptom
     });
   }
 
-  // Hot Flashes → Energy cascade
-  if (hotFlush > 6 && energy < 5) {
+  // Hot Flashes → Energy cascade (HIGH hot flush = frequent)
+  if (hotFlush >= 6 && energy < 5) {
     interconnections.push({
       primary: 'Frequent hot flashes',
       secondary: 'Low energy',
@@ -217,8 +218,8 @@ export function predictNextPhase(answers: SymptomAnswers, stage: string): NextPh
 export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): ProtocolRecommendation[] {
   const recommendations: ProtocolRecommendation[] = [];
   
-  // Hot flash interventions - Multiple modalities
-  if (answers.hot_flush && answers.hot_flush <= 4) {
+  // Hot flash interventions - Multiple modalities (HIGH score = frequent hot flashes)
+  if (answers.hot_flush && answers.hot_flush >= 6) {
     recommendations.push({
       intervention: 'Cold Exposure Protocol',
       rationale: 'Cold showers or ice packs on wrists/neck trigger norepinephrine release, which helps regulate your thermostat and reduce hot flash frequency by 40-60%.',
@@ -226,16 +227,20 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
       evidenceLevel: 'Moderate evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/27806211/'
     });
-    recommendations.push({
-      intervention: 'Evening Primrose Oil + Vitamin E',
-      rationale: 'Your hot flash pattern suggests omega-6 fatty acid deficiency. EPO contains GLA which supports prostaglandin balance, while vitamin E stabilizes cell membranes.',
-      timing: 'Take with dinner for overnight support',
-      evidenceLevel: 'Strong clinical evidence',
-      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
-    });
+    
+    // Only suggest EPO if NOT on HRT
+    if (answers.hrt !== 'Yes') {
+      recommendations.push({
+        intervention: 'Evening Primrose Oil + Vitamin E',
+        rationale: 'Your hot flash pattern suggests omega-6 fatty acid deficiency. EPO contains GLA which supports prostaglandin balance, while vitamin E stabilizes cell membranes.',
+        timing: 'Take with dinner for overnight support',
+        evidenceLevel: 'Strong clinical evidence',
+        researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
+      });
+    }
   }
   
-  // Sleep interventions - Behavioral + Supplement
+  // Sleep interventions - Behavioral + Supplement (LOW score = poor sleep)
   if (answers.sleep && answers.sleep <= 4) {
     recommendations.push({
       intervention: 'Sleep Compression Protocol',
@@ -253,7 +258,7 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
     });
   }
   
-  // Mood interventions - Mind-body + Adaptogen
+  // Mood interventions - Mind-body + Adaptogen (LOW score = poor mood)
   if (answers.mood && answers.mood <= 4) {
     recommendations.push({
       intervention: 'Heart Rate Variability Breathing',
@@ -262,16 +267,20 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/28906496/'
     });
-    recommendations.push({
-      intervention: 'Ashwagandha KSM-66',
-      rationale: 'Modulates HPA axis and supports GABA receptor sensitivity to counter cortisol-progesterone interference.',
-      timing: 'Morning and 4pm (cortisol regulation windows)',
-      evidenceLevel: 'Strong clinical evidence',
-      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23439798/'
-    });
+    
+    // Only suggest Ashwagandha if NOT on HRT
+    if (answers.hrt !== 'Yes') {
+      recommendations.push({
+        intervention: 'Ashwagandha KSM-66',
+        rationale: 'Modulates HPA axis and supports GABA receptor sensitivity to counter cortisol-progesterone interference.',
+        timing: 'Morning and 4pm (cortisol regulation windows)',
+        evidenceLevel: 'Strong clinical evidence',
+        researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23439798/'
+      });
+    }
   }
   
-  // Energy interventions - Movement + Mitochondrial support
+  // Energy interventions - Movement + Mitochondrial support (LOW score = low energy)
   if (answers.energy && answers.energy <= 4) {
     recommendations.push({
       intervention: 'Zone 2 Cardio Protocol',
@@ -289,7 +298,7 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
     });
   }
   
-  // Skin interventions - Lifestyle + Supplement
+  // Skin interventions - Lifestyle + Supplement (LOW score = skin concerns)
   if (answers.skin && answers.skin <= 4) {
     recommendations.push({
       intervention: 'Red Light Therapy (660nm + 850nm)',
@@ -332,8 +341,8 @@ export function calculateDeficiencySignals(answers: SymptomAnswers): DeficiencyS
     });
   }
 
-  // Omega-3 (hot flashes + mood)
-  if (hotFlush > 6 || (mood < 5 && energy < 5)) {
+  // Omega-3 (hot flashes + mood) - HIGH hot flush score = frequent
+  if (hotFlush >= 6 || (mood < 5 && energy < 5)) {
     signals.push({
       nutrient: 'Omega-3 fatty acids',
       confidence: 'Moderate-High',
@@ -362,8 +371,8 @@ export function calculateDeficiencySignals(answers: SymptomAnswers): DeficiencyS
     });
   }
 
-  // Vitamin E + phytoestrogens (hot flashes + skin)
-  if (hotFlush > 7 && skin < 5) {
+  // Vitamin E + phytoestrogens (hot flashes + skin) - HIGH hot flush = frequent
+  if (hotFlush >= 7 && skin < 5) {
     signals.push({
       nutrient: 'Vitamin E + Phytoestrogens',
       confidence: 'Moderate',
@@ -387,7 +396,7 @@ export function generateComparativeContext(answers: SymptomAnswers, stage: strin
 
   const stats: string[] = [];
 
-  if (stage === 'mid-peri' && hotFlush > 6) {
+  if (stage === 'mid-peri' && hotFlush >= 6) {
     stats.push('75% of women with your symptom profile experience hot flashes in this phase');
     stats.push('Average duration: 7-10 years, but intensity typically peaks in years 1-3');
   }

@@ -13,6 +13,12 @@ const questions = [
     type: 'radio' as const,
     options: ['Perimenopause', 'Menopause', 'Post-menopause', 'Not sure'],
   },
+  {
+    id: 'hrt',
+    label: 'Are you currently taking HRT (Hormone Replacement Therapy)?',
+    type: 'radio' as const,
+    options: ['Yes', 'No', 'Not sure'],
+  },
   { id: 'hot_flush', label: 'Hot Flush Frequency', type: 'slider' as const, min: 0, max: 10 },
   { id: 'sleep', label: 'Sleep Quality', type: 'slider' as const, min: 0, max: 10 },
   { id: 'mood', label: 'Mood Stability', type: 'slider' as const, min: 0, max: 10 },
