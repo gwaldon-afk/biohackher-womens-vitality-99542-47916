@@ -97,7 +97,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/symptoms/energy-assessment")}
+              onClick={() => navigate("/assessment/energy-levels")}
             >
               <CardHeader>
                 <Zap className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -116,7 +116,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/brain-assessment")}
+              onClick={() => navigate("/assessment/cognitive-function")}
             >
               <CardHeader>
                 <Brain className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -135,7 +135,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/symptoms/metabolic-assessment")}
+              onClick={() => navigate("/assessment/weight-changes")}
             >
               <CardHeader>
                 <Scale className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -173,7 +173,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/symptoms/sleep-assessment")}
+              onClick={() => navigate("/assessment/sleep")}
             >
               <CardHeader>
                 <Moon className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
