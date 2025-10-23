@@ -45,14 +45,23 @@ export const useDailyPlan = () => {
   }, [user, protocols, goals, energyActions, completions]);
 
   const loadDailyPlan = async () => {
+    console.log('[useDailyPlan] Starting loadDailyPlan');
+    console.log('[useDailyPlan] User:', user?.id);
+    console.log('[useDailyPlan] Available protocols:', protocols);
+    
     setLoading(true);
     try {
       const dailyActions: DailyAction[] = [];
 
       // 1. Get active protocol items (show all, don't filter by time)
       const activeProtocol = protocols.find(p => p.is_active);
+      console.log('[useDailyPlan] Active protocol:', activeProtocol);
+      
       if (activeProtocol) {
         const items = await fetchProtocolItems(activeProtocol.id);
+        console.log('[useDailyPlan] Protocol items fetched:', items);
+        console.log('[useDailyPlan] Active items only:', items.filter(item => item.is_active));
+        
         const relevantItems = items.filter(item => item.is_active);
 
         relevantItems.forEach((item: ProtocolItem) => {
@@ -113,6 +122,10 @@ export const useDailyPlan = () => {
 
       // Calculate priorities for all actions
       const prioritizedActions = calculatePriorities(dailyActions, activeGoals.length, currentScore?.composite_score);
+      
+      console.log('[useDailyPlan] All actions collected:', dailyActions.length);
+      console.log('[useDailyPlan] Protocol actions:', dailyActions.filter(a => a.type === 'protocol'));
+      console.log('[useDailyPlan] Final prioritized actions:', prioritizedActions);
       
       setActions(prioritizedActions);
     } catch (error) {

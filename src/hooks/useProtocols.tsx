@@ -35,6 +35,7 @@ export const useProtocols = () => {
   const fetchProtocols = async () => {
     if (!user) return;
     
+    console.log('[useProtocols] Fetching protocols for user:', user.id);
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -44,6 +45,8 @@ export const useProtocols = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      console.log('[useProtocols] Fetched protocols:', data);
+      console.log('[useProtocols] Active protocols:', data?.filter(p => p.is_active));
       setProtocols(data || []);
     } catch (error) {
       console.error('Error fetching protocols:', error);
@@ -120,6 +123,7 @@ export const useProtocols = () => {
   };
 
   const fetchProtocolItems = async (protocolId: string): Promise<ProtocolItem[]> => {
+    console.log('[useProtocols] Fetching protocol items for protocol:', protocolId);
     try {
       const { data, error } = await supabase
         .from('protocol_items')
@@ -128,6 +132,8 @@ export const useProtocols = () => {
         .order('created_at', { ascending: true });
 
       if (error) throw error;
+      console.log('[useProtocols] Fetched protocol items:', data);
+      console.log('[useProtocols] Active protocol items:', data?.filter(item => item.is_active));
       return data || [];
     } catch (error) {
       console.error('Error fetching protocol items:', error);

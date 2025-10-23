@@ -114,11 +114,22 @@ const Dashboard = () => {
   const assessmentCompletedCount = Object.values(assessmentCompletions).filter(p => p.completed).length;
 
   // Daily plan calculations
+  console.log('[Dashboard] All actions:', actions);
+  console.log('[Dashboard] Protocols:', protocols);
+  console.log('[Dashboard] Active protocols:', protocols.filter(p => p.is_active));
+  
   const movements = actions.filter(a => a.category === 'deep_practice');
   const supplements = actions.filter(a => a.category === 'quick_win' && a.type === 'protocol');
+  
+  console.log('[Dashboard] Filtered supplements:', supplements);
+  console.log('[Dashboard] Supplement count:', supplements.length);
+  
   const remainingActions = actions.filter(a => !a.completed);
   const estimatedMinutesRemaining = remainingActions.reduce((sum, action) => sum + action.estimatedMinutes, 0);
   const hasNoProtocol = actions.length === 0 && !dailyPlanLoading;
+  
+  console.log('[Dashboard] hasNoProtocol:', hasNoProtocol);
+  console.log('[Dashboard] dailyPlanLoading:', dailyPlanLoading);
 
   // Check if we should auto-open the daily submission modal
   const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
