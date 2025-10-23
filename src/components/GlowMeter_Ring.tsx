@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUserStore } from "@/stores/userStore";
+import { useAuth } from "@/hooks/useAuth";
 
 interface GlowMeterRingProps {
   value: number;
@@ -8,7 +8,7 @@ interface GlowMeterRingProps {
 }
 
 const GlowMeter_Ring = ({ value, size = 200, strokeWidth = 16 }: GlowMeterRingProps) => {
-  const profile = useUserStore((state) => state.profile);
+  const { profile } = useAuth();
   const [previousValue, setPreviousValue] = useState(value);
   const [shouldPulse, setShouldPulse] = useState(false);
 

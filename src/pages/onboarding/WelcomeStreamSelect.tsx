@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useUserStore } from "@/stores/userStore";
 import { Zap, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,9 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 
 const WelcomeStreamSelect = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const { toast } = useToast();
-  const updateProfile = useUserStore((state) => state.updateProfile);
 
   const handleStreamSelect = async (stream: 'performance' | 'menopause') => {
     if (!user) return;
@@ -25,8 +23,8 @@ const WelcomeStreamSelect = () => {
 
       if (error) throw error;
 
-      // Update local state
-      updateProfile({ user_stream: stream });
+      // Refresh profile from database
+      await refreshProfile();
       navigate('/onboarding/intro-3step');
     } catch (error) {
       console.error('Error saving stream selection:', error);

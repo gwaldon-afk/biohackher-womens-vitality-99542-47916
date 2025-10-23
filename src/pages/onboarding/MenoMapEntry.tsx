@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "@/stores/userStore";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const MenoMapEntry = () => {
   const navigate = useNavigate();
-  const profile = useUserStore((state) => state.profile);
+  const { profile } = useAuth();
 
   useEffect(() => {
     if (!profile) return;

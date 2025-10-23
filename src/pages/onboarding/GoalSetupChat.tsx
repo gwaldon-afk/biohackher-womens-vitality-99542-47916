@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useUserStore } from "@/stores/userStore";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { useCreateProtocol } from "@/queries/protocolQueries";
@@ -32,8 +31,7 @@ const menopauseGoals = [
 
 const GoalSetupChat = () => {
   const navigate = useNavigate();
-  const profile = useUserStore((state) => state.profile);
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { createGoals } = useGoals();
   const { toast } = useToast();
   const [selected, setSelected] = useState<string[]>([]);

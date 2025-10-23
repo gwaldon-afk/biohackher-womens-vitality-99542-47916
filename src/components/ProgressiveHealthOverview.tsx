@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
-import { useUserStore } from '@/stores/userStore';
 import { HealthRadarChart } from './HealthRadarChart';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -54,7 +53,6 @@ export const ProgressiveHealthOverview = ({
   onViewFullAnalysis,
   compact = false
 }: ProgressiveHealthOverviewProps) => {
-  const { profile, subscription } = useUserStore();
   const { data: analysis, isLoading, error } = useQuery<AnalysisResult>({
     queryKey: ['progressive-analysis', assessments.map(a => a.id).join(',')],
     queryFn: async () => {

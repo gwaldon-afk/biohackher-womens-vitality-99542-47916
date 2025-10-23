@@ -5,11 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Camera, Mic, Lightbulb, Activity } from "lucide-react";
-import { useUserStore } from "@/stores/userStore";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const PermissionSetup = () => {
   const navigate = useNavigate();
-  const { profile, updateProfile } = useUserStore();
+  const { user, profile, refreshProfile } = useAuth();
+  const { toast } = useToast();
   const [permissions, setPermissions] = useState({
     camera: false,
     microphone: false,
@@ -21,14 +24,34 @@ const PermissionSetup = () => {
     setPermissions((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleContinue = () => {
-    updateProfile({ device_permissions: permissions });
-    
-    // Route based on user stream
-    if (profile?.user_stream === 'performance') {
-      navigate('/onboarding/menomap-performance');
-    } else {
-      navigate('/onboarding/menomap-menopause');
+  const handleContinue = async () => {
+    if (!user) return;
+
+    try {
+      // Save to database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ device_permissions: permissions })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      // Refresh profile from database
+      await refreshProfile();
+      
+      // Route based on user stream
+      if (profile?.user_stream === 'performance') {
+        navigate('/energy-loop/onboarding');
+      } else {
+        navigate('/menomap/assessment');
+      }
+    } catch (error) {
+      console.error('Error saving permissions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save permissions. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 

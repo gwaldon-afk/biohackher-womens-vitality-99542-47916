@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star, ExternalLink } from "lucide-react";
-import { useUserStore } from "@/stores/userStore";
+import { useAuth } from "@/hooks/useAuth";
 
 const ExpertFinderMap = () => {
-  const profile = useUserStore((state) => state.profile);
+  const { profile } = useAuth();
   const [selectedExpert, setSelectedExpert] = useState<number | null>(null);
 
   const experts = profile?.user_stream === 'performance' 

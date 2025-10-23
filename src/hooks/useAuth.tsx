@@ -14,11 +14,21 @@ interface Profile {
   email: string | null;
   created_at: string;
   updated_at: string;
-  country: string;
-  language: string;
-  currency: string;
-  measurement_system: string;
-  timezone: string;
+  country: string | null;
+  language: string | null;
+  currency: string | null;
+  measurement_system: string | null;
+  timezone: string | null;
+  onboarding_completed: boolean | null;
+  user_stream: 'performance' | 'menopause' | null;
+  device_permissions: {
+    camera: boolean;
+    microphone: boolean;
+    light_sensor: boolean;
+    motion: boolean;
+  } | null;
+  menomap_enabled: boolean | null;
+  energy_loop_enabled: boolean | null;
 }
 
 interface AuthContextType {
@@ -29,6 +39,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, preferredName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,7 +83,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return;
       }
 
-      setProfile(data);
+      // Map database fields to Profile type
+      const profileData: Profile = {
+        id: data.id,
+        user_id: data.user_id,
+        preferred_name: data.preferred_name,
+        email: data.email,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        country: data.country,
+        language: data.language,
+        currency: data.currency,
+        measurement_system: data.measurement_system,
+        timezone: data.timezone,
+        onboarding_completed: data.onboarding_completed,
+        user_stream: data.user_stream as 'performance' | 'menopause' | null,
+        device_permissions: data.device_permissions as Profile['device_permissions'],
+        menomap_enabled: data.menomap_enabled,
+        energy_loop_enabled: data.energy_loop_enabled,
+      };
+
+      setProfile(profileData);
       
       // Set i18n language based on user's locale preference
       if (data?.language && i18n.language !== data.language) {
@@ -304,6 +335,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const refreshProfile = async () => {
+    if (user?.id) {
+      await fetchProfile(user.id);
+    }
+  };
+
   const value = {
     user,
     session,
@@ -312,6 +349,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signIn,
     signOut,
+    refreshProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

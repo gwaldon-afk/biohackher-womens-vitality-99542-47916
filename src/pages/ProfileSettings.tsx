@@ -4,20 +4,39 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Camera, Mic, Lightbulb, Activity, Shield, Download, ExternalLink } from "lucide-react";
-import { useUserStore } from "@/stores/userStore";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const ProfileSettings = () => {
-  const { profile, updateProfile } = useUserStore();
+  const { user, profile, refreshProfile } = useAuth();
+  const { toast } = useToast();
 
-  const handlePermissionToggle = (key: string, value: boolean) => {
-    if (!profile?.device_permissions) return;
+  const handlePermissionToggle = async (key: string, value: boolean) => {
+    if (!user || !profile?.device_permissions) return;
     
-    updateProfile({
-      device_permissions: {
-        ...profile.device_permissions,
-        [key]: value,
-      },
-    });
+    const updatedPermissions = {
+      ...profile.device_permissions,
+      [key]: value,
+    };
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ device_permissions: updatedPermissions })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      await refreshProfile();
+    } catch (error) {
+      console.error('Error updating permissions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update permissions. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const permissions = [
