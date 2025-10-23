@@ -1,75 +1,113 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
-const questions = [
-  {
-    id: 'stage',
-    label: 'What stage are you in?',
-    type: 'radio' as const,
-    options: ['Perimenopause', 'Menopause', 'Post-menopause', 'Not sure'],
-  },
-  {
-    id: 'hrt',
-    label: 'Are you currently taking HRT (Hormone Replacement Therapy)?',
-    type: 'radio' as const,
-    options: ['Yes', 'No', 'Not sure'],
-  },
-  { 
-    id: 'hot_flush', 
-    label: 'Hot Flush Frequency', 
-    type: 'slider' as const, 
-    min: 0, 
-    max: 10,
-    lowLabel: 'Never',
-    highLabel: 'Very Frequent'
-  },
-  { 
-    id: 'sleep', 
-    label: 'Sleep Quality', 
-    type: 'slider' as const, 
-    min: 0, 
-    max: 10,
-    lowLabel: 'Very Poor',
-    highLabel: 'Excellent'
-  },
-  { 
-    id: 'mood', 
-    label: 'Mood Stability', 
-    type: 'slider' as const, 
-    min: 0, 
-    max: 10,
-    lowLabel: 'Very Unstable',
-    highLabel: 'Very Stable'
-  },
-  { 
-    id: 'energy', 
-    label: 'Energy Levels', 
-    type: 'slider' as const, 
-    min: 0, 
-    max: 10,
-    lowLabel: 'Very Low',
-    highLabel: 'Very High'
-  },
-  { 
-    id: 'skin', 
-    label: 'Skin Health', 
-    type: 'slider' as const, 
-    min: 0, 
-    max: 10,
-    lowLabel: 'Very Poor',
-    highLabel: 'Excellent'
-  },
-];
+const answerSchema = z.object({
+  stage: z.string().min(1, "Please select a stage"),
+  hrt: z.string().min(1, "Please select an option"),
+  hot_flush: z.number().min(0).max(10),
+  sleep: z.number().min(0).max(10),
+  mood: z.number().min(0).max(10),
+  energy: z.number().min(0).max(10),
+  skin: z.number().min(0).max(10),
+});
+
+type Question = {
+  id: keyof z.infer<typeof answerSchema>;
+  label: string;
+  type: 'radio' | 'slider';
+  options?: string[];
+  min?: number;
+  max?: number;
+  lowLabel?: string;
+  highLabel?: string;
+};
 
 const MenoMapMenopause = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number | string>>({});
+  const [isSaving, setIsSaving] = useState(false);
+
+  const questions: Question[] = [
+    {
+      id: 'stage',
+      label: t('menomap.assessment.questions.stage'),
+      type: 'radio' as const,
+      options: [
+        t('menomap.assessment.options.perimenopause'),
+        t('menomap.assessment.options.menopause'),
+        t('menomap.assessment.options.postMenopause'),
+        t('menomap.assessment.options.notSure'),
+      ],
+    },
+    {
+      id: 'hrt',
+      label: t('menomap.assessment.questions.hrt'),
+      type: 'radio' as const,
+      options: [
+        t('menomap.assessment.options.yes'),
+        t('menomap.assessment.options.no'),
+        t('menomap.assessment.options.notSure'),
+      ],
+    },
+    { 
+      id: 'hot_flush', 
+      label: t('menomap.assessment.questions.hotFlush'),
+      type: 'slider' as const, 
+      min: 0, 
+      max: 10,
+      lowLabel: t('menomap.assessment.labels.never'),
+      highLabel: t('menomap.assessment.labels.veryFrequent')
+    },
+    { 
+      id: 'sleep', 
+      label: t('menomap.assessment.questions.sleep'),
+      type: 'slider' as const, 
+      min: 0, 
+      max: 10,
+      lowLabel: t('menomap.assessment.labels.veryPoor'),
+      highLabel: t('menomap.assessment.labels.excellent')
+    },
+    { 
+      id: 'mood', 
+      label: t('menomap.assessment.questions.mood'),
+      type: 'slider' as const, 
+      min: 0, 
+      max: 10,
+      lowLabel: t('menomap.assessment.labels.veryUnstable'),
+      highLabel: t('menomap.assessment.labels.veryStable')
+    },
+    { 
+      id: 'energy', 
+      label: t('menomap.assessment.questions.energy'),
+      type: 'slider' as const, 
+      min: 0, 
+      max: 10,
+      lowLabel: t('menomap.assessment.labels.veryLow'),
+      highLabel: t('menomap.assessment.labels.veryHigh')
+    },
+    { 
+      id: 'skin', 
+      label: t('menomap.assessment.questions.skin'),
+      type: 'slider' as const, 
+      min: 0, 
+      max: 10,
+      lowLabel: t('menomap.assessment.labels.veryPoor'),
+      highLabel: t('menomap.assessment.labels.excellent')
+    },
+  ];
 
   const handleSliderAnswer = (value: number) => {
     const question = questions[currentQuestion];
@@ -81,21 +119,74 @@ const MenoMapMenopause = () => {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
   };
 
-  const handleNext = () => {
+  const calculateBioScore = (answers: Record<string, number | string>): number => {
+    const numericAnswers = Object.entries(answers)
+      .filter(([_, v]) => typeof v === 'number')
+      .map(([_, v]) => v as number);
+    const avgScore = numericAnswers.reduce((a, b) => a + b, 0) / numericAnswers.length;
+    return Math.round((avgScore / 10) * 100);
+  };
+
+  const saveToSupabase = async (bioScore: number) => {
+    if (!user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('menomap_assessments')
+        .insert({
+          user_id: user.id,
+          assessment_type: 'quick',
+          answers: answers,
+          bio_score: bioScore,
+        });
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      return false;
+    }
+  };
+
+  const handleNext = async () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      const numericAnswers = Object.entries(answers)
-        .filter(([_, v]) => typeof v === 'number')
-        .map(([_, v]) => v as number);
-      const avgScore = numericAnswers.reduce((a, b) => a + b, 0) / numericAnswers.length;
-      const bioScore = Math.round((avgScore / 10) * 100);
+      // Validate all answers
+      try {
+        answerSchema.parse(answers);
+      } catch (error) {
+        toast({
+          title: t('menomap.errors.validationFailed'),
+          description: t('menomap.errors.validationFailedDescription'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsSaving(true);
+      const bioScore = calculateBioScore(answers);
       
-      // Save both bio_score for backward compatibility AND structured answers for insights
+      // Save to Supabase if user is logged in
+      if (user) {
+        const success = await saveToSupabase(bioScore);
+        if (!success) {
+          toast({
+            title: t('menomap.errors.saveFailed'),
+            description: t('menomap.errors.saveFailedDescription'),
+            variant: "destructive",
+          });
+          setIsSaving(false);
+          return;
+        }
+      }
+      
+      // Fallback to localStorage for backward compatibility
       localStorage.setItem('bio_score', bioScore.toString());
       localStorage.setItem('menomap_answers', JSON.stringify(answers));
       localStorage.setItem('menomap_assessment_type', 'quick');
       
+      setIsSaving(false);
       navigate('/onboarding/menomap-results');
     }
   };
@@ -107,19 +198,20 @@ const MenoMapMenopause = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-xl w-full space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Menopause Assessment</h1>
-          <p className="text-muted-foreground">
-            Question {currentQuestion + 1} of {questions.length}
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl font-bold">{t('menomap.assessment.title')}</h1>
+          <p className="text-muted-foreground" aria-live="polite">
+            {t('menomap.assessment.progress', { current: currentQuestion + 1, total: questions.length })}
           </p>
-        </div>
+        </header>
 
-        <Card className="p-8 space-y-8">
+        <Card className="p-8 space-y-8" role="region" aria-labelledby="question-label">
           <div className="space-y-4">
-            <Label className="text-xl font-medium">{question.label}</Label>
+            <Label id="question-label" className="text-xl font-medium">{question.label}</Label>
 
             {question.type === 'slider' && (
-              <div className="space-y-4">
+              <fieldset className="space-y-4">
+                <legend className="sr-only">{question.label}</legend>
                 <Slider
                   value={[typeof currentValue === 'number' ? currentValue : 5]}
                   onValueChange={([value]) => handleSliderAnswer(value)}
@@ -127,37 +219,59 @@ const MenoMapMenopause = () => {
                   max={question.max}
                   step={1}
                   className="w-full"
+                  aria-label={question.label}
+                  aria-valuemin={question.min}
+                  aria-valuemax={question.max}
+                  aria-valuenow={typeof currentValue === 'number' ? currentValue : 5}
+                  aria-valuetext={`${typeof currentValue === 'number' ? currentValue : 5} out of 10`}
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>{question.lowLabel || 'Low'}</span>
-                  <span className="text-lg font-semibold text-foreground">
+                  <span>{question.lowLabel || t('menomap.assessment.labels.veryPoor')}</span>
+                  <span className="text-lg font-semibold text-foreground" aria-live="polite">
                     {typeof currentValue === 'number' ? currentValue : 5}/10
                   </span>
-                  <span>{question.highLabel || 'High'}</span>
+                  <span>{question.highLabel || t('menomap.assessment.labels.excellent')}</span>
                 </div>
-              </div>
+              </fieldset>
             )}
 
             {question.type === 'radio' && question.options && (
               <RadioGroup value={currentValue as string} onValueChange={handleRadioAnswer}>
-                {question.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
-                    <RadioGroupItem value={option} id={option} />
-                    <Label htmlFor={option} className="cursor-pointer flex-1">
-                      {option}
-                    </Label>
-                  </div>
-                ))}
+                <fieldset>
+                  <legend className="sr-only">{question.label}</legend>
+                  {question.options.map((option) => (
+                    <div key={option} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
+                      <RadioGroupItem value={option} id={option} />
+                      <Label htmlFor={option} className="cursor-pointer flex-1">
+                        {option}
+                      </Label>
+                    </div>
+                  ))}
+                </fieldset>
               </RadioGroup>
             )}
           </div>
 
-          <Button onClick={handleNext} disabled={!canProceed} className="w-full" size="lg">
-            {currentQuestion < questions.length - 1 ? 'Next Question' : 'Complete Assessment'}
+          <Button 
+            onClick={handleNext} 
+            disabled={!canProceed || isSaving} 
+            className="w-full" 
+            size="lg"
+            aria-busy={isSaving}
+          >
+            {isSaving 
+              ? t('common.loading') 
+              : currentQuestion < questions.length - 1 
+                ? t('menomap.assessment.nextQuestion') 
+                : t('menomap.assessment.completeAssessment')
+            }
           </Button>
         </Card>
 
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2" role="progressbar" aria-valuenow={currentQuestion + 1} aria-valuemin={1} aria-valuemax={questions.length}>
+          <span className="sr-only">
+            {t('menomap.assessment.progress', { current: currentQuestion + 1, total: questions.length })}
+          </span>
           {questions.map((_, index) => (
             <div
               key={index}
@@ -168,6 +282,7 @@ const MenoMapMenopause = () => {
                   ? 'bg-primary/50'
                   : 'bg-muted'
               }`}
+              aria-label={`Question ${index + 1} ${index === currentQuestion ? 'current' : index < currentQuestion ? 'completed' : 'upcoming'}`}
             />
           ))}
         </div>

@@ -1541,6 +1541,36 @@ export type Database = {
         }
         Relationships: []
       }
+      menomap_assessments: {
+        Row: {
+          answers: Json
+          assessment_type: string
+          bio_score: number | null
+          completed_at: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          assessment_type?: string
+          bio_score?: number | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          assessment_type?: string
+          bio_score?: number | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       menopause_insights: {
         Row: {
           acknowledged: boolean | null

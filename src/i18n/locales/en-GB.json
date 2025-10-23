@@ -371,5 +371,46 @@
     "goodFunction": "Good cognitive function",
     "excellentPerformance": "Excellent performance across all categories! Focus on maintenance and continued optimisation.",
     "targetedOptimization": "targeted optimisation could elevate your cognitive performance"
+  },
+  "menomap": {
+    "assessment": {
+      "title": "Menopause Assessment",
+      "progress": "Question {{current}} of {{total}}",
+      "nextQuestion": "Next Question",
+      "completeAssessment": "Complete Assessment",
+      "questions": {
+        "stage": "What stage are you in?",
+        "hrt": "Are you currently taking HRT (Hormone Replacement Therapy)?",
+        "hotFlush": "Hot Flush Frequency",
+        "sleep": "Sleep Quality",
+        "mood": "Mood Stability",
+        "energy": "Energy Levels",
+        "skin": "Skin Health"
+      },
+      "labels": {
+        "never": "Never",
+        "veryFrequent": "Very Frequent",
+        "veryPoor": "Very Poor",
+        "excellent": "Excellent",
+        "veryUnstable": "Very Unstable",
+        "veryStable": "Very Stable",
+        "veryLow": "Very Low",
+        "veryHigh": "Very High"
+      },
+      "options": {
+        "perimenopause": "Perimenopause",
+        "menopause": "Menopause",
+        "postMenopause": "Post-menopause",
+        "notSure": "Not sure",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "errors": {
+      "saveFailed": "Failed to save assessment",
+      "saveFailedDescription": "There was an error saving your assessment. Please try again.",
+      "validationFailed": "Please answer all questions before continuing",
+      "validationFailedDescription": "All fields are required to complete the assessment."
+    }
   }
 }
