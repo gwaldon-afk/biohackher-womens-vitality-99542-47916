@@ -6,6 +6,7 @@ import { NutritionSummaryCard } from "@/components/today/NutritionSummaryCard";
 import { MovementCard } from "@/components/today/MovementCard";
 import { SupplementsCard } from "@/components/today/SupplementsCard";
 import { SimpleProgressTracker } from "@/components/today/SimpleProgressTracker";
+import { ProtocolTiersCard } from "@/components/today/ProtocolTiersCard";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,7 +21,10 @@ export default function MyDailyPlan() {
     actions, 
     loading, 
     completedCount, 
-    totalCount, 
+    totalCount,
+    quickWins,
+    energyBoosters,
+    deepPractices,
     dailyStreak,
     refetch 
   } = useDailyPlan();
@@ -112,23 +116,19 @@ export default function MyDailyPlan() {
           {/* Goal Statement */}
           <GoalStatementCard />
 
+          {/* Protocol Tiers - Bronze to Gold */}
+          <ProtocolTiersCard
+            quickWins={quickWins}
+            energyBoosters={energyBoosters}
+            deepPractices={deepPractices}
+            onToggle={handleToggleAction}
+          />
+
           {/* Daily Essentials */}
           <DailyEssentialsCard />
 
           {/* Today's Nutrition */}
           <NutritionSummaryCard />
-
-          {/* Movement & Activities */}
-          <MovementCard 
-            movements={movements}
-            onToggle={handleToggleAction}
-          />
-
-          {/* Supplements */}
-          <SupplementsCard 
-            supplements={supplements}
-            onToggle={handleToggleAction}
-          />
 
           {/* Progress Tracker */}
           <SimpleProgressTracker 
