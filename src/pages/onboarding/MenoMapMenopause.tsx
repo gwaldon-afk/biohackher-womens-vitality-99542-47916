@@ -19,11 +19,51 @@ const questions = [
     type: 'radio' as const,
     options: ['Yes', 'No', 'Not sure'],
   },
-  { id: 'hot_flush', label: 'Hot Flush Frequency', type: 'slider' as const, min: 0, max: 10 },
-  { id: 'sleep', label: 'Sleep Quality', type: 'slider' as const, min: 0, max: 10 },
-  { id: 'mood', label: 'Mood Stability', type: 'slider' as const, min: 0, max: 10 },
-  { id: 'energy', label: 'Energy Levels', type: 'slider' as const, min: 0, max: 10 },
-  { id: 'skin', label: 'Skin Health', type: 'slider' as const, min: 0, max: 10 },
+  { 
+    id: 'hot_flush', 
+    label: 'Hot Flush Frequency', 
+    type: 'slider' as const, 
+    min: 0, 
+    max: 10,
+    lowLabel: 'Never',
+    highLabel: 'Very Frequent'
+  },
+  { 
+    id: 'sleep', 
+    label: 'Sleep Quality', 
+    type: 'slider' as const, 
+    min: 0, 
+    max: 10,
+    lowLabel: 'Very Poor',
+    highLabel: 'Excellent'
+  },
+  { 
+    id: 'mood', 
+    label: 'Mood Stability', 
+    type: 'slider' as const, 
+    min: 0, 
+    max: 10,
+    lowLabel: 'Very Unstable',
+    highLabel: 'Very Stable'
+  },
+  { 
+    id: 'energy', 
+    label: 'Energy Levels', 
+    type: 'slider' as const, 
+    min: 0, 
+    max: 10,
+    lowLabel: 'Very Low',
+    highLabel: 'Very High'
+  },
+  { 
+    id: 'skin', 
+    label: 'Skin Health', 
+    type: 'slider' as const, 
+    min: 0, 
+    max: 10,
+    lowLabel: 'Very Poor',
+    highLabel: 'Excellent'
+  },
 ];
 
 const MenoMapMenopause = () => {
@@ -89,11 +129,11 @@ const MenoMapMenopause = () => {
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Low</span>
+                  <span>{question.lowLabel || 'Low'}</span>
                   <span className="text-lg font-semibold text-foreground">
                     {typeof currentValue === 'number' ? currentValue : 5}/10
                   </span>
-                  <span>High</span>
+                  <span>{question.highLabel || 'High'}</span>
                 </div>
               </div>
             )}
