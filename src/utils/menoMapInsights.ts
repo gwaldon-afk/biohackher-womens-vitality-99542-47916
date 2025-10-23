@@ -241,10 +241,10 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
   }
   
   // Sleep interventions - Behavioral + Supplement (LOW score = poor sleep)
-  if (answers.sleep && answers.sleep <= 4) {
+  if (answers.sleep && answers.sleep <= 5) {
     recommendations.push({
       intervention: 'Sleep Compression Protocol',
-      rationale: 'Your 2-4am waking suggests sleep drive mismatch. Restricting bed time to 6 hours initially rebuilds sleep pressure and consolidates sleep architecture.',
+      rationale: 'Your sleep disruption suggests sleep drive mismatch. Restricting bed time to 6 hours initially rebuilds sleep pressure and consolidates sleep architecture.',
       timing: 'Bed at 11pm, wake at 5am for 2 weeks, then gradually expand',
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/22550013/'
@@ -259,7 +259,7 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
   }
   
   // Mood interventions - Mind-body + Adaptogen (LOW score = poor mood)
-  if (answers.mood && answers.mood <= 4) {
+  if (answers.mood && answers.mood <= 5) {
     recommendations.push({
       intervention: 'Heart Rate Variability Breathing',
       rationale: '5-6 breaths per minute activates vagal tone and shifts autonomic balance from sympathetic to parasympathetic, reducing anxiety by 50% in 8 weeks.',
@@ -281,10 +281,10 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
   }
   
   // Energy interventions - Movement + Mitochondrial support (LOW score = low energy)
-  if (answers.energy && answers.energy <= 4) {
+  if (answers.energy && answers.energy <= 5) {
     recommendations.push({
       intervention: 'Zone 2 Cardio Protocol',
-      rationale: 'Your energy crashes suggest mitochondrial dysfunction. 30-45min at conversational pace 3x/week increases mitochondrial density by 40% in 8 weeks.',
+      rationale: 'Your energy levels suggest mitochondrial support could help. 30-45min at conversational pace 3x/week increases mitochondrial density by 40% in 8 weeks.',
       timing: 'Morning or early afternoon (before 3pm)',
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
@@ -299,7 +299,7 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
   }
   
   // Skin interventions - Lifestyle + Supplement (LOW score = skin concerns)
-  if (answers.skin && answers.skin <= 4) {
+  if (answers.skin && answers.skin <= 5) {
     recommendations.push({
       intervention: 'Red Light Therapy (660nm + 850nm)',
       rationale: 'Stimulates collagen synthesis via mitochondrial photobiomodulation, increasing dermal thickness by 15-20% in 12 weeks.',
@@ -313,6 +313,35 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
       timing: 'Morning on empty stomach for optimal absorption',
       evidenceLevel: 'Moderate evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/26362110/'
+    });
+  }
+  
+  // Always include foundational recommendations for hormonal health
+  if (recommendations.length < 3) {
+    recommendations.push({
+      intervention: 'Resistance Training 3x/week',
+      rationale: 'Essential for perimenopause: preserves muscle mass (declining 3-8%/year), supports bone density, improves insulin sensitivity, and reduces inflammation.',
+      timing: 'Any consistent schedule - intensity matters more than duration',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
+    });
+    
+    if (answers.hrt !== 'Yes') {
+      recommendations.push({
+        intervention: 'Phytoestrogen-Rich Foods',
+        rationale: 'Ground flaxseed, soy, chickpeas provide plant compounds that support hormonal balance during transition.',
+        timing: 'Daily intake - 1-2 tbsp ground flax or 1 serving soy',
+        evidenceLevel: 'Moderate evidence',
+        researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
+      });
+    }
+    
+    recommendations.push({
+      intervention: 'Mediterranean-Style Eating',
+      rationale: 'Anti-inflammatory diet pattern shown to reduce menopausal symptoms by 30% and support cardiovascular health.',
+      timing: 'Focus on vegetables, fatty fish, olive oil, whole grains',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/28906496/'
     });
   }
   
