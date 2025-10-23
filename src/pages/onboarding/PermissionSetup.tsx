@@ -31,7 +31,7 @@ const PermissionSetup = () => {
       // Save to database
       const { error } = await supabase
         .from('profiles')
-        .update({ device_permissions: permissions })
+        .update({ device_permissions: permissions } as any)
         .eq('user_id', user.id);
 
       if (error) throw error;

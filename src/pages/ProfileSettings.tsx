@@ -23,7 +23,7 @@ const ProfileSettings = () => {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ device_permissions: updatedPermissions })
+        .update({ device_permissions: updatedPermissions } as any)
         .eq('user_id', user.id);
 
       if (error) throw error;

@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         timezone: data.timezone,
         onboarding_completed: data.onboarding_completed,
         user_stream: data.user_stream as 'performance' | 'menopause' | null,
-        device_permissions: data.device_permissions as Profile['device_permissions'],
+        device_permissions: (data as any).device_permissions as Profile['device_permissions'],
         menomap_enabled: data.menomap_enabled,
         energy_loop_enabled: data.energy_loop_enabled,
       };

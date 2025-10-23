@@ -1897,6 +1897,7 @@ export type Database = {
           created_at: string
           currency: string | null
           current_menopause_stage: string | null
+          device_permissions: Json | null
           email: string | null
           energy_loop_enabled: boolean | null
           energy_loop_onboarding_completed: boolean | null
@@ -1917,6 +1918,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           current_menopause_stage?: string | null
+          device_permissions?: Json | null
           email?: string | null
           energy_loop_enabled?: boolean | null
           energy_loop_onboarding_completed?: boolean | null
@@ -1937,6 +1939,7 @@ export type Database = {
           created_at?: string
           currency?: string | null
           current_menopause_stage?: string | null
+          device_permissions?: Json | null
           email?: string | null
           energy_loop_enabled?: boolean | null
           energy_loop_onboarding_completed?: boolean | null
