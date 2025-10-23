@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/hooks/useAuth";
 
 const MenoMapResults = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [bioScore, setBioScore] = useState(0);
 
   useEffect(() => {
@@ -14,6 +16,14 @@ const MenoMapResults = () => {
       setBioScore(parseInt(stored));
     }
   }, []);
+
+  const handleContinue = () => {
+    if (user) {
+      navigate('/onboarding/goal-setup-chat');
+    } else {
+      navigate('/auth?mode=signup&redirect=/onboarding/goal-setup-chat');
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
@@ -72,8 +82,14 @@ const MenoMapResults = () => {
             </p>
           </div>
 
-          <Button onClick={() => navigate('/onboarding/goal-setup-chat')} className="w-full" size="lg">
-            Set Your Goals
+          {!user && (
+            <p className="text-center text-sm text-muted-foreground">
+              Create a free account to save your results and get your personalized protocol
+            </p>
+          )}
+
+          <Button onClick={handleContinue} className="w-full" size="lg">
+            {user ? 'Set Your Goals' : 'Create Free Account & Continue'}
           </Button>
         </Card>
       </div>

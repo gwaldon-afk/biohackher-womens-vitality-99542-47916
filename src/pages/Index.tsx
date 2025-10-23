@@ -97,7 +97,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "energy" } })}
+              onClick={() => navigate("/symptoms/energy-assessment")}
             >
               <CardHeader>
                 <Zap className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -116,7 +116,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "cognitive" } })}
+              onClick={() => navigate("/brain-assessment")}
             >
               <CardHeader>
                 <Brain className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -135,7 +135,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "body" } })}
+              onClick={() => navigate("/symptoms/metabolic-assessment")}
             >
               <CardHeader>
                 <Scale className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -154,7 +154,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "hormonal" } })}
+              onClick={() => navigate("/onboarding/menomap-menopause")}
             >
               <CardHeader>
                 <Heart className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
@@ -162,10 +162,10 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Address perimenopause, menopause, restore hormonal equilibrium
+                  Navigate perimenopause and menopause with personalized insights and symptom tracking
                 </p>
                 <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
+                  <span>Start MenoMap Assessment</span>
                   <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>
@@ -173,7 +173,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "sleep" } })}
+              onClick={() => navigate("/symptoms/sleep-assessment")}
             >
               <CardHeader>
                 <Moon className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
