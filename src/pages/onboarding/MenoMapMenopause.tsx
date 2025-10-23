@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Home, ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 
 const answerSchema = z.object({
   stage: z.string().min(1, "Please select a stage"),
@@ -197,19 +197,28 @@ const MenoMapMenopause = () => {
   const canProceed = currentValue !== undefined;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
-      <div className="max-w-xl w-full space-y-8">
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => navigate('/')}>
-            <Home className="h-4 w-4 mr-2" />
-            Home
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
+    <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-gradient-to-b from-background to-muted/20">
+      <div className="fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-50 flex items-center justify-between px-4">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate('/onboarding/menomap-entry')}
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
         
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate('/')}
+          aria-label="Exit assessment"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </div>
+
+      <div className="max-w-xl w-full space-y-8">
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-bold">{t('menomap.assessment.title')}</h1>
           <p className="text-muted-foreground" aria-live="polite">
