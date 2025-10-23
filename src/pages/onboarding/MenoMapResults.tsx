@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
-import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock } from "lucide-react";
+import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart } from "lucide-react";
 import { 
   analyzeSymptomInterconnections, 
   identifyBiologicalMechanisms,
@@ -74,6 +75,7 @@ const STAGE_INFO = {
 const MenoMapResults = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { addToCart, setIsCartOpen } = useCart();
   const [analysisData, setAnalysisData] = useState<{
     stage: string;
     confidence: number;
@@ -272,7 +274,7 @@ const MenoMapResults = () => {
           </Card>
         )}
 
-        {/* Domain Breakdown */}
+        {/* Domain Breakdown - Severity Scores */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -312,45 +314,48 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* Domain Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-primary" />
-              Your Symptom Pattern Analysis
-            </CardTitle>
-            <CardDescription>
-              How your responses map across the 6 key health domains
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {analysisData.domainScores.map((domain, idx) => {
-                const domainPercent = Math.round(domain.score * 20);
-                const severity = 
-                  domainPercent >= 80 ? { label: 'Excellent', color: 'text-green-600 dark:text-green-400' } :
-                  domainPercent >= 60 ? { label: 'Good', color: 'text-blue-600 dark:text-blue-400' } :
-                  domainPercent >= 40 ? { label: 'Moderate', color: 'text-yellow-600 dark:text-yellow-400' } :
-                  { label: 'Needs Attention', color: 'text-orange-600 dark:text-orange-400' };
-
-                return (
-                  <div key={idx} className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{domain.icon}</span>
-                        <span className="font-medium">{domain.domain}</span>
-                      </div>
-                      <span className={`text-sm font-semibold ${severity.color}`}>
-                        {severity.label}
-                      </span>
+        {/* Deficiency Signals - Must come BEFORE Protocol Preview */}
+        {deficiencySignals.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-primary" />
+                Potential Nutrient Deficiency Signals
+              </CardTitle>
+              <CardDescription>
+                Based on your symptom responses - consult with your healthcare provider
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {deficiencySignals.map((signal, idx) => (
+                <div key={idx} className="border rounded-lg p-3 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-semibold text-sm">{signal.nutrient}</h4>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">{signal.confidence} confidence</Badge>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 px-2"
+                        onClick={() => {
+                          // Search for this nutrient in shop
+                          navigate(`/shop?search=${encodeURIComponent(signal.nutrient)}`);
+                        }}
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <Progress value={domainPercent} className="h-2" />
                   </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                  <p className="text-sm text-muted-foreground">{signal.recommendation}</p>
+                </div>
+              ))}
+              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
+                <p>These insights are based on your symptom responses and are for educational purposes only. Always consult with qualified healthcare professionals before starting any supplementation or treatment protocol.</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Protocol Preview - Specific Interventions */}
         {protocolPreview.length > 0 && (
@@ -361,7 +366,7 @@ const MenoMapResults = () => {
                 Your Personalized Protocol Preview
               </CardTitle>
               <CardDescription>
-                Specific, targeted interventions based on your symptom cluster
+                Evidence-based interventions across lifestyle, nutrition, and supplements
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -369,9 +374,38 @@ const MenoMapResults = () => {
                 <div key={idx} className="border rounded-lg p-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <h4 className="font-semibold">{rec.intervention}</h4>
-                    <Badge variant="outline" className="flex-shrink-0 text-xs">
-                      {rec.evidenceLevel}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="flex-shrink-0 text-xs">
+                        {rec.evidenceLevel}
+                      </Badge>
+                      {rec.researchLink && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2"
+                          onClick={() => window.open(rec.researchLink, '_blank')}
+                        >
+                          <Microscope className="w-4 h-4" />
+                        </Button>
+                      )}
+                      {rec.intervention.toLowerCase().includes('oil') || 
+                       rec.intervention.toLowerCase().includes('magnesium') ||
+                       rec.intervention.toLowerCase().includes('ashwagandha') ||
+                       rec.intervention.toLowerCase().includes('coq10') ||
+                       rec.intervention.toLowerCase().includes('collagen') ? (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2"
+                          onClick={() => {
+                            const searchTerm = rec.intervention.split(' ')[0];
+                            navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
+                          }}
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground">{rec.rationale}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
@@ -380,35 +414,10 @@ const MenoMapResults = () => {
                   </div>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Deficiency Signals */}
-        {deficiencySignals.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
-                Potential Nutrient Deficiency Signals
-              </CardTitle>
-              <CardDescription>
-                Your symptom pattern suggests these potential deficiencies
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {deficiencySignals.map((signal, idx) => (
-                <div key={idx} className="border rounded-lg p-3 space-y-2">
-                  <div className="flex items-start justify-between">
-                    <h4 className="font-semibold text-sm">{signal.nutrient}</h4>
-                    <Badge variant="secondary" className="text-xs">{signal.confidence} confidence</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{signal.recommendation}</p>
-                </div>
-              ))}
-              <p className="text-xs text-muted-foreground pt-2">
-                Note: Always consult healthcare providers before starting supplementation
-              </p>
+              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
+                <p>These recommendations are based on your symptom responses and published research. Always consult with qualified healthcare professionals before implementing any new health protocol.</p>
+              </div>
             </CardContent>
           </Card>
         )}

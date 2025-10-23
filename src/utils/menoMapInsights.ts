@@ -37,6 +37,7 @@ export interface ProtocolRecommendation {
   rationale: string;
   timing: string;
   evidenceLevel: string;
+  researchLink?: string;
 }
 
 export interface DeficiencySignal {
@@ -216,60 +217,97 @@ export function predictNextPhase(answers: SymptomAnswers, stage: string): NextPh
 export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): ProtocolRecommendation[] {
   const recommendations: ProtocolRecommendation[] = [];
   
-  const sleep = answers.sleep || 5;
-  const hotFlush = answers.hot_flush || 5;
-  const energy = answers.energy || 5;
-  const mood = answers.mood || 5;
-
-  // Sleep optimization
-  if (sleep < 5) {
+  // Hot flash interventions - Multiple modalities
+  if (answers.hot_flush && answers.hot_flush <= 4) {
     recommendations.push({
-      intervention: 'Magnesium glycinate 400mg at 9pm',
-      rationale: 'Targets your 2-4am cortisol spike pattern that\'s disrupting sleep continuity. Glycinate form crosses blood-brain barrier to enhance GABA',
-      timing: 'Take 1-2 hours before bed for optimal absorption',
-      evidenceLevel: 'Gold standard - multiple RCTs show 67% improvement in sleep quality'
+      intervention: 'Cold Exposure Protocol',
+      rationale: 'Cold showers or ice packs on wrists/neck trigger norepinephrine release, which helps regulate your thermostat and reduce hot flash frequency by 40-60%.',
+      timing: 'Morning cold shower (2-3 min) or ice pack when hot flash begins',
+      evidenceLevel: 'Moderate evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/27806211/'
+    });
+    recommendations.push({
+      intervention: 'Evening Primrose Oil + Vitamin E',
+      rationale: 'Your hot flash pattern suggests omega-6 fatty acid deficiency. EPO contains GLA which supports prostaglandin balance, while vitamin E stabilizes cell membranes.',
+      timing: 'Take with dinner for overnight support',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
     });
   }
-
-  // Hot flash management
-  if (hotFlush > 6) {
+  
+  // Sleep interventions - Behavioral + Supplement
+  if (answers.sleep && answers.sleep <= 4) {
     recommendations.push({
-      intervention: 'Omega-3 (EPA/DHA 2000mg) + Vitamin E 400IU',
-      rationale: 'Your hot flash frequency suggests vasomotor instability. This combination reduces prostaglandin-mediated inflammation driving temperature dysregulation',
-      timing: 'Morning with breakfast for consistent blood levels',
-      evidenceLevel: 'Silver - Studies show 30-40% reduction in hot flash intensity'
+      intervention: 'Sleep Compression Protocol',
+      rationale: 'Your 2-4am waking suggests sleep drive mismatch. Restricting bed time to 6 hours initially rebuilds sleep pressure and consolidates sleep architecture.',
+      timing: 'Bed at 11pm, wake at 5am for 2 weeks, then gradually expand',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/22550013/'
+    });
+    recommendations.push({
+      intervention: 'Magnesium Glycinate 400mg',
+      rationale: 'Supports GABA production and regulates cortisol rhythm to prevent early morning waking.',
+      timing: '9pm (before cortisol spike window)',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23853635/'
     });
   }
-
-  // Energy support
-  if (energy < 4) {
+  
+  // Mood interventions - Mind-body + Adaptogen
+  if (answers.mood && answers.mood <= 4) {
     recommendations.push({
-      intervention: 'CoQ10 200mg + Iron panel testing',
-      rationale: 'Chronic low energy in perimenopause often signals mitochondrial stress or iron depletion from heavy periods. CoQ10 supports cellular energy production',
-      timing: 'Morning with fats for absorption. Test iron before supplementing',
-      evidenceLevel: 'Emerging - Promising data for perimenopausal fatigue'
+      intervention: 'Heart Rate Variability Breathing',
+      rationale: '5-6 breaths per minute activates vagal tone and shifts autonomic balance from sympathetic to parasympathetic, reducing anxiety by 50% in 8 weeks.',
+      timing: '10 minutes upon waking and before bed',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/28906496/'
+    });
+    recommendations.push({
+      intervention: 'Ashwagandha KSM-66',
+      rationale: 'Modulates HPA axis and supports GABA receptor sensitivity to counter cortisol-progesterone interference.',
+      timing: 'Morning and 4pm (cortisol regulation windows)',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23439798/'
     });
   }
-
-  // Mood stabilization
-  if (mood < 5) {
+  
+  // Energy interventions - Movement + Mitochondrial support
+  if (answers.energy && answers.energy <= 4) {
     recommendations.push({
-      intervention: 'Saffron extract 30mg + B-complex',
-      rationale: 'Saffron modulates serotonin reuptake with efficacy comparable to SSRIs for mild-moderate mood symptoms. B vitamins support neurotransmitter synthesis',
-      timing: 'Morning with food',
-      evidenceLevel: 'Gold - RCTs show similar efficacy to low-dose antidepressants for hormonal mood changes'
+      intervention: 'Zone 2 Cardio Protocol',
+      rationale: 'Your energy crashes suggest mitochondrial dysfunction. 30-45min at conversational pace 3x/week increases mitochondrial density by 40% in 8 weeks.',
+      timing: 'Morning or early afternoon (before 3pm)',
+      evidenceLevel: 'Strong clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
+    });
+    recommendations.push({
+      intervention: 'CoQ10 + B-Complex',
+      rationale: 'Supports mitochondrial ATP production and methylation pathways for hormone metabolism.',
+      timing: 'With breakfast for sustained energy',
+      evidenceLevel: 'Moderate clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23970941/'
     });
   }
-
-  // Always include foundational recommendation
-  recommendations.push({
-    intervention: 'Resistance training 3x/week (20-30 min)',
-    rationale: 'Non-negotiable for perimenopause: preserves muscle mass (declining 3-8%/year), supports bone density, improves insulin sensitivity, and reduces inflammation',
-    timing: 'Any consistent schedule. Intensity matters more than duration',
-    evidenceLevel: 'Gold - Strongest evidence for reducing all menopausal symptoms'
-  });
-
-  return recommendations.slice(0, 4); // Return top 4 most relevant
+  
+  // Skin interventions - Lifestyle + Supplement
+  if (answers.skin && answers.skin <= 4) {
+    recommendations.push({
+      intervention: 'Red Light Therapy (660nm + 850nm)',
+      rationale: 'Stimulates collagen synthesis via mitochondrial photobiomodulation, increasing dermal thickness by 15-20% in 12 weeks.',
+      timing: '10-15 minutes daily, morning or evening',
+      evidenceLevel: 'Emerging evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/31633300/'
+    });
+    recommendations.push({
+      intervention: 'Marine Collagen + Hyaluronic Acid',
+      rationale: 'Type I marine collagen provides bioavailable peptides while HA supports dermal hydration as estrogen declines.',
+      timing: 'Morning on empty stomach for optimal absorption',
+      evidenceLevel: 'Moderate evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/26362110/'
+    });
+  }
+  
+  return recommendations.slice(0, 6);
 }
 
 /**
