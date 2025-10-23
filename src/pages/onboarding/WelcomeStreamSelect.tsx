@@ -15,23 +15,27 @@ const WelcomeStreamSelect = () => {
     if (!user) return;
 
     try {
-      // Update database
       const { error } = await supabase
         .from('profiles')
         .update({ user_stream: stream })
         .eq('user_id', user.id);
 
       if (error) throw error;
-
-      // Refresh profile from database
+      
       await refreshProfile();
-      navigate('/onboarding/intro-3step');
+
+      // Navigate to streamlined onboarding
+      if (stream === 'performance') {
+        navigate('/energy-loop/quick-start');
+      } else {
+        navigate('/onboarding/menomap-entry');
+      }
     } catch (error) {
-      console.error('Error saving stream selection:', error);
+      console.error('Error updating stream:', error);
       toast({
         title: "Error",
-        description: "Failed to save your selection. Please try again.",
-        variant: "destructive"
+        description: "Failed to save your selection",
+        variant: "destructive",
       });
     }
   };

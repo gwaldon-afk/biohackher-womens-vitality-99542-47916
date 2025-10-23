@@ -57,6 +57,7 @@ import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
 import EnergyOnboarding from "./pages/energy/EnergyOnboarding";
 import EnergyLoopDashboard from "./pages/energy/EnergyLoopDashboard";
+import EnergyQuickStart from "./pages/energy/EnergyQuickStart";
 import ExpertRegistration from "./pages/expert/ExpertRegistration";
 import ExpertDashboard from "./pages/expert/ExpertDashboard";
 import ExpertDirectory from "./pages/expert/ExpertDirectory";
@@ -183,6 +184,7 @@ const App = () => (
           
           {/* Energy Loop Routes */}
           <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
+          <Route path="/energy-loop/quick-start" element={<ProtectedRoute><EnergyQuickStart /></ProtectedRoute>} />
           <Route path="/energy-loop/onboarding" element={<ProtectedRoute><EnergyOnboarding /></ProtectedRoute>} />
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />
