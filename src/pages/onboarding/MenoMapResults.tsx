@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
-import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart } from "lucide-react";
+import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart, Home, ArrowLeft } from "lucide-react";
 import { 
   analyzeSymptomInterconnections, 
   identifyBiologicalMechanisms,
@@ -187,6 +187,28 @@ const MenoMapResults = () => {
   return (
     <div className="min-h-screen p-4 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-4xl mx-auto space-y-6 py-8">
+        {/* Navigation Header */}
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Home
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center space-y-2 animate-fade-in">
           <h1 className="text-4xl font-bold">Your MenoMap™ Analysis</h1>
