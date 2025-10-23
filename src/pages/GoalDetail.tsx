@@ -248,7 +248,7 @@ const GoalDetail = () => {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6 mt-6">
             {/* Healthspan Target */}
-            {goal.healthspan_target && (
+            {goal.healthspan_target && Object.keys(goal.healthspan_target).length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -257,15 +257,20 @@ const GoalDetail = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <pre className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {JSON.stringify(goal.healthspan_target, null, 2)}
-                  </pre>
+                  <div className="space-y-2">
+                    {Object.entries(goal.healthspan_target).map(([key, value]) => (
+                      <div key={key}>
+                        <p className="text-sm font-medium">{key}</p>
+                        <p className="text-sm text-muted-foreground">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
 
             {/* Aging Blueprint */}
-            {goal.aging_blueprint && (
+            {goal.aging_blueprint && Object.keys(goal.aging_blueprint).length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Aging Blueprint</CardTitle>
@@ -274,9 +279,14 @@ const GoalDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <pre className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {JSON.stringify(goal.aging_blueprint, null, 2)}
-                  </pre>
+                  <div className="space-y-2">
+                    {Object.entries(goal.aging_blueprint).map(([key, value]) => (
+                      <div key={key}>
+                        <p className="text-sm font-medium">{key}</p>
+                        <p className="text-sm text-muted-foreground">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -326,7 +336,7 @@ const GoalDetail = () => {
           {/* Action Plan Tab */}
           <TabsContent value="plan" className="space-y-6 mt-6">
             {/* Barriers Plan */}
-            {goal.barriers_plan && (
+            {goal.barriers_plan && Object.keys(goal.barriers_plan).length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Barriers & Solutions</CardTitle>
@@ -335,15 +345,20 @@ const GoalDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <pre className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {JSON.stringify(goal.barriers_plan, null, 2)}
-                  </pre>
+                  <div className="space-y-2">
+                    {Object.entries(goal.barriers_plan).map(([key, value]) => (
+                      <div key={key}>
+                        <p className="text-sm font-medium">{key}</p>
+                        <p className="text-sm text-muted-foreground">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
 
             {/* Adaptive Recommendations */}
-            {goal.adaptive_recommendations && (
+            {goal.adaptive_recommendations && Object.keys(goal.adaptive_recommendations).length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Adaptive Recommendations</CardTitle>
@@ -352,9 +367,14 @@ const GoalDetail = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <pre className="text-sm text-muted-foreground whitespace-pre-wrap">
-                    {JSON.stringify(goal.adaptive_recommendations, null, 2)}
-                  </pre>
+                  <div className="space-y-2">
+                    {Object.entries(goal.adaptive_recommendations).map(([key, value]) => (
+                      <div key={key}>
+                        <p className="text-sm font-medium">{key}</p>
+                        <p className="text-sm text-muted-foreground">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
