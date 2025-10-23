@@ -24,7 +24,7 @@ export function useProtocols(userId: string | undefined) {
       if (!userId) return [];
       
       const { data, error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
@@ -76,7 +76,7 @@ export function useCreateProtocol(userId: string) {
       // Check for existing active protocol with the same name
       if (protocol.is_active) {
         const { data: existing } = await supabase
-          .from('user_protocols')
+          .from('protocols')
           .select('id')
           .eq('user_id', userId)
           .eq('name', protocol.name)
@@ -89,7 +89,7 @@ export function useCreateProtocol(userId: string) {
       }
 
       const { data, error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .insert({ ...protocol, user_id: userId })
         .select()
         .single();
@@ -112,7 +112,7 @@ export function useUpdateProtocol() {
   return useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<Protocol> }) => {
       const { data, error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .update(updates)
         .eq('id', id)
         .select()
@@ -136,7 +136,7 @@ export function useDeleteProtocol() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .delete()
         .eq('id', id);
 

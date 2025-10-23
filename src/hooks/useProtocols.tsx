@@ -39,7 +39,7 @@ export const useProtocols = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -62,7 +62,7 @@ export const useProtocols = () => {
       // Check for existing active protocol with the same name
       if (protocol.is_active) {
         const { data: existing } = await supabase
-          .from('user_protocols')
+          .from('protocols')
           .select('id')
           .eq('user_id', user.id)
           .eq('name', protocol.name)
@@ -75,7 +75,7 @@ export const useProtocols = () => {
       }
 
       const { data, error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .insert({
           user_id: user.id,
           ...protocol
@@ -95,7 +95,7 @@ export const useProtocols = () => {
   const updateProtocol = async (id: string, updates: Partial<Protocol>) => {
     try {
       const { error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .update(updates)
         .eq('id', id);
 
@@ -110,7 +110,7 @@ export const useProtocols = () => {
   const deleteProtocol = async (id: string) => {
     try {
       const { error } = await supabase
-        .from('user_protocols')
+        .from('protocols')
         .delete()
         .eq('id', id);
 

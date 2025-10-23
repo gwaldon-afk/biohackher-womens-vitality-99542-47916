@@ -51,7 +51,7 @@ serve(async (req) => {
         .order("completed_at", { ascending: false }),
       
       supabaseClient
-        .from("user_protocols")
+        .from("protocols")
         .select("*")
         .eq("user_id", user.id)
         .eq("is_active", true)
