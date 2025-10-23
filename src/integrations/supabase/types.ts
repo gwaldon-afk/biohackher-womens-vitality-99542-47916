@@ -466,7 +466,7 @@ export type Database = {
             foreignKeyName: "energy_actions_protocol_id_fkey"
             columns: ["protocol_id"]
             isOneToOne: false
-            referencedRelation: "user_protocols"
+            referencedRelation: "protocols"
             referencedColumns: ["id"]
           },
         ]
@@ -2172,10 +2172,49 @@ export type Database = {
             foreignKeyName: "protocol_items_protocol_id_fkey"
             columns: ["protocol_id"]
             isOneToOne: false
-            referencedRelation: "user_protocols"
+            referencedRelation: "protocols"
             referencedColumns: ["id"]
           },
         ]
+      }
+      protocols: {
+        Row: {
+          created_at: string
+          created_from_pillar: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_from_pillar?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_from_pillar?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       research_studies: {
         Row: {
@@ -2712,7 +2751,7 @@ export type Database = {
             foreignKeyName: "user_health_goals_linked_protocol_id_fkey"
             columns: ["linked_protocol_id"]
             isOneToOne: false
-            referencedRelation: "user_protocols"
+            referencedRelation: "protocols"
             referencedColumns: ["id"]
           },
           {
@@ -2878,45 +2917,6 @@ export type Database = {
           onboarding_completed?: boolean
           onboarding_step?: number | null
           pillars_visited?: Json | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_protocols: {
-        Row: {
-          created_at: string
-          created_from_pillar: string | null
-          description: string | null
-          end_date: string | null
-          id: string
-          is_active: boolean
-          name: string
-          start_date: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_from_pillar?: string | null
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          is_active?: boolean
-          name: string
-          start_date?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          created_from_pillar?: string | null
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          is_active?: boolean
-          name?: string
-          start_date?: string
           updated_at?: string
           user_id?: string
         }
