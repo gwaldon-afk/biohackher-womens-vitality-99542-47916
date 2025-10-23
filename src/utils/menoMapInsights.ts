@@ -218,11 +218,38 @@ export function predictNextPhase(answers: SymptomAnswers, stage: string): NextPh
 export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): ProtocolRecommendation[] {
   const recommendations: ProtocolRecommendation[] = [];
   
-  // Hot flash interventions - Multiple modalities (HIGH score = frequent hot flashes)
+  // BASELINE MAINTENANCE SUPPLEMENTS - Everyone should take these
+  recommendations.push({
+    intervention: 'Vitamin D3 (2000-4000 IU) + K2 (100mcg)',
+    rationale: 'Foundational for bone health, immune function, and mood regulation during hormonal transition. K2 ensures calcium goes to bones, not arteries.',
+    timing: 'Morning with fats for absorption',
+    evidenceLevel: 'Strong clinical evidence',
+    researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23853635/'
+  });
+  
+  recommendations.push({
+    intervention: 'Omega-3 Fish Oil (EPA/DHA 2000mg)',
+    rationale: 'Anti-inflammatory baseline support for cardiovascular health, brain function, and reducing overall menopausal symptom severity.',
+    timing: 'With largest meal of the day',
+    evidenceLevel: 'Strong clinical evidence',
+    researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
+  });
+  
+  recommendations.push({
+    intervention: 'Magnesium Glycinate (300-400mg)',
+    rationale: 'Foundational mineral for 300+ enzymatic reactions. Supports sleep, muscle function, bone health, and stress response.',
+    timing: 'Evening, 1-2 hours before bed',
+    evidenceLevel: 'Strong clinical evidence',
+    researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23853635/'
+  });
+  
+  // SYMPTOM-SPECIFIC ADDITIONS based on low scores
+  
+  // Hot flash interventions (HIGH score = frequent hot flashes)
   if (answers.hot_flush && answers.hot_flush >= 6) {
     recommendations.push({
       intervention: 'Cold Exposure Protocol',
-      rationale: 'Cold showers or ice packs on wrists/neck trigger norepinephrine release, which helps regulate your thermostat and reduce hot flash frequency by 40-60%.',
+      rationale: 'Cold showers or ice packs on wrists/neck trigger norepinephrine release, reducing hot flash frequency by 40-60%.',
       timing: 'Morning cold shower (2-3 min) or ice pack when hot flash begins',
       evidenceLevel: 'Moderate evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/27806211/'
@@ -231,38 +258,40 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
     // Only suggest EPO if NOT on HRT
     if (answers.hrt !== 'Yes') {
       recommendations.push({
-        intervention: 'Evening Primrose Oil + Vitamin E',
-        rationale: 'Your hot flash pattern suggests omega-6 fatty acid deficiency. EPO contains GLA which supports prostaglandin balance, while vitamin E stabilizes cell membranes.',
-        timing: 'Take with dinner for overnight support',
+        intervention: 'Evening Primrose Oil (1300mg) + Vitamin E (400 IU)',
+        rationale: 'Targeted for hot flashes. EPO contains GLA which supports prostaglandin balance, while vitamin E stabilizes cell membranes.',
+        timing: 'With dinner for overnight support',
         evidenceLevel: 'Strong clinical evidence',
         researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
       });
     }
   }
   
-  // Sleep interventions - Behavioral + Supplement (LOW score = poor sleep)
+  // Sleep-specific additions (LOW score = poor sleep)
   if (answers.sleep && answers.sleep <= 5) {
     recommendations.push({
       intervention: 'Sleep Compression Protocol',
-      rationale: 'Your sleep disruption suggests sleep drive mismatch. Restricting bed time to 6 hours initially rebuilds sleep pressure and consolidates sleep architecture.',
+      rationale: 'Your sleep disruption suggests sleep drive mismatch. Restricting bed time to 6 hours initially rebuilds sleep pressure.',
       timing: 'Bed at 11pm, wake at 5am for 2 weeks, then gradually expand',
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/22550013/'
     });
+    
+    // Note: Magnesium already in baseline, but emphasize timing
     recommendations.push({
-      intervention: 'Magnesium Glycinate 400mg',
-      rationale: 'Supports GABA production and regulates cortisol rhythm to prevent early morning waking.',
-      timing: '9pm (before cortisol spike window)',
-      evidenceLevel: 'Strong clinical evidence',
+      intervention: 'L-Theanine (200mg) + GABA (500mg)',
+      rationale: 'Additional sleep support beyond baseline magnesium. Promotes relaxation without sedation and supports deep sleep phases.',
+      timing: '30 minutes before bed',
+      evidenceLevel: 'Moderate evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23853635/'
     });
   }
   
-  // Mood interventions - Mind-body + Adaptogen (LOW score = poor mood)
+  // Mood-specific additions (LOW score = poor mood)
   if (answers.mood && answers.mood <= 5) {
     recommendations.push({
       intervention: 'Heart Rate Variability Breathing',
-      rationale: '5-6 breaths per minute activates vagal tone and shifts autonomic balance from sympathetic to parasympathetic, reducing anxiety by 50% in 8 weeks.',
+      rationale: '5-6 breaths per minute activates vagal tone, reducing anxiety by 50% in 8 weeks.',
       timing: '10 minutes upon waking and before bed',
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/28906496/'
@@ -271,81 +300,72 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
     // Only suggest Ashwagandha if NOT on HRT
     if (answers.hrt !== 'Yes') {
       recommendations.push({
-        intervention: 'Ashwagandha KSM-66',
-        rationale: 'Modulates HPA axis and supports GABA receptor sensitivity to counter cortisol-progesterone interference.',
-        timing: 'Morning and 4pm (cortisol regulation windows)',
+        intervention: 'Ashwagandha KSM-66 (600mg)',
+        rationale: 'Adaptogen for mood and stress. Modulates HPA axis and supports GABA receptor sensitivity.',
+        timing: 'Split dose: 300mg morning, 300mg at 4pm',
         evidenceLevel: 'Strong clinical evidence',
         researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23439798/'
       });
     }
   }
   
-  // Energy interventions - Movement + Mitochondrial support (LOW score = low energy)
+  // Energy-specific additions (LOW score = low energy)
   if (answers.energy && answers.energy <= 5) {
     recommendations.push({
       intervention: 'Zone 2 Cardio Protocol',
-      rationale: 'Your energy levels suggest mitochondrial support could help. 30-45min at conversational pace 3x/week increases mitochondrial density by 40% in 8 weeks.',
+      rationale: 'Mitochondrial support through movement. 30-45min at conversational pace 3x/week increases energy capacity by 40%.',
       timing: 'Morning or early afternoon (before 3pm)',
       evidenceLevel: 'Strong clinical evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
     });
+    
     recommendations.push({
-      intervention: 'CoQ10 + B-Complex',
-      rationale: 'Supports mitochondrial ATP production and methylation pathways for hormone metabolism.',
-      timing: 'With breakfast for sustained energy',
+      intervention: 'CoQ10 (200mg) + B-Complex',
+      rationale: 'Additional mitochondrial and energy support beyond baseline. CoQ10 for cellular ATP, B-vitamins for methylation.',
+      timing: 'With breakfast',
       evidenceLevel: 'Moderate clinical evidence',
+      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23970941/'
+    });
+    
+    recommendations.push({
+      intervention: 'Iron Panel Testing',
+      rationale: 'Low energy often signals iron depletion from heavy periods. Test before supplementing (ferritin, TIBC, serum iron).',
+      timing: 'Fasting morning blood draw',
+      evidenceLevel: 'Clinical best practice',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23970941/'
     });
   }
   
-  // Skin interventions - Lifestyle + Supplement (LOW score = skin concerns)
+  // Skin-specific additions (LOW score = skin concerns)
   if (answers.skin && answers.skin <= 5) {
     recommendations.push({
       intervention: 'Red Light Therapy (660nm + 850nm)',
       rationale: 'Stimulates collagen synthesis via mitochondrial photobiomodulation, increasing dermal thickness by 15-20% in 12 weeks.',
-      timing: '10-15 minutes daily, morning or evening',
+      timing: '10-15 minutes daily, face and neck',
       evidenceLevel: 'Emerging evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/31633300/'
     });
+    
     recommendations.push({
-      intervention: 'Marine Collagen + Hyaluronic Acid',
-      rationale: 'Type I marine collagen provides bioavailable peptides while HA supports dermal hydration as estrogen declines.',
+      intervention: 'Marine Collagen (10g) + Hyaluronic Acid (200mg)',
+      rationale: 'Targeted skin support. Type I marine collagen provides bioavailable peptides, HA supports dermal hydration.',
       timing: 'Morning on empty stomach for optimal absorption',
       evidenceLevel: 'Moderate evidence',
       researchLink: 'https://pubmed.ncbi.nlm.nih.gov/26362110/'
     });
   }
   
-  // Always include foundational recommendations for hormonal health
-  if (recommendations.length < 3) {
-    recommendations.push({
-      intervention: 'Resistance Training 3x/week',
-      rationale: 'Essential for perimenopause: preserves muscle mass (declining 3-8%/year), supports bone density, improves insulin sensitivity, and reduces inflammation.',
-      timing: 'Any consistent schedule - intensity matters more than duration',
-      evidenceLevel: 'Strong clinical evidence',
-      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
-    });
-    
-    if (answers.hrt !== 'Yes') {
-      recommendations.push({
-        intervention: 'Phytoestrogen-Rich Foods',
-        rationale: 'Ground flaxseed, soy, chickpeas provide plant compounds that support hormonal balance during transition.',
-        timing: 'Daily intake - 1-2 tbsp ground flax or 1 serving soy',
-        evidenceLevel: 'Moderate evidence',
-        researchLink: 'https://pubmed.ncbi.nlm.nih.gov/23695307/'
-      });
-    }
-    
-    recommendations.push({
-      intervention: 'Mediterranean-Style Eating',
-      rationale: 'Anti-inflammatory diet pattern shown to reduce menopausal symptoms by 30% and support cardiovascular health.',
-      timing: 'Focus on vegetables, fatty fish, olive oil, whole grains',
-      evidenceLevel: 'Strong clinical evidence',
-      researchLink: 'https://pubmed.ncbi.nlm.nih.gov/28906496/'
-    });
-  }
+  // FOUNDATIONAL LIFESTYLE - Always include
+  recommendations.push({
+    intervention: 'Resistance Training (3x/week, 20-30min)',
+    rationale: 'Non-negotiable for hormonal health. Preserves muscle mass, supports bone density, improves insulin sensitivity.',
+    timing: 'Any consistent schedule - intensity matters more than duration',
+    evidenceLevel: 'Strong clinical evidence',
+    researchLink: 'https://pubmed.ncbi.nlm.nih.gov/24149627/'
+  });
   
-  return recommendations.slice(0, 6);
+  // Return top protocols (baseline + most relevant symptom-specific)
+  return recommendations.slice(0, 8);
 }
 
 /**
