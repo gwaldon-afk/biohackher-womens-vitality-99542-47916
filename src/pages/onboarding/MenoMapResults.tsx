@@ -325,11 +325,16 @@ const MenoMapResults = () => {
           <CardContent>
             <div className="space-y-4">
               {analysisData.domainScores.map((domain, idx) => {
-                const domainPercent = Math.round(domain.score * 20);
+                const domainPercent = Math.round(domain.score * 10); // Convert 0-10 to 0-100
+                
+                // Hot flashes are INVERSE - high score = worse
+                const isInverseDomain = domain.domain === 'Vasomotor';
+                const displayPercent = isInverseDomain ? 100 - domainPercent : domainPercent;
+                
                 const severity = 
-                  domainPercent >= 80 ? { label: 'Excellent', color: 'text-green-600 dark:text-green-400' } :
-                  domainPercent >= 60 ? { label: 'Good', color: 'text-blue-600 dark:text-blue-400' } :
-                  domainPercent >= 40 ? { label: 'Moderate', color: 'text-yellow-600 dark:text-yellow-400' } :
+                  displayPercent >= 80 ? { label: 'Excellent', color: 'text-green-600 dark:text-green-400' } :
+                  displayPercent >= 60 ? { label: 'Good', color: 'text-blue-600 dark:text-blue-400' } :
+                  displayPercent >= 40 ? { label: 'Moderate', color: 'text-yellow-600 dark:text-yellow-400' } :
                   { label: 'Needs Attention', color: 'text-orange-600 dark:text-orange-400' };
 
                 return (
@@ -338,12 +343,15 @@ const MenoMapResults = () => {
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{domain.icon}</span>
                         <span className="font-medium">{domain.domain}</span>
+                        {isInverseDomain && (
+                          <span className="text-xs text-muted-foreground">(lower is better)</span>
+                        )}
                       </div>
                       <span className={`text-sm font-semibold ${severity.color}`}>
                         {severity.label}
                       </span>
                     </div>
-                    <Progress value={domainPercent} className="h-2" />
+                    <Progress value={displayPercent} className="h-2" />
                   </div>
                 );
               })}
