@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const questions = [
   { id: 'energy', label: 'Energy Levels', min: 0, max: 10 },
@@ -16,6 +17,7 @@ const questions = [
 
 const MenoMapPerformance = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
@@ -42,23 +44,25 @@ const MenoMapPerformance = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-gradient-to-b from-background to-muted/20">
-      <div className="fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-50 flex items-center justify-between px-4">
+      <div className="fixed top-0 left-0 right-0 h-14 bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-50 flex items-center justify-between px-4">
         <Button 
-          variant="ghost" 
-          size="sm" 
+          variant="outline" 
+          size="default" 
           onClick={() => navigate('/onboarding/menomap-entry')}
           aria-label="Go back"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-6 w-6" />
+          {!isMobile && <span className="ml-2">Back</span>}
         </Button>
         
         <Button 
-          variant="ghost" 
-          size="sm" 
+          variant="outline" 
+          size="default" 
           onClick={() => navigate('/')}
           aria-label="Exit assessment"
         >
-          <X className="h-5 w-5" />
+          <X className="h-6 w-6" />
+          {!isMobile && <span className="ml-2">Exit</span>}
         </Button>
       </div>
 
