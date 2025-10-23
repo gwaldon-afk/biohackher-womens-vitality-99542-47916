@@ -1,16 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Target, Plus } from "lucide-react";
 import { useGoals } from "@/hooks/useGoals";
+import { useNavigate } from "react-router-dom";
 
 export const GoalStatementCard = () => {
   const { goals } = useGoals();
+  const navigate = useNavigate();
   const primaryGoal = goals.find(g => g.status === 'active');
 
   if (!primaryGoal) {
     return (
-      <Card>
-        <CardContent className="pt-6 text-center text-muted-foreground">
-          <p>Set a goal to get started</p>
+      <Card className="border-dashed">
+        <CardContent className="pt-6 text-center">
+          <Target className="w-12 h-12 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground mb-4">No active goal yet</p>
+          <Button 
+            onClick={() => navigate('/my-goals')}
+            className="gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Create Your First Goal
+          </Button>
         </CardContent>
       </Card>
     );
