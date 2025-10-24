@@ -108,6 +108,20 @@ export const useHealthProfile = () => {
     fetchProfile();
   }, [fetchProfile]);
 
+  // Calculate user age from date of birth
+  const calculateAge = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const userAge = profile?.date_of_birth ? calculateAge(profile.date_of_birth) : null;
+
   return {
     profile,
     loading,
@@ -116,5 +130,6 @@ export const useHealthProfile = () => {
     createOrUpdateProfile,
     updateBMI,
     hasProfile: !!profile,
+    userAge,
   };
 };

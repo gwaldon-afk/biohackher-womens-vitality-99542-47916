@@ -154,7 +154,7 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/onboarding/menomap-menopause")}
+              onClick={() => navigate("/hormonal-health/triage")}
             >
               <CardHeader>
                 <Heart className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />

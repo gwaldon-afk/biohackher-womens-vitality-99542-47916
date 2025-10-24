@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { useToast } from "@/hooks/use-toast";
+import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { supabase } from "@/integrations/supabase/client";
 
 interface QuestionOption {
@@ -185,6 +186,7 @@ const Onboarding = () => {
   const { user } = useAuth();
   const { completeOnboarding, updateProgress } = useUserProgress();
   const { toast } = useToast();
+  const { createOrUpdateProfile } = useHealthProfile();
 
   const totalSteps = 14; // 1 baseline + 12 questions + 1 completion
   const progress = (currentStep / totalSteps) * 100;
@@ -332,7 +334,15 @@ const Onboarding = () => {
         color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
       });
 
-      // Save baseline data to profile
+      // Save baseline data to user_health_profile
+      await createOrUpdateProfile({
+        date_of_birth: baselineData.dateOfBirth,
+        height_cm: parseFloat(baselineData.heightCm),
+        weight_kg: parseFloat(baselineData.weightKg),
+        initial_subjective_age_delta: answers['Q5_SubjectiveAge']?.score_value || 0,
+      });
+
+      // Save measurement system to profile
       await supabase.from('profiles').update({
         measurement_system: 'metric'
       }).eq('user_id', user.id);
