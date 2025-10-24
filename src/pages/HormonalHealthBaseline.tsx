@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
@@ -19,6 +19,21 @@ const HormonalHealthBaseline = () => {
   const [heightCm, setHeightCm] = useState("");
   const [weightKg, setWeightKg] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const bmi = useMemo(() => {
+    const height = parseFloat(heightCm);
+    const weight = parseFloat(weightKg);
+    if (!height || !weight || height <= 0 || weight <= 0) return null;
+    const heightInMeters = height / 100;
+    return weight / (heightInMeters * heightInMeters);
+  }, [heightCm, weightKg]);
+
+  const getBMICategory = (bmi: number) => {
+    if (bmi < 18.5) return { label: "Underweight", color: "text-blue-600" };
+    if (bmi < 25) return { label: "Normal weight", color: "text-green-600" };
+    if (bmi < 30) return { label: "Overweight", color: "text-yellow-600" };
+    return { label: "Obese", color: "text-orange-600" };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,6 +145,23 @@ const HormonalHealthBaseline = () => {
                 required
               />
             </div>
+
+            {bmi && (
+              <Card className="p-4 bg-muted/50">
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm text-muted-foreground">Your BMI:</span>
+                    <span className="text-2xl font-semibold">{bmi.toFixed(1)}</span>
+                    <span className={`text-sm font-medium ${getBMICategory(bmi).color}`}>
+                      {getBMICategory(bmi).label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    BMI is a general indicator and may not reflect individual health
+                  </p>
+                </div>
+              </Card>
+            )}
 
             <Button
               type="submit"
