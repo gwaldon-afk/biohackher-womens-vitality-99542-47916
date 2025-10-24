@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -14,9 +15,9 @@ import { ArrowLeft, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const answerSchema = z.object({
-  stage: z.string().min(1, "Please select a stage"),
-  hrt: z.string().min(1, "Please select an option"),
-  hot_flush: z.number().min(0).max(10),
+  stage: z.string().min(1, "Please select an option"),
+  hormone_medication: z.array(z.string()).min(1, "Please select at least one option"),
+  symptoms: z.array(z.string()).min(1, "Please select at least one symptom"),
   sleep: z.number().min(0).max(10),
   mood: z.number().min(0).max(10),
   energy: z.number().min(0).max(10),
@@ -26,7 +27,7 @@ const answerSchema = z.object({
 type Question = {
   id: keyof z.infer<typeof answerSchema>;
   label: string;
-  type: 'radio' | 'slider';
+  type: 'radio' | 'slider' | 'checkbox';
   options?: string[];
   min?: number;
   max?: number;
@@ -40,39 +41,51 @@ const MenoMapMenopause = () => {
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number | string>>({});
+  const [answers, setAnswers] = useState<Record<string, number | string | string[]>>({});
   const [isSaving, setIsSaving] = useState(false);
 
   const questions: Question[] = [
     {
       id: 'stage',
-      label: t('menomap.assessment.questions.stage'),
+      label: 'How would you describe your menstrual cycle?',
       type: 'radio' as const,
       options: [
-        t('menomap.assessment.options.perimenopause'),
-        t('menomap.assessment.options.menopause'),
-        t('menomap.assessment.options.postMenopause'),
-        t('menomap.assessment.options.notSure'),
+        'Regular cycles',
+        'Irregular cycles',
+        'No cycles currently',
+        'Not sure',
       ],
     },
     {
-      id: 'hrt',
-      label: t('menomap.assessment.questions.hrt'),
-      type: 'radio' as const,
+      id: 'hormone_medication',
+      label: 'Are you taking any hormone medication?',
+      type: 'checkbox' as const,
       options: [
-        t('menomap.assessment.options.yes'),
-        t('menomap.assessment.options.no'),
-        t('menomap.assessment.options.notSure'),
+        'Birth control pill',
+        'Hormonal IUD',
+        'Hormone replacement therapy (HRT)',
+        'Thyroid medication',
+        'Fertility medications',
+        'Testosterone therapy',
+        'Other hormone medication',
+        'None',
       ],
     },
     { 
-      id: 'hot_flush', 
-      label: t('menomap.assessment.questions.hotFlush'),
-      type: 'slider' as const, 
-      min: 0, 
-      max: 10,
-      lowLabel: t('menomap.assessment.labels.never'),
-      highLabel: t('menomap.assessment.labels.veryFrequent')
+      id: 'symptoms', 
+      label: 'What other symptoms are you experiencing?',
+      type: 'checkbox' as const,
+      options: [
+        'Hot flashes or night sweats',
+        'Irregular or heavy periods',
+        'Brain fog or memory issues',
+        'Weight changes',
+        'Low libido',
+        'Digestive issues',
+        'Joint pain or stiffness',
+        'Headaches or migraines',
+        'None',
+      ],
     },
     { 
       id: 'sleep', 
@@ -122,7 +135,18 @@ const MenoMapMenopause = () => {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
   };
 
-  const calculateBioScore = (answers: Record<string, number | string>): number => {
+  const handleCheckboxAnswer = (option: string) => {
+    const question = questions[currentQuestion];
+    const currentValues = (answers[question.id] as string[]) || [];
+    
+    const newValues = currentValues.includes(option)
+      ? currentValues.filter(v => v !== option)
+      : [...currentValues, option];
+    
+    setAnswers((prev) => ({ ...prev, [question.id]: newValues }));
+  };
+
+  const calculateBioScore = (answers: Record<string, number | string | string[]>): number => {
     const numericAnswers = Object.entries(answers)
       .filter(([_, v]) => typeof v === 'number')
       .map(([_, v]) => v as number);
@@ -274,6 +298,23 @@ const MenoMapMenopause = () => {
                   ))}
                 </fieldset>
               </RadioGroup>
+            )}
+
+            {question.type === 'checkbox' && question.options && (
+              <div className="space-y-2">
+                {question.options.map((option) => (
+                  <div key={option} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
+                    <Checkbox
+                      id={option}
+                      checked={(currentValue as string[] || []).includes(option)}
+                      onCheckedChange={() => handleCheckboxAnswer(option)}
+                    />
+                    <Label htmlFor={option} className="cursor-pointer flex-1">
+                      {option}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 

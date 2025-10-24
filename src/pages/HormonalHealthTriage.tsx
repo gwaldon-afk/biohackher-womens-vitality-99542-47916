@@ -111,7 +111,7 @@ const HormonalHealthTriage = () => {
     try {
       // Age-based routing logic
       const age = userAge || 0;
-      let targetRoute = "/menomap/assessment"; // Default fallback
+      let targetRoute = "/onboarding/menomap-menopause"; // Default fallback
 
       // Route based on age and concerns
       if (age < 35) {
@@ -134,7 +134,7 @@ const HormonalHealthTriage = () => {
         }
       } else if (age >= 45) {
         // Menopause range - use existing assessment
-        targetRoute = "/menomap/assessment";
+        targetRoute = "/onboarding/menomap-menopause";
       }
 
       // Special routing for fertility concerns (25-42 range)
