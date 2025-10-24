@@ -38,16 +38,6 @@ const HormonalHealthBaseline = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to continue",
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
     if (!dateOfBirth || !heightCm || !weightKg) {
       toast({
         title: "Missing information",
@@ -59,16 +49,32 @@ const HormonalHealthBaseline = () => {
 
     setIsSaving(true);
     try {
-      await createOrUpdateProfile({
-        date_of_birth: dateOfBirth,
-        height_cm: parseFloat(heightCm),
-        weight_kg: parseFloat(weightKg),
-      });
+      if (user) {
+        // Save to database for authenticated users
+        await createOrUpdateProfile({
+          date_of_birth: dateOfBirth,
+          height_cm: parseFloat(heightCm),
+          weight_kg: parseFloat(weightKg),
+        });
 
-      toast({
-        title: "Profile updated",
-        description: "Your baseline data has been saved",
-      });
+        toast({
+          title: "Profile updated",
+          description: "Your baseline data has been saved",
+        });
+      } else {
+        // Store in localStorage for guest users
+        localStorage.setItem('guest_health_baseline', JSON.stringify({
+          date_of_birth: dateOfBirth,
+          height_cm: parseFloat(heightCm),
+          weight_kg: parseFloat(weightKg),
+          bmi: bmi
+        }));
+
+        toast({
+          title: "Information saved",
+          description: "Your baseline data has been saved locally",
+        });
+      }
 
       navigate("/hormonal-health/triage");
     } catch (error) {

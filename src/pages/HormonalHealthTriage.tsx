@@ -78,16 +78,6 @@ const HormonalHealthTriage = () => {
   };
 
   const handleContinue = async () => {
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to continue with your assessment",
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
     if (selectedConcerns.length === 0) {
       toast({
         title: "Please select at least one concern",
@@ -97,7 +87,14 @@ const HormonalHealthTriage = () => {
       return;
     }
 
-    if (!profile || !profile.date_of_birth) {
+    // Store selected concerns for later use
+    localStorage.setItem('hormonal_concerns', JSON.stringify(selectedConcerns));
+
+    // Check for baseline data (either in profile or localStorage)
+    const hasProfileData = profile && profile.date_of_birth;
+    const hasGuestData = localStorage.getItem('guest_health_baseline');
+
+    if (!hasProfileData && !hasGuestData) {
       toast({
         title: "We need a few details first",
         description: "Let's collect some basic information to personalize your assessment.",

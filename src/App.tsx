@@ -207,7 +207,7 @@ const App = () => (
           <Route path="/onboarding/menomap-performance" element={<MenoMapPerformance />} />
           <Route path="/onboarding/menomap-menopause" element={<MenoMapMenopause />} />
           <Route path="/hormonal-health/triage" element={<HormonalHealthTriage />} />
-          <Route path="/hormonal-health/baseline" element={<ProtectedRoute><HormonalHealthBaseline /></ProtectedRoute>} />
+          <Route path="/hormonal-health/baseline" element={<HormonalHealthBaseline />} />
           <Route path="/onboarding/menomap-results" element={<MenoMapResultsOnboarding />} />
           <Route path="/onboarding/goal-setup-chat" element={<GoalSetupChat />} />
           <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
