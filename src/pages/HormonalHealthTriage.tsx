@@ -109,42 +109,8 @@ const HormonalHealthTriage = () => {
     setIsProcessing(true);
 
     try {
-      // Age-based routing logic
-      const age = userAge || 0;
-      let targetRoute = "/onboarding/menomap-menopause"; // Default fallback
-
-      // Route based on age and concerns
-      if (age < 35) {
-        // Younger users with cycle issues
-        if (
-          selectedConcerns.some((c) =>
-            ["irregular-cycles", "heavy-periods", "fertility"].includes(c)
-          )
-        ) {
-          targetRoute = "/assessment/reproductive-health"; // Phase 2 placeholder
-        }
-      } else if (age >= 35 && age < 45) {
-        // Early perimenopause range
-        if (
-          selectedConcerns.some((c) =>
-            ["hot-flashes", "mood-changes", "sleep-issues"].includes(c)
-          )
-        ) {
-          targetRoute = "/assessment/early-perimenopause"; // Phase 2 placeholder
-        }
-      } else if (age >= 45) {
-        // Menopause range - use existing assessment
-        targetRoute = "/onboarding/menomap-menopause";
-      }
-
-      // Special routing for fertility concerns (25-42 range)
-      if (
-        age >= 25 &&
-        age <= 42 &&
-        selectedConcerns.includes("fertility")
-      ) {
-        targetRoute = "/assessment/fertility-optimization"; // Phase 2 placeholder
-      }
+      // All users go to the same 7-question assessment
+      const targetRoute = "/onboarding/menomap-menopause";
 
       navigate(targetRoute);
     } catch (error) {
