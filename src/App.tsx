@@ -95,6 +95,7 @@ import InsightsDetail from "./pages/InsightsDetail";
 import ExpertFinderMap from "./pages/ExpertFinderMap";
 import ProfileSettings from "./pages/ProfileSettings";
 import HormonalHealthTriage from "./pages/HormonalHealthTriage";
+import HormonalHealthBaseline from "./pages/HormonalHealthBaseline";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -205,7 +206,8 @@ const App = () => (
           <Route path="/onboarding/menomap-entry" element={<MenoMapEntry />} />
           <Route path="/onboarding/menomap-performance" element={<MenoMapPerformance />} />
           <Route path="/onboarding/menomap-menopause" element={<MenoMapMenopause />} />
-          <Route path="/hormonal-health/triage" element={<HormonalHealthTriage />} />
+          <Route path="/hormonal-health/triage" element={<ProtectedRoute><HormonalHealthTriage /></ProtectedRoute>} />
+          <Route path="/hormonal-health/baseline" element={<ProtectedRoute><HormonalHealthBaseline /></ProtectedRoute>} />
           <Route path="/onboarding/menomap-results" element={<MenoMapResultsOnboarding />} />
           <Route path="/onboarding/goal-setup-chat" element={<GoalSetupChat />} />
           <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />

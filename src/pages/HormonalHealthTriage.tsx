@@ -99,11 +99,10 @@ const HormonalHealthTriage = () => {
 
     if (!profile || !profile.date_of_birth) {
       toast({
-        title: "Profile Incomplete",
-        description: "Please complete your health profile first",
-        variant: "destructive",
+        title: "We need a few details first",
+        description: "Let's collect some basic information to personalize your assessment.",
       });
-      navigate("/onboarding");
+      navigate("/hormonal-health/baseline");
       return;
     }
 
