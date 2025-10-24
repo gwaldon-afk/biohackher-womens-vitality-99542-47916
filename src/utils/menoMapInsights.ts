@@ -41,11 +41,15 @@ export interface ProtocolRecommendation {
   researchLink?: string;
 }
 
-export interface DeficiencySignal {
-  nutrient: string;
+export interface HealthInsight {
+  title: string;
+  category: 'Hormonal' | 'Metabolic' | 'Cardiovascular' | 'Bone Health' | 'Nutritional' | 'Sleep & Circadian' | 'Cognitive & Mental' | 'Gut Health';
+  severity: 'low' | 'moderate' | 'high' | 'critical';
   confidence: string;
   indicators: string[];
   recommendation: string;
+  testingSuggested?: string;
+  urgency?: 'routine' | 'soon' | 'urgent';
 }
 
 /**
@@ -369,68 +373,262 @@ export function generatePersonalizedProtocolPreview(answers: SymptomAnswers): Pr
 }
 
 /**
- * Identifies nutrient deficiency patterns from symptom clusters
+ * Comprehensive health insights beyond just nutrient deficiencies
  */
-export function calculateDeficiencySignals(answers: SymptomAnswers): DeficiencySignal[] {
-  const signals: DeficiencySignal[] = [];
+export function calculateHealthInsights(answers: SymptomAnswers): HealthInsight[] {
+  const insights: HealthInsight[] = [];
   
   const sleep = answers.sleep || 5;
   const hotFlush = answers.hot_flush || 5;
   const energy = answers.energy || 5;
   const skin = answers.skin || 5;
   const mood = answers.mood || 5;
+  const stage = answers.stage || 'pre';
 
-  // Magnesium (sleep + mood)
-  if (sleep < 5 && mood < 5) {
-    signals.push({
-      nutrient: 'Magnesium',
-      confidence: 'High',
-      indicators: ['Poor sleep', 'Mood instability', 'Muscle tension'],
-      recommendation: 'Magnesium glycinate 400-600mg daily. Avoid oxide form (poorly absorbed)'
-    });
-  }
-
-  // Omega-3 (hot flashes + mood) - HIGH hot flush score = frequent
-  if (hotFlush >= 6 || (mood < 5 && energy < 5)) {
-    signals.push({
-      nutrient: 'Omega-3 fatty acids',
+  // === HORMONAL IMBALANCE SIGNALS ===
+  
+  // Estrogen dominance pattern
+  if (stage === 'early-peri' && mood < 5 && sleep < 5) {
+    insights.push({
+      title: 'Potential Estrogen-Progesterone Imbalance',
+      category: 'Hormonal',
+      severity: 'moderate',
       confidence: 'Moderate-High',
-      indicators: ['Vasomotor symptoms', 'Inflammation markers', 'Mood dysregulation'],
-      recommendation: 'EPA/DHA 2000-3000mg from quality fish oil. Look for IFOS certification'
+      indicators: ['Mood instability', 'Sleep disruption', 'Early perimenopause stage'],
+      recommendation: 'Support progesterone production with vitamin B6, magnesium, and stress management. Consider cycle tracking to identify patterns.',
+      testingSuggested: 'Day 21 progesterone testing (if still cycling)',
+      urgency: 'soon'
     });
   }
 
-  // Vitamin D (energy + mood + bone)
+  // Cortisol dysregulation
+  if (energy < 4 && mood < 4 && sleep < 4) {
+    insights.push({
+      title: 'Cortisol Dysregulation Pattern',
+      category: 'Hormonal',
+      severity: 'high',
+      confidence: 'High',
+      indicators: ['Persistent fatigue', 'Mood dysregulation', 'Sleep disruption', 'Multiple system impact'],
+      recommendation: 'Address HPA axis: adaptogenic herbs (ashwagandha, rhodiola), circadian rhythm support, stress reduction practices.',
+      testingSuggested: '4-point salivary cortisol test',
+      urgency: 'soon'
+    });
+  }
+
+  // === METABOLIC HEALTH ===
+  
+  // Insulin resistance risk
+  if (stage !== 'pre' && energy < 5) {
+    const bmiStr = localStorage.getItem('menomap_bmi');
+    const bmi = bmiStr ? parseFloat(bmiStr) : null;
+    
+    if (bmi && bmi > 27) {
+      insights.push({
+        title: 'Metabolic Health Optimization',
+        category: 'Metabolic',
+        severity: 'moderate',
+        confidence: 'Moderate',
+        indicators: ['BMI >27', 'Energy fluctuations', 'Hormonal transition'],
+        recommendation: 'Focus on metabolic health: resistance training 3x/week, minimize refined carbs, increase protein intake (1g per lb ideal body weight).',
+        testingSuggested: 'Fasting insulin, HbA1c, fasting glucose',
+        urgency: 'routine'
+      });
+    }
+  }
+
+  // === CARDIOVASCULAR RISK FACTORS ===
+  
+  // Post-menopause cardiovascular protection
+  if (stage === 'post' || stage === 'late-peri') {
+    insights.push({
+      title: 'Cardiovascular Protection Priority',
+      category: 'Cardiovascular',
+      severity: 'moderate',
+      confidence: 'High',
+      indicators: ['Post-menopausal stage', 'Loss of estrogen cardioprotection'],
+      recommendation: 'Prioritize cardiovascular health: omega-3s (EPA/DHA 2-3g), CoQ10, regular cardio exercise, blood pressure monitoring.',
+      testingSuggested: 'Lipid panel (including ApoB), hs-CRP, blood pressure',
+      urgency: 'soon'
+    });
+  }
+
+  // === BONE HEALTH ===
+  
+  // Bone density risk
+  if (stage === 'late-peri' || stage === 'post') {
+    const bmiStr = localStorage.getItem('menomap_bmi');
+    const bmi = bmiStr ? parseFloat(bmiStr) : null;
+    const lowBMI = bmi && bmi < 20;
+    
+    insights.push({
+      title: 'Bone Density Preservation',
+      category: 'Bone Health',
+      severity: lowBMI ? 'high' : 'moderate',
+      confidence: 'High',
+      indicators: ['Late perimenopause/post-menopause', 'Rapid bone loss window', lowBMI ? 'Low BMI increases risk' : 'Standard risk profile'],
+      recommendation: 'Critical: Calcium citrate (1200mg) + Vitamin D3 (2000-4000 IU) + K2-MK7 (180mcg). Weight-bearing exercise 4x/week.',
+      testingSuggested: 'DEXA scan for bone density baseline',
+      urgency: lowBMI ? 'urgent' : 'soon'
+    });
+  }
+
+  // === NUTRITIONAL DEFICIENCIES ===
+  
+  // Magnesium deficiency
+  if (sleep < 5 && mood < 5) {
+    insights.push({
+      title: 'Magnesium Deficiency Likelihood',
+      category: 'Nutritional',
+      severity: 'moderate',
+      confidence: 'High',
+      indicators: ['Poor sleep', 'Mood instability', 'Common deficiency (50% of population)'],
+      recommendation: 'Magnesium glycinate 400-600mg daily (evening). Avoid oxide form (poorly absorbed). Supports 300+ enzymatic reactions.',
+      testingSuggested: 'RBC magnesium (more accurate than serum)',
+      urgency: 'routine'
+    });
+  }
+
+  // Omega-3 deficiency
+  if (hotFlush >= 6 || (mood < 5 && energy < 5)) {
+    insights.push({
+      title: 'Omega-3 Deficiency & Inflammation',
+      category: 'Nutritional',
+      severity: 'moderate',
+      confidence: 'Moderate-High',
+      indicators: ['Vasomotor symptoms', 'Mood dysregulation', 'Anti-inflammatory need'],
+      recommendation: 'EPA/DHA 2000-3000mg from quality fish oil (IFOS certified). Reduces inflammation and supports mood.',
+      testingSuggested: 'Omega-3 Index test (target >8%)',
+      urgency: 'routine'
+    });
+  }
+
+  // Vitamin D deficiency
   if (energy < 5 && mood < 5) {
-    signals.push({
-      nutrient: 'Vitamin D',
+    insights.push({
+      title: 'Vitamin D Insufficiency',
+      category: 'Nutritional',
+      severity: 'moderate',
       confidence: 'Moderate',
-      indicators: ['Fatigue', 'Low mood', 'Age-related bone concerns'],
-      recommendation: 'Test levels first (optimal: 50-80 ng/mL). Supplement 2000-4000 IU daily with K2'
+      indicators: ['Fatigue', 'Low mood', '80% of population deficient'],
+      recommendation: 'Test first (optimal: 50-80 ng/mL). Supplement 2000-4000 IU daily with K2 and fats for absorption.',
+      testingSuggested: '25-OH Vitamin D blood test',
+      urgency: 'routine'
     });
   }
 
-  // B vitamins (energy + brain fog)
+  // Iron deficiency
+  if (energy < 4 && skin < 5) {
+    insights.push({
+      title: 'Iron Status Assessment',
+      category: 'Nutritional',
+      severity: 'moderate',
+      confidence: 'Moderate',
+      indicators: ['Persistent fatigue', 'Skin/hair changes', 'Common in perimenopausal women'],
+      recommendation: 'Test ferritin first (optimal: 50-100 ng/mL). If low, ferrous bisglycinate 25mg daily with vitamin C. Do NOT supplement without testing.',
+      testingSuggested: 'Ferritin, TIBC, serum iron panel',
+      urgency: 'soon'
+    });
+  }
+
+  // B-complex need
   if (energy < 4) {
-    signals.push({
-      nutrient: 'B-complex vitamins',
+    insights.push({
+      title: 'B-Vitamin Complex Support',
+      category: 'Nutritional',
+      severity: 'low',
       confidence: 'Moderate',
-      indicators: ['Persistent fatigue', 'Potential cognitive impacts'],
-      recommendation: 'Activated B-complex with methylated folate. Supports energy production and hormone metabolism'
+      indicators: ['Persistent fatigue', 'Energy production support needed'],
+      recommendation: 'Activated B-complex with methylated folate (MTHFR-friendly). Supports energy and hormone metabolism.',
+      urgency: 'routine'
     });
   }
 
-  // Vitamin E + phytoestrogens (hot flashes + skin) - HIGH hot flush = frequent
-  if (hotFlush >= 7 && skin < 5) {
-    signals.push({
-      nutrient: 'Vitamin E + Phytoestrogens',
-      confidence: 'Moderate',
-      indicators: ['Severe hot flashes', 'Skin changes', 'Estrogen fluctuation'],
-      recommendation: 'Mixed tocopherols 400 IU + dietary phytoestrogens (flax, soy, chickpeas)'
+  // === SLEEP & CIRCADIAN HEALTH ===
+  
+  // Sleep architecture disruption
+  if (sleep < 4) {
+    insights.push({
+      title: 'Sleep Architecture Disruption',
+      category: 'Sleep & Circadian',
+      severity: 'high',
+      confidence: 'High',
+      indicators: ['Severely disrupted sleep', 'Impacts all other systems'],
+      recommendation: 'Sleep compression protocol: restrict to 6 hours initially (11pm-5am) for 2 weeks to rebuild sleep drive. Then gradually expand.',
+      testingSuggested: 'Consider sleep study if snoring/breathing issues',
+      urgency: 'urgent'
     });
   }
 
-  return signals;
+  // Circadian rhythm misalignment
+  if (sleep < 5 && energy < 5) {
+    insights.push({
+      title: 'Circadian Rhythm Optimization',
+      category: 'Sleep & Circadian',
+      severity: 'moderate',
+      confidence: 'Moderate-High',
+      indicators: ['Sleep-energy disconnect', 'Disrupted circadian signals'],
+      recommendation: 'Morning bright light exposure (15min within 1hr of waking), evening blue light blocking, consistent sleep/wake times.',
+      urgency: 'soon'
+    });
+  }
+
+  // === COGNITIVE & MENTAL HEALTH ===
+  
+  // HPA axis dysregulation
+  if (mood < 4 && (energy < 4 || sleep < 4)) {
+    insights.push({
+      title: 'Stress Response System Overload',
+      category: 'Cognitive & Mental',
+      severity: 'high',
+      confidence: 'High',
+      indicators: ['Mood dysregulation', 'Energy/sleep impacts', 'HPA axis strain'],
+      recommendation: 'HRV breathing (5-6 breaths/min, 10min 2x daily), adaptogenic support, stress reduction practices. Consider therapy/counseling.',
+      urgency: 'soon'
+    });
+  }
+
+  // Neurotransmitter support
+  if (mood < 5) {
+    insights.push({
+      title: 'Neurotransmitter Support',
+      category: 'Cognitive & Mental',
+      severity: 'moderate',
+      confidence: 'Moderate',
+      indicators: ['Mood instability', 'Hormonal impact on neurotransmitters'],
+      recommendation: 'Support serotonin/GABA: L-theanine (200mg), GABA (500mg evening), consider 5-HTP if appropriate. Magnesium helps GABA receptors.',
+      urgency: 'routine'
+    });
+  }
+
+  // === GUT HEALTH ===
+  
+  // Estrogen metabolism
+  if (stage !== 'pre' && (mood < 5 || skin < 5)) {
+    insights.push({
+      title: 'Gut-Hormone Axis Optimization',
+      category: 'Gut Health',
+      severity: 'moderate',
+      confidence: 'Moderate',
+      indicators: ['Hormonal transition', 'Gut metabolizes estrogen'],
+      recommendation: 'Support healthy estrogen metabolism: high-fiber diet (25-35g/day), cruciferous vegetables, probiotic-rich foods, avoid excess alcohol.',
+      testingSuggested: 'Consider comprehensive stool test',
+      urgency: 'routine'
+    });
+  }
+
+  // Sort by urgency and severity
+  const urgencyOrder = { urgent: 0, soon: 1, routine: 2 };
+  const severityOrder = { critical: 0, high: 1, moderate: 2, low: 3 };
+  
+  insights.sort((a, b) => {
+    const urgencyA = urgencyOrder[a.urgency || 'routine'];
+    const urgencyB = urgencyOrder[b.urgency || 'routine'];
+    if (urgencyA !== urgencyB) return urgencyA - urgencyB;
+    
+    return severityOrder[a.severity] - severityOrder[b.severity];
+  });
+
+  return insights;
 }
 
 /**

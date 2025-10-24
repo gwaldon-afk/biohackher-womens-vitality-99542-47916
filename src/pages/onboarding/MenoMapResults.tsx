@@ -13,7 +13,7 @@ import {
   identifyBiologicalMechanisms,
   predictNextPhase,
   generatePersonalizedProtocolPreview,
-  calculateDeficiencySignals,
+  calculateHealthInsights,
   generateComparativeContext,
   type SymptomAnswers
 } from "@/utils/menoMapInsights";
@@ -181,7 +181,7 @@ const MenoMapResults = () => {
   const biologicalInsight = identifyBiologicalMechanisms(storedAnswers, analysisData.stage);
   const nextPhase = predictNextPhase(storedAnswers, analysisData.stage);
   const protocolPreview = generatePersonalizedProtocolPreview(storedAnswers);
-  const deficiencySignals = calculateDeficiencySignals(storedAnswers);
+  const healthInsights = calculateHealthInsights(storedAnswers);
   const comparativeContext = generateComparativeContext(storedAnswers, analysisData.stage);
 
   return (
@@ -359,44 +359,79 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* Deficiency Signals - Must come BEFORE Protocol Preview */}
-        {deficiencySignals.length > 0 && (
+        {/* Health Insights - Comprehensive Analysis */}
+        {healthInsights.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
-                Potential Nutrient Deficiency Signals
+                <Microscope className="w-5 h-5 text-primary" />
+                Health Insights
               </CardTitle>
               <CardDescription>
-                Based on your symptom responses - consult with your healthcare provider
+                Comprehensive health analysis based on your symptoms, stage, and risk factors
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {deficiencySignals.map((signal, idx) => (
-                <div key={idx} className="border rounded-lg p-3 space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-semibold text-sm">{signal.nutrient}</h4>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">{signal.confidence} confidence</Badge>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-7 px-2"
-                        onClick={() => {
-                          // Search for this nutrient in shop
-                          navigate(`/shop?search=${encodeURIComponent(signal.nutrient)}`);
-                        }}
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                      </Button>
-                    </div>
+            <CardContent className="space-y-4">
+              {/* Group by category */}
+              {['Hormonal', 'Metabolic', 'Cardiovascular', 'Bone Health', 'Nutritional', 'Sleep & Circadian', 'Cognitive & Mental', 'Gut Health'].map(category => {
+                const categoryInsights = healthInsights.filter(i => i.category === category);
+                if (categoryInsights.length === 0) return null;
+
+                return (
+                  <div key={category} className="space-y-3">
+                    <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                      {category}
+                      <Badge variant="outline" className="text-xs">{categoryInsights.length}</Badge>
+                    </h3>
+                    {categoryInsights.map((insight, idx) => {
+                      const severityColors = {
+                        critical: 'border-red-500 bg-red-50/50 dark:bg-red-950/20',
+                        high: 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/20',
+                        moderate: 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20',
+                        low: 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20'
+                      };
+
+                      const urgencyLabels = {
+                        urgent: { label: 'Urgent', variant: 'destructive' as const },
+                        soon: { label: 'Soon', variant: 'default' as const },
+                        routine: { label: 'Routine', variant: 'secondary' as const }
+                      };
+
+                      return (
+                        <div key={idx} className={`border rounded-lg p-3 space-y-2 ${severityColors[insight.severity]}`}>
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-semibold text-sm">{insight.title}</h4>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <Badge variant="secondary" className="text-xs">{insight.confidence}</Badge>
+                              {insight.urgency && (
+                                <Badge variant={urgencyLabels[insight.urgency].variant} className="text-xs">
+                                  {urgencyLabels[insight.urgency].label}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="text-xs text-muted-foreground">
+                            <span className="font-medium">Indicators:</span> {insight.indicators.join(', ')}
+                          </div>
+                          
+                          <p className="text-sm">{insight.recommendation}</p>
+                          
+                          {insight.testingSuggested && (
+                            <div className="bg-background/50 rounded p-2 text-xs">
+                              <span className="font-medium">🔬 Testing Suggested:</span> {insight.testingSuggested}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                  <p className="text-sm text-muted-foreground">{signal.recommendation}</p>
-                </div>
-              ))}
-              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                );
+              })}
+              
+              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground mt-4">
                 <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
-                <p>These insights are based on your symptom responses and are for educational purposes only. Always consult with qualified healthcare professionals before starting any supplementation or treatment protocol.</p>
+                <p>These insights are based on your symptom responses and published research. They are for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, testing, or treatment protocol.</p>
               </div>
             </CardContent>
           </Card>
