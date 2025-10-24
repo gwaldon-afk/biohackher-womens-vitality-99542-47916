@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
-import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart, Home, ArrowLeft } from "lucide-react";
+import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart, Home, ArrowLeft, Brain, Link2, Dumbbell, Heart, Thermometer, Pill } from "lucide-react";
 import { 
   analyzeSymptomInterconnections, 
   identifyBiologicalMechanisms,
@@ -264,21 +264,6 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* Educational Disclaimer - Early Placement */}
-        <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-900">
-          <CardContent className="pt-6">
-            <div className="flex gap-3">
-              <div className="text-2xl">⚕️</div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-sm">Important: Educational Purposes Only</h4>
-                <p className="text-sm text-muted-foreground">
-                  This analysis is based on your symptom responses and published research. It is for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, treatment protocol, or making significant health decisions.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Symptom Pattern Analysis - The Insight Value-Add */}
         {interconnections.length > 0 && (
           <Card>
@@ -359,175 +344,87 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
-        {/* Health Insights - Comprehensive Analysis */}
+        {/* Health Insights - PHYSIOLOGICAL ANALYSIS */}
         {healthInsights.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Microscope className="w-5 h-5 text-primary" />
-                Health Insights
-              </CardTitle>
-              <CardDescription>
-                Comprehensive health analysis based on your symptoms, stage, and risk factors
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Group by category */}
-              {['Hormonal', 'Metabolic', 'Cardiovascular', 'Bone Health', 'Nutritional', 'Sleep & Circadian', 'Cognitive & Mental', 'Gut Health'].map(category => {
-                const categoryInsights = healthInsights.filter(i => i.category === category);
-                if (categoryInsights.length === 0) return null;
-
-                return (
-                  <div key={category} className="space-y-3">
-                    <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
-                      {category}
-                      <Badge variant="outline" className="text-xs">{categoryInsights.length}</Badge>
-                    </h3>
-                    {categoryInsights.map((insight, idx) => {
-                      const severityColors = {
-                        critical: 'border-red-500 bg-red-50/50 dark:bg-red-950/20',
-                        high: 'border-orange-500 bg-orange-50/50 dark:bg-orange-950/20',
-                        moderate: 'border-yellow-500 bg-yellow-50/50 dark:bg-yellow-950/20',
-                        low: 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20'
-                      };
-
-                      const urgencyLabels = {
-                        urgent: { label: 'Urgent', variant: 'destructive' as const },
-                        soon: { label: 'Soon', variant: 'default' as const },
-                        routine: { label: 'Routine', variant: 'secondary' as const }
-                      };
-
-                      return (
-                        <div key={idx} className={`border rounded-lg p-3 space-y-2 ${severityColors[insight.severity]}`}>
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-semibold text-sm">{insight.title}</h4>
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <Badge variant="secondary" className="text-xs">{insight.confidence}</Badge>
-                              {insight.urgency && (
-                                <Badge variant={urgencyLabels[insight.urgency].variant} className="text-xs">
-                                  {urgencyLabels[insight.urgency].label}
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="text-xs text-muted-foreground">
-                            <span className="font-medium">Indicators:</span> {insight.indicators.join(', ')}
-                          </div>
-                          
-                          <p className="text-sm">{insight.recommendation}</p>
-                          
-                          {insight.testingSuggested && (
-                            <div className="bg-background/50 rounded p-2 text-xs">
-                              <span className="font-medium">🔬 Testing Suggested:</span> {insight.testingSuggested}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-              
-              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground mt-4">
-                <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
-                <p>These insights are based on your symptom responses and published research. They are for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, testing, or treatment protocol.</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Protocol Preview - Specific Interventions */}
-        {protocolPreview.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-primary" />
-                Your Personalized Protocol Preview
-              </CardTitle>
-              <CardDescription>
-                Evidence-based interventions across lifestyle, nutrition, and supplements
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {protocolPreview.map((rec, idx) => {
-                // Check if this is a supplement (not a lifestyle/behavioral intervention)
-                const isSupplement = 
-                  rec.intervention.toLowerCase().includes('vitamin') ||
-                  rec.intervention.toLowerCase().includes('magnesium') ||
-                  rec.intervention.toLowerCase().includes('omega') ||
-                  rec.intervention.toLowerCase().includes('oil') ||
-                  rec.intervention.toLowerCase().includes('ashwagandha') ||
-                  rec.intervention.toLowerCase().includes('coq10') ||
-                  rec.intervention.toLowerCase().includes('collagen') ||
-                  rec.intervention.toLowerCase().includes('l-theanine') ||
-                  rec.intervention.toLowerCase().includes('gaba') ||
-                  rec.intervention.toLowerCase().includes('b-complex') ||
-                  rec.intervention.toLowerCase().includes('iron') ||
-                  rec.intervention.toLowerCase().includes('fish oil') ||
-                  !rec.intervention.toLowerCase().includes('protocol') &&
-                  !rec.intervention.toLowerCase().includes('training') &&
-                  !rec.intervention.toLowerCase().includes('breathing') &&
-                  !rec.intervention.toLowerCase().includes('therapy') &&
-                  !rec.intervention.toLowerCase().includes('testing');
-                
-                // Extract supplement name for search (before parentheses or "mg")
-                const extractSupplementName = (name: string) => {
-                  // Remove dosage info in parentheses
-                  let cleaned = name.split('(')[0].trim();
-                  // Remove anything after "+" to get first supplement
-                  cleaned = cleaned.split('+')[0].trim();
-                  // Remove trailing "mg" or "IU"
-                  cleaned = cleaned.replace(/\s*\d+\s*(mg|iu|mcg|g)?\s*$/i, '').trim();
-                  return cleaned;
-                };
-                
-                return (
-                  <div key={idx} className="border rounded-lg p-4 space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-semibold">{rec.intervention}</h4>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="flex-shrink-0 text-xs">
-                          {rec.evidenceLevel}
-                        </Badge>
-                        {rec.researchLink && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 px-2"
-                            onClick={() => window.open(rec.researchLink, '_blank')}
-                          >
-                            <Microscope className="w-4 h-4" />
-                          </Button>
-                        )}
-                        {isSupplement && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 px-2"
-                            onClick={() => {
-                              const searchTerm = extractSupplementName(rec.intervention);
-                              navigate(`/shop?search=${encodeURIComponent(searchTerm)}`);
-                            }}
-                          >
-                            <ShoppingCart className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
+          <Card className="p-6">
+            <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+              <Brain className="w-6 h-6 text-primary" />
+              Health Insights: What's Happening in Your Body
+            </h2>
+            
+            <div className="space-y-6">
+              {healthInsights.map((insight, idx) => (
+                <Card key={idx} className="p-5 border-l-4" style={{
+                  borderLeftColor: insight.severity === 'high' || insight.severity === 'critical' ? '#ef4444' : 
+                                 insight.severity === 'moderate' ? '#f59e0b' : '#10b981'
+                }}>
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <Badge variant="outline" className="mb-2">{insight.category}</Badge>
+                      <h3 className="text-lg font-semibold">{insight.title}</h3>
                     </div>
-                    <p className="text-sm text-muted-foreground">{rec.rationale}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{rec.timing}</span>
-                    </div>
+                    <Badge variant={
+                      insight.urgency === 'priority' ? 'destructive' :
+                      insight.urgency === 'soon' ? 'default' : 'secondary'
+                    }>
+                      {insight.urgency === 'priority' ? 'Priority' :
+                       insight.urgency === 'soon' ? 'Address Soon' : 'Routine'}
+                    </Badge>
                   </div>
-                );
-              })}
-              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
-                <p className="font-medium mb-1">⚕️ Important Disclaimer</p>
-                <p>These recommendations are based on your symptom responses and published research. Always consult with qualified healthcare professionals before implementing any new health protocol.</p>
-              </div>
-            </CardContent>
+
+                  <p className="text-sm text-muted-foreground mb-3">{insight.description}</p>
+
+                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg mb-3">
+                    <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                      <Activity className="w-4 h-4" />
+                      What's Happening Physiologically
+                    </h4>
+                    <p className="text-sm text-foreground">{insight.physiologyExplanation}</p>
+                  </div>
+
+                  <div className="mb-3">
+                    <h4 className="text-sm font-semibold mb-2">System-Wide Impact:</h4>
+                    <ul className="space-y-1">
+                      {insight.systemImpact.map((impact, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>{impact}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {insight.cascadeEffect && (
+                    <div className="bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg mb-3">
+                      <h4 className="text-sm font-semibold mb-1 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-amber-600" />
+                        Cascade Effect
+                      </h4>
+                      <p className="text-sm text-foreground">{insight.cascadeEffect}</p>
+                    </div>
+                  )}
+
+                  <div className="bg-purple-50 dark:bg-purple-950/20 p-3 rounded-lg mb-3">
+                    <h4 className="text-sm font-semibold mb-1">Why This Matters for You:</h4>
+                    <p className="text-sm text-foreground">{insight.whyThisMatters}</p>
+                  </div>
+
+                  <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <AlertCircle className="w-4 h-4 mt-0.5" />
+                    <span>Based on: {insight.indicators.join(', ')}</span>
+                  </div>
+
+                  {insight.testingSuggested && (
+                    <div className="mt-3 pt-3 border-t flex items-center gap-2 text-sm">
+                      <Microscope className="w-4 h-4 text-primary" />
+                      <span className="text-muted-foreground">
+                        Consider testing: <strong>{insight.testingSuggested}</strong>
+                      </span>
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </div>
           </Card>
         )}
 
@@ -563,6 +460,130 @@ const MenoMapResults = () => {
           </CardContent>
         </Card>
 
+        {/* Understanding → Action Bridge */}
+        <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-6 border-2 border-purple-200 dark:border-purple-800">
+          <div className="flex items-start gap-3">
+            <Lightbulb className="w-6 h-6 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                From Understanding to Action
+              </h3>
+              <p className="text-sm text-muted-foreground mb-2">
+                Now that you understand the specific physiological patterns in your body, 
+                the section below shows evidence-based interventions that may support 
+                these mechanisms.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Each intervention is explicitly linked to the insights above and organized 
+                by type—lifestyle changes first, optional nutritional support last. This helps 
+                you make informed decisions based on your unique physiology.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Educational Disclaimer */}
+        <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-900">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <div className="text-2xl">⚕️</div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-sm">Important: Educational Purposes Only</h4>
+                <p className="text-sm text-muted-foreground">
+                  This analysis is based on your symptom responses and published research. It is for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, treatment protocol, or making significant health decisions.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Evidence-Based Interventions */}
+        {protocolPreview.length > 0 && (
+          <Card className="p-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              Evidence-Based Interventions to Consider
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              These interventions are organized by type and mapped to your specific 
+              physiological insights above. Remember: these are educational suggestions 
+              based on research, not medical advice.
+            </p>
+
+            {['exercise', 'lifestyle', 'testing', 'therapy', 'supplement'].map(category => {
+              const items = protocolPreview.filter(item => item.category === category);
+              if (items.length === 0) return null;
+
+              const categoryConfig: Record<string, { icon: any; label: string; color: string }> = {
+                exercise: { icon: Dumbbell, label: 'Exercise & Movement', color: 'green' },
+                lifestyle: { icon: Heart, label: 'Lifestyle & Habits', color: 'blue' },
+                testing: { icon: Microscope, label: 'Testing to Consider', color: 'purple' },
+                therapy: { icon: Thermometer, label: 'Therapeutic Approaches', color: 'orange' },
+                supplement: { icon: Pill, label: 'Nutritional Support', color: 'pink' }
+              };
+
+              const config = categoryConfig[category];
+              const Icon = config.icon;
+
+              return (
+                <div key={category} className="mb-8 last:mb-0">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Icon className="w-5 h-5" />
+                    <h3 className="text-lg font-semibold">{config.label}</h3>
+                    <Badge variant="outline">{items.length}</Badge>
+                  </div>
+
+                  <div className="space-y-4">
+                    {items.map((item, idx) => (
+                      <Card key={idx} className="p-4 border-l-4 border-l-primary/50">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-base">{item.intervention}</h4>
+                            
+                            <div className="flex items-center gap-1 mt-1 text-xs text-purple-600 dark:text-purple-400">
+                              <Link2 className="w-3 h-3" />
+                              <span>Addresses: {item.addressesInsight}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge>{item.evidenceLevel}</Badge>
+                            {item.researchLink && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 px-2"
+                                onClick={() => window.open(item.researchLink, '_blank')}
+                              >
+                                <Microscope className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded mb-3">
+                          <p className="text-sm font-medium text-foreground">
+                            {item.howItHelps}
+                          </p>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground mb-2">
+                          <strong>Mechanism:</strong> {item.rationale}
+                        </p>
+
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {item.timing}
+                          </span>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </Card>
+        )}
+
         {/* CTA Section */}
         <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-500/5">
           <CardHeader className="text-center">
@@ -576,7 +597,7 @@ const MenoMapResults = () => {
           </CardHeader>
           <CardContent>
             <Button onClick={handleContinue} className="w-full" size="lg">
-              {user ? 'Set Your Health Goals' : 'Create Free Account & Get Your Protocol'}
+              {user ? 'Save Your Results & Continue Your Journey' : 'Save Your Results & Continue Your Journey'}
             </Button>
           </CardContent>
         </Card>
