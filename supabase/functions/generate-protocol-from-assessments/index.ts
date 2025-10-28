@@ -7,7 +7,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Intervention mapping based on assessment results
+// Intervention mapping based on assessment results - ALL 23 ASSESSMENTS
 const INTERVENTION_MAP: Record<string, any> = {
   'brain': {
     'cognitive-function': {
@@ -33,15 +33,40 @@ const INTERVENTION_MAP: Record<string, any> = {
         { type: 'habit', name: 'Deep Breathing Breaks', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
     },
-    'sleep': {
+    'headaches': {
       poor: [
-        { type: 'supplement', name: 'Magnesium Glycinate', frequency: 'daily', time_of_day: ['evening'] },
-        { type: 'habit', name: 'Screen-Free Hour Before Bed', frequency: 'daily', time_of_day: ['evening'] },
-        { type: 'therapy', name: 'Sleep Hygiene Routine', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'supplement', name: 'Magnesium Glycinate (400mg)', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'supplement', name: 'Riboflavin (B2) 400mg', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Headache Trigger Journal', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'Stress Reduction Techniques', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
       fair: [
-        { type: 'supplement', name: 'Glycine (3g)', frequency: 'daily', time_of_day: ['evening'] },
-        { type: 'habit', name: 'Consistent Sleep Schedule', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'supplement', name: 'CoQ10 (100mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Regular Hydration Tracking', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+      ],
+    },
+    'memory-issues': {
+      poor: [
+        { type: 'supplement', name: 'Phosphatidylserine (100mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Bacopa Monnieri', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Memory Palace Technique', frequency: 'daily', time_of_day: ['afternoon'] },
+        { type: 'exercise', name: 'Aerobic Exercise (30 min)', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Ginkgo Biloba', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Mental Rehearsal Practice', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'menopause-brain-health': {
+      poor: [
+        { type: 'supplement', name: 'Omega-3 (EPA/DHA)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Black Cohosh', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'therapy', name: 'Cognitive Behavioral Therapy', frequency: 'weekly', time_of_day: ['afternoon'] },
+        { type: 'habit', name: 'Brain-Stimulating Activities', frequency: 'daily', time_of_day: ['afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Vitamin E (400 IU)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Social Engagement Activities', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
     },
   },
@@ -58,9 +83,21 @@ const INTERVENTION_MAP: Record<string, any> = {
         { type: 'habit', name: 'Energy Check-In Breaks', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
     },
+    'athletic-performance': {
+      poor: [
+        { type: 'supplement', name: 'Creatine Monohydrate (5g)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Beta-Alanine (3-5g)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'exercise', name: 'Progressive Strength Training', frequency: 'three_times_weekly', time_of_day: ['morning', 'afternoon'] },
+        { type: 'therapy', name: 'Sports Massage', frequency: 'weekly', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Whey Protein (25g)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Performance Tracking', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
     'physical-performance': {
       poor: [
-        { type: 'exercise', name: 'Strength Training (20 min)', frequency: 'three_times_daily', time_of_day: ['morning', 'afternoon'] },
+        { type: 'exercise', name: 'Strength Training (20 min)', frequency: 'three_times_weekly', time_of_day: ['morning', 'afternoon'] },
         { type: 'supplement', name: 'Creatine Monohydrate', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'therapy', name: 'Physical Therapy Exercises', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
@@ -69,8 +106,104 @@ const INTERVENTION_MAP: Record<string, any> = {
         { type: 'supplement', name: 'Collagen Peptides', frequency: 'daily', time_of_day: ['morning'] },
       ],
     },
+    'recovery-optimization': {
+      poor: [
+        { type: 'supplement', name: 'Tart Cherry Extract', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'supplement', name: 'Magnesium Threonate', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'Compression Therapy', frequency: 'three_times_weekly', time_of_day: ['evening'] },
+        { type: 'habit', name: 'HRV Tracking', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Omega-3 (EPA/DHA)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Active Recovery Sessions', frequency: 'twice_weekly', time_of_day: ['afternoon'] },
+      ],
+    },
+    'body-composition': {
+      poor: [
+        { type: 'diet', name: 'Protein Optimization (1.6g/kg)', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'exercise', name: 'Resistance Training', frequency: 'four_times_weekly', time_of_day: ['morning', 'afternoon'] },
+        { type: 'supplement', name: 'CLA (3g)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Body Composition Tracking', frequency: 'weekly', time_of_day: ['morning'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Green Tea Extract', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Metabolic Rate Optimization', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+    },
+    'joint-pain': {
+      poor: [
+        { type: 'supplement', name: 'Glucosamine + Chondroitin', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Curcumin (500mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'therapy', name: 'Physical Therapy', frequency: 'twice_weekly', time_of_day: ['afternoon'] },
+        { type: 'exercise', name: 'Low-Impact Movement', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Omega-3 (high EPA)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Joint Mobility Routine', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+    },
+    'weight-changes': {
+      poor: [
+        { type: 'diet', name: 'Metabolic Optimization Plan', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'exercise', name: 'HIIT Training (20 min)', frequency: 'three_times_weekly', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Berberine (500mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'habit', name: 'Metabolic Health Tracking', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Chromium Picolinate', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Mindful Eating Practice', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+      ],
+    },
+    'gut': {
+      poor: [
+        { type: 'supplement', name: 'Multi-Strain Probiotic', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'L-Glutamine (5g)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'diet', name: 'Gut-Healing Protocol', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'habit', name: 'Food Symptom Journal', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Digestive Enzymes', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'diet', name: 'Prebiotic Fiber Increase', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+      ],
+    },
+    'bloating': {
+      poor: [
+        { type: 'supplement', name: 'Peppermint Oil Capsules', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'supplement', name: 'Digestive Enzymes', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'diet', name: 'Low-FODMAP Elimination', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'habit', name: 'Bloating Trigger Tracking', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Ginger Extract', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+        { type: 'habit', name: 'Mindful Eating & Chewing', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+      ],
+    },
   },
   'balance': {
+    'anxiety': {
+      poor: [
+        { type: 'supplement', name: 'L-Theanine (200mg)', frequency: 'twice_daily', time_of_day: ['morning', 'afternoon'] },
+        { type: 'supplement', name: 'Magnesium Glycinate', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'CBT for Anxiety', frequency: 'weekly', time_of_day: ['afternoon'] },
+        { type: 'habit', name: 'Box Breathing (4-4-4-4)', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Ashwagandha KSM-66', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Progressive Muscle Relaxation', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'mood': {
+      poor: [
+        { type: 'supplement', name: '5-HTP (100mg)', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'supplement', name: 'Vitamin D3 (2000 IU)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'exercise', name: 'Aerobic Exercise (30 min)', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+        { type: 'therapy', name: 'Talk Therapy', frequency: 'weekly', time_of_day: ['afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Omega-3 (EPA 1000mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Gratitude Journaling', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
     'stress-assessment': {
       poor: [
         { type: 'supplement', name: 'Ashwagandha', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
@@ -80,6 +213,103 @@ const INTERVENTION_MAP: Record<string, any> = {
       fair: [
         { type: 'supplement', name: 'L-Theanine', frequency: 'daily', time_of_day: ['afternoon'] },
         { type: 'habit', name: 'Breathing Exercises', frequency: 'daily', time_of_day: ['afternoon'] },
+      ],
+    },
+    'sleep': {
+      poor: [
+        { type: 'supplement', name: 'Magnesium Glycinate', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'habit', name: 'Screen-Free Hour Before Bed', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'Sleep Hygiene Routine', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Glycine (3g)', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'habit', name: 'Consistent Sleep Schedule', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'hot-flashes': {
+      poor: [
+        { type: 'supplement', name: 'Black Cohosh (40mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'supplement', name: 'Sage Extract (300mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Cooling Breathwork', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+        { type: 'therapy', name: 'Acupuncture for Hot Flashes', frequency: 'weekly', time_of_day: ['afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Vitamin E (400 IU)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Trigger Identification Journal', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'night-sweats': {
+      poor: [
+        { type: 'supplement', name: 'Black Cohosh', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'supplement', name: 'Magnesium Glycinate', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'habit', name: 'Bedroom Temperature Optimization', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'Sleep Environment Consultation', frequency: 'once', time_of_day: ['afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Vitamin E', frequency: 'daily', time_of_day: ['evening'] },
+        { type: 'habit', name: 'Cooling Sheet Protocol', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'irregular-periods': {
+      poor: [
+        { type: 'supplement', name: 'Vitex (Chasteberry)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Myo-Inositol (2g)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'habit', name: 'Cycle Tracking App', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'therapy', name: 'Hormone Consultation', frequency: 'monthly', time_of_day: ['afternoon'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'B-Complex High Potency', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Stress Management for Hormones', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'sexual-function': {
+      poor: [
+        { type: 'supplement', name: 'Maca Root (1500mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'DHEA (25mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'therapy', name: 'Pelvic Floor Therapy', frequency: 'weekly', time_of_day: ['afternoon'] },
+        { type: 'habit', name: 'Intimacy Communication Practice', frequency: 'weekly', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'L-Arginine', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Kegel Exercise Routine', frequency: 'daily', time_of_day: ['morning', 'evening'] },
+      ],
+    },
+  },
+  'beauty': {
+    'skin-health': {
+      poor: [
+        { type: 'supplement', name: 'Collagen Peptides (20g)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Vitamin C (2000mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
+        { type: 'therapy', name: 'Red Light Therapy', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Advanced Skincare Routine', frequency: 'daily', time_of_day: ['morning', 'evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Hyaluronic Acid (200mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Sun Protection Protocol', frequency: 'daily', time_of_day: ['morning'] },
+      ],
+    },
+    'hair-thinning': {
+      poor: [
+        { type: 'supplement', name: 'Biotin (5000mcg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Saw Palmetto', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Marine Collagen', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'therapy', name: 'Scalp Massage Therapy', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Zinc (30mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Scalp Health Routine', frequency: 'daily', time_of_day: ['evening'] },
+      ],
+    },
+    'appearance-concerns': {
+      poor: [
+        { type: 'supplement', name: 'NMN (500mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'supplement', name: 'Resveratrol (500mg)', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'therapy', name: 'Cellular Health Consultation', frequency: 'monthly', time_of_day: ['afternoon'] },
+        { type: 'habit', name: 'Comprehensive Anti-Aging Protocol', frequency: 'daily', time_of_day: ['morning', 'evening'] },
+      ],
+      fair: [
+        { type: 'supplement', name: 'Antioxidant Complex', frequency: 'daily', time_of_day: ['morning'] },
+        { type: 'habit', name: 'Cellular Vitality Tracking', frequency: 'daily', time_of_day: ['evening'] },
       ],
     },
   },

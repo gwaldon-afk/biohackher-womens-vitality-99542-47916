@@ -42,6 +42,7 @@ import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useProtocols } from "@/hooks/useProtocols";
 import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
 import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
+import { EnergyMetricsCard } from "@/components/EnergyMetricsCard";
 import { GoalStatementCard } from "@/components/today/GoalStatementCard";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { NutritionSummaryCard } from "@/components/today/NutritionSummaryCard";
@@ -516,6 +517,34 @@ const Dashboard = () => {
 
             {/* Insights Tab - Analysis & Reports */}
             <TabsContent value="insights" className="space-y-8">
+              {/* Energy & Health Metrics Grid */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <EnergyMetricsCard />
+                {recentAssessments.length >= 1 && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Recent Assessments</CardTitle>
+                      <CardDescription>Your latest health check-ins</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {recentAssessments.slice(0, 3).map(assessment => (
+                          <div key={assessment.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                            <div>
+                              <p className="font-medium">{getSymptomName(assessment.symptom_type)}</p>
+                              <p className="text-sm text-muted-foreground">{format(new Date(assessment.completed_at), 'MMM d, yyyy')}</p>
+                            </div>
+                            <Badge className={getCategoryColor(assessment.score_category)}>
+                              {assessment.score_category}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+              
               {/* Comprehensive Health Analysis - Show if 2+ assessments */}
               {recentAssessments.length >= 2 && (
                 <Card className="border-primary/20">
