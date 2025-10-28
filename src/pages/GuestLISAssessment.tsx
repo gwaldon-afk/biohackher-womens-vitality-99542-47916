@@ -421,7 +421,7 @@ const PILLAR_ICONS = {
 };
 
 interface BaselineData {
-  age: string;
+  dateOfBirth: string;
   heightCm: string;
   weightKg: string;
 }
@@ -433,7 +433,7 @@ export default function GuestLISAssessment() {
   const { user } = useAuth();
   const [showBaseline, setShowBaseline] = useState(true);
   const [baselineData, setBaselineData] = useState<BaselineData>({
-    age: '',
+    dateOfBirth: '',
     heightCm: '',
     weightKg: ''
   });
@@ -450,15 +450,26 @@ export default function GuestLISAssessment() {
     return 0;
   };
 
+  const calculateAgeFromDOB = (dob: string): number => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   const handleBaselineSubmit = () => {
-    if (!baselineData.age || !baselineData.heightCm || !baselineData.weightKg) {
+    if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
       toast.error('Please fill in all baseline information');
       return;
     }
 
-    const age = parseInt(baselineData.age);
+    const age = calculateAgeFromDOB(baselineData.dateOfBirth);
     if (age < 18 || age > 120) {
-      toast.error('Please enter a valid age (18-120 years)');
+      toast.error('Please enter a valid date of birth (age 18-120 years)');
       return;
     }
 
@@ -586,7 +597,7 @@ export default function GuestLISAssessment() {
       // Prepare assessment data
       const assessmentData = {
         baselineData: {
-          age: parseInt(baselineData.age),
+          date_of_birth: baselineData.dateOfBirth,
           heightCm: parseFloat(baselineData.heightCm),
           weightKg: parseFloat(baselineData.weightKg),
           bmi: calculateBMI()
@@ -608,18 +619,14 @@ export default function GuestLISAssessment() {
 
       // Handle authenticated users differently
       if (user) {
-        // Calculate date of birth from age
-        const age = parseInt(baselineData.age);
-        const today = new Date();
-        const birthYear = today.getFullYear() - age;
-        const dateOfBirth = new Date(birthYear, today.getMonth(), today.getDate()).toISOString().split('T')[0];
+        const age = calculateAgeFromDOB(baselineData.dateOfBirth);
 
         // 1. Create/update health profile
         const { error: profileError } = await supabase
           .from('user_health_profile')
           .upsert({
             user_id: user.id,
-            date_of_birth: dateOfBirth,
+            date_of_birth: baselineData.dateOfBirth,
             height_cm: parseFloat(baselineData.heightCm),
             weight_kg: parseFloat(baselineData.weightKg),
             current_bmi: calculateBMI(),
@@ -782,25 +789,25 @@ export default function GuestLISAssessment() {
               </div>
 
               <div className="space-y-6 max-w-xl mx-auto">
-                {/* Age */}
+                {/* Date of Birth */}
                 <div className="space-y-2">
-                  <Label htmlFor="age" className="text-base font-medium flex items-center gap-2">
+                  <Label htmlFor="dob" className="text-base font-medium flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-primary" />
-                    Age (years)
+                    Date of Birth
                   </Label>
                   <Input
-                    id="age"
-                    type="number"
-                    placeholder="e.g., 35"
-                    value={baselineData.age}
-                    onChange={(e) => setBaselineData(prev => ({ ...prev, age: e.target.value }))}
-                    min="18"
-                    max="120"
+                    id="dob"
+                    type="date"
+                    value={baselineData.dateOfBirth}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    max={new Date().toISOString().split('T')[0]}
                     className="h-12 text-base"
                   />
-                  <p className="text-sm text-muted-foreground">
-                    Used to personalize your longevity score
-                  </p>
+                  {baselineData.dateOfBirth && (
+                    <p className="text-sm text-muted-foreground">
+                      Age: {calculateAgeFromDOB(baselineData.dateOfBirth)} years
+                    </p>
+                  )}
                 </div>
 
                 {/* Height */}
@@ -946,7 +953,7 @@ export default function GuestLISAssessment() {
               </Button>
               <Button
                 onClick={handleBaselineSubmit}
-                disabled={!baselineData.age || !baselineData.heightCm || !baselineData.weightKg}
+                disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg}
                 size="lg"
                 className="min-w-48"
               >

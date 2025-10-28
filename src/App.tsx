@@ -91,7 +91,6 @@ import InsightsDetail from "./pages/InsightsDetail";
 import ExpertFinderMap from "./pages/ExpertFinderMap";
 import ProfileSettings from "./pages/ProfileSettings";
 import HormonalHealthTriage from "./pages/HormonalHealthTriage";
-import HormonalHealthBaseline from "./pages/HormonalHealthBaseline";
 import LISDailyCheckIn from "./pages/LISDailyCheckIn";
 
 // Configure React Query with sensible defaults
@@ -211,7 +210,6 @@ const App = () => (
           <Route path="/onboarding/hormone-compass-performance" element={<Navigate to="/guest-lis-assessment" replace />} />
           <Route path="/onboarding/menomap-menopause" element={<Navigate to="/onboarding/hormone-compass-menopause" replace />} />
           <Route path="/hormonal-health/triage" element={<HormonalHealthTriage />} />
-          <Route path="/hormonal-health/baseline" element={<HormonalHealthBaseline />} />
           <Route path="/daily-check-in" element={<ProtectedRoute><LISDailyCheckIn /></ProtectedRoute>} />
           <Route path="/onboarding/hormone-compass-results" element={<HormoneCompassResultsOnboarding />} />
           <Route path="/onboarding/menomap-results" element={<Navigate to="/onboarding/hormone-compass-results" replace />} />
