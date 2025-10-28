@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { useProtocols } from './useProtocols';
 import { useGoals } from './useGoals';
+import { useHealthProfile } from './useHealthProfile';
 import { useEnergyLoop } from './useEnergyLoop';
 import { useStreaks } from './useStreaks';
 import { useProtocolCompletions } from '@/queries/protocolQueries';
@@ -30,6 +31,7 @@ export const useDailyPlan = () => {
   const { user } = useAuth();
   const { protocols, fetchProtocolItems } = useProtocols();
   const { goals } = useGoals();
+  const { energyMetrics } = useHealthProfile();
   const { actions: energyActions, currentScore } = useEnergyLoop();
   const { streaks, getStreak } = useStreaks();
   const today = new Date().toISOString().split('T')[0];
@@ -121,7 +123,7 @@ export const useDailyPlan = () => {
       });
 
       // Calculate priorities for all actions
-      const prioritizedActions = calculatePriorities(dailyActions, activeGoals.length, currentScore?.composite_score);
+      const prioritizedActions = calculatePriorities(dailyActions, activeGoals.length, currentScore?.composite_score, energyMetrics);
       
       console.log('[useDailyPlan] All actions collected:', dailyActions.length);
       console.log('[useDailyPlan] Protocol actions:', dailyActions.filter(a => a.type === 'protocol'));
@@ -135,9 +137,33 @@ export const useDailyPlan = () => {
     }
   };
 
-  const calculatePriorities = (actions: DailyAction[], activeGoalCount: number, energyScore?: number): DailyAction[] => {
+  const calculatePriorities = (actions: DailyAction[], activeGoalCount: number, energyScore?: number, energyMetrics?: any): DailyAction[] => {
+    const isLowEnergy = (energyMetrics?.latestScore ?? 100) < 60;
+    
     return actions.map(action => {
       let score = 0;
+
+      // ENERGY-BASED PRIORITIZATION
+      if (isLowEnergy) {
+        // Boost energy-related actions
+        if (action.type === 'protocol' && 
+            (action.title.toLowerCase().includes('iron') || 
+             action.title.toLowerCase().includes('b12') || 
+             action.title.toLowerCase().includes('coq10'))) {
+          score += 4; // High boost for energy supplements
+        }
+        
+        if (action.title.toLowerCase().includes('energy')) {
+          score += 3; // Boost energy check-ins and activities
+        }
+
+        // Prefer quick wins over deep practice when low energy
+        if (action.estimatedMinutes && action.estimatedMinutes <= 10) {
+          score += 2;
+        } else if (action.estimatedMinutes && action.estimatedMinutes > 30) {
+          score -= 1; // De-prioritize long activities when fatigued
+        }
+      }
 
       // Goal alignment (×3)
       if (action.goalAlignment) score += 3;
@@ -148,10 +174,13 @@ export const useDailyPlan = () => {
       // Time sensitivity (×1.5)
       if (action.type === 'protocol') score += 1.5;
 
-      // Energy requirement match (×1)
+      // Energy requirement match (×2)
       if (energyScore && energyScore < 60 && action.category === 'energy_booster') {
         score += 2;
       }
+
+      // Completed actions go to bottom
+      if (action.completed) score -= 100;
 
       return { ...action, priority: score };
     }).sort((a, b) => b.priority - a.priority);

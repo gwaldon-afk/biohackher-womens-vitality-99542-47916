@@ -15,8 +15,20 @@ interface HealthProfile {
   smoking_cessation_category?: "never" | "current" | "quit_within_1y" | "quit_1_5y" | "quit_over_5y";
   initial_subjective_age_delta?: number;
   social_engagement_baseline?: number;
+  latest_energy_score?: number;
+  latest_energy_category?: string;
+  energy_assessment_date?: string;
+  chronic_fatigue_risk?: boolean;
   created_at?: string;
   updated_at?: string;
+}
+
+interface EnergyMetrics {
+  latestScore: number | null;
+  category: string | null;
+  assessmentDate: string | null;
+  chronicFatigueRisk: boolean;
+  trendDirection?: 'improving' | 'declining' | 'stable';
 }
 
 export const useHealthProfile = () => {
@@ -122,6 +134,17 @@ export const useHealthProfile = () => {
 
   const userAge = profile?.date_of_birth ? calculateAge(profile.date_of_birth) : null;
 
+  // Calculate energy metrics
+  const energyMetrics: EnergyMetrics = {
+    latestScore: profile?.latest_energy_score ?? null,
+    category: profile?.latest_energy_category ?? null,
+    assessmentDate: profile?.energy_assessment_date ?? null,
+    chronicFatigueRisk: profile?.chronic_fatigue_risk ?? false,
+    trendDirection: profile?.latest_energy_score 
+      ? (profile.latest_energy_score >= 70 ? 'improving' : profile.latest_energy_score < 50 ? 'declining' : 'stable')
+      : undefined
+  };
+
   return {
     profile,
     loading,
@@ -131,5 +154,6 @@ export const useHealthProfile = () => {
     updateBMI,
     hasProfile: !!profile,
     userAge,
+    energyMetrics,
   };
 };

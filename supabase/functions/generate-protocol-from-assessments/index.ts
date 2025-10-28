@@ -110,14 +110,40 @@ serve(async (req) => {
 
     console.log('Generating protocol for user:', user.id);
 
-    // 1. Fetch user's assessment completions
-    const { data: assessments, error: assessmentsError } = await supabase
+    // 1. Fetch user's assessment completions (both pillar and symptom assessments)
+    const { data: pillarAssessments, error: pillarError } = await supabase
       .from('user_assessment_completions')
       .select('*')
       .eq('user_id', user.id)
       .order('completed_at', { ascending: false });
 
-    if (assessmentsError) throw assessmentsError;
+    if (pillarError) throw pillarError;
+
+    // Fetch symptom assessments (including energy-levels)
+    const { data: symptomAssessments, error: symptomError } = await supabase
+      .from('symptom_assessments')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('completed_at', { ascending: false });
+
+    if (symptomError) throw symptomError;
+
+    // Combine both assessment types
+    const assessments = [
+      ...(pillarAssessments || []).map(a => ({
+        ...a,
+        source: 'pillar'
+      })),
+      ...(symptomAssessments || []).map(a => ({
+        user_id: a.user_id,
+        pillar: 'body',
+        assessment_id: a.symptom_type,
+        score: a.overall_score,
+        score_category: a.score_category,
+        completed_at: a.completed_at,
+        source: 'symptom'
+      }))
+    ];
 
     if (!assessments || assessments.length === 0) {
       return new Response(
@@ -129,6 +155,7 @@ serve(async (req) => {
     // 2. Analyze assessments to identify focus areas
     const focusAreas: any[] = [];
     const assessmentsByPillar: Record<string, any[]> = {};
+    let shouldEnableEnergyLoop = false;
 
     assessments.forEach(assessment => {
       if (!assessment.pillar || !assessment.score) return;
@@ -141,15 +168,32 @@ serve(async (req) => {
       // Identify low-scoring assessments that need attention
       const scoreCategory = assessment.score < 40 ? 'poor' : assessment.score < 65 ? 'fair' : 'good';
       
+      // Check if energy levels are critically low
+      if (assessment.assessment_id === 'energy-levels' && assessment.score < 60) {
+        shouldEnableEnergyLoop = true;
+        console.log('Low energy detected, will enable Energy Loop Module');
+      }
+      
       if (scoreCategory === 'poor' || scoreCategory === 'fair') {
         focusAreas.push({
           pillar: assessment.pillar,
           assessment_id: assessment.assessment_id,
           score: assessment.score,
-          severity: scoreCategory
+          severity: scoreCategory,
+          source: assessment.source
         });
       }
     });
+
+    // Auto-enable Energy Loop Module if needed
+    if (shouldEnableEnergyLoop) {
+      await supabase
+        .from('profiles')
+        .update({ energy_loop_enabled: true })
+        .eq('user_id', user.id);
+      
+      console.log('Auto-enabled Energy Loop Module for user due to low energy score');
+    }
 
     console.log('Focus areas identified:', focusAreas);
 
