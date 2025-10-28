@@ -34,7 +34,6 @@ import Shop from "./pages/Shop";
 import Pillars from "./pages/Pillars";
 import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
-import LISAssessment from "./pages/LISAssessment";
 import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
 import ProgressTracking from "./pages/ProgressTracking";
@@ -79,8 +78,6 @@ import MyDailyPlan from "./pages/MyDailyPlan";
 import EvidenceDrawer from "./components/EvidenceDrawer";
 import Intro3Step from "./pages/onboarding/Intro3Step";
 import PermissionSetup from "./pages/onboarding/PermissionSetup";
-import HormoneCompassEntry from "./pages/onboarding/HormoneCompassEntry";
-import HormoneCompassPerformance from "./pages/onboarding/HormoneCompassPerformance";
 import HormoneCompassMenopause from "./pages/onboarding/HormoneCompassMenopause";
 import HormoneCompassResultsOnboarding from "./pages/onboarding/HormoneCompassResults";
 import GoalSetupChat from "./pages/onboarding/GoalSetupChat";
@@ -95,6 +92,7 @@ import ExpertFinderMap from "./pages/ExpertFinderMap";
 import ProfileSettings from "./pages/ProfileSettings";
 import HormonalHealthTriage from "./pages/HormonalHealthTriage";
 import HormonalHealthBaseline from "./pages/HormonalHealthBaseline";
+import LISDailyCheckIn from "./pages/LISDailyCheckIn";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -151,7 +149,6 @@ const App = () => (
             <Route path="/pillars" element={<Pillars />} />
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
-            <Route path="/lis-assessment" element={<LISAssessment />} />
             <Route path="/brain-assessment" element={<BrainAssessment />} />
             <Route path="/lis2-setup" element={<LIS2InitialAssessment />} />
             <Route path="/lis-results" element={<LISResults />} />
@@ -206,15 +203,16 @@ const App = () => (
           {/* New Onboarding Flow Routes */}
           <Route path="/onboarding/intro-3step" element={<Intro3Step />} />
           <Route path="/onboarding/permission-setup" element={<PermissionSetup />} />
-          <Route path="/onboarding/hormone-compass-entry" element={<HormoneCompassEntry />} />
-          <Route path="/onboarding/hormone-compass-performance" element={<HormoneCompassPerformance />} />
           <Route path="/onboarding/hormone-compass-menopause" element={<HormoneCompassMenopause />} />
-          {/* Legacy MenoMap onboarding redirects */}
-          <Route path="/onboarding/menomap-entry" element={<Navigate to="/onboarding/hormone-compass-entry" replace />} />
-          <Route path="/onboarding/menomap-performance" element={<Navigate to="/onboarding/hormone-compass-performance" replace />} />
+          {/* Legacy MenoMap onboarding redirects - redirect to unified assessment */}
+          <Route path="/onboarding/menomap-entry" element={<Navigate to="/guest-lis-assessment" replace />} />
+          <Route path="/onboarding/hormone-compass-entry" element={<Navigate to="/guest-lis-assessment" replace />} />
+          <Route path="/onboarding/menomap-performance" element={<Navigate to="/guest-lis-assessment" replace />} />
+          <Route path="/onboarding/hormone-compass-performance" element={<Navigate to="/guest-lis-assessment" replace />} />
           <Route path="/onboarding/menomap-menopause" element={<Navigate to="/onboarding/hormone-compass-menopause" replace />} />
           <Route path="/hormonal-health/triage" element={<HormonalHealthTriage />} />
           <Route path="/hormonal-health/baseline" element={<HormonalHealthBaseline />} />
+          <Route path="/daily-check-in" element={<ProtectedRoute><LISDailyCheckIn /></ProtectedRoute>} />
           <Route path="/onboarding/hormone-compass-results" element={<HormoneCompassResultsOnboarding />} />
           <Route path="/onboarding/menomap-results" element={<Navigate to="/onboarding/hormone-compass-results" replace />} />
           <Route path="/onboarding/goal-setup-chat" element={<GoalSetupChat />} />

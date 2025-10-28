@@ -94,8 +94,8 @@ const Auth = () => {
         // If onboarding not completed, redirect to unified assessment
         if (profile && !profile.onboarding_completed) {
           const onboardingPath = returnTo 
-            ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
-            : '/onboarding/hormone-compass-entry';
+            ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
+            : '/guest-lis-assessment';
           navigate(onboardingPath);
           return;
         }
@@ -249,11 +249,11 @@ const Auth = () => {
         }
       }
     } else if (!error) {
-      // New user without guest session - redirect to onboarding
+      // New user without guest session - redirect to unified assessment
       toast.success("Welcome! Let's set up your health profile.");
       const onboardingPath = returnTo 
-        ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
-        : '/onboarding/hormone-compass-entry';
+        ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
+        : '/guest-lis-assessment';
       navigate(onboardingPath);
     }
     

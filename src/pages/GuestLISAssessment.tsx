@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface QuestionOption {
   text: string;
@@ -427,6 +428,9 @@ interface BaselineData {
 
 export default function GuestLISAssessment() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
+  const { user } = useAuth();
   const [showBaseline, setShowBaseline] = useState(true);
   const [baselineData, setBaselineData] = useState<BaselineData>({
     age: '',
@@ -578,7 +582,6 @@ export default function GuestLISAssessment() {
 
     try {
       const scoreData = calculateScore();
-      const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       // Prepare assessment data
       const assessmentData = {
@@ -603,23 +606,129 @@ export default function GuestLISAssessment() {
         smokingPenalty: scoreData.smokingPenalty
       };
 
-      // Save to guest_lis_assessments table
-      const { error } = await supabase
-        .from('guest_lis_assessments')
-        .insert({
-          session_id: sessionId,
-          assessment_data: assessmentData,
-          brief_results: briefResults
-        });
+      // Handle authenticated users differently
+      if (user) {
+        // Calculate date of birth from age
+        const age = parseInt(baselineData.age);
+        const today = new Date();
+        const birthYear = today.getFullYear() - age;
+        const dateOfBirth = new Date(birthYear, today.getMonth(), today.getDate()).toISOString().split('T')[0];
 
-      if (error) {
-        console.error('Error saving guest assessment:', error);
-        toast.error('Failed to save assessment. Please try again.');
-        return;
+        // 1. Create/update health profile
+        const { error: profileError } = await supabase
+          .from('user_health_profile')
+          .upsert({
+            user_id: user.id,
+            date_of_birth: dateOfBirth,
+            height_cm: parseFloat(baselineData.heightCm),
+            weight_kg: parseFloat(baselineData.weightKg),
+            current_bmi: calculateBMI(),
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (profileError) {
+          console.error('Error saving health profile:', profileError);
+          toast.error('Failed to save health profile. Please try again.');
+          return;
+        }
+
+        // 2. Create baseline daily_score
+        const { error: scoreError } = await supabase
+          .from('daily_scores')
+          .insert({
+            user_id: user.id,
+            date: new Date().toISOString().split('T')[0],
+            longevity_impact_score: scoreData.finalScore,
+            biological_age_impact: scoreData.finalScore,
+            is_baseline: true,
+            assessment_type: 'lis_2.0_baseline',
+            user_chronological_age: age,
+            lis_version: 'LIS 2.0',
+            source_type: 'manual_entry',
+            sleep_score: scoreData.pillarScores.Body || 0,
+            stress_score: scoreData.pillarScores.Balance || 0,
+            physical_activity_score: scoreData.pillarScores.Body || 0,
+            nutrition_score: scoreData.pillarScores.Body || 0,
+            social_connections_score: scoreData.pillarScores.Balance || 0,
+            cognitive_engagement_score: scoreData.pillarScores.Brain || 0,
+            color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
+          });
+
+        if (scoreError) {
+          console.error('Error saving daily score:', scoreError);
+          toast.error('Failed to save assessment score. Please try again.');
+          return;
+        }
+
+        // 3. Create synthetic assessment_completions for protocol generation
+        const syntheticAssessments = [
+          { assessment_id: 'sleep-quality', pillar: 'body', score: scoreData.pillarScores.Body || 0 },
+          { assessment_id: 'stress-management', pillar: 'balance', score: scoreData.pillarScores.Balance || 0 },
+          { assessment_id: 'cognitive-function', pillar: 'brain', score: scoreData.pillarScores.Brain || 0 },
+          { assessment_id: 'physical-activity', pillar: 'body', score: scoreData.pillarScores.Body || 0 },
+        ];
+
+        for (const assessment of syntheticAssessments) {
+          await supabase.from('user_assessment_completions').insert({
+            user_id: user.id,
+            assessment_id: assessment.assessment_id,
+            pillar: assessment.pillar,
+            score: assessment.score,
+            interpretation: assessment.score >= 70 ? 'good' : assessment.score >= 50 ? 'fair' : 'poor',
+            completed_at: new Date().toISOString()
+          });
+        }
+
+        // 4. Generate protocol automatically
+        toast.promise(
+          supabase.functions.invoke('generate-protocol-from-assessments', { body: {} }),
+          {
+            loading: 'Generating your personalized protocol...',
+            success: (result) => {
+              const data = result.data;
+              return `Protocol created with ${data?.items_count || 0} personalized recommendations!`;
+            },
+            error: 'Protocol generation will complete in the background'
+          }
+        );
+
+        // 5. Mark onboarding as complete
+        await supabase
+          .from('profiles')
+          .update({ onboarding_completed: true })
+          .eq('user_id', user.id);
+
+        // Navigate to dashboard or returnTo destination
+        setTimeout(() => {
+          if (returnTo) {
+            navigate(decodeURIComponent(returnTo));
+          } else {
+            navigate('/dashboard');
+          }
+        }, 2000);
+
+      } else {
+        // Guest user - save to guest table
+        const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        const { error } = await supabase
+          .from('guest_lis_assessments')
+          .insert({
+            session_id: sessionId,
+            assessment_data: assessmentData,
+            brief_results: briefResults
+          });
+
+        if (error) {
+          console.error('Error saving guest assessment:', error);
+          toast.error('Failed to save assessment. Please try again.');
+          return;
+        }
+
+        // Navigate to results page
+        navigate(`/guest-lis-results/${sessionId}`);
       }
-
-      // Navigate to results page
-      navigate(`/guest-lis-results/${sessionId}`);
     } catch (error) {
       console.error('Error submitting assessment:', error);
       toast.error('An error occurred. Please try again.');
