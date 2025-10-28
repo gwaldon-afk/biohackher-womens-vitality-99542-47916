@@ -22,7 +22,7 @@ export const DailyCheckInWidget = () => {
         .select('id')
         .eq('user_id', user.id)
         .eq('date', today)
-        .eq('assessment_type', 'daily_check_in')
+        .eq('assessment_type', 'daily_tracking')
         .maybeSingle();
       
       setHasCheckedInToday(!!data);

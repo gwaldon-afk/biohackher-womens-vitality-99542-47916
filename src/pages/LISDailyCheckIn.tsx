@@ -183,7 +183,7 @@ export default function LISDailyCheckIn() {
           longevity_impact_score: scoreData.finalScore,
           biological_age_impact: scoreData.finalScore,
           is_baseline: false,
-          assessment_type: 'daily_check_in',
+          assessment_type: 'daily_tracking',
           lis_version: 'LIS 2.0',
           source_type: 'manual_entry',
           sleep_score: scoreData.pillarScores.Body || 0,

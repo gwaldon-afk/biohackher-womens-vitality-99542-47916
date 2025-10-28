@@ -649,7 +649,7 @@ export default function GuestLISAssessment() {
             longevity_impact_score: scoreData.finalScore,
             biological_age_impact: scoreData.finalScore,
             is_baseline: true,
-            assessment_type: 'lis_2.0_baseline',
+            assessment_type: 'lifestyle_baseline',
             user_chronological_age: age,
             lis_version: 'LIS 2.0',
             source_type: 'manual_entry',
