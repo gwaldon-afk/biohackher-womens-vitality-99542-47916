@@ -21,6 +21,7 @@ import { useAssessmentFlowStore } from "@/stores/assessmentFlowStore";
 import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOverview";
 import { ProgressiveHealthOverviewLocked } from "@/components/ProgressiveHealthOverviewLocked";
 import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
+import { generateProtocolFromSymptom, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -31,6 +32,7 @@ const AssessmentResults = () => {
   const { getAssessment } = useAssessments();
   const { toast } = useToast();
   const [savingRecommendations, setSavingRecommendations] = useState(false);
+  const [addingToPlan, setAddingToPlan] = useState(false);
   
   const state = location.state as {
     score: number;
@@ -746,6 +748,43 @@ const AssessmentResults = () => {
                 </Card>
               )}
             </>
+          )}
+
+          {/* Add to My Plan CTA for authenticated users */}
+          {user && (scoreCategory === 'poor' || scoreCategory === 'fair') && (
+            <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Add to My Plan
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Convert these insights into actionable protocol items tailored to address your {symptomId} symptoms.
+                </p>
+                <Button 
+                  onClick={async () => {
+                    setAddingToPlan(true);
+                    try {
+                      await generateProtocolFromSymptom(user.id, symptomId || '', score, scoreCategory);
+                      await updateUserProfileAfterAssessment(user.id, 'symptom', { symptomType: symptomId, score });
+                      toast({ title: "Added to your protocol!", description: "Check My Protocol to see your new interventions" });
+                      navigate('/my-protocol');
+                    } catch (error) {
+                      toast({ title: "Error", description: "Failed to add to plan", variant: "destructive" });
+                    } finally {
+                      setAddingToPlan(false);
+                    }
+                  }}
+                  disabled={addingToPlan}
+                  size="lg"
+                  className="w-full"
+                >
+                  {addingToPlan ? 'Adding to Plan...' : 'Add Interventions to My Plan'}
+                </Button>
+              </CardContent>
+            </Card>
           )}
 
           {/* Unlock More Features CTA for Guest Users */}

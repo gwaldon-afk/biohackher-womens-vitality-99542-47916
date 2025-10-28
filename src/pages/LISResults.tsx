@@ -15,6 +15,7 @@ import { LISRadarChart } from '@/components/LISRadarChart';
 import { LISRadarLegend } from '@/components/LISRadarLegend';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
+import { generateProtocolFromLIS, updateUserProfileAfterAssessment } from '@/services/assessmentProtocolService';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const LISResults = () => {
   const score = parseFloat(searchParams.get('score') || '0');
   const lisData = useLISData();
   const { toast } = useToast();
+  const [addingToPlan, setAddingToPlan] = useState(false);
   
   // Check if this is a new baseline assessment
   const isNewBaseline = searchParams.get('isNewBaseline') === 'true';
@@ -149,6 +151,43 @@ const LISResults = () => {
       .sort(([, a]: any, [, b]: any) => a - b)
       .slice(0, 3);
     return sorted;
+  };
+
+  const handleAddToPlan = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to add interventions to your plan",
+        variant: "destructive"
+      });
+      navigate('/auth?returnTo=/lis-results');
+      return;
+    }
+
+    setAddingToPlan(true);
+    try {
+      const pillarScores = urlPillarScores || lisData.pillarScores;
+      await generateProtocolFromLIS(user.id, pillarScores);
+      await updateUserProfileAfterAssessment(user.id, 'lis', { 
+        score: displayScore, 
+        isBaseline: isNewBaseline 
+      });
+      
+      toast({
+        title: "Success!",
+        description: "Personalized interventions added to your protocol",
+      });
+      navigate('/my-protocol');
+    } catch (error) {
+      console.error('Error adding to plan:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add interventions to your plan",
+        variant: "destructive"
+      });
+    } finally {
+      setAddingToPlan(false);
+    }
   };
 
   // Calculate biological age data
@@ -636,6 +675,34 @@ const LISResults = () => {
                       </div>
                     </CardContent>
                   </Card>
+
+                  {/* Build My Protocol CTA */}
+                  {user && (
+                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Sparkles className="w-5 w-5 text-primary" />
+                          Build Your Personalized Protocol
+                        </CardTitle>
+                        <CardDescription>
+                          Convert your assessment insights into actionable daily interventions
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          Based on your pillar scores, we'll create targeted protocol items for your weak areas while maintaining your strengths.
+                        </p>
+                        <Button 
+                          onClick={handleAddToPlan}
+                          disabled={addingToPlan}
+                          size="lg"
+                          className="w-full"
+                        >
+                          {addingToPlan ? 'Adding to Plan...' : 'Build My Personalized Protocol'}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
 
                   <Alert className="bg-success/5 border-success/20">
                     <Activity className="h-5 w-5 text-success" />

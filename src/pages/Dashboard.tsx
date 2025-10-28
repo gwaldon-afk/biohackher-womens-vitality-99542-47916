@@ -128,8 +128,10 @@ const Dashboard = () => {
   const remainingActions = actions.filter(a => !a.completed);
   const estimatedMinutesRemaining = remainingActions.reduce((sum, action) => sum + action.estimatedMinutes, 0);
   const hasNoProtocol = actions.length === 0 && !dailyPlanLoading;
+  const hasEmptyProtocol = protocols.filter(p => p.is_active).length > 0 && actions.length === 0 && !dailyPlanLoading;
   
   console.log('[Dashboard] hasNoProtocol:', hasNoProtocol);
+  console.log('[Dashboard] hasEmptyProtocol:', hasEmptyProtocol);
   console.log('[Dashboard] dailyPlanLoading:', dailyPlanLoading);
 
   // Check if we should auto-open the daily submission modal
@@ -462,7 +464,7 @@ const Dashboard = () => {
 
             {/* Today Tab - Daily Actions */}
             <TabsContent value="today" className="space-y-6">
-              {hasNoProtocol && assessmentCompletedCount > 0 && (
+              {(hasNoProtocol || hasEmptyProtocol) && assessmentCompletedCount > 0 && (
                 <ProtocolGenerationPrompt 
                   assessmentsCompleted={assessmentCompletedCount}
                   onGenerate={refetchDailyPlan}

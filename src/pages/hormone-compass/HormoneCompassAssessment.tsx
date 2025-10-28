@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneStage } from "@/data/hormoneCompassAssessment";
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
@@ -74,19 +75,43 @@ export default function HormoneCompassAssessment() {
       // Calculate stage
       const result = calculateHormoneStage(answers);
 
-      // Navigate to results
-      navigate('/hormone-compass/results', {
-        state: {
+      if (!user) {
+        // For guest users, just navigate with state
+        navigate('/hormone-compass/results', {
+          state: {
+            stage: result.stage,
+            confidence: result.confidence,
+            answers
+          }
+        });
+        return;
+      }
+
+      // Save assessment to database for authenticated users
+      const { data: stageData, error } = await supabase
+        .from('hormone_compass_stages')
+        .insert({
+          user_id: user.id,
           stage: result.stage,
-          confidence: result.confidence,
-          answers
-        }
-      });
+          confidence_score: result.confidence,
+          hormone_indicators: { 
+            domainScores: answers,
+            avgScore: result.avgScore,
+            completedAt: new Date().toISOString()
+          }
+        })
+        .select('id')
+        .single();
+
+      if (error) throw error;
+
+      // Navigate with assessment ID for fetching from database
+      navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error) {
       console.error('Error completing assessment:', error);
       toast({
         title: "Error",
-        description: "Failed to calculate results. Please try again.",
+        description: "Failed to save assessment. Please try again.",
         variant: "destructive"
       });
     } finally {

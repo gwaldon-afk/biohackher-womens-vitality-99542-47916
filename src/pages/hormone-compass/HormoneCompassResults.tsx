@@ -1,13 +1,17 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HormoneCompassStageCompass } from "@/components/hormone-compass/HormoneCompassStageCompass";
-import { CheckCircle, ArrowRight, Download, ShoppingCart } from "lucide-react";
+import { CheckCircle, ArrowRight, Download, ShoppingCart, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { searchProductsBySymptoms, formatProductPrice, type Product } from "@/services/productService";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { generateProtocolFromHormoneStage, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
+import { useState } from "react";
 
 const STAGE_INFO = {
   'pre': {
@@ -70,8 +74,43 @@ const STAGE_INFO = {
 export default function MenoMapResults() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const { addToCart, setIsCartOpen } = useCart();
-  const { stage, confidence } = location.state || {};
+  const [addingToPlan, setAddingToPlan] = useState(false);
+  
+  const assessmentId = searchParams.get('assessmentId');
+  const stateData = location.state || {};
+
+  // Fetch assessment from database if we have an ID
+  const { data: assessmentData, isLoading } = useQuery({
+    queryKey: ['hormone-assessment', assessmentId],
+    queryFn: async () => {
+      if (!assessmentId || !user) return null;
+      
+      const { data, error } = await supabase
+        .from('hormone_compass_stages')
+        .select('*')
+        .eq('id', assessmentId)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!assessmentId && !!user
+  });
+
+  // Use database data if available, fallback to state
+  const stage = assessmentData?.stage || stateData.stage;
+  const confidence = assessmentData?.confidence_score || stateData.confidence;
+
+  if (isLoading) {
+    return (
+      <div className="container max-w-4xl py-8">
+        <p className="text-center text-muted-foreground">Loading your results...</p>
+      </div>
+    );
+  }
 
   if (!stage) {
     navigate('/menomap/assessment');
@@ -100,6 +139,28 @@ export default function MenoMapResults() {
   };
 
   const topProducts = recommendedProducts?.slice(0, 3) || [];
+
+  const handleAddToPlan = async () => {
+    if (!user) {
+      toast.error('Please sign in to add interventions to your plan');
+      navigate(`/auth?returnTo=/hormone-compass/results?assessmentId=${assessmentId}`);
+      return;
+    }
+
+    setAddingToPlan(true);
+    try {
+      await generateProtocolFromHormoneStage(user.id, stage, confidence);
+      await updateUserProfileAfterAssessment(user.id, 'hormone', { stage, confidence });
+      
+      toast.success('Stage-specific interventions added to your protocol!');
+      navigate('/my-protocol');
+    } catch (error) {
+      console.error('Error adding to plan:', error);
+      toast.error('Failed to add interventions to your plan');
+    } finally {
+      setAddingToPlan(false);
+    }
+  };
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
@@ -221,17 +282,43 @@ export default function MenoMapResults() {
         </Card>
       )}
 
+      {/* Add to My Plan */}
+      {user && (
+        <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              Build Your Personalized Protocol
+            </CardTitle>
+            <CardDescription>
+              Add {stageInfo.recommendations.length} evidence-based interventions to your daily plan
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={handleAddToPlan}
+              disabled={addingToPlan}
+              className="w-full"
+              size="lg"
+            >
+              {addingToPlan ? 'Adding to Plan...' : 'Add Stage Interventions to My Plan'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* What's Next */}
       <Card>
         <CardHeader>
           <CardTitle>What's Next?</CardTitle>
           <CardDescription>
-            Continue your MenoMap journey with these features
+            Continue your Hormone Compass journey
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button 
             onClick={() => navigate('/menomap/tracker')}
+            variant="outline"
             className="w-full justify-between"
             size="lg"
           >
@@ -245,17 +332,7 @@ export default function MenoMapResults() {
             className="w-full justify-between"
             size="lg"
           >
-            <span>View My Plan Dashboard</span>
-            <ArrowRight className="w-5 h-5" />
-          </Button>
-
-          <Button 
-            onClick={() => navigate('/my-protocol')}
-            variant="outline"
-            className="w-full justify-between"
-            size="lg"
-          >
-            <span>Build Your Protocol</span>
+            <span>View Dashboard</span>
             <ArrowRight className="w-5 h-5" />
           </Button>
         </CardContent>
