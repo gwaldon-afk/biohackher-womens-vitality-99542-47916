@@ -94,7 +94,13 @@ const HormonalHealthBaseline = () => {
       <div className="max-w-2xl mx-auto pt-8">
         <Button
           variant="ghost"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            if (window.history.length > 1) {
+              navigate(-1);
+            } else {
+              navigate('/');
+            }
+          }}
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />

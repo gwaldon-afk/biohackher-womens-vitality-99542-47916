@@ -44,7 +44,12 @@ const SymptomAssessment = () => {
   }, [symptomId]);
 
   const handleCancelAssessment = () => {
-    navigate('/dashboard');
+    // Go back to previous page if history exists, otherwise fallback to appropriate page
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate(user ? '/dashboard' : '/');
+    }
   };
 
   // Get assessment config from database

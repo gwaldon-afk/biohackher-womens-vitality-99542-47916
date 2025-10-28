@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
+import { useAuth } from "@/hooks/useAuth";
 import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneStage } from "@/data/hormoneCompassAssessment";
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { trackSymptom: _trackSymptom } = useHormoneCompass();
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -103,7 +105,13 @@ export default function HormoneCompassAssessment() {
         <div className="space-y-4">
           <Button
             variant="ghost"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => {
+              if (window.history.length > 1) {
+                navigate(-1);
+              } else {
+                navigate(user ? '/dashboard' : '/');
+              }
+            }}
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />

@@ -934,7 +934,13 @@ export default function GuestLISAssessment() {
             <>
               <Button
                 variant="outline"
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate('/');
+                  }
+                }}
               >
                 Cancel
               </Button>
