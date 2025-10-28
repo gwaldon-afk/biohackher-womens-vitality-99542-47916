@@ -165,7 +165,7 @@ const Index = () => {
                   Navigate perimenopause and menopause with personalized insights and symptom tracking
                 </p>
                 <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start MenoMap Assessment</span>
+                  <span>Start HormoneCompass™ Assessment</span>
                   <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>

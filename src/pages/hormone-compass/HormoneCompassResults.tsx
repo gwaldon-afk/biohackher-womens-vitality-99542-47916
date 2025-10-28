@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
+import { HormoneCompassStageCompass } from "@/components/hormone-compass/HormoneCompassStageCompass";
 import { CheckCircle, ArrowRight, Download, ShoppingCart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { searchProductsBySymptoms, formatProductPrice, type Product } from "@/services/productService";
@@ -123,7 +123,7 @@ export default function MenoMapResults() {
       {/* Stage Result */}
       <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50">
         <CardContent className="pt-8">
-          <MenoMapStageCompass 
+          <HormoneCompassStageCompass 
             currentStage={stage}
             confidenceScore={confidence}
             size="lg"

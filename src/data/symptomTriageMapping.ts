@@ -39,7 +39,7 @@ export const TRIAGE_THEMES: Record<string, TriageTheme> = {
     icon: Heart,
     pillar: 'balance',
     symptomIds: ['hot-flashes', 'night-sweats', 'irregular-periods', 'weight-changes', 'sexual-function', 'menopause-brain-health'],
-    cta: 'MenoMap™ Quiz',
+    cta: 'HormoneCompass™ Quiz',
     estimatedTime: '10-15 min'
   },
   beauty: {

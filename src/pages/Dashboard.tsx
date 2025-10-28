@@ -35,7 +35,7 @@ import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
 import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
 import { useGoals } from "@/hooks/useGoals";
 import { GoalInsightsCard } from "@/components/GoalInsightsCard";
-import { MenoMapDashboardWidget } from "@/components/menomap/MenoMapDashboardWidget";
+import { HormoneCompassDashboardWidget } from "@/components/hormone-compass/HormoneCompassDashboardWidget";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { EnergyDashboardWidget } from "@/components/energy/EnergyDashboardWidget";
 import { useEnergyLoop } from "@/hooks/useEnergyLoop";

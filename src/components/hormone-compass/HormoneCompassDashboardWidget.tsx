@@ -1,13 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MenoMapStageCompass } from "./MenoMapStageCompass";
-import { MenoMapInsightCard } from "./MenoMapInsightCard";
+import { HormoneCompassStageCompass } from "./HormoneCompassStageCompass";
+import { HormoneCompassInsightCard } from "./HormoneCompassInsightCard";
 import { ArrowRight, TrendingUp, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 
-export const MenoMapDashboardWidget = () => {
+export const HormoneCompassDashboardWidget = () => {
   const navigate = useNavigate();
   const { currentStage, insights, symptoms } = useHormoneCompass();
 
@@ -17,7 +17,7 @@ export const MenoMapDashboardWidget = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="text-2xl">🧭</span>
-            Map Your Menopause Journey
+            Map Your Hormonal Journey
           </CardTitle>
           <CardDescription>
             Get personalized insights and track your hormonal transitions
@@ -25,10 +25,10 @@ export const MenoMapDashboardWidget = () => {
         </CardHeader>
         <CardContent>
           <Button 
-            onClick={() => navigate('/menomap/assessment')}
+            onClick={() => navigate('/hormone-compass/assessment')}
             className="w-full gap-2"
           >
-            Start MenoMap Assessment
+            Start HormoneCompass™ Assessment
             <ArrowRight className="w-4 h-4" />
           </Button>
         </CardContent>
@@ -44,14 +44,14 @@ export const MenoMapDashboardWidget = () => {
       <CardHeader className="bg-gradient-to-br from-purple-50 to-pink-50 border-b">
         <CardTitle className="flex items-center gap-2">
           <span className="text-2xl">🧭</span>
-          MenoMap™
+          HormoneCompass™
         </CardTitle>
-        <CardDescription>Your menopause journey insights</CardDescription>
+        <CardDescription>Your hormonal journey insights</CardDescription>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
         {/* Current Stage */}
         <div className="space-y-4">
-          <MenoMapStageCompass 
+          <HormoneCompassStageCompass 
             currentStage={currentStage.stage as 'pre' | 'early-peri' | 'mid-peri' | 'late-peri' | 'post'}
             confidenceScore={currentStage.confidence_score || undefined}
             size="sm"
@@ -92,12 +92,9 @@ export const MenoMapDashboardWidget = () => {
           <div className="space-y-3">
             <h4 className="text-sm font-medium">Latest Insights</h4>
             {unacknowledgedInsights.map(insight => (
-              <MenoMapInsightCard
+              <HormoneCompassInsightCard
                 key={insight.id}
                 insight={insight as any}
-                onAcknowledge={async () => {}}
-                onDismiss={async () => {}}
-                compact
               />
             ))}
           </div>
@@ -107,7 +104,7 @@ export const MenoMapDashboardWidget = () => {
         <Button 
           variant="outline" 
           className="w-full gap-2"
-          onClick={() => navigate('/menomap/tracker')}
+          onClick={() => navigate('/hormone-compass/tracker')}
         >
           Track Today's Symptoms
           <ArrowRight className="w-4 h-4" />

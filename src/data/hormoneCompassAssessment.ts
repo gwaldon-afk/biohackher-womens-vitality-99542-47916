@@ -1,6 +1,6 @@
-export const MENOMAP_ASSESSMENT = {
-  id: 'menomap-full',
-  name: 'MenoMap™ Complete Assessment',
+export const HORMONE_COMPASS_ASSESSMENT = {
+  id: 'hormone-compass-full',
+  name: 'HormoneCompass™ Complete Assessment',
   description: 'Comprehensive menopause stage and symptom evaluation across 6 key domains',
   duration: '5-7 minutes',
   domains: [
@@ -386,7 +386,7 @@ export const MENOMAP_ASSESSMENT = {
   }
 };
 
-export const calculateMenoStage = (answers: Record<string, number>) => {
+export function calculateHormoneStage(answers: Record<string, number>) {
   // Calculate average score across all answers (inverted so lower = more severe symptoms)
   const scores = Object.values(answers);
   const avgScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
@@ -48,10 +48,10 @@ import GuestGoalsPreview from "./pages/GuestGoalsPreview";
 import AdvisoryBoard from "./pages/AdvisoryBoard";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import MenoMapAssessment from "./pages/menomap/MenoMapAssessment";
-import MenoMapResults from "./pages/menomap/MenoMapResults";
-import MenoMapTracker from "./pages/menomap/MenoMapTracker";
-import MenoMapDashboard from "./pages/menomap/MenoMapDashboard";
+import HormoneCompassAssessment from "./pages/hormone-compass/HormoneCompassAssessment";
+import HormoneCompassResults from "./pages/hormone-compass/HormoneCompassResults";
+import HormoneCompassTracker from "./pages/hormone-compass/HormoneCompassTracker";
+import HormoneCompassDashboard from "./pages/hormone-compass/HormoneCompassDashboard";
 import EnergyCheckIn from "./pages/energy/EnergyCheckIn";
 import EnergyProgress from "./pages/energy/EnergyProgress";
 import EnergyActions from "./pages/energy/EnergyActions";
@@ -80,10 +80,10 @@ import EvidenceDrawer from "./components/EvidenceDrawer";
 import WelcomeStreamSelect from "./pages/onboarding/WelcomeStreamSelect";
 import Intro3Step from "./pages/onboarding/Intro3Step";
 import PermissionSetup from "./pages/onboarding/PermissionSetup";
-import MenoMapEntry from "./pages/onboarding/MenoMapEntry";
-import MenoMapPerformance from "./pages/onboarding/MenoMapPerformance";
-import MenoMapMenopause from "./pages/onboarding/MenoMapMenopause";
-import MenoMapResultsOnboarding from "./pages/onboarding/MenoMapResults";
+import HormoneCompassEntry from "./pages/onboarding/HormoneCompassEntry";
+import HormoneCompassPerformance from "./pages/onboarding/HormoneCompassPerformance";
+import HormoneCompassMenopause from "./pages/onboarding/HormoneCompassMenopause";
+import HormoneCompassResultsOnboarding from "./pages/onboarding/HormoneCompassResults";
 import GoalSetupChat from "./pages/onboarding/GoalSetupChat";
 import GoalAffirmation from "./pages/onboarding/GoalAffirmation";
 import PlanHome from "./pages/PlanHome";
@@ -178,11 +178,16 @@ const App = () => (
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             
-            {/* MenoMap Routes */}
-          <Route path="/menomap" element={<ProtectedRoute><MenoMapDashboard /></ProtectedRoute>} />
-          <Route path="/menomap/assessment" element={<ProtectedRoute><MenoMapAssessment /></ProtectedRoute>} />
-          <Route path="/menomap/results" element={<ProtectedRoute><MenoMapResults /></ProtectedRoute>} />
-          <Route path="/menomap/tracker" element={<ProtectedRoute><MenoMapTracker /></ProtectedRoute>} />
+            {/* HormoneCompass™ Routes */}
+          <Route path="/hormone-compass" element={<ProtectedRoute><HormoneCompassDashboard /></ProtectedRoute>} />
+          <Route path="/hormone-compass/assessment" element={<ProtectedRoute><HormoneCompassAssessment /></ProtectedRoute>} />
+          <Route path="/hormone-compass/results" element={<ProtectedRoute><HormoneCompassResults /></ProtectedRoute>} />
+          <Route path="/hormone-compass/tracker" element={<ProtectedRoute><HormoneCompassTracker /></ProtectedRoute>} />
+          {/* Legacy MenoMap redirects */}
+          <Route path="/menomap" element={<Navigate to="/hormone-compass" replace />} />
+          <Route path="/menomap/assessment" element={<Navigate to="/hormone-compass/assessment" replace />} />
+          <Route path="/menomap/results" element={<Navigate to="/hormone-compass/results" replace />} />
+          <Route path="/menomap/tracker" element={<Navigate to="/hormone-compass/tracker" replace />} />
           
           {/* Energy Loop Routes */}
           <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
@@ -203,12 +208,17 @@ const App = () => (
           <Route path="/onboarding/welcome-stream-select" element={<WelcomeStreamSelect />} />
           <Route path="/onboarding/intro-3step" element={<Intro3Step />} />
           <Route path="/onboarding/permission-setup" element={<PermissionSetup />} />
-          <Route path="/onboarding/menomap-entry" element={<MenoMapEntry />} />
-          <Route path="/onboarding/menomap-performance" element={<MenoMapPerformance />} />
-          <Route path="/onboarding/menomap-menopause" element={<MenoMapMenopause />} />
+          <Route path="/onboarding/hormone-compass-entry" element={<HormoneCompassEntry />} />
+          <Route path="/onboarding/hormone-compass-performance" element={<HormoneCompassPerformance />} />
+          <Route path="/onboarding/hormone-compass-menopause" element={<HormoneCompassMenopause />} />
+          {/* Legacy MenoMap onboarding redirects */}
+          <Route path="/onboarding/menomap-entry" element={<Navigate to="/onboarding/hormone-compass-entry" replace />} />
+          <Route path="/onboarding/menomap-performance" element={<Navigate to="/onboarding/hormone-compass-performance" replace />} />
+          <Route path="/onboarding/menomap-menopause" element={<Navigate to="/onboarding/hormone-compass-menopause" replace />} />
           <Route path="/hormonal-health/triage" element={<HormonalHealthTriage />} />
           <Route path="/hormonal-health/baseline" element={<HormonalHealthBaseline />} />
-          <Route path="/onboarding/menomap-results" element={<MenoMapResultsOnboarding />} />
+          <Route path="/onboarding/hormone-compass-results" element={<HormoneCompassResultsOnboarding />} />
+          <Route path="/onboarding/menomap-results" element={<Navigate to="/onboarding/hormone-compass-results" replace />} />
           <Route path="/onboarding/goal-setup-chat" element={<GoalSetupChat />} />
           <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
           

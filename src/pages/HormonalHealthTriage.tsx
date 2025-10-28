@@ -107,7 +107,7 @@ const HormonalHealthTriage = () => {
 
     try {
       // All users go to the same 7-question assessment
-      const targetRoute = "/onboarding/menomap-menopause";
+      const targetRoute = "/onboarding/hormone-compass-menopause";
 
       navigate(targetRoute);
     } catch (error) {

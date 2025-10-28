@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-const MenoMapEntry = () => {
+const HormoneCompassEntry = () => {
   const navigate = useNavigate();
   const { profile } = useAuth();
 
@@ -13,9 +13,9 @@ const MenoMapEntry = () => {
 
     const timer = setTimeout(() => {
       if (profile.user_stream === 'performance') {
-        navigate('/onboarding/menomap-performance', { replace: true });
+        navigate('/onboarding/hormone-compass-performance', { replace: true });
       } else {
-        navigate('/onboarding/menomap-menopause', { replace: true });
+        navigate('/onboarding/hormone-compass-menopause', { replace: true });
       }
     }, 100);
 
@@ -24,9 +24,9 @@ const MenoMapEntry = () => {
 
   const handleManualContinue = () => {
     if (profile?.user_stream === 'performance') {
-      navigate('/onboarding/menomap-performance', { replace: true });
+      navigate('/onboarding/hormone-compass-performance', { replace: true });
     } else {
-      navigate('/onboarding/menomap-menopause', { replace: true });
+      navigate('/onboarding/hormone-compass-menopause', { replace: true });
     }
   };
 
@@ -42,4 +42,4 @@ const MenoMapEntry = () => {
   );
 };
 
-export default MenoMapEntry;
+export default HormoneCompassEntry;

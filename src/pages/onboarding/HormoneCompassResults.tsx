@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
-import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
-import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
+import { HormoneCompassStageCompass } from "@/components/hormone-compass/HormoneCompassStageCompass";
+import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneStage } from "@/data/hormoneCompassAssessment";
 import { CheckCircle, TrendingUp, AlertCircle, Activity, Lightbulb, Target, Clock, Microscope, ShoppingCart, Home, ArrowLeft, Brain, Link2, Dumbbell, Heart, Thermometer, Pill } from "lucide-react";
 import { 
   analyzeSymptomInterconnections, 
@@ -72,7 +72,7 @@ const STAGE_INFO = {
   }
 };
 
-const MenoMapResults = () => {
+const HormoneCompassResults = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { addToCart, setIsCartOpen } = useCart();
@@ -135,7 +135,7 @@ const MenoMapResults = () => {
             numericAnswers[key] = value;
           }
         });
-        stageResult = calculateMenoStage(numericAnswers);
+        stageResult = calculateHormoneStage(numericAnswers);
       }
       
       // For quick assessment, create simplified domain scores
@@ -211,7 +211,7 @@ const MenoMapResults = () => {
 
         {/* Header */}
         <div className="text-center space-y-2 animate-fade-in">
-          <h1 className="text-4xl font-bold">Your MenoMap™ Analysis</h1>
+          <h1 className="text-4xl font-bold">Your HormoneCompass™ Analysis</h1>
           <p className="text-lg text-muted-foreground">
             Here's what your responses reveal about your hormonal health journey
           </p>
@@ -220,7 +220,7 @@ const MenoMapResults = () => {
         {/* Stage Result with Compass */}
         <Card className="border-2 bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20">
           <CardContent className="pt-8">
-            <MenoMapStageCompass 
+            <HormoneCompassStageCompass 
               currentStage={analysisData.stage as any}
               confidenceScore={analysisData.confidence}
               size="lg"
@@ -606,4 +606,4 @@ const MenoMapResults = () => {
   );
 };
 
-export default MenoMapResults;
+export default HormoneCompassResults;

@@ -132,7 +132,7 @@ export const evidenceMap: Record<string, EvidenceContext> = {
   },
   
   // Menstrual Health
-  'menomap:follicular': {
+  'hormone-compass:follicular': {
     query: { 
       is_women_specific: true,
       custom_tags: ['menstrual-cycle', 'follicular-phase']
@@ -141,7 +141,7 @@ export const evidenceMap: Record<string, EvidenceContext> = {
     summary: 'Research shows the follicular phase is ideal for higher-intensity training and skill acquisition due to rising estrogen levels that support strength, recovery, and neuroplasticity.'
   },
   
-  'menomap:luteal': {
+  'hormone-compass:luteal': {
     query: { 
       is_women_specific: true,
       custom_tags: ['menstrual-cycle', 'luteal-phase']
@@ -150,7 +150,7 @@ export const evidenceMap: Record<string, EvidenceContext> = {
     summary: 'During the luteal phase, progesterone rises and may affect energy, recovery, and thermoregulation. Adapting training intensity can optimize performance and wellbeing.'
   },
   
-  'menomap:menopause': {
+  'hormone-compass:menopause': {
     query: { 
       is_women_specific: true,
       custom_tags: ['menopause', 'hormone-therapy']

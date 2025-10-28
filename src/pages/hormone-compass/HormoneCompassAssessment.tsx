@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
-import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
+import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneStage } from "@/data/hormoneCompassAssessment";
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-export default function MenoMapAssessment() {
+export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
   const { trackSymptom: _trackSymptom } = useHormoneCompass();
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
@@ -17,9 +17,9 @@ export default function MenoMapAssessment() {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [isCalculating, setIsCalculating] = useState(false);
 
-  const currentDomain = MENOMAP_ASSESSMENT.domains[currentDomainIndex];
+  const currentDomain = HORMONE_COMPASS_ASSESSMENT.domains[currentDomainIndex];
   const currentQuestion = currentDomain.questions[currentQuestionIndex];
-  const totalQuestions = MENOMAP_ASSESSMENT.domains.reduce(
+  const totalQuestions = HORMONE_COMPASS_ASSESSMENT.domains.reduce(
     (sum, domain) => sum + domain.questions.length,
     0
   );
@@ -46,7 +46,7 @@ export default function MenoMapAssessment() {
     // Move to next question or domain
     if (currentQuestionIndex < currentDomain.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (currentDomainIndex < MENOMAP_ASSESSMENT.domains.length - 1) {
+    } else if (currentDomainIndex < HORMONE_COMPASS_ASSESSMENT.domains.length - 1) {
       setCurrentDomainIndex(currentDomainIndex + 1);
       setCurrentQuestionIndex(0);
     } else {
@@ -60,7 +60,7 @@ export default function MenoMapAssessment() {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     } else if (currentDomainIndex > 0) {
       setCurrentDomainIndex(currentDomainIndex - 1);
-      const prevDomain = MENOMAP_ASSESSMENT.domains[currentDomainIndex - 1];
+      const prevDomain = HORMONE_COMPASS_ASSESSMENT.domains[currentDomainIndex - 1];
       setCurrentQuestionIndex(prevDomain.questions.length - 1);
     }
   };
@@ -70,10 +70,10 @@ export default function MenoMapAssessment() {
 
     try {
       // Calculate stage
-      const result = calculateMenoStage(answers);
+      const result = calculateHormoneStage(answers);
 
       // Navigate to results
-      navigate('/menomap/results', {
+      navigate('/hormone-compass/results', {
         state: {
           stage: result.stage,
           confidence: result.confidence,
@@ -93,7 +93,7 @@ export default function MenoMapAssessment() {
   };
 
   const isLastQuestion = 
-    currentDomainIndex === MENOMAP_ASSESSMENT.domains.length - 1 &&
+    currentDomainIndex === HORMONE_COMPASS_ASSESSMENT.domains.length - 1 &&
     currentQuestionIndex === currentDomain.questions.length - 1;
 
   return (
@@ -113,7 +113,7 @@ export default function MenoMapAssessment() {
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
               <Moon className="w-8 h-8 text-primary" />
-              MenoMap™ Assessment
+              HormoneCompass™ Assessment
             </h1>
             <p className="text-muted-foreground">
               Answer honestly to get the most accurate stage mapping
@@ -207,7 +207,7 @@ export default function MenoMapAssessment() {
 
         {/* Domain Progress Indicators */}
         <div className="flex gap-2 justify-center">
-          {MENOMAP_ASSESSMENT.domains.map((domain, index) => (
+          {HORMONE_COMPASS_ASSESSMENT.domains.map((domain, index) => (
             <div
               key={domain.id}
               className={`h-2 flex-1 rounded-full transition-all ${

@@ -34,7 +34,7 @@ const Navigation = () => {
     { href: "/dashboard", label: "My Plan" },
     { href: "/my-goals", label: "My Goals" },
     { href: "/experts", label: "Find Experts" },
-    { href: "/menomap", label: "MenoMap™" },
+    { href: "/hormone-compass", label: "HormoneCompass™" },
     { href: "/energy-loop", label: "Energy Loop" },
     { href: "/symptoms", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },

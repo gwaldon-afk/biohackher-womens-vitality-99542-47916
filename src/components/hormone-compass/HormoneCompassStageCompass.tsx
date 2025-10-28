@@ -1,7 +1,7 @@
 import { Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface MenoMapStageCompassProps {
+interface HormoneCompassStageCompassProps {
   currentStage: 'pre' | 'early-peri' | 'mid-peri' | 'late-peri' | 'post';
   confidenceScore?: number;
   size?: 'sm' | 'md' | 'lg';
@@ -17,13 +17,13 @@ const STAGES = [
   { id: 'post', label: 'Post-Menopause', color: 'from-indigo-400 to-violet-400', position: 4 },
 ];
 
-export const MenoMapStageCompass = ({
+export const HormoneCompassStageCompass = ({
   currentStage,
   confidenceScore,
   size = 'md',
   interactive = false,
   onStageClick
-}: MenoMapStageCompassProps) => {
+}: HormoneCompassStageCompassProps) => {
   const sizeClasses = {
     sm: 'w-32 h-32',
     md: 'w-48 h-48',

@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
-import { MenoMapInsightCard } from "@/components/menomap/MenoMapInsightCard";
+import { HormoneCompassStageCompass } from "@/components/hormone-compass/HormoneCompassStageCompass";
+import { HormoneCompassInsightCard } from "@/components/hormone-compass/HormoneCompassInsightCard";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { Activity, TrendingUp, Calendar, Lightbulb, ArrowRight, Home } from "lucide-react";
 import { format } from "date-fns";
 
-export default function MenoMapDashboard() {
+export default function HormoneCompassDashboard() {
   const navigate = useNavigate();
   const { 
     currentStage, 
@@ -23,14 +23,14 @@ export default function MenoMapDashboard() {
       <div className="container max-w-4xl py-8">
         <Card className="border-2 border-dashed">
           <CardHeader>
-            <CardTitle>Welcome to MenoMap™</CardTitle>
+            <CardTitle>Welcome to HormoneCompass™</CardTitle>
             <CardDescription>
-              Map your menopause journey with AI-powered insights and personalized tracking
+              Map your hormonal journey with AI-powered insights and personalized tracking
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              MenoMap helps you understand your hormonal stage, track symptoms, and get 
+              HormoneCompass™ helps you understand your hormonal stage, track symptoms, and get 
               biohacks tailored to your body's unique journey.
             </p>
             <div className="flex gap-3">
@@ -63,16 +63,16 @@ export default function MenoMapDashboard() {
     <div className="container max-w-6xl py-8 space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">MenoMap™ Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">HormoneCompass™ Dashboard</h1>
         <p className="text-muted-foreground">
-          Your personalized menopause journey intelligence
+          Your personalized hormonal journey intelligence
         </p>
       </div>
 
       {/* Stage Overview */}
       <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
         <CardContent className="pt-8">
-          <MenoMapStageCompass 
+          <HormoneCompassStageCompass 
             currentStage={currentStage.stage as 'pre' | 'early-peri' | 'mid-peri' | 'late-peri' | 'post'}
             confidenceScore={currentStage.confidence_score || undefined}
             size="lg"
@@ -150,11 +150,9 @@ export default function MenoMapDashboard() {
         <TabsContent value="insights" className="space-y-4">
           {unacknowledgedInsights.length > 0 ? (
             unacknowledgedInsights.map(insight => (
-              <MenoMapInsightCard
+              <HormoneCompassInsightCard
                 key={insight.id}
                 insight={insight as any}
-                onAcknowledge={async () => {}}
-                onDismiss={dismissInsight}
               />
             ))
           ) : (
