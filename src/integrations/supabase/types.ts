@@ -297,6 +297,7 @@ export type Database = {
           daily_delta_ba_lis: number | null
           date: string
           deep_sleep_hours: number | null
+          fatigue_score: number | null
           hrv: number | null
           id: string
           input_mode: string | null
@@ -340,6 +341,7 @@ export type Database = {
           daily_delta_ba_lis?: number | null
           date: string
           deep_sleep_hours?: number | null
+          fatigue_score?: number | null
           hrv?: number | null
           id?: string
           input_mode?: string | null
@@ -383,6 +385,7 @@ export type Database = {
           daily_delta_ba_lis?: number | null
           date?: string
           deep_sleep_hours?: number | null
+          fatigue_score?: number | null
           hrv?: number | null
           id?: string
           input_mode?: string | null
@@ -3105,45 +3108,57 @@ export type Database = {
       }
       user_health_profile: {
         Row: {
+          chronic_fatigue_risk: boolean | null
           created_at: string | null
           current_bmi: number | null
           date_of_birth: string
           date_quit_smoking: string | null
+          energy_assessment_date: string | null
           height_cm: number | null
           id: string
           initial_subjective_age_delta: number | null
           is_current_smoker: boolean | null
           is_former_smoker: boolean | null
+          latest_energy_category: string | null
+          latest_energy_score: number | null
           social_engagement_baseline: number | null
           updated_at: string | null
           user_id: string
           weight_kg: number | null
         }
         Insert: {
+          chronic_fatigue_risk?: boolean | null
           created_at?: string | null
           current_bmi?: number | null
           date_of_birth: string
           date_quit_smoking?: string | null
+          energy_assessment_date?: string | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          latest_energy_category?: string | null
+          latest_energy_score?: number | null
           social_engagement_baseline?: number | null
           updated_at?: string | null
           user_id: string
           weight_kg?: number | null
         }
         Update: {
+          chronic_fatigue_risk?: boolean | null
           created_at?: string | null
           current_bmi?: number | null
           date_of_birth?: string
           date_quit_smoking?: string | null
+          energy_assessment_date?: string | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          latest_energy_category?: string | null
+          latest_energy_score?: number | null
           social_engagement_baseline?: number | null
           updated_at?: string | null
           user_id?: string
@@ -3535,7 +3550,17 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      unified_assessments: {
+        Row: {
+          assessment_id: string | null
+          completed_at: string | null
+          pillar: string | null
+          score: number | null
+          source: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       generate_expert_id: { Args: never; Returns: string }
