@@ -405,7 +405,7 @@ const Dashboard = () => {
               My <span className="text-primary">Plan</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Your personalised 90-day health transformation roadmap
+              Monitor your health journey with personalized protocols, actionable goals, and data-driven insights
             </p>
           </div>
 
