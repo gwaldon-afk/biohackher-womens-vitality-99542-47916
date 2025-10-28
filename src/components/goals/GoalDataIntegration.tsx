@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { HealthGoal } from "@/hooks/useGoals";
 import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useLISData } from "@/hooks/useLISData";
-import { useMenoMap } from "@/hooks/useMenoMap";
+import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { Activity, Brain, Moon, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface GoalDataIntegrationProps {
@@ -14,7 +14,7 @@ interface GoalDataIntegrationProps {
 export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
   const { currentScore: energyScore } = useEnergyLoop();
   const { baselineScore: lisScore, currentScore: currentLisScore } = useLISData();
-  const { currentStage: menoStage } = useMenoMap();
+  const { currentStage: hormoneStage } = useHormoneCompass();
 
   // Determine if goal aligns with each data source
   const energyAlignment = goal.pillar_category === 'balance' || goal.pillar_category === 'body';
@@ -104,16 +104,16 @@ export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
       )}
 
       {/* MenoMap Integration */}
-      {menoAlignment && menoStage && (
+      {menoAlignment && hormoneStage && (
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Moon className="h-5 w-5 text-pink-600" />
-                <CardTitle className="text-base">MenoMap Stage</CardTitle>
+                <CardTitle className="text-base">HormoneCompass™ Stage</CardTitle>
               </div>
               <Badge variant="outline">
-                {menoStage.stage}
+                {hormoneStage.stage}
               </Badge>
             </div>
             <CardDescription>
@@ -122,12 +122,12 @@ export const GoalDataIntegration = ({ goal }: GoalDataIntegrationProps) => {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Currently in <span className="font-medium text-foreground">{menoStage.stage}</span> stage.
+              Currently in <span className="font-medium text-foreground">{hormoneStage.stage}</span> stage.
               Check-in frequency and interventions are optimized for this phase.
             </p>
             <div className="mt-3 p-2 rounded-lg bg-muted/50">
               <p className="text-xs text-muted-foreground">
-                Confidence: {Math.round((menoStage.confidence_score || 0) * 100)}%
+                Confidence: {Math.round((hormoneStage.confidence_score || 0) * 100)}%
               </p>
             </div>
           </CardContent>

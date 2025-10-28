@@ -36,7 +36,7 @@ import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
 import { useGoals } from "@/hooks/useGoals";
 import { GoalInsightsCard } from "@/components/GoalInsightsCard";
 import { MenoMapDashboardWidget } from "@/components/menomap/MenoMapDashboardWidget";
-import { useMenoMap } from "@/hooks/useMenoMap";
+import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { EnergyDashboardWidget } from "@/components/energy/EnergyDashboardWidget";
 import { useEnergyLoop } from "@/hooks/useEnergyLoop";
 import { useProtocols } from "@/hooks/useProtocols";
@@ -86,7 +86,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
-  const { currentStage, isEnabled: menoMapEnabled } = useMenoMap();
+  const { currentStage, isEnabled: hormoneCompassEnabled } = useHormoneCompass();
   const { isEnabled: energyLoopEnabled, currentScore } = useEnergyLoop();
 
   // Use React Query hooks

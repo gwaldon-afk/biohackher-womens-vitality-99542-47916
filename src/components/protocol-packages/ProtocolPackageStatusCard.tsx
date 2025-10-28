@@ -16,7 +16,7 @@ export const ProtocolPackageStatusCard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered': return 'success';
+      case 'delivered': return 'default';
       case 'shipped': return 'default';
       case 'processing': return 'secondary';
       default: return 'outline';
@@ -33,11 +33,11 @@ export const ProtocolPackageStatusCard = () => {
   };
 
   return (
-    <Card className="border-success/30">
+    <Card className="border-primary/30">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <Badge variant="success" className="mb-2">ACTIVE PACKAGE</Badge>
+            <Badge variant="default" className="mb-2">ACTIVE PACKAGE</Badge>
             <CardTitle>{packageData.package_name}</CardTitle>
             <CardDescription>
               {getStatusLabel(activePurchase.shipment_status)} • 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMenoMap } from "@/hooks/useMenoMap";
+import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -44,7 +44,7 @@ const SYMPTOM_CATEGORIES = {
 
 export default function MenoMapTracker() {
   const navigate = useNavigate();
-  const { trackSymptom } = useMenoMap();
+  const { trackSymptom } = useHormoneCompass();
   const [selectedCategory, setSelectedCategory] = useState<string>('thermoregulation');
   const [symptoms, setSymptoms] = useState<Record<string, { severity: number; notes: string }>>({});
   const [saving, setSaving] = useState(false);
@@ -88,12 +88,12 @@ export default function MenoMapTracker() {
 
       // Save each symptom
       for (const [symptomName, data] of entries) {
-        await trackSymptom(
-          selectedCategory,
-          symptomName,
-          data.severity,
-          data.notes || undefined
-        );
+        await trackSymptom({
+          symptom_category: selectedCategory,
+          symptom_name: symptomName,
+          severity: data.severity,
+          notes: data.notes || undefined
+        });
       }
 
       toast({

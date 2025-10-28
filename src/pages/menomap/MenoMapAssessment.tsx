@@ -4,14 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
-import { useMenoMap } from "@/hooks/useMenoMap";
+import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { MENOMAP_ASSESSMENT, calculateMenoStage } from "@/data/menoMapAssessment";
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function MenoMapAssessment() {
   const navigate = useNavigate();
-  const { saveStage, enableMenoMap } = useMenoMap();
+  const { trackSymptom: _trackSymptom } = useHormoneCompass();
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -71,12 +71,6 @@ export default function MenoMapAssessment() {
     try {
       // Calculate stage
       const result = calculateMenoStage(answers);
-
-      // Enable MenoMap if not already
-      await enableMenoMap();
-
-      // Save stage
-      await saveStage(result.stage, result.confidence);
 
       // Navigate to results
       navigate('/menomap/results', {

@@ -11,7 +11,7 @@ interface HormoneCompassInsightCardProps {
     title: string;
     description: string;
     severity?: string;
-    action_suggestions: any[];
+    action_items: any;
   };
 }
 
@@ -60,7 +60,7 @@ export const HormoneCompassInsightCard = ({ insight }: HormoneCompassInsightCard
         <CardDescription>{insight.description}</CardDescription>
       </CardHeader>
 
-      {insight.action_suggestions && insight.action_suggestions.length > 0 && (
+      {insight.action_items && Array.isArray(insight.action_items) && insight.action_items.length > 0 && (
         <CardContent>
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm font-medium">
@@ -68,7 +68,7 @@ export const HormoneCompassInsightCard = ({ insight }: HormoneCompassInsightCard
               Suggested Actions:
             </div>
             <ul className="space-y-1">
-              {insight.action_suggestions.map((action: any, idx: number) => (
+              {insight.action_items.map((action: any, idx: number) => (
                 <li key={idx} className="text-sm text-muted-foreground pl-4">
                   • {typeof action === 'string' ? action : action.title || action.description}
                 </li>

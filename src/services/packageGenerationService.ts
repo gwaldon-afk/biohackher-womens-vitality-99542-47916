@@ -56,7 +56,7 @@ export const generateProtocolPackage = async (
         user_id: userId,
         protocol_id: protocolId,
         package_name: `90-Day ${tierCalc.tier.toUpperCase()} Protocol Package`,
-        tier: tierCalc.tier,
+        tier: tierCalc.tier as 'gold' | 'silver' | 'bronze',
         duration_days: 90,
         total_items_count: items.length,
         gold_items_count: tierCalc.goldCount,
@@ -92,7 +92,7 @@ export const generateProtocolPackage = async (
 
     if (itemsInsertError) throw itemsInsertError;
 
-    return pkg;
+    return pkg as ProtocolPackage;
   } catch (error) {
     console.error('Error generating protocol package:', error);
     return null;

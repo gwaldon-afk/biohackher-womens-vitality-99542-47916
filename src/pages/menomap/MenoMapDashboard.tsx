@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MenoMapStageCompass } from "@/components/menomap/MenoMapStageCompass";
 import { MenoMapInsightCard } from "@/components/menomap/MenoMapInsightCard";
-import { useMenoMap } from "@/hooks/useMenoMap";
+import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { Activity, TrendingUp, Calendar, Lightbulb, ArrowRight, Home } from "lucide-react";
 import { format } from "date-fns";
 
@@ -15,9 +15,8 @@ export default function MenoMapDashboard() {
     symptoms, 
     insights, 
     isEnabled,
-    acknowledgeInsight, 
     dismissInsight 
-  } = useMenoMap();
+  } = useHormoneCompass();
 
   if (!isEnabled || !currentStage) {
     return (
@@ -74,7 +73,7 @@ export default function MenoMapDashboard() {
       <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
         <CardContent className="pt-8">
           <MenoMapStageCompass 
-            currentStage={currentStage.stage}
+            currentStage={currentStage.stage as 'pre' | 'early-peri' | 'mid-peri' | 'late-peri' | 'post'}
             confidenceScore={currentStage.confidence_score || undefined}
             size="lg"
           />
@@ -153,8 +152,8 @@ export default function MenoMapDashboard() {
             unacknowledgedInsights.map(insight => (
               <MenoMapInsightCard
                 key={insight.id}
-                insight={insight}
-                onAcknowledge={acknowledgeInsight}
+                insight={insight as any}
+                onAcknowledge={async () => {}}
                 onDismiss={dismissInsight}
               />
             ))

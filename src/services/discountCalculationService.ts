@@ -133,12 +133,19 @@ function calculateDiscount(price: number, rule: DiscountRule): number {
  */
 export const incrementDiscountUsage = async (ruleId: string) => {
   try {
+    // Fetch current count, increment locally, then update
+    const { data: rule, error: fetchError } = await supabase
+      .from('discount_rules')
+      .select('current_uses')
+      .eq('id', ruleId)
+      .single();
+
+    if (fetchError) throw fetchError;
+
     const { error } = await supabase
-      .rpc('increment', { 
-        row_id: ruleId,
-        table_name: 'discount_rules',
-        column_name: 'current_uses'
-      });
+      .from('discount_rules')
+      .update({ current_uses: (rule.current_uses || 0) + 1 })
+      .eq('id', ruleId);
 
     if (error) throw error;
     return true;

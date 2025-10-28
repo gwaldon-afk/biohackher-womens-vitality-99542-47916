@@ -27,7 +27,7 @@ interface Profile {
     light_sensor: boolean;
     motion: boolean;
   } | null;
-  menomap_enabled: boolean | null;
+  hormone_compass_enabled: boolean | null;
   energy_loop_enabled: boolean | null;
 }
 
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         onboarding_completed: data.onboarding_completed,
         user_stream: data.user_stream as 'performance' | 'menopause' | null,
         device_permissions: (data as any).device_permissions as Profile['device_permissions'],
-        menomap_enabled: data.menomap_enabled,
+        hormone_compass_enabled: data.hormone_compass_enabled,
         energy_loop_enabled: data.energy_loop_enabled,
       };
 

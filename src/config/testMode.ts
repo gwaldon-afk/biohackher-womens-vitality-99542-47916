@@ -45,6 +45,6 @@ export const MOCK_PROFILE = {
     light_sensor: false,
     motion: false,
   },
-  menomap_enabled: false,
+  hormone_compass_enabled: false,
   energy_loop_enabled: false,
 };
