@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
@@ -74,6 +76,8 @@ const STAGE_INFO = {
 
 const HormoneCompassResults = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
   const { user } = useAuth();
   const { addToCart, setIsCartOpen } = useCart();
   const [analysisData, setAnalysisData] = useState<{
@@ -156,11 +160,40 @@ const HormoneCompassResults = () => {
     return () => clearTimeout(timeoutId);
   }, [navigate]);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    // Update profile to mark onboarding as completed
     if (user) {
-      navigate('/onboarding/goal-setup-chat');
+      const { error } = await supabase
+        .from('profiles')
+        .update({ onboarding_completed: true })
+        .eq('user_id', user.id);
+      
+      if (error) {
+        console.error('Error updating profile:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update profile. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Redirect to returnTo destination or default next step
+      if (returnTo) {
+        toast({
+          title: "Profile Complete!",
+          description: `Taking you to ${decodeURIComponent(returnTo).split('/').pop()?.replace(/-/g, ' ')}...`
+        });
+        navigate(decodeURIComponent(returnTo));
+      } else {
+        navigate('/onboarding/goal-setup-chat');
+      }
     } else {
-      navigate('/auth?mode=signup&redirect=/onboarding/goal-setup-chat');
+      // Guest user - prompt to sign up
+      const authPath = returnTo
+        ? `/auth?mode=signup&returnTo=${encodeURIComponent(returnTo)}`
+        : '/auth?mode=signup&redirect=/onboarding/goal-setup-chat';
+      navigate(authPath);
     }
   };
 

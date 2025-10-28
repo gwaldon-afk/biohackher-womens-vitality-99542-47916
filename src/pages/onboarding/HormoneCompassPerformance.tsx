@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,8 @@ const questions = [
 const MenoMapPerformance = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
@@ -34,7 +36,12 @@ const MenoMapPerformance = () => {
       const avgScore = Object.values(answers).reduce((a, b) => a + b, 0) / questions.length;
       const bioScore = Math.round((avgScore / 10) * 100);
       localStorage.setItem('bio_score', bioScore.toString());
-      navigate('/onboarding/menomap-results');
+      
+      // Navigate to results, preserving returnTo parameter
+      const resultsPath = returnTo 
+        ? `/onboarding/hormone-compass-results?returnTo=${encodeURIComponent(returnTo)}`
+        : '/onboarding/hormone-compass-results';
+      navigate(resultsPath);
     }
   };
 
@@ -42,9 +49,27 @@ const MenoMapPerformance = () => {
   const currentValue = answers[question.id] || 5;
   const canProceed = answers[question.id] !== undefined;
 
+  const getDestinationName = () => {
+    if (!returnTo) return null;
+    const path = decodeURIComponent(returnTo);
+    if (path.includes('my-goals')) return 'My Goals';
+    if (path.includes('dashboard')) return 'Dashboard';
+    if (path.includes('protocol')) return 'My Protocol';
+    return 'your destination';
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 pt-20 bg-gradient-to-b from-background to-muted/20">
-      <div className="fixed top-0 left-0 right-0 h-14 bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-50 flex items-center justify-between px-4">
+      {/* Contextual Banner */}
+      {returnTo && (
+        <div className="fixed top-0 left-0 right-0 bg-primary/10 backdrop-blur-sm border-b border-primary/20 z-50 py-2 px-4">
+          <p className="text-sm text-center">
+            📊 Complete this quick assessment to access <span className="font-semibold">{getDestinationName()}</span> • Takes ~2 minutes
+          </p>
+        </div>
+      )}
+      
+      <div className="fixed top-0 left-0 right-0 h-14 bg-background backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-40 flex items-center justify-between px-4" style={{ marginTop: returnTo ? '40px' : '0' }}>
         <Button 
           variant="outline" 
           size="default" 

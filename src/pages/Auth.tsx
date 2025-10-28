@@ -100,7 +100,7 @@ const Auth = () => {
           return;
         }
 
-        // If returnTo exists and onboarding is complete, redirect there
+        // If returnTo exists, redirect there directly
         if (returnTo) {
           navigate(decodeURIComponent(returnTo));
           return;
@@ -145,29 +145,14 @@ const Auth = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
-        // Check onboarding first
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('user_id', currentUser.id)
-          .maybeSingle();
-        
-        if (profile && !profile.onboarding_completed) {
-          const onboardingPath = returnTo 
-            ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
-            : '/onboarding/hormone-compass-entry';
-          toast.info('Please complete your profile to get started');
-          navigate(onboardingPath);
-          return;
-        }
-
-        // If returnTo exists and onboarding is complete, redirect there
+        // If returnTo exists, redirect there directly
         if (returnTo) {
           navigate(decodeURIComponent(returnTo));
           return;
         }
 
-        // Then check health profile
+        // If no returnTo, check health profile and redirect appropriately
+        // Check health profile
         const { data: healthProfile } = await supabase
           .from('user_health_profile')
           .select('id')
