@@ -27,7 +27,7 @@ export default function EnergyCheckIn() {
       <div className="space-y-4 mb-8">
         <h1 className="text-3xl font-bold">Daily Energy Check-In</h1>
         <p className="text-muted-foreground">
-          Take 30 seconds to reflect on your current state. Your Energy Loop updates automatically.
+          Track 3 key metrics daily to identify patterns. Pattern analysis helps optimize your protocols over time.
         </p>
       </div>
 

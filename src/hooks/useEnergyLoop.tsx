@@ -169,7 +169,6 @@ export const useEnergyLoop = () => {
     energy_rating: number;
     sleep_quality: number;
     stress_level: number;
-    movement_completed: boolean;
     notes?: string;
   }) => {
     if (!user) return;
