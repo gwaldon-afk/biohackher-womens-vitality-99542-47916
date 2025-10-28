@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon } from 'lucide-react';
+import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
 import LISInputForm from '@/components/LISInputForm';
 import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome';
 import { useLISData } from '@/hooks/useLISData';
@@ -12,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
 import { LISRadarChart } from '@/components/LISRadarChart';
 import { LISRadarLegend } from '@/components/LISRadarLegend';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect, useState } from 'react';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -21,6 +24,37 @@ const LISResults = () => {
   const score = parseFloat(searchParams.get('score') || '0');
   const lisData = useLISData();
   const { toast } = useToast();
+  
+  // Check if this is a new baseline assessment
+  const isNewBaseline = searchParams.get('isNewBaseline') === 'true';
+  const urlPillarScoresParam = searchParams.get('pillarScores');
+  const urlPillarScores = urlPillarScoresParam ? JSON.parse(decodeURIComponent(urlPillarScoresParam)) : null;
+  
+  // State for baseline data
+  const [baselineData, setBaselineData] = useState<any>(null);
+  const [chronologicalAge, setChronologicalAge] = useState<number>(0);
+
+  // Fetch baseline assessment data when isNewBaseline is true
+  useEffect(() => {
+    if (isNewBaseline && user) {
+      const fetchBaseline = async () => {
+        const { data, error } = await supabase
+          .from('daily_scores')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('is_baseline', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        if (data && !error) {
+          setBaselineData(data);
+          setChronologicalAge(data.user_chronological_age || 0);
+        }
+      };
+      fetchBaseline();
+    }
+  }, [isNewBaseline, user]);
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
@@ -34,6 +68,92 @@ const LISResults = () => {
     if (score >= 40) return 'Fair';
     return 'Needs Attention';
   };
+
+  const calculateBiologicalAge = (lisScore: number, chronoAge: number): { 
+    bioAge: number; 
+    delta: number; 
+    annualDeceleration: number;
+    projections: {
+      current5yr: number;
+      current20yr: number;
+      optimized5yr: number;
+      optimized20yr: number;
+      improvementGap5yr: number;
+      improvementGap20yr: number;
+    }
+  } => {
+    if (!chronoAge || !lisScore) {
+      return { 
+        bioAge: 0, 
+        delta: 0, 
+        annualDeceleration: 0,
+        projections: {
+          current5yr: 0,
+          current20yr: 0,
+          optimized5yr: 0,
+          optimized20yr: 0,
+          improvementGap5yr: 0,
+          improvementGap20yr: 0
+        }
+      };
+    }
+
+    // Research-backed coefficients
+    const baselineScore = 50; // Average population
+    const scoreDelta = lisScore - baselineScore;
+    const biologicalAgeDelta = (scoreDelta / 5) * -1; // Higher LIS = younger biological age
+    
+    const biologicalAge = chronoAge + biologicalAgeDelta;
+    
+    // Aging rate: 1.5 at LIS=0, 1.0 at LIS=50, 0.7 at LIS=100
+    const annualDeceleration = 1.0 - ((lisScore - 50) / 100);
+    const currentAgingRate = annualDeceleration;
+    
+    // Optimized scenario: LIS score of 85 (achievable with biohacking)
+    const optimizedLIS = 85;
+    const optimizedDeceleration = 1.0 - ((optimizedLIS - 50) / 100);
+    const optimizedAgingRate = optimizedDeceleration;
+    
+    // Future projections
+    const current5yr = biologicalAge + (currentAgingRate * 5);
+    const current20yr = biologicalAge + (currentAgingRate * 20);
+    const optimized5yr = biologicalAge + (optimizedAgingRate * 5);
+    const optimized20yr = biologicalAge + (optimizedAgingRate * 20);
+
+    return {
+      bioAge: Math.round(biologicalAge * 10) / 10,
+      delta: Math.round(biologicalAgeDelta * 10) / 10,
+      annualDeceleration: Math.round(annualDeceleration * 1000) / 1000,
+      projections: {
+        current5yr: Math.round(current5yr * 10) / 10,
+        current20yr: Math.round(current20yr * 10) / 10,
+        optimized5yr: Math.round(optimized5yr * 10) / 10,
+        optimized20yr: Math.round(optimized20yr * 10) / 10,
+        improvementGap5yr: Math.round((current5yr - optimized5yr) * 10) / 10,
+        improvementGap20yr: Math.round((current20yr - optimized20yr) * 10) / 10
+      }
+    };
+  };
+
+  const getTopStrengths = () => {
+    const pillarScores = urlPillarScores || lisData.pillarScores;
+    const sorted = Object.entries(pillarScores)
+      .sort(([, a]: any, [, b]: any) => b - a)
+      .slice(0, 3);
+    return sorted;
+  };
+
+  const getTopImprovements = () => {
+    const pillarScores = urlPillarScores || lisData.pillarScores;
+    const sorted = Object.entries(pillarScores)
+      .sort(([, a]: any, [, b]: any) => a - b)
+      .slice(0, 3);
+    return sorted;
+  };
+
+  // Calculate biological age data
+  const displayScore = isNewBaseline && score ? score : (lisData.currentScore || score);
+  const bioAgeData = chronologicalAge > 0 ? calculateBiologicalAge(displayScore, chronologicalAge) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -175,7 +295,206 @@ const LISResults = () => {
               <strong>Note:</strong> This LIS assessment is a guide based on your responses. For accurate biological age measurement, we recommend comprehensive blood testing and biomarker analysis.
             </p>
           </div>
+        </CardContent>
+      </Card>
 
+      {/* Biological Age Card - Only for users with baseline data */}
+      {!isGuest && chronologicalAge > 0 && bioAgeData && (
+        <Card className="p-8 mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
+            
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
+              <strong>Biological age</strong> measures how well your body is functioning at a cellular level, while <strong>chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              <div className="p-4 bg-background rounded-lg">
+                <div className="text-sm text-muted-foreground mb-1">Chronological Age</div>
+                <div className="text-4xl font-bold">{chronologicalAge}</div>
+                <div className="text-xs text-muted-foreground mt-1">years</div>
+              </div>
+
+              <div className="p-4 bg-background rounded-lg border-2 border-primary">
+                <div className="text-sm text-muted-foreground mb-1">Biological Age</div>
+                <div className="text-4xl font-bold text-primary">{bioAgeData.bioAge}</div>
+                <div className="text-xs text-muted-foreground mt-1">years</div>
+              </div>
+
+              <div className="p-4 bg-background rounded-lg">
+                <div className="text-sm text-muted-foreground mb-1">Age Delta</div>
+                <div className={`text-4xl font-bold ${bioAgeData.delta > 0 ? 'text-destructive' : 'text-green-600'}`}>
+                  {bioAgeData.delta > 0 ? '+' : ''}{bioAgeData.delta}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">years</div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-background rounded-lg mb-6">
+              <p className="text-sm text-muted-foreground mb-2">
+                Based on your LIS score of {displayScore.toFixed(1)}, your lifestyle is causing you to age approximately{' '}
+                <span className="font-bold text-foreground">
+                  {bioAgeData.annualDeceleration.toFixed(2)}x
+                </span>{' '}
+                the normal rate ({bioAgeData.annualDeceleration < 1 ? 'slower than' : bioAgeData.annualDeceleration > 1 ? 'faster than' : 'same as'} average).
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {bioAgeData.delta < 0 
+                  ? `🎉 Your biological age is ${Math.abs(bioAgeData.delta)} years younger than your chronological age!` 
+                  : bioAgeData.delta === 0 
+                  ? 'Your biological age matches your chronological age.' 
+                  : `⚠️ Your biological age is ${bioAgeData.delta} years older than your chronological age.`}
+              </p>
+            </div>
+
+            {/* Future Projections */}
+            <div className="space-y-4">
+              <h4 className="text-lg font-semibold text-left">Your Aging Trajectory</h4>
+              
+              {/* 5 Year Projection */}
+              <div className="p-5 bg-background rounded-lg border-2">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-semibold text-base">In 5 Years</span>
+                  <span className="text-sm text-muted-foreground">
+                    You'll be {chronologicalAge + 5} years old
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-left">
+                    <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-orange-600">
+                        {bioAgeData.projections.current5yr}
+                      </span>
+                      <span className="text-sm text-muted-foreground">years bio age</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-left border-l-2 border-primary/20 pl-4">
+                    <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-green-600">
+                        {bioAgeData.projections.optimized5yr}
+                      </span>
+                      <span className="text-sm text-muted-foreground">years bio age</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded border border-green-500/20">
+                  <p className="text-sm font-medium text-green-700 mb-1">
+                    💡 <span className="font-bold">Improvement Potential: {bioAgeData.projections.improvementGap5yr} years younger biological age</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    That's a {((bioAgeData.projections.current5yr - bioAgeData.projections.optimized5yr) / bioAgeData.projections.current5yr * 100).toFixed(0)}% reduction in biological aging over 5 years!
+                  </p>
+                </div>
+              </div>
+
+              {/* 20 Year Projection */}
+              <div className="p-5 bg-background rounded-lg border-2 border-primary">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-semibold text-base">In 20 Years</span>
+                  <span className="text-sm text-muted-foreground">
+                    You'll be {chronologicalAge + 20} years old
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-left">
+                    <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-destructive">
+                        {bioAgeData.projections.current20yr}
+                      </span>
+                      <span className="text-sm text-muted-foreground">years bio age</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-left border-l-2 border-primary/20 pl-4">
+                    <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-green-600">
+                        {bioAgeData.projections.optimized20yr}
+                      </span>
+                      <span className="text-sm text-muted-foreground">years bio age</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-primary/10 rounded border-2 border-green-500/30">
+                  <p className="text-sm font-bold text-green-700 mb-1">
+                    🚀 Transform Your Future: <span className="text-lg">{bioAgeData.projections.improvementGap20yr} years younger!</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    That's like turning back the clock by gaining {bioAgeData.projections.improvementGap20yr} extra years of vitality
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="text-xs text-muted-foreground mb-2">
+                  <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {bioAgeData.annualDeceleration.toFixed(2)}x per year.
+                </p>
+              </div>
+
+              {/* Medium Disclaimer */}
+              <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For precise biological age determination, we recommend comprehensive blood work including inflammation markers, metabolic panels, and hormonal assessments.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Pillar Scores - Strengths and Improvements */}
+      {!isGuest && (urlPillarScores || Object.keys(lisData.pillarScores).length > 0) && (
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {/* Top Strengths */}
+          <Card className="p-6 border-2 border-green-500/20 bg-green-500/5">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-green-600" />
+              <h3 className="text-xl font-semibold">Top Strengths</h3>
+            </div>
+            <div className="space-y-3">
+              {getTopStrengths().map(([pillar, score]: any) => (
+                <div key={pillar} className="flex items-center justify-between">
+                  <span className="font-medium">{pillar}</span>
+                  <div className="flex items-center gap-2">
+                    <Progress value={score} className="w-24 h-2" />
+                    <span className="text-sm font-semibold w-12 text-right">{Math.round(score)}/100</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Areas for Improvement */}
+          <Card className="p-6 border-2 border-orange-500/20 bg-orange-500/5">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingDown className="w-5 h-5 text-orange-600" />
+              <h3 className="text-xl font-semibold">Improvement Opportunities</h3>
+            </div>
+            <div className="space-y-3">
+              {getTopImprovements().map(([pillar, score]: any) => (
+                <div key={pillar} className="flex items-center justify-between">
+                  <span className="font-medium">{pillar}</span>
+                  <div className="flex items-center gap-2">
+                    <Progress value={score} className="w-24 h-2" />
+                    <span className="text-sm font-semibold w-12 text-right">{Math.round(score)}/100</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      )}
+
+      <Card className="mb-6">
+        <CardContent className="pt-6">
           {/* Guest User - Prompt to Register */}
           {isGuest && (
             <Alert className="mt-6 border-primary">

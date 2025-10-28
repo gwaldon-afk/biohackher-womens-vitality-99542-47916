@@ -706,12 +706,12 @@ export default function GuestLISAssessment() {
           .update({ onboarding_completed: true })
           .eq('user_id', user.id);
 
-        // Navigate to dashboard or returnTo destination
+        // Navigate to results page with score data
         setTimeout(() => {
           if (returnTo) {
             navigate(decodeURIComponent(returnTo));
           } else {
-            navigate('/dashboard');
+            navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
           }
         }, 2000);
 
