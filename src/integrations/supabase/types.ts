@@ -424,6 +424,63 @@ export type Database = {
           },
         ]
       }
+      discount_rules: {
+        Row: {
+          applies_to: string | null
+          conditions: Json | null
+          created_at: string | null
+          created_by: string | null
+          current_uses: number | null
+          discount_type: string | null
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          promo_code: string | null
+          rule_name: string
+          rule_type: string | null
+          specific_item_ids: string[] | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          applies_to?: string | null
+          conditions?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          current_uses?: number | null
+          discount_type?: string | null
+          discount_value: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          promo_code?: string | null
+          rule_name: string
+          rule_type?: string | null
+          specific_item_ids?: string[] | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          applies_to?: string | null
+          conditions?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          current_uses?: number | null
+          discount_type?: string | null
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          promo_code?: string | null
+          rule_name?: string
+          rule_type?: string | null
+          specific_item_ids?: string[] | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       energy_actions: {
         Row: {
           action_name: string
@@ -1332,6 +1389,50 @@ export type Database = {
           },
         ]
       }
+      goal_metric_tracking: {
+        Row: {
+          created_at: string | null
+          goal_id: string
+          id: string
+          metric_name: string
+          metric_unit: string | null
+          metric_value: number | null
+          notes: string | null
+          tracked_date: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          goal_id: string
+          id?: string
+          metric_name: string
+          metric_unit?: string | null
+          metric_value?: number | null
+          notes?: string | null
+          tracked_date?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          goal_id?: string
+          id?: string
+          metric_name?: string
+          metric_unit?: string | null
+          metric_value?: number | null
+          notes?: string | null
+          tracked_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "goal_metric_tracking_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       goal_templates: {
         Row: {
           common_barriers: Json | null
@@ -1541,37 +1642,7 @@ export type Database = {
         }
         Relationships: []
       }
-      menomap_assessments: {
-        Row: {
-          answers: Json
-          assessment_type: string
-          bio_score: number | null
-          completed_at: string
-          created_at: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          answers?: Json
-          assessment_type?: string
-          bio_score?: number | null
-          completed_at?: string
-          created_at?: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          answers?: Json
-          assessment_type?: string
-          bio_score?: number | null
-          completed_at?: string
-          created_at?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      menopause_insights: {
+      hormone_compass_insights: {
         Row: {
           acknowledged: boolean | null
           action_items: Json | null
@@ -1610,37 +1681,7 @@ export type Database = {
         }
         Relationships: []
       }
-      menopause_progress_milestones: {
-        Row: {
-          achieved_at: string | null
-          badge_name: string
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          milestone_type: string
-          user_id: string
-        }
-        Insert: {
-          achieved_at?: string | null
-          badge_name: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          milestone_type: string
-          user_id: string
-        }
-        Update: {
-          achieved_at?: string | null
-          badge_name?: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          milestone_type?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      menopause_stages: {
+      hormone_compass_stages: {
         Row: {
           assessment_id: string | null
           calculated_at: string | null
@@ -1676,7 +1717,7 @@ export type Database = {
         }
         Relationships: []
       }
-      menopause_symptom_tracking: {
+      hormone_compass_symptom_tracking: {
         Row: {
           created_at: string | null
           id: string
@@ -1708,6 +1749,66 @@ export type Database = {
           symptom_name?: string
           tracked_date?: string | null
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      menomap_assessments: {
+        Row: {
+          answers: Json
+          assessment_type: string
+          bio_score: number | null
+          completed_at: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          assessment_type?: string
+          bio_score?: number | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          assessment_type?: string
+          bio_score?: number | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      menopause_progress_milestones: {
+        Row: {
+          achieved_at: string | null
+          badge_name: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          badge_name: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          badge_name?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
           user_id?: string
         }
         Relationships: []
@@ -1807,6 +1908,132 @@ export type Database = {
           weight?: number | null
         }
         Relationships: []
+      }
+      package_protocol_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_customizable: boolean | null
+          item_position: number
+          package_id: string
+          product_id: string | null
+          protocol_item_id: string
+          replacement_options: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_customizable?: boolean | null
+          item_position: number
+          package_id: string
+          product_id?: string | null
+          protocol_item_id: string
+          replacement_options?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_customizable?: boolean | null
+          item_position?: number
+          package_id?: string
+          product_id?: string | null
+          protocol_item_id?: string
+          replacement_options?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "package_protocol_items_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "package_protocol_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "package_protocol_items_protocol_item_id_fkey"
+            columns: ["protocol_item_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      package_purchases: {
+        Row: {
+          delivered_at: string | null
+          discount_applied: number | null
+          discount_code: string | null
+          id: string
+          metadata: Json | null
+          package_id: string
+          payment_plan_current_installment: number | null
+          payment_plan_installment_count: number | null
+          payment_status: string | null
+          purchase_type: string | null
+          purchased_at: string | null
+          shipment_status: string | null
+          shipped_at: string | null
+          stripe_payment_intent_id: string | null
+          stripe_subscription_id: string | null
+          total_amount: number
+          tracking_number: string | null
+          user_id: string
+        }
+        Insert: {
+          delivered_at?: string | null
+          discount_applied?: number | null
+          discount_code?: string | null
+          id?: string
+          metadata?: Json | null
+          package_id: string
+          payment_plan_current_installment?: number | null
+          payment_plan_installment_count?: number | null
+          payment_status?: string | null
+          purchase_type?: string | null
+          purchased_at?: string | null
+          shipment_status?: string | null
+          shipped_at?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
+          total_amount: number
+          tracking_number?: string | null
+          user_id: string
+        }
+        Update: {
+          delivered_at?: string | null
+          discount_applied?: number | null
+          discount_code?: string | null
+          id?: string
+          metadata?: Json | null
+          package_id?: string
+          payment_plan_current_installment?: number | null
+          payment_plan_installment_count?: number | null
+          payment_status?: string | null
+          purchase_type?: string | null
+          purchased_at?: string | null
+          shipment_status?: string | null
+          shipped_at?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_subscription_id?: string | null
+          total_amount?: number
+          tracking_number?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "package_purchases_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_packages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       product_symptoms: {
         Row: {
@@ -1931,10 +2158,11 @@ export type Database = {
           email: string | null
           energy_loop_enabled: boolean | null
           energy_loop_onboarding_completed: boolean | null
+          hormone_compass_enabled: boolean | null
+          hormone_compass_onboarding_completed: boolean | null
           id: string
           language: string | null
           measurement_system: string | null
-          menomap_enabled: boolean | null
           menomap_onboarding_completed: boolean | null
           onboarding_completed: boolean | null
           preferred_name: string
@@ -1952,10 +2180,11 @@ export type Database = {
           email?: string | null
           energy_loop_enabled?: boolean | null
           energy_loop_onboarding_completed?: boolean | null
+          hormone_compass_enabled?: boolean | null
+          hormone_compass_onboarding_completed?: boolean | null
           id?: string
           language?: string | null
           measurement_system?: string | null
-          menomap_enabled?: boolean | null
           menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name: string
@@ -1973,10 +2202,11 @@ export type Database = {
           email?: string | null
           energy_loop_enabled?: boolean | null
           energy_loop_onboarding_completed?: boolean | null
+          hormone_compass_enabled?: boolean | null
+          hormone_compass_onboarding_completed?: boolean | null
           id?: string
           language?: string | null
           measurement_system?: string | null
-          menomap_enabled?: boolean | null
           menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name?: string
@@ -2149,11 +2379,13 @@ export type Database = {
       }
       protocol_items: {
         Row: {
+          contributes_to_metrics: string[] | null
           created_at: string
           description: string | null
           dosage: string | null
           frequency: Database["public"]["Enums"]["protocol_frequency"]
           goal_id: string | null
+          goal_ids: string[] | null
           id: string
           is_active: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
@@ -2165,11 +2397,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          contributes_to_metrics?: string[] | null
           created_at?: string
           description?: string | null
           dosage?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
           goal_id?: string | null
+          goal_ids?: string[] | null
           id?: string
           is_active?: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
@@ -2181,11 +2415,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          contributes_to_metrics?: string[] | null
           created_at?: string
           description?: string | null
           dosage?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
           goal_id?: string | null
+          goal_ids?: string[] | null
           id?: string
           is_active?: boolean
           item_type?: Database["public"]["Enums"]["protocol_item_type"]
@@ -2206,6 +2442,74 @@ export type Database = {
           },
           {
             foreignKeyName: "protocol_items_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "protocols"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      protocol_packages: {
+        Row: {
+          base_price: number
+          bronze_items_count: number
+          created_at: string | null
+          discount_amount: number
+          discount_type: string | null
+          duration_days: number
+          expires_at: string | null
+          final_price: number
+          gold_items_count: number
+          id: string
+          is_active: boolean | null
+          package_name: string
+          protocol_id: string
+          silver_items_count: number
+          tier: string | null
+          total_items_count: number
+          user_id: string
+        }
+        Insert: {
+          base_price: number
+          bronze_items_count?: number
+          created_at?: string | null
+          discount_amount?: number
+          discount_type?: string | null
+          duration_days?: number
+          expires_at?: string | null
+          final_price: number
+          gold_items_count?: number
+          id?: string
+          is_active?: boolean | null
+          package_name: string
+          protocol_id: string
+          silver_items_count?: number
+          tier?: string | null
+          total_items_count: number
+          user_id: string
+        }
+        Update: {
+          base_price?: number
+          bronze_items_count?: number
+          created_at?: string | null
+          discount_amount?: number
+          discount_type?: string | null
+          duration_days?: number
+          expires_at?: string | null
+          final_price?: number
+          gold_items_count?: number
+          id?: string
+          is_active?: boolean | null
+          package_name?: string
+          protocol_id?: string
+          silver_items_count?: number
+          tier?: string | null
+          total_items_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_packages_protocol_id_fkey"
             columns: ["protocol_id"]
             isOneToOne: false
             referencedRelation: "protocols"
