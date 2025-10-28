@@ -44,7 +44,7 @@ const SymptomAssessment = () => {
   }, [symptomId]);
 
   const handleCancelAssessment = () => {
-    navigate('/pillars');
+    navigate('/dashboard');
   };
 
   // Get assessment config from database

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -773,6 +774,11 @@ const Pillars = () => {
   return <TooltipProvider>
       <div className="min-h-screen bg-background">
         <Navigation />
+        
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs items={[{ label: 'Health Pillars', href: '/pillars' }]} />
+        </div>
 
         {/* Hero Section */}
         <section className="py-16 lg:py-24">
