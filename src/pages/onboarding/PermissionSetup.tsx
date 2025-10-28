@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -11,7 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 
 const PermissionSetup = () => {
   const navigate = useNavigate();
-  const { user, profile, refreshProfile } = useAuth();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo') || '';
+  const { user, refreshProfile } = useAuth();
   const { toast } = useToast();
   const [permissions, setPermissions] = useState({
     camera: false,
@@ -39,12 +41,9 @@ const PermissionSetup = () => {
       // Refresh profile from database
       await refreshProfile();
       
-      // Route based on user stream
-      if (profile?.user_stream === 'performance') {
-        navigate('/energy-loop/onboarding');
-      } else {
-        navigate('/menomap/assessment');
-      }
+      // Route to unified onboarding path
+      const nextPath = returnTo || '/energy-loop/onboarding';
+      navigate(nextPath);
     } catch (error) {
       console.error('Error saving permissions:', error);
       toast({

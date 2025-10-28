@@ -20,7 +20,6 @@ interface Profile {
   measurement_system: string | null;
   timezone: string | null;
   onboarding_completed: boolean | null;
-  user_stream: 'performance' | 'menopause' | null;
   device_permissions: {
     camera: boolean;
     microphone: boolean;
@@ -97,7 +96,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         measurement_system: data.measurement_system,
         timezone: data.timezone,
         onboarding_completed: data.onboarding_completed,
-        user_stream: data.user_stream as 'performance' | 'menopause' | null,
         device_permissions: (data as any).device_permissions as Profile['device_permissions'],
         hormone_compass_enabled: data.hormone_compass_enabled,
         energy_loop_enabled: data.energy_loop_enabled,

@@ -2,23 +2,19 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, Star, ExternalLink } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
 
 const ExpertFinderMap = () => {
-  const { profile } = useAuth();
   const [selectedExpert, setSelectedExpert] = useState<number | null>(null);
 
-  const experts = profile?.user_stream === 'performance' 
-    ? [
-        { id: 1, name: 'Dr. Sarah Chen', specialty: 'Performance Nutrition', rating: 4.9, distance: '2.3 km' },
-        { id: 2, name: 'Coach Mike Roberts', specialty: 'Biohacking', rating: 4.8, distance: '5.1 km' },
-        { id: 3, name: 'Dr. Alex Kumar', specialty: 'Sleep Optimization', rating: 4.7, distance: '8.4 km' },
-      ]
-    : [
-        { id: 1, name: 'Dr. Emma Wilson', specialty: 'Menopause Specialist', rating: 4.9, distance: '1.8 km' },
-        { id: 2, name: 'Dr. Lisa Thompson', specialty: 'Hormone Health', rating: 4.8, distance: '4.2 km' },
-        { id: 3, name: 'Dr. Rachel Green', specialty: 'Integrative Medicine', rating: 4.7, distance: '6.9 km' },
-      ];
+  // Unified expert directory - show all experts regardless of user preferences
+  const experts = [
+    { id: 1, name: 'Dr. Sarah Chen', specialty: 'Performance Nutrition', rating: 4.9, distance: '2.3 km' },
+    { id: 2, name: 'Coach Mike Roberts', specialty: 'Biohacking', rating: 4.8, distance: '5.1 km' },
+    { id: 3, name: 'Dr. Alex Kumar', specialty: 'Sleep Optimization', rating: 4.7, distance: '8.4 km' },
+    { id: 4, name: 'Dr. Emma Wilson', specialty: 'Hormone Health', rating: 4.9, distance: '1.8 km' },
+    { id: 5, name: 'Dr. Lisa Thompson', specialty: 'Integrative Medicine', rating: 4.8, distance: '4.2 km' },
+    { id: 6, name: 'Dr. Rachel Green', specialty: 'Women\'s Health', rating: 4.7, distance: '6.9 km' },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4">

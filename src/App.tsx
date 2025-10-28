@@ -77,7 +77,6 @@ import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
 import MyDailyPlan from "./pages/MyDailyPlan";
 import EvidenceDrawer from "./components/EvidenceDrawer";
-import WelcomeStreamSelect from "./pages/onboarding/WelcomeStreamSelect";
 import Intro3Step from "./pages/onboarding/Intro3Step";
 import PermissionSetup from "./pages/onboarding/PermissionSetup";
 import HormoneCompassEntry from "./pages/onboarding/HormoneCompassEntry";
@@ -205,7 +204,6 @@ const App = () => (
           <Route path="/admin/experts" element={<ProtectedRoute><ExpertVerification /></ProtectedRoute>} />
           
           {/* New Onboarding Flow Routes */}
-          <Route path="/onboarding/welcome-stream-select" element={<WelcomeStreamSelect />} />
           <Route path="/onboarding/intro-3step" element={<Intro3Step />} />
           <Route path="/onboarding/permission-setup" element={<PermissionSetup />} />
           <Route path="/onboarding/hormone-compass-entry" element={<HormoneCompassEntry />} />

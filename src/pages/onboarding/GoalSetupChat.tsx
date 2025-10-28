@@ -11,18 +11,14 @@ import { useCreateProtocolItem } from "@/queries/protocolQueries";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
-const performanceGoals = [
+const unifiedGoals = [
   'Increase energy levels',
   'Improve mental clarity',
   'Enhance athletic performance',
   'Optimize sleep quality',
   'Reduce stress',
   'Build muscle',
-];
-
-const menopauseGoals = [
   'Manage hot flushes',
-  'Improve sleep quality',
   'Balance mood swings',
   'Maintain bone health',
   'Support skin health',
@@ -37,7 +33,7 @@ const GoalSetupChat = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [isCreating, setIsCreating] = useState(false);
 
-  const goals = profile?.user_stream === 'performance' ? performanceGoals : menopauseGoals;
+  const goals = unifiedGoals;
 
   const toggleGoal = (goal: string) => {
     setSelected((prev) =>
@@ -60,25 +56,39 @@ const GoalSetupChat = () => {
 
     setIsCreating(true);
     try {
-      // Create goals in database
-      const goalData = selected.map(goal => ({
-        title: goal,
-        pillar_category: (profile?.user_stream === 'performance' ? 'body' : 'balance') as 'body' | 'balance' | 'brain' | 'beauty',
-        status: 'active' as const,
-        progress: 0,
-      }));
+      // Create goals in database with smart categorization
+      const goalData = selected.map(goal => {
+        let pillar_category: 'body' | 'balance' | 'brain' | 'beauty' = 'body';
+        
+        if (goal.toLowerCase().includes('energy') || goal.toLowerCase().includes('athletic') || goal.toLowerCase().includes('muscle')) {
+          pillar_category = 'body';
+        } else if (goal.toLowerCase().includes('mood') || goal.toLowerCase().includes('stress') || goal.toLowerCase().includes('flush')) {
+          pillar_category = 'balance';
+        } else if (goal.toLowerCase().includes('clarity') || goal.toLowerCase().includes('mental')) {
+          pillar_category = 'brain';
+        } else if (goal.toLowerCase().includes('skin') || goal.toLowerCase().includes('beauty')) {
+          pillar_category = 'beauty';
+        }
+        
+        return {
+          title: goal,
+          pillar_category,
+          status: 'active' as const,
+          progress: 0,
+        };
+      });
 
       await createGoals(goalData);
 
-      // Create protocol
+      // Create personalized protocol
       const protocol = await createProtocol.mutateAsync({
         user_id: user.id,
-        name: `${profile?.user_stream === 'performance' ? 'Performance' : 'Menopause'} Protocol`,
-        description: `Personalized protocol based on your goals: ${selected.join(', ')}`,
+        name: 'Personalized Health Protocol',
+        description: `Tailored protocol based on your goals: ${selected.join(', ')}`,
         is_active: true,
         start_date: new Date().toISOString(),
         end_date: null,
-        created_from_pillar: profile?.user_stream === 'performance' ? 'Body' : 'Balance',
+        created_from_pillar: 'Body',
       });
 
       // Create protocol items based on goals

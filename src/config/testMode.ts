@@ -38,7 +38,6 @@ export const MOCK_PROFILE = {
   measurement_system: 'imperial',
   timezone: 'America/New_York',
   onboarding_completed: true,
-  user_stream: 'performance' as 'performance' | 'menopause',
   device_permissions: {
     camera: false,
     microphone: false,

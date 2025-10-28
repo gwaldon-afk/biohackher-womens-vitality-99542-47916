@@ -39,6 +39,7 @@ const Auth = () => {
   // Get session ID from URL if user is registering from guest results
   const guestSessionId = searchParams.get('session');
   const assessmentSession = searchParams.get('assessmentSession');
+  const returnTo = searchParams.get('returnTo') || '';
 
   // Always call useAuth - it provides mock data in test mode
   const { signIn, signUp, user } = useAuth();
@@ -90,9 +91,18 @@ const Auth = () => {
           .eq('user_id', user.id)
           .maybeSingle();
         
-        // If onboarding not completed, redirect to onboarding
+        // If onboarding not completed, redirect to unified assessment
         if (profile && !profile.onboarding_completed) {
-          navigate('/onboarding/welcome-stream-select');
+          const onboardingPath = returnTo 
+            ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
+            : '/onboarding/hormone-compass-entry';
+          navigate(onboardingPath);
+          return;
+        }
+
+        // If returnTo exists and onboarding is complete, redirect there
+        if (returnTo) {
+          navigate(decodeURIComponent(returnTo));
           return;
         }
 
@@ -124,7 +134,7 @@ const Auth = () => {
     };
     
     checkProfileAndRedirect();
-  }, [user, navigate, guestSessionId, assessmentSession]);
+  }, [user, navigate, guestSessionId, assessmentSession, returnTo]);
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(true);
@@ -143,7 +153,17 @@ const Auth = () => {
           .maybeSingle();
         
         if (profile && !profile.onboarding_completed) {
-          navigate('/onboarding/welcome-stream-select');
+          const onboardingPath = returnTo 
+            ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
+            : '/onboarding/hormone-compass-entry';
+          toast.info('Please complete your profile to get started');
+          navigate(onboardingPath);
+          return;
+        }
+
+        // If returnTo exists and onboarding is complete, redirect there
+        if (returnTo) {
+          navigate(decodeURIComponent(returnTo));
           return;
         }
 
@@ -246,7 +266,10 @@ const Auth = () => {
     } else if (!error) {
       // New user without guest session - redirect to onboarding
       toast.success("Welcome! Let's set up your health profile.");
-      navigate('/onboarding/welcome-stream-select');
+      const onboardingPath = returnTo 
+        ? `/onboarding/hormone-compass-entry?returnTo=${encodeURIComponent(returnTo)}`
+        : '/onboarding/hormone-compass-entry';
+      navigate(onboardingPath);
     }
     
     setIsLoading(false);
