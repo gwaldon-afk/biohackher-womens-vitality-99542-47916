@@ -15,7 +15,6 @@ import { LISRadarChart } from '@/components/LISRadarChart';
 import { LISRadarLegend } from '@/components/LISRadarLegend';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
-import { generateProtocolFromLIS, updateUserProfileAfterAssessment } from '@/services/assessmentProtocolService';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 
 const LISResults = () => {
@@ -26,7 +25,6 @@ const LISResults = () => {
   const score = parseFloat(searchParams.get('score') || '0');
   const lisData = useLISData();
   const { toast } = useToast();
-  const [addingToPlan, setAddingToPlan] = useState(false);
   
   // Check if this is a new baseline assessment
   const isNewBaseline = searchParams.get('isNewBaseline') === 'true';
@@ -152,43 +150,6 @@ const LISResults = () => {
       .sort(([, a]: any, [, b]: any) => a - b)
       .slice(0, 3);
     return sorted;
-  };
-
-  const handleAddToPlan = async () => {
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to add interventions to your plan",
-        variant: "destructive"
-      });
-      navigate('/auth?returnTo=/lis-results');
-      return;
-    }
-
-    setAddingToPlan(true);
-    try {
-      const pillarScores = urlPillarScores || lisData.pillarScores;
-      await generateProtocolFromLIS(user.id, pillarScores);
-      await updateUserProfileAfterAssessment(user.id, 'lis', { 
-        score: displayScore, 
-        isBaseline: isNewBaseline 
-      });
-      
-      toast({
-        title: "Success!",
-        description: "Personalized interventions added to your protocol",
-      });
-      navigate('/my-protocol');
-    } catch (error) {
-      console.error('Error adding to plan:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add interventions to your plan",
-        variant: "destructive"
-      });
-    } finally {
-      setAddingToPlan(false);
-    }
   };
 
   // Calculate biological age data
@@ -696,61 +657,50 @@ const LISResults = () => {
                     </CardContent>
                   </Card>
 
-                  {/* Build My Protocol CTA */}
+                  {/* View Protocol CTA */}
                   {user && (
-                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Sparkles className="w-5 w-5 text-primary" />
-                          Build Your Personalized Protocol
-                        </CardTitle>
-                        <CardDescription>
-                          Convert your assessment insights into actionable daily interventions
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Based on your pillar scores, we'll create targeted protocol items for your weak areas while maintaining your strengths.
-                        </p>
-                        <Button 
-                          onClick={handleAddToPlan}
-                          disabled={addingToPlan}
-                          size="lg"
-                          className="w-full"
-                        >
-                          {addingToPlan ? 'Adding to Plan...' : 'Build My Personalized Protocol'}
-                        </Button>
-                      </CardContent>
-                    </Card>
+                    <div className="flex justify-center">
+                      <Button 
+                        onClick={() => navigate('/my-protocol')}
+                        size="lg"
+                        className="gap-2"
+                      >
+                        <Sparkles className="w-5 h-5" />
+                        View Your Personalized Protocol
+                      </Button>
+                    </div>
                   )}
 
-                  <Alert className="bg-success/5 border-success/20">
-                    <Activity className="h-5 w-5 text-success" />
-                    <AlertTitle className="text-success">Start Your Daily Tracking Journey</AlertTitle>
-                    <AlertDescription className="mt-2">
-                      <p className="text-sm mb-3">
-                        Now that you understand your baseline longevity profile, daily tracking will help you optimize each pillar and monitor your biological age trajectory in real-time.
-                      </p>
-                      <ul className="space-y-2 text-sm mb-4">
-                        <li className="flex gap-2">
-                          <span className="text-success">✓</span>
-                          <span>2-minute daily check-ins across all 6 pillars</span>
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-success">✓</span>
-                          <span>Real-time feedback on your biological aging rate</span>
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-success">✓</span>
-                          <span>Personalized insights based on your patterns</span>
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-success">✓</span>
-                          <span>Track progress toward optimal longevity</span>
-                        </li>
-                      </ul>
-                    </AlertDescription>
-                  </Alert>
+                  {/* Only show if user hasn't done any daily check-ins yet */}
+                  {lisData.dailyScores.length === 0 && (
+                    <Alert className="bg-success/5 border-success/20">
+                      <Activity className="h-5 w-5 text-success" />
+                      <AlertTitle className="text-success">Continue with Daily Check-Ins</AlertTitle>
+                      <AlertDescription className="mt-2">
+                        <p className="text-sm mb-3">
+                          You've completed your baseline assessment! Now start daily check-ins to track how your lifestyle changes impact your longevity score over time.
+                        </p>
+                        <ul className="space-y-2 text-sm mb-4">
+                          <li className="flex gap-2">
+                            <span className="text-success">✓</span>
+                            <span>Quick 2-minute daily check-ins</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-success">✓</span>
+                            <span>See real-time changes in your biological age</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-success">✓</span>
+                            <span>Discover which habits move the needle</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-success">✓</span>
+                            <span>Get AI insights based on your patterns</span>
+                          </li>
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </div>
               </div>
 
