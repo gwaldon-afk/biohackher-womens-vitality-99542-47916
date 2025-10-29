@@ -60,7 +60,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/health-assistant")}
-                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 hover:border-white/50 px-6 py-5 h-auto text-base"
+                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 hover:border-white/50 px-8 py-6 h-auto text-base"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
                 Ask Our AI Health Assistant
