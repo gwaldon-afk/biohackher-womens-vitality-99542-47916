@@ -682,7 +682,6 @@ export default function GuestLISAssessment() {
             assessment_id: assessment.assessment_id,
             pillar: assessment.pillar,
             score: assessment.score,
-            interpretation: assessment.score >= 70 ? 'good' : assessment.score >= 50 ? 'fair' : 'poor',
             completed_at: new Date().toISOString()
           });
         }

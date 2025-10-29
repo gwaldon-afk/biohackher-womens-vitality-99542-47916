@@ -357,14 +357,14 @@ const LISResults = () => {
 
               <div className="p-4 bg-background rounded-lg border-2 border-primary">
                 <div className="text-sm text-muted-foreground mb-1">Biological Age</div>
-                <div className="text-4xl font-bold text-primary">{bioAgeData.bioAge}</div>
+                <div className="text-4xl font-bold text-primary">{bioAgeData?.bioAge || 'N/A'}</div>
                 <div className="text-xs text-muted-foreground mt-1">years</div>
               </div>
 
               <div className="p-4 bg-background rounded-lg">
                 <div className="text-sm text-muted-foreground mb-1">Age Delta</div>
-                <div className={`text-4xl font-bold ${bioAgeData.delta > 0 ? 'text-destructive' : 'text-green-600'}`}>
-                  {bioAgeData.delta > 0 ? '+' : ''}{bioAgeData.delta}
+                <div className={`text-4xl font-bold ${bioAgeData?.delta && bioAgeData.delta > 0 ? 'text-destructive' : 'text-green-600'}`}>
+                  {bioAgeData?.delta ? (bioAgeData.delta > 0 ? '+' : '') + bioAgeData.delta : 'N/A'}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">years</div>
               </div>
@@ -501,7 +501,7 @@ const LISResults = () => {
             answers={{}} // LIS doesn't use traditional Q&A format
             metadata={{ 
               pillarScores: urlPillarScores || lisData.pillarScores,
-              biologicalAge: bioAgeData.bioAge,
+              biologicalAge: bioAgeData?.bioAge,
               chronologicalAge: chronologicalAge
             }}
             autoGenerate={true}
