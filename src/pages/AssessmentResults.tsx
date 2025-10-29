@@ -22,6 +22,7 @@ import { ProgressiveHealthOverview } from "@/components/ProgressiveHealthOvervie
 import { ProgressiveHealthOverviewLocked } from "@/components/ProgressiveHealthOverviewLocked";
 import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
 import { generateProtocolFromSymptom, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
+import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -749,6 +750,16 @@ const AssessmentResults = () => {
               )}
             </>
           )}
+
+          {/* AI Analysis Card */}
+          <AssessmentAIAnalysisCard
+            assessmentType="symptom"
+            assessmentId={symptomId || ''}
+            score={score}
+            scoreCategory={scoreCategory}
+            answers={answers}
+            autoGenerate={true}
+          />
 
           {/* Add to My Plan CTA for authenticated users */}
           {user && (scoreCategory === 'poor' || scoreCategory === 'fair') && (

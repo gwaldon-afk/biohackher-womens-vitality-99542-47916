@@ -16,6 +16,7 @@ import { LISRadarLegend } from '@/components/LISRadarLegend';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import { generateProtocolFromLIS, updateUserProfileAfterAssessment } from '@/services/assessmentProtocolService';
+import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -487,6 +488,25 @@ const LISResults = () => {
             </div>
           </div>
         </Card>
+      )}
+
+      {/* AI Analysis Card */}
+      {!isGuest && (
+        <div className="mb-6">
+          <AssessmentAIAnalysisCard
+            assessmentType="lis"
+            assessmentId="longevity-impact-score"
+            score={score}
+            scoreCategory={getScoreCategory(score)}
+            answers={{}} // LIS doesn't use traditional Q&A format
+            metadata={{ 
+              pillarScores: urlPillarScores || lisData.pillarScores,
+              biologicalAge: bioAgeData.bioAge,
+              chronologicalAge: chronologicalAge
+            }}
+            autoGenerate={true}
+          />
+        </div>
       )}
 
       {/* Pillar Scores - Strengths and Improvements */}

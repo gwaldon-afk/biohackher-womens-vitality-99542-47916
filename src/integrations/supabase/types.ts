@@ -59,6 +59,107 @@ export type Database = {
         }
         Relationships: []
       }
+      assessment_ai_insights: {
+        Row: {
+          ai_model: string
+          answers: Json
+          answers_hash: string
+          applied_to_protocol: boolean | null
+          assessment_id: string
+          assessment_type: string
+          cache_key: string
+          confidence_score: number | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          key_findings: Json
+          metadata: Json | null
+          next_steps: Json | null
+          overall_analysis: string
+          pattern_detections: Json | null
+          personalized_insights: Json
+          priority_actions: Json
+          processing_time_ms: number | null
+          protocol_recommendations: Json
+          score: number
+          score_category: string
+          symptom_assessment_id: string | null
+          tokens_used: number | null
+          updated_at: string | null
+          user_id: string | null
+          version: number | null
+          viewed_at: string | null
+        }
+        Insert: {
+          ai_model: string
+          answers: Json
+          answers_hash: string
+          applied_to_protocol?: boolean | null
+          assessment_id: string
+          assessment_type: string
+          cache_key: string
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          key_findings: Json
+          metadata?: Json | null
+          next_steps?: Json | null
+          overall_analysis: string
+          pattern_detections?: Json | null
+          personalized_insights: Json
+          priority_actions: Json
+          processing_time_ms?: number | null
+          protocol_recommendations: Json
+          score: number
+          score_category: string
+          symptom_assessment_id?: string | null
+          tokens_used?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          version?: number | null
+          viewed_at?: string | null
+        }
+        Update: {
+          ai_model?: string
+          answers?: Json
+          answers_hash?: string
+          applied_to_protocol?: boolean | null
+          assessment_id?: string
+          assessment_type?: string
+          cache_key?: string
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          key_findings?: Json
+          metadata?: Json | null
+          next_steps?: Json | null
+          overall_analysis?: string
+          pattern_detections?: Json | null
+          personalized_insights?: Json
+          priority_actions?: Json
+          processing_time_ms?: number | null
+          protocol_recommendations?: Json
+          score?: number
+          score_category?: string
+          symptom_assessment_id?: string | null
+          tokens_used?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          version?: number | null
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_ai_insights_symptom_assessment_id_fkey"
+            columns: ["symptom_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "symptom_assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessment_question_options: {
         Row: {
           created_at: string | null

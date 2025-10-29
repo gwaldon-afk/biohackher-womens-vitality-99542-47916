@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { generateProtocolFromHormoneStage, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
 import { useState } from "react";
+import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard";
 
 const STAGE_INFO = {
   'pre': {
@@ -214,6 +215,24 @@ export default function MenoMapResults() {
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Analysis Card */}
+      {user && (
+        <div className="mb-6">
+          <AssessmentAIAnalysisCard
+            assessmentType="hormone-compass"
+            assessmentId="hormone-stage-assessment"
+            score={75} // Default confidence score, could be made dynamic
+            scoreCategory={stage}
+            answers={{}} // Hormone compass doesn't use traditional Q&A format
+            metadata={{ 
+              stage,
+              answers: stateData.answers || assessmentData?.hormone_indicators
+            }}
+            autoGenerate={true}
+          />
+        </div>
+      )}
 
       {/* Recommended Products */}
       {topProducts.length > 0 && (
