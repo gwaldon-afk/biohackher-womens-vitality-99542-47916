@@ -1,66 +1,95 @@
-import { Battery, Brain, Heart, Sparkles, Activity, Settings, LucideIcon } from "lucide-react";
+import { Brain, Activity, Heart, Sparkles, Settings, LucideIcon } from "lucide-react";
 
 export interface TriageTheme {
   id: string;
   title: string;
   subtitle: string;
+  description: string;
   icon: LucideIcon;
   pillar: string;
+  imagePath: string;
   symptomIds: string[];
+  protocolHighlights: string[];
   cta: string;
   estimatedTime: string;
 }
 
 export const TRIAGE_THEMES: Record<string, TriageTheme> = {
-  energy: {
-    id: 'tired-all-time',
-    title: 'Tired All the Time?',
-    subtitle: "It's not you — it's your mitochondria",
-    icon: Battery,
-    pillar: 'body',
-    symptomIds: ['energy-levels', 'sleep', 'bloating', 'gut', 'joint-pain'],
-    cta: 'Energy Reboot Series',
-    estimatedTime: '15-20 min'
-  },
   brain: {
-    id: 'brain-fog-mood',
-    title: 'Brain Fog & Mood Swings',
-    subtitle: "Your brain's Wi-Fi dropped — let's reconnect",
+    id: 'brain',
+    title: 'Brain',
+    subtitle: 'Cognitive clarity, focus & mental resilience',
+    description: 'Optimize your cognitive function, mental clarity, mood regulation, and stress resilience through evidence-based interventions.',
     icon: Brain,
     pillar: 'brain',
-    symptomIds: ['brain-fog', 'mood', 'anxiety', 'headaches', 'memory-issues', 'cognitive-performance'],
-    cta: 'Defog Your Brain',
-    estimatedTime: '12-18 min'
+    imagePath: '/src/assets/brain-pillar.png',
+    symptomIds: ['brain-fog', 'mood', 'anxiety', 'headaches', 'memory-issues', 'cognitive-performance', 'sleep'],
+    protocolHighlights: [
+      'Nootropic supplementation',
+      'Cognitive behavioral techniques',
+      'Sleep optimization protocols',
+      'Stress resilience training',
+      'Neurotransmitter support'
+    ],
+    cta: 'Explore Brain Assessments',
+    estimatedTime: '25-35 min'
   },
-  hormones: {
-    id: 'perimenopause-puzzle',
-    title: 'The Perimenopause Puzzle',
-    subtitle: "You're not broken — you're bio-shifting",
+  body: {
+    id: 'body',
+    title: 'Body',
+    subtitle: 'Energy, strength & physical vitality',
+    description: "Build sustainable energy, optimize metabolic function, and support your body's natural resilience through targeted interventions.",
+    icon: Activity,
+    pillar: 'body',
+    imagePath: '/src/assets/body-pillar.png',
+    symptomIds: ['energy-levels', 'joint-pain', 'bloating', 'gut', 'weight-changes', 'sleep'],
+    protocolHighlights: [
+      'Mitochondrial support protocols',
+      'Anti-inflammatory interventions',
+      'Gut microbiome optimization',
+      'Movement and recovery strategies',
+      'Metabolic enhancement'
+    ],
+    cta: 'Explore Body Assessments',
+    estimatedTime: '20-30 min'
+  },
+  balance: {
+    id: 'balance',
+    title: 'Balance',
+    subtitle: 'Hormonal harmony & emotional equilibrium',
+    description: 'Navigate hormonal transitions, regulate stress response, and cultivate emotional balance through science-backed protocols.',
     icon: Heart,
     pillar: 'balance',
-    symptomIds: ['hot-flashes', 'night-sweats', 'irregular-periods', 'weight-changes', 'sexual-function', 'menopause-brain-health'],
-    cta: 'HormoneCompass™ Quiz',
-    estimatedTime: '10-15 min'
+    imagePath: '/src/assets/balance-pillar.png',
+    symptomIds: ['hot-flashes', 'night-sweats', 'irregular-periods', 'mood', 'anxiety', 'weight-changes', 'sexual-function', 'menopause-brain-health'],
+    protocolHighlights: [
+      'Hormone balancing protocols',
+      'Stress adaptation techniques',
+      'Temperature regulation strategies',
+      'Circadian rhythm optimization',
+      'Emotional resilience building'
+    ],
+    cta: 'Explore Balance Assessments',
+    estimatedTime: '30-40 min'
   },
   beauty: {
-    id: 'glow-within',
-    title: 'Glow From Within',
-    subtitle: 'Your glow is your longevity signal',
+    id: 'beauty',
+    title: 'Beauty',
+    subtitle: 'Cellular health & radiant vitality',
+    description: 'Enhance your natural radiance from within through cellular optimization, collagen support, and longevity-focused interventions.',
     icon: Sparkles,
     pillar: 'beauty',
-    symptomIds: ['skin-health', 'hair-thinning', 'appearance-concerns'],
-    cta: 'Cellular Beauty Plan',
-    estimatedTime: '8-12 min'
-  },
-  stress: {
-    id: 'stress-superpower',
-    title: 'Stress Is Your Superpower',
-    subtitle: 'Learn to bend, not break',
-    icon: Activity,
-    pillar: 'brain',
-    symptomIds: ['anxiety', 'mood', 'sleep', 'headaches'],
-    cta: 'Stress Reset Program',
-    estimatedTime: '10-15 min'
+    imagePath: '/src/assets/beauty-pillar.png',
+    symptomIds: ['skin-health', 'hair-thinning', 'appearance-concerns', 'sleep'],
+    protocolHighlights: [
+      'Collagen synthesis support',
+      'Cellular rejuvenation protocols',
+      'Nutrient optimization for skin & hair',
+      'Antioxidant protection strategies',
+      'Beauty-from-within interventions'
+    ],
+    cta: 'Explore Beauty Assessments',
+    estimatedTime: '15-25 min'
   }
 };
 

@@ -39,14 +39,15 @@ const SymptomAssessmentSelection = ({
   const { toast } = useToast();
   const [includeCompleted, setIncludeCompleted] = useState(false);
 
-  const theme = Object.values(TRIAGE_THEMES).find(t => t.id === themeId);
+  // Support both old theme IDs and new pillar IDs
+  const theme = TRIAGE_THEMES[themeId] || Object.values(TRIAGE_THEMES).find(t => t.id === themeId);
   if (!theme) return null;
 
   const ThemeIcon = theme.icon;
 
-  // Filter symptoms based on theme
+  // Filter symptoms based on theme/pillar
   const filteredSymptoms = symptoms.filter(symptom => 
-    theme.symptomIds.includes(symptom.id)
+    theme.symptomIds.includes(symptom.id) || symptom.pillars?.includes(themeId)
   );
 
   const isCompleted = (symptomId: string) => {
