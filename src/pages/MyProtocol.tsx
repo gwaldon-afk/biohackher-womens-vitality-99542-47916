@@ -162,7 +162,7 @@ const MyProtocol = () => {
               <p className="text-muted-foreground mb-6">
                 Complete your first symptom assessment to receive personalized supplement recommendations.
               </p>
-              <Button onClick={() => navigate('/symptoms')}>
+              <Button onClick={() => navigate('/pillars')}>
                 Take Your First Assessment
               </Button>
             </CardContent>
@@ -206,7 +206,7 @@ const MyProtocol = () => {
                   <p className="text-muted-foreground mb-6">
                     Build your complete wellness protocol including supplements, nutrition, exercise, therapies, and daily habits.
                   </p>
-                  <Button onClick={() => navigate('/symptoms')}>
+                  <Button onClick={() => navigate('/pillars')}>
                     Start with an Assessment
                   </Button>
                 </CardContent>
@@ -539,7 +539,7 @@ const MyProtocol = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => navigate('/symptoms')}
+                  onClick={() => navigate('/pillars')}
                 >
                   Take More Assessments to Expand Your Protocol
                 </Button>

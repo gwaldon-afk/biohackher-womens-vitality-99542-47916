@@ -115,7 +115,7 @@ const AssessmentResults = () => {
 
   const handleSaveAndExit = () => {
     flowStore.clearFlow();
-    navigate('/symptoms');
+    navigate('/pillars');
   };
 
   const handleViewProfile = () => {
@@ -133,7 +133,7 @@ const AssessmentResults = () => {
       handleContinueToNext();
     } else {
       flowStore.clearFlow();
-      navigate('/symptoms');
+      navigate('/pillars');
     }
   };
 
@@ -479,7 +479,7 @@ const AssessmentResults = () => {
                   assessments={allUserAssessments}
                   totalInFlow={flowStore.assessmentQueue.length}
                   onContinueToNext={hasMore ? handleContinueToNext : undefined}
-                  onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
+                  onViewFullAnalysis={() => navigate('/pillars?view=history&tab=overview')}
                 />
               ) : (
                 <ProgressiveHealthOverviewLocked

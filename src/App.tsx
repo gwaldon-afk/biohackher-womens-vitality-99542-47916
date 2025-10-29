@@ -15,7 +15,7 @@ import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
-import Symptoms from "./pages/Symptoms";
+
 import SymptomAssessment from "./pages/SymptomAssessment";
 import AssessmentResults from "./pages/AssessmentResults";
 import AssessmentHistory from "./pages/AssessmentHistory";
@@ -131,7 +131,7 @@ const App = () => (
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/symptom-trends" element={<SymptomTrends />} />
                 <Route path="/wearables" element={<ProtectedRoute><WearableIntegrations /></ProtectedRoute>} />
-                <Route path="/symptoms" element={<Symptoms />} />
+                <Route path="/symptoms" element={<Navigate to="/pillars" replace />} />
             <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
             <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
             <Route path="/assessment-history" element={<AssessmentHistory />} />
@@ -159,7 +159,7 @@ const App = () => (
             <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
             <Route path="/about" element={<About />} />
             <Route path="/health-assistant" element={<HealthAssistant />} />
-            <Route path="/symptom-tracking" element={<Symptoms />} />
+            <Route path="/symptom-tracking" element={<Navigate to="/pillars" replace />} />
             <Route path="/import-research" element={<ImportResearch />} />
             <Route path="/goals-preview" element={<GuestGoalsPreview />} />
           {/* Goals Dashboard - Redirect to main dashboard */}

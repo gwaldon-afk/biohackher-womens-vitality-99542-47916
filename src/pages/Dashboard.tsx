@@ -282,7 +282,7 @@ const Dashboard = () => {
       recommendations.push({
         title: "Start Your Health Assessment",
         description: "Take your first symptom assessment to get personalised recommendations",
-        action: () => navigate('/symptoms'),
+        action: () => navigate('/pillars'),
         priority: 'high'
       });
     }
@@ -315,7 +315,7 @@ const Dashboard = () => {
       subtitle: "Assessment History & Reports", 
       icon: History,
       variant: "default" as const,
-      onClick: () => navigate('/symptoms?from=dashboard'),
+      onClick: () => navigate('/pillars?from=dashboard'),
       className: "bg-primary text-primary-foreground hover:bg-primary/90"
     },
     {
@@ -323,7 +323,7 @@ const Dashboard = () => {
       subtitle: "Complete your wellness check",
       icon: FileText,
       variant: "outline" as const,
-      onClick: () => navigate('/symptoms'),
+      onClick: () => navigate('/pillars'),
       className: "border-primary/20 text-primary hover:bg-primary/5"
     },
     {
@@ -564,7 +564,7 @@ const Dashboard = () => {
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        onClick={() => navigate('/symptoms?view=history&tab=overview')}
+                        onClick={() => navigate('/pillars?view=history&tab=overview')}
                       >
                         View Full Analysis
                         <ChevronRight className="h-4 w-4 ml-1" />
@@ -583,7 +583,7 @@ const Dashboard = () => {
                         updated_at: a.completed_at
                       }))}
                       compact={false}
-                      onViewFullAnalysis={() => navigate('/symptoms?view=history&tab=overview')}
+                      onViewFullAnalysis={() => navigate('/pillars?view=history&tab=overview')}
                     />
                   </CardContent>
                 </Card>

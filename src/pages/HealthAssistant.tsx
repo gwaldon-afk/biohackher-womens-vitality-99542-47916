@@ -308,7 +308,7 @@ const HealthAssistant = () => {
                                       if (assessment.id) {
                                         navigate(`/assessment/${assessment.id}`);
                                       } else {
-                                        navigate('/symptoms');
+                                        navigate('/pillars');
                                       }
                                     } else {
                                       navigate('/auth');

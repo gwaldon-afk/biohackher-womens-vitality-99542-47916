@@ -244,7 +244,7 @@ const AssessmentHistory = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(referrer === 'symptoms' ? '/symptoms' : '/dashboard')}
+              onClick={() => navigate(referrer === 'symptoms' ? '/pillars' : '/dashboard')}
               className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -270,7 +270,7 @@ const AssessmentHistory = () => {
               <p className="text-muted-foreground mb-4">
                 Complete your first symptom assessment to start tracking your progress.
               </p>
-              <Button onClick={() => filterSymptom ? navigate(`/assessment/${filterSymptom}`) : navigate('/symptoms')}>
+              <Button onClick={() => filterSymptom ? navigate(`/assessment/${filterSymptom}`) : navigate('/pillars')}>
                 Start Assessment
               </Button>
             </CardContent>
@@ -305,7 +305,7 @@ const AssessmentHistory = () => {
                     <p className="text-muted-foreground mb-4">
                       Your comprehensive health overview will appear here after you complete at least 2 assessments.
                     </p>
-                    <Button onClick={() => navigate('/symptoms')}>
+                    <Button onClick={() => navigate('/pillars')}>
                       Take More Assessments
                     </Button>
                   </CardContent>

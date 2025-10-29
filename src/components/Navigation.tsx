@@ -36,7 +36,7 @@ const Navigation = () => {
     { href: "/experts", label: "Find Experts" },
     { href: "/hormone-compass", label: "HormoneCompass™" },
     { href: "/energy-loop", label: "Energy Loop" },
-    { href: "/symptoms", label: "Symptom Tracking" },
+    { href: "/pillars", label: "Symptom Tracking" },
     { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },
     { href: "/health-assistant", label: "Ask Us" },
