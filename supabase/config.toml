@@ -1,1 +1,52 @@
 project_id = "ictdgxsynjnmsevcegvu"
+
+[functions.analyze-assessment-results]
+verify_jwt = true
+
+[functions.analyze-energy-loop]
+verify_jwt = true
+
+[functions.analyze-health-patterns]
+verify_jwt = true
+
+[functions.compile-research]
+verify_jwt = true
+
+[functions.create-payment]
+verify_jwt = true
+
+[functions.data-sync-wearable]
+verify_jwt = true
+
+[functions.generate-energy-insights]
+verify_jwt = true
+
+[functions.generate-goal-insights]
+verify_jwt = true
+
+[functions.generate-goal-optimization]
+verify_jwt = true
+
+[functions.generate-goal-suggestions]
+verify_jwt = true
+
+[functions.generate-insights]
+verify_jwt = true
+
+[functions.generate-meal-plan]
+verify_jwt = true
+
+[functions.generate-monthly-report]
+verify_jwt = true
+
+[functions.generate-protocol-from-assessments]
+verify_jwt = true
+
+[functions.health-assistant]
+verify_jwt = true
+
+[functions.score-calculate]
+verify_jwt = true
+
+[functions.score-history]
+verify_jwt = true
