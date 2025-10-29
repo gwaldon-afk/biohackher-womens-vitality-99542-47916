@@ -135,15 +135,15 @@ const Index = () => {
 
             <Card 
               className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/assessment/weight-changes")}
+              onClick={() => navigate("/assessment/body-composition")}
             >
               <CardHeader>
-                <Scale className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Body Composition</CardTitle>
+                <Activity className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
+                <CardTitle className="text-lg group-hover:text-primary transition-colors">Body Composition & Metabolism</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Build lean muscle, optimize metabolism, sustainable weight management
+                  Optimize muscle mass, metabolic health, and body composition for longevity
                 </p>
                 <div className="flex items-center gap-2 text-primary text-sm font-medium">
                   <span>Start Assessment</span>

@@ -306,6 +306,169 @@ export async function generateProtocolFromSymptom(
 }
 
 /**
+ * Generate protocol items from body composition assessment
+ */
+export async function generateProtocolFromBodyComposition(
+  userId: string,
+  score: number,
+  category: string,
+  answers: Record<string, number>
+): Promise<boolean> {
+  try {
+    const protocolId = await getOrCreateUserProtocol(userId, 'Body Composition Protocol');
+    if (!protocolId) throw new Error('Failed to create protocol');
+
+    const items: ProtocolItem[] = [];
+
+    // Protocol items for Poor/Fair scores (0-21 points)
+    if (category === 'poor' || category === 'fair') {
+      // Protein optimization (if protein intake insufficient)
+      if (answers['protein-intake'] && answers['protein-intake'] < 3) {
+        items.push({
+          name: 'Protein Optimization',
+          description: 'Target 1.6-2.2g protein per kg bodyweight daily',
+          item_type: 'diet',
+          frequency: 'daily',
+          time_of_day: ['morning', 'afternoon', 'evening'],
+          notes: 'Distribute protein across all meals for optimal muscle synthesis'
+        });
+      }
+
+      // Resistance training (if strength training frequency low)
+      if (answers['strength-training-frequency'] && answers['strength-training-frequency'] < 3) {
+        items.push({
+          name: 'Progressive Resistance Training',
+          description: 'Full-body strength training 3x per week',
+          item_type: 'exercise',
+          frequency: 'three_times_daily',
+          time_of_day: ['morning', 'afternoon'],
+          notes: 'Focus on compound movements: squats, deadlifts, presses'
+        });
+      }
+
+      // Metabolic support (if muscle mass concerns or metabolic issues)
+      if ((answers['muscle-mass-perception'] && answers['muscle-mass-perception'] < 3) || 
+          (answers['metabolic-indicators'] && answers['metabolic-indicators'] < 3)) {
+        items.push({
+          name: 'Creatine Monohydrate',
+          description: 'Supports muscle mass, strength, and metabolic health',
+          item_type: 'supplement',
+          frequency: 'daily',
+          time_of_day: ['morning'],
+          dosage: '5g daily (timing flexible)'
+        });
+      }
+
+      // Recovery protocol (if sleep/recovery poor)
+      if (answers['recovery-sleep-quality'] && answers['recovery-sleep-quality'] < 3) {
+        items.push({
+          name: 'Recovery Optimization',
+          description: 'Magnesium glycinate + prioritize 7-9 hours sleep',
+          item_type: 'supplement',
+          frequency: 'daily',
+          time_of_day: ['evening'],
+          dosage: '400mg magnesium glycinate',
+          notes: 'Sleep is critical for muscle recovery and body composition'
+        });
+      }
+
+      // Body composition tracking habit
+      items.push({
+        name: 'Body Composition Tracking',
+        description: 'Weekly measurements: weight, waist, progress photos',
+        item_type: 'habit',
+        frequency: 'weekly',
+        time_of_day: ['morning'],
+        notes: 'Same day/time each week for consistency'
+      });
+
+      // Whole food nutrition (if processed food intake high)
+      if (answers['whole-foods-intake'] && answers['whole-foods-intake'] < 3) {
+        items.push({
+          name: 'Whole Food Nutrition',
+          description: '80/20 rule - 80% whole foods, 20% flexible',
+          item_type: 'diet',
+          frequency: 'daily',
+          time_of_day: ['morning', 'afternoon', 'evening'],
+          notes: 'Focus on vegetables, lean proteins, healthy fats, whole grains'
+        });
+      }
+    }
+
+    // Protocol items for Good scores (22-29 points)
+    if (category === 'good') {
+      items.push({
+        name: 'Advanced Training Program',
+        description: 'Periodized strength program with progressive overload',
+        item_type: 'exercise',
+        frequency: 'three_times_daily',
+        time_of_day: ['morning', 'afternoon'],
+        notes: 'Vary rep ranges: 6-8 (strength), 8-12 (hypertrophy), 12-15 (endurance)'
+      });
+
+      items.push({
+        name: 'Performance Nutrition',
+        description: 'Nutrient timing: protein + carbs around workouts',
+        item_type: 'diet',
+        frequency: 'daily',
+        time_of_day: ['morning', 'afternoon'],
+        notes: 'Pre-workout: carbs for energy. Post-workout: protein + carbs for recovery'
+      });
+
+      items.push({
+        name: 'Body Recomposition',
+        description: 'Slight caloric deficit on rest days, maintenance on training days',
+        item_type: 'diet',
+        frequency: 'daily',
+        time_of_day: ['morning', 'afternoon', 'evening'],
+        notes: 'For simultaneous fat loss and muscle gain'
+      });
+    }
+
+    // Protocol items for Excellent scores (30-36 points)
+    if (category === 'excellent') {
+      items.push({
+        name: 'Advanced Body Composition',
+        description: 'Periodization, deload weeks, advanced techniques',
+        item_type: 'exercise',
+        frequency: 'daily',
+        time_of_day: ['morning', 'afternoon'],
+        notes: 'Focus on fine-tuning and maintaining excellence'
+      });
+
+      items.push({
+        name: 'Quarterly DEXA Tracking',
+        description: 'Professional body composition analysis',
+        item_type: 'habit',
+        frequency: 'as_needed',
+        time_of_day: ['morning'],
+        notes: 'Track lean mass, fat mass, bone density trends'
+      });
+    }
+
+    // Insert items if any were generated
+    if (items.length > 0) {
+      const { error: insertError } = await supabase
+        .from('protocol_items')
+        .insert(
+          items.map(item => ({
+            protocol_id: protocolId,
+            ...item,
+            is_active: true
+          }))
+        );
+
+      if (insertError) throw insertError;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error generating body composition protocol:', error);
+    throw error;
+  }
+}
+
+/**
  * Generate protocol items from hormone compass stage
  */
 export async function generateProtocolFromHormoneStage(
@@ -443,7 +606,7 @@ export async function generateProtocolFromHormoneStage(
  */
 export async function updateUserProfileAfterAssessment(
   userId: string,
-  assessmentType: 'lis' | 'symptom' | 'hormone',
+  assessmentType: 'lis' | 'symptom' | 'hormone' | 'body-composition',
   data: any
 ): Promise<void> {
   try {
@@ -465,6 +628,9 @@ export async function updateUserProfileAfterAssessment(
       updates.menopause_stage = data.stage;
       updates.menopause_stage_confidence = data.confidence;
       updates.hormone_assessment_date = new Date().toISOString().split('T')[0];
+    } else if (assessmentType === 'body-composition') {
+      updates.last_body_comp_assessment = new Date().toISOString();
+      updates.body_comp_score = data.score;
     }
 
     // Upsert to user_health_profile
@@ -488,6 +654,11 @@ export async function updateUserProfileAfterAssessment(
         .update({ hormone_compass_enabled: true })
         .eq('user_id', userId);
     } else if (assessmentType === 'symptom' && data.symptomType?.includes('energy')) {
+      await supabase
+        .from('profiles')
+        .update({ energy_loop_enabled: true })
+        .eq('user_id', userId);
+    } else if (assessmentType === 'body-composition') {
       await supabase
         .from('profiles')
         .update({ energy_loop_enabled: true })

@@ -250,6 +250,132 @@ const sleepQuality: AssessmentConfig = {
 
 // BODY & PHYSICAL ASSESSMENTS
 
+const bodyComposition: AssessmentConfig = {
+  id: "body-composition",
+  name: "Body Composition & Metabolism Assessment",
+  description: "Evaluate muscle mass, metabolic health, and body composition for longevity optimization",
+  pillar: "body",
+  questions: [
+    {
+      id: "muscle-mass-perception",
+      category: "Muscle & Strength",
+      question: "How would you describe your current muscle mass and strength?",
+      options: [
+        { text: "Strong and well-developed muscle mass", score: 4 },
+        { text: "Moderate muscle mass with room to improve", score: 3 },
+        { text: "Below average muscle mass", score: 2 },
+        { text: "Very low muscle mass, feeling weak", score: 1 },
+        { text: "Unsure or not applicable", score: 0 }
+      ]
+    },
+    {
+      id: "strength-training-frequency",
+      category: "Muscle & Strength",
+      question: "How often do you engage in resistance/strength training?",
+      options: [
+        { text: "4+ times per week with progressive overload", score: 4 },
+        { text: "2-3 times per week consistently", score: 3 },
+        { text: "Once per week or occasionally", score: 2 },
+        { text: "Rarely or never", score: 1 }
+      ]
+    },
+    {
+      id: "cardiovascular-activity",
+      category: "Metabolic Health",
+      question: "How much cardiovascular/aerobic activity do you do weekly?",
+      options: [
+        { text: "150+ minutes of moderate or 75+ vigorous", score: 4 },
+        { text: "100-150 minutes moderate activity", score: 3 },
+        { text: "30-100 minutes of activity", score: 2 },
+        { text: "Less than 30 minutes per week", score: 1 }
+      ]
+    },
+    {
+      id: "functional-movement",
+      category: "Muscle & Strength",
+      question: "How easily can you perform daily functional movements (stairs, lifting, squatting)?",
+      options: [
+        { text: "Very easily without fatigue", score: 4 },
+        { text: "Comfortably with minor effort", score: 3 },
+        { text: "With some difficulty or discomfort", score: 2 },
+        { text: "Very difficult or painful", score: 1 }
+      ]
+    },
+    {
+      id: "energy-throughout-day",
+      category: "Metabolic Health",
+      question: "How stable is your energy throughout the day?",
+      options: [
+        { text: "Consistently high and stable", score: 4 },
+        { text: "Generally good with minor dips", score: 3 },
+        { text: "Frequent energy crashes or low energy", score: 2 },
+        { text: "Constantly tired and low energy", score: 1 }
+      ]
+    },
+    {
+      id: "metabolic-indicators",
+      category: "Metabolic Health",
+      question: "Do you experience signs of poor metabolic health (blood sugar spikes, insulin resistance, constant hunger)?",
+      options: [
+        { text: "No metabolic concerns", score: 4 },
+        { text: "Occasional mild symptoms", score: 3 },
+        { text: "Frequent metabolic symptoms", score: 2 },
+        { text: "Diagnosed metabolic issues or severe symptoms", score: 1 }
+      ]
+    },
+    {
+      id: "protein-intake",
+      category: "Nutrition",
+      question: "How adequate is your daily protein intake (aim: 1.6-2.2g per kg bodyweight)?",
+      options: [
+        { text: "I consistently meet or exceed protein targets", score: 4 },
+        { text: "I usually get adequate protein most days", score: 3 },
+        { text: "My protein intake is often insufficient", score: 2 },
+        { text: "I rarely prioritize protein", score: 1 }
+      ]
+    },
+    {
+      id: "whole-foods-intake",
+      category: "Nutrition",
+      question: "What percentage of your diet consists of whole, unprocessed foods?",
+      options: [
+        { text: "80%+ whole foods", score: 4 },
+        { text: "60-80% whole foods", score: 3 },
+        { text: "40-60% whole foods", score: 2 },
+        { text: "Less than 40% whole foods", score: 1 }
+      ]
+    },
+    {
+      id: "recovery-sleep-quality",
+      category: "Recovery",
+      question: "How would you rate your sleep quality and recovery?",
+      options: [
+        { text: "Excellent - 7-9 hours, wake refreshed", score: 4 },
+        { text: "Good - Usually adequate sleep", score: 3 },
+        { text: "Fair - Inconsistent or poor quality", score: 2 },
+        { text: "Poor - Chronic sleep issues", score: 1 }
+      ]
+    },
+    {
+      id: "body-composition-goals",
+      category: "Goals & Tracking",
+      question: "Do you actively track and work toward body composition goals?",
+      options: [
+        { text: "Yes, I track metrics and adjust regularly", score: 4 },
+        { text: "I have goals but track inconsistently", score: 3 },
+        { text: "I have goals but don't track", score: 2 },
+        { text: "No specific goals or tracking", score: 1 }
+      ]
+    }
+  ],
+  scoringGuidance: {
+    excellent: { min: 30, max: 36, description: "Optimal body composition and metabolic health - excellent foundation for longevity" },
+    good: { min: 22, max: 29, description: "Solid body composition with room for targeted optimization" },
+    fair: { min: 14, max: 21, description: "Moderate body composition concerns requiring focused intervention" },
+    poor: { min: 0, max: 13, description: "Significant body composition challenges - professional guidance recommended" }
+  }
+};
+
 const energyLevels: AssessmentConfig = {
   id: "energy-levels",
   name: "Energy Levels Assessment",
@@ -2316,5 +2442,6 @@ export const assessmentConfigs: Record<string, AssessmentConfig> = {
   "hormone-optimization": hormoneOptimization,
   "cellular-vitality": cellularVitality,
   "skin-performance": skinPerformance,
-  "recovery-appearance": recoveryAppearance
+  "recovery-appearance": recoveryAppearance,
+  "body-composition": bodyComposition
 };
