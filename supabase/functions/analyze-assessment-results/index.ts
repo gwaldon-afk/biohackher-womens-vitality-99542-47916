@@ -253,7 +253,7 @@ async function fetchUserHealthContext(supabase: any, userId: string) {
     age: profile?.chronological_age,
     biologicalAge: profile?.biological_age,
     assessmentCount: assessments?.length || 0,
-    activeGoals: goals?.map(g => g.goal_name) || []
+    activeGoals: goals?.map((g: any) => g.goal_name) || []
   };
 }
 

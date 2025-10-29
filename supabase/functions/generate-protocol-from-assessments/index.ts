@@ -358,6 +358,63 @@ serve(async (req) => {
 
     if (symptomError) throw symptomError;
 
+    // FALLBACK: If no pillar assessments, try to fetch from daily_scores (LIS baseline)
+    let lisScores: any[] = [];
+    if (!pillarAssessments || pillarAssessments.length === 0) {
+      console.log('No pillar assessments found, checking daily_scores for baseline LIS data');
+      
+      const { data: dailyScoresData, error: dailyScoresError } = await supabase
+        .from('daily_scores')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_baseline', true)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (dailyScoresError) {
+        console.error('Error fetching daily scores:', dailyScoresError);
+      } else if (dailyScoresData && dailyScoresData.length > 0) {
+        const baselineScore = dailyScoresData[0];
+        console.log('Found baseline LIS score:', baselineScore.total_score);
+        
+        // Extract pillar scores from the baseline LIS assessment
+        lisScores = [
+          {
+            pillar: 'brain',
+            assessment_id: 'brain-health',
+            score: baselineScore.brain_score || 0,
+            score_category: baselineScore.brain_score < 40 ? 'poor' : baselineScore.brain_score < 65 ? 'fair' : 'good',
+            completed_at: baselineScore.created_at,
+            source: 'lis_baseline'
+          },
+          {
+            pillar: 'body',
+            assessment_id: 'body-health',
+            score: baselineScore.body_score || 0,
+            score_category: baselineScore.body_score < 40 ? 'poor' : baselineScore.body_score < 65 ? 'fair' : 'good',
+            completed_at: baselineScore.created_at,
+            source: 'lis_baseline'
+          },
+          {
+            pillar: 'balance',
+            assessment_id: 'balance-health',
+            score: baselineScore.balance_score || 0,
+            score_category: baselineScore.balance_score < 40 ? 'poor' : baselineScore.balance_score < 65 ? 'fair' : 'good',
+            completed_at: baselineScore.created_at,
+            source: 'lis_baseline'
+          },
+          {
+            pillar: 'beauty',
+            assessment_id: 'beauty-health',
+            score: baselineScore.beauty_score || 0,
+            score_category: baselineScore.beauty_score < 40 ? 'poor' : baselineScore.beauty_score < 65 ? 'fair' : 'good',
+            completed_at: baselineScore.created_at,
+            source: 'lis_baseline'
+          }
+        ];
+      }
+    }
+
     // Combine both assessment types
     const assessments = [
       ...(pillarAssessments || []).map(a => ({
@@ -372,7 +429,8 @@ serve(async (req) => {
         score_category: a.score_category,
         completed_at: a.completed_at,
         source: 'symptom'
-      }))
+      })),
+      ...lisScores
     ];
 
     if (!assessments || assessments.length === 0) {
@@ -381,6 +439,8 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    console.log(`Found ${assessments.length} assessments from ${new Set(assessments.map(a => a.source)).size} sources`);
 
     // 2. Analyze assessments to identify focus areas
     const focusAreas: any[] = [];

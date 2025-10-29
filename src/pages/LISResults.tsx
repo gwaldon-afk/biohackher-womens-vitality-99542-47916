@@ -16,6 +16,8 @@ import { LISRadarLegend } from '@/components/LISRadarLegend';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
+import { useProtocolGeneration } from '@/hooks/useProtocolGeneration';
+import { useProtocols } from '@/hooks/useProtocols';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -25,6 +27,8 @@ const LISResults = () => {
   const score = parseFloat(searchParams.get('score') || '0');
   const lisData = useLISData();
   const { toast } = useToast();
+  const { generateProtocolFromAssessments, loading: protocolGenerating } = useProtocolGeneration();
+  const { protocols, loading: protocolsLoading } = useProtocols();
   
   // Check if this is a new baseline assessment
   const isNewBaseline = searchParams.get('isNewBaseline') === 'true';
@@ -34,6 +38,10 @@ const LISResults = () => {
   // State for baseline data
   const [baselineData, setBaselineData] = useState<any>(null);
   const [chronologicalAge, setChronologicalAge] = useState<number>(0);
+  const [protocolGenerated, setProtocolGenerated] = useState(false);
+  
+  // Check if user has an active protocol
+  const hasActiveProtocol = protocols && protocols.length > 0;
 
   // Fetch baseline assessment data when isNewBaseline is true
   useEffect(() => {
@@ -56,6 +64,25 @@ const LISResults = () => {
       fetchBaseline();
     }
   }, [isNewBaseline, user]);
+
+  // Auto-generate protocol if new baseline and no active protocol yet
+  useEffect(() => {
+    if (isNewBaseline && user && !protocolsLoading && !hasActiveProtocol && !protocolGenerated) {
+      const generateProtocol = async () => {
+        try {
+          console.log('Auto-generating protocol from baseline LIS assessment...');
+          await generateProtocolFromAssessments();
+          setProtocolGenerated(true);
+        } catch (error) {
+          console.error('Failed to auto-generate protocol:', error);
+        }
+      };
+      
+      // Add a small delay to ensure assessment data is saved
+      const timer = setTimeout(generateProtocol, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isNewBaseline, user, protocolsLoading, hasActiveProtocol, protocolGenerated, generateProtocolFromAssessments]);
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
@@ -664,9 +691,10 @@ const LISResults = () => {
                         onClick={() => navigate('/my-protocol')}
                         size="lg"
                         className="gap-2"
+                        disabled={protocolGenerating || protocolsLoading}
                       >
                         <Sparkles className="w-5 h-5" />
-                        View Your Personalized Protocol
+                        {protocolGenerating ? 'Generating Your Protocol...' : 'View Your Personalized Protocol'}
                       </Button>
                     </div>
                   )}
