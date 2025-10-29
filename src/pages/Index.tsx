@@ -257,10 +257,16 @@ const Index = () => {
 
             {/* Create Account to Unlock */}
             <div className="max-w-2xl mx-auto">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">Create Free Account to Unlock</h3>
-                <p className="text-muted-foreground">Save your results and access personalized protocols</p>
-              </div>
+            <div className="text-center mb-8">
+              <Button 
+                size="lg"
+                onClick={() => navigate("/auth")}
+                className="text-xl px-8 py-6 h-auto mb-2"
+              >
+                Create Free Account to Unlock
+              </Button>
+              <p className="text-muted-foreground">Save your results and access personalized protocols</p>
+            </div>
               
               <div className="grid gap-4">
                 {[
