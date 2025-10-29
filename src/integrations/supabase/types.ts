@@ -3105,6 +3105,7 @@ export type Database = {
       }
       user_health_profile: {
         Row: {
+          body_comp_score: number | null
           chronic_fatigue_risk: boolean | null
           created_at: string | null
           current_bmi: number | null
@@ -3116,6 +3117,7 @@ export type Database = {
           initial_subjective_age_delta: number | null
           is_current_smoker: boolean | null
           is_former_smoker: boolean | null
+          last_body_comp_assessment: string | null
           latest_energy_category: string | null
           latest_energy_score: number | null
           social_engagement_baseline: number | null
@@ -3124,6 +3126,7 @@ export type Database = {
           weight_kg: number | null
         }
         Insert: {
+          body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
           created_at?: string | null
           current_bmi?: number | null
@@ -3135,6 +3138,7 @@ export type Database = {
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          last_body_comp_assessment?: string | null
           latest_energy_category?: string | null
           latest_energy_score?: number | null
           social_engagement_baseline?: number | null
@@ -3143,6 +3147,7 @@ export type Database = {
           weight_kg?: number | null
         }
         Update: {
+          body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
           created_at?: string | null
           current_bmi?: number | null
@@ -3154,6 +3159,7 @@ export type Database = {
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          last_body_comp_assessment?: string | null
           latest_energy_category?: string | null
           latest_energy_score?: number | null
           social_engagement_baseline?: number | null
