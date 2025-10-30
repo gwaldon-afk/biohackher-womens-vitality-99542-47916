@@ -14,9 +14,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import EvidenceBadge from './EvidenceBadge';
-import { ExternalLink, Users, FlaskConical, X } from 'lucide-react';
+import { ExternalLink, Users, FlaskConical, X, Search } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import AdditionalResearchModal from './AdditionalResearchModal';
+import { useState } from 'react';
 
 const studyTypeIcons: Record<string, any> = {
   'rct': FlaskConical,
@@ -41,6 +43,7 @@ const EvidenceDrawer = () => {
   const { data, isLoading } = useEvidence(currentEvidence?.key || '', {
     enabled: isOpen && !!currentEvidence?.key,
   });
+  const [showAdditionalResearch, setShowAdditionalResearch] = useState(false);
 
   const evidenceLevel = data?.studies[0]?.evidence_level;
   const womenSpecificStudies = data?.studies.filter(s => s.is_women_specific) || [];
@@ -239,11 +242,26 @@ const EvidenceDrawer = () => {
         </ScrollArea>
 
         <DrawerFooter className="border-t">
+          <Button 
+            variant="default" 
+            onClick={() => setShowAdditionalResearch(true)}
+            className="w-full"
+          >
+            <Search className="h-4 w-4 mr-2" />
+            Find More Research on PubMed
+          </Button>
           <Button variant="outline" onClick={closeEvidence} className="w-full">
             Close
           </Button>
         </DrawerFooter>
       </DrawerContent>
+
+      <AdditionalResearchModal
+        open={showAdditionalResearch}
+        onOpenChange={setShowAdditionalResearch}
+        interventionName={currentEvidence?.title || ''}
+        interventionType={data?.studies[0]?.related_pillars?.[0] || 'supplement'}
+      />
     </Drawer>
   );
 };
