@@ -7,11 +7,13 @@ import Navigation from "@/components/Navigation";
 import brandFaceLogo from "@/assets/brand-face-logo.jpg";
 import { Heart, Users, Award, Mic, Mail, MapPin, Phone, Send, BookOpen, Target, Sparkles, GraduationCap, FileText } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { getTotalStudyCount } from "@/data/researchEvidence";
 
 const About = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'mission';
+  const totalStudies = getTotalStudyCount();
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,7 +241,7 @@ const About = () => {
                 Research <span className="text-primary">Evidence</span>
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                500+ peer-reviewed studies backing every recommendation
+                {totalStudies}+ peer-reviewed studies backing every recommendation
               </p>
             </div>
 
