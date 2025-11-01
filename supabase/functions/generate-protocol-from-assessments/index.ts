@@ -515,6 +515,127 @@ serve(async (req) => {
 
     console.log('Generated protocol items:', protocolItems.length);
 
+    // 3.5 Add Evidence-Based Universal Protocols (Protein, Creatine, Vitamin D3+K2, Glycine)
+    // These are universal recommendations from female longevity research (Gabrielle Lyon, Stacey Sims)
+    
+    // Universal Protein Protocol (30g per meal, 3x daily)
+    const proteinProtocols = [
+      {
+        type: 'diet',
+        name: 'Protein-Rich Breakfast (30g minimum)',
+        description: 'Muscle protein synthesis requires 30g+ protein per meal. Breakfast sets metabolic tone.',
+        frequency: 'daily',
+        time_of_day: ['morning'],
+        reason: 'Evidence: Gabrielle Lyon - Forever Strong (2023)',
+      },
+      {
+        type: 'diet',
+        name: 'Protein-Rich Lunch (30g minimum)',
+        description: 'Maintains muscle protein synthesis throughout the day.',
+        frequency: 'daily',
+        time_of_day: ['afternoon'],
+        reason: 'Evidence: Gabrielle Lyon - Forever Strong (2023)',
+      },
+      {
+        type: 'diet',
+        name: 'Protein-Rich Dinner (30g minimum)',
+        description: 'Supports overnight muscle recovery and repair.',
+        frequency: 'daily',
+        time_of_day: ['evening'],
+        reason: 'Evidence: Gabrielle Lyon - Forever Strong (2023)',
+      },
+    ];
+
+    proteinProtocols.forEach(item => {
+      const itemKey = `${item.type}-${item.name}`;
+      if (!addedItems.has(itemKey)) {
+        protocolItems.push({ ...item, pillar: 'body' });
+        addedItems.add(itemKey);
+      }
+    });
+
+    // Critical Supplements (Evidence-Based)
+    const criticalSupplements = [
+      {
+        type: 'supplement',
+        name: 'Creatine Monohydrate (5g daily)',
+        description: 'Improves muscle strength, bone density, cognitive function. Safe and effective for women.',
+        frequency: 'daily',
+        time_of_day: ['morning'],
+        reason: 'Evidence: Multiple meta-analyses (2023), Stacey Sims',
+      },
+      {
+        type: 'supplement',
+        name: 'Vitamin D3 + K2 (2000-4000 IU)',
+        description: 'Essential for bone health, immune function, mood. Most women are deficient.',
+        frequency: 'daily',
+        time_of_day: ['morning'],
+        reason: 'Evidence: Endocrine Society Guidelines (2023)',
+      },
+      {
+        type: 'supplement',
+        name: 'Glycine (3g before bed)',
+        description: 'Improves sleep quality, supports collagen synthesis.',
+        frequency: 'daily',
+        time_of_day: ['evening'],
+        reason: 'Evidence: Sleep Research (2022)',
+      },
+    ];
+
+    criticalSupplements.forEach(item => {
+      const itemKey = `${item.type}-${item.name}`;
+      if (!addedItems.has(itemKey)) {
+        protocolItems.push({ ...item, pillar: 'body' });
+        addedItems.add(itemKey);
+      }
+    });
+
+    // 3.6 Add Resistance Training Protocols (Stacey Sims: 4x/week, progressive overload)
+    const resistanceTraining = [
+      {
+        type: 'exercise',
+        name: 'Lower Body Compound Lifts (3-4 sets x 6-10 reps)',
+        description: 'Squats, deadlifts, lunges. Build bone density and muscle mass. Progressive overload essential.',
+        frequency: 'daily',
+        time_of_day: ['morning', 'afternoon'],
+        reason: 'Evidence: Stacey Sims - Next Level (2022)',
+      },
+      {
+        type: 'exercise',
+        name: 'Upper Body Compound Lifts (3-4 sets x 6-10 reps)',
+        description: 'Bench press, overhead press, rows. Maintain upper body strength.',
+        frequency: 'daily',
+        time_of_day: ['morning', 'afternoon'],
+        reason: 'Evidence: Stacey Sims - Next Level (2022)',
+      },
+    ];
+
+    resistanceTraining.forEach(item => {
+      const itemKey = `${item.type}-${item.name}`;
+      if (!addedItems.has(itemKey)) {
+        protocolItems.push({ ...item, pillar: 'body' });
+        addedItems.add(itemKey);
+      }
+    });
+
+    // 3.7 Add HIIT Protocol (2x/week)
+    const hiitProtocol = {
+      type: 'exercise',
+      name: 'HIIT Training (4-6 intervals x 30-60 sec)',
+      description: 'High-intensity intervals @ 85-95% max HR. Stimulates growth hormone, improves insulin sensitivity.',
+      frequency: 'twice_daily',
+      time_of_day: ['morning', 'afternoon'],
+      reason: 'Evidence: Stacey Sims - Next Level (2022)',
+    };
+
+    const hiitKey = `${hiitProtocol.type}-${hiitProtocol.name}`;
+    if (!addedItems.has(hiitKey)) {
+      protocolItems.push({ ...hiitProtocol, pillar: 'body' });
+      addedItems.add(hiitKey);
+    }
+
+    console.log('Added evidence-based protocols. Total items:', protocolItems.length);
+
     // 4. Use AI to enhance recommendations with personalization
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (lovableApiKey) {

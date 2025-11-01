@@ -25,6 +25,38 @@ export interface ResearchCitation {
   doi?: string;
   url?: string;
   key_findings?: string;
+  evidence_strength?: 'weak' | 'moderate' | 'strong' | 'very_strong';
+  expert_source?: string;
+}
+
+export interface ProtocolVersion {
+  id: string;
+  protocol_id: string;
+  version_number: number;
+  created_at: string;
+  updated_at: string;
+  change_summary?: string;
+  evidence_level?: 'low' | 'moderate' | 'high' | 'very_high';
+  research_basis?: string;
+  items_snapshot: any;
+  created_by?: string;
+}
+
+export interface ProtocolResearchLink {
+  id: string;
+  protocol_id?: string;
+  protocol_item_id?: string;
+  research_title: string;
+  authors?: string;
+  journal?: string;
+  publication_year?: number;
+  doi?: string;
+  url?: string;
+  key_findings?: string;
+  evidence_strength?: 'weak' | 'moderate' | 'strong' | 'very_strong';
+  expert_source?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Protocol {

@@ -2618,6 +2618,119 @@ export type Database = {
           },
         ]
       }
+      protocol_research_links: {
+        Row: {
+          authors: string | null
+          created_at: string | null
+          doi: string | null
+          evidence_strength: string | null
+          expert_source: string | null
+          id: string
+          journal: string | null
+          key_findings: string | null
+          protocol_id: string | null
+          protocol_item_id: string | null
+          publication_year: number | null
+          research_title: string
+          updated_at: string | null
+          url: string | null
+        }
+        Insert: {
+          authors?: string | null
+          created_at?: string | null
+          doi?: string | null
+          evidence_strength?: string | null
+          expert_source?: string | null
+          id?: string
+          journal?: string | null
+          key_findings?: string | null
+          protocol_id?: string | null
+          protocol_item_id?: string | null
+          publication_year?: number | null
+          research_title: string
+          updated_at?: string | null
+          url?: string | null
+        }
+        Update: {
+          authors?: string | null
+          created_at?: string | null
+          doi?: string | null
+          evidence_strength?: string | null
+          expert_source?: string | null
+          id?: string
+          journal?: string | null
+          key_findings?: string | null
+          protocol_id?: string | null
+          protocol_item_id?: string | null
+          publication_year?: number | null
+          research_title?: string
+          updated_at?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_research_links_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "protocols"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protocol_research_links_protocol_item_id_fkey"
+            columns: ["protocol_item_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      protocol_versions: {
+        Row: {
+          change_summary: string | null
+          created_at: string | null
+          created_by: string | null
+          evidence_level: string | null
+          id: string
+          items_snapshot: Json
+          protocol_id: string | null
+          research_basis: string | null
+          updated_at: string | null
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          evidence_level?: string | null
+          id?: string
+          items_snapshot: Json
+          protocol_id?: string | null
+          research_basis?: string | null
+          updated_at?: string | null
+          version_number: number
+        }
+        Update: {
+          change_summary?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          evidence_level?: string | null
+          id?: string
+          items_snapshot?: Json
+          protocol_id?: string | null
+          research_basis?: string | null
+          updated_at?: string | null
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_versions_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "protocols"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       protocols: {
         Row: {
           created_at: string
@@ -3206,64 +3319,94 @@ export type Database = {
       }
       user_health_profile: {
         Row: {
+          allergies_sensitivities: Json | null
           body_comp_score: number | null
           chronic_fatigue_risk: boolean | null
+          compound_lift_experience: Json | null
           created_at: string | null
           current_bmi: number | null
+          current_supplements: Json | null
           date_of_birth: string
           date_quit_smoking: string | null
           energy_assessment_date: string | null
+          exercise_preferences: Json | null
+          exercise_routine_frequency: number | null
           height_cm: number | null
           id: string
           initial_subjective_age_delta: number | null
           is_current_smoker: boolean | null
           is_former_smoker: boolean | null
+          known_deficiencies: Json | null
           last_body_comp_assessment: string | null
           latest_energy_category: string | null
           latest_energy_score: number | null
+          medication_list: Json | null
+          previous_injuries: string | null
+          protein_per_meal: number | null
           social_engagement_baseline: number | null
+          training_experience: string | null
           updated_at: string | null
           user_id: string
           weight_kg: number | null
         }
         Insert: {
+          allergies_sensitivities?: Json | null
           body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
+          compound_lift_experience?: Json | null
           created_at?: string | null
           current_bmi?: number | null
+          current_supplements?: Json | null
           date_of_birth: string
           date_quit_smoking?: string | null
           energy_assessment_date?: string | null
+          exercise_preferences?: Json | null
+          exercise_routine_frequency?: number | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          known_deficiencies?: Json | null
           last_body_comp_assessment?: string | null
           latest_energy_category?: string | null
           latest_energy_score?: number | null
+          medication_list?: Json | null
+          previous_injuries?: string | null
+          protein_per_meal?: number | null
           social_engagement_baseline?: number | null
+          training_experience?: string | null
           updated_at?: string | null
           user_id: string
           weight_kg?: number | null
         }
         Update: {
+          allergies_sensitivities?: Json | null
           body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
+          compound_lift_experience?: Json | null
           created_at?: string | null
           current_bmi?: number | null
+          current_supplements?: Json | null
           date_of_birth?: string
           date_quit_smoking?: string | null
           energy_assessment_date?: string | null
+          exercise_preferences?: Json | null
+          exercise_routine_frequency?: number | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
           is_current_smoker?: boolean | null
           is_former_smoker?: boolean | null
+          known_deficiencies?: Json | null
           last_body_comp_assessment?: string | null
           latest_energy_category?: string | null
           latest_energy_score?: number | null
+          medication_list?: Json | null
+          previous_injuries?: string | null
+          protein_per_meal?: number | null
           social_engagement_baseline?: number | null
+          training_experience?: string | null
           updated_at?: string | null
           user_id?: string
           weight_kg?: number | null

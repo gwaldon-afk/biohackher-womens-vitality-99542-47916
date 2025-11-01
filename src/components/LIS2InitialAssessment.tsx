@@ -38,6 +38,23 @@ export const LIS2InitialAssessment = () => {
     smoking_cessation_category: "never" as "never" | "current" | "quit_within_1y" | "quit_1_5y" | "quit_over_5y",
     initial_subjective_age: "",
     social_engagement_baseline: 3,
+    // Step 4: Training & Exercise History
+    training_experience: "beginner" as "beginner" | "intermediate" | "advanced",
+    exercise_routine_frequency: 0,
+    compound_lift_experience: {
+      squat: false,
+      deadlift: false,
+      bench_press: false,
+      overhead_press: false,
+    },
+    previous_injuries: "",
+    exercise_preferences: [] as string[],
+    // Step 5: Supplement & Nutrition Context
+    current_supplements: [] as string[],
+    known_deficiencies: [] as string[],
+    protein_per_meal: 0,
+    allergies_sensitivities: [] as string[],
+    medication_list: [] as string[],
   });
 
   const calculateAge = (yearOfBirth: string) => {
@@ -67,6 +84,18 @@ export const LIS2InitialAssessment = () => {
         is_former_smoker: formData.smoking_cessation_category !== "never" && formData.smoking_cessation_category !== "current",
         initial_subjective_age_delta: subjectiveAgeDelta,
         social_engagement_baseline: formData.social_engagement_baseline,
+        // Training & Exercise
+        training_experience: formData.training_experience,
+        exercise_routine_frequency: formData.exercise_routine_frequency,
+        compound_lift_experience: formData.compound_lift_experience,
+        previous_injuries: formData.previous_injuries,
+        exercise_preferences: formData.exercise_preferences,
+        // Nutrition & Supplements
+        current_supplements: formData.current_supplements,
+        known_deficiencies: formData.known_deficiencies,
+        protein_per_meal: formData.protein_per_meal,
+        allergies_sensitivities: formData.allergies_sensitivities,
+        medication_list: formData.medication_list,
       });
 
       // Calculate a simple baseline score for demonstration
@@ -202,7 +231,7 @@ export const LIS2InitialAssessment = () => {
         <Button variant="outline" onClick={() => setStep(1)}>
           Back
         </Button>
-        <Button onClick={() => setStep(3)} className="flex-1">
+        <Button onClick={() => setStep(4)} className="flex-1">
           Continue
         </Button>
       </div>
@@ -264,17 +293,165 @@ export const LIS2InitialAssessment = () => {
           <Button variant="outline" onClick={() => setStep(2)}>
             Back
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!formData.initial_subjective_age}
-            className="flex-1"
-          >
-            Complete Setup
+          <Button onClick={() => setStep(4)} className="flex-1">
+            Continue
           </Button>
         </div>
       </div>
     );
   };
+
+  const renderStep4 = () => (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <Label>Current Training Experience</Label>
+        <RadioGroup
+          value={formData.training_experience}
+          onValueChange={(value: any) => setFormData({ ...formData, training_experience: value })}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="beginner" id="beginner" />
+            <Label htmlFor="beginner" className="font-normal">Beginner (0-1 year)</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="intermediate" id="intermediate" />
+            <Label htmlFor="intermediate" className="font-normal">Intermediate (1-3 years)</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="advanced" id="advanced" />
+            <Label htmlFor="advanced" className="font-normal">Advanced (3+ years)</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="exercise_freq">How often do you currently exercise per week?</Label>
+        <Input
+          id="exercise_freq"
+          type="number"
+          placeholder="0-7 days"
+          min="0"
+          max="7"
+          value={formData.exercise_routine_frequency || ""}
+          onChange={(e) => setFormData({ ...formData, exercise_routine_frequency: parseInt(e.target.value) || 0 })}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Experience with Compound Lifts (Check all that apply)</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {(['squat', 'deadlift', 'bench_press', 'overhead_press'] as const).map((lift) => (
+            <label key={lift} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.compound_lift_experience[lift]}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  compound_lift_experience: {
+                    ...formData.compound_lift_experience,
+                    [lift]: e.target.checked
+                  }
+                })}
+                className="rounded"
+              />
+              <span className="text-sm capitalize">{lift.replace('_', ' ')}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="injuries">Previous Injuries or Limitations (Optional)</Label>
+        <Input
+          id="injuries"
+          placeholder="e.g., knee injury, lower back pain"
+          value={formData.previous_injuries}
+          onChange={(e) => setFormData({ ...formData, previous_injuries: e.target.value })}
+        />
+      </div>
+
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={() => setStep(3)}>
+          Back
+        </Button>
+        <Button onClick={() => setStep(5)} className="flex-1">
+          Continue
+        </Button>
+      </div>
+    </div>
+  );
+
+  const renderStep5 = () => (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="protein_per_meal">Estimated Protein Per Meal (grams)</Label>
+        <p className="text-xs text-muted-foreground">
+          Research shows women need 30g+ protein per meal for optimal muscle health
+        </p>
+        <Input
+          id="protein_per_meal"
+          type="number"
+          placeholder="e.g., 20"
+          value={formData.protein_per_meal || ""}
+          onChange={(e) => setFormData({ ...formData, protein_per_meal: parseInt(e.target.value) || 0 })}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="current_supplements">Current Supplements (Optional)</Label>
+        <p className="text-xs text-muted-foreground">
+          Enter supplements separated by commas (e.g., Vitamin D, Omega-3)
+        </p>
+        <Input
+          id="current_supplements"
+          placeholder="e.g., Vitamin D, Magnesium"
+          onChange={(e) => setFormData({ 
+            ...formData, 
+            current_supplements: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+          })}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="known_deficiencies">Known Deficiencies (Optional)</Label>
+        <p className="text-xs text-muted-foreground">
+          Have you been diagnosed with any vitamin/mineral deficiencies?
+        </p>
+        <Input
+          id="known_deficiencies"
+          placeholder="e.g., Iron, B12"
+          onChange={(e) => setFormData({ 
+            ...formData, 
+            known_deficiencies: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+          })}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="allergies">Allergies or Sensitivities (Optional)</Label>
+        <Input
+          id="allergies"
+          placeholder="e.g., Dairy, Gluten"
+          onChange={(e) => setFormData({ 
+            ...formData, 
+            allergies_sensitivities: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+          })}
+        />
+      </div>
+
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={() => setStep(4)}>
+          Back
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          className="flex-1"
+        >
+          Complete Setup
+        </Button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="container max-w-2xl mx-auto py-8 px-4">
@@ -336,13 +513,15 @@ export const LIS2InitialAssessment = () => {
         <CardHeader>
           <CardTitle>LIS 2.0 Initial Assessment</CardTitle>
           <CardDescription>
-            Step {step} of 3: Let's establish your personal baseline for longevity tracking
+            Step {step} of 5: Let's establish your personal baseline for longevity tracking
           </CardDescription>
         </CardHeader>
         <CardContent>
           {step === 1 && renderStep1()}
           {step === 2 && renderStep2()}
           {step === 3 && renderStep3()}
+          {step === 4 && renderStep4()}
+          {step === 5 && renderStep5()}
         </CardContent>
       </Card>
     </div>

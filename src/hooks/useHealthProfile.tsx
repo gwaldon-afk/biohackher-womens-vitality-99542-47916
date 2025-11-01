@@ -19,6 +19,18 @@ interface HealthProfile {
   latest_energy_category?: string;
   energy_assessment_date?: string;
   chronic_fatigue_risk?: boolean;
+  // Training & Exercise History
+  training_experience?: "beginner" | "intermediate" | "advanced";
+  exercise_routine_frequency?: number;
+  compound_lift_experience?: Record<string, any>;
+  previous_injuries?: string;
+  exercise_preferences?: string[];
+  // Supplement & Nutrition Context
+  current_supplements?: string[];
+  known_deficiencies?: string[];
+  protein_per_meal?: number;
+  allergies_sensitivities?: string[];
+  medication_list?: string[];
   created_at?: string;
   updated_at?: string;
 }
@@ -55,7 +67,7 @@ export const useHealthProfile = () => {
 
       if (fetchError) throw fetchError;
       
-      setProfile(data);
+      setProfile(data as HealthProfile);
     } catch (err: any) {
       console.error('Error fetching health profile:', err);
       setError(err.message);
@@ -92,7 +104,7 @@ export const useHealthProfile = () => {
 
       if (upsertError) throw upsertError;
 
-      setProfile(data);
+      setProfile(data as HealthProfile);
       return data;
     } catch (err: any) {
       console.error('Error saving health profile:', err);
