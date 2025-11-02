@@ -8,6 +8,7 @@ import NutritionPreferencesForm from "@/components/nutrition/NutritionPreference
 import NutritionCalculator from "@/components/nutrition/NutritionCalculator";
 import FoodScienceTab from "@/components/nutrition/FoodScienceTab";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
+import NutritionalScorecard from "@/components/NutritionalScorecard";
 
 const Nutrition = () => {
   console.log('[Nutrition] Component rendering');
@@ -58,12 +59,22 @@ const Nutrition = () => {
           onSave={savePreferences}
         />
 
-        <Tabs defaultValue="calculator" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="calculator">Nutrition Calculator</TabsTrigger>
+        <Tabs defaultValue="assessment" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="assessment">Daily Assessment</TabsTrigger>
+            <TabsTrigger value="calculator">Calculator</TabsTrigger>
             <TabsTrigger value="food-science">Food Science</TabsTrigger>
             <TabsTrigger value="meals">Meal Plans</TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="assessment" className="mt-6">
+            <NutritionalScorecard 
+              onScoreCalculated={(score, grade) => {
+                console.log('Nutrition score:', score, grade);
+              }}
+              hasDairySensitivity={preferences.hasIBS || preferences.isLowFODMAP}
+            />
+          </TabsContent>
           
           <TabsContent value="calculator" className="mt-6">
             <NutritionCalculator
