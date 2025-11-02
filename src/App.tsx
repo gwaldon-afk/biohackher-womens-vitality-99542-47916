@@ -62,6 +62,14 @@ import ExpertDashboard from "./pages/expert/ExpertDashboard";
 import ExpertDirectory from "./pages/expert/ExpertDirectory";
 import ExpertProfile from "./pages/expert/ExpertProfile";
 import ExpertVerification from "./pages/admin/ExpertVerification";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ContentManagement from "./pages/admin/ContentManagement";
+import UserManagement from "./pages/admin/UserManagement";
+import Analytics from "./pages/admin/Analytics";
+import ShopManagement from "./pages/admin/ShopManagement";
+import SystemHealth from "./pages/admin/SystemHealth";
+import { AdminRoute } from "./components/AdminRoute";
+import { AdminLayout } from "./components/AdminLayout";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
 import GuestLISResults from "./pages/GuestLISResults";
@@ -197,7 +205,17 @@ const App = () => (
           <Route path="/expert/:id" element={<ExpertProfile />} />
           <Route path="/expert/register" element={<ProtectedRoute><ExpertRegistration /></ProtectedRoute>} />
           <Route path="/expert/dashboard" element={<ProtectedRoute><ExpertDashboard /></ProtectedRoute>} />
-          <Route path="/admin/experts" element={<ProtectedRoute><ExpertVerification /></ProtectedRoute>} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="content" element={<ContentManagement />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="experts" element={<ExpertVerification />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="shop" element={<ShopManagement />} />
+            <Route path="system" element={<SystemHealth />} />
+          </Route>
           
           {/* New Onboarding Flow Routes */}
           <Route path="/onboarding/intro-3step" element={<Intro3Step />} />

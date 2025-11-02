@@ -29,15 +29,20 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Simplified core navigation - key pages with Goals prominent
+  // Core navigation - streamlined to 6 visible items
   const coreNavItems = [
     { href: "/dashboard", label: "My Plan" },
     { href: "/my-goals", label: "My Goals" },
-    { href: "/experts", label: "Find Experts" },
+    { href: "/my-protocol", label: "My Protocol" },
     { href: "/hormone-compass", label: "HormoneCompass™" },
+    { href: "/experts", label: "Find Experts" },
+    { href: "/shop", label: t('navigation.shop') },
+  ];
+
+  // Items in "More" dropdown
+  const moreNavItems = [
     { href: "/energy-loop", label: "Energy Loop" },
     { href: "/pillars", label: "Symptom Tracking" },
-    { href: "/shop", label: t('navigation.shop') },
     { href: "/about", label: "About & Science" },
     { href: "/health-assistant", label: "Ask Us" },
   ];
@@ -80,6 +85,34 @@ const Navigation = () => {
                 </Button>
               </Link>
             ))}
+            
+            {/* More dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium text-muted-foreground hover:text-primary"
+                >
+                  More <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {moreNavItems.map((item) => (
+                  <DropdownMenuItem key={item.href} asChild>
+                    <Link 
+                      to={item.href} 
+                      className={cn(
+                        "cursor-pointer",
+                        isActive(item.href) && "text-primary bg-accent"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Desktop Actions */}
@@ -135,9 +168,9 @@ const Navigation = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/admin/experts" className="flex items-center cursor-pointer text-xs">
-                    <Settings className="h-3 w-3 mr-2" />
-                    Admin: Verify Experts
+                  <Link to="/admin" className="flex items-center cursor-pointer text-xs">
+                    <Settings className="h-3 w-3 mr-2 text-destructive" />
+                    <span className="text-destructive font-semibold">Admin Panel</span>
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -176,6 +209,30 @@ const Navigation = () => {
                   {item.label}
                 </Link>
               ))}
+
+              {/* More items - Mobile */}
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-md">
+                  More <ChevronDown className="h-4 w-4" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pl-4">
+                  {moreNavItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      to={item.href}
+                      className={cn(
+                        "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md block",
+                        isActive(item.href)
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground"
+                      )}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
 
               <div className="flex flex-col space-y-2 mt-4 pt-4 border-t border-border">
                 <div className="px-2">

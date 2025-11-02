@@ -6,7 +6,7 @@ import { EnergyLoopCircle } from "@/components/energy/EnergyLoopCircle";
 import { EnergyInsightCards } from "@/components/energy/EnergyInsightCards";
 import { EnergyLoopLegend } from "@/components/energy/EnergyLoopLegend";
 import { EnergyAnalysisCard } from "@/components/energy/EnergyAnalysisCard";
-import { Zap, Plus } from "lucide-react";
+import { Zap, Plus, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function EnergyLoopDashboard() {
@@ -84,13 +84,23 @@ export default function EnergyLoopDashboard() {
       {/* Hero Section */}
       <div className="mb-12">
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Energy Loop
-            </h1>
-            <p className="text-muted-foreground text-lg">
-              Your holistic energy tracking system
-            </p>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="rounded-full"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Energy Loop
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Your holistic energy tracking system
+              </p>
+            </div>
           </div>
           <Button 
             variant="outline" 

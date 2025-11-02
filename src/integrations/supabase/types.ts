@@ -59,6 +59,42 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_user_id: string | null
+          changes: Json | null
+          id: string
+          ip_address: string | null
+          performed_at: string | null
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id?: string | null
+          changes?: Json | null
+          id?: string
+          ip_address?: string | null
+          performed_at?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string | null
+          changes?: Json | null
+          id?: string
+          ip_address?: string | null
+          performed_at?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       assessment_ai_insights: {
         Row: {
           ai_model: string
@@ -3215,6 +3251,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_feedback: {
+        Row: {
+          admin_notes: string | null
+          assigned_to: string | null
+          created_at: string | null
+          id: string
+          message: string
+          priority: string | null
+          resolved_at: string | null
+          status: string | null
+          subject: string
+          type: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_to?: string | null
+          created_at?: string | null
+          id?: string
+          message: string
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          subject: string
+          type: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_to?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          priority?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          subject?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_health_goals: {
         Row: {
           adaptive_recommendations: Json | null
@@ -3528,18 +3609,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          permissions: Json | null
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          permissions?: Json | null
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          permissions?: Json | null
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }

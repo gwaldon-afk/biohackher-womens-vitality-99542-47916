@@ -6,8 +6,8 @@ export const MobileBottomNav = () => {
 
   const navItems = [
     { path: '/today', icon: Home, label: 'Today' },
-    { path: '/progress', icon: TrendingUp, label: 'Progress' },
-    { path: '/my-goals', icon: Target, label: 'Goals' },
+    { path: '/my-protocol', icon: Target, label: 'Protocol' },
+    { path: '/my-goals', icon: TrendingUp, label: 'Goals' },
     { path: '/settings', icon: User, label: 'Profile' }
   ];
 
