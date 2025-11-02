@@ -22,6 +22,26 @@ interface ProtocolItem {
 }
 
 const PROTOCOL_TEMPLATES = {
+  "evidence-based-foundation": {
+    name: "Evidence-Based Foundation Protocol",
+    description: "Universal wellness interventions from Gabrielle Lyon, Stacey Sims & contemporary longevity research",
+    items: [
+      // Protein Protocol (Gabrielle Lyon)
+      { item_type: 'diet', name: 'Protein-Rich Breakfast', description: '30-40g protein per meal for muscle protein synthesis', dosage: '30-40g protein', frequency: 'daily', time_of_day: ['morning'] },
+      { item_type: 'diet', name: 'Protein-Rich Lunch', description: 'Maintains muscle protein synthesis throughout day', dosage: '30-40g protein', frequency: 'daily', time_of_day: ['afternoon'] },
+      { item_type: 'diet', name: 'Protein-Rich Dinner', description: 'Supports overnight muscle recovery', dosage: '30-40g protein', frequency: 'daily', time_of_day: ['evening'] },
+      // Resistance Training (Stacey Sims)
+      { item_type: 'exercise', name: 'Lower Body Compound Lifts', description: 'Squats, deadlifts, lunges - progressive overload', dosage: '3-4 sets x 6-10 reps', frequency: 'twice_daily', time_of_day: ['morning', 'afternoon'] },
+      { item_type: 'exercise', name: 'Upper Body Compound Lifts', description: 'Bench press, overhead press, rows', dosage: '3-4 sets x 6-10 reps', frequency: 'twice_daily', time_of_day: ['morning', 'afternoon'] },
+      // HIIT (Stacey Sims)
+      { item_type: 'exercise', name: 'HIIT Training', description: '4-6 intervals at 85-95% max HR, 2x/week', dosage: '30-60 sec intervals', frequency: 'twice_daily', time_of_day: ['morning', 'afternoon'] },
+      // Critical Supplements
+      { item_type: 'supplement', name: 'Creatine Monohydrate', description: 'Muscle strength, bone density, cognitive function', dosage: '5g', frequency: 'daily', time_of_day: ['morning'] },
+      { item_type: 'supplement', name: 'Vitamin D3 + K2', description: 'Bone health, immune function, mood', dosage: '2000-4000 IU D3 + 100mcg K2', frequency: 'daily', time_of_day: ['morning'] },
+      { item_type: 'supplement', name: 'Glycine', description: 'Sleep quality, collagen synthesis', dosage: '3g', frequency: 'daily', time_of_day: ['evening'] },
+      { item_type: 'supplement', name: 'Collagen Peptides', description: 'Skin elasticity, joint health, bone density', dosage: '10-20g', frequency: 'daily', time_of_day: ['morning'] },
+    ]
+  },
   "energy-boost": {
     name: "Energy & Vitality Protocol",
     description: "Support natural energy levels and reduce fatigue",

@@ -39,11 +39,17 @@ const MyProtocol = () => {
   
   const activeProtocols = protocols.filter(p => p.is_active);
   
-  // Get protocol items for active protocols
+  // Get protocol items for ALL active protocols
   const activeProtocolIds = activeProtocols.map(p => p.id);
-  const { data: allProtocolItems = [], isLoading: loadingItems } = useProtocolItems(
-    activeProtocolIds.length > 0 ? activeProtocolIds[0] : undefined
+  
+  // Fetch items for each active protocol
+  const protocolItemsQueries = activeProtocolIds.map(id => 
+    useProtocolItems(id)
   );
+  
+  // Merge all protocol items from all active protocols
+  const allProtocolItems = protocolItemsQueries.flatMap(query => query.data || []);
+  const loadingItems = protocolItemsQueries.some(query => query.isLoading);
 
   // Get unique assessments by symptom type (most recent for each)
   const uniqueAssessments = assessments?.reduce((acc: AssessmentData[], current) => {
