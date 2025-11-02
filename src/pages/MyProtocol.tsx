@@ -14,7 +14,7 @@ import MealPlanProtocolCard from "@/components/MealPlanProtocolCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProtocolBuilderDialog } from "@/components/ProtocolBuilderDialog";
 import { AdherenceCalendar } from "@/components/AdherenceCalendar";
-import { useAssessments, useProtocols, useProtocolItems, useDeleteProtocol, useUpdateProtocol } from "@/queries";
+import { useAssessments, useProtocols, useMultipleProtocolItems, useDeleteProtocol, useUpdateProtocol } from "@/queries";
 import { ProtocolSkeleton } from "@/components/skeletons/ProtocolSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Protocol } from "@/types/protocols";
@@ -43,14 +43,8 @@ const MyProtocol = () => {
   // Get protocol items for ALL active protocols
   const activeProtocolIds = activeProtocols.map(p => p.id);
   
-  // Fetch items for each active protocol
-  const protocolItemsQueries = activeProtocolIds.map(id => 
-    useProtocolItems(id)
-  );
-  
-  // Merge all protocol items from all active protocols
-  const allProtocolItems = protocolItemsQueries.flatMap(query => query.data || []);
-  const loadingItems = protocolItemsQueries.some(query => query.isLoading);
+  // Fetch items for all active protocols in a single query
+  const { data: allProtocolItems = [], isLoading: loadingItems } = useMultipleProtocolItems(activeProtocolIds);
 
   // Get unique assessments by symptom type (most recent for each)
   const uniqueAssessments = assessments?.reduce((acc: AssessmentData[], current) => {

@@ -66,6 +66,28 @@ export function useProtocolItems(protocolId: string | undefined) {
   });
 }
 
+// Fetch protocol items for multiple protocols
+export function useMultipleProtocolItems(protocolIds: string[]) {
+  return useQuery({
+    queryKey: [...protocolKeys.all, 'items', 'multiple', protocolIds.sort().join(',')],
+    queryFn: async () => {
+      if (protocolIds.length === 0) return [];
+      
+      const { data, error } = await supabase
+        .from('protocol_items')
+        .select('*')
+        .in('protocol_id', protocolIds)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      
+      return (data || []) as ProtocolItem[];
+    },
+    enabled: protocolIds.length > 0,
+    staleTime: 30000,
+  });
+}
+
 // Create a new protocol
 export function useCreateProtocol(userId: string) {
   const queryClient = useQueryClient();

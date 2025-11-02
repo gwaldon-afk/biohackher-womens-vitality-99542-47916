@@ -6,7 +6,8 @@ export * from './goalQueries';
 // Re-export specific hooks for convenience
 export { 
   useProtocols, 
-  useProtocolItems, 
+  useProtocolItems,
+  useMultipleProtocolItems,
   useCreateProtocol,
   useUpdateProtocol,
   useDeleteProtocol,
