@@ -86,6 +86,8 @@ export interface ProtocolItem {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  meal_template_id?: string | null;
+  recipe_data?: any | null;
 }
 
 export interface ProtocolItemCompletion {

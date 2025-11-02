@@ -42,6 +42,34 @@ const PROTOCOL_TEMPLATES = {
       { item_type: 'supplement', name: 'Collagen Peptides', description: 'Skin elasticity, joint health, bone density', dosage: '10-20g', frequency: 'daily', time_of_day: ['morning'] },
     ]
   },
+  "mediterranean-meal-plan": {
+    name: "Mediterranean 7-Day Meal Plan",
+    description: "Complete week of heart-healthy Mediterranean meals with shopping list",
+    items: [
+      { item_type: 'diet', name: 'Mediterranean Meal Plan', description: '7-day plan with recipes, ~1800 cal/day, 120g protein avg', dosage: '1800 cal, 120g protein daily', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'], meal_template_id: 'mediterranean' }
+    ]
+  },
+  "high-protein-meal-plan": {
+    name: "High Protein Athlete 7-Day Plan",
+    description: "Muscle-building meal plan optimized for 2g protein per kg bodyweight",
+    items: [
+      { item_type: 'diet', name: 'High Protein Meal Plan', description: '7-day plan for athletes, ~2200 cal/day, 180g protein avg', dosage: '2200 cal, 180g protein daily', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'], meal_template_id: 'high-protein' }
+    ]
+  },
+  "plant-based-meal-plan": {
+    name: "Plant-Based Power 7-Day Plan",
+    description: "Complete plant-based nutrition with optimal amino acid profile",
+    items: [
+      { item_type: 'diet', name: 'Plant-Based Meal Plan', description: '7-day vegan plan, ~1900 cal/day, 110g protein avg, 40g+ fiber', dosage: '1900 cal, 110g protein daily', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'], meal_template_id: 'plant-based' }
+    ]
+  },
+  "low-fodmap-meal-plan": {
+    name: "Low-FODMAP Gentle 7-Day Plan",
+    description: "IBS-friendly meals to support digestive comfort",
+    items: [
+      { item_type: 'diet', name: 'Low-FODMAP Meal Plan', description: '7-day IBS-friendly plan, ~1750 cal/day, 115g protein avg', dosage: '1750 cal, 115g protein daily', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'], meal_template_id: 'low-fodmap' }
+    ]
+  },
   "energy-boost": {
     name: "Energy & Vitality Protocol",
     description: "Support natural energy levels and reduce fatigue",

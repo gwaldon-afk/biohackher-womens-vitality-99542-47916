@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
-import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2 } from "lucide-react";
+import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
 import { useAdherence } from "@/hooks/useAdherence";
 import { ProtocolItemCard } from "@/components/ProtocolItemCard";
+import MealPlanProtocolCard from "@/components/MealPlanProtocolCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProtocolBuilderDialog } from "@/components/ProtocolBuilderDialog";
 import { AdherenceCalendar } from "@/components/AdherenceCalendar";
@@ -186,17 +187,30 @@ const MyProtocol = () => {
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Protocol <span className="text-primary">Manager</span>
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Your complete wellness protocol: supplements, nutrition, exercise, therapies & daily habits
-          </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">
+                Protocol <span className="text-primary">Manager</span>
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Your complete wellness protocol: supplements, nutrition, exercise, therapies & daily habits
+              </p>
+            </div>
+            <Button 
+              onClick={() => navigate('/protocol-library')}
+              variant="outline"
+              className="hidden md:flex items-center gap-2"
+            >
+              <BookOpen className="h-4 w-4" />
+              Browse Templates
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "today"} className="space-y-6">
           <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="today">Today</TabsTrigger>
+            <TabsTrigger value="protocols">Protocols</TabsTrigger>
             <TabsTrigger value="by-type">By Type</TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="builder">Builder</TabsTrigger>
@@ -238,10 +252,30 @@ const MyProtocol = () => {
                       </div>
                     ) : (
                       <>
+                        {/* Meal Plans - Display at top if present */}
+                        {allProtocolItems.some(item => item.item_type === 'diet' && item.meal_template_id) && (
+                          <div className="space-y-2">
+                            <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                              🍽️ Your Meal Plan
+                            </h3>
+                            {allProtocolItems
+                              .filter(item => item.item_type === 'diet' && item.meal_template_id)
+                              .map(item => (
+                                <MealPlanProtocolCard 
+                                  key={item.id}
+                                  mealTemplateId={item.meal_template_id!}
+                                  proteinTarget={120}
+                                  currentProtein={0}
+                                />
+                              ))
+                            }
+                          </div>
+                        )}
+
                         {/* Organize by item type */}
                         {['supplement', 'diet', 'exercise', 'therapy', 'habit'].map((type) => {
                           const itemsOfType = allProtocolItems.filter(
-                            item => item.is_active && item.item_type === type
+                            item => item.is_active && item.item_type === type && !(type === 'diet' && item.meal_template_id)
                           );
                           
                           if (itemsOfType.length === 0) return null;
@@ -350,6 +384,35 @@ const MyProtocol = () => {
 
           {/* Builder Tab */}
           <TabsContent value="builder" className="space-y-6">
+            {/* Protocol Library CTA */}
+            <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30">
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="p-3 bg-primary/20 rounded-lg">
+                      <BookOpen className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Browse Protocol Templates</h3>
+                      <p className="text-muted-foreground">
+                        Explore complete wellness programs, 7-day meal plans, and evidence-based protocols designed for optimal health
+                      </p>
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        <Badge variant="outline">4 Meal Plans</Badge>
+                        <Badge variant="outline">Complete Programs</Badge>
+                        <Badge variant="outline">Evidence-Based</Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <Button 
+                    size="lg"
+                    onClick={() => navigate('/protocol-library')}
+                  >
+                    Explore Templates
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>

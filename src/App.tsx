@@ -36,6 +36,7 @@ import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
 import LIS2Research from "./pages/LIS2Research";
 import MyProtocol from "./pages/MyProtocol";
+import ProtocolLibrary from "./pages/ProtocolLibrary";
 import ProgressTracking from "./pages/ProgressTracking";
 import MyGoals from "./pages/MyGoals";
 import GoalInsights from "./pages/GoalInsights";
@@ -162,6 +163,7 @@ const App = () => (
             <Route path="/daily-score-results" element={<DailyScoreResults />} />
             <Route path="/lis2-research" element={<LIS2Research />} />
             <Route path="/my-protocol" element={<ProtectedRoute><MyProtocol /></ProtectedRoute>} />
+            <Route path="/protocol-library" element={<ProtectedRoute><ProtocolLibrary /></ProtectedRoute>} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
             <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />

@@ -2526,10 +2526,12 @@ export type Database = {
           id: string
           is_active: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
+          meal_template_id: string | null
           name: string
           notes: string | null
           product_link: string | null
           protocol_id: string
+          recipe_data: Json | null
           time_of_day: string[] | null
           updated_at: string
         }
@@ -2544,10 +2546,12 @@ export type Database = {
           id?: string
           is_active?: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
+          meal_template_id?: string | null
           name: string
           notes?: string | null
           product_link?: string | null
           protocol_id: string
+          recipe_data?: Json | null
           time_of_day?: string[] | null
           updated_at?: string
         }
@@ -2562,10 +2566,12 @@ export type Database = {
           id?: string
           is_active?: boolean
           item_type?: Database["public"]["Enums"]["protocol_item_type"]
+          meal_template_id?: string | null
           name?: string
           notes?: string | null
           product_link?: string | null
           protocol_id?: string
+          recipe_data?: Json | null
           time_of_day?: string[] | null
           updated_at?: string
         }
