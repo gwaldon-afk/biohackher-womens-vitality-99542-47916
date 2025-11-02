@@ -191,6 +191,66 @@ export const useProtocols = () => {
     }
   }, [user]);
 
+  const addProtocolFromLibrary = async (
+    protocolName: string,
+    items: Array<{
+      item_type: 'supplement' | 'therapy' | 'habit' | 'exercise' | 'diet';
+      name: string;
+      description?: string;
+      dosage?: string;
+      frequency: 'daily' | 'twice_daily' | 'three_times_daily' | 'weekly' | 'as_needed';
+      time_of_day?: string[];
+      notes?: string;
+    }>
+  ) => {
+    if (!user) return;
+
+    try {
+      // Get or create active protocol
+      let activeProtocol = protocols.find(p => p.is_active);
+      
+      if (!activeProtocol) {
+        // Create new active protocol
+        activeProtocol = await createProtocol({
+          name: 'My Protocol',
+          description: 'My personalized wellness protocol',
+          is_active: true,
+          start_date: new Date().toISOString().split('T')[0],
+          end_date: null,
+          created_from_pillar: null
+        });
+      }
+
+      if (!activeProtocol) {
+        throw new Error('Failed to create protocol');
+      }
+
+      // Add all items to the protocol
+      const promises = items.map(item =>
+        addProtocolItem({
+          protocol_id: activeProtocol!.id,
+          item_type: item.item_type,
+          name: item.name,
+          description: item.description || null,
+          dosage: item.dosage || null,
+          frequency: item.frequency,
+          time_of_day: item.time_of_day || null,
+          notes: item.notes || `Added from ${protocolName}`,
+          product_link: null,
+          is_active: true
+        })
+      );
+
+      await Promise.all(promises);
+      await fetchProtocols();
+      
+      return activeProtocol;
+    } catch (error) {
+      console.error('Error adding protocol from library:', error);
+      throw error;
+    }
+  };
+
   return {
     protocols,
     loading,
@@ -201,6 +261,7 @@ export const useProtocols = () => {
     fetchProtocolItems,
     addProtocolItem,
     updateProtocolItem,
-    deleteProtocolItem
+    deleteProtocolItem,
+    addProtocolFromLibrary
   };
 };
