@@ -41,6 +41,7 @@ const Navigation = () => {
 
   // Items in "More" dropdown
   const moreNavItems = [
+    { href: "/nutrition", label: "Nutrition & Meal Plans" },
     { href: "/protocol-library", label: "Protocol Library" },
     { href: "/energy-loop", label: "Energy Loop" },
     { href: "/pillars", label: "Symptom Tracking" },
