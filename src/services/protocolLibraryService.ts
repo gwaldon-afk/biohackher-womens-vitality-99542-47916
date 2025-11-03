@@ -11,18 +11,22 @@ import {
 } from "@/data/evidenceBasedProtocols";
 import { mealTemplates } from "@/data/mealTemplates";
 import { getAllToolkitItems } from "./toolkitService";
+import type { Product } from "@/types/products";
 
 export interface LibraryProtocol {
   id: string;
   name: string;
   description: string;
   category: 'therapy' | 'exercise' | 'nutrition' | 'supplement' | 'sleep' | 'complete' | 'habit';
-  evidenceLevel?: 'weak' | 'moderate' | 'strong' | 'very_strong';
+  evidenceLevel?: 'Gold' | 'Silver' | 'Bronze' | 'Emerging';
   evidenceSource?: string;
   benefits: string[];
   icon?: string;
   sourceType: 'toolkit' | 'evidence' | 'meal_template';
   sourceData: any; // Original data to convert to protocol_item
+  product?: Product; // Matched product from database
+  researchCitations?: any[]; // Research citations
+  evidenceKey?: string; // Key for evidence drawer
 }
 
 // Map toolkit categories to our categories
@@ -35,21 +39,69 @@ const categoryMap: Record<string, LibraryProtocol['category']> = {
   'habits': 'habit'
 };
 
+// Map evidence levels from database to display format
+const mapEvidenceLevel = (level: string | undefined): 'Gold' | 'Silver' | 'Bronze' | 'Emerging' => {
+  switch (level?.toLowerCase()) {
+    case 'very_strong':
+    case 'gold':
+      return 'Gold';
+    case 'strong':
+    case 'silver':
+      return 'Silver';
+    case 'moderate':
+    case 'bronze':
+      return 'Bronze';
+    default:
+      return 'Emerging';
+  }
+};
+
+// Match product to toolkit item by name
+const matchProductToToolkitItem = async (itemName: string): Promise<Product | null> => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .ilike('name', `%${itemName}%`)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error matching product:', error);
+    return null;
+  }
+
+  // Cast the data to Product type
+  return data as unknown as Product;
+};
+
 // Convert toolkit items to library protocols
 const convertToolkitItems = async (): Promise<LibraryProtocol[]> => {
   const toolkitItems = await getAllToolkitItems();
   
-  return toolkitItems.map(item => ({
-    id: `toolkit-${item.id}`,
-    name: item.name,
-    description: item.description || '',
-    category: categoryMap[item.category?.slug || ''] || 'therapy',
-    evidenceLevel: 'strong', // Toolkit items are curated
-    benefits: item.benefits || [],
-    icon: item.category?.icon_name,
-    sourceType: 'toolkit' as const,
-    sourceData: item
-  }));
+  // Match products to toolkit items
+  const protocolsWithProducts = await Promise.all(
+    toolkitItems.map(async (item) => {
+      const product = await matchProductToToolkitItem(item.name);
+      const slug = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      return {
+        id: `toolkit-${item.id}`,
+        name: item.name,
+        description: item.description || '',
+        category: categoryMap[item.category?.slug || ''] || 'therapy',
+        evidenceLevel: mapEvidenceLevel(item.evidence_level),
+        benefits: item.benefits || [],
+        icon: item.category?.icon_name,
+        sourceType: 'toolkit' as const,
+        sourceData: item,
+        product: product || undefined,
+        researchCitations: item.research_citations || [],
+        evidenceKey: `toolkit:${slug}`,
+      };
+    })
+  );
+
+  return protocolsWithProducts;
 };
 
 // Convert evidence-based interventions to library protocols
@@ -62,7 +114,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     name: "Gabrielle Lyon's Protein Protocol",
     description: "30-40g protein per meal, 3x daily for optimal muscle protein synthesis",
     category: 'nutrition',
-    evidenceLevel: 'very_strong',
+    evidenceLevel: 'Gold',
     evidenceSource: 'Gabrielle Lyon - Forever Strong (2023)',
     benefits: [
       'Optimizes muscle protein synthesis',
@@ -81,7 +133,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     name: "Stacey Sims' Resistance Training Protocol",
     description: "4+ days/week of compound lifts with progressive overload",
     category: 'exercise',
-    evidenceLevel: 'very_strong',
+    evidenceLevel: 'Gold',
     evidenceSource: 'Stacey Sims - Next Level (2022)',
     benefits: [
       'Builds bone density and muscle mass',
@@ -100,7 +152,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     name: 'High-Intensity Interval Training',
     description: '2x/week HIIT sessions for hormonal health and fitness',
     category: 'exercise',
-    evidenceLevel: 'very_strong',
+    evidenceLevel: 'Gold',
     evidenceSource: 'Stacey Sims - Next Level (2022)',
     benefits: [
       'Stimulates growth hormone',
@@ -120,7 +172,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
       name: supp.name,
       description: supp.reason,
       category: 'supplement',
-      evidenceLevel: supp.evidence_strength,
+      evidenceLevel: mapEvidenceLevel(supp.evidence_strength),
       evidenceSource: supp.evidence_source,
       benefits: [supp.reason],
       icon: '💊',
@@ -135,7 +187,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     name: 'Perimenopause Training Protocol',
     description: 'Aggressive resistance training and sprint intervals for hormonal transition',
     category: 'exercise',
-    evidenceLevel: 'very_strong',
+    evidenceLevel: 'Gold',
     evidenceSource: 'Stacey Sims - Next Level (2022)',
     benefits: [
       'Combats rapid muscle loss during perimenopause',
@@ -154,7 +206,7 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     name: 'Postmenopause Training Protocol',
     description: 'Moderate resistance training with emphasis on recovery',
     category: 'exercise',
-    evidenceLevel: 'very_strong',
+    evidenceLevel: 'Gold',
     evidenceSource: 'Stacey Sims - Next Level (2022)',
     benefits: [
       'Maintains bone density and muscle mass',
@@ -177,7 +229,7 @@ const convertMealTemplates = (): LibraryProtocol[] => {
     name: template.name,
     description: template.description,
     category: 'nutrition' as const,
-    evidenceLevel: 'strong' as const,
+    evidenceLevel: 'Silver' as const,
     benefits: template.benefits,
     icon: template.icon,
     sourceType: 'meal_template' as const,
@@ -191,7 +243,7 @@ const getCompleteProgram = (): LibraryProtocol => ({
   name: 'Evidence-Based Foundation Protocol',
   description: 'Complete wellness program combining nutrition, exercise, and supplements based on Gabrielle Lyon & Stacey Sims research',
   category: 'complete',
-  evidenceLevel: 'very_strong',
+  evidenceLevel: 'Gold',
   evidenceSource: 'Multiple peer-reviewed sources',
   benefits: [
     '30-40g protein per meal for muscle protein synthesis',

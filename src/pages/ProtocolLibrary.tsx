@@ -54,10 +54,20 @@ const ProtocolLibrary = () => {
     }
   };
 
-  const filteredProtocols = protocols.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Enhanced search - includes target_symptoms, benefits, category
+  const filteredProtocols = protocols.filter((protocol) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      protocol.name.toLowerCase().includes(searchLower) ||
+      protocol.description.toLowerCase().includes(searchLower) ||
+      protocol.benefits.some(b => b.toLowerCase().includes(searchLower)) ||
+      protocol.category.toLowerCase().includes(searchLower) ||
+      (protocol.sourceData?.target_symptoms?.some((s: string) => 
+        s.toLowerCase().includes(searchLower)
+      )) ||
+      (protocol.sourceData?.detailed_description?.toLowerCase().includes(searchLower))
+    );
+  });
 
   const handleAddToProtocol = async (protocol: LibraryProtocol) => {
     setAddingProtocolId(protocol.id);

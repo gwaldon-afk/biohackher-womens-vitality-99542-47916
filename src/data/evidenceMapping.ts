@@ -75,6 +75,97 @@ export const evidenceMap: Record<string, EvidenceContext> = {
     title: 'Sauna & Heat Therapy',
     summary: 'Regular sauna use is associated with reduced cardiovascular risk, improved longevity, and activation of heat shock proteins that support cellular health.'
   },
+
+  // Supplements
+  'toolkit:magnesium-glycinate': {
+    query: { 
+      related_pillars: ['brain', 'balance'],
+      related_symptoms: ['sleep_disruption', 'anxiety', 'muscle_tension']
+    },
+    title: 'Magnesium Glycinate for Sleep & Relaxation',
+    summary: 'Magnesium glycinate is a highly bioavailable form of magnesium that supports sleep quality, nervous system function, and muscle relaxation. Research shows benefits for sleep onset, quality, and stress reduction.'
+  },
+
+  'toolkit:glycine': {
+    query: { 
+      related_pillars: ['brain', 'body'],
+      related_symptoms: ['sleep_disruption', 'joint_pain']
+    },
+    title: 'Glycine for Sleep & Collagen',
+    summary: 'Glycine improves sleep quality, supports collagen production, and may benefit joint health. Studies show it can reduce sleep onset time and improve subjective sleep quality.'
+  },
+
+  'toolkit:creatine': {
+    query: { 
+      related_pillars: ['body', 'brain'],
+      related_toolkit_items: ['creatine', 'strength-training']
+    },
+    title: 'Creatine for Muscle & Cognition',
+    summary: 'Creatine monohydrate supports muscle strength, power output, and may benefit cognitive function, especially in women. Well-researched for safety and efficacy across age groups.'
+  },
+
+  'toolkit:vitamin-d3-k2': {
+    query: { 
+      related_pillars: ['body', 'balance'],
+      related_symptoms: ['bone_health', 'immune_function']
+    },
+    title: 'Vitamin D3+K2 for Bone & Immune Health',
+    summary: 'Vitamin D3 with K2 supports bone density, immune function, and cardiovascular health. The combination ensures proper calcium metabolism and prevents arterial calcification.'
+  },
+
+  'toolkit:omega-3': {
+    query: { 
+      related_pillars: ['brain', 'body'],
+      related_symptoms: ['inflammation', 'cognitive_decline']
+    },
+    title: 'Omega-3 for Brain & Heart Health',
+    summary: 'EPA and DHA omega-3 fatty acids support brain function, reduce inflammation, and protect cardiovascular health. Essential for healthy aging and cognitive preservation.'
+  },
+
+  'toolkit:collagen': {
+    query: { 
+      related_pillars: ['beauty', 'body'],
+      related_symptoms: ['skin_aging', 'joint_pain']
+    },
+    title: 'Collagen Peptides for Skin & Joints',
+    summary: 'Hydrolyzed collagen peptides support skin elasticity, hydration, and joint health. Multiple studies show improvements in skin aging markers and joint comfort.'
+  },
+
+  'toolkit:lions-mane': {
+    query: { 
+      related_pillars: ['brain'],
+      related_symptoms: ['cognitive_decline', 'focus']
+    },
+    title: "Lion's Mane for Cognitive Function",
+    summary: "Lion's Mane mushroom supports nerve growth factor production and may enhance cognitive function, memory, and neuroplasticity. Emerging research shows promise for brain health."
+  },
+
+  'toolkit:taurine': {
+    query: { 
+      related_pillars: ['body', 'brain'],
+      related_symptoms: ['energy', 'cardiovascular']
+    },
+    title: 'Taurine for Longevity',
+    summary: 'Taurine supplementation shows promise for supporting cardiovascular health, exercise performance, and healthy aging. Research indicates it may address age-related taurine decline.'
+  },
+
+  'toolkit:red-light-therapy': {
+    query: { 
+      related_pillars: ['beauty', 'body'],
+      related_toolkit_items: ['red-light-therapy', 'photobiomodulation']
+    },
+    title: 'Red Light Therapy',
+    summary: 'Photobiomodulation with red and near-infrared light supports cellular energy production, skin health, wound healing, and may reduce inflammation through mitochondrial stimulation.'
+  },
+
+  'toolkit:cold-exposure': {
+    query: { 
+      related_pillars: ['body', 'balance'],
+      related_toolkit_items: ['cold-exposure', 'cold-therapy']
+    },
+    title: 'Cold Exposure Benefits',
+    summary: 'Cold exposure activates brown adipose tissue, improves metabolic health, enhances mood, and may support immune function through hormetic stress adaptation.'
+  },
   
   // Foods
   'food:blueberries': {
