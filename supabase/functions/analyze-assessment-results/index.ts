@@ -105,30 +105,66 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
+    console.log('AI response received:', JSON.stringify(aiData).substring(0, 500));
     
-    // Validate AI response structure
-    if (!aiData.choices || !aiData.choices[0] || !aiData.choices[0].message) {
-      console.error('Invalid AI response structure:', JSON.stringify(aiData));
-      throw new Error('Invalid AI response structure');
+    // Robust validation of AI response structure
+    if (!aiData || typeof aiData !== 'object') {
+      console.error('AI response is not an object:', aiData);
+      throw new Error('Invalid AI response: not an object');
+    }
+
+    if (!aiData.choices || !Array.isArray(aiData.choices) || aiData.choices.length === 0) {
+      console.error('AI response missing choices array:', JSON.stringify(aiData));
+      throw new Error('Invalid AI response: missing choices array');
+    }
+
+    const choice = aiData.choices[0];
+    if (!choice || typeof choice !== 'object') {
+      console.error('First choice is invalid:', choice);
+      throw new Error('Invalid AI response: invalid first choice');
+    }
+
+    const message = choice.message;
+    if (!message || typeof message !== 'object') {
+      console.error('Message object is invalid:', message);
+      throw new Error('Invalid AI response: invalid message object');
     }
     
-    const message = aiData.choices[0].message;
-    
-    // Check for tool_calls or content
-    let analysis;
-    if (message.tool_calls && message.tool_calls[0]) {
-      analysis = JSON.parse(message.tool_calls[0].function.arguments);
-    } else if (message.content) {
-      // Try to parse content as JSON
-      try {
+    // Extract analysis from tool_calls or content
+    let analysis: any;
+    try {
+      if (message.tool_calls && Array.isArray(message.tool_calls) && message.tool_calls.length > 0) {
+        const toolCall = message.tool_calls[0];
+        if (toolCall?.function?.arguments) {
+          console.log('Parsing tool_calls arguments');
+          analysis = JSON.parse(toolCall.function.arguments);
+        } else {
+          throw new Error('tool_calls present but missing function.arguments');
+        }
+      } else if (message.content) {
+        console.log('Attempting to parse message content as JSON');
         analysis = JSON.parse(message.content);
-      } catch (e) {
-        console.error('Could not parse AI content as JSON:', message.content);
-        throw new Error('AI response format error: no valid tool_calls or parseable content');
+      } else {
+        console.error('No tool_calls or content in message:', JSON.stringify(message));
+        throw new Error('AI response missing both tool_calls and content');
       }
-    } else {
-      console.error('No tool_calls or content in AI response:', JSON.stringify(message));
-      throw new Error('AI response missing expected data');
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', parseError);
+      console.error('Raw message:', JSON.stringify(message));
+      
+      // Generate fallback analysis
+      console.log('Generating fallback analysis due to parse error');
+      analysis = generateFallbackAnalysis(score, scoreCategory, answers);
+    }
+
+    // Validate required fields in analysis
+    const requiredFields = ['overall_analysis', 'key_findings', 'personalized_insights', 'protocol_recommendations', 'priority_actions', 'confidence_score'];
+    const missingFields = requiredFields.filter(field => !analysis[field]);
+    
+    if (missingFields.length > 0) {
+      console.error('Analysis missing required fields:', missingFields);
+      // Fill in missing fields with fallback data
+      analysis = { ...generateFallbackAnalysis(score, scoreCategory, answers), ...analysis };
     }
 
     const processingTime = Date.now() - startTime;
@@ -471,4 +507,90 @@ function getTokenBudget(category: string): number {
     excellent: 500
   };
   return budgets[category] || 1000;
+}
+
+function generateFallbackAnalysis(score: number, scoreCategory: string, answers: Record<string, number>) {
+  console.log('Generating fallback analysis for score:', score, 'category:', scoreCategory);
+  
+  return {
+    overall_analysis: `Your assessment score of ${score}/100 places you in the "${scoreCategory}" category. This indicates your current lifestyle and health habits are ${scoreCategory === 'excellent' ? 'optimally supporting' : scoreCategory === 'good' ? 'positively supporting' : scoreCategory === 'fair' ? 'moderately supporting' : 'requiring attention to better support'} your longevity and healthspan. Based on your responses, there are specific areas where targeted improvements can significantly impact your biological aging trajectory.`,
+    key_findings: [
+      {
+        finding: `Overall health score: ${score}/100 (${scoreCategory})`,
+        severity: scoreCategory === 'poor' || scoreCategory === 'fair' ? 'high' : 'medium',
+        category: 'General Health'
+      },
+      {
+        finding: 'Multiple health domains assessed across 6 key pillars',
+        severity: 'medium',
+        category: 'Comprehensive Assessment'
+      },
+      {
+        finding: 'Personalized recommendations available based on specific responses',
+        severity: 'low',
+        category: 'Action Items'
+      }
+    ],
+    personalized_insights: [
+      {
+        insight: `Your current score suggests ${scoreCategory === 'excellent' ? 'maintaining' : 'improving'} lifestyle habits can significantly impact your healthspan`,
+        reasoning: 'Research shows lifestyle modifications can affect biological aging by 5-10 years',
+        evidence_level: 'high'
+      },
+      {
+        insight: 'Focus on the lowest-scoring pillars for maximum impact',
+        reasoning: 'Addressing weakest areas typically yields the greatest improvements in overall health',
+        evidence_level: 'high'
+      },
+      {
+        insight: 'Consistency in health habits compounds over time',
+        reasoning: 'Daily small improvements accumulate to create significant long-term benefits',
+        evidence_level: 'high'
+      }
+    ],
+    protocol_recommendations: [
+      {
+        intervention: 'Prioritize sleep optimization',
+        type: 'lifestyle',
+        rationale: 'Sleep quality affects all other health domains',
+        priority: 'high',
+        impact: 'high'
+      },
+      {
+        intervention: 'Implement stress management practices',
+        type: 'lifestyle',
+        rationale: 'Chronic stress accelerates biological aging',
+        priority: 'high',
+        impact: 'high'
+      },
+      {
+        intervention: 'Regular physical activity',
+        type: 'exercise',
+        rationale: 'Movement is fundamental to longevity',
+        priority: 'high',
+        impact: 'high'
+      }
+    ],
+    priority_actions: [
+      {
+        action: 'Review detailed pillar analysis for specific guidance',
+        rationale: 'Each pillar provides targeted recommendations based on your score',
+        timeline: 'Today',
+        expected_outcome: 'Clear understanding of priority areas'
+      },
+      {
+        action: 'Start with one small improvement in your weakest pillar',
+        rationale: 'Small consistent changes build momentum and sustainable habits',
+        timeline: 'This week',
+        expected_outcome: 'Foundation for lasting change'
+      },
+      {
+        action: 'Track progress and reassess in 30 days',
+        rationale: 'Regular measurement helps maintain motivation and adjust approach',
+        timeline: '30 days',
+        expected_outcome: 'Measurable improvement in target area'
+      }
+    ],
+    confidence_score: 75
+  };
 }

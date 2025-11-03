@@ -18,6 +18,8 @@ import { useEffect, useState } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { useProtocolGeneration } from '@/hooks/useProtocolGeneration';
 import { useProtocols } from '@/hooks/useProtocols';
+import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
+import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -183,6 +185,10 @@ const LISResults = () => {
   const displayScore = isNewBaseline && score ? score : (lisData.currentScore || score);
   const bioAgeData = chronologicalAge > 0 ? calculateBiologicalAge(displayScore, chronologicalAge) : null;
 
+  // Generate pillar analyses
+  const pillarScores = urlPillarScores || lisData.pillarScores;
+  const pillarAnalyses = generatePillarAnalysis(pillarScores);
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -214,13 +220,41 @@ const LISResults = () => {
           {user && (
             <LISRadarLegend pillarScores={lisData.pillarScores} />
           )}
-          
+        </CardContent>
+      </Card>
+
+      {/* Individual Pillar Analysis Cards */}
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          <Activity className="h-6 w-6 text-primary" />
+          Detailed Pillar Analysis
+        </h2>
+        <p className="text-muted-foreground mb-6">
+          Deep dive into each longevity pillar with personalized insights and actionable recommendations.
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {pillarAnalyses.map((pillar) => (
+            <LISPillarAnalysisCard
+              key={pillar.name}
+              pillarName={pillar.name}
+              pillarScore={pillar.score}
+              icon={pillar.icon}
+              color={pillar.color}
+              overallLIS={displayScore}
+              userAge={chronologicalAge}
+            />
+          ))}
+        </div>
+      </div>
+
+      <Card className="mb-6">
+        <CardContent className="pt-6">
           {/* Comprehensive Analysis */}
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
                 <Activity className="h-5 w-5 text-primary" />
-                Your Longevity Profile Analysis
+                Your Longevity Profile Summary
               </h3>
               
               <div className="bg-muted/30 p-4 rounded-lg mb-4">
