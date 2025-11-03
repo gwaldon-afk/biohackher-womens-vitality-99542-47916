@@ -28,7 +28,8 @@ import { MemberProgressCard } from "@/components/MemberProgressCard";
 import { useAssessments, useDailyScores, useUserSymptoms } from "@/queries";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { GoalsSummaryView } from "@/components/GoalsSummaryView";
+import { GoalsReminderCard } from "@/components/GoalsReminderCard";
+import { TodaysFocusCard } from "@/components/today/TodaysFocusCard";
 import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
 
@@ -91,7 +92,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'today');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'focus');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -454,57 +455,45 @@ const Dashboard = () => {
 
         {/* Tabs for My Plan */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="overview">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="focus">
               <Sparkles className="h-4 w-4 mr-2" />
+              Today's Focus
+            </TabsTrigger>
+            <TabsTrigger value="overview">
+              <Target className="h-4 w-4 mr-2" />
               90 Day Plan
             </TabsTrigger>
-            <TabsTrigger value="goals">
-              <Target className="h-4 w-4 mr-2" />
-              My Goals
-            </TabsTrigger>
             <TabsTrigger value="insights">Health Analysis</TabsTrigger>
-            <TabsTrigger value="progress">Tracking</TabsTrigger>
           </TabsList>
+
+          {/* Today's Focus Tab */}
+          <TabsContent value="focus" className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <TodaysFocusCard />
+              <GoalsReminderCard />
+            </div>
+            
+            <ProgressTracker />
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <StreakCard 
+                activityType="daily_checkin" 
+                title="Daily Check-ins" 
+                description="Consistency builds healthy habits"
+              />
+              <StreakCard 
+                activityType="protocol_completion" 
+                title="Protocol Completion" 
+                description="Following your personalized plan"
+              />
+            </div>
+          </TabsContent>
 
           {/* 90-Day Overview Tab */}
           <TabsContent value="overview">
             <NinetyDayPlanOverview />
           </TabsContent>
-
-            {/* Goals Tab - Foundation of Journey */}
-            <TabsContent value="goals" className="space-y-6">
-              <GoalsSummaryView />
-            </TabsContent>
-
-            {/* Progress Tab - Tracking & Streaks */}
-            <TabsContent value="progress" className="space-y-6">
-              {/* Progress Tracker & Streaks */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <ProgressTracker />
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Your Streaks</h3>
-                  <div className="space-y-3">
-                    <StreakCard
-                      activityType="daily_check_in"
-                      title="Daily Check-In"
-                      description="Log your daily wellness metrics"
-                    />
-                    <StreakCard
-                      activityType="assessments"
-                      title="Assessments"
-                      description="Complete health assessments"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              {/* Member Progress Card */}
-              <MemberProgressCard />
-
-              {/* Adherence Calendar */}
-              <AdherenceCalendar />
-            </TabsContent>
 
             {/* Insights Tab - Analysis & Reports */}
             <TabsContent value="insights" className="space-y-8">
