@@ -14,6 +14,8 @@ import { useState } from "react";
 import { getTodaysQuote } from "@/data/femaleLongevityQuotes";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useCart } from "@/hooks/useCart";
+import { LISImpactPreview } from "@/components/today/LISImpactPreview";
+import { useLISData } from "@/hooks/useLISData";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
@@ -21,6 +23,7 @@ export const UnifiedDailyChecklist = () => {
   const { goals } = useGoals();
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
+  const { currentScore: sustainedLIS } = useLISData();
   
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
@@ -249,6 +252,16 @@ export const UnifiedDailyChecklist = () => {
           })}
         </div>
       )}
+
+      {/* LIS Impact & Biological Age Prediction */}
+      <div className="pb-6">
+        <LISImpactPreview 
+          completedCount={completedCount}
+          totalCount={totalCount}
+          sustainedLIS={sustainedLIS}
+          currentAge={42}
+        />
+      </div>
 
       {/* Progress Summary */}
       <div className="space-y-2 pb-6 border-b-2 border-primary/20">
