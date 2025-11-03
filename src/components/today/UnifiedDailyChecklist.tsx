@@ -1,32 +1,39 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sun, Sunset, Moon, Clock, Lock, Target } from "lucide-react";
+import { Sun, Sunset, Moon, Clock, Lock, ShoppingCart } from "lucide-react";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useGoals } from "@/hooks/useGoals";
 import { toast } from "sonner";
 import { SAMPLE_DAILY_ACTIONS } from "@/data/sampleDailyPlan";
 import { useState } from "react";
+import { getTodaysQuote } from "@/data/femaleLongevityQuotes";
+import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import { useCart } from "@/hooks/useCart";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { goals } = useGoals();
+  const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
   
-  // Use sample data if no user data exists
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Set<string>>(new Set());
   
   const totalCount = isUsingSampleData ? SAMPLE_DAILY_ACTIONS.length : userTotalCount;
   const completedCount = isUsingSampleData ? sampleCompletedIds.size : userCompletedCount;
+  
+  const todaysQuote = getTodaysQuote();
+  const today = new Date();
+  const dateString = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   const handleToggle = async (actionId: string) => {
-    // If using sample data, just toggle in local state
     if (isUsingSampleData) {
       setSampleCompletedIds(prev => {
         const next = new Set(prev);
@@ -40,7 +47,6 @@ export const UnifiedDailyChecklist = () => {
       return;
     }
 
-    // Otherwise, handle real user data
     const action = userActions.find(a => a.id === actionId);
     if (!action || !user) return;
 
@@ -74,17 +80,25 @@ export const UnifiedDailyChecklist = () => {
     }
   };
 
-  const morningActions = actions.filter((a: any) => 
-    a.timeOfDay?.includes('morning')
-  );
-  const afternoonActions = actions.filter((a: any) => 
-    a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday')
-  );
-  const eveningActions = actions.filter((a: any) => 
-    a.timeOfDay?.includes('evening') || a.timeOfDay?.includes('night')
-  );
+  const handleBuySupplements = (action: any) => {
+    // Mock supplement product for cart
+    addToCart({
+      id: `supplement-${action.id}`,
+      name: action.title,
+      price: 45.00,
+      originalPrice: 65.00,
+      image: '/placeholder.svg',
+      brand: 'Longevity Labs',
+      dosage: 'Daily',
+      quantity: 1
+    });
+    toast.success("Added to cart!");
+  };
 
-  // Map completed state for sample data
+  const morningActions = actions.filter((a: any) => a.timeOfDay?.includes('morning'));
+  const afternoonActions = actions.filter((a: any) => a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday'));
+  const eveningActions = actions.filter((a: any) => a.timeOfDay?.includes('evening') || a.timeOfDay?.includes('night'));
+
   const getItemCompleted = (actionId: string) => {
     if (isUsingSampleData) {
       return sampleCompletedIds.has(actionId);
@@ -94,22 +108,19 @@ export const UnifiedDailyChecklist = () => {
 
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   const remainingMinutes = actions
-    .filter(a => !a.completed)
-    .reduce((sum, a) => sum + a.estimatedMinutes, 0);
+    .filter((a: any) => !getItemCompleted(a.id))
+    .reduce((sum: number, a: any) => sum + a.estimatedMinutes, 0);
+
+  const activeGoals = goals?.filter(g => g.status === 'active') || [];
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Today's Checklist</CardTitle>
-        </CardHeader>
-        <CardContent className="py-8">
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-            <p>Loading your daily plan...</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="py-8">
+        <div className="flex items-center justify-center gap-2 text-muted-foreground">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+          <p>Loading your daily plan...</p>
+        </div>
+      </div>
     );
   }
 
@@ -118,18 +129,18 @@ export const UnifiedDailyChecklist = () => {
     
     return (
       <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm font-semibold text-foreground/70 uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-sm font-semibold text-foreground uppercase tracking-wider border-b border-border pb-2">
           <Icon className="w-5 h-5 text-primary" />
           {title}
         </div>
         {items.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
-          const isPillar = action.pillar;
+          const isSupplementCategory = action.category === 'supplement';
           
           return (
             <div
               key={action.id}
-              className="group relative flex items-start gap-3 p-4 rounded-lg border border-border bg-card hover:border-primary/30 hover:shadow-md transition-all"
+              className="group relative flex items-start gap-3 p-3 rounded-lg border border-border bg-card/50 hover:bg-card hover:border-primary/30 transition-all"
             >
               <Checkbox
                 checked={isCompleted}
@@ -138,24 +149,38 @@ export const UnifiedDailyChecklist = () => {
                 disabled={isUsingSampleData && !user}
               />
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <p className={`font-semibold ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-                    {action.title}
-                  </p>
-                  {isPillar && (
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className={`font-medium ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                      {action.title}
+                    </p>
+                    <ScienceBackedIcon className="w-3.5 h-3.5" showTooltip={true} />
+                  </div>
+                  {action.pillar && (
                     <Badge variant="outline" className="text-xs capitalize shrink-0 bg-primary/5 text-primary border-primary/20">
-                      {isPillar}
+                      {action.pillar}
                     </Badge>
                   )}
                 </div>
                 {action.description && (
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{action.description}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
                 )}
-                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center gap-4 mt-2">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="w-3 h-3" />
                     {action.estimatedMinutes} min
                   </div>
+                  {isSupplementCategory && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleBuySupplements(action)}
+                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                    >
+                      <ShoppingCart className="w-3 h-3" />
+                      Buy
+                    </Button>
+                  )}
                 </div>
               </div>
               
@@ -167,7 +192,7 @@ export const UnifiedDailyChecklist = () => {
                     className="shadow-lg"
                   >
                     <Lock className="w-3 h-3 mr-1" />
-                    Unlock
+                    Sign Up to Track
                   </Button>
                 </div>
               )}
@@ -179,44 +204,81 @@ export const UnifiedDailyChecklist = () => {
   };
 
   return (
-    <Card className="border-primary/20 shadow-lg">
-      <CardHeader className="bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-primary/10">
-        <div className="flex items-center justify-between mb-2">
-          <CardTitle className="text-2xl flex items-center gap-2">
-            <Target className="w-6 h-6 text-primary" />
-            <span>Your Daily Protocol</span>
-          </CardTitle>
-          <Badge variant="outline" className="bg-background text-base px-3 py-1">
-            {completedCount} / {totalCount}
-          </Badge>
-        </div>
-        
-        {isUsingSampleData && !user && (
-          <div className="mb-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-            <p className="text-sm text-foreground/80 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-primary" />
-              <span><strong>Preview Mode:</strong> Sign up to save progress and unlock your personalized plan</span>
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Date & Quote Header */}
+      <div className="space-y-4 pb-6 border-b-2 border-primary/20">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+          TODAY - {dateString}
+        </h1>
+        <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
+          <span className="text-2xl">💫</span>
+          <div>
+            <p className="text-foreground italic leading-relaxed">
+              "{todaysQuote.quote}"
             </p>
-          </div>
-        )}
-        
-        <div className="space-y-3">
-          <Progress 
-            value={progressPercent} 
-            className="h-3 bg-muted" 
-          />
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground font-medium">{progressPercent}% Complete</span>
-            <span className="text-muted-foreground">{remainingMinutes} min remaining</span>
+            <p className="text-sm text-muted-foreground mt-1">— {todaysQuote.author}</p>
           </div>
         </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-8 pt-6">
-        <TimeSection title="Morning Routine" icon={Sun} items={morningActions} />
-        <TimeSection title="Afternoon Actions" icon={Sunset} items={afternoonActions} />
-        <TimeSection title="Evening Protocol" icon={Moon} items={eveningActions} />
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Goals Section */}
+      {activeGoals.length > 0 && (
+        <div className="space-y-3 pb-6 border-b border-border">
+          <h2 className="text-lg font-semibold text-foreground uppercase tracking-wide">
+            YOUR GOALS TODAY
+          </h2>
+          {activeGoals.map(goal => {
+            const daysSinceStart = Math.floor((Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24));
+            const progress = Math.min(Math.round((daysSinceStart / 90) * 100), 100);
+            
+            return (
+              <div key={goal.id} className="flex items-start gap-2">
+                <Checkbox checked={progress >= 50} className="mt-1" disabled />
+                <div className="flex-1">
+                  <p className="font-medium text-foreground">
+                    {goal.title} - Day {daysSinceStart}/90 ({progress}% complete)
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Progress Summary */}
+      <div className="space-y-2 pb-6 border-b-2 border-primary/20">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-semibold text-foreground">
+            Progress: {completedCount}/{totalCount} actions complete • {remainingMinutes} min remaining
+          </span>
+        </div>
+        <Progress value={progressPercent} className="h-2 bg-muted" />
+      </div>
+
+      {/* Time-Based Sections */}
+      <div className="space-y-8">
+        <TimeSection title="MORNING ESSENTIALS (Before 10 AM)" icon={Sun} items={morningActions} />
+        <TimeSection title="AFTERNOON FOCUS" icon={Sunset} items={afternoonActions} />
+        <TimeSection title="EVENING ROUTINE" icon={Moon} items={eveningActions} />
+      </div>
+
+      {/* Guest CTA */}
+      {!user && (
+        <div className="mt-8 p-6 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 text-center space-y-3">
+          <h3 className="text-xl font-bold text-foreground">Ready to Unlock Your Personalized Plan?</h3>
+          <p className="text-muted-foreground">
+            Create a free account to save progress, get AI insights, and access personalized protocols
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <Button size="lg" onClick={() => navigate('/auth')}>
+              Create Free Account
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate('/guest-lis-assessment')}>
+              Take Assessment First
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
