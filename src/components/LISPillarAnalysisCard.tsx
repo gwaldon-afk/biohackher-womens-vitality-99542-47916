@@ -5,6 +5,8 @@ import { LucideIcon, TrendingUp, AlertCircle } from 'lucide-react';
 
 interface PillarAnalysisCardProps {
   pillarName: string;
+  pillarDisplayName: string;
+  pillarAnalysisName: string;
   pillarScore: number;
   icon: LucideIcon;
   color: string;
@@ -13,7 +15,9 @@ interface PillarAnalysisCardProps {
 }
 
 export const LISPillarAnalysisCard = ({ 
-  pillarName, 
+  pillarName,
+  pillarDisplayName,
+  pillarAnalysisName,
   pillarScore, 
   icon: Icon, 
   color,
@@ -47,6 +51,7 @@ export const LISPillarAnalysisCard = ({
                       pillarScore >= 60 ? 'good' : 
                       pillarScore >= 40 ? 'fair' : 'poor';
 
+    // Use analysisName for lookup to map guest assessment pillars to detailed analysis
     const analyses: Record<string, Record<string, { impact: string; recommendations: string[]; quickWin: string }>> = {
       'Sleep': {
         excellent: {
@@ -300,8 +305,8 @@ export const LISPillarAnalysisCard = ({
       }
     };
 
-    return analyses[pillarName]?.[scoreBand] || {
-      impact: `Your ${pillarName} score indicates this area is impacting your biological aging trajectory.`,
+    return analyses[pillarAnalysisName]?.[scoreBand] || {
+      impact: `Your ${pillarDisplayName} score indicates this area is impacting your biological aging trajectory.`,
       recommendations: [
         'Focus on foundational health habits in this domain',
         'Consider working with specialist for personalized guidance',
@@ -327,7 +332,7 @@ export const LISPillarAnalysisCard = ({
               <Icon className="h-5 w-5" style={{ color }} />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">{pillarName}</h3>
+              <h3 className="font-semibold text-lg">{pillarDisplayName}</h3>
               <Badge variant={getBadgeVariant(pillarScore)} className="mt-1">
                 {scoreLabel}
               </Badge>

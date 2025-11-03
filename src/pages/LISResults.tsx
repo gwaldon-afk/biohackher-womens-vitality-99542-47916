@@ -237,6 +237,8 @@ const LISResults = () => {
             <LISPillarAnalysisCard
               key={pillar.name}
               pillarName={pillar.name}
+              pillarDisplayName={pillar.displayName}
+              pillarAnalysisName={pillar.analysisName}
               pillarScore={pillar.score}
               icon={pillar.icon}
               color={pillar.color}
