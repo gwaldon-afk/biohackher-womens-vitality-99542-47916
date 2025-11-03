@@ -53,6 +53,14 @@ import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
 import { ProtocolGenerationPrompt } from "@/components/ProtocolGenerationPrompt";
 import { supabase } from "@/integrations/supabase/client";
+import { AssessmentHub } from "@/components/AssessmentHub";
+import { ProtocolRecommendationsCard } from "@/components/ProtocolRecommendationsCard";
+import { PersonalizedInsightsSummary } from "@/components/PersonalizedInsightsSummary";
+import { SuggestedAssessmentsCard } from "@/components/SuggestedAssessmentsCard";
+import { extractSymptomsFromAssessments } from "@/utils/assessmentProtocolMatching";
+import { getSuggestedAdditionalAssessments } from "@/utils/assessmentSuggestionEngine";
+import { assessmentConfigs } from "@/data/assessmentQuestions";
+import { useMemo } from "react";
 
 interface DashboardData {
   currentScore: number;
@@ -147,6 +155,18 @@ const Dashboard = () => {
 
   const activeSymptoms = userSymptoms?.filter(s => s.is_active) || [];
   const dailyScoreCount = dailyScores?.length || 0;
+
+  // Extract symptoms from assessments for protocol recommendations
+  const extractedSymptoms = useMemo(() => 
+    extractSymptomsFromAssessments(recentAssessments), 
+    [recentAssessments]
+  );
+
+  // Get suggested assessments based on completed assessments
+  const suggestedAssessments = useMemo(() => 
+    getSuggestedAdditionalAssessments(recentAssessments, Object.keys(assessmentConfigs)),
+    [recentAssessments]
+  );
 
   const isLoading = authLoading || loadingAssessments || loadingDailyScores || loadingSymptoms;
 
@@ -519,35 +539,52 @@ const Dashboard = () => {
 
             {/* Insights Tab - Analysis & Reports */}
             <TabsContent value="insights" className="space-y-8">
-              {/* Energy & Health Metrics Grid */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <EnergyMetricsCard />
-                {recentAssessments.length >= 1 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Recent Assessments</CardTitle>
-                      <CardDescription>Your latest health check-ins</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {recentAssessments.slice(0, 3).map(assessment => (
-                          <div key={assessment.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                            <div>
-                              <p className="font-medium">{getSymptomName(assessment.symptom_type)}</p>
-                              <p className="text-sm text-muted-foreground">{format(new Date(assessment.completed_at), 'MMM d, yyyy')}</p>
-                            </div>
-                            <Badge className={getCategoryColor(assessment.score_category)}>
-                              {assessment.score_category}
-                            </Badge>
+              {/* 1. Personalized Insights Summary */}
+              <PersonalizedInsightsSummary 
+                assessments={recentAssessments}
+              />
+
+              {/* 2. Assessment Hub */}
+              <AssessmentHub 
+                completedAssessments={recentAssessments}
+              />
+
+              {/* 2B. Suggested Additional Assessments */}
+              <SuggestedAssessmentsCard
+                suggestions={suggestedAssessments}
+                onTakeAssessment={(id) => navigate(`/assessment/${id}`)}
+              />
+
+              {/* 4. Protocol Recommendations */}
+              <ProtocolRecommendationsCard
+                userSymptoms={extractedSymptoms}
+              />
+
+              {/* 5. Recent Assessment History */}
+              {recentAssessments.length >= 1 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Assessment History</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {recentAssessments.slice(0, 5).map(assessment => (
+                        <div key={assessment.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div>
+                            <p className="font-medium">{getSymptomName(assessment.symptom_type)}</p>
+                            <p className="text-sm text-muted-foreground">{format(new Date(assessment.completed_at), 'MMM d, yyyy')}</p>
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-              
-              {/* Comprehensive Health Analysis - Show if 2+ assessments */}
+                          <Badge className={getCategoryColor(assessment.score_category)}>
+                            {assessment.score_category}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* 6. AI Analysis - Show if 2+ assessments */}
               {recentAssessments.length >= 2 && (
                 <Card className="border-primary/20">
                   <CardHeader>
@@ -588,6 +625,13 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               )}
+
+              {/* 7. AI Insights & Reports Section */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <AIInsightsCard />
+              </div>
+
+              <MonthlyReportCard isPremium={false} />
 
               {/* Baseline Reassessment Prompt */}
               <BaselineReassessmentPrompt />
