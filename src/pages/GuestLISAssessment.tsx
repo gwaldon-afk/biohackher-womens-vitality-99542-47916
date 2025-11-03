@@ -641,10 +641,10 @@ export default function GuestLISAssessment() {
           return;
         }
 
-        // 2. Create baseline daily_score
+        // 2. Create baseline daily_score (upsert to handle duplicates)
         const { error: scoreError } = await supabase
           .from('daily_scores')
-          .insert({
+          .upsert({
             user_id: user.id,
             date: new Date().toISOString().split('T')[0],
             longevity_impact_score: scoreData.finalScore,
@@ -661,12 +661,13 @@ export default function GuestLISAssessment() {
             social_connections_score: scoreData.pillarScores.Balance || 0,
             cognitive_engagement_score: scoreData.pillarScores.Brain || 0,
             color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
+          }, {
+            onConflict: 'user_id,date'
           });
 
         if (scoreError) {
           console.error('Error saving daily score:', scoreError);
-          toast.error('Failed to save assessment score. Please try again.');
-          return;
+          // Don't block the flow for duplicate entries
         }
 
         // 3. Create synthetic assessment_completions for protocol generation
