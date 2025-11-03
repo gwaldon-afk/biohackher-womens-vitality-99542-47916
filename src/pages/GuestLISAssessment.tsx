@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield } from 'lucide-react';
+import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield, Moon, TrendingUp, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface QuestionOption {
@@ -27,9 +27,10 @@ interface Question {
 }
 
 const ASSESSMENT_QUESTIONS: Question[] = [
+  // ==================== SLEEP PILLAR (3 questions) ====================
   {
     question_id: "Q1_SleepDuration",
-    pillar: "Body",
+    pillar: "sleep",
     type: "slider",
     text: "On average over the past week, how many hours of sleep did you get per night?",
     options: [
@@ -60,8 +61,8 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q2_SubjectiveSleepQuality",
-    pillar: "Body",
+    question_id: "Q2_SleepQuality",
+    pillar: "sleep",
     type: "slider",
     text: "How would you rate the restorative quality (depth, feeling of repair) of your sleep over the past week?",
     options: [
@@ -92,104 +93,42 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q3_Activity",
-    pillar: "Body",
+    question_id: "Q3_SleepConsistency",
+    pillar: "sleep",
     type: "slider",
-    text: "On an average day, which of the following best describes your physical activity level (steps or active minutes)?",
+    text: "How consistent is your sleep schedule? (Going to bed and waking up at similar times)",
     options: [
       {
-        text: "A. Less than 2,000 steps or minimal movement",
-        emoji: "🛋️",
+        text: "A. Very inconsistent (Varies by 3+ hours)",
+        emoji: "🌙",
         score_value: 0,
-        ai_analysis: "Critical Risk. Sedentary behavior is strongly associated with accelerated biological aging and increased mortality risk."
+        ai_analysis: "Critical. Irregular sleep patterns disrupt circadian rhythm and metabolic health."
       },
       {
-        text: "B. 2,000–4,000 steps or less than 15 minutes of activity",
-        emoji: "🚶",
-        score_value: 30,
-        ai_analysis: "High Risk. Below the minimum threshold for cardiovascular and metabolic health protection."
-      },
-      {
-        text: "C. 4,000–7,999 steps or 15–29 minutes of moderate activity",
-        emoji: "🏃",
-        score_value: 70,
-        ai_analysis: "Protective Threshold. Meets minimum activity requirements for health maintenance."
-      },
-      {
-        text: "D. 8,000+ steps or ≥ 30 minutes of moderate exercise",
-        emoji: "💪",
-        score_value: 100,
-        ai_analysis: "Maximal Benefit. This volume reaches the step-count saturation point for younger adults, and the 30-minute duration is associated with a 17% reduction in annual deaths, earning full credit."
-      }
-    ]
-  },
-  {
-    question_id: "Q4_NutritionQuality",
-    pillar: "Body",
-    type: "slider",
-    text: "What proportion of your daily food intake comes from whole, unprocessed sources (vegetables, fruits, lean protein, healthy fats)?",
-    options: [
-      {
-        text: "A. Less than 30% whole foods (Mostly processed)",
-        emoji: "🍔",
-        score_value: 0,
-        ai_analysis: "Critical Risk. Diet dominated by ultra-processed foods drives chronic inflammation and metabolic dysfunction."
-      },
-      {
-        text: "B. 30–50% whole foods (Mixed intake, frequent nutrient-poor meals)",
-        emoji: "🍕",
-        score_value: 30,
-        ai_analysis: "Insufficient Density. Indicates potential chronic metabolic stress and insufficient micronutrient supply for optimal cellular repair."
-      },
-      {
-        text: "C. 50–70% whole foods (Balanced, occasional treats)",
-        emoji: "🥗",
-        score_value: 70,
-        ai_analysis: "Protective Pattern. Adherence to a generally protective dietary pattern associated with slower biological aging and good general health."
-      },
-      {
-        text: "D. > 70% whole foods (Strict adherence to balanced, dense nutrition)",
-        emoji: "🥬",
-        score_value: 100,
-        ai_analysis: "Maximum credit for a diet designed to minimize systemic inflammation and optimally support metabolic and cellular health."
-      }
-    ]
-  },
-  {
-    question_id: "Q5_SubjectiveAge",
-    pillar: "Balance",
-    type: "slider",
-    text: "Considering your energy, vitality, and mental clarity, how old do you genuinely feel compared to your chronological age?",
-    options: [
-      {
-        text: "A. I feel more than 5 years older than my age.",
-        emoji: "🧓",
-        score_value: 0,
-        ai_analysis: "Critical Risk. Large positive subjective age delta is a powerful predictor of mortality and biological aging acceleration."
-      },
-      {
-        text: "B. I feel 1–4 years older than my age.",
-        emoji: "😓",
+        text: "B. Somewhat inconsistent (Varies by 1-3 hours)",
+        emoji: "😴",
         score_value: 40,
-        ai_analysis: "Increased Risk. Positive subjective age delta, suggesting a perception of accelerating physical and mental decline, which is a known predictor of adverse outcomes."
+        ai_analysis: "Suboptimal. Some circadian disruption affecting recovery quality."
       },
       {
-        text: "C. I feel my age or slightly younger (0 to 4 years younger).",
-        emoji: "😐",
-        score_value: 80,
-        ai_analysis: "Neutral/Protective. Reflects a stable self-assessment, establishing a strong baseline for mental health and resilience."
+        text: "C. Fairly consistent (Usually within 1 hour)",
+        emoji: "😊",
+        score_value: 75,
+        ai_analysis: "Good. Supports healthy circadian rhythm and recovery."
       },
       {
-        text: "D. I feel ≥ 5 years younger than my age.",
-        emoji: "✨",
+        text: "D. Very consistent (Same time daily, ±30 min)",
+        emoji: "⏰",
         score_value: 100,
-        ai_analysis: "Major Protective Factor. This negative delta correlates with a significant survival advantage, reflecting high vitality and optimal psychological health, which receives maximum score credit."
+        ai_analysis: "Optimal. Maximizes circadian alignment and recovery efficiency."
       }
     ]
   },
+
+  // ==================== STRESS PILLAR (4 questions) ====================
   {
-    question_id: "Q6_SubjectiveCalmness",
-    pillar: "Balance",
+    question_id: "Q4_SubjectiveCalmness",
+    pillar: "stress",
     type: "slider",
     text: "On a scale of 0 (Extremely Stressed) to 10 (Completely Recovered/Calm), how mentally recovered and calm do you feel this morning?",
     options: [
@@ -220,8 +159,334 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q7_SocialConnection",
-    pillar: "Balance",
+    question_id: "Q5_SubjectiveAge",
+    pillar: "stress",
+    type: "slider",
+    text: "Considering your energy, vitality, and mental clarity, how old do you genuinely feel compared to your chronological age?",
+    options: [
+      {
+        text: "A. I feel more than 5 years older than my age.",
+        emoji: "🧓",
+        score_value: 0,
+        ai_analysis: "Critical Risk. Large positive subjective age delta is a powerful predictor of mortality and biological aging acceleration."
+      },
+      {
+        text: "B. I feel 1–4 years older than my age.",
+        emoji: "😓",
+        score_value: 40,
+        ai_analysis: "Increased Risk. Positive subjective age delta, suggesting a perception of accelerating physical and mental decline, which is a known predictor of adverse outcomes."
+      },
+      {
+        text: "C. I feel my age or slightly younger (0 to 4 years younger).",
+        emoji: "😐",
+        score_value: 80,
+        ai_analysis: "Neutral/Protective. Reflects a stable self-assessment, establishing a strong baseline for mental health and resilience."
+      },
+      {
+        text: "D. I feel ≥ 5 years younger than my age.",
+        emoji: "✨",
+        score_value: 100,
+        ai_analysis: "Major Protective Factor. This negative delta correlates with a significant survival advantage, reflecting high vitality and optimal psychological health, which receives maximum score credit."
+      }
+    ]
+  },
+  {
+    question_id: "Q6_StressManagement",
+    pillar: "stress",
+    type: "slider",
+    text: "How effectively do you manage and recover from daily stressors?",
+    options: [
+      {
+        text: "A. Poorly (Stress accumulates, little recovery)",
+        emoji: "😣",
+        score_value: 0,
+        ai_analysis: "Critical. Inability to manage stress leads to chronic activation and accelerated aging."
+      },
+      {
+        text: "B. Somewhat (I struggle but eventually cope)",
+        emoji: "😐",
+        score_value: 40,
+        ai_analysis: "Suboptimal. Delayed recovery from stressors increases allostatic load."
+      },
+      {
+        text: "C. Well (I have effective coping strategies)",
+        emoji: "😊",
+        score_value: 75,
+        ai_analysis: "Protective. Good stress management supports resilience and longevity."
+      },
+      {
+        text: "D. Excellently (Quick recovery, strong resilience)",
+        emoji: "💪",
+        score_value: 100,
+        ai_analysis: "Optimal. Excellent stress adaptation is a key longevity marker."
+      }
+    ]
+  },
+  {
+    question_id: "Q7_EmotionalResilience",
+    pillar: "stress",
+    type: "slider",
+    text: "Which statement best describes your emotional outlook and resilience when facing unexpected challenges?",
+    options: [
+      {
+        text: "A. I often feel overwhelmed and highly pessimistic about the future.",
+        emoji: "😞",
+        score_value: 0,
+        ai_analysis: "Captures elements of anxiety and fatalism that are statistically significant contributors to mortality risk, requiring the highest penalty."
+      },
+      {
+        text: "B. I sometimes struggle to cope and can become reactive to stress.",
+        emoji: "😐",
+        score_value: 30,
+        ai_analysis: "Suggests moderate vulnerability to psychological distress, requiring focused interventions to build mental fortitude."
+      },
+      {
+        text: "C. I am generally resilient and handle challenges with measured thought.",
+        emoji: "😊",
+        score_value: 70,
+        ai_analysis: "Represents a healthy capacity for psychological self-regulation and coping, supporting sustained well-being."
+      },
+      {
+        text: "D. I am highly resilient and maintain a strong, positive, and proactive outlook.",
+        emoji: "💪",
+        score_value: 100,
+        ai_analysis: "Maximal score. Optimistic outlook is a statistically powerful contributor to a healthy survival profile."
+      }
+    ]
+  },
+
+  // ==================== ACTIVITY PILLAR (3 questions) ====================
+  {
+    question_id: "Q8_ActivityLevel",
+    pillar: "activity",
+    type: "slider",
+    text: "On an average day, which of the following best describes your physical activity level (steps or active minutes)?",
+    options: [
+      {
+        text: "A. Less than 2,000 steps or minimal movement",
+        emoji: "🛋️",
+        score_value: 0,
+        ai_analysis: "Critical Risk. Sedentary behavior is strongly associated with accelerated biological aging and increased mortality risk."
+      },
+      {
+        text: "B. 2,000–4,000 steps or less than 15 minutes of activity",
+        emoji: "🚶",
+        score_value: 30,
+        ai_analysis: "High Risk. Below the minimum threshold for cardiovascular and metabolic health protection."
+      },
+      {
+        text: "C. 4,000–7,999 steps or 15–29 minutes of moderate activity",
+        emoji: "🏃",
+        score_value: 70,
+        ai_analysis: "Protective Threshold. Meets minimum activity requirements for health maintenance."
+      },
+      {
+        text: "D. 8,000+ steps or ≥ 30 minutes of moderate exercise",
+        emoji: "💪",
+        score_value: 100,
+        ai_analysis: "Maximal Benefit. This volume reaches the step-count saturation point for younger adults, and the 30-minute duration is associated with a 17% reduction in annual deaths, earning full credit."
+      }
+    ]
+  },
+  {
+    question_id: "Q9_ExerciseIntensity",
+    pillar: "activity",
+    type: "slider",
+    text: "How often do you engage in vigorous physical activity (running, HIIT, intense sports, heavy lifting)?",
+    options: [
+      {
+        text: "A. Never or rarely",
+        emoji: "🚶",
+        score_value: 30,
+        ai_analysis: "Minimal. Lacks intensity for optimal cardiovascular and metabolic adaptation."
+      },
+      {
+        text: "B. 1-2 times per week",
+        emoji: "🏃",
+        score_value: 60,
+        ai_analysis: "Moderate. Some intensity training provides benefits beyond moderate activity."
+      },
+      {
+        text: "C. 3-4 times per week",
+        emoji: "💪",
+        score_value: 85,
+        ai_analysis: "Optimal. Regular vigorous activity maximizes cardiovascular and metabolic health."
+      },
+      {
+        text: "D. 5+ times per week",
+        emoji: "🏋️",
+        score_value: 100,
+        ai_analysis: "Elite. High-frequency vigorous activity associated with exceptional longevity markers."
+      }
+    ]
+  },
+  {
+    question_id: "Q10_MovementVariety",
+    pillar: "activity",
+    type: "slider",
+    text: "Do you include strength training or resistance exercises in your routine?",
+    options: [
+      {
+        text: "A. Never",
+        emoji: "❌",
+        score_value: 0,
+        ai_analysis: "Critical Gap. Lack of resistance training accelerates muscle loss and metabolic decline."
+      },
+      {
+        text: "B. Occasionally (less than once per week)",
+        emoji: "🤷",
+        score_value: 40,
+        ai_analysis: "Insufficient. Inadequate frequency for muscle maintenance."
+      },
+      {
+        text: "C. 1-2 times per week",
+        emoji: "💪",
+        score_value: 75,
+        ai_analysis: "Good. Meets minimum frequency for muscle maintenance and metabolic health."
+      },
+      {
+        text: "D. 3+ times per week",
+        emoji: "🏋️",
+        score_value: 100,
+        ai_analysis: "Optimal. Sufficient volume for muscle growth, bone density, and metabolic optimization."
+      }
+    ]
+  },
+
+  // ==================== NUTRITION PILLAR (4 questions) ====================
+  {
+    question_id: "Q11_NutritionQuality",
+    pillar: "nutrition",
+    type: "slider",
+    text: "What proportion of your daily food intake comes from whole, unprocessed sources (vegetables, fruits, lean protein, healthy fats)?",
+    options: [
+      {
+        text: "A. Less than 30% whole foods (Mostly processed)",
+        emoji: "🍔",
+        score_value: 0,
+        ai_analysis: "Critical Risk. Diet dominated by ultra-processed foods drives chronic inflammation and metabolic dysfunction."
+      },
+      {
+        text: "B. 30–50% whole foods (Mixed intake, frequent nutrient-poor meals)",
+        emoji: "🍕",
+        score_value: 30,
+        ai_analysis: "Insufficient Density. Indicates potential chronic metabolic stress and insufficient micronutrient supply for optimal cellular repair."
+      },
+      {
+        text: "C. 50–70% whole foods (Balanced, occasional treats)",
+        emoji: "🥗",
+        score_value: 70,
+        ai_analysis: "Protective Pattern. Adherence to a generally protective dietary pattern associated with slower biological aging and good general health."
+      },
+      {
+        text: "D. > 70% whole foods (Strict adherence to balanced, dense nutrition)",
+        emoji: "🥬",
+        score_value: 100,
+        ai_analysis: "Maximum credit for a diet designed to minimize systemic inflammation and optimally support metabolic and cellular health."
+      }
+    ]
+  },
+  {
+    question_id: "Q12_ProteinIntake",
+    pillar: "nutrition",
+    type: "slider",
+    text: "Do you consume adequate protein (0.8-1.2g per kg body weight) from quality sources daily?",
+    options: [
+      {
+        text: "A. Rarely or inconsistent protein intake",
+        emoji: "🤷",
+        score_value: 0,
+        ai_analysis: "Critical. Inadequate protein accelerates muscle loss and metabolic decline."
+      },
+      {
+        text: "B. Sometimes, but below optimal levels",
+        emoji: "🥚",
+        score_value: 40,
+        ai_analysis: "Suboptimal. Insufficient protein for muscle maintenance and repair."
+      },
+      {
+        text: "C. Usually meet protein needs",
+        emoji: "🍗",
+        score_value: 75,
+        ai_analysis: "Good. Adequate protein supports muscle maintenance and metabolic health."
+      },
+      {
+        text: "D. Consistently meet or exceed protein goals with quality sources",
+        emoji: "🥩",
+        score_value: 100,
+        ai_analysis: "Optimal. Excellent protein intake supports muscle, bone, and metabolic health."
+      }
+    ]
+  },
+  {
+    question_id: "Q13_Hydration",
+    pillar: "nutrition",
+    type: "slider",
+    text: "How well do you maintain adequate daily hydration (2-3 liters of water)?",
+    options: [
+      {
+        text: "A. Rarely drink water, often dehydrated",
+        emoji: "🏜️",
+        score_value: 0,
+        ai_analysis: "Critical. Chronic dehydration impairs cellular function and cognitive performance."
+      },
+      {
+        text: "B. Inconsistent, sometimes dehydrated",
+        emoji: "💧",
+        score_value: 40,
+        ai_analysis: "Suboptimal. Intermittent dehydration affects performance and recovery."
+      },
+      {
+        text: "C. Usually well-hydrated",
+        emoji: "🚰",
+        score_value: 75,
+        ai_analysis: "Good. Adequate hydration supports cellular function and performance."
+      },
+      {
+        text: "D. Consistently well-hydrated throughout the day",
+        emoji: "💦",
+        score_value: 100,
+        ai_analysis: "Optimal. Excellent hydration maximizes cellular function and cognitive performance."
+      }
+    ]
+  },
+  {
+    question_id: "Q14_VegetableIntake",
+    pillar: "nutrition",
+    type: "slider",
+    text: "How many servings of vegetables and fruits do you consume daily?",
+    options: [
+      {
+        text: "A. 0-2 servings",
+        emoji: "🚫",
+        score_value: 0,
+        ai_analysis: "Critical. Severe micronutrient and antioxidant deficiency."
+      },
+      {
+        text: "B. 3-4 servings",
+        emoji: "🥕",
+        score_value: 40,
+        ai_analysis: "Below optimal. Insufficient phytonutrient diversity."
+      },
+      {
+        text: "C. 5-7 servings",
+        emoji: "🥗",
+        score_value: 80,
+        ai_analysis: "Good. Meets general recommendations for health maintenance."
+      },
+      {
+        text: "D. 8+ servings with high variety",
+        emoji: "🌈",
+        score_value: 100,
+        ai_analysis: "Optimal. Maximizes antioxidant and phytonutrient intake for longevity."
+      }
+    ]
+  },
+
+  // ==================== SOCIAL PILLAR (3 questions) ====================
+  {
+    question_id: "Q15_SocialConnection",
+    pillar: "social",
     type: "slider",
     text: "How often do you feel strongly connected and supported by your family, friends, or community?",
     options: [
@@ -252,40 +517,74 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q8_EmotionalResilience",
-    pillar: "Balance",
+    question_id: "Q16_CommunityEngagement",
+    pillar: "social",
     type: "slider",
-    text: "Which statement best describes your emotional outlook and resilience when facing unexpected challenges?",
+    text: "How often do you participate in meaningful social activities or community engagement?",
     options: [
       {
-        text: "A. I often feel overwhelmed and highly pessimistic about the future.",
-        emoji: "😞",
+        text: "A. Rarely (Less than once per month)",
+        emoji: "🏠",
         score_value: 0,
-        ai_analysis: "Captures elements of anxiety and fatalism that are statistically significant contributors to mortality risk, requiring the highest penalty."
+        ai_analysis: "Critical. Lack of social engagement associated with faster cognitive decline."
       },
       {
-        text: "B. I sometimes struggle to cope and can become reactive to stress.",
-        emoji: "😐",
-        score_value: 30,
-        ai_analysis: "Suggests moderate vulnerability to psychological distress, requiring focused interventions to build mental fortitude."
+        text: "B. Occasionally (1-2 times per month)",
+        emoji: "👥",
+        score_value: 40,
+        ai_analysis: "Minimal. Insufficient social interaction frequency."
       },
       {
-        text: "C. I am generally resilient and handle challenges with measured thought.",
-        emoji: "😊",
-        score_value: 70,
-        ai_analysis: "Represents a healthy capacity for psychological self-regulation and coping, supporting sustained well-being."
+        text: "C. Regularly (Weekly)",
+        emoji: "🎉",
+        score_value: 75,
+        ai_analysis: "Good. Regular social engagement supports cognitive and emotional health."
       },
       {
-        text: "D. I am highly resilient and maintain a strong, positive, and proactive outlook.",
-        emoji: "💪",
+        text: "D. Frequently (Multiple times per week)",
+        emoji: "🤝",
         score_value: 100,
-        ai_analysis: "Maximal score. Optimistic outlook is a statistically powerful contributor to a healthy survival profile."
+        ai_analysis: "Optimal. High social engagement maximizes cognitive reserve and longevity."
       }
     ]
   },
   {
-    question_id: "Q9_CognitiveEngagement",
-    pillar: "Brain",
+    question_id: "Q17_Purpose",
+    pillar: "social",
+    type: "slider",
+    text: "Do you feel a strong sense of purpose or meaning in your daily life?",
+    options: [
+      {
+        text: "A. No, I lack clear purpose or direction",
+        emoji: "🤷",
+        score_value: 0,
+        ai_analysis: "Critical. Lack of purpose is strongly associated with mortality risk."
+      },
+      {
+        text: "B. Sometimes, but it's inconsistent",
+        emoji: "🤔",
+        score_value: 40,
+        ai_analysis: "Suboptimal. Inconsistent sense of purpose affects motivation and well-being."
+      },
+      {
+        text: "C. Generally yes, I have meaningful goals",
+        emoji: "🎯",
+        score_value: 75,
+        ai_analysis: "Good. Clear purpose supports motivation and psychological health."
+      },
+      {
+        text: "D. Strong, clear purpose that drives my daily actions",
+        emoji: "⭐",
+        score_value: 100,
+        ai_analysis: "Optimal. Strong sense of purpose is a powerful longevity factor."
+      }
+    ]
+  },
+
+  // ==================== COGNITIVE PILLAR (3 questions) ====================
+  {
+    question_id: "Q18_CognitiveEngagement",
+    pillar: "cognitive",
     type: "slider",
     text: "On most days, how much time do you dedicate to focused cognitive tasks (learning, complex problem-solving, reading, etc.)?",
     options: [
@@ -316,8 +615,40 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q10_MeditationAdherence",
-    pillar: "Brain",
+    question_id: "Q19_LearningNew",
+    pillar: "cognitive",
+    type: "slider",
+    text: "How often do you actively learn new skills or engage in novel cognitive challenges?",
+    options: [
+      {
+        text: "A. Rarely (Stuck in routine)",
+        emoji: "🔄",
+        score_value: 0,
+        ai_analysis: "Critical. Lack of novelty accelerates cognitive decline."
+      },
+      {
+        text: "B. Occasionally (Few times per year)",
+        emoji: "📚",
+        score_value: 40,
+        ai_analysis: "Minimal. Insufficient novelty for cognitive reserve building."
+      },
+      {
+        text: "C. Regularly (Monthly new learning)",
+        emoji: "🎨",
+        score_value: 75,
+        ai_analysis: "Good. Regular novelty supports cognitive plasticity."
+      },
+      {
+        text: "D. Consistently (Weekly new challenges)",
+        emoji: "🚀",
+        score_value: 100,
+        ai_analysis: "Optimal. Frequent novel learning maximizes cognitive reserve and brain health."
+      }
+    ]
+  },
+  {
+    question_id: "Q20_MeditationPractice",
+    pillar: "cognitive",
     type: "radio",
     text: "In the past seven days, what was your average daily practice time for meditation, mindful breathing, or conscious relaxation?",
     options: [
@@ -347,9 +678,11 @@ const ASSESSMENT_QUESTIONS: Question[] = [
       }
     ]
   },
+
+  // ==================== SMOKING STATUS (Percentage Modifier) ====================
   {
-    question_id: "Q11_SmokingStatus",
-    pillar: "Body_Penalty",
+    question_id: "Q21_SmokingStatus",
+    pillar: "modifier",
     type: "radio",
     text: "What is your current smoking status? (This includes vaping nicotine products.)",
     options: [
@@ -357,13 +690,13 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         text: "A. Current Smoker (Daily or occasional use)",
         emoji: "🚬",
         score_value: 0,
-        ai_analysis: "Maximum Penalty Trigger. Current smoking is the single largest modifiable risk factor for accelerated epigenetic aging. Triggers a fixed -60 point penalty."
+        ai_analysis: "Maximum Penalty Trigger. Current smoking is the single largest modifiable risk factor for accelerated epigenetic aging. Triggers a fixed -60% penalty."
       },
       {
         text: "B. Former Smoker (Quit less than 1 year ago)",
         emoji: "🚭",
         score_value: 30,
-        ai_analysis: "High Penalty Trigger. Residual risk is still significant. Triggers the fixed -30 point penalty reflecting high EAA sensitivity during the first year of cessation."
+        ai_analysis: "High Penalty Trigger. Residual risk is still significant. Triggers a -5% penalty reflecting high cardiovascular sensitivity during the first year of cessation."
       },
       {
         text: "C. Former Smoker (Quit 1-5 years ago)",
@@ -378,46 +711,16 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         ai_analysis: "Zero Penalty. After 5 years of cessation, cardiovascular risk profile approaches that of never-smokers."
       }
     ]
-  },
-  {
-    question_id: "Q12_SkinHealth",
-    pillar: "Beauty",
-    type: "slider",
-    text: "How would you describe the current health and vitality of your skin and hair? (A proxy for systemic inflammation and nutrient status).",
-    options: [
-      {
-        text: "A. Poor (Dull, inflamed, significant issues)",
-        emoji: "😟",
-        score_value: 0,
-        ai_analysis: "Critical. May indicate systemic inflammation and nutrient deficiencies affecting cellular health."
-      },
-      {
-        text: "B. Fair (Occasional issues, lacks vitality)",
-        emoji: "😐",
-        score_value: 30,
-        ai_analysis: "Suboptimal. Suggests potential nutrient gaps or inflammatory processes."
-      },
-      {
-        text: "C. Good (Generally healthy, minor concerns)",
-        emoji: "😊",
-        score_value: 70,
-        ai_analysis: "Protective. Reflects adequate nutrient status and controlled inflammation."
-      },
-      {
-        text: "D. Excellent (Vibrant, clear, healthy)",
-        emoji: "✨",
-        score_value: 100,
-        ai_analysis: "Optimal. External manifestation of optimal internal cellular health and nutrient status."
-      }
-    ]
   }
 ];
 
 const PILLAR_ICONS = {
-  Body: Activity,
-  Balance: Heart,
-  Brain: Brain,
-  Beauty: Sparkles
+  sleep: Moon,
+  stress: Heart,
+  activity: Activity,
+  nutrition: TrendingUp,
+  social: Users,
+  cognitive: Brain
 };
 
 interface BaselineData {
@@ -488,7 +791,7 @@ export default function GuestLISAssessment() {
 
   const progress = showBaseline ? 0 : ((currentQuestion + 1) / ASSESSMENT_QUESTIONS.length) * 100;
   const question = !showBaseline ? ASSESSMENT_QUESTIONS[currentQuestion] : null;
-  const PillarIcon = question ? PILLAR_ICONS[question.pillar.replace('_Penalty', '') as keyof typeof PILLAR_ICONS] || Activity : Activity;
+  const PillarIcon = question ? PILLAR_ICONS[question.pillar as keyof typeof PILLAR_ICONS] || Activity : Activity;
 
   const handleAnswerSelect = (option: QuestionOption) => {
     if (!question) return;
@@ -525,7 +828,7 @@ export default function GuestLISAssessment() {
       totalScore += option.score_value;
 
       // Apply smoking penalties as percentage reductions (research-aligned)
-      if (questionId === 'Q11_SmokingStatus') {
+      if (questionId === 'Q21_SmokingStatus') {
         if (option.text.includes('Current Smoker')) {
           smokingPenaltyPercent = 0.60; // 60% - Maximum impact
         } else if (option.text.includes('less than 1 year')) {
@@ -564,18 +867,20 @@ export default function GuestLISAssessment() {
 
   const calculatePillarScores = () => {
     const pillarScores: Record<string, { score: number; count: number }> = {
-      Body: { score: 0, count: 0 },
-      Balance: { score: 0, count: 0 },
-      Brain: { score: 0, count: 0 },
-      Beauty: { score: 0, count: 0 }
+      sleep: { score: 0, count: 0 },
+      stress: { score: 0, count: 0 },
+      activity: { score: 0, count: 0 },
+      nutrition: { score: 0, count: 0 },
+      social: { score: 0, count: 0 },
+      cognitive: { score: 0, count: 0 }
     };
 
     Object.entries(answers).forEach(([questionId, option]) => {
       const q = ASSESSMENT_QUESTIONS.find(q => q.question_id === questionId);
       if (q) {
-        const pillar = q.pillar.replace('_Penalty', '');
+        const pillar = q.pillar;
         // SKIP smoking question - it's a pure percentage modifier, not a pillar contributor
-        if (pillarScores[pillar] && questionId !== 'Q11_SmokingStatus') {
+        if (pillarScores[pillar] && questionId !== 'Q21_SmokingStatus') {
           pillarScores[pillar].score += option.score_value;
           pillarScores[pillar].count += 1;
         }
@@ -657,12 +962,12 @@ export default function GuestLISAssessment() {
             user_chronological_age: age,
             lis_version: 'LIS 2.0',
             source_type: 'manual_entry',
-            sleep_score: scoreData.pillarScores.Body || 0,
-            stress_score: scoreData.pillarScores.Balance || 0,
-            physical_activity_score: scoreData.pillarScores.Body || 0,
-            nutrition_score: scoreData.pillarScores.Body || 0,
-            social_connections_score: scoreData.pillarScores.Balance || 0,
-            cognitive_engagement_score: scoreData.pillarScores.Brain || 0,
+            sleep_score: scoreData.pillarScores.sleep || 0,
+            stress_score: scoreData.pillarScores.stress || 0,
+            physical_activity_score: scoreData.pillarScores.activity || 0,
+            nutrition_score: scoreData.pillarScores.nutrition || 0,
+            social_connections_score: scoreData.pillarScores.social || 0,
+            cognitive_engagement_score: scoreData.pillarScores.cognitive || 0,
             color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
           }, {
             onConflict: 'user_id,date'
@@ -675,10 +980,12 @@ export default function GuestLISAssessment() {
 
         // 3. Create synthetic assessment_completions for protocol generation
         const syntheticAssessments = [
-          { assessment_id: 'sleep-quality', pillar: 'body', score: scoreData.pillarScores.Body || 0 },
-          { assessment_id: 'stress-management', pillar: 'balance', score: scoreData.pillarScores.Balance || 0 },
-          { assessment_id: 'cognitive-function', pillar: 'brain', score: scoreData.pillarScores.Brain || 0 },
-          { assessment_id: 'physical-activity', pillar: 'body', score: scoreData.pillarScores.Body || 0 },
+          { assessment_id: 'sleep-quality', pillar: 'sleep', score: scoreData.pillarScores.sleep || 0 },
+          { assessment_id: 'stress-management', pillar: 'stress', score: scoreData.pillarScores.stress || 0 },
+          { assessment_id: 'cognitive-function', pillar: 'cognitive', score: scoreData.pillarScores.cognitive || 0 },
+          { assessment_id: 'physical-activity', pillar: 'activity', score: scoreData.pillarScores.activity || 0 },
+          { assessment_id: 'nutrition-quality', pillar: 'nutrition', score: scoreData.pillarScores.nutrition || 0 },
+          { assessment_id: 'social-connection', pillar: 'social', score: scoreData.pillarScores.social || 0 },
         ];
 
         for (const assessment of syntheticAssessments) {
@@ -715,7 +1022,7 @@ export default function GuestLISAssessment() {
           if (returnTo) {
             navigate(decodeURIComponent(returnTo));
           } else {
-            navigate(`/guest-lis-results/${user.id}?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
+            navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
           }
         }, 2000);
 
@@ -737,8 +1044,8 @@ export default function GuestLISAssessment() {
           return;
         }
 
-        // Navigate to results page
-        navigate(`/guest-lis-results/${sessionId}`);
+        // Navigate to results page for guests
+        navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true&isGuest=true`);
       }
     } catch (error) {
       console.error('Error submitting assessment:', error);
