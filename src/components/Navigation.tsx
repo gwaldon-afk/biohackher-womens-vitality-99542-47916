@@ -31,7 +31,7 @@ const Navigation = () => {
 
   // Core navigation - streamlined to 6 visible items
   const coreNavItems = [
-    { href: "/dashboard", label: "My Plan" },
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/my-goals", label: "My Goals" },
     { href: "/my-protocol", label: "My Protocol" },
     { href: "/hormone-compass", label: "HormoneCompass™" },

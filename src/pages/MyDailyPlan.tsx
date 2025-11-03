@@ -137,6 +137,24 @@ export default function MyDailyPlan() {
             estimatedMinutesRemaining={estimatedMinutesRemaining}
             dailyStreak={dailyStreak?.current_streak || 0}
           />
+
+          {/* Quick Navigation */}
+          <div className="grid grid-cols-2 gap-4 mt-6">
+            <button
+              onClick={() => window.location.href = '/my-protocol'}
+              className="p-4 rounded-lg border bg-card hover:bg-accent transition-colors text-left"
+            >
+              <p className="font-semibold mb-1">View Full Protocol</p>
+              <p className="text-xs text-muted-foreground">Manage your complete wellness plan</p>
+            </button>
+            <button
+              onClick={() => window.location.href = '/protocol-library'}
+              className="p-4 rounded-lg border bg-card hover:bg-accent transition-colors text-left"
+            >
+              <p className="font-semibold mb-1">Browse Protocols</p>
+              <p className="text-xs text-muted-foreground">Explore evidence-based interventions</p>
+            </button>
+          </div>
         </div>
       </main>
       <MobileBottomNav />

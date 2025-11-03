@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
@@ -299,6 +299,29 @@ const ProtocolLibrary = () => {
               Browse evidence-based wellness protocols from top researchers and add them to your personalized plan
             </p>
             
+            {/* Build Your Protocol CTA */}
+            <Card className="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
+              <CardContent className="pt-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                      Build Your Custom Protocol
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Start with evidence-based templates or create your personalized wellness plan from scratch
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <Button onClick={() => navigate('/my-protocol')}>
+                      <Activity className="w-4 h-4 mr-2" />
+                      Go to My Protocol
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Evidence Explainer */}
             <div className="mb-6">
               <EvidenceExplainer />

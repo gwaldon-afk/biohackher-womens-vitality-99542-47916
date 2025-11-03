@@ -560,6 +560,20 @@ const Dashboard = () => {
                 userSymptoms={extractedSymptoms}
               />
 
+              {/* Quick Link to Today's Plan */}
+              <Card>
+                <CardContent className="pt-6">
+                  <Button 
+                    onClick={() => navigate('/today')} 
+                    className="w-full"
+                    size="lg"
+                  >
+                    <CheckCircle2 className="mr-2 h-5 w-5" />
+                    Go to Today's Plan
+                  </Button>
+                </CardContent>
+              </Card>
+
               {/* 5. Recent Assessment History */}
               {recentAssessments.length >= 1 && (
                 <Card>
