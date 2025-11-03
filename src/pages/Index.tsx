@@ -81,143 +81,126 @@ const Index = () => {
         </div>
       </section>
 
-
-      {/* What Are You Working On Section */}
-      <section className="py-16">
+      {/* You're Not Alone - Women's Top Health Concerns */}
+      <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              What Are You Working On?
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Start with a focused assessment for your primary health goal
-            </p>
-          </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                You're Not Alone — We Cover What Matters Most
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                These are the top health concerns women face. Our comprehensive assessment addresses all of them.
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/assessment/energy-levels")}
-            >
-              <CardHeader>
-                <Zap className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Energy & Vitality</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Combat fatigue, boost mitochondrial function, feel energized
-                </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {/* Hormone Balance */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/assessment/cognitive-function")}
-            >
-              <CardHeader>
-                <Brain className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Cognitive Performance</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+                <Heart className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Hormone Balance & Menopause</h3>
                 <p className="text-sm text-muted-foreground">
-                  Enhance focus, memory, and mental clarity with targeted interventions
+                  Navigate perimenopause symptoms, hot flashes, and hormonal shifts with confidence
                 </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/assessment/body-composition")}
-            >
-              <CardHeader>
-                <Activity className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Body Composition & Metabolism</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              {/* Energy & Fatigue */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
+                </div>
+                <Zap className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Energy & Fatigue</h3>
                 <p className="text-sm text-muted-foreground">
-                  Optimize muscle mass, metabolic health, and body composition for longevity
+                  Combat exhaustion, brain fog, and afternoon crashes that disrupt your day
                 </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/hormonal-health/baseline")}
-            >
-              <CardHeader>
-                <Heart className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Hormonal Balance</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              {/* Weight & Metabolism */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
+                </div>
+                <Scale className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Weight & Metabolism</h3>
                 <p className="text-sm text-muted-foreground">
-                  Navigate perimenopause and menopause with personalized insights and symptom tracking
+                  Understand metabolic changes, stubborn weight, and how to optimize body composition
                 </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start HormoneCompass™ Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/assessment/sleep")}
-            >
-              <CardHeader>
-                <Moon className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Sleep Quality</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              {/* Sleep Quality */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
+                </div>
+                <Moon className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Sleep Quality</h3>
                 <p className="text-sm text-muted-foreground">
-                  Improve sleep duration, depth, wake feeling refreshed every morning
+                  Address insomnia, night waking, and poor sleep that leaves you feeling drained
                 </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card 
-              className="hover:shadow-xl hover:border-primary/50 transition-all cursor-pointer group"
-              onClick={() => navigate("/guest-lis-assessment", { state: { focusArea: "longevity" } })}
-            >
-              <CardHeader>
-                <TrendingUp className="h-6 w-6 text-primary mb-2 group-hover:scale-110 transition-transform" />
-                <CardTitle className="text-lg group-hover:text-primary transition-colors">Longevity Optimization</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
+              {/* Brain Fog & Mental Clarity */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
+                </div>
+                <Brain className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Brain Fog & Mental Clarity</h3>
                 <p className="text-sm text-muted-foreground">
-                  Extend healthspan, reduce biological age, maximize quality of life
+                  Sharpen focus, improve memory, and clear mental cloudiness affecting your performance
                 </p>
-                <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                  <span>Start Assessment</span>
-                  <Activity className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
 
-          {/* Alternative: Comprehensive Assessment */}
-          <div className="text-center mt-8">
-            <button
-              onClick={() => navigate("/guest-lis-assessment")}
-              className="text-muted-foreground hover:text-primary underline text-sm"
-            >
-              Or take the full comprehensive assessment →
-            </button>
+              {/* Stress & Emotional Balance */}
+              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                    <Sparkles className="h-3 w-3" />
+                    <span>Covered</span>
+                  </div>
+                </div>
+                <Activity className="h-8 w-8 text-primary mb-3" />
+                <h3 className="text-lg font-bold mb-2">Stress & Emotional Balance</h3>
+                <p className="text-sm text-muted-foreground">
+                  Manage overwhelm, mood swings, and find calm amidst life's demands
+                </p>
+              </div>
+            </div>
+
+            {/* Trust Bar */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                <span>All 6 areas assessed in 5 minutes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-primary" />
+                <span>Evidence-based insights</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span>Science-backed for women</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -255,18 +238,13 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Create Account to Unlock */}
+            {/* Benefits of Creating Account */}
             <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <Button 
-                size="lg"
-                onClick={() => navigate("/auth")}
-                className="text-xl px-8 py-6 h-auto mb-2"
-              >
-                Create Free Account to Unlock
-              </Button>
-              <p className="text-muted-foreground">Save your results and access personalized protocols</p>
-            </div>
+              <div className="text-center mb-6">
+                <p className="text-lg text-muted-foreground">
+                  Create a free account after your assessment to unlock:
+                </p>
+              </div>
               
               <div className="grid gap-4">
                 {[
