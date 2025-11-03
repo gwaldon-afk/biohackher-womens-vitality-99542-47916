@@ -124,7 +124,8 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     ],
     icon: '🥩',
     sourceType: 'evidence',
-    sourceData: PROTEIN_PROTOCOL
+    sourceData: PROTEIN_PROTOCOL,
+    evidenceKey: 'intervention:nutrition-protein'
   });
 
   // Resistance Training
@@ -143,7 +144,8 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     ],
     icon: '🏋️',
     sourceType: 'evidence',
-    sourceData: RESISTANCE_TRAINING_PROTOCOL
+    sourceData: RESISTANCE_TRAINING_PROTOCOL,
+    evidenceKey: 'toolkit:strength-training'
   });
 
   // HIIT Protocol
@@ -162,7 +164,8 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     ],
     icon: '⚡',
     sourceType: 'evidence',
-    sourceData: HIIT_PROTOCOL
+    sourceData: HIIT_PROTOCOL,
+    evidenceKey: 'toolkit:hiit'
   });
 
   // Critical Supplements (individual items)
@@ -197,7 +200,8 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     ],
     icon: '🔥',
     sourceType: 'evidence',
-    sourceData: PERIMENOPAUSE_PROTOCOL
+    sourceData: PERIMENOPAUSE_PROTOCOL,
+    evidenceKey: 'hormone-compass:menopause'
   });
 
   // Postmenopause Protocol
@@ -216,7 +220,8 @@ const convertEvidenceProtocols = (): LibraryProtocol[] => {
     ],
     icon: '🌸',
     sourceType: 'evidence',
-    sourceData: POSTMENOPAUSE_PROTOCOL
+    sourceData: POSTMENOPAUSE_PROTOCOL,
+    evidenceKey: 'hormone-compass:menopause'
   });
 
   return protocols;
@@ -258,7 +263,8 @@ const getCompleteProgram = (): LibraryProtocol => ({
     resistance: RESISTANCE_TRAINING_PROTOCOL,
     hiit: HIIT_PROTOCOL,
     supplements: CRITICAL_SUPPLEMENTS
-  }
+  },
+  evidenceKey: 'intervention:complete-protocol'
 });
 
 // Fetch all library protocols

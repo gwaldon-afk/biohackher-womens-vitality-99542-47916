@@ -11,6 +11,8 @@ import { useProtocols } from "@/hooks/useProtocols";
 import { fetchAllLibraryProtocols, getProtocolsByCategory, LibraryProtocol } from "@/services/protocolLibraryService";
 import { useToast } from "@/hooks/use-toast";
 import { EvidenceBasedIntervention } from "@/data/evidenceBasedProtocols";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import EvidenceExplainer from "@/components/EvidenceExplainer";
 
 const ProtocolLibrary = () => {
   const navigate = useNavigate();
@@ -54,9 +56,9 @@ const ProtocolLibrary = () => {
     }
   };
 
-  // Normalize text for search (handle hyphenated terms like "sleep-disruption")
+  // Normalize text for search (handle hyphenated and underscored terms like "sleep-disruption" or "sleep_disruption")
   const normalizeForSearch = (text: string) => {
-    return text.toLowerCase().replace(/-/g, ' ');
+    return text.toLowerCase().replace(/[-_]/g, ' ');
   };
 
   // Enhanced search - includes target_symptoms, benefits, category with normalization
@@ -191,6 +193,11 @@ const ProtocolLibrary = () => {
               Browse evidence-based wellness protocols from top researchers and add them to your personalized plan
             </p>
             
+            {/* Evidence Explainer */}
+            <div className="mb-6">
+              <EvidenceExplainer />
+            </div>
+            
             {/* Search */}
             <div className="relative max-w-2xl">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -203,6 +210,15 @@ const ProtocolLibrary = () => {
               />
             </div>
           </div>
+
+          {/* Search Results Context */}
+          {searchQuery && filteredProtocols.length > 0 && (
+            <Alert className="mb-6 border-primary/20 bg-primary/5">
+              <AlertDescription>
+                Found <strong>{filteredProtocols.length}</strong> evidence-based protocol{filteredProtocols.length !== 1 ? 's' : ''} for "<strong>{searchQuery}</strong>". All protocols below have research backing, with evidence levels ranging from Gold-standard RCTs to emerging research.
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Category Tabs */}
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">

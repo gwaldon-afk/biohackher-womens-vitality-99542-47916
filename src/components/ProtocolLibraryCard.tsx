@@ -181,55 +181,124 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
                 </Badge>
               </div>
             </div>
-            <DialogDescription className="text-base mt-4">
-              {protocol.sourceData?.detailed_description || protocol.description}
+            <DialogDescription className="text-base space-y-6 mt-4">
+              {/* Main Description */}
+              {protocol.sourceData?.detailed_description && (
+                <div className="space-y-2">
+                  <p className="leading-relaxed text-foreground">{protocol.sourceData.detailed_description}</p>
+                </div>
+              )}
+              
+              {!protocol.sourceData?.detailed_description && protocol.description && (
+                <div className="space-y-2">
+                  <p className="leading-relaxed text-foreground">{protocol.description}</p>
+                </div>
+              )}
+
+              {/* Why This Works Section */}
+              {protocol.sourceData?.mechanism && (
+                <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                  <h4 className="font-semibold text-sm text-primary mb-2 flex items-center gap-2">
+                    <span>💡</span> Why This Works
+                  </h4>
+                  <p className="text-sm leading-relaxed">{protocol.sourceData.mechanism}</p>
+                </div>
+              )}
+
+              {/* Research Highlights - MOVED HIGHER */}
+              {protocol.researchCitations && protocol.researchCitations.length > 0 && (
+                <div className="p-4 rounded-lg bg-accent/5 border border-accent/20">
+                  <h4 className="font-semibold text-sm text-accent mb-3 flex items-center gap-2">
+                    <span>🔬</span> Research Highlights
+                  </h4>
+                  <div className="space-y-3">
+                    {protocol.researchCitations.slice(0, 3).map((citation: any, idx: number) => (
+                      <div key={idx} className="text-sm">
+                        <p className="font-medium text-foreground">{citation.finding || citation.title}</p>
+                        {citation.source && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {citation.source} {citation.year && `(${citation.year})`}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {protocol.evidenceKey && (
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={handleViewResearch}
+                      className="mt-3 p-0 h-auto text-primary"
+                    >
+                      View All Research →
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {/* Benefits */}
+              {protocol.benefits && protocol.benefits.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">Key Benefits:</h4>
+                  <ul className="space-y-2">
+                    {protocol.benefits.map((benefit, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm">
+                        <span className="text-primary mt-1">✓</span>
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 mt-4">
-            {/* All Benefits */}
-            {protocol.benefits.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Check className="h-5 w-5 text-primary" />
-                  Benefits
-                </h3>
-                <div className="grid gap-2">
-                  {protocol.benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-2 p-2 rounded-lg bg-accent/30">
-                      <Check className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            <Separator />
-
-            {/* Protocol Steps/Dosing */}
+            {/* How to Use - Enhanced */}
             {protocolSteps.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-lg font-semibold">How to Use</h3>
-                <div className="space-y-2">
-                  {protocolSteps.map((step: any, idx: number) => (
-                    <div key={idx} className="p-3 rounded-lg bg-muted/50 border border-border">
-                      <p className="text-sm font-medium">{step.name || `Step ${idx + 1}`}</p>
-                      {step.timing && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {step.timing}
-                        </p>
+                {protocolSteps.map((item: any, idx: number) => (
+                  <div key={idx} className="p-4 rounded-lg border border-border bg-card space-y-2">
+                    <p className="font-medium text-base">{item.intervention || item.name}</p>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      {item.duration && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">⏱️ Duration:</span>
+                          <span className="font-medium">{item.duration}</span>
+                        </div>
                       )}
-                      {step.dosage && (
-                        <p className="text-sm mt-1">
-                          <strong>Dosage:</strong> {step.dosage}
-                        </p>
+                      {item.frequency && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">📅 Frequency:</span>
+                          <span className="font-medium">{item.frequency}</span>
+                        </div>
                       )}
                     </div>
-                  ))}
-                </div>
+                    {item.method && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">🎯 Method: </span>
+                        <span>{item.method}</span>
+                      </div>
+                    )}
+                    {item.pattern && (
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">🔄 Pattern: </span>
+                        <span>{item.pattern}</span>
+                      </div>
+                    )}
+                    {item.rationale && (
+                      <div className="mt-2 pt-2 border-t border-border">
+                        <p className="text-xs text-muted-foreground italic">{item.rationale}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             )}
+            
+            <Separator />
 
             {/* Target Symptoms */}
             {targetSymptoms.length > 0 && (
@@ -262,42 +331,21 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
               </Alert>
             )}
 
-            <Separator />
-
-            {/* Research Support */}
-            {protocol.researchCitations && protocol.researchCitations.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Microscope className="h-5 w-5 text-primary" />
-                  Research Support
-                </h3>
-                <div className="space-y-3">
-                  {protocol.researchCitations.slice(0, 3).map((citation: any, idx: number) => (
-                    <ResearchCitation
-                      key={idx}
-                      title={citation.title}
-                      journal={citation.journal}
-                      year={citation.year}
-                      url={citation.url}
-                      doi={citation.doi}
-                      studyType={citation.studyType}
-                      sampleSize={citation.sampleSize}
-                    />
-                  ))}
-                  {protocol.evidenceKey && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleViewResearch}
-                      className="w-full gap-2"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      View All Research
-                    </Button>
-                  )}
-                </div>
+            {/* Additional Research Info - Only show if no highlights shown earlier */}
+            {(!protocol.researchCitations || protocol.researchCitations.length === 0) && protocol.evidenceKey && (
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleViewResearch}
+                  className="w-full"
+                >
+                  View Research Evidence →
+                </Button>
               </div>
             )}
+
+            <Separator />
 
             {/* Product Purchase Option */}
             {protocol.product && (
