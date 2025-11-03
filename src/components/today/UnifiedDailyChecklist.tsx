@@ -273,6 +273,23 @@ export const UnifiedDailyChecklist = () => {
         <Progress value={progressPercent} className="h-2 bg-muted" />
       </div>
 
+      {/* Protocol Management Link */}
+      {user && actions.length > 0 && (
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
+          <div className="flex flex-col">
+            <p className="font-semibold text-foreground">From Your Active Protocol</p>
+            <p className="text-sm text-muted-foreground">View and edit your supplements, meal plans, and routines</p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/my-protocol')}
+            className="shrink-0"
+          >
+            Manage Protocol
+          </Button>
+        </div>
+      )}
+
       {/* Time-Based Sections */}
       <div className="space-y-8">
         <TimeSection title="MORNING ESSENTIALS (Before 10 AM)" icon={Sun} items={morningActions} />
