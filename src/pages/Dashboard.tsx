@@ -454,11 +454,7 @@ const Dashboard = () => {
 
         {/* Tabs for My Plan */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8">
-            <TabsTrigger value="today">
-              <CheckCircle2 className="h-4 w-4 mr-2" />
-              My Daily Plan
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="overview">
               <Sparkles className="h-4 w-4 mr-2" />
               90 Day Plan
@@ -469,7 +465,6 @@ const Dashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="insights">Health Analysis</TabsTrigger>
             <TabsTrigger value="progress">Tracking</TabsTrigger>
-            <TabsTrigger value="protocols">Protocols</TabsTrigger>
           </TabsList>
 
           {/* 90-Day Overview Tab */}
@@ -480,32 +475,6 @@ const Dashboard = () => {
             {/* Goals Tab - Foundation of Journey */}
             <TabsContent value="goals" className="space-y-6">
               <GoalsSummaryView />
-            </TabsContent>
-
-            {/* Today Tab - Daily Actions */}
-            <TabsContent value="today" className="space-y-6">
-              {(hasNoProtocol || hasEmptyProtocol) && assessmentCompletedCount > 0 && (
-                <ProtocolGenerationPrompt 
-                  assessmentsCompleted={assessmentCompletedCount}
-                  onGenerate={refetchDailyPlan}
-                />
-              )}
-
-              <GoalStatementCard />
-              <DailyEssentialsCard />
-              <NutritionSummaryCard />
-              {movements.length > 0 && (
-                <MovementCard movements={movements} onToggle={handleToggleAction} />
-              )}
-              {supplements.length > 0 && (
-                <SupplementsCard supplements={supplements} onToggle={handleToggleAction} />
-              )}
-              <SimpleProgressTracker 
-                completedCount={completedCount}
-                totalCount={totalCount}
-                estimatedMinutesRemaining={estimatedMinutesRemaining}
-                dailyStreak={dailyStreak?.current_streak || 0}
-              />
             </TabsContent>
 
             {/* Progress Tab - Tracking & Streaks */}
@@ -728,13 +697,8 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              {/* AI Insights & Reports Section */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <GoalInsightsCard />
-                <AIInsightsCard />
-              </div>
-
-              <MonthlyReportCard isPremium={false} />
+              {/* Goal Insights Section */}
+              <GoalInsightsCard />
 
               {/* Personalised Health Assessment */}
               <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
@@ -795,101 +759,6 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </TabsContent>
-
-            {/* Protocols Tab - Protocol Management */}
-            <TabsContent value="protocols" className="space-y-6">
-              {/* My Personalized Protocol */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>My Personalized Protocol</CardTitle>
-                  <CardDescription>
-                    Daily tracking, supplement adherence, and personalized recommendations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    onClick={() => navigate('/my-protocol')}
-                    className="w-full"
-                    size="lg"
-                  >
-                    <Pill className="mr-2 h-5 w-5" />
-                    View My Protocol Manager
-                  </Button>
-                  <p className="text-sm text-muted-foreground mt-4 text-center">
-                    Access your supplement schedule, adherence calendar, and product recommendations
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* 4 Pillar Protocols */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>4 Pillar Protocols</CardTitle>
-                  <CardDescription>
-                    Explore Brain, Body, Balance & Beauty - complete with assessments and science-backed guidance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate('/pillars?pillar=brain')}
-                      className="h-auto p-4 flex flex-col items-start gap-2"
-                    >
-                      <div className="flex items-center gap-2 w-full">
-                        <Brain className="h-5 w-5 text-primary" />
-                        <span className="font-semibold">Brain</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground text-left">
-                        Cognitive optimization & mental clarity
-                      </p>
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate('/pillars?pillar=body')}
-                      className="h-auto p-4 flex flex-col items-start gap-2"
-                    >
-                      <div className="flex items-center gap-2 w-full">
-                        <Activity className="h-5 w-5 text-primary" />
-                        <span className="font-semibold">Body</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground text-left">
-                        Physical strength & vitality
-                      </p>
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate('/pillars?pillar=balance')}
-                      className="h-auto p-4 flex flex-col items-start gap-2"
-                    >
-                      <div className="flex items-center gap-2 w-full">
-                        <Heart className="h-5 w-5 text-primary" />
-                        <span className="font-semibold">Balance</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground text-left">
-                        Stress management & inner peace
-                      </p>
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate('/pillars?pillar=beauty')}
-                      className="h-auto p-4 flex flex-col items-start gap-2"
-                    >
-                      <div className="flex items-center gap-2 w-full">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        <span className="font-semibold">Beauty</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground text-left">
-                        Radiant skin & cellular rejuvenation
-                      </p>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-          </TabsContent>
         </Tabs>
         </>
         )}
