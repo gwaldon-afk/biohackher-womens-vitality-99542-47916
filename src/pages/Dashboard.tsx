@@ -29,7 +29,6 @@ import { useAssessments, useDailyScores, useUserSymptoms } from "@/queries";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoalsReminderCard } from "@/components/GoalsReminderCard";
-import { TodaysFocusCard } from "@/components/today/TodaysFocusCard";
 import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
 
@@ -92,7 +91,7 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'focus');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'roadmap');
   const [loading, setLoading] = useState(false);
   
   const lisData = useLISData();
@@ -455,48 +454,24 @@ const Dashboard = () => {
 
         {/* Tabs for My Plan */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="focus">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="roadmap" className="data-[state=active]:bg-background">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              90-Day Roadmap
+            </TabsTrigger>
+            <TabsTrigger value="health-insights" className="data-[state=active]:bg-background">
               <Sparkles className="h-4 w-4 mr-2" />
-              Today's Focus
+              Health Insights
             </TabsTrigger>
-            <TabsTrigger value="overview">
-              <Target className="h-4 w-4 mr-2" />
-              90 Day Plan
-            </TabsTrigger>
-            <TabsTrigger value="insights">Health Analysis</TabsTrigger>
           </TabsList>
 
-          {/* Today's Focus Tab */}
-          <TabsContent value="focus" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              <TodaysFocusCard />
-              <GoalsReminderCard />
-            </div>
-            
-            <ProgressTracker />
-            
-            <div className="grid md:grid-cols-2 gap-4">
-              <StreakCard 
-                activityType="daily_checkin" 
-                title="Daily Check-ins" 
-                description="Consistency builds healthy habits"
-              />
-              <StreakCard 
-                activityType="protocol_completion" 
-                title="Protocol Completion" 
-                description="Following your personalized plan"
-              />
-            </div>
-          </TabsContent>
-
-          {/* 90-Day Overview Tab */}
-          <TabsContent value="overview">
+          {/* 90-Day Roadmap Tab */}
+          <TabsContent value="roadmap" className="space-y-6 mt-0">
             <NinetyDayPlanOverview />
           </TabsContent>
 
-            {/* Insights Tab - Analysis & Reports */}
-            <TabsContent value="insights" className="space-y-8">
+            {/* Health Insights Tab - Analysis & Reports */}
+            <TabsContent value="health-insights" className="space-y-8 mt-0">
               {/* 1. Personalized Insights Summary */}
               <PersonalizedInsightsSummary 
                 assessments={recentAssessments}

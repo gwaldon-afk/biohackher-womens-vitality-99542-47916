@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useGoals } from "@/hooks/useGoals";
 import { toast } from "sonner";
-import { SAMPLE_DAILY_ACTIONS } from "@/data/sampleDailyPlan";
+import { SAMPLE_DAILY_ACTIONS, SAMPLE_GOALS } from "@/data/sampleDailyPlan";
 import { useState } from "react";
 import { getTodaysQuote } from "@/data/femaleLongevityQuotes";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
@@ -112,6 +112,7 @@ export const UnifiedDailyChecklist = () => {
     .reduce((sum: number, a: any) => sum + a.estimatedMinutes, 0);
 
   const activeGoals = goals?.filter(g => g.status === 'active') || [];
+  const displayGoals = isUsingSampleData ? SAMPLE_GOALS : activeGoals;
 
   if (loading) {
     return (
@@ -222,14 +223,18 @@ export const UnifiedDailyChecklist = () => {
       </div>
 
       {/* Goals Section */}
-      {activeGoals.length > 0 && (
+      {displayGoals.length > 0 && (
         <div className="space-y-3 pb-6 border-b border-border">
           <h2 className="text-lg font-semibold text-foreground uppercase tracking-wide">
             YOUR GOALS TODAY
           </h2>
-          {activeGoals.map(goal => {
-            const daysSinceStart = Math.floor((Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24));
-            const progress = Math.min(Math.round((daysSinceStart / 90) * 100), 100);
+          {displayGoals.map(goal => {
+            const daysSinceStart = isUsingSampleData 
+              ? goal.days_active 
+              : Math.floor((Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24));
+            const progress = isUsingSampleData 
+              ? goal.progress_percentage 
+              : Math.min(Math.round((daysSinceStart / 90) * 100), 100);
             
             return (
               <div key={goal.id} className="flex items-start gap-2">

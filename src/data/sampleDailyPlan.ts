@@ -1,4 +1,29 @@
 // Sample daily plan data for guest/new users to preview functionality
+
+// Sample goals for guest users
+export const SAMPLE_GOALS = [
+  {
+    id: 'sample-goal-1',
+    title: 'Build Muscle Strength & Longevity',
+    description: 'Progressive resistance training for metabolic health',
+    target_value: 90,
+    current_value: 60,
+    status: 'active',
+    progress_percentage: 67,
+    days_active: 12
+  },
+  {
+    id: 'sample-goal-2',
+    title: 'Optimize Sleep Quality',
+    description: 'Consistent 7-8 hours with deep sleep phases',
+    target_value: 90,
+    current_value: 40,
+    status: 'active',
+    progress_percentage: 45,
+    days_active: 8
+  }
+];
+
 export const SAMPLE_DAILY_ACTIONS = [
   // Morning Actions
   {
