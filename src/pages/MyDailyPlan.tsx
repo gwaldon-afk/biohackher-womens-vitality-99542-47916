@@ -1,6 +1,6 @@
 import Navigation from "@/components/Navigation";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { GoalStatementCard } from "@/components/today/GoalStatementCard";
+import { DailyMotivationHeader } from "@/components/today/DailyMotivationHeader";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { NutritionSummaryCard } from "@/components/today/NutritionSummaryCard";
 import { MovementCard } from "@/components/today/MovementCard";
@@ -113,8 +113,8 @@ export default function MyDailyPlan() {
             />
           )}
 
-          {/* Goal Statement */}
-          <GoalStatementCard />
+          {/* Daily Motivation */}
+          <DailyMotivationHeader />
 
           {/* Protocol Tiers - Bronze to Gold */}
           <ProtocolTiersCard
