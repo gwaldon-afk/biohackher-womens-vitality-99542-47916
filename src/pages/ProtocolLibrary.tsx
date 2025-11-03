@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Activity, Utensils, Dumbbell, Pill, Sparkles, Heart, Search, Loader2 } from "lucide-react";
 import { ProtocolLibraryCard } from "@/components/ProtocolLibraryCard";
 import { useProtocols } from "@/hooks/useProtocols";
@@ -13,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EvidenceBasedIntervention } from "@/data/evidenceBasedProtocols";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EvidenceExplainer from "@/components/EvidenceExplainer";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProtocolLibrary = () => {
   const navigate = useNavigate();
@@ -23,6 +25,9 @@ const ProtocolLibrary = () => {
   const [protocols, setProtocols] = useState<LibraryProtocol[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingProtocolId, setAddingProtocolId] = useState<string | null>(null);
+  const [extractedKeywords, setExtractedKeywords] = useState<string[]>([]);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [primaryIntent, setPrimaryIntent] = useState<string>('');
 
   const categories = [
     { id: "all", label: "All Protocols", icon: Activity },
@@ -61,27 +66,128 @@ const ProtocolLibrary = () => {
     return text.toLowerCase().replace(/[-_]/g, ' ');
   };
 
-  // Enhanced search - includes target_symptoms, benefits, category with normalization
-  const filteredProtocols = protocols.filter((protocol) => {
-    if (!searchQuery.trim()) return true;
-    
-    const searchLower = searchQuery.toLowerCase();
-    
-    // Check if any symptom matches (with normalization for hyphenated terms)
-    const symptomsMatch = protocol.sourceData?.target_symptoms?.some((symptom: string) => {
-      const normalized = normalizeForSearch(symptom);
-      return normalized.includes(searchLower) || symptom.toLowerCase().includes(searchLower);
-    });
-    
-    return (
-      protocol.name.toLowerCase().includes(searchLower) ||
-      protocol.description.toLowerCase().includes(searchLower) ||
-      protocol.benefits.some((benefit) => benefit.toLowerCase().includes(searchLower)) ||
-      normalizeForSearch(protocol.category).includes(searchLower) ||
-      symptomsMatch ||
-      protocol.sourceData?.detailed_description?.toLowerCase().includes(searchLower)
-    );
-  });
+  // AI keyword extraction with debounce
+  const extractKeywords = useCallback(async (query: string) => {
+    if (!query.trim() || query.length < 3) {
+      setExtractedKeywords([]);
+      setPrimaryIntent('');
+      return;
+    }
+
+    setIsExtracting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('extract-protocol-keywords', {
+        body: { query }
+      });
+
+      if (error) throw error;
+
+      setExtractedKeywords(data.keywords || []);
+      setPrimaryIntent(data.primary_intent || '');
+    } catch (error) {
+      console.error('Keyword extraction failed:', error);
+      // Fallback to simple search
+      setExtractedKeywords([query]);
+      setPrimaryIntent('general');
+    } finally {
+      setIsExtracting(false);
+    }
+  }, []);
+
+  // Debounce extraction
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchQuery.trim()) {
+        extractKeywords(searchQuery);
+      } else {
+        setExtractedKeywords([]);
+        setPrimaryIntent('');
+      }
+    }, 800);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, extractKeywords]);
+
+  // Intelligent matching with scoring
+  const filteredProtocols = useMemo(() => {
+    if (!searchQuery.trim()) return protocols;
+
+    // Use AI-extracted keywords or fallback to simple search
+    const keywords = extractedKeywords.length > 0 
+      ? extractedKeywords 
+      : [searchQuery.toLowerCase()];
+
+    return protocols
+      .map(protocol => {
+        let score = 0;
+        const matchReasons: string[] = [];
+
+        keywords.forEach(keyword => {
+          const kwLower = keyword.toLowerCase();
+          const kwNormalized = normalizeForSearch(keyword);
+
+          // Name match (highest weight)
+          if (protocol.name.toLowerCase().includes(kwLower)) {
+            score += 10;
+            matchReasons.push('name');
+          }
+
+          // Target symptoms match (high weight)
+          const symptomsMatch = protocol.sourceData?.target_symptoms?.some((symptom: string) => {
+            const normalized = normalizeForSearch(symptom);
+            return normalized.includes(kwNormalized) || 
+                   symptom.toLowerCase().includes(kwLower);
+          });
+          if (symptomsMatch) {
+            score += 8;
+            matchReasons.push('targets your symptoms');
+          }
+
+          // Benefits match (medium weight)
+          const benefitsMatch = protocol.benefits.some(benefit => 
+            benefit.toLowerCase().includes(kwLower)
+          );
+          if (benefitsMatch) {
+            score += 5;
+            matchReasons.push('provides benefits you need');
+          }
+
+          // Description match (medium weight)
+          if (protocol.description.toLowerCase().includes(kwLower)) {
+            score += 4;
+            matchReasons.push('description');
+          }
+
+          // Category match (lower weight)
+          if (normalizeForSearch(protocol.category).includes(kwNormalized)) {
+            score += 3;
+            matchReasons.push('category');
+          }
+
+          // Detailed description match (lower weight)
+          if (protocol.sourceData?.detailed_description?.toLowerCase().includes(kwLower)) {
+            score += 2;
+            matchReasons.push('detailed info');
+          }
+        });
+
+        return { 
+          ...protocol, 
+          matchScore: score, 
+          matchReasons: [...new Set(matchReasons)] 
+        };
+      })
+      .filter(p => p.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore);
+  }, [protocols, searchQuery, extractedKeywords]);
+
+  const exampleSearches = [
+    "I can't sleep well",
+    "Low energy all day",
+    "Brain fog and focus issues",
+    "Perimenopause symptoms",
+    "Anxiety and stress"
+  ];
 
   const handleAddToProtocol = async (protocol: LibraryProtocol) => {
     setAddingProtocolId(protocol.id);
@@ -198,16 +304,40 @@ const ProtocolLibrary = () => {
               <EvidenceExplainer />
             </div>
             
+            {/* Conversational Prompt */}
+            <div className="text-center mb-4">
+              <p className="text-lg font-medium">What health goal are you working on?</p>
+              <p className="text-sm text-muted-foreground">
+                Describe your symptoms, goals, or what you'd like to improve in natural language
+              </p>
+            </div>
+            
             {/* Search */}
-            <div className="relative max-w-2xl">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search protocols (e.g., sleep, energy, focus, magnesium)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="What are you interested in? (e.g., I can't sleep, I'm always tired, anxiety relief)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              {/* Example searches */}
+              <div className="flex flex-wrap gap-2 mt-3 justify-center">
+                {exampleSearches.map(example => (
+                  <Badge 
+                    key={example}
+                    variant="outline" 
+                    className="cursor-pointer hover:bg-primary/10 transition-colors"
+                    onClick={() => setSearchQuery(example)}
+                  >
+                    {example}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -215,9 +345,48 @@ const ProtocolLibrary = () => {
           {searchQuery && filteredProtocols.length > 0 && (
             <Alert className="mb-6 border-primary/20 bg-primary/5">
               <AlertDescription>
-                Found <strong>{filteredProtocols.length}</strong> evidence-based protocol{filteredProtocols.length !== 1 ? 's' : ''} for "<strong>{searchQuery}</strong>". All protocols below have research backing, with evidence levels ranging from Gold-standard RCTs to emerging research.
+                <div className="flex flex-col gap-2">
+                  <div>
+                    Found <strong>{filteredProtocols.length}</strong> protocol{filteredProtocols.length !== 1 ? 's' : ''}
+                    {extractedKeywords.length > 0 && (
+                      <> matching: <strong>{extractedKeywords.join(', ')}</strong></>
+                    )}
+                  </div>
+                  {isExtracting && (
+                    <div className="text-xs flex items-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Understanding your needs...
+                    </div>
+                  )}
+                </div>
               </AlertDescription>
             </Alert>
+          )}
+          
+          {/* No results with suggestions */}
+          {searchQuery && !loading && filteredProtocols.length === 0 && (
+            <Card className="mb-6">
+              <CardContent className="pt-6">
+                <p className="text-center text-muted-foreground mb-4">
+                  No protocols found for "{searchQuery}"
+                </p>
+                <div className="text-sm text-center">
+                  <p className="mb-3 font-medium">Try searching for:</p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {["sleep", "energy", "stress", "focus", "hormones", "gut health"].map(term => (
+                      <Badge 
+                        key={term}
+                        variant="outline" 
+                        className="cursor-pointer hover:bg-primary/10 transition-colors"
+                        onClick={() => setSearchQuery(term)}
+                      >
+                        {term}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           )}
 
           {/* Category Tabs */}

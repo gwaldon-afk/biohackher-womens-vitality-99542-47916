@@ -1,5 +1,8 @@
 project_id = "ictdgxsynjnmsevcegvu"
 
+[functions.extract-protocol-keywords]
+verify_jwt = false
+
 [functions.analyze-assessment-results]
 verify_jwt = true
 
