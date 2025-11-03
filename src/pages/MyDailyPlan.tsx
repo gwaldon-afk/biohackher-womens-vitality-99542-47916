@@ -7,6 +7,8 @@ import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sparkles } from "lucide-react";
 
 export default function MyDailyPlan() {
   const { actions, loading } = useDailyPlan();
@@ -25,31 +27,47 @@ export default function MyDailyPlan() {
       <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-4xl">
         <div className="space-y-6">
           {hasNoProtocol && assessmentsCompleted > 0 && (
-            <ProtocolGenerationPrompt 
-              assessmentsCompleted={assessmentsCompleted}
-              onGenerate={() => {}}
-            />
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  Ready to Create Your Protocol
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  You've completed {assessmentsCompleted} assessment{assessmentsCompleted !== 1 ? 's' : ''}. 
+                  Generate a personalized protocol to see your daily action plan.
+                </p>
+                <ProtocolGenerationPrompt 
+                  assessmentsCompleted={assessmentsCompleted}
+                  onGenerate={() => window.location.reload()}
+                />
+              </CardContent>
+            </Card>
           )}
 
-          <DailyMotivationHeader />
+          {!hasNoProtocol && <DailyMotivationHeader />}
           <UnifiedDailyChecklist />
 
-          <div className="flex gap-4">
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = '/my-protocol'}
-              className="flex-1"
-            >
-              View Full Protocol
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = '/protocol-library'}
-              className="flex-1"
-            >
-              Browse Library
-            </Button>
-          </div>
+          {!hasNoProtocol && (
+            <div className="flex gap-4">
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/my-protocol'}
+                className="flex-1"
+              >
+                View Full Protocol
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/protocol-library'}
+                className="flex-1"
+              >
+                Browse Library
+              </Button>
+            </div>
+          )}
         </div>
       </main>
       <MobileBottomNav />

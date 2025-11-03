@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { Sun, Sunset, Moon, Clock } from "lucide-react";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +11,10 @@ import { toast } from "sonner";
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
   const { actions, loading, completedCount, totalCount, refetch } = useDailyPlan();
+
+  console.log('[UnifiedDailyChecklist] User:', user?.id);
+  console.log('[UnifiedDailyChecklist] Actions:', actions.length);
+  console.log('[UnifiedDailyChecklist] Loading:', loading);
 
   const handleToggle = async (actionId: string) => {
     const action = actions.find(a => a.id === actionId);
@@ -63,8 +68,14 @@ export const UnifiedDailyChecklist = () => {
   if (loading) {
     return (
       <Card>
+        <CardHeader>
+          <CardTitle>Today's Checklist</CardTitle>
+        </CardHeader>
         <CardContent className="py-8">
-          <p className="text-center text-muted-foreground">Loading your daily plan...</p>
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+            <p>Loading your daily plan...</p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -130,9 +141,28 @@ export const UnifiedDailyChecklist = () => {
         <TimeSection title="EVENING" icon={Moon} items={eveningActions} />
         
         {actions.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>No actions scheduled for today.</p>
-            <p className="text-sm mt-2">Complete your assessments to get personalized recommendations.</p>
+          <div className="text-center py-12 space-y-4">
+            <div className="text-4xl">📋</div>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-lg">No Daily Plan Yet</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                Complete your assessments and generate a personalized protocol to see your daily actions here.
+              </p>
+            </div>
+            <div className="flex gap-3 justify-center pt-2">
+              <Button
+                variant="default"
+                onClick={() => window.location.href = '/assessment-hub'}
+              >
+                Start Assessments
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = '/protocol-library'}
+              >
+                Browse Library
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>
