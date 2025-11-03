@@ -6,7 +6,7 @@ export const MobileBottomNav = () => {
 
   const navItems = [
     { path: '/today', icon: Home, label: 'Today' },
-    { path: '/my-protocol', icon: Target, label: 'Protocol' },
+    { path: '/my-protocol', icon: Target, label: 'Protocols' },
     { path: '/nutrition', icon: Utensils, label: 'Nutrition' },
     { path: '/my-goals', icon: TrendingUp, label: 'Goals' },
     { path: '/settings', icon: User, label: 'Profile' }

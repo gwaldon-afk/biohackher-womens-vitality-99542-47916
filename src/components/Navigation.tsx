@@ -31,9 +31,9 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
-    { href: "/dashboard", label: "Dashboard" },
+    { href: "/dashboard", label: "My Plans" },
     { href: "/my-goals", label: "My Goals" },
-    { href: "/my-protocol", label: "My Protocol" },
+    { href: "/my-protocol", label: "My Protocols" },
     { href: "/nutrition", label: "Nutrition" },
     { href: "/hormone-compass", label: "HormoneCompass™" },
     { href: "/experts", label: "Find Experts" },
