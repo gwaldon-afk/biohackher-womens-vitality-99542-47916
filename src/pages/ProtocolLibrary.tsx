@@ -54,18 +54,30 @@ const ProtocolLibrary = () => {
     }
   };
 
-  // Enhanced search - includes target_symptoms, benefits, category
+  // Normalize text for search (handle hyphenated terms like "sleep-disruption")
+  const normalizeForSearch = (text: string) => {
+    return text.toLowerCase().replace(/-/g, ' ');
+  };
+
+  // Enhanced search - includes target_symptoms, benefits, category with normalization
   const filteredProtocols = protocols.filter((protocol) => {
+    if (!searchQuery.trim()) return true;
+    
     const searchLower = searchQuery.toLowerCase();
+    
+    // Check if any symptom matches (with normalization for hyphenated terms)
+    const symptomsMatch = protocol.sourceData?.target_symptoms?.some((symptom: string) => {
+      const normalized = normalizeForSearch(symptom);
+      return normalized.includes(searchLower) || symptom.toLowerCase().includes(searchLower);
+    });
+    
     return (
       protocol.name.toLowerCase().includes(searchLower) ||
       protocol.description.toLowerCase().includes(searchLower) ||
-      protocol.benefits.some(b => b.toLowerCase().includes(searchLower)) ||
-      protocol.category.toLowerCase().includes(searchLower) ||
-      (protocol.sourceData?.target_symptoms?.some((s: string) => 
-        s.toLowerCase().includes(searchLower)
-      )) ||
-      (protocol.sourceData?.detailed_description?.toLowerCase().includes(searchLower))
+      protocol.benefits.some((benefit) => benefit.toLowerCase().includes(searchLower)) ||
+      normalizeForSearch(protocol.category).includes(searchLower) ||
+      symptomsMatch ||
+      protocol.sourceData?.detailed_description?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -180,11 +192,11 @@ const ProtocolLibrary = () => {
             </p>
             
             {/* Search */}
-            <div className="relative max-w-md">
+            <div className="relative max-w-2xl">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search protocols..."
+                placeholder="Search protocols (e.g., sleep, energy, focus, magnesium)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"

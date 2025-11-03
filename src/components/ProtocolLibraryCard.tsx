@@ -13,6 +13,7 @@ import { useEvidenceStore } from "@/stores/evidenceStore";
 import { getEvidenceContext } from "@/data/evidenceMapping";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getIconComponent, getCategoryLabel } from "@/utils/iconMapper";
 
 interface ProtocolLibraryCardProps {
   protocol: LibraryProtocol;
@@ -53,6 +54,9 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
   const protocolSteps = protocol.sourceData?.protocols || [];
   const contraindications = protocol.sourceData?.contraindications || [];
   const targetSymptoms = protocol.sourceData?.target_symptoms || [];
+  
+  const IconComponent = getIconComponent(protocol.icon);
+  const categoryLabel = getCategoryLabel(protocol.category);
 
   return (
     <>
@@ -60,7 +64,9 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-3 flex-1">
-              {protocol.icon && <span className="text-3xl">{protocol.icon}</span>}
+              <div className="p-2 rounded-lg bg-primary/10">
+                <IconComponent className="h-6 w-6 text-primary" />
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <CardTitle className="text-lg">{protocol.name}</CardTitle>
@@ -74,8 +80,8 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
                     />
                   )}
                 </div>
-                <Badge variant="outline" className="mt-1 text-xs capitalize">
-                  {protocol.category}
+                <Badge variant="secondary" className="mt-1 text-xs">
+                  {categoryLabel}
                 </Badge>
               </div>
             </div>
@@ -154,7 +160,9 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center gap-3">
-              {protocol.icon && <span className="text-4xl">{protocol.icon}</span>}
+              <div className="p-3 rounded-lg bg-primary/10">
+                <IconComponent className="h-8 w-8 text-primary" />
+              </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   <DialogTitle className="text-2xl">{protocol.name}</DialogTitle>
@@ -168,8 +176,8 @@ export const ProtocolLibraryCard = ({ protocol, onAddToProtocol, isAdding = fals
                     />
                   )}
                 </div>
-                <Badge variant="outline" className="text-xs capitalize">
-                  {protocol.category}
+                <Badge variant="secondary" className="text-xs">
+                  {categoryLabel}
                 </Badge>
               </div>
             </div>
