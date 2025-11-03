@@ -597,7 +597,8 @@ export default function GuestLISAssessment() {
       // Prepare assessment data
       const assessmentData = {
         baselineData: {
-          date_of_birth: baselineData.dateOfBirth,
+          dateOfBirth: baselineData.dateOfBirth,
+          age: calculateAgeFromDOB(baselineData.dateOfBirth),
           heightCm: parseFloat(baselineData.heightCm),
           weightKg: parseFloat(baselineData.weightKg),
           bmi: calculateBMI()

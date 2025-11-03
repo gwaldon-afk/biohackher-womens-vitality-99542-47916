@@ -104,7 +104,20 @@ export default function GuestLISResults() {
       };
     }
 
-    const chronologicalAge = assessmentData.baselineData.age;
+    const chronologicalAge = assessmentData.baselineData.age || 
+      (() => {
+        const dob = assessmentData.baselineData.dateOfBirth;
+        if (!dob) return 40; // Default fallback
+        
+        const birthDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      })();
     const lisScore = results.finalScore;
     
     // Research-backed coefficients - CORRECTED FORMULA
