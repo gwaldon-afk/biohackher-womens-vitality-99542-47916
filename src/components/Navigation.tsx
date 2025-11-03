@@ -31,7 +31,7 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
-    { href: "/dashboard", label: "My Plans" },
+    { href: "/today", label: "My Plans" },
     { href: "/my-goals", label: "My Goals" },
     { href: "/my-protocol", label: "My Protocols" },
     { href: "/nutrition", label: "Nutrition" },
