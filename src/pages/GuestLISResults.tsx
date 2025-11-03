@@ -7,6 +7,8 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { TrendingUp, TrendingDown, AlertCircle, Sparkles, Lock } from 'lucide-react';
+import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
+import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 
 interface BriefResults {
   finalScore: number;
@@ -477,6 +479,32 @@ export default function GuestLISResults() {
             </div>
           </Card>
         )}
+
+        {/* Detailed Pillar Analysis */}
+        <div className="mb-6">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold mb-2">Detailed Pillar Analysis</h2>
+            <p className="text-muted-foreground">
+              Deep dive into each of the 6 longevity pillars with personalized insights and recommendations
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            {generatePillarAnalysis(results.pillarScores).map((pillar) => (
+              <LISPillarAnalysisCard
+                key={pillar.name}
+                pillarName={pillar.name}
+                pillarDisplayName={pillar.displayName}
+                pillarAnalysisName={pillar.analysisName}
+                pillarScore={pillar.score}
+                icon={pillar.icon}
+                color={pillar.color}
+                overallLIS={results.finalScore}
+                userAge={assessmentData?.baselineData?.age}
+              />
+            ))}
+          </div>
+        </div>
 
         {/* Pillar Scores */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">
