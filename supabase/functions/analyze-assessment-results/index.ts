@@ -105,9 +105,31 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
-    const analysis = JSON.parse(
-      aiData.choices[0].message.tool_calls[0].function.arguments
-    );
+    
+    // Validate AI response structure
+    if (!aiData.choices || !aiData.choices[0] || !aiData.choices[0].message) {
+      console.error('Invalid AI response structure:', JSON.stringify(aiData));
+      throw new Error('Invalid AI response structure');
+    }
+    
+    const message = aiData.choices[0].message;
+    
+    // Check for tool_calls or content
+    let analysis;
+    if (message.tool_calls && message.tool_calls[0]) {
+      analysis = JSON.parse(message.tool_calls[0].function.arguments);
+    } else if (message.content) {
+      // Try to parse content as JSON
+      try {
+        analysis = JSON.parse(message.content);
+      } catch (e) {
+        console.error('Could not parse AI content as JSON:', message.content);
+        throw new Error('AI response format error: no valid tool_calls or parseable content');
+      }
+    } else {
+      console.error('No tool_calls or content in AI response:', JSON.stringify(message));
+      throw new Error('AI response missing expected data');
+    }
 
     const processingTime = Date.now() - startTime;
 

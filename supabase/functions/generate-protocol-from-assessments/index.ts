@@ -87,7 +87,7 @@ const INTERVENTION_MAP: Record<string, any> = {
       poor: [
         { type: 'supplement', name: 'Creatine Monohydrate (5g)', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'supplement', name: 'Beta-Alanine (3-5g)', frequency: 'daily', time_of_day: ['morning'] },
-        { type: 'exercise', name: 'Progressive Strength Training', frequency: 'three_times_weekly', time_of_day: ['morning', 'afternoon'] },
+        { type: 'exercise', name: 'Progressive Strength Training', frequency: 'weekly', time_of_day: ['morning', 'afternoon'] },
         { type: 'therapy', name: 'Sports Massage', frequency: 'weekly', time_of_day: ['evening'] },
       ],
       fair: [
@@ -97,7 +97,7 @@ const INTERVENTION_MAP: Record<string, any> = {
     },
     'physical-performance': {
       poor: [
-        { type: 'exercise', name: 'Strength Training (20 min)', frequency: 'three_times_weekly', time_of_day: ['morning', 'afternoon'] },
+        { type: 'exercise', name: 'Strength Training (20 min)', frequency: 'weekly', time_of_day: ['morning', 'afternoon'] },
         { type: 'supplement', name: 'Creatine Monohydrate', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'therapy', name: 'Physical Therapy Exercises', frequency: 'daily', time_of_day: ['afternoon'] },
       ],
@@ -110,18 +110,18 @@ const INTERVENTION_MAP: Record<string, any> = {
       poor: [
         { type: 'supplement', name: 'Tart Cherry Extract', frequency: 'daily', time_of_day: ['evening'] },
         { type: 'supplement', name: 'Magnesium Threonate', frequency: 'daily', time_of_day: ['evening'] },
-        { type: 'therapy', name: 'Compression Therapy', frequency: 'three_times_weekly', time_of_day: ['evening'] },
+        { type: 'therapy', name: 'Compression Therapy', frequency: 'weekly', time_of_day: ['evening'] },
         { type: 'habit', name: 'HRV Tracking', frequency: 'daily', time_of_day: ['morning'] },
       ],
       fair: [
         { type: 'supplement', name: 'Omega-3 (EPA/DHA)', frequency: 'daily', time_of_day: ['morning'] },
-        { type: 'habit', name: 'Active Recovery Sessions', frequency: 'twice_weekly', time_of_day: ['afternoon'] },
+        { type: 'habit', name: 'Active Recovery Sessions', frequency: 'weekly', time_of_day: ['afternoon'] },
       ],
     },
     'body-composition': {
       poor: [
         { type: 'diet', name: 'Protein Optimization (1.6g/kg)', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
-        { type: 'exercise', name: 'Resistance Training', frequency: 'four_times_weekly', time_of_day: ['morning', 'afternoon'] },
+        { type: 'exercise', name: 'Resistance Training', frequency: 'weekly', time_of_day: ['morning', 'afternoon'] },
         { type: 'supplement', name: 'CLA (3g)', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'habit', name: 'Body Composition Tracking', frequency: 'weekly', time_of_day: ['morning'] },
       ],
@@ -134,7 +134,7 @@ const INTERVENTION_MAP: Record<string, any> = {
       poor: [
         { type: 'supplement', name: 'Glucosamine + Chondroitin', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'supplement', name: 'Curcumin (500mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
-        { type: 'therapy', name: 'Physical Therapy', frequency: 'twice_weekly', time_of_day: ['afternoon'] },
+        { type: 'therapy', name: 'Physical Therapy', frequency: 'weekly', time_of_day: ['afternoon'] },
         { type: 'exercise', name: 'Low-Impact Movement', frequency: 'daily', time_of_day: ['morning'] },
       ],
       fair: [
@@ -145,7 +145,7 @@ const INTERVENTION_MAP: Record<string, any> = {
     'weight-changes': {
       poor: [
         { type: 'diet', name: 'Metabolic Optimization Plan', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
-        { type: 'exercise', name: 'HIIT Training (20 min)', frequency: 'three_times_weekly', time_of_day: ['morning'] },
+        { type: 'exercise', name: 'HIIT Training (20 min)', frequency: 'weekly', time_of_day: ['morning'] },
         { type: 'supplement', name: 'Berberine (500mg)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
         { type: 'habit', name: 'Metabolic Health Tracking', frequency: 'daily', time_of_day: ['morning'] },
       ],
@@ -243,7 +243,7 @@ const INTERVENTION_MAP: Record<string, any> = {
         { type: 'supplement', name: 'Black Cohosh', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
         { type: 'supplement', name: 'Magnesium Glycinate', frequency: 'daily', time_of_day: ['evening'] },
         { type: 'habit', name: 'Bedroom Temperature Optimization', frequency: 'daily', time_of_day: ['evening'] },
-        { type: 'therapy', name: 'Sleep Environment Consultation', frequency: 'once', time_of_day: ['afternoon'] },
+        { type: 'therapy', name: 'Sleep Environment Consultation', frequency: 'as_needed', time_of_day: ['afternoon'] },
       ],
       fair: [
         { type: 'supplement', name: 'Vitamin E', frequency: 'daily', time_of_day: ['evening'] },
@@ -255,7 +255,7 @@ const INTERVENTION_MAP: Record<string, any> = {
         { type: 'supplement', name: 'Vitex (Chasteberry)', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'supplement', name: 'Myo-Inositol (2g)', frequency: 'twice_daily', time_of_day: ['morning', 'evening'] },
         { type: 'habit', name: 'Cycle Tracking App', frequency: 'daily', time_of_day: ['morning'] },
-        { type: 'therapy', name: 'Hormone Consultation', frequency: 'monthly', time_of_day: ['afternoon'] },
+        { type: 'therapy', name: 'Hormone Consultation', frequency: 'as_needed', time_of_day: ['afternoon'] },
       ],
       fair: [
         { type: 'supplement', name: 'B-Complex High Potency', frequency: 'daily', time_of_day: ['morning'] },
@@ -304,7 +304,7 @@ const INTERVENTION_MAP: Record<string, any> = {
       poor: [
         { type: 'supplement', name: 'NMN (500mg)', frequency: 'daily', time_of_day: ['morning'] },
         { type: 'supplement', name: 'Resveratrol (500mg)', frequency: 'daily', time_of_day: ['morning'] },
-        { type: 'therapy', name: 'Cellular Health Consultation', frequency: 'monthly', time_of_day: ['afternoon'] },
+        { type: 'therapy', name: 'Cellular Health Consultation', frequency: 'as_needed', time_of_day: ['afternoon'] },
         { type: 'habit', name: 'Comprehensive Anti-Aging Protocol', frequency: 'daily', time_of_day: ['morning', 'evening'] },
       ],
       fair: [
