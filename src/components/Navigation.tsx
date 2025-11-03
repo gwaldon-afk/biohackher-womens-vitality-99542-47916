@@ -29,24 +29,23 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Core navigation - streamlined to 6 visible items
+  // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/my-goals", label: "My Goals" },
     { href: "/my-protocol", label: "My Protocol" },
+    { href: "/nutrition", label: "Nutrition" },
     { href: "/hormone-compass", label: "HormoneCompass™" },
     { href: "/experts", label: "Find Experts" },
     { href: "/shop", label: t('navigation.shop') },
   ];
 
-  // Items in "More" dropdown
-  const moreNavItems = [
-    { href: "/nutrition", label: "Nutrition & Meal Plans" },
-    { href: "/protocol-library", label: "Protocol Library" },
-    { href: "/energy-loop", label: "Energy Loop" },
-    { href: "/pillars", label: "Symptom Tracking" },
-    { href: "/about", label: "About & Science" },
-    { href: "/health-assistant", label: "Ask Us" },
+  // Wellness Tools dropdown items
+  const wellnessToolsItems = [
+    { href: "/protocol-library", label: "Protocol Library", icon: Target },
+    { href: "/energy-loop", label: "Energy Loop", icon: TrendingUp },
+    { href: "/pillars", label: "Symptom Tracking", icon: BarChart3 },
+    { href: "/health-assistant", label: "Health Assistant", icon: Sparkles },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -88,7 +87,7 @@ const Navigation = () => {
               </Link>
             ))}
             
-            {/* More dropdown */}
+            {/* Wellness Tools dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -96,23 +95,27 @@ const Navigation = () => {
                   size="sm"
                   className="text-sm font-medium text-muted-foreground hover:text-primary"
                 >
-                  More <ChevronDown className="ml-1 h-3 w-3" />
+                  Wellness Tools <ChevronDown className="ml-1 h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {moreNavItems.map((item) => (
-                  <DropdownMenuItem key={item.href} asChild>
-                    <Link 
-                      to={item.href} 
-                      className={cn(
-                        "cursor-pointer",
-                        isActive(item.href) && "text-primary bg-accent"
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+              <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
+                {wellnessToolsItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link 
+                        to={item.href} 
+                        className={cn(
+                          "cursor-pointer flex items-center gap-2",
+                          isActive(item.href) && "text-primary bg-accent"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -153,6 +156,12 @@ const Navigation = () => {
                   <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
                     <Sparkles className="h-3 w-3 mr-2" />
                     Toolkit
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/about" className="flex items-center cursor-pointer text-xs">
+                    <Heart className="h-3 w-3 mr-2" />
+                    About & Science
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
@@ -212,27 +221,31 @@ const Navigation = () => {
                 </Link>
               ))}
 
-              {/* More items - Mobile */}
+              {/* Wellness Tools - Mobile */}
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-md">
-                  More <ChevronDown className="h-4 w-4" />
+                  Wellness Tools <ChevronDown className="h-4 w-4" />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4">
-                  {moreNavItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      className={cn(
-                        "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md block",
-                        isActive(item.href)
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground"
-                      )}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {wellnessToolsItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className={cn(
+                          "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md flex items-center gap-2",
+                          isActive(item.href)
+                            ? "text-primary bg-primary/10"
+                            : "text-muted-foreground"
+                        )}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
                 </CollapsibleContent>
               </Collapsible>
 
