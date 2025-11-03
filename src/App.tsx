@@ -131,11 +131,7 @@ const App = () => (
                 <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
-                <Route path="/dashboard" element={
-                  <ErrorBoundary>
-                    <Dashboard />
-                  </ErrorBoundary>
-                } />
+                <Route path="/dashboard" element={<Navigate to="/today" replace />} />
                 <Route path="/analytics" element={<AnalyticsDashboard />} />
                 <Route path="/achievements" element={<Achievements />} />
                 <Route path="/symptom-trends" element={<SymptomTrends />} />
