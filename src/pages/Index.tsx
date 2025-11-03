@@ -240,8 +240,8 @@ const Index = () => {
               </div>
               <div className="p-6 bg-background rounded-lg border border-primary/10">
                 <Activity className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-xl font-bold mb-2">Scores Across 4 Health Pillars</h3>
-                <p className="text-sm text-muted-foreground">See your Brain, Body, Balance & Beauty ratings so you know which areas need the most attention</p>
+                <h3 className="text-xl font-bold mb-2">Scores Across 6 Health Pillars</h3>
+                <p className="text-sm text-muted-foreground">See your Sleep, Stress, Activity, Nutrition, Social, and Cognitive ratings so you know which areas need the most attention</p>
               </div>
               <div className="p-6 bg-background rounded-lg border border-primary/10">
                 <Brain className="h-8 w-8 text-primary mb-3" />
@@ -309,7 +309,7 @@ const Index = () => {
                 <div>
                   <h3 className="text-xl font-bold mb-2">Get Your Longevity Score</h3>
                   <p className="text-muted-foreground">
-                    See your score across Brain, Body, Balance & Beauty. Understand your biological age and risk factors.
+                    See your score across Sleep, Stress, Activity, Nutrition, Social, and Cognitive health. Understand your biological age and risk factors.
                   </p>
                 </div>
               </div>

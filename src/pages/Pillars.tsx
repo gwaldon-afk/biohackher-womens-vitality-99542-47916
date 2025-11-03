@@ -801,13 +801,13 @@ const Pillars = () => {
                   ? "Optimize your biology for peak performance and longevity. Each pillar provides targeted assessments and protocols to help you achieve your highest potential."
                   : journeyPath === 'menopause'
                   ? "Navigate your menopause journey with confidence. Each pillar addresses the unique changes you're experiencing with science-backed assessments and protocols."
-                  : "Understanding your health through four essential pillars gives you a complete picture of your wellbeing. Each pillar addresses a key area that impacts how you look, feel, and function every day. Take targeted assessments to uncover personalized insights and create your roadmap to optimal health."}
+                  : "Understanding your health through six essential pillars gives you a complete picture of your wellbeing. Each pillar addresses a key area that impacts how you look, feel, and function every day. Take targeted assessments to uncover personalized insights and create your roadmap to optimal health."}
               </p>
             </div>
           </div>
         </section>
 
-        {/* Four Pillars Grid */}
+        {/* Health Pillars Grid */}
         <section className="py-10">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">

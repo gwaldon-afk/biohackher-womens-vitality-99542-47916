@@ -86,7 +86,7 @@ export const ProgressTracker = () => {
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 text-center">
             <p className="text-sm font-semibold text-primary">🎉 All Pillars Complete!</p>
             <p className="text-xs text-muted-foreground mt-1">
-              You've completed assessments for all four pillars. Continue to add more assessments or update your supplement stack!
+              You've completed assessments for all six pillars. Continue to add more assessments or update your supplement stack!
             </p>
           </div>
         )}
