@@ -2,70 +2,91 @@ import Navigation from "@/components/Navigation";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { DailyMotivationHeader } from "@/components/today/DailyMotivationHeader";
 import { UnifiedDailyChecklist } from "@/components/today/UnifiedDailyChecklist";
-import { ProtocolGenerationPrompt } from "@/components/ProtocolGenerationPrompt";
-import { useAssessmentCompletions } from "@/hooks/useAssessmentCompletions";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
-import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
+import { Target, TrendingUp, Sparkles } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function MyDailyPlan() {
+  const { user } = useAuth();
   const { actions, loading } = useDailyPlan();
-  const { completions } = useAssessmentCompletions();
+  const navigate = useNavigate();
 
-  const assessmentsCompleted = useMemo(() => {
-    if (!completions) return 0;
-    return Object.values(completions).filter(c => c.completed).length;
-  }, [completions]);
-
-  const hasNoProtocol = actions.length === 0 && !loading;
+  const hasProtocol = actions.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-4xl">
-        <div className="space-y-6">
-          {hasNoProtocol && assessmentsCompleted > 0 && (
-            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  Ready to Create Your Protocol
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  You've completed {assessmentsCompleted} assessment{assessmentsCompleted !== 1 ? 's' : ''}. 
-                  Generate a personalized protocol to see your daily action plan.
-                </p>
-                <ProtocolGenerationPrompt 
-                  assessmentsCompleted={assessmentsCompleted}
-                  onGenerate={() => window.location.reload()}
-                />
-              </CardContent>
-            </Card>
-          )}
+      <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
+        {/* Hero Header - Always visible */}
+        <div className="mb-8 text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
+            <Sparkles className="w-4 h-4" />
+            <span>Your Personalized Longevity Protocol</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Today's Biohacking Plan
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Science-backed actions to optimize your healthspan and extend your years of vitality
+          </p>
+        </div>
 
-          {!hasNoProtocol && <DailyMotivationHeader />}
+        {/* Main Content */}
+        <div className="space-y-6">
+          {hasProtocol && <DailyMotivationHeader />}
+          
           <UnifiedDailyChecklist />
 
-          {!hasNoProtocol && (
-            <div className="flex gap-4">
+          {/* Action Buttons */}
+          {user && hasProtocol && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
               <Button
                 variant="outline"
-                onClick={() => window.location.href = '/my-protocol'}
-                className="flex-1"
+                size="lg"
+                onClick={() => navigate('/my-protocol')}
+                className="h-auto py-4"
               >
+                <Target className="w-5 h-5 mr-2" />
                 View Full Protocol
               </Button>
               <Button
                 variant="outline"
-                onClick={() => window.location.href = '/protocol-library'}
-                className="flex-1"
+                size="lg"
+                onClick={() => navigate('/protocol-library')}
+                className="h-auto py-4"
               >
-                Browse Library
+                <TrendingUp className="w-5 h-5 mr-2" />
+                Browse Protocol Library
               </Button>
+            </div>
+          )}
+
+          {/* Guest CTA - Only if no user */}
+          {!user && (
+            <div className="mt-8 p-8 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 text-center space-y-4">
+              <h3 className="text-2xl font-bold">Ready to Unlock Your Full Plan?</h3>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Create a free account to save your progress, get AI insights, and receive personalized supplement recommendations
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/auth')}
+                  className="text-lg px-8"
+                >
+                  Create Free Account
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate('/guest-lis-assessment')}
+                  className="text-lg px-8"
+                >
+                  Take Assessment First
+                </Button>
+              </div>
             </div>
           )}
         </div>
