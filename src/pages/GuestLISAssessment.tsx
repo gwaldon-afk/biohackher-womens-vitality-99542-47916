@@ -292,8 +292,8 @@ const ASSESSMENT_QUESTIONS: Question[] = [
       {
         text: "A. Less than 15 minutes",
         emoji: "📱",
-        score_value: 0,
-        ai_analysis: "Critical. Minimal cognitive stimulation is associated with accelerated cognitive decline."
+        score_value: 20,
+        ai_analysis: "Minimal Engagement. Even brief cognitive activity provides some protective benefit, but falls well short of optimal."
       },
       {
         text: "B. 15–30 minutes",
@@ -324,8 +324,8 @@ const ASSESSMENT_QUESTIONS: Question[] = [
       {
         text: "A. 0 minutes (None)",
         emoji: "🤷",
-        score_value: 0,
-        ai_analysis: "Zero credit. Failure to engage in practices known to support the parasympathetic nervous system and stress reduction."
+        score_value: 15,
+        ai_analysis: "Minimal Credit. Not everyone has established meditation practice, but this still represents a missed opportunity for stress management."
       },
       {
         text: "B. 1–9 minutes (Inconsistent practice)",
@@ -366,16 +366,16 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         ai_analysis: "High Penalty Trigger. Residual risk is still significant. Triggers the fixed -30 point penalty reflecting high EAA sensitivity during the first year of cessation."
       },
       {
-        text: "C. Former Smoker (Quit more than 1 year ago)",
+        text: "C. Former Smoker (Quit 1-5 years ago)",
         emoji: "✅",
-        score_value: 70,
-        ai_analysis: "Minimal Penalty Trigger. Risk declines substantially post-1 year. Triggers a minor -15 point penalty reflecting residual long-term EAA impact."
+        score_value: 95,
+        ai_analysis: "Minimal Penalty. Risk significantly reduced after 1 year of cessation. 2% penalty reflects minor residual cardiovascular impact."
       },
       {
-        text: "D. Never Smoked",
+        text: "D. Former Smoker (Quit 5+ years ago) or Never Smoked",
         emoji: "🌟",
         score_value: 100,
-        ai_analysis: "Zero Penalty. This status provides the baseline zero-risk factor for this major lifestyle determinant, ensuring no penalty is applied."
+        ai_analysis: "Zero Penalty. After 5 years of cessation, cardiovascular risk profile approaches that of never-smokers."
       }
     ]
   },
@@ -524,14 +524,16 @@ export default function GuestLISAssessment() {
     Object.entries(answers).forEach(([questionId, option]) => {
       totalScore += option.score_value;
 
-      // Apply smoking penalties as percentage reductions
+      // Apply smoking penalties as percentage reductions (research-aligned)
       if (questionId === 'Q11_SmokingStatus') {
         if (option.text.includes('Current Smoker')) {
-          smokingPenaltyPercent = 0.60; // 60% reduction for current smokers
+          smokingPenaltyPercent = 0.60; // 60% - Maximum impact
         } else if (option.text.includes('less than 1 year')) {
-          smokingPenaltyPercent = 0.30; // 30% reduction
-        } else if (option.text.includes('more than 1 year')) {
-          smokingPenaltyPercent = 0.15; // 15% reduction
+          smokingPenaltyPercent = 0.05; // 5% - Significant recovery at 12 months
+        } else if (option.text.includes('1-5 years')) {
+          smokingPenaltyPercent = 0.02; // 2% - Minimal residual impact
+        } else if (option.text.includes('5+ years')) {
+          smokingPenaltyPercent = 0.00; // 0% - Risk approaches never-smoker
         }
       }
     });
@@ -572,7 +574,8 @@ export default function GuestLISAssessment() {
       const q = ASSESSMENT_QUESTIONS.find(q => q.question_id === questionId);
       if (q) {
         const pillar = q.pillar.replace('_Penalty', '');
-        if (pillarScores[pillar]) {
+        // SKIP smoking question - it's a pure percentage modifier, not a pillar contributor
+        if (pillarScores[pillar] && questionId !== 'Q11_SmokingStatus') {
           pillarScores[pillar].score += option.score_value;
           pillarScores[pillar].count += 1;
         }
@@ -712,7 +715,7 @@ export default function GuestLISAssessment() {
           if (returnTo) {
             navigate(decodeURIComponent(returnTo));
           } else {
-            navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
+            navigate(`/guest-lis-results/${user.id}?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
           }
         }, 2000);
 
