@@ -285,14 +285,14 @@ export function GoalSuggestionCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-lg">Aging Blueprint (A)</h3>
+              <h3 className="font-semibold text-lg">Longevity Blueprint (A)</h3>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Info className="h-4 w-4 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
-                    <p className="text-sm font-semibold mb-1">HACK: Aging Blueprint</p>
+                    <p className="text-sm font-semibold mb-1">HACK: Longevity Blueprint</p>
                     <p className="text-sm">Evidence-based interventions to help you reach your target</p>
                   </TooltipContent>
                 </Tooltip>
