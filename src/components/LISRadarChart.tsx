@@ -17,7 +17,7 @@ interface LISRadarChartProps {
   size?: number;
 }
 
-export const LISRadarChart = ({ pillarScores, compositeScore, size = 350 }: LISRadarChartProps) => {
+export const LISRadarChart = ({ pillarScores, compositeScore, size = 475 }: LISRadarChartProps) => {
   // Transform pillar scores for Recharts
   const chartData = [
     {

@@ -509,7 +509,7 @@ const LISResults = () => {
             assessmentId="longevity-impact-score"
             score={score}
             scoreCategory={getScoreCategory(score)}
-            answers={{}} // LIS doesn't use traditional Q&A format
+            answers={urlPillarScores || lisData.pillarScores}
             metadata={{ 
               pillarScores: urlPillarScores || lisData.pillarScores,
               biologicalAge: bioAgeData?.bioAge,
