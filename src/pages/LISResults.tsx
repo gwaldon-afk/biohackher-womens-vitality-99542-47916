@@ -85,6 +85,62 @@ const LISResults = () => {
     }
   }, [isNewBaseline, user, protocolsLoading, hasActiveProtocol, protocolGenerated, generateProtocolFromAssessments]);
 
+  // Auto-load assessment data if URL parameters are missing
+  useEffect(() => {
+    const loadMissingAssessmentData = async () => {
+      // Only run if URL params are missing (score is 0 and no pillar scores)
+      if (score === 0 && !urlPillarScores) {
+        if (user) {
+          // Fetch from database for logged-in users
+          const { data, error } = await supabase
+            .from('daily_scores')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('is_baseline', true)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          
+          if (data && !error) {
+            const pillarScores = {
+              sleep: data.sleep_score,
+              stress: data.stress_score,
+              activity: data.physical_activity_score,
+              nutrition: data.nutrition_score,
+              social: data.social_connections_score,
+              cognitive: data.cognitive_engagement_score
+            };
+            
+            navigate(
+              `/lis-results?score=${data.longevity_impact_score}&pillarScores=${encodeURIComponent(JSON.stringify(pillarScores))}&isNewBaseline=true`,
+              { replace: true }
+            );
+          } else {
+            toast({
+              title: "No Assessment Found",
+              description: "Please complete your baseline assessment first.",
+            });
+            navigate('/guest-lis-assessment');
+          }
+        } else {
+          // Handle guest users
+          const sessionId = localStorage.getItem('lis_guest_session_id');
+          if (sessionId) {
+            navigate(`/guest-lis-results/${sessionId}`);
+          } else {
+            toast({
+              title: "Assessment Not Found",
+              description: "Please complete the assessment to view results.",
+            });
+            navigate('/guest-lis-assessment');
+          }
+        }
+      }
+    };
+    
+    loadMissingAssessmentData();
+  }, [score, urlPillarScores, user, navigate, toast]);
+
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
     if (score >= 60) return 'text-yellow-600';

@@ -1086,6 +1086,9 @@ export default function GuestLISAssessment() {
       } else {
         // Guest user - save to guest table
         const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Save sessionId to localStorage for later retrieval
+        localStorage.setItem('lis_guest_session_id', sessionId);
 
         const { error } = await supabase
           .from('guest_lis_assessments')

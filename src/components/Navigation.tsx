@@ -46,6 +46,7 @@ const Navigation = () => {
     { href: "/energy-loop", label: "Energy Loop", icon: TrendingUp },
     { href: "/pillars", label: "Symptom Tracking", icon: BarChart3 },
     { href: "/health-assistant", label: "Health Assistant", icon: Sparkles },
+    { href: "/lis-results", label: "My LIS Results", icon: Activity },
   ];
 
   const isActive = (href: string) => location.pathname === href;
