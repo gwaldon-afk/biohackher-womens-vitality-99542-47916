@@ -711,6 +711,46 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         ai_analysis: "Zero Penalty. After 5 years of cessation, cardiovascular risk profile approaches that of never-smokers."
       }
     ]
+  },
+
+  // ==================== ACTIVITY LEVEL CLASSIFICATION (Demographic Data) ====================
+  {
+    question_id: "Q22_ActivityLevelClassification",
+    pillar: "demographic",
+    type: "slider",
+    text: "Which best describes your overall lifestyle activity level?",
+    options: [
+      {
+        text: "A. Sedentary (Mostly sitting, minimal physical activity)",
+        emoji: "🪑",
+        score_value: 0,
+        ai_analysis: "Sedentary lifestyle. Used for nutrition calculations and personalized recommendations."
+      },
+      {
+        text: "B. Lightly Active (Light exercise 1-3 days/week)",
+        emoji: "🚶",
+        score_value: 30,
+        ai_analysis: "Lightly active lifestyle. Used for nutrition calculations and personalized recommendations."
+      },
+      {
+        text: "C. Moderately Active (Moderate exercise 3-5 days/week)",
+        emoji: "🏃",
+        score_value: 60,
+        ai_analysis: "Moderately active lifestyle. Used for nutrition calculations and personalized recommendations."
+      },
+      {
+        text: "D. Very Active (Hard exercise 6-7 days/week)",
+        emoji: "💪",
+        score_value: 85,
+        ai_analysis: "Very active lifestyle. Used for nutrition calculations and personalized recommendations."
+      },
+      {
+        text: "E. Extremely Active (Professional athlete or very intense daily training)",
+        emoji: "🏋️",
+        score_value: 100,
+        ai_analysis: "Extremely active lifestyle. Used for nutrition calculations and personalized recommendations."
+      }
+    ]
   }
 ];
 
@@ -720,7 +760,9 @@ const PILLAR_ICONS = {
   activity: Activity,
   nutrition: TrendingUp,
   social: Users,
-  cognitive: Brain
+  cognitive: Brain,
+  modifier: Sparkles,
+  demographic: User
 };
 
 interface BaselineData {
@@ -879,8 +921,8 @@ export default function GuestLISAssessment() {
       const q = ASSESSMENT_QUESTIONS.find(q => q.question_id === questionId);
       if (q) {
         const pillar = q.pillar;
-        // SKIP smoking question - it's a pure percentage modifier, not a pillar contributor
-        if (pillarScores[pillar] && questionId !== 'Q21_SmokingStatus') {
+        // SKIP modifier and demographic questions - they don't contribute to pillar scores
+        if (pillarScores[pillar] && pillar !== 'modifier' && pillar !== 'demographic') {
           pillarScores[pillar].score += option.score_value;
           pillarScores[pillar].count += 1;
         }
@@ -930,6 +972,21 @@ export default function GuestLISAssessment() {
       if (user) {
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
 
+        // Extract activity level from Q22 answer
+        const activityAnswer = answers['Q22_ActivityLevelClassification'];
+        let activityLevel = 'sedentary';
+        if (activityAnswer) {
+          if (activityAnswer.text.includes('Lightly Active')) {
+            activityLevel = 'lightly_active';
+          } else if (activityAnswer.text.includes('Moderately Active')) {
+            activityLevel = 'moderately_active';
+          } else if (activityAnswer.text.includes('Very Active')) {
+            activityLevel = 'very_active';
+          } else if (activityAnswer.text.includes('Extremely Active')) {
+            activityLevel = 'extremely_active';
+          }
+        }
+
         // 1. Create/update health profile
         const { error: profileError } = await supabase
           .from('user_health_profile')
@@ -939,6 +996,7 @@ export default function GuestLISAssessment() {
             height_cm: parseFloat(baselineData.heightCm),
             weight_kg: parseFloat(baselineData.weightKg),
             current_bmi: calculateBMI(),
+            activity_level: activityLevel,
           }, {
             onConflict: 'user_id'
           });
@@ -1205,7 +1263,11 @@ export default function GuestLISAssessment() {
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium text-primary mb-2">
-                  {question?.pillar.replace('_Penalty', '')} Pillar
+                  {question?.pillar === 'modifier' 
+                    ? 'Risk Modifier' 
+                    : question?.pillar === 'demographic' 
+                    ? 'Lifestyle Profile' 
+                    : `${question?.pillar.charAt(0).toUpperCase() + question?.pillar.slice(1)} Pillar`}
                 </div>
                 <h2 className="text-xl font-semibold leading-relaxed">
                   {question?.text}
