@@ -43,7 +43,7 @@ export function GoalReframeCard({
           {reframe.healthspanTarget && (
             <div className="bg-primary rounded-lg p-4">
               <h4 className="font-semibold text-base mb-1">Healthspan Target</h4>
-              <p className="text-sm">{reframe.healthspanTarget}</p>
+              <p className="text-base">{reframe.healthspanTarget}</p>
             </div>
           )}
 
