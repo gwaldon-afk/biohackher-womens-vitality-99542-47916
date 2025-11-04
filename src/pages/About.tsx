@@ -151,7 +151,7 @@ const About = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Target className="h-5 w-5 text-primary" />
-                      <span className="text-sm">Helped 10,000+ Women Optimise Their Health</span>
+                      <span className="text-sm">Evidence-Based Longevity Platform</span>
                     </div>
                   </div>
                 </div>

@@ -713,10 +713,10 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
 
-  // ==================== ACTIVITY LEVEL CLASSIFICATION (Demographic Data) ====================
+  // ==================== ACTIVITY LEVEL CLASSIFICATION (Activity Pillar) ====================
   {
     question_id: "Q22_ActivityLevelClassification",
-    pillar: "demographic",
+    pillar: "activity",
     type: "slider",
     text: "Which best describes your overall lifestyle activity level?",
     options: [
@@ -724,31 +724,31 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         text: "A. Sedentary (Mostly sitting, minimal physical activity)",
         emoji: "🪑",
         score_value: 0,
-        ai_analysis: "Sedentary lifestyle. Used for nutrition calculations and personalized recommendations."
+        ai_analysis: "Critical Risk. Sedentary lifestyle classification indicates minimal overall energy expenditure, significantly increasing mortality risk."
       },
       {
         text: "B. Lightly Active (Light exercise 1-3 days/week)",
         emoji: "🚶",
         score_value: 30,
-        ai_analysis: "Lightly active lifestyle. Used for nutrition calculations and personalized recommendations."
+        ai_analysis: "Suboptimal. Light activity provides some benefit but remains below optimal thresholds for longevity."
       },
       {
         text: "C. Moderately Active (Moderate exercise 3-5 days/week)",
         emoji: "🏃",
         score_value: 60,
-        ai_analysis: "Moderately active lifestyle. Used for nutrition calculations and personalized recommendations."
+        ai_analysis: "Good. Moderate activity level supports metabolic health and longevity."
       },
       {
         text: "D. Very Active (Hard exercise 6-7 days/week)",
         emoji: "💪",
         score_value: 85,
-        ai_analysis: "Very active lifestyle. Used for nutrition calculations and personalized recommendations."
+        ai_analysis: "Excellent. Very active lifestyle associated with strong longevity markers."
       },
       {
         text: "E. Extremely Active (Professional athlete or very intense daily training)",
         emoji: "🏋️",
         score_value: 100,
-        ai_analysis: "Extremely active lifestyle. Used for nutrition calculations and personalized recommendations."
+        ai_analysis: "Elite. Extremely active lifestyle maximizes metabolic health and longevity potential."
       }
     ]
   }
@@ -761,8 +761,7 @@ const PILLAR_ICONS = {
   nutrition: TrendingUp,
   social: Users,
   cognitive: Brain,
-  modifier: Sparkles,
-  demographic: User
+  modifier: Sparkles
 };
 
 interface BaselineData {
@@ -921,8 +920,8 @@ export default function GuestLISAssessment() {
       const q = ASSESSMENT_QUESTIONS.find(q => q.question_id === questionId);
       if (q) {
         const pillar = q.pillar;
-        // SKIP modifier and demographic questions - they don't contribute to pillar scores
-        if (pillarScores[pillar] && pillar !== 'modifier' && pillar !== 'demographic') {
+        // SKIP modifier questions - they don't contribute to pillar scores
+        if (pillarScores[pillar] && pillar !== 'modifier') {
           pillarScores[pillar].score += option.score_value;
           pillarScores[pillar].count += 1;
         }
@@ -1265,8 +1264,6 @@ export default function GuestLISAssessment() {
                 <div className="text-sm font-medium text-primary mb-2">
                   {question?.pillar === 'modifier' 
                     ? 'Risk Modifier' 
-                    : question?.pillar === 'demographic' 
-                    ? 'Lifestyle Profile' 
                     : `${question?.pillar.charAt(0).toUpperCase() + question?.pillar.slice(1)} Pillar`}
                 </div>
                 <h2 className="text-xl font-semibold leading-relaxed">
