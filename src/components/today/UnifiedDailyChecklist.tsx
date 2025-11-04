@@ -2,7 +2,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sun, Sunset, Moon, Clock, Lock, ShoppingCart, Utensils } from "lucide-react";
+import { Lock } from "lucide-react";
+import { CategoryBlock } from "@/components/today/CategoryBlock";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -130,15 +131,53 @@ export const UnifiedDailyChecklist = () => {
     toast.success("Added to cart!");
   };
 
-  const morningActions = actions.filter((a: any) => a.timeOfDay?.includes('morning'));
-  const afternoonActions = actions.filter((a: any) => a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday'));
-  const eveningActions = actions.filter((a: any) => a.timeOfDay?.includes('evening') || a.timeOfDay?.includes('night'));
+  // Categorize actions by type
+  const categorizeActions = () => {
+    const supplements = actions.filter((a: any) => 
+      a.category === 'supplement' || (a.type === 'protocol' && a.title?.toLowerCase().includes('supplement'))
+    );
+    const movement = actions.filter((a: any) => 
+      a.category === 'exercise' || a.category === 'movement' || (a.type === 'protocol' && (a.title?.toLowerCase().includes('exercise') || a.title?.toLowerCase().includes('workout')))
+    );
+    const meals = actions.filter((a: any) => a.type === 'meal');
+    const tracking = actions.filter((a: any) => 
+      a.type === 'energy' || a.category === 'tracking' || a.title?.toLowerCase().includes('track')
+    );
+    const therapy = actions.filter((a: any) => 
+      a.category === 'therapy' || a.title?.toLowerCase().includes('therapy')
+    );
+    const habits = actions.filter((a: any) => 
+      a.type === 'habit' || a.category === 'habit'
+    );
+
+    // Remaining items that don't fit other categories
+    const categorizedIds = new Set([
+      ...supplements.map(a => a.id),
+      ...movement.map(a => a.id),
+      ...meals.map(a => a.id),
+      ...tracking.map(a => a.id),
+      ...therapy.map(a => a.id),
+      ...habits.map(a => a.id),
+    ]);
+    const other = actions.filter((a: any) => !categorizedIds.has(a.id));
+
+    return { supplements, movement, meals, tracking, therapy, habits, other };
+  };
+
+  const categories = categorizeActions();
 
   const getItemCompleted = (actionId: string) => {
     if (isUsingSampleData) {
       return sampleCompletedIds.has(actionId);
     }
     return actions.find(a => a.id === actionId)?.completed || false;
+  };
+
+  const getCategoryStats = (items: any[]) => {
+    const completed = items.filter(a => getItemCompleted(a.id)).length;
+    const total = items.length;
+    const minutes = items.reduce((sum, a) => sum + (a.estimatedMinutes || 0), 0);
+    return { completed, total, minutes };
   };
 
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -157,109 +196,9 @@ export const UnifiedDailyChecklist = () => {
     );
   }
 
-  const TimeSection = ({ title, icon: Icon, items }: any) => {
-    if (items.length === 0) return null;
-    
-    const sectionTime = items.reduce((sum: number, a: any) => sum + (a.estimatedMinutes || 0), 0);
-    
-    return (
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm font-semibold text-foreground uppercase tracking-wider border-b border-border pb-2">
-          <Icon className="w-5 h-5 text-primary" />
-          {title}
-          <span className="ml-auto text-xs text-muted-foreground font-normal">
-            {sectionTime} min
-          </span>
-        </div>
-        {items.map((action: any) => {
-          const isCompleted = getItemCompleted(action.id);
-          const isSupplementCategory = action.category === 'supplement';
-          const isMeal = action.type === 'meal';
-          
-          return (
-            <div
-              key={action.id}
-              className="group relative flex items-start gap-3 p-3 rounded-lg border border-border bg-card/50 hover:bg-card hover:border-primary/30 transition-all"
-            >
-              <Checkbox
-                checked={isCompleted}
-                onCheckedChange={() => handleToggle(action.id)}
-                className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                disabled={isUsingSampleData && !user}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className={`font-medium ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-                      {action.title}
-                    </p>
-                    <ScienceBackedIcon className="w-3.5 h-3.5" showTooltip={true} />
-                    {isMeal && (
-                      <Badge variant="secondary" className="text-xs gap-1">
-                        <Utensils className="w-3 h-3" />
-                        Meal
-                      </Badge>
-                    )}
-                  </div>
-                  {action.pillar && (
-                    <Badge variant="outline" className="text-xs capitalize shrink-0 bg-primary/5 text-primary border-primary/20">
-                      {action.pillar}
-                    </Badge>
-                  )}
-                </div>
-                {action.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
-                )}
-                <div className="flex items-center gap-4 mt-2">
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3" />
-                    {action.estimatedMinutes} min
-                  </div>
-                  {isMeal && action.mealData && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => {
-                        setSelectedMeal({ ...action.mealData, mealType: action.mealType });
-                        setMealModalOpen(true);
-                      }}
-                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
-                    >
-                      <Utensils className="w-3 h-3" />
-                      View Recipe
-                    </Button>
-                  )}
-                  {isSupplementCategory && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleBuySupplements(action)}
-                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
-                    >
-                      <ShoppingCart className="w-3 h-3" />
-                      Buy
-                    </Button>
-                  )}
-                </div>
-              </div>
-              
-              {isUsingSampleData && !user && (
-                <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    size="sm"
-                    onClick={() => navigate('/auth')}
-                    className="shadow-lg"
-                  >
-                    <Lock className="w-3 h-3 mr-1" />
-                    Sign Up to Track
-                  </Button>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
+  const handleViewMeal = (action: any) => {
+    setSelectedMeal({ ...action.mealData, mealType: action.mealType });
+    setMealModalOpen(true);
   };
 
   return (
@@ -352,11 +291,123 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* Time-Based Sections */}
-      <div className="space-y-8">
-        <TimeSection title="MORNING ESSENTIALS (Before 10 AM)" icon={Sun} items={morningActions} />
-        <TimeSection title="AFTERNOON FOCUS" icon={Sunset} items={afternoonActions} />
-        <TimeSection title="EVENING ROUTINE" icon={Moon} items={eveningActions} />
+      {/* Category-Based Sections */}
+      <div className="space-y-4">
+        <CategoryBlock
+          icon="💊"
+          title="Supplements"
+          items={categories.supplements}
+          completedCount={getCategoryStats(categories.supplements).completed}
+          totalCount={getCategoryStats(categories.supplements).total}
+          totalMinutes={getCategoryStats(categories.supplements).minutes}
+          color="orange"
+          defaultExpanded={getCategoryStats(categories.supplements).completed < getCategoryStats(categories.supplements).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          onBuySupplements={handleBuySupplements}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        <CategoryBlock
+          icon="💪"
+          title="Movement & Exercise"
+          items={categories.movement}
+          completedCount={getCategoryStats(categories.movement).completed}
+          totalCount={getCategoryStats(categories.movement).total}
+          totalMinutes={getCategoryStats(categories.movement).minutes}
+          color="blue"
+          defaultExpanded={getCategoryStats(categories.movement).completed < getCategoryStats(categories.movement).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        <CategoryBlock
+          icon="🍽️"
+          title="Meals & Nutrition"
+          items={categories.meals}
+          completedCount={getCategoryStats(categories.meals).completed}
+          totalCount={getCategoryStats(categories.meals).total}
+          totalMinutes={getCategoryStats(categories.meals).minutes}
+          color="green"
+          defaultExpanded={getCategoryStats(categories.meals).completed < getCategoryStats(categories.meals).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          onViewMeal={handleViewMeal}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        <CategoryBlock
+          icon="📊"
+          title="Tracking & Check-ins"
+          items={categories.tracking}
+          completedCount={getCategoryStats(categories.tracking).completed}
+          totalCount={getCategoryStats(categories.tracking).total}
+          totalMinutes={getCategoryStats(categories.tracking).minutes}
+          color="purple"
+          defaultExpanded={getCategoryStats(categories.tracking).completed < getCategoryStats(categories.tracking).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        <CategoryBlock
+          icon="🧘"
+          title="Therapy & Wellness"
+          items={categories.therapy}
+          completedCount={getCategoryStats(categories.therapy).completed}
+          totalCount={getCategoryStats(categories.therapy).total}
+          totalMinutes={getCategoryStats(categories.therapy).minutes}
+          color="pink"
+          defaultExpanded={getCategoryStats(categories.therapy).completed < getCategoryStats(categories.therapy).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        <CategoryBlock
+          icon="✨"
+          title="Habits & Routines"
+          items={categories.habits}
+          completedCount={getCategoryStats(categories.habits).completed}
+          totalCount={getCategoryStats(categories.habits).total}
+          totalMinutes={getCategoryStats(categories.habits).minutes}
+          color="yellow"
+          defaultExpanded={getCategoryStats(categories.habits).completed < getCategoryStats(categories.habits).total}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        {categories.other.length > 0 && (
+          <CategoryBlock
+            icon="📋"
+            title="Other Actions"
+            items={categories.other}
+            completedCount={getCategoryStats(categories.other).completed}
+            totalCount={getCategoryStats(categories.other).total}
+            totalMinutes={getCategoryStats(categories.other).minutes}
+            color="blue"
+            defaultExpanded={getCategoryStats(categories.other).completed < getCategoryStats(categories.other).total}
+            onToggle={handleToggle}
+            getItemCompleted={getItemCompleted}
+            isUsingSampleData={isUsingSampleData}
+            user={user}
+            onNavigate={() => navigate('/auth')}
+          />
+        )}
       </div>
 
       {/* Guest CTA */}
