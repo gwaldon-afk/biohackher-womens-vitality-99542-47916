@@ -34,9 +34,9 @@ export const calculate5YearBioAgeImpact = (lis: number): number => {
  * Assumes moving from baseline towards optimal (135) proportionally to completion
  */
 export const estimateLISFromCompletion = (completionRate: number, currentBaseline: number = 100): number => {
-  // If completion is high, assume moving towards optimal (135)
+  // Sustained completion moves you proportionally towards optimal (135)
   const maxGain = 135 - currentBaseline;
-  const dailyGain = (maxGain / 90) * (completionRate / 100);
+  const sustainedGain = maxGain * (completionRate / 100);
   
-  return Math.round(currentBaseline + dailyGain);
+  return Math.round(currentBaseline + sustainedGain);
 };
