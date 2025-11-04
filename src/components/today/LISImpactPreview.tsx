@@ -57,13 +57,15 @@ export const LISImpactPreview = ({
         <Progress value={completionRate} className="h-2" />
 
         {/* Hero Message - Prominent Longevity Benefit Statement */}
-        {completionRate > 0 && opportunityGap > 0 && (
+        {opportunityGap > 0 && (
           <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 border border-primary/20">
             <div className="flex items-start gap-2">
               <TrendingUp className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm font-semibold text-foreground leading-relaxed">
-                Consistently completing your daily plan can improve your LIS by {estimatedLISPoints} points, 
-                which could reduce biological aging by {opportunityGap.toFixed(1)} years over 5 years! 🚀
+                {completionRate === 0 
+                  ? `Start completing your daily plan to improve your LIS by ${estimatedLISPoints} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
+                  : `Consistently completing your daily plan can improve your LIS by ${estimatedLISPoints} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
+                }
               </p>
             </div>
           </div>

@@ -124,6 +124,9 @@ export const useLISData = (): LISData => {
         if (lastWearableEntry) {
           setLastSyncTime(lastWearableEntry.created_at);
         }
+      } else if (baseline) {
+        // Use baseline score as current if no non-baseline scores exist
+        setCurrentScore(baseline.longevity_impact_score);
       }
 
       setLoading(false);
