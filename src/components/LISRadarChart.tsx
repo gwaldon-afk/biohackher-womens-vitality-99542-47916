@@ -128,15 +128,15 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 350 }: LISR
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <div className="bg-background/95 backdrop-blur-sm rounded-full px-8 py-5 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
-          <div className="text-xs text-muted-foreground mb-1 text-center font-medium">Longevity Score</div>
+        <div className="bg-background/70 backdrop-blur-[2px] rounded-full px-5 py-3 border-2 shadow-md" style={{ borderColor: getScoreColor(compositeScore) }}>
+          <div className="text-[10px] text-muted-foreground mb-0.5 text-center font-medium">Longevity Score</div>
           <div
-            className="text-5xl font-bold text-center"
+            className="text-4xl font-bold text-center leading-none"
             style={{ color: getScoreColor(compositeScore) }}
           >
             {Math.round(compositeScore)}
           </div>
-          <div className="text-sm font-medium text-center mt-1" style={{ color: getScoreColor(compositeScore) }}>
+          <div className="text-xs font-medium text-center mt-0.5" style={{ color: getScoreColor(compositeScore) }}>
             {getScoreCategory(compositeScore)}
           </div>
         </div>
