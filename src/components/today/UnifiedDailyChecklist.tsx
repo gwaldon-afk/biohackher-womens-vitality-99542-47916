@@ -131,23 +131,27 @@ export const UnifiedDailyChecklist = () => {
     toast.success("Added to cart!");
   };
 
-  // Categorize actions by type
+  // Categorize actions by type using itemType field from database
   const categorizeActions = () => {
-    const supplements = actions.filter((a: any) => 
-      a.category === 'supplement' || (a.type === 'protocol' && a.title?.toLowerCase().includes('supplement'))
-    );
-    const movement = actions.filter((a: any) => 
-      a.category === 'exercise' || a.category === 'movement' || (a.type === 'protocol' && (a.title?.toLowerCase().includes('exercise') || a.title?.toLowerCase().includes('workout')))
-    );
-    const meals = actions.filter((a: any) => a.type === 'meal');
+    const supplements = actions.filter((a: any) => a.itemType === 'supplement');
+    const movement = actions.filter((a: any) => a.itemType === 'exercise');
+    const meals = actions.filter((a: any) => a.type === 'meal' || a.itemType === 'diet');
     const tracking = actions.filter((a: any) => 
-      a.type === 'energy' || a.category === 'tracking' || a.title?.toLowerCase().includes('track')
+      a.type === 'energy' ||
+      a.title?.toLowerCase().includes('log') ||
+      a.title?.toLowerCase().includes('track') ||
+      a.title?.toLowerCase().includes('check-in')
     );
     const therapy = actions.filter((a: any) => 
-      a.category === 'therapy' || a.title?.toLowerCase().includes('therapy')
+      a.itemType === 'therapy' ||
+      a.title?.toLowerCase().includes('red light') ||
+      a.title?.toLowerCase().includes('sauna') ||
+      a.title?.toLowerCase().includes('meditation') ||
+      a.title?.toLowerCase().includes('breathwork')
     );
     const habits = actions.filter((a: any) => 
-      a.type === 'habit' || a.category === 'habit'
+      a.type === 'habit' ||
+      a.itemType === 'habit'
     );
 
     // Remaining items that don't fit other categories

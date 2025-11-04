@@ -30,6 +30,7 @@ export interface DailyAction {
   timeOfDay?: string[] | null;
   mealData?: any;
   mealType?: string;
+  itemType?: string; // Original item_type from database for proper categorization
 }
 
 export const useDailyPlan = () => {
@@ -92,7 +93,8 @@ export const useDailyPlan = () => {
             icon: getItemIcon(item.item_type),
             completed: isCompleted,
             protocolItemId: item.id,
-            timeOfDay: item.time_of_day
+            timeOfDay: item.time_of_day,
+            itemType: item.item_type // Preserve original item_type for categorization
           });
         });
       }
