@@ -56,6 +56,19 @@ export const LISImpactPreview = ({
 
         <Progress value={completionRate} className="h-2" />
 
+        {/* Hero Message - Prominent Longevity Benefit Statement */}
+        {completionRate > 0 && opportunityGap > 0 && (
+          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 border border-primary/20">
+            <div className="flex items-start gap-2">
+              <TrendingUp className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <p className="text-sm font-semibold text-foreground leading-relaxed">
+                Consistently completing your daily plan can improve your LIS by {estimatedLISPoints} points, 
+                which could reduce biological aging by {opportunityGap.toFixed(1)} years over 5 years! 🚀
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-start gap-2 text-sm">
           <TrendingUp className="w-4 h-4 text-green-500 mt-0.5" />
           <p className="text-muted-foreground">{getImpactMessage()}</p>
@@ -98,13 +111,6 @@ export const LISImpactPreview = ({
           <p className="text-xs text-muted-foreground italic">
             Complete your daily plan consistently to move towards optimal biological age
           </p>
-        </div>
-
-        <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t border-border">
-          <p className="font-medium">Daily actions breakdown:</p>
-          <p>• Morning sunlight: +0.5 LIS</p>
-          <p>• Daily supplements: +0.3 LIS</p>
-          <p>• Movement practice: +0.8 LIS</p>
         </div>
       </CardContent>
     </Card>

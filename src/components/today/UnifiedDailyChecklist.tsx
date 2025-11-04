@@ -304,13 +304,6 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* Nutrition Scorecard Widget */}
-      {user && (
-        <div className="pb-6">
-          <NutritionScorecardWidget />
-        </div>
-      )}
-
       {/* LIS Impact & Biological Age Prediction */}
       <div className="pb-6">
         <LISImpactPreview 
@@ -320,6 +313,13 @@ export const UnifiedDailyChecklist = () => {
           currentAge={42}
         />
       </div>
+
+      {/* Nutrition Scorecard Widget */}
+      {user && (
+        <div className="pb-6">
+          <NutritionScorecardWidget />
+        </div>
+      )}
 
       {/* Progress Summary */}
       <div className="space-y-2 pb-6 border-b-2 border-primary/20">
