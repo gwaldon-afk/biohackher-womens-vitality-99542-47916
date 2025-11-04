@@ -72,6 +72,36 @@ export const useGoals = () => {
   }, [subscription]);
 
   /**
+   * Ensure subscription exists for the user (auto-create if missing)
+   */
+  const ensureSubscriptionExists = async (userId: string) => {
+    // Check if subscription already exists
+    const { data: existing } = await supabase
+      .from('user_subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    if (existing) return existing;
+    
+    // Create default subscription
+    const { data, error } = await supabase
+      .from('user_subscriptions')
+      .insert({
+        user_id: userId,
+        subscription_tier: 'registered',
+        subscription_status: 'trialing',
+        trial_start_date: new Date().toISOString(),
+        trial_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  };
+
+  /**
    * Fetch goals by status
    */
   const fetchGoals = async (status?: 'active' | 'completed' | 'paused' | 'archived') => {
@@ -124,7 +154,7 @@ export const useGoals = () => {
    * Create a new goal (checks tier limits first - NO HARDCODING)
    */
   const createGoal = async (goalData: Partial<HealthGoal>) => {
-    if (!user || !subscription) {
+    if (!user) {
       toast({
         title: 'Authentication required',
         description: 'Please sign in to create goals',
@@ -133,8 +163,24 @@ export const useGoals = () => {
       return null;
     }
 
+    // Ensure subscription exists (auto-create if missing)
+    let userSubscription = subscription;
+    if (!userSubscription) {
+      try {
+        userSubscription = await ensureSubscriptionExists(user.id);
+      } catch (error) {
+        console.error('Error creating subscription:', error);
+        toast({
+          title: 'Setup error',
+          description: 'Could not initialize your account. Please try again.',
+          variant: 'destructive',
+        });
+        return null;
+      }
+    }
+
     // Check if user can create goal (database-driven)
-    const canCreate = await canCreateGoal(user.id, subscription.subscription_tier);
+    const canCreate = await canCreateGoal(user.id, userSubscription.subscription_tier);
     if (!canCreate.allowed) {
       toast({
         title: 'Goal limit reached',
