@@ -69,8 +69,8 @@ export const LISImpactPreview = ({
               <TrendingUp className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm font-semibold text-foreground leading-relaxed">
                 {completionRate === 0 
-                  ? `Start completing your daily plan to improve your LIS by ${lisPointsOpportunity} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
-                  : `Consistently completing your daily plan can improve your LIS by ${lisPointsOpportunity} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
+                  ? `Start completing your daily plan to improve your LIS by ${lisPointsOpportunity} points, which could reduce your biological age by ${opportunityGap.toFixed(1)} years over the next 5 years! 🚀`
+                  : `Consistently completing your daily plan can improve your LIS by ${lisPointsOpportunity} points, which could reduce your biological age by ${opportunityGap.toFixed(1)} years over the next 5 years! 🚀`
                 }
               </p>
             </div>
