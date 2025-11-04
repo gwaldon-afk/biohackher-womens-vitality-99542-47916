@@ -421,6 +421,51 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_nutrition_scores: {
+        Row: {
+          created_at: string | null
+          dairy_gluten: number | null
+          grade: string
+          hydration: number | null
+          id: string
+          processed_foods: number | null
+          protein: number | null
+          score: number
+          score_date: string
+          sugar: number | null
+          user_id: string
+          vegetables: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          dairy_gluten?: number | null
+          grade: string
+          hydration?: number | null
+          id?: string
+          processed_foods?: number | null
+          protein?: number | null
+          score: number
+          score_date?: string
+          sugar?: number | null
+          user_id: string
+          vegetables?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          dairy_gluten?: number | null
+          grade?: string
+          hydration?: number | null
+          id?: string
+          processed_foods?: number | null
+          protein?: number | null
+          score?: number
+          score_date?: string
+          sugar?: number | null
+          user_id?: string
+          vegetables?: number | null
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           active_minutes: number | null
@@ -1893,6 +1938,39 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_completions: {
+        Row: {
+          calories: number | null
+          completed_date: string
+          created_at: string | null
+          id: string
+          meal_name: string
+          meal_type: string
+          protein: number | null
+          user_id: string
+        }
+        Insert: {
+          calories?: number | null
+          completed_date?: string
+          created_at?: string | null
+          id?: string
+          meal_name: string
+          meal_type: string
+          protein?: number | null
+          user_id: string
+        }
+        Update: {
+          calories?: number | null
+          completed_date?: string
+          created_at?: string | null
+          id?: string
+          meal_name?: string
+          meal_type?: string
+          protein?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       menomap_assessments: {
         Row: {
           answers: Json
@@ -2004,6 +2082,7 @@ export type Database = {
           selected_breakfast_recipe: string | null
           selected_dinner_recipe: string | null
           selected_lunch_recipe: string | null
+          selected_meal_plan_template: string | null
           selected_recipe_style: string | null
           updated_at: string
           user_id: string
@@ -2023,6 +2102,7 @@ export type Database = {
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null
+          selected_meal_plan_template?: string | null
           selected_recipe_style?: string | null
           updated_at?: string
           user_id: string
@@ -2042,6 +2122,7 @@ export type Database = {
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null
+          selected_meal_plan_template?: string | null
           selected_recipe_style?: string | null
           updated_at?: string
           user_id?: string

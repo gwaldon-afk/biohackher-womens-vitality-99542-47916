@@ -6,15 +6,18 @@ import { useHealthProfile } from './useHealthProfile';
 import { useEnergyLoop } from './useEnergyLoop';
 import { useStreaks } from './useStreaks';
 import { useProtocolCompletions } from '@/queries/protocolQueries';
+import { useNutritionPreferences } from './useNutritionPreferences';
+import { supabase } from '@/integrations/supabase/client';
 import { matchesTimeOfDay } from '@/utils/timeContext';
 import { ProtocolItem } from '@/types/protocols';
+import { templateMealPlans } from '@/data/mealTemplates';
 
 export interface DailyAction {
   id: string;
-  type: 'protocol' | 'goal' | 'energy' | 'habit';
+  type: 'protocol' | 'goal' | 'energy' | 'habit' | 'meal';
   title: string;
   description?: string;
-  category: 'quick_win' | 'energy_booster' | 'deep_practice' | 'optional';
+  category: 'quick_win' | 'energy_booster' | 'deep_practice' | 'optional' | 'nutrition';
   estimatedMinutes: number;
   priority: number;
   goalAlignment?: string;
@@ -25,6 +28,8 @@ export interface DailyAction {
   goalId?: string;
   energyActionId?: string;
   timeOfDay?: string[] | null;
+  mealData?: any;
+  mealType?: string;
 }
 
 export const useDailyPlan = () => {
@@ -33,6 +38,7 @@ export const useDailyPlan = () => {
   const { goals } = useGoals();
   const { energyMetrics } = useHealthProfile();
   const { actions: energyActions, currentScore } = useEnergyLoop();
+  const { preferences: nutritionPrefs } = useNutritionPreferences();
   const { streaks, getStreak } = useStreaks();
   const today = new Date().toISOString().split('T')[0];
   const { data: completions } = useProtocolCompletions(user?.id, today);
@@ -44,7 +50,7 @@ export const useDailyPlan = () => {
     if (user) {
       loadDailyPlan();
     }
-  }, [user, protocols, goals, energyActions, completions]);
+  }, [user, protocols, goals, energyActions, completions, nutritionPrefs]);
 
   const loadDailyPlan = async () => {
     console.log('[useDailyPlan] Starting loadDailyPlan');
@@ -121,6 +127,43 @@ export const useDailyPlan = () => {
           energyActionId: action.id
         });
       });
+
+      // 4. Get today's meal plan (if template is selected)
+      if (nutritionPrefs?.selectedMealPlanTemplate) {
+        const dayOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
+        const todaysMeals = templateMealPlans[nutritionPrefs.selectedMealPlanTemplate]?.[dayOfWeek];
+        
+        if (todaysMeals && user) {
+          // Check meal completions
+          const { data: mealCompletions } = await supabase
+            .from('meal_completions')
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('completed_date', today);
+          
+          const mealTypes: Array<'breakfast' | 'lunch' | 'dinner'> = ['breakfast', 'lunch', 'dinner'];
+          mealTypes.forEach(mealType => {
+            const meal = todaysMeals[mealType];
+            const isCompleted = mealCompletions?.some(c => c.meal_type === mealType) || false;
+            
+            dailyActions.push({
+              id: `meal-${mealType}`,
+              type: 'meal',
+              title: meal.name,
+              description: `${meal.calories} cal • ${meal.protein}g protein`,
+              category: 'nutrition',
+              estimatedMinutes: mealType === 'breakfast' ? 15 : mealType === 'lunch' ? 20 : 30,
+              priority: 0,
+              timeOfDay: mealType === 'breakfast' ? ['morning'] : mealType === 'lunch' ? ['midday'] : ['evening'],
+              whyItMatters: `Part of your ${nutritionPrefs.selectedMealPlanTemplate} meal plan`,
+              icon: 'Utensils',
+              completed: isCompleted,
+              mealData: meal,
+              mealType
+            });
+          });
+        }
+      }
 
       // Calculate priorities for all actions
       const prioritizedActions = calculatePriorities(dailyActions, activeGoals.length, currentScore?.composite_score, energyMetrics);

@@ -16,6 +16,7 @@ export interface NutritionPreferences {
   selectedBreakfastRecipe: string;
   selectedLunchRecipe: string;
   selectedDinnerRecipe: string;
+  selectedMealPlanTemplate?: string;
 }
 
 export const useNutritionPreferences = () => {
@@ -81,6 +82,7 @@ export const useNutritionPreferences = () => {
           selectedDinnerRecipe: data.selected_dinner_recipe || "",
           isLowFODMAP: data.is_low_fodmap || false,
           hasIBS: data.has_ibs || false,
+          selectedMealPlanTemplate: data.selected_meal_plan_template || undefined,
         });
         setHasPreferences(true);
       }
@@ -108,7 +110,8 @@ export const useNutritionPreferences = () => {
         selected_lunch_recipe: preferences.selectedLunchRecipe,
         selected_dinner_recipe: preferences.selectedDinnerRecipe,
         is_low_fodmap: preferences.isLowFODMAP,
-        has_ibs: preferences.hasIBS
+        has_ibs: preferences.hasIBS,
+        selected_meal_plan_template: preferences.selectedMealPlanTemplate || null,
       };
 
       const { error } = await supabase

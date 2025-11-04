@@ -100,6 +100,7 @@ const Nutrition = () => {
             <MealPlansTab
               preferences={preferences}
               setPreferences={setPreferences}
+              savePreferences={savePreferences}
             />
           </TabsContent>
         </Tabs>

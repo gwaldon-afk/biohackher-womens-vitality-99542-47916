@@ -2,7 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sun, Sunset, Moon, Clock, Lock, ShoppingCart } from "lucide-react";
+import { Sun, Sunset, Moon, Clock, Lock, ShoppingCart, Utensils } from "lucide-react";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +16,8 @@ import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useCart } from "@/hooks/useCart";
 import { LISImpactPreview } from "@/components/today/LISImpactPreview";
 import { useLISData } from "@/hooks/useLISData";
+import { NutritionScorecardWidget } from "@/components/today/NutritionScorecardWidget";
+import { MealDetailModal } from "@/components/today/MealDetailModal";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
@@ -28,6 +30,8 @@ export const UnifiedDailyChecklist = () => {
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Set<string>>(new Set());
+  const [selectedMeal, setSelectedMeal] = useState<any>(null);
+  const [mealModalOpen, setMealModalOpen] = useState(false);
   
   const totalCount = isUsingSampleData ? SAMPLE_DAILY_ACTIONS.length : userTotalCount;
   const completedCount = isUsingSampleData ? sampleCompletedIds.size : userCompletedCount;
@@ -54,7 +58,35 @@ export const UnifiedDailyChecklist = () => {
     if (!action || !user) return;
 
     try {
-      if (action.type === 'protocol' && 'protocolItemId' in action && action.protocolItemId) {
+      // Handle meal completion
+      if (action.type === 'meal' && action.mealType && action.mealData) {
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (action.completed) {
+          await supabase
+            .from('meal_completions')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('meal_type', action.mealType)
+            .eq('completed_date', today);
+        } else {
+          await supabase
+            .from('meal_completions')
+            .insert({
+              user_id: user.id,
+              meal_type: action.mealType,
+              completed_date: today,
+              meal_name: action.mealData.name,
+              calories: action.mealData.calories,
+              protein: action.mealData.protein,
+            });
+          toast.success("Meal logged!");
+        }
+        
+        refetch();
+      }
+      // Handle protocol item completion
+      else if (action.type === 'protocol' && 'protocolItemId' in action && action.protocolItemId) {
         const today = new Date().toISOString().split('T')[0];
         
         if (action.completed) {
@@ -110,9 +142,6 @@ export const UnifiedDailyChecklist = () => {
   };
 
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-  const remainingMinutes = actions
-    .filter((a: any) => !getItemCompleted(a.id))
-    .reduce((sum: number, a: any) => sum + a.estimatedMinutes, 0);
 
   const activeGoals = goals?.filter(g => g.status === 'active') || [];
   const displayGoals = isUsingSampleData ? SAMPLE_GOALS : activeGoals;
@@ -131,15 +160,21 @@ export const UnifiedDailyChecklist = () => {
   const TimeSection = ({ title, icon: Icon, items }: any) => {
     if (items.length === 0) return null;
     
+    const sectionTime = items.reduce((sum: number, a: any) => sum + (a.estimatedMinutes || 0), 0);
+    
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-foreground uppercase tracking-wider border-b border-border pb-2">
           <Icon className="w-5 h-5 text-primary" />
           {title}
+          <span className="ml-auto text-xs text-muted-foreground font-normal">
+            {sectionTime} min
+          </span>
         </div>
         {items.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
           const isSupplementCategory = action.category === 'supplement';
+          const isMeal = action.type === 'meal';
           
           return (
             <div
@@ -159,6 +194,12 @@ export const UnifiedDailyChecklist = () => {
                       {action.title}
                     </p>
                     <ScienceBackedIcon className="w-3.5 h-3.5" showTooltip={true} />
+                    {isMeal && (
+                      <Badge variant="secondary" className="text-xs gap-1">
+                        <Utensils className="w-3 h-3" />
+                        Meal
+                      </Badge>
+                    )}
                   </div>
                   {action.pillar && (
                     <Badge variant="outline" className="text-xs capitalize shrink-0 bg-primary/5 text-primary border-primary/20">
@@ -174,6 +215,20 @@ export const UnifiedDailyChecklist = () => {
                     <Clock className="w-3 h-3" />
                     {action.estimatedMinutes} min
                   </div>
+                  {isMeal && action.mealData && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedMeal({ ...action.mealData, mealType: action.mealType });
+                        setMealModalOpen(true);
+                      }}
+                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                    >
+                      <Utensils className="w-3 h-3" />
+                      View Recipe
+                    </Button>
+                  )}
                   {isSupplementCategory && (
                     <Button
                       size="sm"
@@ -253,6 +308,13 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
+      {/* Nutrition Scorecard Widget */}
+      {user && (
+        <div className="pb-6">
+          <NutritionScorecardWidget />
+        </div>
+      )}
+
       {/* LIS Impact & Biological Age Prediction */}
       <div className="pb-6">
         <LISImpactPreview 
@@ -267,7 +329,7 @@ export const UnifiedDailyChecklist = () => {
       <div className="space-y-2 pb-6 border-b-2 border-primary/20">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold text-foreground">
-            Progress: {completedCount}/{totalCount} actions complete • {remainingMinutes} min remaining
+            Progress: {completedCount}/{totalCount} actions complete
           </span>
         </div>
         <Progress value={progressPercent} className="h-2 bg-muted" />
@@ -313,6 +375,16 @@ export const UnifiedDailyChecklist = () => {
             </Button>
           </div>
         </div>
+      )}
+
+      {/* Meal Detail Modal */}
+      {selectedMeal && (
+        <MealDetailModal
+          open={mealModalOpen}
+          onOpenChange={setMealModalOpen}
+          meal={selectedMeal}
+          mealType={selectedMeal.mealType || 'meal'}
+        />
       )}
     </div>
   );
