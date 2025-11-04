@@ -22,7 +22,7 @@ import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 
 const LISResults = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [searchParams] = useSearchParams();
   const isGuest = !user;
   const score = parseFloat(searchParams.get('score') || '0');
@@ -88,6 +88,12 @@ const LISResults = () => {
   // Auto-load assessment data if URL parameters are missing
   useEffect(() => {
     const loadMissingAssessmentData = async () => {
+      // Wait for auth to finish loading before making decisions
+      if (loading) {
+        console.log('Auth still loading, waiting...');
+        return;
+      }
+      
       // Only run if URL params are missing (score is 0 and no pillar scores)
       if (score === 0 && !urlPillarScores) {
         if (user) {
@@ -139,7 +145,7 @@ const LISResults = () => {
     };
     
     loadMissingAssessmentData();
-  }, [score, urlPillarScores, user, navigate, toast]);
+  }, [score, urlPillarScores, user, loading, navigate, toast]);
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
