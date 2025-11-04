@@ -1308,19 +1308,18 @@ export default function GuestLISAssessment() {
         </Label>
         <Slider
           id="socialEngagement"
-          value={baselineData.socialEngagement}
-          onValueChange={(value) => setBaselineData(prev => ({ ...prev, socialEngagement: value }))}
+          value={[baselineData.socialEngagement]}
+          onValueChange={(value) => setBaselineData(prev => ({ ...prev, socialEngagement: value[0] }))}
           min={1}
           max={5}
           step={1}
-          marks={[
-            { value: 1, label: '1' },
-            { value: 2, label: '2' },
-            { value: 3, label: '3' },
-            { value: 4, label: '4' },
-            { value: 5, label: '5' }
-          ]}
+          className="w-full"
         />
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>1 - Isolated</span>
+          <span className="font-medium">Current: {baselineData.socialEngagement}</span>
+          <span>5 - Very Connected</span>
+        </div>
       </div>
     </>
   );
@@ -1607,14 +1606,14 @@ export default function GuestLISAssessment() {
             {question?.type === 'slider' ? (
               <div className="space-y-6">
                 <Slider
-                  value={selectedAnswer ? selectedAnswer.score_value : 0}
+                  value={[selectedAnswer ? selectedAnswer.score_value : 0]}
                   min={0}
                   max={100}
                   step={1}
                   onValueChange={(value) => {
                     const option = question.options.reduce<QuestionOption | null>((prev, curr) => {
                       // Find closest option by score_value
-                      if (Math.abs(curr.score_value - value) < Math.abs((prev?.score_value ?? 0) - value)) {
+                      if (Math.abs(curr.score_value - value[0]) < Math.abs((prev?.score_value ?? 0) - value[0])) {
                         return curr;
                       }
                       return prev;
