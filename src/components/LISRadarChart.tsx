@@ -74,92 +74,95 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 350 }: LISR
   };
 
   return (
-    <div className="relative mx-auto" style={{ width: size, height: size }}>
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <ChartContainer config={chartConfig} className="h-full w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={chartData}>
-              <defs>
-                <linearGradient id="lisGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <PolarGrid 
-                stroke="hsl(var(--border))" 
-                strokeWidth={1}
-                strokeDasharray="3 3"
-              />
-              <PolarAngleAxis
-                dataKey="dimension"
-                tick={{ 
-                  fill: "hsl(var(--foreground))", 
-                  fontSize: 12,
-                  fontWeight: 500,
-                }}
-                tickLine={false}
-              />
-              <PolarRadiusAxis
-                angle={90}
-                domain={[0, 100]}
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-                tickCount={6}
-              />
-              <Radar
-                name="LIS Score"
-                dataKey="score"
-                stroke="hsl(var(--primary))"
-                fill="url(#lisGradient)"
-                strokeWidth={2}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      </motion.div>
+    <div className="flex flex-col items-center gap-6 mx-auto" style={{ width: size }}>
+      {/* Radar Chart */}
+      <div className="relative" style={{ width: size, height: size }}>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <ChartContainer config={chartConfig} className="h-full w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={chartData}>
+                <defs>
+                  <linearGradient id="lisGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.1} />
+                  </linearGradient>
+                </defs>
+                <PolarGrid 
+                  stroke="hsl(var(--border))" 
+                  strokeWidth={1}
+                  strokeDasharray="3 3"
+                />
+                <PolarAngleAxis
+                  dataKey="dimension"
+                  tick={{ 
+                    fill: "hsl(var(--foreground))", 
+                    fontSize: 12,
+                    fontWeight: 500,
+                  }}
+                  tickLine={false}
+                />
+                <PolarRadiusAxis
+                  angle={90}
+                  domain={[0, 100]}
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                  tickCount={6}
+                />
+                <Radar
+                  name="LIS Score"
+                  dataKey="score"
+                  stroke="hsl(var(--primary))"
+                  fill="url(#lisGradient)"
+                  strokeWidth={2}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </motion.div>
 
-      {/* Center score overlay */}
+        {/* Pulsing glow effect when score is excellent */}
+        {compositeScore >= 80 && (
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              background: `radial-gradient(circle, hsl(var(--success) / 0.2) 0%, transparent 70%)`,
+            }}
+            animate={{
+              scale: [1, 1.08, 1],
+              opacity: [0.6, 0.9, 0.6],
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        )}
+      </div>
+
+      {/* Score card below chart */}
       <motion.div
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+        className="flex flex-col items-center"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <div className="bg-background/70 backdrop-blur-[2px] rounded-full px-5 py-3 border-2 shadow-md" style={{ borderColor: getScoreColor(compositeScore) }}>
-          <div className="text-[10px] text-muted-foreground mb-0.5 text-center font-medium">Longevity Score</div>
+        <div className="bg-card rounded-lg px-8 py-4 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
+          <div className="text-xs text-muted-foreground mb-1 text-center font-medium">Longevity Impact Score</div>
           <div
-            className="text-4xl font-bold text-center leading-none"
+            className="text-5xl font-bold text-center leading-none"
             style={{ color: getScoreColor(compositeScore) }}
           >
             {Math.round(compositeScore)}
           </div>
-          <div className="text-xs font-medium text-center mt-0.5" style={{ color: getScoreColor(compositeScore) }}>
+          <div className="text-sm font-medium text-center mt-1" style={{ color: getScoreColor(compositeScore) }}>
             {getScoreCategory(compositeScore)}
           </div>
         </div>
       </motion.div>
-
-      {/* Pulsing glow effect when score is excellent */}
-      {compositeScore >= 80 && (
-        <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background: `radial-gradient(circle, hsl(var(--success) / 0.2) 0%, transparent 70%)`,
-          }}
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.6, 0.9, 0.6],
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      )}
     </div>
   );
 };
