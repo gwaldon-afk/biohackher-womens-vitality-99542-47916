@@ -262,8 +262,8 @@ export const UnifiedDailyChecklist = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/30 rounded-full blur-2xl" />
           
-          <div className="relative flex items-start gap-4">
-            <span className="text-5xl flex-shrink-0 drop-shadow-sm">💫</span>
+          <div className="relative flex flex-col items-center gap-4 text-center">
+            <span className="text-5xl drop-shadow-sm">💫</span>
             <div>
               <p className="text-3xl md:text-4xl font-semibold text-foreground italic leading-tight drop-shadow-sm">
                 "{todaysQuote.quote}"
