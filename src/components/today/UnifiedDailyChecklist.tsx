@@ -196,6 +196,28 @@ export const UnifiedDailyChecklist = () => {
     );
   }
 
+  // Show message when user has no active protocol items
+  if (user && !loading && actions.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center py-12 space-y-4">
+          <div className="text-6xl mb-4">📋</div>
+          <h2 className="text-2xl font-bold text-foreground">No Active Protocol Items</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Your protocol items are currently inactive. Activate them to see your daily plan.
+          </p>
+          <Button
+            size="lg"
+            onClick={() => navigate('/my-protocol')}
+            className="mt-4"
+          >
+            Manage Your Protocol
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const handleViewMeal = (action: any) => {
     setSelectedMeal({ ...action.mealData, mealType: action.mealType });
     setMealModalOpen(true);
