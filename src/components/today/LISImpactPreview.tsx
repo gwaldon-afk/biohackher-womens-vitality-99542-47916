@@ -18,7 +18,6 @@ export const LISImpactPreview = ({
 }: LISImpactPreviewProps) => {
   // Calculate completion rate and estimated LIS
   const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-  const estimatedLISPoints = Math.round((completionRate / 100) * 3);
 
   // Calculate biological age projection
   const currentLIS = sustainedLIS || 100;
@@ -27,6 +26,9 @@ export const LISImpactPreview = ({
   // Compare current state to optimal 80% completion target
   const optimalCompletionRate = 80;
   const optimalPotentialLIS = estimateLISFromCompletion(optimalCompletionRate, currentLIS);
+  
+  // Calculate the actual LIS points opportunity (difference between optimal and current)
+  const lisPointsOpportunity = Math.round(optimalPotentialLIS - currentPotentialLIS);
   
   const currentBioAgeImpact = calculate5YearBioAgeImpact(currentPotentialLIS);
   const optimalBioAgeImpact = calculate5YearBioAgeImpact(optimalPotentialLIS);
@@ -49,8 +51,8 @@ export const LISImpactPreview = ({
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-3xl font-bold text-purple-600">+{estimatedLISPoints}</p>
-            <p className="text-sm text-muted-foreground">Estimated LIS Points</p>
+            <p className="text-3xl font-bold text-purple-600">+{lisPointsOpportunity}</p>
+            <p className="text-sm text-muted-foreground">LIS Points Opportunity</p>
           </div>
           <div className="text-right">
             <p className="text-lg font-semibold">{Math.round(completionRate)}%</p>
@@ -67,8 +69,8 @@ export const LISImpactPreview = ({
               <TrendingUp className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm font-semibold text-foreground leading-relaxed">
                 {completionRate === 0 
-                  ? `Start completing your daily plan to improve your LIS by ${estimatedLISPoints} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
-                  : `Consistently completing your daily plan can improve your LIS by ${estimatedLISPoints} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
+                  ? `Start completing your daily plan to improve your LIS by ${lisPointsOpportunity} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
+                  : `Consistently completing your daily plan can improve your LIS by ${lisPointsOpportunity} points, which could reduce biological aging by ${opportunityGap.toFixed(1)} years over 5 years! 🚀`
                 }
               </p>
             </div>
