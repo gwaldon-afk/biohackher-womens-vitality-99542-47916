@@ -12,7 +12,6 @@ import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
 import { LISRadarChart } from '@/components/LISRadarChart';
-import { LISRadarLegend } from '@/components/LISRadarLegend';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
@@ -202,15 +201,12 @@ const LISResults = () => {
         </CardHeader>
         <CardContent className="pt-6">
           {/* Radar Chart Visualization */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center">
             <LISRadarChart 
               pillarScores={pillarScores}
               compositeScore={displayScore}
             />
           </div>
-
-          {/* Legend */}
-          <LISRadarLegend pillarScores={pillarScores} />
         </CardContent>
       </Card>
 
