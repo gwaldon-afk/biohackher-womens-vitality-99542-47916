@@ -80,13 +80,24 @@ const MyGoals = () => {
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-base">
+                    {activeGoals.length} of {tierFeatures.maxActiveGoals} Goal Slots Used
+                  </p>
+                  <Badge variant="secondary">
+                    {tierFeatures.displayName || 'Free Plan'}
+                  </Badge>
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  Active Goals: {activeGoals.length} / {tierFeatures.maxActiveGoals}
+                  {tierFeatures.maxActiveGoals - activeGoals.length === 0 
+                    ? 'You\'ve reached your goal limit. Upgrade for unlimited goals.'
+                    : `You can create ${tierFeatures.maxActiveGoals - activeGoals.length} more ${tierFeatures.maxActiveGoals - activeGoals.length === 1 ? 'goal' : 'goals'}.`
+                  }
                 </p>
                 <Progress 
                   value={(activeGoals.length / tierFeatures.maxActiveGoals) * 100} 
-                  className="mt-2 w-64"
+                  className="w-64"
                 />
               </div>
               <Button variant="outline" onClick={() => navigate("/upgrade")}>
