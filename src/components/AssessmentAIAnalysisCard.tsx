@@ -72,19 +72,23 @@ export const AssessmentAIAnalysisCard = ({
           setError("AI credits needed. Please add credits to your workspace.");
           toast.error("AI credits needed. Please add credits to your workspace.");
         } else {
-          setError("Failed to generate analysis");
-          toast.error("Failed to generate analysis");
+          setError("Failed to generate analysis. Please try again later.");
+          toast.error("Failed to generate analysis. Please try again later.");
         }
         throw invokeError;
       }
 
-      setAnalysis(data);
-      setFromCache(data.fromCache || false);
-      
-      if (data.fromCache) {
-        toast.success("Retrieved cached analysis");
-      } else {
-        toast.success("Analysis generated successfully");
+      if (data) {
+        setAnalysis(data);
+        setFromCache(data.fromCache || false);
+        
+        if (data.providerError) {
+          toast.warning(data.errorMessage || "AI provider temporarily unavailable. Showing general recommendations.");
+        } else if (data.fromCache) {
+          toast.success("Retrieved cached analysis");
+        } else {
+          toast.success("Analysis generated successfully");
+        }
       }
     } catch (err) {
       console.error("Analysis error:", err);
@@ -154,6 +158,27 @@ export const AssessmentAIAnalysisCard = ({
             <Button size="sm" onClick={() => generateAnalysis(true)}>
               <RefreshCw className="mr-2 h-4 w-4" />
               Update Analysis
+            </Button>
+          </div>
+        )}
+
+        {analysis?.providerError && (
+          <div className="border-l-4 border-orange-500 p-4 bg-orange-50 rounded-r">
+            <div className="flex items-center gap-2 text-orange-800 mb-2">
+              <AlertCircle className="h-5 w-5" />
+              <p className="font-medium">Using General Recommendations</p>
+            </div>
+            <p className="text-sm text-orange-700">
+              {analysis.errorMessage || "AI provider is temporarily unavailable. Showing general recommendations based on your score."}
+            </p>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="mt-3"
+              onClick={() => generateAnalysis(true)}
+            >
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Try AI Analysis Again
             </Button>
           </div>
         )}

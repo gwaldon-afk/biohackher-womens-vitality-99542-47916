@@ -107,15 +107,44 @@ serve(async (req) => {
     const aiData = await aiResponse.json();
     console.log('AI response received:', JSON.stringify(aiData).substring(0, 500));
     
+    // Check for provider errors in response body (Lovable AI Gateway error format)
+    if (aiData && aiData.error) {
+      console.error('Provider error in response:', JSON.stringify(aiData.error));
+      const errorMsg = aiData.error.message || 'AI provider error';
+      const providerName = aiData.error.metadata?.provider_name || 'AI provider';
+      
+      // Generate fallback analysis when provider is down
+      console.log('Generating fallback analysis due to provider error');
+      const fallbackAnalysis = generateFallbackAnalysis(score, scoreCategory, answers);
+      
+      return new Response(
+        JSON.stringify({ 
+          ...fallbackAnalysis, 
+          fromCache: false,
+          providerError: true,
+          errorMessage: `${providerName} is temporarily unavailable. Showing general recommendations based on your score.`
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     // Robust validation of AI response structure
     if (!aiData || typeof aiData !== 'object') {
       console.error('AI response is not an object:', aiData);
-      throw new Error('Invalid AI response: not an object');
+      const fallbackAnalysis = generateFallbackAnalysis(score, scoreCategory, answers);
+      return new Response(
+        JSON.stringify({ ...fallbackAnalysis, fromCache: false, providerError: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     if (!aiData.choices || !Array.isArray(aiData.choices) || aiData.choices.length === 0) {
       console.error('AI response missing choices array:', JSON.stringify(aiData));
-      throw new Error('Invalid AI response: missing choices array');
+      const fallbackAnalysis = generateFallbackAnalysis(score, scoreCategory, answers);
+      return new Response(
+        JSON.stringify({ ...fallbackAnalysis, fromCache: false, providerError: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const choice = aiData.choices[0];
