@@ -22,11 +22,15 @@ export const LISImpactPreview = ({
 
   // Calculate biological age projection
   const currentLIS = sustainedLIS || 100;
-  const potentialLIS = estimateLISFromCompletion(completionRate, currentLIS);
+  const currentPotentialLIS = estimateLISFromCompletion(completionRate, currentLIS);
   
-  const currentBioAgeImpact = calculate5YearBioAgeImpact(currentLIS);
-  const potentialBioAgeImpact = calculate5YearBioAgeImpact(potentialLIS);
-  const opportunityGap = Math.abs(potentialBioAgeImpact - currentBioAgeImpact);
+  // Compare current state to optimal 80% completion target
+  const optimalCompletionRate = 80;
+  const optimalPotentialLIS = estimateLISFromCompletion(optimalCompletionRate, currentLIS);
+  
+  const currentBioAgeImpact = calculate5YearBioAgeImpact(currentPotentialLIS);
+  const optimalBioAgeImpact = calculate5YearBioAgeImpact(optimalPotentialLIS);
+  const opportunityGap = Math.abs(optimalBioAgeImpact - currentBioAgeImpact);
 
   const getImpactMessage = () => {
     if (completionRate >= 75) return "Excellent impact on your longevity!";
