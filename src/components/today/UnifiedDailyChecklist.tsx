@@ -259,7 +259,7 @@ export const UnifiedDailyChecklist = () => {
         <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
           <span className="text-3xl">💫</span>
           <div>
-            <p className="text-lg text-foreground italic leading-relaxed">
+            <p className="text-2xl text-foreground italic leading-relaxed">
               "{todaysQuote.quote}"
             </p>
             <p className="text-sm text-muted-foreground mt-1">— {todaysQuote.author}</p>
