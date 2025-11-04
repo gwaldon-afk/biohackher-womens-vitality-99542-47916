@@ -256,13 +256,22 @@ export const UnifiedDailyChecklist = () => {
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
           TODAY - {dateString}
         </h1>
-        <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
-          <span className="text-3xl">💫</span>
-          <div>
-            <p className="text-2xl text-foreground italic leading-relaxed">
-              "{todaysQuote.quote}"
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">— {todaysQuote.author}</p>
+        {/* Motivational Quote - Enhanced with Brand Colors */}
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-secondary p-8 shadow-lg">
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/30 rounded-full blur-2xl" />
+          
+          <div className="relative flex items-start gap-4">
+            <span className="text-5xl flex-shrink-0 drop-shadow-sm">💫</span>
+            <div>
+              <p className="text-3xl md:text-4xl font-semibold text-foreground italic leading-tight drop-shadow-sm">
+                "{todaysQuote.quote}"
+              </p>
+              <p className="text-base text-foreground/80 mt-3 font-medium">
+                — {todaysQuote.author}
+              </p>
+            </div>
           </div>
         </div>
       </div>
