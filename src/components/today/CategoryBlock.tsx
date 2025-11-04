@@ -99,10 +99,9 @@ export const CategoryBlock = ({
                       {action.title}
                     </p>
                     <ScienceBackedIcon className="w-3.5 h-3.5" showTooltip={true} />
-                    {isMeal && (
-                      <Badge variant="secondary" className="text-xs gap-1">
-                        <Utensils className="w-3 h-3" />
-                        Meal
+                    {isMeal && action.mealData?.protein && (
+                      <Badge variant="outline" className="bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+                        🥚 {action.mealData.protein}g protein
                       </Badge>
                     )}
                   </div>

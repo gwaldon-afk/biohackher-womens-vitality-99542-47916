@@ -19,6 +19,8 @@ import { LISImpactPreview } from "@/components/today/LISImpactPreview";
 import { useLISData } from "@/hooks/useLISData";
 import { NutritionScorecardWidget } from "@/components/today/NutritionScorecardWidget";
 import { MealDetailModal } from "@/components/today/MealDetailModal";
+import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummary";
+import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
@@ -27,6 +29,7 @@ export const UnifiedDailyChecklist = () => {
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
   const { currentScore: sustainedLIS } = useLISData();
+  const { preferences: nutritionPrefs } = useNutritionPreferences();
   
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
@@ -135,7 +138,26 @@ export const UnifiedDailyChecklist = () => {
   const categorizeActions = () => {
     const supplements = actions.filter((a: any) => a.itemType === 'supplement');
     const movement = actions.filter((a: any) => a.itemType === 'exercise');
-    const meals = actions.filter((a: any) => a.type === 'meal' || a.itemType === 'diet');
+    
+    // Filter meals - exclude protein reminders if user has a meal plan
+    const meals = actions.filter((a: any) => {
+      // Include actual meal plans
+      if (a.type === 'meal') return true;
+      
+      // Handle diet items
+      if (a.itemType === 'diet') {
+        const isProteinReminder = a.title?.toLowerCase().includes('protein');
+        const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
+        
+        // Exclude protein reminders if user has a meal plan (meals show protein already)
+        if (isProteinReminder && hasMealPlan) return false;
+        
+        // Include other diet items
+        return true;
+      }
+      
+      return false;
+    });
     const tracking = actions.filter((a: any) => 
       a.type === 'energy' ||
       a.title?.toLowerCase().includes('log') ||
@@ -235,9 +257,9 @@ export const UnifiedDailyChecklist = () => {
           TODAY - {dateString}
         </h1>
         <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg border border-primary/10">
-          <span className="text-2xl">💫</span>
+          <span className="text-3xl">💫</span>
           <div>
-            <p className="text-foreground italic leading-relaxed">
+            <p className="text-lg text-foreground italic leading-relaxed">
               "{todaysQuote.quote}"
             </p>
             <p className="text-sm text-muted-foreground mt-1">— {todaysQuote.author}</p>
@@ -327,7 +349,7 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.supplements).total}
           totalMinutes={getCategoryStats(categories.supplements).minutes}
           color="orange"
-          defaultExpanded={getCategoryStats(categories.supplements).completed < getCategoryStats(categories.supplements).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           onBuySupplements={handleBuySupplements}
@@ -344,13 +366,21 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.movement).total}
           totalMinutes={getCategoryStats(categories.movement).minutes}
           color="blue"
-          defaultExpanded={getCategoryStats(categories.movement).completed < getCategoryStats(categories.movement).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
         />
+
+        {/* Protein Tracking Summary */}
+        {nutritionPrefs?.weight && categories.meals.length > 0 && (
+          <ProteinTrackingSummary 
+            completedMeals={categories.meals.filter(m => getItemCompleted(m.id))}
+            nutritionPreferences={nutritionPrefs}
+          />
+        )}
 
         <CategoryBlock
           icon="🍽️"
@@ -360,7 +390,7 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.meals).total}
           totalMinutes={getCategoryStats(categories.meals).minutes}
           color="green"
-          defaultExpanded={getCategoryStats(categories.meals).completed < getCategoryStats(categories.meals).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           onViewMeal={handleViewMeal}
@@ -377,7 +407,7 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.tracking).total}
           totalMinutes={getCategoryStats(categories.tracking).minutes}
           color="purple"
-          defaultExpanded={getCategoryStats(categories.tracking).completed < getCategoryStats(categories.tracking).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           isUsingSampleData={isUsingSampleData}
@@ -393,7 +423,7 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.therapy).total}
           totalMinutes={getCategoryStats(categories.therapy).minutes}
           color="pink"
-          defaultExpanded={getCategoryStats(categories.therapy).completed < getCategoryStats(categories.therapy).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           isUsingSampleData={isUsingSampleData}
@@ -409,7 +439,7 @@ export const UnifiedDailyChecklist = () => {
           totalCount={getCategoryStats(categories.habits).total}
           totalMinutes={getCategoryStats(categories.habits).minutes}
           color="yellow"
-          defaultExpanded={getCategoryStats(categories.habits).completed < getCategoryStats(categories.habits).total}
+          defaultExpanded={false}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           isUsingSampleData={isUsingSampleData}
@@ -426,7 +456,7 @@ export const UnifiedDailyChecklist = () => {
             totalCount={getCategoryStats(categories.other).total}
             totalMinutes={getCategoryStats(categories.other).minutes}
             color="blue"
-            defaultExpanded={getCategoryStats(categories.other).completed < getCategoryStats(categories.other).total}
+            defaultExpanded={false}
             onToggle={handleToggle}
             getItemCompleted={getItemCompleted}
             isUsingSampleData={isUsingSampleData}
