@@ -61,16 +61,22 @@ export const useDailyPlan = () => {
     try {
       const dailyActions: DailyAction[] = [];
 
-      // 1. Get active protocol items (show all, don't filter by time)
-      const activeProtocol = protocols.find(p => p.is_active);
-      console.log('[useDailyPlan] Active protocol:', activeProtocol);
+      // 1. Get active protocol items from ALL active protocols
+      const activeProtocols = protocols.filter(p => p.is_active);
+      console.log('[useDailyPlan] Active protocols:', activeProtocols);
       
-      if (activeProtocol) {
-        const items = await fetchProtocolItems(activeProtocol.id);
-        console.log('[useDailyPlan] Protocol items fetched:', items);
-        console.log('[useDailyPlan] Active items only:', items.filter(item => item.is_active));
+      // Warn if multiple active protocols (data integrity issue)
+      if (activeProtocols.length > 1) {
+        console.warn(`[useDailyPlan] Found ${activeProtocols.length} active protocols! User should only have 1 active protocol.`);
+      }
+      
+      // Fetch and merge items from all active protocols
+      for (const protocol of activeProtocols) {
+        const items = await fetchProtocolItems(protocol.id);
+        console.log(`[useDailyPlan] Protocol ${protocol.id} items fetched:`, items);
         
         const relevantItems = items.filter(item => item.is_active);
+        console.log(`[useDailyPlan] Active items from protocol ${protocol.id}:`, relevantItems);
 
         relevantItems.forEach((item: ProtocolItem) => {
           const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
