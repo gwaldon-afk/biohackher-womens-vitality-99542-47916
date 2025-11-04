@@ -126,7 +126,7 @@ const App = () => (
             <ErrorBoundary>
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/today" element={<ProtectedRoute><MyDailyPlan /></ProtectedRoute>} />
+                <Route path="/today" element={<MyDailyPlan />} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
                 <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
                 <Route path="/auth" element={<Auth />} />
