@@ -6,12 +6,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { Slider } from '@/components/ui/slider';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield, Moon, TrendingUp, Users, Cigarette, Dumbbell, ArrowLeft } from 'lucide-react';
+import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield, Moon, TrendingUp, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import ScienceBackedIcon from '@/components/ScienceBackedIcon';
 
 interface QuestionOption {
   text: string;
@@ -726,32 +724,9 @@ const PILLAR_ICONS = {
 };
 
 interface BaselineData {
-  // Basic metrics
   dateOfBirth: string;
   heightCm: string;
   weightKg: string;
-  // Smoking history
-  smokingStatus: "never" | "current" | "quit_within_1y" | "quit_1_5y" | "quit_over_5y";
-  // Subjective health
-  subjectiveAge: string;
-  socialEngagement: number;
-  // Activity level (NEW - for LIS 2.0)
-  activityLevelCategory: "sedentary" | "lightly_active" | "moderate" | "very_active" | "extremely_active";
-  // Training history
-  trainingExperience: "beginner" | "intermediate" | "advanced";
-  exerciseFrequency: number;
-  compoundLifts: {
-    squat: boolean;
-    deadlift: boolean;
-    bench_press: boolean;
-    overhead_press: boolean;
-  };
-  previousInjuries: string;
-  // Nutrition
-  proteinPerMeal: number;
-  currentSupplements: string[];
-  knownDeficiencies: string[];
-  allergies: string[];
 }
 
 export default function GuestLISAssessment() {
@@ -759,29 +734,11 @@ export default function GuestLISAssessment() {
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user } = useAuth();
-  const [baselineStep, setBaselineStep] = useState(1);
   const [showBaseline, setShowBaseline] = useState(true);
   const [baselineData, setBaselineData] = useState<BaselineData>({
     dateOfBirth: '',
     heightCm: '',
-    weightKg: '',
-    smokingStatus: 'never',
-    subjectiveAge: '',
-    socialEngagement: 3,
-    activityLevelCategory: 'moderate',
-    trainingExperience: 'beginner',
-    exerciseFrequency: 0,
-    compoundLifts: {
-      squat: false,
-      deadlift: false,
-      bench_press: false,
-      overhead_press: false
-    },
-    previousInjuries: '',
-    proteinPerMeal: 0,
-    currentSupplements: [],
-    knownDeficiencies: [],
-    allergies: []
+    weightKg: ''
   });
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
@@ -808,56 +765,27 @@ export default function GuestLISAssessment() {
   };
 
   const handleBaselineSubmit = () => {
-    // Step 1: Basic metrics
-    if (baselineStep === 1) {
-      if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
-        toast.error('Please fill in all required fields');
-        return;
-      }
-
-      const age = calculateAgeFromDOB(baselineData.dateOfBirth);
-      if (age < 18 || age > 120) {
-        toast.error('Please enter a valid date of birth (age 18-120 years)');
-        return;
-      }
-
-      if (parseFloat(baselineData.heightCm) < 100 || parseFloat(baselineData.heightCm) > 250) {
-        toast.error('Please enter a valid height (100-250 cm)');
-        return;
-      }
-
-      if (parseFloat(baselineData.weightKg) < 30 || parseFloat(baselineData.weightKg) > 300) {
-        toast.error('Please enter a valid weight (30-300 kg)');
-        return;
-      }
-
-      setBaselineStep(2);
+    if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
+      toast.error('Please fill in all baseline information');
       return;
     }
 
-    // Step 2: Health history (smoking, subjective age, social)
-    if (baselineStep === 2) {
-      if (!baselineData.subjectiveAge) {
-        toast.error('Please enter how old you feel');
-        return;
-      }
-      setBaselineStep(3);
+    const age = calculateAgeFromDOB(baselineData.dateOfBirth);
+    if (age < 18 || age > 120) {
+      toast.error('Please enter a valid date of birth (age 18-120 years)');
       return;
     }
 
-    // Step 3: Activity level (NEW - feeds into LIS scoring)
-    if (baselineStep === 3) {
-      setBaselineStep(4);
+    if (parseFloat(baselineData.heightCm) < 100 || parseFloat(baselineData.heightCm) > 250) {
+      toast.error('Please enter a valid height (100-250 cm)');
       return;
     }
 
-    // Step 4: Training experience
-    if (baselineStep === 4) {
-      setBaselineStep(5);
+    if (parseFloat(baselineData.weightKg) < 30 || parseFloat(baselineData.weightKg) > 300) {
+      toast.error('Please enter a valid weight (30-300 kg)');
       return;
     }
 
-    // Step 5: Nutrition - proceed to main assessment
     setShowBaseline(false);
   };
 
@@ -887,20 +815,8 @@ export default function GuestLISAssessment() {
   };
 
   const handleBack = () => {
-    if (showBaseline) {
-      if (baselineStep > 1) {
-        setBaselineStep(baselineStep - 1);
-      } else {
-        if (window.history.length > 1) {
-          navigate(-1);
-        } else {
-          navigate('/');
-        }
-      }
-    } else {
-      if (currentQuestion > 0) {
-        setCurrentQuestion(currentQuestion - 1);
-      }
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
     }
   };
 
@@ -1012,10 +928,9 @@ export default function GuestLISAssessment() {
 
       // Handle authenticated users differently
       if (user) {
-        // 1. Create/update health profile with ALL baseline data
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
-        const subjectiveAgeDelta = parseInt(baselineData.subjectiveAge) - age;
 
+        // 1. Create/update health profile
         const { error: profileError } = await supabase
           .from('user_health_profile')
           .upsert({
@@ -1024,20 +939,6 @@ export default function GuestLISAssessment() {
             height_cm: parseFloat(baselineData.heightCm),
             weight_kg: parseFloat(baselineData.weightKg),
             current_bmi: calculateBMI(),
-            smoking_cessation_category: baselineData.smokingStatus,
-            is_current_smoker: baselineData.smokingStatus === 'current',
-            is_former_smoker: baselineData.smokingStatus !== 'never' && baselineData.smokingStatus !== 'current',
-            initial_subjective_age_delta: subjectiveAgeDelta,
-            social_engagement_baseline: baselineData.socialEngagement,
-            activity_level_category: baselineData.activityLevelCategory,
-            training_experience: baselineData.trainingExperience,
-            exercise_routine_frequency: baselineData.exerciseFrequency,
-            compound_lift_experience: baselineData.compoundLifts,
-            previous_injuries: baselineData.previousInjuries,
-            protein_per_meal: baselineData.proteinPerMeal,
-            current_supplements: baselineData.currentSupplements,
-            known_deficiencies: baselineData.knownDeficiencies,
-            allergies_sensitivities: baselineData.allergies,
           }, {
             onConflict: 'user_id'
           });
@@ -1157,375 +1058,6 @@ export default function GuestLISAssessment() {
   const selectedAnswer = question ? answers[question.question_id] : undefined;
   const bmi = calculateBMI();
 
-  // Render functions for baseline steps
-  const renderBaselineStep1 = () => (
-    <>
-      {/* Date of Birth */}
-      <div className="space-y-2">
-        <Label htmlFor="dob" className="text-base font-medium flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-primary" />
-          Date of Birth
-        </Label>
-        <Input
-          id="dob"
-          type="date"
-          value={baselineData.dateOfBirth}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-          max={new Date().toISOString().split('T')[0]}
-          className="h-12 text-base"
-        />
-        {baselineData.dateOfBirth && (
-          <p className="text-sm text-muted-foreground">
-            Age: {calculateAgeFromDOB(baselineData.dateOfBirth)} years
-          </p>
-        )}
-      </div>
-
-      {/* Height */}
-      <div className="space-y-2">
-        <Label htmlFor="height" className="text-base font-medium flex items-center gap-2">
-          <Ruler className="w-4 h-4 text-primary" />
-          Height (cm)
-        </Label>
-        <Input
-          id="height"
-          type="number"
-          placeholder="e.g., 165"
-          value={baselineData.heightCm}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
-          min="100"
-          max="250"
-          className="h-12 text-base"
-        />
-        {baselineData.heightCm && parseFloat(baselineData.heightCm) > 0 && (
-          <p className="text-sm text-muted-foreground">
-            About {Math.floor(parseFloat(baselineData.heightCm) / 30.48 / 12)}'{Math.round((parseFloat(baselineData.heightCm) / 30.48) % 12)}" in feet
-          </p>
-        )}
-      </div>
-
-      {/* Weight */}
-      <div className="space-y-2">
-        <Label htmlFor="weight" className="text-base font-medium flex items-center gap-2">
-          <Scale className="w-4 h-4 text-primary" />
-          Weight (kg)
-        </Label>
-        <Input
-          id="weight"
-          type="number"
-          placeholder="e.g., 65"
-          value={baselineData.weightKg}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
-          min="30"
-          max="300"
-          step="0.1"
-          className="h-12 text-base"
-        />
-        {baselineData.weightKg && parseFloat(baselineData.weightKg) > 0 && (
-          <p className="text-sm text-muted-foreground">
-            About {Math.round(parseFloat(baselineData.weightKg) * 2.20462)} lbs
-          </p>
-        )}
-      </div>
-
-      {/* BMI Display */}
-      {bmi > 0 && (
-        <div className="p-5 bg-primary/5 rounded-lg border border-primary/10">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
-              <p className="text-4xl font-bold text-primary">{bmi}</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
-              </p>
-            </div>
-            <Activity className="w-12 h-12 text-primary/20" />
-          </div>
-        </div>
-      )}
-    </>
-  );
-
-  const renderBaselineStep2 = () => (
-    <>
-      {/* Smoking Status */}
-      <div className="space-y-2">
-        <Label htmlFor="smokingStatus" className="text-base font-medium flex items-center gap-2">
-          <Cigarette className="w-4 h-4 text-primary" />
-          Current Smoking Status
-        </Label>
-        <RadioGroup
-          value={baselineData.smokingStatus}
-          onValueChange={(value) => setBaselineData(prev => ({ ...prev, smokingStatus: value as BaselineData['smokingStatus'] }))}
-          className="space-y-3"
-        >
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="never" id="smoke-never" />
-            <Label htmlFor="smoke-never" className="cursor-pointer">Never Smoked</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="current" id="smoke-current" />
-            <Label htmlFor="smoke-current" className="cursor-pointer">Current Smoker</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="quit_within_1y" id="smoke-quit1" />
-            <Label htmlFor="smoke-quit1" className="cursor-pointer">Quit less than 1 year ago</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="quit_1_5y" id="smoke-quit2" />
-            <Label htmlFor="smoke-quit2" className="cursor-pointer">Quit 1-5 years ago</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="quit_over_5y" id="smoke-quit3" />
-            <Label htmlFor="smoke-quit3" className="cursor-pointer">Quit 5+ years ago</Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      {/* Subjective Age */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="subjectiveAge" className="text-base font-medium flex items-center gap-2">
-          <User className="w-4 h-4 text-primary" />
-          How old do you feel (subjective age)?
-        </Label>
-        <Input
-          id="subjectiveAge"
-          type="number"
-          placeholder="e.g., 30"
-          value={baselineData.subjectiveAge}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, subjectiveAge: e.target.value }))}
-          min="10"
-          max="120"
-          className="h-12 text-base"
-        />
-      </div>
-
-      {/* Social Engagement */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="socialEngagement" className="text-base font-medium flex items-center gap-2">
-          <Users className="w-4 h-4 text-primary" />
-          How socially engaged do you feel? (1 = isolated, 5 = very connected)
-        </Label>
-        <Slider
-          id="socialEngagement"
-          value={[baselineData.socialEngagement]}
-          onValueChange={(value) => setBaselineData(prev => ({ ...prev, socialEngagement: value[0] }))}
-          min={1}
-          max={5}
-          step={1}
-          className="w-full"
-        />
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>1 - Isolated</span>
-          <span className="font-medium">Current: {baselineData.socialEngagement}</span>
-          <span>5 - Very Connected</span>
-        </div>
-      </div>
-    </>
-  );
-
-  const renderBaselineStep3 = () => (
-    <>
-      {/* Activity Level Category */}
-      <div className="space-y-2">
-        <Label htmlFor="activityLevelCategory" className="text-base font-medium flex items-center gap-2">
-          <Activity className="w-4 h-4 text-primary" />
-          What best describes your typical activity level?
-        </Label>
-        <RadioGroup
-          value={baselineData.activityLevelCategory}
-          onValueChange={(value) => setBaselineData(prev => ({ ...prev, activityLevelCategory: value as BaselineData['activityLevelCategory'] }))}
-          className="space-y-3"
-        >
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="sedentary" id="activity-sedentary" />
-            <Label htmlFor="activity-sedentary" className="cursor-pointer">Sedentary (little or no exercise)</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="lightly_active" id="activity-lightly" />
-            <Label htmlFor="activity-lightly" className="cursor-pointer">Lightly Active (light exercise 1-3 days/week)</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="moderate" id="activity-moderate" />
-            <Label htmlFor="activity-moderate" className="cursor-pointer">Moderate (moderate exercise 3-5 days/week)</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="very_active" id="activity-very" />
-            <Label htmlFor="activity-very" className="cursor-pointer">Very Active (hard exercise 6-7 days/week)</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="extremely_active" id="activity-extreme" />
-            <Label htmlFor="activity-extreme" className="cursor-pointer">Extremely Active (very hard exercise & physical job)</Label>
-          </div>
-        </RadioGroup>
-      </div>
-    </>
-  );
-
-  const renderBaselineStep4 = () => (
-    <>
-      {/* Training Experience */}
-      <div className="space-y-2">
-        <Label htmlFor="trainingExperience" className="text-base font-medium flex items-center gap-2">
-          <Dumbbell className="w-4 h-4 text-primary" />
-          What is your training experience level?
-        </Label>
-        <RadioGroup
-          value={baselineData.trainingExperience}
-          onValueChange={(value) => setBaselineData(prev => ({ ...prev, trainingExperience: value as BaselineData['trainingExperience'] }))}
-          className="space-y-3"
-        >
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="beginner" id="training-beginner" />
-            <Label htmlFor="training-beginner" className="cursor-pointer">Beginner</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="intermediate" id="training-intermediate" />
-            <Label htmlFor="training-intermediate" className="cursor-pointer">Intermediate</Label>
-          </div>
-          <div className="flex items-center space-x-3">
-            <RadioGroupItem value="advanced" id="training-advanced" />
-            <Label htmlFor="training-advanced" className="cursor-pointer">Advanced</Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      {/* Exercise Frequency */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="exerciseFrequency" className="text-base font-medium flex items-center gap-2">
-          <Activity className="w-4 h-4 text-primary" />
-          How many days per week do you exercise?
-        </Label>
-        <Input
-          id="exerciseFrequency"
-          type="number"
-          placeholder="e.g., 3"
-          value={baselineData.exerciseFrequency}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, exerciseFrequency: parseInt(e.target.value) || 0 }))}
-          min={0}
-          max={7}
-          className="h-12 text-base"
-        />
-      </div>
-
-      {/* Compound Lifts Experience */}
-      <div className="space-y-2 mt-6">
-        <Label className="text-base font-medium flex items-center gap-2">
-          <Dumbbell className="w-4 h-4 text-primary" />
-          Do you have experience with these compound lifts?
-        </Label>
-        <div className="flex flex-col space-y-2">
-          {(['squat', 'deadlift', 'bench_press', 'overhead_press'] as (keyof BaselineData['compoundLifts'])[]).map(lift => (
-            <div key={lift} className="flex items-center space-x-3">
-              <input
-                type="checkbox"
-                id={`lift-${lift}`}
-                checked={baselineData.compoundLifts[lift]}
-                onChange={() => setBaselineData(prev => ({
-                  ...prev,
-                  compoundLifts: {
-                    ...prev.compoundLifts,
-                    [lift]: !prev.compoundLifts[lift]
-                  }
-                }))}
-                className="cursor-pointer"
-              />
-              <label htmlFor={`lift-${lift}`} className="cursor-pointer capitalize">
-                {lift.replace('_', ' ')}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Previous Injuries */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="previousInjuries" className="text-base font-medium flex items-center gap-2">
-          <Shield className="w-4 h-4 text-primary" />
-          Any previous injuries or health conditions?
-        </Label>
-        <Input
-          id="previousInjuries"
-          type="text"
-          placeholder="Describe if any"
-          value={baselineData.previousInjuries}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, previousInjuries: e.target.value }))}
-          className="h-12 text-base"
-        />
-      </div>
-    </>
-  );
-
-  const renderBaselineStep5 = () => (
-    <>
-      {/* Protein Per Meal */}
-      <div className="space-y-2">
-        <Label htmlFor="proteinPerMeal" className="text-base font-medium flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          Average protein intake per meal (grams)
-        </Label>
-        <Input
-          id="proteinPerMeal"
-          type="number"
-          placeholder="e.g., 25"
-          value={baselineData.proteinPerMeal}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, proteinPerMeal: parseInt(e.target.value) || 0 }))}
-          min={0}
-          max={200}
-          className="h-12 text-base"
-        />
-      </div>
-
-      {/* Current Supplements */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="currentSupplements" className="text-base font-medium flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          Current supplements (comma separated)
-        </Label>
-        <Input
-          id="currentSupplements"
-          type="text"
-          placeholder="e.g., Vitamin D, Omega-3"
-          value={baselineData.currentSupplements.join(', ')}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, currentSupplements: e.target.value.split(',').map(s => s.trim()) }))}
-          className="h-12 text-base"
-        />
-      </div>
-
-      {/* Known Deficiencies */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="knownDeficiencies" className="text-base font-medium flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
-          Known nutrient deficiencies (comma separated)
-        </Label>
-        <Input
-          id="knownDeficiencies"
-          type="text"
-          placeholder="e.g., Iron, B12"
-          value={baselineData.knownDeficiencies.join(', ')}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, knownDeficiencies: e.target.value.split(',').map(s => s.trim()) }))}
-          className="h-12 text-base"
-        />
-      </div>
-
-      {/* Allergies */}
-      <div className="space-y-2 mt-6">
-        <Label htmlFor="allergies" className="text-base font-medium flex items-center gap-2">
-          <Shield className="w-4 h-4 text-primary" />
-          Allergies or sensitivities (comma separated)
-        </Label>
-        <Input
-          id="allergies"
-          type="text"
-          placeholder="e.g., Gluten, Dairy"
-          value={baselineData.allergies.join(', ')}
-          onChange={(e) => setBaselineData(prev => ({ ...prev, allergies: e.target.value.split(',').map(s => s.trim()) }))}
-          className="h-12 text-base"
-        />
-      </div>
-    </>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -1568,14 +1100,92 @@ export default function GuestLISAssessment() {
               </div>
 
               <div className="space-y-6 max-w-xl mx-auto">
-                {baselineStep === 1 && renderBaselineStep1()}
-                {baselineStep === 2 && renderBaselineStep2()}
-                {baselineStep === 3 && renderBaselineStep3()}
-                {baselineStep === 4 && renderBaselineStep4()}
-                {baselineStep === 5 && renderBaselineStep5()}
+                {/* Date of Birth */}
+                <div className="space-y-2">
+                  <Label htmlFor="dob" className="text-base font-medium flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-primary" />
+                    Date of Birth
+                  </Label>
+                  <Input
+                    id="dob"
+                    type="date"
+                    value={baselineData.dateOfBirth}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="h-12 text-base"
+                  />
+                  {baselineData.dateOfBirth && (
+                    <p className="text-sm text-muted-foreground">
+                      Age: {calculateAgeFromDOB(baselineData.dateOfBirth)} years
+                    </p>
+                  )}
+                </div>
+
+                {/* Height */}
+                <div className="space-y-2">
+                  <Label htmlFor="height" className="text-base font-medium flex items-center gap-2">
+                    <Ruler className="w-4 h-4 text-primary" />
+                    Height (cm)
+                  </Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    placeholder="e.g., 165"
+                    value={baselineData.heightCm}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
+                    min="100"
+                    max="250"
+                    className="h-12 text-base"
+                  />
+                  {baselineData.heightCm && parseFloat(baselineData.heightCm) > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      About {Math.floor(parseFloat(baselineData.heightCm) / 30.48 / 12)}'{Math.round((parseFloat(baselineData.heightCm) / 30.48) % 12)}" in feet
+                    </p>
+                  )}
+                </div>
+
+                {/* Weight */}
+                <div className="space-y-2">
+                  <Label htmlFor="weight" className="text-base font-medium flex items-center gap-2">
+                    <Scale className="w-4 h-4 text-primary" />
+                    Weight (kg)
+                  </Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    placeholder="e.g., 65"
+                    value={baselineData.weightKg}
+                    onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
+                    min="30"
+                    max="300"
+                    step="0.1"
+                    className="h-12 text-base"
+                  />
+                  {baselineData.weightKg && parseFloat(baselineData.weightKg) > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      About {Math.round(parseFloat(baselineData.weightKg) * 2.20462)} lbs
+                    </p>
+                  )}
+                </div>
+
+                {/* BMI Display */}
+                {bmi > 0 && (
+                  <div className="p-5 bg-primary/5 rounded-lg border border-primary/10">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
+                        <p className="text-4xl font-bold text-primary">{bmi}</p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
+                        </p>
+                      </div>
+                      <Activity className="w-12 h-12 text-primary/20" />
+                    </div>
+                  </div>
+                )}
 
                 {/* Privacy Notice */}
-                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg border mt-8">
+                <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg border">
                   <Shield className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium mb-1">Your data is private and secure</p>
@@ -1603,66 +1213,36 @@ export default function GuestLISAssessment() {
               </div>
             </div>
 
-            {question?.type === 'slider' ? (
-              <div className="space-y-6">
-                <Slider
-                  value={[selectedAnswer ? selectedAnswer.score_value : 0]}
-                  min={0}
-                  max={100}
-                  step={1}
-                  onValueChange={(value) => {
-                    const option = question.options.reduce<QuestionOption | null>((prev, curr) => {
-                      // Find closest option by score_value
-                      if (Math.abs(curr.score_value - value[0]) < Math.abs((prev?.score_value ?? 0) - value[0])) {
-                        return curr;
-                      }
-                      return prev;
-                    }, null);
-                    if (option) handleAnswerSelect(option);
-                  }}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  {question.options.map((opt, idx) => (
-                    <div key={idx} className="flex flex-col items-center w-1/4">
-                      <span className="text-xl">{opt.emoji}</span>
-                      <span className="text-center">{opt.text.split('. ')[0]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <RadioGroup
-                key={question?.question_id || currentQuestion}
-                value={selectedAnswer?.text || ''}
-                onValueChange={(value) => {
-                  const option = question?.options.find(opt => opt.text === value);
-                  if (option) handleAnswerSelect(option);
-                }}
-                className="space-y-3"
-              >
-                {question?.options.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                      selectedAnswer?.text === option.text
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border'
-                    }`}
-                    onClick={() => handleAnswerSelect(option)}
+            <RadioGroup
+              key={question?.question_id || currentQuestion}
+              value={selectedAnswer?.text || ''}
+              onValueChange={(value) => {
+                const option = question?.options.find(opt => opt.text === value);
+                if (option) handleAnswerSelect(option);
+              }}
+              className="space-y-3"
+            >
+              {question?.options.map((option, index) => (
+                <div
+                  key={index}
+                  className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
+                    selectedAnswer?.text === option.text
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border'
+                  }`}
+                  onClick={() => handleAnswerSelect(option)}
+                >
+                  <RadioGroupItem value={option.text} id={`option-${index}`} />
+                  <Label
+                    htmlFor={`option-${index}`}
+                    className="flex-1 cursor-pointer leading-relaxed"
                   >
-                    <RadioGroupItem value={option.text} id={`option-${index}`} />
-                    <Label
-                      htmlFor={`option-${index}`}
-                      className="flex-1 cursor-pointer leading-relaxed"
-                    >
-                      {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
-                      {option.text}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            )}
+                    {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
+                    {option.text}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
           </Card>
         )}
 
@@ -1672,16 +1252,23 @@ export default function GuestLISAssessment() {
             <>
               <Button
                 variant="outline"
-                onClick={handleBack}
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate('/');
+                  }
+                }}
               >
-                {baselineStep === 1 ? 'Cancel' : <><ArrowLeft className="w-4 h-4 mr-2" /> Back</>}
+                Cancel
               </Button>
               <Button
                 onClick={handleBaselineSubmit}
+                disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg}
                 size="lg"
                 className="min-w-48"
               >
-                {baselineStep === 5 ? 'Start Assessment' : 'Continue'}
+                Start Assessment
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </>

@@ -3487,7 +3487,6 @@ export type Database = {
       }
       user_health_profile: {
         Row: {
-          activity_level_category: string | null
           allergies_sensitivities: Json | null
           body_comp_score: number | null
           chronic_fatigue_risk: boolean | null
@@ -3500,7 +3499,6 @@ export type Database = {
           energy_assessment_date: string | null
           exercise_preferences: Json | null
           exercise_routine_frequency: number | null
-          fitness_goal: string | null
           height_cm: number | null
           id: string
           initial_subjective_age_delta: number | null
@@ -3520,7 +3518,6 @@ export type Database = {
           weight_kg: number | null
         }
         Insert: {
-          activity_level_category?: string | null
           allergies_sensitivities?: Json | null
           body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
@@ -3533,7 +3530,6 @@ export type Database = {
           energy_assessment_date?: string | null
           exercise_preferences?: Json | null
           exercise_routine_frequency?: number | null
-          fitness_goal?: string | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
@@ -3553,7 +3549,6 @@ export type Database = {
           weight_kg?: number | null
         }
         Update: {
-          activity_level_category?: string | null
           allergies_sensitivities?: Json | null
           body_comp_score?: number | null
           chronic_fatigue_risk?: boolean | null
@@ -3566,7 +3561,6 @@ export type Database = {
           energy_assessment_date?: string | null
           exercise_preferences?: Json | null
           exercise_routine_frequency?: number | null
-          fitness_goal?: string | null
           height_cm?: number | null
           id?: string
           initial_subjective_age_delta?: number | null
