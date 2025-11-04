@@ -75,6 +75,26 @@ const GoalSetupChat = () => {
           pillar_category,
           status: 'active' as const,
           progress: 0,
+          healthspan_target: {
+            metric: goal,
+            target_value: 'Improvement',
+            timeframe_days: 90,
+            reasoning: 'User-selected goal'
+          },
+          aging_blueprint: {
+            interventions: []
+          },
+          barriers_plan: {
+            common_barriers: [],
+            solutions: [],
+            support_needed: ''
+          },
+          longevity_metrics: {
+            target_biological_age_reduction: 0,
+            tracking_frequency: 'weekly',
+            primary_metrics: [goal]
+          },
+          check_in_frequency: 'weekly',
         };
       });
 

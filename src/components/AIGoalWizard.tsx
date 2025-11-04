@@ -159,6 +159,11 @@ export default function AIGoalWizard() {
         interventions: aiSuggestion.interventions,
       },
       barriers_plan: aiSuggestion.barriers_plan,
+      longevity_metrics: {
+        target_biological_age_reduction: aiSuggestion.biological_age_impact_predicted || 0,
+        tracking_frequency: aiSuggestion.check_in_frequency,
+        primary_metrics: aiSuggestion.interventions?.slice(0, 3).map((i: any) => i.name) || [],
+      },
       check_in_frequency: aiSuggestion.check_in_frequency,
       ai_optimization_plan: aiSuggestion.ai_reasoning,
       biological_age_impact_predicted: aiSuggestion.biological_age_impact_predicted,
