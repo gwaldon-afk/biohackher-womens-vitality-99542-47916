@@ -17,7 +17,7 @@ interface LISRadarChartProps {
   size?: number;
 }
 
-export const LISRadarChart = ({ pillarScores, compositeScore, size = 475 }: LISRadarChartProps) => {
+export const LISRadarChart = ({ pillarScores, compositeScore, size = 550 }: LISRadarChartProps) => {
   // Transform pillar scores for Recharts
   const chartData = [
     {
@@ -74,7 +74,7 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 475 }: LISR
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 mx-auto" style={{ width: size }}>
+    <div className="flex flex-col items-center gap-2 mx-auto" style={{ width: size }}>
       {/* Radar Chart */}
       <div className="relative" style={{ width: size, height: size }}>
         <motion.div
