@@ -255,15 +255,15 @@ const LISResults = () => {
       <Navigation />
       <div className="container max-w-4xl mx-auto py-8 px-4">
       <Card className="mb-4">
-        <CardHeader className="text-center pb-2">
-          <CardTitle className="text-2xl mb-2">Your Longevity Impact Score</CardTitle>
+        <CardHeader className="text-center pb-3">
+          <CardTitle className="text-2xl mb-1">Your Longevity Impact Score</CardTitle>
           <CardDescription className="text-sm">
             A comprehensive view of your healthspan across 6 key pillars
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-2">
+        <CardContent className="pt-0 pb-4">
           {/* Radar Chart Visualization */}
-          <div className="flex justify-center">
+          <div className="flex justify-center -mt-2">
             <LISRadarChart 
               pillarScores={pillarScores}
               compositeScore={displayScore}
