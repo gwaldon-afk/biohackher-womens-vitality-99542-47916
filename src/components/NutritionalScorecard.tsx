@@ -18,9 +18,9 @@ const getHydrationEmoji = (value: number) => {
 };
 
 const getHydrationLabel = (value: number) => {
-  if (value === 1) return "Needs more water";
-  if (value === 3) return "Good hydration";
-  return "Excellent!";
+  if (value === 1) return "<4 cups (1L)";
+  if (value === 3) return "6-8 cups (1.5-2L)";
+  return "10+ cups (2.5L+)";
 };
 
 const getVegetablesEmoji = (value: number) => {
@@ -30,9 +30,9 @@ const getVegetablesEmoji = (value: number) => {
 };
 
 const getVegetablesLabel = (value: number) => {
-  if (value === 1) return "Add more veggies";
-  if (value === 3) return "Good variety";
-  return "Amazing variety!";
+  if (value === 1) return "1-2 servings";
+  if (value === 3) return "3-5 servings";
+  return "6+ servings";
 };
 
 const getProteinEmoji = (value: number) => {
@@ -42,13 +42,13 @@ const getProteinEmoji = (value: number) => {
 };
 
 const getProteinLabel = (value: number) => {
-  if (value === 1) return "Below goal";
-  if (value === 3) return "Met goal";
-  return "Exceeded goal!";
+  if (value === 1) return "<80g per day";
+  if (value === 3) return "100-140g per day";
+  return "150g+ per day";
 };
 
 const getFatsEmoji = (value: number) => value === 5 ? "✅" : "❌";
-const getFatsLabel = (value: number) => value === 5 ? "Great choice!" : "Consider adding";
+const getFatsLabel = (value: number) => value === 5 ? "Yes (fish, nuts, seeds)" : "No omega-3s today";
 
 const getSugarEmoji = (value: number) => {
   if (value === 0) return "🌟";
@@ -57,9 +57,9 @@ const getSugarEmoji = (value: number) => {
 };
 
 const getSugarLabel = (value: number) => {
-  if (value === 0) return "Perfect!";
-  if (value === -2.5) return "Some treats";
-  return "Cheat day";
+  if (value === 0) return "No processed foods";
+  if (value === -2.5) return "1-2 treats/snacks";
+  return "3+ treats or processed meals";
 };
 
 const getAlcoholEmoji = (value: number) => {
@@ -69,13 +69,13 @@ const getAlcoholEmoji = (value: number) => {
 };
 
 const getAlcoholLabel = (value: number) => {
-  if (value === 0) return "Alcohol-free";
-  if (value === -2.5) return "One drink";
-  return "Multiple drinks";
+  if (value === 0) return "0 drinks";
+  if (value === -2.5) return "1 standard drink";
+  return "2+ drinks";
 };
 
 const getDairyEmoji = (value: number) => value === 0 ? "🌟" : "🥛";
-const getDairyLabel = (value: number) => value === 0 ? "Avoided triggers" : "Consumed dairy/gluten";
+const getDairyLabel = (value: number) => value === 0 ? "None consumed" : "Dairy or gluten consumed";
 
 interface NutritionalData {
   hydration: number;
@@ -184,6 +184,20 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
               <h3 className="font-semibold text-green-700">Build Your Score</h3>
             </div>
 
+            {/* Reference Guide */}
+            <Collapsible>
+              <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                <HelpCircle className="h-4 w-4" />
+                What counts as a serving?
+              </CollapsibleTrigger>
+              <CollapsibleContent className="text-xs space-y-2 mt-3 p-4 bg-muted/50 rounded-lg">
+                <p><strong>Vegetables:</strong> 1 serving = 1 cup raw leafy greens or ½ cup cooked</p>
+                <p><strong>Protein:</strong> 20-30g protein = 3-4oz meat/fish, 1 cup Greek yogurt, 4 eggs</p>
+                <p><strong>Omega-3 Fats:</strong> Salmon, sardines, walnuts, chia/flax seeds, quality fish oil</p>
+                <p><strong>Processed/Sugar:</strong> Packaged snacks, candy, soda, refined carbs, fast food</p>
+              </CollapsibleContent>
+            </Collapsible>
+
             {/* Hydration Slider */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -212,7 +226,12 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={2}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>&lt;4 cups</span>
+                <span>6-8 cups</span>
+                <span>10+ cups</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getHydrationLabel(nutritionalData.hydration)}
               </p>
             </div>
@@ -245,7 +264,12 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={2}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>1-2 servings</span>
+                <span>3-5 servings</span>
+                <span>6+ servings</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getVegetablesLabel(nutritionalData.vegetables)}
               </p>
             </div>
@@ -278,7 +302,12 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={2}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>&lt;80g</span>
+                <span>100-140g</span>
+                <span>150g+</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getProteinLabel(nutritionalData.protein)}
               </p>
             </div>
@@ -311,7 +340,11 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={5}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>No</span>
+                <span>Yes</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getFatsLabel(nutritionalData.fatsOmegas)}
               </p>
             </div>
@@ -354,7 +387,12 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={2.5}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>3+ treats</span>
+                <span>1-2 treats</span>
+                <span>None</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getSugarLabel(nutritionalData.sugarProcessed)}
               </p>
             </div>
@@ -387,7 +425,12 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                 step={2.5}
                 className="cursor-pointer"
               />
-              <p className="text-xs text-muted-foreground text-center">
+              <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                <span>2+ drinks</span>
+                <span>1 drink</span>
+                <span>0 drinks</span>
+              </div>
+              <p className="text-xs text-muted-foreground text-center font-medium">
                 {getAlcoholLabel(nutritionalData.alcohol)}
               </p>
             </div>
@@ -421,7 +464,11 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
                   step={3}
                   className="cursor-pointer"
                 />
-                <p className="text-xs text-muted-foreground text-center">
+                <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+                  <span>Consumed</span>
+                  <span>None</span>
+                </div>
+                <p className="text-xs text-muted-foreground text-center font-medium">
                   {getDairyLabel(nutritionalData.dairyGluten || 0)}
                 </p>
               </div>
