@@ -649,16 +649,16 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         ai_analysis: "High Penalty Trigger. Residual risk is still significant. Triggers a -5% penalty reflecting high cardiovascular sensitivity during the first year of cessation."
       },
       {
-        text: "C. Former Smoker (Quit 1-5 years ago)",
+        text: "C. Former Smoker (quit over 1 year ago)",
         emoji: "✅",
         score_value: 95,
         ai_analysis: "Minimal Penalty. Risk significantly reduced after 1 year of cessation. 2% penalty reflects minor residual cardiovascular impact."
       },
       {
-        text: "D. Former Smoker (Quit 5+ years ago) or Never Smoked",
+        text: "D. Never smoked",
         emoji: "🌟",
         score_value: 100,
-        ai_analysis: "Zero Penalty. After 5 years of cessation, cardiovascular risk profile approaches that of never-smokers."
+        ai_analysis: "Zero Penalty. Never smoking provides optimal protection against tobacco-related health risks."
       }
     ]
   }
