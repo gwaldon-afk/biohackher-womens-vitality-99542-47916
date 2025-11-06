@@ -17,7 +17,7 @@ interface LISRadarChartProps {
   size?: number;
 }
 
-export const LISRadarChart = ({ pillarScores, compositeScore, size = 620 }: LISRadarChartProps) => {
+export const LISRadarChart = ({ pillarScores, compositeScore, size = 680 }: LISRadarChartProps) => {
   // Transform pillar scores for Recharts
   const chartData = [
     {
@@ -145,15 +145,15 @@ export const LISRadarChart = ({ pillarScores, compositeScore, size = 620 }: LISR
 
       {/* Score card below chart */}
       <motion.div
-        className="flex flex-col items-center -mt-4"
+        className="flex flex-col items-center -mt-8"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <div className="bg-card rounded-lg px-6 py-3 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
+        <div className="bg-card rounded-lg px-5 py-2 border-2 shadow-lg" style={{ borderColor: getScoreColor(compositeScore) }}>
           <div className="text-xs text-muted-foreground mb-1 text-center font-medium">Longevity Impact Score</div>
           <div
-            className="text-4xl font-bold text-center leading-none"
+            className="text-3xl font-bold text-center leading-none"
             style={{ color: getScoreColor(compositeScore) }}
           >
             {Math.round(compositeScore)}
