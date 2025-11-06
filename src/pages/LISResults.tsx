@@ -327,10 +327,9 @@ const LISResults = () => {
               
               {/* 5 Year Projection */}
               <div className="p-5 bg-background rounded-lg border-2">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold text-base">In 5 Years</span>
-                  <span className="text-sm text-muted-foreground">
-                    You'll be {chronologicalAge + 5} years old
+                <div className="mb-3">
+                  <span className="font-semibold text-base">
+                    In 5 years you'll be {chronologicalAge + 5} years old
                   </span>
                 </div>
                 
@@ -368,10 +367,9 @@ const LISResults = () => {
 
               {/* 20 Year Projection */}
               <div className="p-5 bg-background rounded-lg border-2 border-primary">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-semibold text-base">In 20 Years</span>
-                  <span className="text-sm text-muted-foreground">
-                    You'll be {chronologicalAge + 20} years old
+                <div className="mb-3">
+                  <span className="font-semibold text-base">
+                    In 20 years you'll be {chronologicalAge + 20} years old
                   </span>
                 </div>
                 
