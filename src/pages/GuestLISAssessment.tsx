@@ -8,7 +8,21 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, ArrowRight, Shield, Moon, TrendingUp, Users } from 'lucide-react';
+import { 
+  Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, 
+  ArrowRight, Shield, Moon, TrendingUp, Users, Home, X, Check 
+} from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 
 interface QuestionOption {
@@ -125,7 +139,7 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
 
-  // ==================== STRESS PILLAR (4 questions) ====================
+  // ==================== STRESS PILLAR (3 questions - Merged Q6+Q7) ====================
   {
     question_id: "Q4_SubjectiveCalmness",
     pillar: "stress",
@@ -191,71 +205,39 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
   {
-    question_id: "Q6_StressManagement",
+    question_id: "Q6_StressResilience",
     pillar: "stress",
     type: "slider",
-    text: "How effectively do you manage and recover from daily stressors?",
+    text: "How effectively do you manage stress and bounce back from challenges?",
     options: [
       {
-        text: "A. Poorly (Stress accumulates, little recovery)",
+        text: "A. Poorly (Stress accumulates, slow recovery, often overwhelmed)",
         emoji: "😣",
         score_value: 0,
-        ai_analysis: "Critical. Inability to manage stress leads to chronic activation and accelerated aging."
+        ai_analysis: "Critical. Inability to manage stress and low resilience leads to chronic activation and accelerated aging."
       },
       {
-        text: "B. Somewhat (I struggle but eventually cope)",
+        text: "B. Moderately (Eventually cope but struggle)",
         emoji: "😐",
-        score_value: 40,
-        ai_analysis: "Suboptimal. Delayed recovery from stressors increases allostatic load."
+        score_value: 35,
+        ai_analysis: "Suboptimal. Delayed stress recovery and moderate vulnerability to psychological distress increases allostatic load."
       },
       {
-        text: "C. Well (I have effective coping strategies)",
+        text: "C. Well (Effective coping strategies, resilient)",
         emoji: "😊",
         score_value: 75,
-        ai_analysis: "Protective. Good stress management supports resilience and longevity."
+        ai_analysis: "Protective. Good stress management and resilience supports healthy aging and sustained well-being."
       },
       {
-        text: "D. Excellently (Quick recovery, strong resilience)",
+        text: "D. Excellently (Quick recovery, strong adaptation, proactive outlook)",
         emoji: "💪",
         score_value: 100,
-        ai_analysis: "Optimal. Excellent stress adaptation is a key longevity marker."
-      }
-    ]
-  },
-  {
-    question_id: "Q7_EmotionalResilience",
-    pillar: "stress",
-    type: "slider",
-    text: "Which statement best describes your emotional outlook and resilience when facing unexpected challenges?",
-    options: [
-      {
-        text: "A. I often feel overwhelmed and highly pessimistic about the future.",
-        emoji: "😞",
-        score_value: 0,
-        ai_analysis: "Captures elements of anxiety and fatalism that are statistically significant contributors to mortality risk, requiring the highest penalty."
-      },
-      {
-        text: "B. I sometimes struggle to cope and can become reactive to stress.",
-        emoji: "😐",
-        score_value: 30,
-        ai_analysis: "Suggests moderate vulnerability to psychological distress, requiring focused interventions to build mental fortitude."
-      },
-      {
-        text: "C. I am generally resilient and handle challenges with measured thought.",
-        emoji: "😊",
-        score_value: 70,
-        ai_analysis: "Represents a healthy capacity for psychological self-regulation and coping, supporting sustained well-being."
-      },
-      {
-        text: "D. I am highly resilient and maintain a strong, positive, and proactive outlook.",
-        emoji: "💪",
-        score_value: 100,
-        ai_analysis: "Maximal score. Optimistic outlook is a statistically powerful contributor to a healthy survival profile."
+        ai_analysis: "Optimal. Excellent stress adaptation and highly resilient, proactive outlook is a key longevity marker."
       }
     ]
   },
 
-  // ==================== ACTIVITY PILLAR (3 questions) ====================
+  // ==================== ACTIVITY PILLAR (3 questions - Removed Q22) ====================
   {
     question_id: "Q8_ActivityLevel",
     pillar: "activity",
@@ -483,68 +465,36 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     ]
   },
 
-  // ==================== SOCIAL PILLAR (3 questions) ====================
+  // ==================== SOCIAL PILLAR (2 questions - Merged Q15+Q16) ====================
   {
-    question_id: "Q15_SocialConnection",
+    question_id: "Q15_SocialEngagement",
     pillar: "social",
     type: "slider",
-    text: "How often do you feel strongly connected and supported by your family, friends, or community?",
+    text: "How connected and engaged are you with family, friends, and community?",
     options: [
       {
-        text: "A. Rarely or Never (I often feel isolated)",
+        text: "A. Rarely (Feel isolated, minimal social activity)",
         emoji: "😔",
         score_value: 0,
-        ai_analysis: "Critical Risk. Social isolation is as harmful as smoking 15 cigarettes per day in terms of mortality risk."
+        ai_analysis: "Critical Risk. Social isolation and lack of engagement is as harmful as smoking 15 cigarettes per day, strongly associated with faster cognitive decline and mortality risk."
       },
       {
-        text: "B. Sometimes (I experience periods of loneliness)",
+        text: "B. Occasionally (Some connections but inconsistent)",
         emoji: "🙂",
-        score_value: 30,
-        ai_analysis: "Moderate Risk. Intermittent lack of social support weakens the protective effect that strong social bonds offer against chronic stress."
+        score_value: 35,
+        ai_analysis: "Moderate Risk. Intermittent social support and engagement, insufficient frequency weakens protective effects against chronic stress."
       },
       {
-        text: "C. Generally Supported (Connected most of the time)",
+        text: "C. Regularly (Connected most of the time, weekly activities)",
         emoji: "😊",
-        score_value: 70,
-        ai_analysis: "Protective Threshold. Meets the minimum requirement for utilizing social ties as an effective buffer against life stressors."
+        score_value: 75,
+        ai_analysis: "Protective. Regular social connections and engagement supports cognitive and emotional health, meeting minimum threshold for effective stress buffering."
       },
       {
-        text: "D. Highly Engaged (Feel consistently supported and connected)",
+        text: "D. Highly (Consistently supported, multiple weekly engagements)",
         emoji: "🤗",
         score_value: 100,
-        ai_analysis: "Maximal Protection. This high level of social integration is linked to decelerated biological aging and maximal survival benefit, earning full credit."
-      }
-    ]
-  },
-  {
-    question_id: "Q16_CommunityEngagement",
-    pillar: "social",
-    type: "slider",
-    text: "How often do you participate in meaningful social activities or community engagement?",
-    options: [
-      {
-        text: "A. Rarely (Less than once per month)",
-        emoji: "🏠",
-        score_value: 0,
-        ai_analysis: "Critical. Lack of social engagement associated with faster cognitive decline."
-      },
-      {
-        text: "B. Occasionally (1-2 times per month)",
-        emoji: "👥",
-        score_value: 40,
-        ai_analysis: "Minimal. Insufficient social interaction frequency."
-      },
-      {
-        text: "C. Regularly (Weekly)",
-        emoji: "🎉",
-        score_value: 75,
-        ai_analysis: "Good. Regular social engagement supports cognitive and emotional health."
-      },
-      {
-        text: "D. Frequently (Multiple times per week)",
-        emoji: "🤝",
-        score_value: 100,
-        ai_analysis: "Optimal. High social engagement maximizes cognitive reserve and longevity."
+        ai_analysis: "Optimal. High level of social integration and frequent engagement is linked to decelerated biological aging, maximal cognitive reserve, and survival benefit."
       }
     ]
   },
@@ -711,47 +661,17 @@ const ASSESSMENT_QUESTIONS: Question[] = [
         ai_analysis: "Zero Penalty. After 5 years of cessation, cardiovascular risk profile approaches that of never-smokers."
       }
     ]
-  },
-
-  // ==================== ACTIVITY LEVEL CLASSIFICATION (Activity Pillar) ====================
-  {
-    question_id: "Q22_ActivityLevelClassification",
-    pillar: "activity",
-    type: "slider",
-    text: "Which best describes your overall lifestyle activity level?",
-    options: [
-      {
-        text: "A. Sedentary (Mostly sitting, minimal physical activity)",
-        emoji: "🪑",
-        score_value: 0,
-        ai_analysis: "Critical Risk. Sedentary lifestyle classification indicates minimal overall energy expenditure, significantly increasing mortality risk."
-      },
-      {
-        text: "B. Lightly Active (Light exercise 1-3 days/week)",
-        emoji: "🚶",
-        score_value: 30,
-        ai_analysis: "Suboptimal. Light activity provides some benefit but remains below optimal thresholds for longevity."
-      },
-      {
-        text: "C. Moderately Active (Moderate exercise 3-5 days/week)",
-        emoji: "🏃",
-        score_value: 60,
-        ai_analysis: "Good. Moderate activity level supports metabolic health and longevity."
-      },
-      {
-        text: "D. Very Active (Hard exercise 6-7 days/week)",
-        emoji: "💪",
-        score_value: 85,
-        ai_analysis: "Excellent. Very active lifestyle associated with strong longevity markers."
-      },
-      {
-        text: "E. Extremely Active (Professional athlete or very intense daily training)",
-        emoji: "🏋️",
-        score_value: 100,
-        ai_analysis: "Elite. Extremely active lifestyle maximizes metabolic health and longevity potential."
-      }
-    ]
   }
+];
+
+// Pillar groups for new UI
+const PILLAR_GROUPS = [
+  { name: 'Sleep', icon: Moon, color: '#6366f1', pillar: 'sleep' },
+  { name: 'Stress', icon: Heart, color: '#ef4444', pillar: 'stress' },
+  { name: 'Activity', icon: Activity, color: '#f97316', pillar: 'activity' },
+  { name: 'Nutrition', icon: TrendingUp, color: '#22c55e', pillar: 'nutrition' },
+  { name: 'Social', icon: Users, color: '#ec4899', pillar: 'social' },
+  { name: 'Cognitive', icon: Brain, color: '#a855f7', pillar: 'cognitive' }
 ];
 
 const PILLAR_ICONS = {
@@ -781,9 +701,35 @@ export default function GuestLISAssessment() {
     heightCm: '',
     weightKg: ''
   });
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentPillar, setCurrentPillar] = useState(0);
+  const [currentPillarQuestion, setCurrentPillarQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
+
+  // Group questions by pillar
+  const questionsByPillar = PILLAR_GROUPS.map(pillarGroup => ({
+    ...pillarGroup,
+    questions: ASSESSMENT_QUESTIONS.filter(q => q.pillar === pillarGroup.pillar)
+  }));
+
+  // Add modifier questions at the end
+  const modifierQuestions = ASSESSMENT_QUESTIONS.filter(q => q.pillar === 'modifier');
+  
+  // Check if we're on modifier questions
+  const isOnModifier = currentPillar >= questionsByPillar.length;
+  const currentPillarInfo = isOnModifier ? null : questionsByPillar[currentPillar];
+  const totalPillars = questionsByPillar.length;
+  
+  // Get current question
+  const getCurrentQuestion = () => {
+    if (isOnModifier) {
+      return modifierQuestions[currentPillarQuestion];
+    }
+    return currentPillarInfo?.questions[currentPillarQuestion];
+  };
+
+  const question = !showBaseline ? getCurrentQuestion() : null;
 
   const calculateBMI = (): number => {
     const height = parseFloat(baselineData.heightCm);
@@ -830,9 +776,15 @@ export default function GuestLISAssessment() {
     setShowBaseline(false);
   };
 
-  const progress = showBaseline ? 0 : ((currentQuestion + 1) / ASSESSMENT_QUESTIONS.length) * 100;
-  const question = !showBaseline ? ASSESSMENT_QUESTIONS[currentQuestion] : null;
-  const PillarIcon = question ? PILLAR_ICONS[question.pillar as keyof typeof PILLAR_ICONS] || Activity : Activity;
+  // Calculate total questions and progress
+  const totalQuestions = ASSESSMENT_QUESTIONS.length;
+  const answeredQuestions = Object.keys(answers).length;
+  const progress = showBaseline ? 0 : (answeredQuestions / totalQuestions) * 100;
+
+  const handleExitToHome = () => {
+    setShowExitDialog(false);
+    navigate('/');
+  };
 
   const handleAnswerSelect = (option: QuestionOption) => {
     if (!question) return;
@@ -848,16 +800,51 @@ export default function GuestLISAssessment() {
       return;
     }
 
-    if (currentQuestion < ASSESSMENT_QUESTIONS.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+    if (isOnModifier) {
+      // On modifier questions
+      if (currentPillarQuestion < modifierQuestions.length - 1) {
+        setCurrentPillarQuestion(currentPillarQuestion + 1);
+      } else {
+        handleSubmit();
+      }
     } else {
-      handleSubmit();
+      // On pillar questions
+      const pillarQuestions = currentPillarInfo?.questions || [];
+      if (currentPillarQuestion < pillarQuestions.length - 1) {
+        // Move to next question in current pillar
+        setCurrentPillarQuestion(currentPillarQuestion + 1);
+      } else {
+        // Move to next pillar
+        if (currentPillar < totalPillars - 1) {
+          setCurrentPillar(currentPillar + 1);
+          setCurrentPillarQuestion(0);
+        } else {
+          // Move to modifier questions
+          setCurrentPillar(totalPillars);
+          setCurrentPillarQuestion(0);
+        }
+      }
     }
   };
 
   const handleBack = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+    if (isOnModifier) {
+      if (currentPillarQuestion > 0) {
+        setCurrentPillarQuestion(currentPillarQuestion - 1);
+      } else {
+        // Go back to last pillar
+        setCurrentPillar(totalPillars - 1);
+        const lastPillarQuestions = questionsByPillar[totalPillars - 1].questions;
+        setCurrentPillarQuestion(lastPillarQuestions.length - 1);
+      }
+    } else {
+      if (currentPillarQuestion > 0) {
+        setCurrentPillarQuestion(currentPillarQuestion - 1);
+      } else if (currentPillar > 0) {
+        setCurrentPillar(currentPillar - 1);
+        const prevPillarQuestions = questionsByPillar[currentPillar - 1].questions;
+        setCurrentPillarQuestion(prevPillarQuestions.length - 1);
+      }
     }
   };
 
@@ -971,18 +958,18 @@ export default function GuestLISAssessment() {
       if (user) {
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
 
-        // Extract activity level from Q22 answer
-        const activityAnswer = answers['Q22_ActivityLevelClassification'];
+        // Determine activity level from answers (Q8 + Q9)
         let activityLevel = 'sedentary';
-        if (activityAnswer) {
-          if (activityAnswer.text.includes('Lightly Active')) {
-            activityLevel = 'lightly_active';
-          } else if (activityAnswer.text.includes('Moderately Active')) {
-            activityLevel = 'moderately_active';
-          } else if (activityAnswer.text.includes('Very Active')) {
+        const activityLevelAnswer = answers['Q8_ActivityLevel'];
+        const intensityAnswer = answers['Q9_ExerciseIntensity'];
+        
+        if (activityLevelAnswer && intensityAnswer) {
+          if (activityLevelAnswer.text.includes('8,000+') && intensityAnswer.score_value >= 85) {
             activityLevel = 'very_active';
-          } else if (activityAnswer.text.includes('Extremely Active')) {
-            activityLevel = 'extremely_active';
+          } else if (activityLevelAnswer.score_value >= 70 || intensityAnswer.score_value >= 60) {
+            activityLevel = 'moderately_active';
+          } else if (activityLevelAnswer.score_value >= 30 || intensityAnswer.score_value >= 30) {
+            activityLevel = 'lightly_active';
           }
         }
 
@@ -1118,25 +1105,105 @@ export default function GuestLISAssessment() {
   const selectedAnswer = question ? answers[question.question_id] : undefined;
   const bmi = calculateBMI();
 
+  const isFirstQuestion = currentPillar === 0 && currentPillarQuestion === 0 && !isOnModifier;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Exit Confirmation Dialog */}
+      <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Exit Assessment?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress will be lost. Are you sure you want to exit?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Continue Assessment</AlertDialogCancel>
+            <AlertDialogAction onClick={handleExitToHome}>Exit to Home</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="container max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            LIS 2.0 Longevity Assessment
-          </h1>
-          <p className="text-muted-foreground">
-            Discover your science-backed Longevity Impact Score
-          </p>
+        {/* Header with Navigation */}
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="gap-2"
+          >
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Home</span>
+          </Button>
+          
+          <div className="text-center flex-1">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              LIS 2.0 Assessment
+            </h1>
+          </div>
+
+          {!showBaseline && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowExitDialog(true)}
+              className="gap-2"
+            >
+              <X className="h-4 w-4" />
+              <span className="hidden sm:inline">Exit</span>
+            </Button>
+          )}
         </div>
 
-        {/* Progress Bar */}
-        {!showBaseline && (
+        <p className="text-center text-muted-foreground mb-8">
+          Discover your science-backed Longevity Impact Score
+        </p>
+
+        {/* Pillar Progress Overview */}
+        {!showBaseline && !isOnModifier && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm text-muted-foreground">
+                {answeredQuestions} of {totalQuestions} questions answered
+              </span>
+              <span className="text-sm font-medium">{Math.round(progress)}%</span>
+            </div>
+            <div className="flex gap-2 mb-4">
+              {questionsByPillar.map((pillarGroup, idx) => (
+                <div
+                  key={idx}
+                  className={`flex-1 h-2 rounded transition-all ${
+                    idx < currentPillar
+                      ? 'bg-green-500'
+                      : idx === currentPillar
+                      ? 'bg-primary'
+                      : 'bg-muted'
+                  }`}
+                  title={pillarGroup.name}
+                />
+              ))}
+            </div>
+            {currentPillar > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {questionsByPillar.slice(0, currentPillar).map((pillar) => (
+                  <Badge key={pillar.name} variant="secondary" className="gap-1">
+                    <Check className="h-3 w-3" />
+                    {pillar.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Modifier Progress */}
+        {!showBaseline && isOnModifier && (
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-muted-foreground">
-                Question {currentQuestion + 1} of {ASSESSMENT_QUESTIONS.length}
+                Final Question - Risk Modifier
               </span>
               <span className="text-sm font-medium">{Math.round(progress)}%</span>
             </div>
@@ -1258,53 +1325,92 @@ export default function GuestLISAssessment() {
             </div>
           </Card>
         ) : (
-          <Card className="p-8 mb-6 border-2">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="p-3 rounded-full bg-primary/10">
-                <PillarIcon className="w-6 h-6 text-primary" />
-              </div>
-              <div className="flex-1">
-                <div className="text-sm font-medium text-primary mb-2">
-                  {question?.pillar === 'modifier' 
-                    ? 'Risk Modifier' 
-                    : `${question?.pillar.charAt(0).toUpperCase() + question?.pillar.slice(1)} Pillar`}
+          <Card className="mb-6 border-2" style={{ borderColor: isOnModifier ? '#a855f7' : currentPillarInfo?.color }}>
+            {/* Pillar Header */}
+            {!isOnModifier && currentPillarInfo && (
+              <div
+                className="p-4 sm:p-6"
+                style={{
+                  background: `linear-gradient(to right, ${currentPillarInfo.color}20, transparent)`,
+                }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <currentPillarInfo.icon className="h-8 w-8" style={{ color: currentPillarInfo.color }} />
+                  <div>
+                    <h2 className="text-2xl font-bold">{currentPillarInfo.name} Pillar</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Question {currentPillarQuestion + 1} of {currentPillarInfo.questions.length}
+                    </p>
+                  </div>
                 </div>
-                <h2 className="text-xl font-semibold leading-relaxed">
-                  {question?.text}
-                </h2>
+                {/* Question dots indicator */}
+                <div className="flex gap-2">
+                  {currentPillarInfo.questions.map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        idx < currentPillarQuestion
+                          ? 'bg-green-500 w-4'
+                          : idx === currentPillarQuestion
+                          ? 'bg-primary w-6'
+                          : 'bg-muted'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            <RadioGroup
-              key={question?.question_id || currentQuestion}
-              value={selectedAnswer?.text || ''}
-              onValueChange={(value) => {
-                const option = question?.options.find(opt => opt.text === value);
-                if (option) handleAnswerSelect(option);
-              }}
-              className="space-y-3"
-            >
-              {question?.options.map((option, index) => (
-                <div
-                  key={index}
-                  className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                    selectedAnswer?.text === option.text
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border'
-                  }`}
-                  onClick={() => handleAnswerSelect(option)}
-                >
-                  <RadioGroupItem value={option.text} id={`option-${index}`} />
-                  <Label
-                    htmlFor={`option-${index}`}
-                    className="flex-1 cursor-pointer leading-relaxed"
-                  >
-                    {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
-                    {option.text}
-                  </Label>
+            {/* Modifier Header */}
+            {isOnModifier && (
+              <div className="p-4 sm:p-6 bg-purple-500/10">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-8 w-8 text-purple-500" />
+                  <div>
+                    <h2 className="text-2xl font-bold">Risk Modifier</h2>
+                    <p className="text-sm text-muted-foreground">Final assessment question</p>
+                  </div>
                 </div>
-              ))}
-            </RadioGroup>
+              </div>
+            )}
+
+            {/* Question Content */}
+            <div className="p-4 sm:p-8">
+              <h3 className="text-lg font-semibold leading-relaxed mb-6">
+                {question?.text}
+              </h3>
+
+              <RadioGroup
+                key={question?.question_id}
+                value={selectedAnswer?.text || ''}
+                onValueChange={(value) => {
+                  const option = question?.options.find(opt => opt.text === value);
+                  if (option) handleAnswerSelect(option);
+                }}
+                className="space-y-3"
+              >
+                {question?.options.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
+                      selectedAnswer?.text === option.text
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border'
+                    }`}
+                    onClick={() => handleAnswerSelect(option)}
+                  >
+                    <RadioGroupItem value={option.text} id={`option-${index}`} />
+                    <Label
+                      htmlFor={`option-${index}`}
+                      className="flex-1 cursor-pointer leading-relaxed"
+                    >
+                      {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
+                      {option.text}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </Card>
         )}
 
@@ -1336,13 +1442,24 @@ export default function GuestLISAssessment() {
             </>
           ) : (
             <>
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={currentQuestion === 0}
-              >
-                Back
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowExitDialog(true)}
+                  className="gap-2"
+                >
+                  <Home className="h-4 w-4" />
+                  Exit
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  disabled={isFirstQuestion}
+                >
+                  Back
+                </Button>
+              </div>
 
               <Button
                 onClick={handleNext}
@@ -1351,8 +1468,13 @@ export default function GuestLISAssessment() {
               >
                 {isSubmitting ? (
                   'Calculating...'
-                ) : currentQuestion === ASSESSMENT_QUESTIONS.length - 1 ? (
+                ) : isOnModifier && currentPillarQuestion === modifierQuestions.length - 1 ? (
                   'Get My Score'
+                ) : !isOnModifier && currentPillarQuestion === (currentPillarInfo?.questions.length || 0) - 1 ? (
+                  <>
+                    Complete {currentPillarInfo?.name}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </>
                 ) : (
                   'Next'
                 )}
@@ -1363,7 +1485,10 @@ export default function GuestLISAssessment() {
 
         {/* Footer Note */}
         <p className="text-center text-sm text-muted-foreground mt-8">
-          This assessment takes approximately 3 minutes to complete
+          {showBaseline 
+            ? 'This assessment takes approximately 2 minutes to complete'
+            : `${totalQuestions - answeredQuestions} questions remaining • ~${Math.ceil((totalQuestions - answeredQuestions) / 10)} min`
+          }
         </p>
       </div>
     </div>
