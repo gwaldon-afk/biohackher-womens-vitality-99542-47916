@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
@@ -702,7 +703,6 @@ export default function GuestLISAssessment() {
     weightKg: ''
   });
   const [currentPillar, setCurrentPillar] = useState(0);
-  const [currentPillarQuestion, setCurrentPillarQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -721,15 +721,20 @@ export default function GuestLISAssessment() {
   const currentPillarInfo = isOnModifier ? null : questionsByPillar[currentPillar];
   const totalPillars = questionsByPillar.length;
   
-  // Get current question
-  const getCurrentQuestion = () => {
+  // Get current questions (all questions for the pillar or modifier questions)
+  const getCurrentQuestions = () => {
     if (isOnModifier) {
-      return modifierQuestions[currentPillarQuestion];
+      return modifierQuestions;
     }
-    return currentPillarInfo?.questions[currentPillarQuestion];
+    return currentPillarInfo?.questions || [];
   };
 
-  const question = !showBaseline ? getCurrentQuestion() : null;
+  const currentQuestions = !showBaseline ? getCurrentQuestions() : [];
+  
+  // Check if all questions in current pillar are answered
+  const areAllPillarQuestionsAnswered = () => {
+    return currentQuestions.every(q => answers[q.question_id]);
+  };
 
   const calculateBMI = (): number => {
     const height = parseFloat(baselineData.heightCm);
@@ -786,65 +791,45 @@ export default function GuestLISAssessment() {
     navigate('/');
   };
 
-  const handleAnswerSelect = (option: QuestionOption) => {
-    if (!question) return;
+  const handleAnswerSelect = (questionId: string, option: QuestionOption) => {
     setAnswers(prev => ({
       ...prev,
-      [question.question_id]: option
+      [questionId]: option
     }));
   };
 
   const handleNext = () => {
-    if (!question || !answers[question.question_id]) {
-      toast.error('Please select an answer to continue');
+    // Check if all questions in current pillar/section are answered
+    if (!areAllPillarQuestionsAnswered()) {
+      toast.error(`Please answer all ${currentQuestions.length} question${currentQuestions.length > 1 ? 's' : ''} to continue`);
       return;
     }
 
     if (isOnModifier) {
-      // On modifier questions
-      if (currentPillarQuestion < modifierQuestions.length - 1) {
-        setCurrentPillarQuestion(currentPillarQuestion + 1);
-      } else {
-        handleSubmit();
-      }
+      // Submit after modifier questions
+      handleSubmit();
     } else {
-      // On pillar questions
-      const pillarQuestions = currentPillarInfo?.questions || [];
-      if (currentPillarQuestion < pillarQuestions.length - 1) {
-        // Move to next question in current pillar
-        setCurrentPillarQuestion(currentPillarQuestion + 1);
+      // Move to next pillar or modifier
+      if (currentPillar < totalPillars - 1) {
+        setCurrentPillar(currentPillar + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        // Move to next pillar
-        if (currentPillar < totalPillars - 1) {
-          setCurrentPillar(currentPillar + 1);
-          setCurrentPillarQuestion(0);
-        } else {
-          // Move to modifier questions
-          setCurrentPillar(totalPillars);
-          setCurrentPillarQuestion(0);
-        }
+        // Move to modifier questions
+        setCurrentPillar(totalPillars);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };
 
   const handleBack = () => {
     if (isOnModifier) {
-      if (currentPillarQuestion > 0) {
-        setCurrentPillarQuestion(currentPillarQuestion - 1);
-      } else {
-        // Go back to last pillar
-        setCurrentPillar(totalPillars - 1);
-        const lastPillarQuestions = questionsByPillar[totalPillars - 1].questions;
-        setCurrentPillarQuestion(lastPillarQuestions.length - 1);
-      }
-    } else {
-      if (currentPillarQuestion > 0) {
-        setCurrentPillarQuestion(currentPillarQuestion - 1);
-      } else if (currentPillar > 0) {
-        setCurrentPillar(currentPillar - 1);
-        const prevPillarQuestions = questionsByPillar[currentPillar - 1].questions;
-        setCurrentPillarQuestion(prevPillarQuestions.length - 1);
-      }
+      // Go back to last pillar
+      setCurrentPillar(totalPillars - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentPillar > 0) {
+      // Go to previous pillar
+      setCurrentPillar(currentPillar - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -1102,10 +1087,8 @@ export default function GuestLISAssessment() {
     }
   };
 
-  const selectedAnswer = question ? answers[question.question_id] : undefined;
   const bmi = calculateBMI();
-
-  const isFirstQuestion = currentPillar === 0 && currentPillarQuestion === 0 && !isOnModifier;
+  const isFirstPillar = currentPillar === 0 && !isOnModifier;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -1329,87 +1312,107 @@ export default function GuestLISAssessment() {
             {/* Pillar Header */}
             {!isOnModifier && currentPillarInfo && (
               <div
-                className="p-4 sm:p-6"
+                className="p-6"
                 style={{
                   background: `linear-gradient(to right, ${currentPillarInfo.color}20, transparent)`,
                 }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <currentPillarInfo.icon className="h-8 w-8" style={{ color: currentPillarInfo.color }} />
-                  <div>
-                    <h2 className="text-2xl font-bold">{currentPillarInfo.name} Pillar</h2>
-                    <p className="text-sm text-muted-foreground">
-                      Question {currentPillarQuestion + 1} of {currentPillarInfo.questions.length}
-                    </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <currentPillarInfo.icon className="h-10 w-10" style={{ color: currentPillarInfo.color }} />
+                    <div>
+                      <h2 className="text-2xl font-bold">{currentPillarInfo.name} Pillar</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {currentPillar + 1} of {totalPillars} • {currentQuestions.length} question{currentQuestions.length > 1 ? 's' : ''}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                {/* Question dots indicator */}
-                <div className="flex gap-2">
-                  {currentPillarInfo.questions.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className={`h-2 w-2 rounded-full transition-all ${
-                        idx < currentPillarQuestion
-                          ? 'bg-green-500 w-4'
-                          : idx === currentPillarQuestion
-                          ? 'bg-primary w-6'
-                          : 'bg-muted'
-                      }`}
-                    />
-                  ))}
+                  {/* Pillar progress dots */}
+                  <div className="flex gap-1">
+                    {questionsByPillar.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-2 w-2 rounded-full ${
+                          idx < currentPillar ? 'bg-green-500' :
+                          idx === currentPillar ? 'bg-primary' : 'bg-muted'
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Modifier Header */}
             {isOnModifier && (
-              <div className="p-4 sm:p-6 bg-purple-500/10">
+              <div className="p-6 bg-purple-500/10">
                 <div className="flex items-center gap-3">
-                  <Sparkles className="h-8 w-8 text-purple-500" />
+                  <Sparkles className="h-10 w-10 text-purple-500" />
                   <div>
                     <h2 className="text-2xl font-bold">Risk Modifier</h2>
-                    <p className="text-sm text-muted-foreground">Final assessment question</p>
+                    <p className="text-sm text-muted-foreground">
+                      Final question - This adjusts your score based on smoking history
+                    </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Question Content */}
-            <div className="p-4 sm:p-8">
-              <h3 className="text-lg font-semibold leading-relaxed mb-6">
-                {question?.text}
-              </h3>
-
-              <RadioGroup
-                key={question?.question_id}
-                value={selectedAnswer?.text || ''}
-                onValueChange={(value) => {
-                  const option = question?.options.find(opt => opt.text === value);
-                  if (option) handleAnswerSelect(option);
-                }}
-                className="space-y-3"
-              >
-                {question?.options.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                      selectedAnswer?.text === option.text
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border'
-                    }`}
-                    onClick={() => handleAnswerSelect(option)}
-                  >
-                    <RadioGroupItem value={option.text} id={`option-${index}`} />
-                    <Label
-                      htmlFor={`option-${index}`}
-                      className="flex-1 cursor-pointer leading-relaxed"
-                    >
-                      {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
-                      {option.text}
-                    </Label>
+            {/* All Questions in Pillar/Section */}
+            <div className="p-6 space-y-8">
+              {currentQuestions.map((question, qIndex) => (
+                <div key={question.question_id} className="space-y-4">
+                  {/* Question header */}
+                  <div className="flex items-start gap-3">
+                    <Badge variant="outline" className="mt-1 shrink-0">Q{qIndex + 1}</Badge>
+                    <div className="flex-1 space-y-4">
+                      <h3 className="text-base font-semibold leading-relaxed">
+                        {question.text}
+                      </h3>
+                      
+                      <RadioGroup
+                        value={answers[question.question_id]?.text || ''}
+                        onValueChange={(value) => {
+                          const option = question.options.find(opt => opt.text === value);
+                          if (option) {
+                            handleAnswerSelect(question.question_id, option);
+                          }
+                        }}
+                        className="space-y-2"
+                      >
+                        {question.options.map((option, optIndex) => (
+                          <div
+                            key={optIndex}
+                            className={`flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer hover:bg-accent ${
+                              answers[question.question_id]?.text === option.text
+                                ? 'border-primary bg-primary/5 shadow-sm'
+                                : 'border-border'
+                            }`}
+                            onClick={() => handleAnswerSelect(question.question_id, option)}
+                          >
+                            <RadioGroupItem 
+                              value={option.text} 
+                              id={`${question.question_id}-${optIndex}`}
+                            />
+                            <Label 
+                              htmlFor={`${question.question_id}-${optIndex}`}
+                              className="flex-1 cursor-pointer leading-relaxed"
+                            >
+                              {option.emoji && <span className="mr-2">{option.emoji}</span>}
+                              {option.text}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
                   </div>
-                ))}
-              </RadioGroup>
+                  
+                  {/* Divider between questions (except last) */}
+                  {qIndex < currentQuestions.length - 1 && (
+                    <Separator className="my-6" />
+                  )}
+                </div>
+              ))}
             </div>
           </Card>
         )}
@@ -1455,7 +1458,7 @@ export default function GuestLISAssessment() {
                 <Button
                   variant="outline"
                   onClick={handleBack}
-                  disabled={isFirstQuestion}
+                  disabled={isFirstPillar}
                 >
                   Back
                 </Button>
@@ -1463,20 +1466,24 @@ export default function GuestLISAssessment() {
 
               <Button
                 onClick={handleNext}
-                disabled={!selectedAnswer || isSubmitting}
-                className="min-w-32"
+                disabled={!areAllPillarQuestionsAnswered() || isSubmitting}
+                size="lg"
+                className="min-w-48"
               >
                 {isSubmitting ? (
                   'Calculating...'
-                ) : isOnModifier && currentPillarQuestion === modifierQuestions.length - 1 ? (
+                ) : isOnModifier ? (
                   'Get My Score'
-                ) : !isOnModifier && currentPillarQuestion === (currentPillarInfo?.questions.length || 0) - 1 ? (
+                ) : currentPillar === totalPillars - 1 ? (
                   <>
-                    Complete {currentPillarInfo?.name}
+                    Continue to Final Question
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </>
                 ) : (
-                  'Next'
+                  <>
+                    Continue to {questionsByPillar[currentPillar + 1].name}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </>
                 )}
               </Button>
             </>
