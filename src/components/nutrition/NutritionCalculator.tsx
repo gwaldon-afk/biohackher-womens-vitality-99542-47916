@@ -35,69 +35,35 @@ const NutritionCalculator = ({
   const calories = calculateCalories();
   const macros = calculateMacros();
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  // Check if preferences are set
+  if (!weight || !activityLevel || !goal) {
+    return (
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calculator className="h-5 w-5" />
-            Personal Details
-          </CardTitle>
-          <CardDescription>Enter your information for personalised recommendations</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="weight">Body Weight (kg)</Label>
-            <Input
-              id="weight"
-              type="number"
-              placeholder="Enter weight in kg"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="activity">Activity Level</Label>
-            <select 
-              id="activity"
-              className="w-full p-2 border rounded-md bg-background"
-              value={activityLevel}
-              onChange={(e) => setActivityLevel(e.target.value)}
-            >
-              <option value="sedentary">Sedentary (little/no exercise)</option>
-              <option value="moderate">Moderate (3-5 days/week)</option>
-              <option value="active">Very Active (6-7 days/week)</option>
-              <option value="athlete">Athlete (2x/day, intense)</option>
-            </select>
-          </div>
-
-          <div>
-            <Label htmlFor="goal">Fitness Goal</Label>
-            <select 
-              id="goal"
-              className="w-full p-2 border rounded-md bg-background"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-            >
-              <option value="weight-loss">Weight Loss (-15% calories)</option>
-              <option value="maintenance">Maintenance (balanced)</option>
-              <option value="muscle-gain">Muscle Gain (+15% calories)</option>
-            </select>
-          </div>
+        <CardContent className="p-8 text-center">
+          <Calculator className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <h3 className="text-lg font-semibold mb-2">Set Your Preferences First</h3>
+          <p className="text-muted-foreground">
+            Please complete your personal details in the section above to see your personalized nutrition targets.
+          </p>
         </CardContent>
       </Card>
+    );
+  }
 
+  return (
+    <div>
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5" />
-                Your Daily Targets
+                Your Daily Nutrition Targets
                 <ScienceBackedIcon className="h-5 w-5" showTooltip={false} />
               </CardTitle>
-              <CardDescription>Personalised nutrition recommendations</CardDescription>
+              <CardDescription>
+                Based on {weight}kg, {activityLevel} activity, {goal} goal
+              </CardDescription>
             </div>
           </div>
         </CardHeader>

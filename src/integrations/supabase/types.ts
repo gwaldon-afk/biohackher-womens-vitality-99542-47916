@@ -397,6 +397,36 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_meal_plans: {
+        Row: {
+          created_at: string | null
+          generated_at: string | null
+          id: string
+          is_active: boolean | null
+          meal_data: Json
+          plan_name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          meal_data: Json
+          plan_name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          generated_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          meal_data?: Json
+          plan_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       daily_essentials_completions: {
         Row: {
           created_at: string | null

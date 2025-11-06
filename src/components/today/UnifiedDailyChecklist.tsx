@@ -391,6 +391,24 @@ export const UnifiedDailyChecklist = () => {
           />
         )}
 
+        {/* Meal Plan Header */}
+        {nutritionPrefs?.selectedMealPlanTemplate && categories.meals.length > 0 && (
+          <div className="mb-3 p-3 bg-primary/10 rounded-lg border border-primary/20">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium">
+                📋 Following: {nutritionPrefs.selectedMealPlanTemplate} Plan • Day {new Date().getDay() || 7}/7
+              </p>
+              <Button 
+                variant="link" 
+                onClick={() => navigate('/nutrition?tab=meal-plans')}
+                className="text-xs h-auto p-0"
+              >
+                View full plan & shopping list →
+              </Button>
+            </div>
+          </div>
+        )}
+
         <CategoryBlock
           icon="🍽️"
           title="Meals & Nutrition"
