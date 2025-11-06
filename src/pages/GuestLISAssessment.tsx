@@ -144,7 +144,7 @@ const ASSESSMENT_QUESTIONS: Question[] = [
     question_id: "Q4_SubjectiveCalmness",
     pillar: "stress",
     type: "slider",
-    text: "On a scale of 0 (Extremely Stressed) to 10 (Completely Recovered/Calm), how mentally recovered and calm do you feel this morning?",
+    text: "How mentally recovered and calm do you feel this morning?",
     options: [
       {
         text: "A. 0–3 (Extremely stressed, anxious, or overwhelmed)",
