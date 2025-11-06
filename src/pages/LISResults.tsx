@@ -253,7 +253,7 @@ const LISResults = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container max-w-4xl mx-auto py-8 px-4">
+      <div className="container max-w-6xl mx-auto py-8 px-4">
       <Card className="mb-4">
         <CardHeader className="text-center pb-1">
           <CardTitle className="text-2xl mb-0">Your Longevity Impact Score</CardTitle>
@@ -261,7 +261,7 @@ const LISResults = () => {
             A comprehensive view of your healthspan across 6 key pillars
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-0 pb-0">
+        <CardContent className="pt-0 pb-0 px-0">
           {/* Radar Chart Visualization */}
           <div className="flex justify-center -mt-8">
             <LISRadarChart 
