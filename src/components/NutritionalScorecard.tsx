@@ -1,26 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
+import { ProgressCircle } from "@/components/ui/progress-circle";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Utensils, Droplets, Leaf, Beef, Fish, Cookie, Wine, Milk, HelpCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
+import { Utensils, Droplets, Leaf, Beef, Fish, Cookie, Wine, Milk, HelpCircle, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
-// Validation schema for nutritional data
-const nutritionalSchema = z.object({
-  hydration: z.number().min(1).max(5),
-  vegetables: z.number().min(1).max(5),
-  protein: z.number().min(1).max(5),
-  fatsOmegas: z.number().min(0).max(5),
-  sugarProcessed: z.number().min(-5).max(0),
-  alcohol: z.number().min(-5).max(0),
-  dairyGluten: z.number().min(-3).max(0).optional()
-});
+// Emoji mapping functions
+const getHydrationEmoji = (value: number) => {
+  if (value === 1) return "😟";
+  if (value === 3) return "😊";
+  return "🌟";
+};
+
+const getHydrationLabel = (value: number) => {
+  if (value === 1) return "Needs more water";
+  if (value === 3) return "Good hydration";
+  return "Excellent!";
+};
+
+const getVegetablesEmoji = (value: number) => {
+  if (value === 1) return "🥗";
+  if (value === 3) return "🥬";
+  return "🌈";
+};
+
+const getVegetablesLabel = (value: number) => {
+  if (value === 1) return "Add more veggies";
+  if (value === 3) return "Good variety";
+  return "Amazing variety!";
+};
+
+const getProteinEmoji = (value: number) => {
+  if (value === 1) return "💪🏻";
+  if (value === 3) return "💪";
+  return "💪🏽";
+};
+
+const getProteinLabel = (value: number) => {
+  if (value === 1) return "Below goal";
+  if (value === 3) return "Met goal";
+  return "Exceeded goal!";
+};
+
+const getFatsEmoji = (value: number) => value === 5 ? "✅" : "❌";
+const getFatsLabel = (value: number) => value === 5 ? "Great choice!" : "Consider adding";
+
+const getSugarEmoji = (value: number) => {
+  if (value === 0) return "🌟";
+  if (value === -2.5) return "😬";
+  return "🚫";
+};
+
+const getSugarLabel = (value: number) => {
+  if (value === 0) return "Perfect!";
+  if (value === -2.5) return "Some treats";
+  return "Cheat day";
+};
+
+const getAlcoholEmoji = (value: number) => {
+  if (value === 0) return "🌟";
+  if (value === -2.5) return "🍷";
+  return "🍺🍺";
+};
+
+const getAlcoholLabel = (value: number) => {
+  if (value === 0) return "Alcohol-free";
+  if (value === -2.5) return "One drink";
+  return "Multiple drinks";
+};
+
+const getDairyEmoji = (value: number) => value === 0 ? "🌟" : "🥛";
+const getDairyLabel = (value: number) => value === 0 ? "Avoided triggers" : "Consumed dairy/gluten";
 
 interface NutritionalData {
   hydration: number;
@@ -38,7 +93,6 @@ interface NutritionalScorecardProps {
 }
 
 const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }: NutritionalScorecardProps) => {
-  const { toast } = useToast();
   const [nutritionalData, setNutritionalData] = useState<NutritionalData>({
     hydration: 3,
     vegetables: 3,
@@ -48,6 +102,8 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
     alcohol: 0,
     dairyGluten: 0
   });
+
+  const [showLearnMore, setShowLearnMore] = useState(false);
 
   // Category definitions for help tooltips
   const categoryDefinitions = {
@@ -74,28 +130,15 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
     return { grade: 'F', description: 'Poor. A highly pro-inflammatory day.', color: 'text-red-600' };
   };
 
-  const handleSubmit = () => {
-    try {
-      nutritionalSchema.parse(nutritionalData);
-      const score = calculateScore();
-      const { grade, description } = getGrade(score);
-      
-      onScoreCalculated(score, grade);
-      
-      toast({
-        title: `Daily Nutrition Score: ${grade}`,
-        description: description,
-        variant: "default"
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast({
-          title: "Please complete all sections",
-          description: "All nutritional questions must be answered.",
-          variant: "destructive"
-        });
-      }
-    }
+  // Auto-calculate score on every change
+  useEffect(() => {
+    const score = calculateScore();
+    const { grade } = getGrade(score);
+    onScoreCalculated(score, grade);
+  }, [nutritionalData, hasDairySensitivity, onScoreCalculated]);
+
+  const updateValue = (key: keyof NutritionalData, value: number) => {
+    setNutritionalData(prev => ({ ...prev, [key]: value }));
   };
 
   const currentScore = calculateScore();
@@ -105,285 +148,327 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
   return (
     <TooltipProvider>
       <Card className="w-full">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <Utensils className="h-5 w-5 text-orange-500" />
-            Daily Nutritional Scorecard
-            <Badge variant="secondary" className={color}>
-              Score: {currentScore} ({grade})
-            </Badge>
+            Daily Nutrition Scorecard
           </CardTitle>
           <CardDescription>
-            Track your anti-inflammatory nutrition choices to support longevity and reduce biological aging
+            Track your anti-inflammatory choices
           </CardDescription>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Net Inflammatory Score</span>
-              <span className={color}>{currentScore}/15</span>
-            </div>
-            <Progress value={progressValue} className="h-2" />
-            <p className="text-xs text-muted-foreground">{description}</p>
-          </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Anti-Inflammatory Section */}
+          {/* Score Display - Using ProgressCircle */}
+          <div className="flex flex-col items-center justify-center py-4">
+            <ProgressCircle value={progressValue} size="xl" className="mb-3">
+              <motion.div 
+                key={currentScore}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-center"
+              >
+                <div className={`text-4xl font-bold ${color}`}>{currentScore}</div>
+                <div className={`text-xl font-semibold ${color}`}>{grade}</div>
+              </motion.div>
+            </ProgressCircle>
+            <p className="text-sm text-center text-muted-foreground max-w-xs">{description}</p>
+          </div>
+
+          <Separator />
+
+          {/* Anti-Inflammatory Sliders */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Leaf className="h-4 w-4 text-green-500" />
-              <h3 className="font-semibold text-green-700">Anti-Inflammatory Choices (+Points)</h3>
+            <div className="flex items-center gap-2">
+              <Leaf className="h-5 w-5 text-green-500" />
+              <h3 className="font-semibold text-green-700">Build Your Score</h3>
             </div>
 
-            {/* Hydration */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Droplets className="h-4 w-4 text-blue-500" />
-                <Label className="font-bold">Hydration (Water Intake)</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.hydration}</p>
-                  </TooltipContent>
-                </Tooltip>
+            {/* Hydration Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Droplets className="h-5 w-5 text-blue-500" />
+                  <Label>Water</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs">Hydration supports cellular function and reduces inflammation</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getHydrationEmoji(nutritionalData.hydration)}</span>
+                  <Badge variant="secondary" className="text-green-600">+{nutritionalData.hydration}</Badge>
+                </div>
               </div>
-              <RadioGroup
-                value={nutritionalData.hydration.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, hydration: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="1" id="hydration-1" />
-                  <Label htmlFor="hydration-1" className="text-sm cursor-pointer">Barely (1-2 glasses) +1</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id="hydration-3" />
-                  <Label htmlFor="hydration-3" className="text-sm cursor-pointer">Okay (3-5 glasses) +3</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5" id="hydration-5" />
-                  <Label htmlFor="hydration-5" className="text-sm cursor-pointer">Excellent (6+ glasses) +5</Label>
-                </div>
-              </RadioGroup>
+              <Slider
+                value={[nutritionalData.hydration]}
+                onValueChange={([value]) => updateValue('hydration', value)}
+                min={1}
+                max={5}
+                step={2}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getHydrationLabel(nutritionalData.hydration)}
+              </p>
             </div>
 
-            {/* Vegetables */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Leaf className="h-4 w-4 text-green-500" />
-                <Label className="font-bold">Leafy Greens & Colorful Vegetables</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.vegetables}</p>
-                  </TooltipContent>
-                </Tooltip>
+            {/* Vegetables Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Leaf className="h-5 w-5 text-green-500" />
+                  <Label>Vegetables</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs">Vegetables provide antioxidants that combat inflammation</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getVegetablesEmoji(nutritionalData.vegetables)}</span>
+                  <Badge variant="secondary" className="text-green-600">+{nutritionalData.vegetables}</Badge>
+                </div>
               </div>
-              <RadioGroup
-                value={nutritionalData.vegetables.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, vegetables: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="1" id="vegetables-1" />
-                  <Label htmlFor="vegetables-1" className="text-sm cursor-pointer">One serving +1</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id="vegetables-3" />
-                  <Label htmlFor="vegetables-3" className="text-sm cursor-pointer">Two servings +3</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5" id="vegetables-5" />
-                  <Label htmlFor="vegetables-5" className="text-sm cursor-pointer">Three or more servings +5</Label>
-                </div>
-              </RadioGroup>
+              <Slider
+                value={[nutritionalData.vegetables]}
+                onValueChange={([value]) => updateValue('vegetables', value)}
+                min={1}
+                max={5}
+                step={2}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getVegetablesLabel(nutritionalData.vegetables)}
+              </p>
             </div>
 
-            {/* Protein */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Beef className="h-4 w-4 text-red-500" />
-                <Label className="font-bold">Protein Intake</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.protein}</p>
-                  </TooltipContent>
-                </Tooltip>
+            {/* Protein Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Beef className="h-5 w-5 text-red-500" />
+                  <Label>Protein</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs">Protein supports muscle and immune function</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getProteinEmoji(nutritionalData.protein)}</span>
+                  <Badge variant="secondary" className="text-green-600">+{nutritionalData.protein}</Badge>
+                </div>
               </div>
-              <RadioGroup
-                value={nutritionalData.protein.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, protein: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="1" id="protein-1" />
-                  <Label htmlFor="protein-1" className="text-sm cursor-pointer">Below personal goal +1</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="3" id="protein-3" />
-                  <Label htmlFor="protein-3" className="text-sm cursor-pointer">Met personal goal +3</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5" id="protein-5" />
-                  <Label htmlFor="protein-5" className="text-sm cursor-pointer">Exceeded personal goal +5</Label>
-                </div>
-              </RadioGroup>
+              <Slider
+                value={[nutritionalData.protein]}
+                onValueChange={([value]) => updateValue('protein', value)}
+                min={1}
+                max={5}
+                step={2}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getProteinLabel(nutritionalData.protein)}
+              </p>
             </div>
 
-            {/* Healthy Fats & Omega-3s */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Fish className="h-4 w-4 text-blue-500" />
-                <Label className="font-bold">Healthy Fats & Omega-3s</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.fatsOmegas}</p>
-                  </TooltipContent>
-                </Tooltip>
+            {/* Healthy Fats Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Fish className="h-5 w-5 text-blue-500" />
+                  <Label>Healthy Fats</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs">Omega-3s reduce inflammation and support brain health</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getFatsEmoji(nutritionalData.fatsOmegas)}</span>
+                  <Badge variant="secondary" className="text-green-600">+{nutritionalData.fatsOmegas}</Badge>
+                </div>
               </div>
-              <RadioGroup
-                value={nutritionalData.fatsOmegas.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, fatsOmegas: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5" id="fats-yes" />
-                  <Label htmlFor="fats-yes" className="text-sm cursor-pointer">Yes, I consumed healthy fats or Omega-3s +5</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="0" id="fats-no" />
-                  <Label htmlFor="fats-no" className="text-sm cursor-pointer">No, I did not +0</Label>
-                </div>
-              </RadioGroup>
+              <Slider
+                value={[nutritionalData.fatsOmegas]}
+                onValueChange={([value]) => updateValue('fatsOmegas', value)}
+                min={0}
+                max={5}
+                step={5}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getFatsLabel(nutritionalData.fatsOmegas)}
+              </p>
             </div>
           </div>
 
           <Separator />
 
-          {/* Pro-Inflammatory Section */}
+          {/* Pro-Inflammatory Sliders */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Cookie className="h-4 w-4 text-red-500" />
-              <h3 className="font-semibold text-red-700">Pro-Inflammatory Choices (Deductions)</h3>
+            <div className="flex items-center gap-2">
+              <Cookie className="h-5 w-5 text-red-500" />
+              <h3 className="font-semibold text-red-700">Watch These</h3>
             </div>
 
-            {/* Refined Sugars & Processed Foods */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Cookie className="h-4 w-4 text-orange-500" />
-                <Label className="font-bold">Refined Sugars & Processed Foods</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.sugarProcessed}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <RadioGroup
-                value={nutritionalData.sugarProcessed.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, sugarProcessed: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="0" id="sugar-none" />
-                  <Label htmlFor="sugar-none" className="text-sm cursor-pointer">I had none +0</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="-2" id="sugar-some" />
-                  <Label htmlFor="sugar-some" className="text-sm cursor-pointer">I had some -2</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="-5" id="sugar-cheat" />
-                  <Label htmlFor="sugar-cheat" className="text-sm cursor-pointer">I had a cheat day -5</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* Alcohol */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Wine className="h-4 w-4 text-purple-500" />
-                <Label className="font-bold">Alcohol</Label>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{categoryDefinitions.alcohol}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <RadioGroup
-                value={nutritionalData.alcohol.toString()}
-                onValueChange={(value) => setNutritionalData({...nutritionalData, alcohol: parseInt(value)})}
-                className="flex flex-wrap gap-6"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="0" id="alcohol-none" />
-                  <Label htmlFor="alcohol-none" className="text-sm cursor-pointer">None +0</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="-2" id="alcohol-one" />
-                  <Label htmlFor="alcohol-one" className="text-sm cursor-pointer">1 drink -2</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="-5" id="alcohol-multiple" />
-                  <Label htmlFor="alcohol-multiple" className="text-sm cursor-pointer">2 or more drinks -5</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* Dairy & Gluten (conditional) */}
-            {hasDairySensitivity && (
-              <div className="space-y-3">
+            {/* Sugar Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Milk className="h-4 w-4 text-yellow-500" />
-                  <Label className="font-bold">Dairy & Gluten (based on your sensitivity)</Label>
+                  <Cookie className="h-5 w-5 text-orange-500" />
+                  <Label>Sugar & Processed</Label>
                   <Tooltip>
                     <TooltipTrigger>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent className="max-w-xs">
-                      <p>{categoryDefinitions.dairyGluten}</p>
+                      <p className="text-xs">Refined sugars promote inflammation</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <RadioGroup
-                  value={(nutritionalData.dairyGluten || 0).toString()}
-                  onValueChange={(value) => setNutritionalData({...nutritionalData, dairyGluten: parseInt(value)})}
-                  className="flex flex-wrap gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="-3" id="dairy-yes" />
-                    <Label htmlFor="dairy-yes" className="text-sm cursor-pointer">Yes, I consumed dairy or gluten today -3</Label>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getSugarEmoji(nutritionalData.sugarProcessed)}</span>
+                  <Badge variant="secondary" className="text-red-600">{nutritionalData.sugarProcessed}</Badge>
+                </div>
+              </div>
+              <Slider
+                value={[nutritionalData.sugarProcessed]}
+                onValueChange={([value]) => updateValue('sugarProcessed', value)}
+                min={-5}
+                max={0}
+                step={2.5}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getSugarLabel(nutritionalData.sugarProcessed)}
+              </p>
+            </div>
+
+            {/* Alcohol Slider */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Wine className="h-5 w-5 text-purple-500" />
+                  <Label>Alcohol</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs">
+                      <p className="text-xs">Alcohol increases inflammatory markers</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">{getAlcoholEmoji(nutritionalData.alcohol)}</span>
+                  <Badge variant="secondary" className="text-red-600">{nutritionalData.alcohol}</Badge>
+                </div>
+              </div>
+              <Slider
+                value={[nutritionalData.alcohol]}
+                onValueChange={([value]) => updateValue('alcohol', value)}
+                min={-5}
+                max={0}
+                step={2.5}
+                className="cursor-pointer"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {getAlcoholLabel(nutritionalData.alcohol)}
+              </p>
+            </div>
+
+            {/* Dairy & Gluten Slider (conditional) */}
+            {hasDairySensitivity && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Milk className="h-5 w-5 text-yellow-500" />
+                    <Label>Dairy & Gluten</Label>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs">
+                        <p className="text-xs">Can trigger inflammation if sensitive</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="0" id="dairy-no" />
-                    <Label htmlFor="dairy-no" className="text-sm cursor-pointer">No, I did not +0</Label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{getDairyEmoji(nutritionalData.dairyGluten || 0)}</span>
+                    <Badge variant="secondary" className="text-red-600">{nutritionalData.dairyGluten || 0}</Badge>
                   </div>
-                </RadioGroup>
+                </div>
+                <Slider
+                  value={[nutritionalData.dairyGluten || 0]}
+                  onValueChange={([value]) => updateValue('dairyGluten', value)}
+                  min={-3}
+                  max={0}
+                  step={3}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-muted-foreground text-center">
+                  {getDairyLabel(nutritionalData.dairyGluten || 0)}
+                </p>
               </div>
             )}
           </div>
 
           <Separator />
 
-          <div className="flex justify-end">
-            <Button onClick={handleSubmit}>
-              Calculate Nutrition Score
-            </Button>
-          </div>
+          {/* Collapsible Learn More Section */}
+          <Collapsible open={showLearnMore} onOpenChange={setShowLearnMore}>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground w-full">
+              <ChevronDown className={`h-4 w-4 transition-transform ${showLearnMore ? 'rotate-180' : ''}`} />
+              Learn More About Anti-Inflammatory Nutrition
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4 space-y-3 text-xs text-muted-foreground">
+              <div>
+                <p className="font-semibold text-foreground mb-1">💧 Hydration</p>
+                <p>{categoryDefinitions.hydration}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">🥬 Vegetables</p>
+                <p>{categoryDefinitions.vegetables}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">💪 Protein</p>
+                <p>{categoryDefinitions.protein}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">🐟 Healthy Fats</p>
+                <p>{categoryDefinitions.fatsOmegas}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">🍪 Sugar & Processed Foods</p>
+                <p>{categoryDefinitions.sugarProcessed}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-foreground mb-1">🍷 Alcohol</p>
+                <p>{categoryDefinitions.alcohol}</p>
+              </div>
+              {hasDairySensitivity && (
+                <div>
+                  <p className="font-semibold text-foreground mb-1">🥛 Dairy & Gluten</p>
+                  <p>{categoryDefinitions.dairyGluten}</p>
+                </div>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
         </CardContent>
       </Card>
     </TooltipProvider>
