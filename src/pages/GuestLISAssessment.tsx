@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
   Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, 
-  ArrowRight, Shield, Moon, TrendingUp, Users, Home, X, ArrowLeft 
+  ArrowRight, Shield, Moon, TrendingUp, Users, Home, X, Check 
 } from 'lucide-react';
 import {
   AlertDialog,
@@ -700,24 +702,39 @@ export default function GuestLISAssessment() {
     heightCm: '',
     weightKg: ''
   });
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentPillar, setCurrentPillar] = useState(0);
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
-  // Get all questions in order
-  const allQuestions = ASSESSMENT_QUESTIONS;
-  const totalQuestions = allQuestions.length;
-  const currentQuestion = !showBaseline && currentQuestionIndex < totalQuestions 
-    ? allQuestions[currentQuestionIndex] 
-    : null;
+  // Group questions by pillar
+  const questionsByPillar = PILLAR_GROUPS.map(pillarGroup => ({
+    ...pillarGroup,
+    questions: ASSESSMENT_QUESTIONS.filter(q => q.pillar === pillarGroup.pillar)
+  }));
+
+  // Add modifier questions at the end
+  const modifierQuestions = ASSESSMENT_QUESTIONS.filter(q => q.pillar === 'modifier');
   
-  // Find current pillar info for the current question
-  const currentPillarInfo = currentQuestion 
-    ? PILLAR_GROUPS.find(p => p.pillar === currentQuestion.pillar)
-    : null;
+  // Check if we're on modifier questions
+  const isOnModifier = currentPillar >= questionsByPillar.length;
+  const currentPillarInfo = isOnModifier ? null : questionsByPillar[currentPillar];
+  const totalPillars = questionsByPillar.length;
   
-  const isOnModifier = currentQuestion?.pillar === 'modifier';
+  // Get current questions (all questions for the pillar or modifier questions)
+  const getCurrentQuestions = () => {
+    if (isOnModifier) {
+      return modifierQuestions;
+    }
+    return currentPillarInfo?.questions || [];
+  };
+
+  const currentQuestions = !showBaseline ? getCurrentQuestions() : [];
+  
+  // Check if all questions in current pillar are answered
+  const areAllPillarQuestionsAnswered = () => {
+    return currentQuestions.every(q => answers[q.question_id]);
+  };
 
   const calculateBMI = (): number => {
     const height = parseFloat(baselineData.heightCm);
@@ -764,9 +781,10 @@ export default function GuestLISAssessment() {
     setShowBaseline(false);
   };
 
-  // Calculate progress
+  // Calculate total questions and progress
+  const totalQuestions = ASSESSMENT_QUESTIONS.length;
   const answeredQuestions = Object.keys(answers).length;
-  const progress = showBaseline ? 0 : ((currentQuestionIndex + 1) / totalQuestions) * 100;
+  const progress = showBaseline ? 0 : (answeredQuestions / totalQuestions) * 100;
 
   const handleExitToHome = () => {
     setShowExitDialog(false);
@@ -778,27 +796,39 @@ export default function GuestLISAssessment() {
       ...prev,
       [questionId]: option
     }));
-    
-    // Auto-advance to next question after a brief delay
-    setTimeout(() => {
-      handleNext();
-    }, 400);
   };
 
   const handleNext = () => {
-    // If on last question, submit
-    if (currentQuestionIndex >= totalQuestions - 1) {
+    // Check if all questions in current pillar/section are answered
+    if (!areAllPillarQuestionsAnswered()) {
+      toast.error(`Please answer all ${currentQuestions.length} question${currentQuestions.length > 1 ? 's' : ''} to continue`);
+      return;
+    }
+
+    if (isOnModifier) {
+      // Submit after modifier questions
       handleSubmit();
     } else {
-      // Move to next question
-      setCurrentQuestionIndex(prev => prev + 1);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Move to next pillar or modifier
+      if (currentPillar < totalPillars - 1) {
+        setCurrentPillar(currentPillar + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Move to modifier questions
+        setCurrentPillar(totalPillars);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
   };
 
   const handleBack = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
+    if (isOnModifier) {
+      // Go back to last pillar
+      setCurrentPillar(totalPillars - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (currentPillar > 0) {
+      // Go to previous pillar
+      setCurrentPillar(currentPillar - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -1058,7 +1088,7 @@ export default function GuestLISAssessment() {
   };
 
   const bmi = calculateBMI();
-  const isFirstQuestion = currentQuestionIndex === 0;
+  const isFirstPillar = currentPillar === 0 && !isOnModifier;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -1114,19 +1144,51 @@ export default function GuestLISAssessment() {
           Discover your science-backed Longevity Impact Score
         </p>
 
-        {/* Progress Header */}
-        {!showBaseline && currentQuestion && (
-          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm py-4 mb-6 border-b">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium">
-                Question {currentQuestionIndex + 1} of {totalQuestions}
+        {/* Pillar Progress Overview */}
+        {!showBaseline && !isOnModifier && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-sm text-muted-foreground">
+                {answeredQuestions} of {totalQuestions} questions answered
               </span>
-              {currentPillarInfo && (
-                <Badge variant="secondary" className="gap-2">
-                  {currentPillarInfo.icon && <currentPillarInfo.icon className="h-3 w-3" />}
-                  {currentPillarInfo.name}
-                </Badge>
-              )}
+              <span className="text-sm font-medium">{Math.round(progress)}%</span>
+            </div>
+            <div className="flex gap-2 mb-4">
+              {questionsByPillar.map((pillarGroup, idx) => (
+                <div
+                  key={idx}
+                  className={`flex-1 h-2 rounded transition-all ${
+                    idx < currentPillar
+                      ? 'bg-green-500'
+                      : idx === currentPillar
+                      ? 'bg-primary'
+                      : 'bg-muted'
+                  }`}
+                  title={pillarGroup.name}
+                />
+              ))}
+            </div>
+            {currentPillar > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {questionsByPillar.slice(0, currentPillar).map((pillar) => (
+                  <Badge key={pillar.name} variant="secondary" className="gap-1">
+                    <Check className="h-3 w-3" />
+                    {pillar.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Modifier Progress */}
+        {!showBaseline && isOnModifier && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm text-muted-foreground">
+                Final Question - Risk Modifier
+              </span>
+              <span className="text-sm font-medium">{Math.round(progress)}%</span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
@@ -1245,67 +1307,114 @@ export default function GuestLISAssessment() {
               </div>
             </div>
           </Card>
-        ) : currentQuestion && (
-          <div className="max-w-3xl mx-auto">
-            {/* Question Card */}
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-semibold leading-relaxed px-4">
-                {currentQuestion.text}
-              </h2>
-            </div>
-
-            {/* Answer Options as Large Cards */}
-            <div className="space-y-4">
-              {currentQuestion.options.map((option, optIndex) => {
-                const isSelected = answers[currentQuestion.question_id]?.text === option.text;
-                const scorePercentage = (option.score_value / 100) * 100;
-                const barColor = scorePercentage >= 70 ? 'bg-green-500' : scorePercentage >= 40 ? 'bg-yellow-500' : 'bg-red-500';
-                
-                return (
-                  <Card
-                    key={optIndex}
-                    className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg ${
-                      isSelected 
-                        ? 'border-primary border-2 bg-primary/10 shadow-md' 
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                    onClick={() => handleAnswerSelect(currentQuestion.question_id, option)}
-                  >
-                    <div className="p-6">
-                      <div className="flex items-center gap-6">
-                        {/* Large Emoji */}
-                        {option.emoji && (
-                          <div className="text-6xl flex-shrink-0">
-                            {option.emoji}
-                          </div>
-                        )}
-                        
-                        {/* Option Text and Score Bar */}
-                        <div className="flex-1 space-y-3">
-                          <p className="font-semibold text-lg leading-relaxed">
-                            {option.text.replace(/^[A-D]\.\s*/, '')}
-                          </p>
-                          
-                          {/* Color-coded Score Bar */}
-                          <div className="space-y-1">
-                            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full ${barColor} transition-all duration-500`}
-                                style={{ width: `${scorePercentage}%` }}
-                              />
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              Impact Score: {option.score_value}/100
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+        ) : (
+          <Card className="mb-6 border-2" style={{ borderColor: isOnModifier ? '#a855f7' : currentPillarInfo?.color }}>
+            {/* Pillar Header */}
+            {!isOnModifier && currentPillarInfo && (
+              <div
+                className="p-6"
+                style={{
+                  background: `linear-gradient(to right, ${currentPillarInfo.color}20, transparent)`,
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <currentPillarInfo.icon className="h-10 w-10" style={{ color: currentPillarInfo.color }} />
+                    <div>
+                      <h2 className="text-2xl font-bold">{currentPillarInfo.name} Pillar</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {currentPillar + 1} of {totalPillars} • {currentQuestions.length} question{currentQuestions.length > 1 ? 's' : ''}
+                      </p>
                     </div>
-                  </Card>
-                );
-              })}
+                  </div>
+                  {/* Pillar progress dots */}
+                  <div className="flex gap-1">
+                    {questionsByPillar.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-2 w-2 rounded-full ${
+                          idx < currentPillar ? 'bg-green-500' :
+                          idx === currentPillar ? 'bg-primary' : 'bg-muted'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Modifier Header */}
+            {isOnModifier && (
+              <div className="p-6 bg-purple-500/10">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-10 w-10 text-purple-500" />
+                  <div>
+                    <h2 className="text-2xl font-bold">Risk Modifier</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Final question - This adjusts your score based on smoking history
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* All Questions in Pillar/Section */}
+            <div className="p-6 space-y-8">
+              {currentQuestions.map((question, qIndex) => (
+                <div key={question.question_id} className="space-y-4">
+                  {/* Question header */}
+                  <div className="flex items-start gap-3">
+                    <Badge variant="outline" className="mt-1 shrink-0">Q{qIndex + 1}</Badge>
+                    <div className="flex-1 space-y-4">
+                      <h3 className="text-base font-semibold leading-relaxed">
+                        {question.text}
+                      </h3>
+                      
+                      <RadioGroup
+                        value={answers[question.question_id]?.text || ''}
+                        onValueChange={(value) => {
+                          const option = question.options.find(opt => opt.text === value);
+                          if (option) {
+                            handleAnswerSelect(question.question_id, option);
+                          }
+                        }}
+                        className="space-y-2"
+                      >
+                        {question.options.map((option, optIndex) => (
+                          <div
+                            key={optIndex}
+                            className={`flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer hover:bg-accent ${
+                              answers[question.question_id]?.text === option.text
+                                ? 'border-primary bg-primary/5 shadow-sm'
+                                : 'border-border'
+                            }`}
+                            onClick={() => handleAnswerSelect(question.question_id, option)}
+                          >
+                            <RadioGroupItem 
+                              value={option.text} 
+                              id={`${question.question_id}-${optIndex}`}
+                            />
+                            <Label 
+                              htmlFor={`${question.question_id}-${optIndex}`}
+                              className="flex-1 cursor-pointer leading-relaxed"
+                            >
+                              {option.emoji && <span className="mr-2">{option.emoji}</span>}
+                              {option.text}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                  </div>
+                  
+                  {/* Divider between questions (except last) */}
+                  {qIndex < currentQuestions.length - 1 && (
+                    <Separator className="my-6" />
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Navigation Buttons */}
@@ -1336,29 +1445,43 @@ export default function GuestLISAssessment() {
             </>
           ) : (
             <>
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={isFirstQuestion}
-                className="gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowExitDialog(true)}
+                  className="gap-2"
+                >
+                  <Home className="h-4 w-4" />
+                  Exit
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  disabled={isFirstPillar}
+                >
+                  Back
+                </Button>
+              </div>
 
               <Button
                 onClick={handleNext}
-                disabled={!answers[currentQuestion?.question_id || ''] || isSubmitting}
+                disabled={!areAllPillarQuestionsAnswered() || isSubmitting}
                 size="lg"
                 className="min-w-48"
               >
                 {isSubmitting ? (
                   'Calculating...'
-                ) : currentQuestionIndex === totalQuestions - 1 ? (
+                ) : isOnModifier ? (
                   'Get My Score'
+                ) : currentPillar === totalPillars - 1 ? (
+                  <>
+                    Continue to Final Question
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </>
                 ) : (
                   <>
-                    Continue
+                    Continue to {questionsByPillar[currentPillar + 1].name}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </>
                 )}
@@ -1371,7 +1494,7 @@ export default function GuestLISAssessment() {
         <p className="text-center text-sm text-muted-foreground mt-8">
           {showBaseline 
             ? 'This assessment takes approximately 2 minutes to complete'
-            : `${totalQuestions - currentQuestionIndex - 1} questions remaining • ~${Math.ceil((totalQuestions - currentQuestionIndex - 1) / 10)} min`
+            : `${totalQuestions - answeredQuestions} questions remaining • ~${Math.ceil((totalQuestions - answeredQuestions) / 10)} min`
           }
         </p>
       </div>
