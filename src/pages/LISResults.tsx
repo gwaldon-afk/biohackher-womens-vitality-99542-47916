@@ -279,7 +279,7 @@ const LISResults = () => {
             <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
             
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
-              <strong>Biological age</strong> measures how well your body is functioning at a cellular level, while <strong>chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
+              <strong>Biological age</strong> is an indicator of how well your body may be functioning at a cellular level. This assessment uses lifestyle factors to provide an indicative biological age estimate. <strong>Chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
             </p>
             
             <div className="grid md:grid-cols-3 gap-6 mb-6">
@@ -306,7 +306,7 @@ const LISResults = () => {
 
             <div className="p-4 bg-background rounded-lg mb-6">
               <p className="text-sm text-muted-foreground mb-2">
-                Based on your LIS score of {displayScore.toFixed(1)}, your lifestyle is causing you to age approximately{' '}
+                Based on your LIS score of {displayScore.toFixed(1)}, your lifestyle indicates you could be aging approximately{' '}
                 <span className="font-bold text-foreground">
                   {bioAgeData.annualDeceleration.toFixed(2)}x
                 </span>{' '}
@@ -414,7 +414,7 @@ const LISResults = () => {
               {/* Medium Disclaimer */}
               <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For precise biological age determination, we recommend comprehensive blood work including inflammation markers, metabolic panels, and hormonal assessments.
+                  <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For a more accurate cellular-level biological age measurement, we recommend taking a clinical test including comprehensive blood work, inflammation markers, metabolic panels, and hormonal assessments.
                 </p>
               </div>
             </div>

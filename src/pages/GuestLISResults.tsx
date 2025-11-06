@@ -316,7 +316,7 @@ export default function GuestLISResults() {
           {/* Short Disclaimer */}
           <div className="mt-6 p-4 bg-muted/50 border border-muted rounded-lg">
             <p className="text-xs text-muted-foreground text-center">
-              <strong>Note:</strong> This LIS assessment is a guide based on your responses. For accurate biological age measurement, we recommend comprehensive blood testing and biomarker analysis.
+              <strong>Note:</strong> This LIS assessment is a guide based on your responses and provides an indicative biological age estimate using lifestyle factors. For a more accurate cellular-level biological age measurement, we recommend taking a clinical test including comprehensive blood testing and biomarker analysis.
             </p>
           </div>
         </Card>
@@ -328,7 +328,7 @@ export default function GuestLISResults() {
               <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
               
               <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
-                <strong>Biological age</strong> measures how well your body is functioning at a cellular level, while <strong>chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
+                <strong>Biological age</strong> is an indicator of how well your body may be functioning at a cellular level. This assessment uses lifestyle factors to provide an indicative biological age estimate. <strong>Chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
               </p>
               
               <div className="grid md:grid-cols-3 gap-6 mb-6">
@@ -355,7 +355,7 @@ export default function GuestLISResults() {
 
               <div className="p-4 bg-background rounded-lg mb-6">
                 <p className="text-sm text-muted-foreground mb-2">
-                  Based on your LIS score of {results.finalScore}, your lifestyle is causing you to age approximately{' '}
+                  Based on your LIS score of {results.finalScore}, your lifestyle indicates you could be aging approximately{' '}
                   <span className="font-bold text-foreground">
                     {bioAgeData.annualDeceleration.toFixed(2)}x
                   </span>{' '}
