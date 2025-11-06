@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navigation from "@/components/Navigation";
@@ -213,84 +211,123 @@ const SymptomAssessment = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                variant="outline"
-                onClick={() => setShowCancelDialog(true)}
-                className="text-muted-foreground"
-              >
-                <X className="mr-2 h-4 w-4" />
-                Cancel Assessment
-              </Button>
-            </div>
-            <h1 className="text-3xl font-bold mb-2">{assessmentConfig.name}</h1>
-            <p className="text-muted-foreground">{assessmentConfig.description}</p>
+      
+      {/* Minimal Sticky Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b">
+        <div className="container max-w-3xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowCancelDialog(true)}
+              className="gap-2"
+            >
+              <X className="w-4 h-4" />
+              Exit
+            </Button>
+            
+            <span className="text-sm text-muted-foreground font-medium">
+              {currentQuestion + 1} of {questions.length}
+            </span>
           </div>
 
-          <Card className="p-6">
-            <div className="mb-6">
-              <div className="flex justify-between text-sm text-muted-foreground mb-2">
-                <span>Question {currentQuestion + 1} of {questions.length}</span>
-                <span>{Math.round(progress)}% Complete</span>
-              </div>
-              <Progress value={progress} className="h-2" />
+          {/* Smooth Progress Bar */}
+          <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary/60 transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          {/* Category Badge */}
+          <div className="flex items-center gap-2 mt-3">
+            <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+              {currentQ.category}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Question Display - Centered */}
+      <div className="container max-w-3xl mx-auto px-4">
+        <div className="flex items-center justify-center min-h-[calc(100vh-200px)] py-12">
+          <div className="w-full space-y-8 animate-fade-in">
+            {/* Question Text - Large & Prominent */}
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+                {currentQ.question}
+              </h2>
             </div>
 
-            <div className="mb-6">
-              <div className="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-                {currentQ.category}
-              </div>
-              <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
-
-              <RadioGroup
-                key={currentQ.id}
-                value={answers[currentQ.id]?.toString()}
-                onValueChange={(value) => handleAnswerChange(currentQ.id, parseInt(value))}
-              >
-                <div className="space-y-3">
-                  {currentQ.options.map((option, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-center space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                        answers[currentQ.id] === option.score
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                      onClick={() => handleAnswerChange(currentQ.id, option.score)}
-                    >
-                      <RadioGroupItem value={option.score.toString()} id={`option-${index}`} />
-                      <Label
-                        htmlFor={`option-${index}`}
-                        className="flex-1 cursor-pointer font-normal"
-                      >
+            {/* Answer Cards - Large Interactive Tiles */}
+            <div className="grid grid-cols-1 gap-4 animate-scale-in">
+              {currentQ.options.map((option, index) => {
+                const isSelected = answers[currentQ.id] === option.score;
+                const scorePercent = (option.score / 5) * 100; // Assuming max score is 5
+                const barColor = scorePercent >= 66 ? 'bg-green-500' : scorePercent >= 33 ? 'bg-yellow-500' : 'bg-red-500';
+                
+                return (
+                  <Card
+                    key={index}
+                    className={`cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-lg ${
+                      isSelected
+                        ? 'border-primary border-2 bg-primary/10 shadow-md'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                    onClick={() => {
+                      handleAnswerChange(currentQ.id, option.score);
+                      // Auto-advance after 400ms
+                      setTimeout(() => handleNext(), 400);
+                    }}
+                  >
+                    <CardContent className="p-6 space-y-3">
+                      {/* Option Text */}
+                      <h4 className="font-semibold text-lg leading-relaxed">
                         {option.text}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </RadioGroup>
+                      </h4>
+                      
+                      {/* Color-coded Score Bar */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${barColor} transition-all duration-300`}
+                            style={{ width: `${scorePercent}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground font-medium min-w-[3ch]">
+                          {option.score}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
-            <div className="flex justify-between pt-4 border-t">
+            {/* Navigation - Minimal */}
+            <div className="flex justify-between items-center pt-6">
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={handleBack}
                 disabled={currentQuestion === 0}
+                className="gap-2"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="w-4 h-4" />
                 Back
               </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!isAnswered}
-              >
-                {currentQuestion === questions.length - 1 ? 'View Results' : 'Next'}
-              </Button>
+
+              {/* Show Continue button if needed */}
+              {isAnswered && (
+                <Button
+                  onClick={handleNext}
+                  size="lg"
+                  className="gap-2"
+                >
+                  {currentQuestion === questions.length - 1 ? 'View Results' : 'Continue'}
+                </Button>
+              )}
             </div>
-          </Card>
+          </div>
         </div>
       </div>
 

@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Activity, Brain, Heart, Home, ArrowLeft } from 'lucide-react';
+import { Activity, Brain, Heart, Home, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface QuestionOption {
@@ -211,125 +209,128 @@ export default function LISDailyCheckIn() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(-1)}
-            className="gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="gap-2"
-          >
-            <Home className="w-4 h-4" />
-            Dashboard
-          </Button>
-        </div>
-
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Daily LIS Check-In
-          </h1>
-          <p className="text-muted-foreground">
-            Track your daily longevity habits in under 2 minutes
-          </p>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">
-              Question {currentQuestion + 1} of {DAILY_QUESTIONS.length}
+      {/* Minimal Sticky Header */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b">
+        <div className="container max-w-3xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="gap-2"
+            >
+              <Home className="w-4 h-4" />
+              Exit
+            </Button>
+            
+            <span className="text-sm text-muted-foreground font-medium">
+              {currentQuestion + 1} of {DAILY_QUESTIONS.length}
             </span>
-            <span className="text-sm font-medium">{Math.round(progress)}%</span>
           </div>
-          <Progress value={progress} className="h-2" />
+
+          {/* Smooth Progress Bar */}
+          <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary/60 transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          {/* Pillar Context Badge */}
+          <div className="flex items-center gap-2 mt-3">
+            <PillarIcon className="w-5 h-5 text-primary" />
+            <span className="text-sm font-medium">{question.pillar}</span>
+          </div>
         </div>
+      </div>
 
-        {/* Question Card */}
-        <Card className="p-8 mb-6 border-2">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="p-3 rounded-full bg-primary/10">
-              <PillarIcon className="w-6 h-6 text-primary" />
-            </div>
-            <div className="flex-1">
-              <div className="text-sm font-medium text-primary mb-2">
-                {question.pillar} Pillar
-              </div>
-              <h2 className="text-xl font-semibold leading-relaxed">
-                {question.text}
-              </h2>
-            </div>
+      {/* Main Question Display - Centered */}
+      <div className="flex items-center justify-center min-h-[calc(100vh-180px)] px-4 py-12">
+        <div className="w-full max-w-3xl space-y-8 animate-fade-in">
+          {/* Question Text - Large & Prominent */}
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+              {question.text}
+            </h2>
           </div>
 
-          <RadioGroup
-            value={selectedAnswer?.text || ''}
-            onValueChange={(value) => {
-              const option = question.options.find(opt => opt.text === value);
-              if (option) handleAnswerSelect(option);
-            }}
-            className="space-y-3"
-          >
-            {question.options.map((option, index) => (
-              <div
-                key={index}
-                className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                  selectedAnswer?.text === option.text
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border'
-                }`}
-                onClick={() => handleAnswerSelect(option)}
-              >
-                <RadioGroupItem value={option.text} id={`option-${index}`} />
-                <Label
-                  htmlFor={`option-${index}`}
-                  className="flex-1 cursor-pointer leading-relaxed"
+          {/* Answer Cards - Large Interactive Tiles */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-scale-in">
+            {question.options.map((option, idx) => {
+              const isSelected = selectedAnswer?.text === option.text;
+              const scorePercent = option.score_value;
+              const barColor = scorePercent >= 75 ? 'bg-green-500' : scorePercent >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+              
+              return (
+                <Card
+                  key={idx}
+                  className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                    isSelected
+                      ? 'border-primary border-2 bg-primary/10 shadow-md'
+                      : 'border-border hover:border-primary/50'
+                  }`}
+                  onClick={() => {
+                    handleAnswerSelect(option);
+                    // Auto-advance after 400ms
+                    setTimeout(() => handleNext(), 400);
+                  }}
                 >
-                  {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
-                  {option.text}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </Card>
+                  <CardContent className="p-6 text-center space-y-4">
+                    {/* Large Emoji */}
+                    {option.emoji && (
+                      <div className="text-6xl animate-scale-in">
+                        {option.emoji}
+                      </div>
+                    )}
+                    
+                    {/* Option Text - No letter prefix */}
+                    <h4 className="font-semibold text-lg leading-relaxed">
+                      {option.text}
+                    </h4>
+                    
+                    {/* Color-coded Score Bar */}
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full ${barColor} transition-all duration-300`}
+                          style={{ width: `${scorePercent}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-muted-foreground font-medium min-w-[3ch]">
+                        {scorePercent}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={currentQuestion === 0}
-          >
-            Back
-          </Button>
+          {/* Navigation - Minimal */}
+          <div className="flex justify-between items-center pt-6">
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              disabled={currentQuestion === 0}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
 
-          <Button
-            onClick={handleNext}
-            disabled={!selectedAnswer || isSubmitting}
-            className="min-w-32"
-          >
-            {isSubmitting ? (
-              'Saving...'
-            ) : currentQuestion === DAILY_QUESTIONS.length - 1 ? (
-              'Complete Check-In'
-            ) : (
-              'Next'
+            {/* Only show Continue if no selection (no auto-advance) */}
+            {selectedAnswer && !isSubmitting && (
+              <Button
+                onClick={handleNext}
+                size="lg"
+                className="gap-2"
+              >
+                {currentQuestion === DAILY_QUESTIONS.length - 1 ? 'Complete' : 'Continue'}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             )}
-          </Button>
+          </div>
         </div>
-
-        {/* Footer Note */}
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          Daily check-ins help track your longevity trajectory over time
-        </p>
       </div>
     </div>
   );

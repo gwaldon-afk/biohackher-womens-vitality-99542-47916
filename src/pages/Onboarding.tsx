@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowRight, ArrowLeft, X, Brain, Heart, Activity, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -451,7 +450,7 @@ const Onboarding = () => {
       const selectedAnswer = answers[question.question_id];
 
       return (
-        <Card className="w-full max-w-2xl mx-auto">
+        <Card className="w-full max-w-3xl mx-auto">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <div className="p-3 rounded-full bg-primary/10">
@@ -461,28 +460,58 @@ const Onboarding = () => {
             <div className="text-xs font-semibold text-primary mb-2">
               {question.pillar.toUpperCase()} PILLAR
             </div>
-            <CardTitle className="text-xl">{question.text}</CardTitle>
+            <CardTitle className="text-3xl md:text-4xl font-bold leading-tight">
+              {question.text}
+            </CardTitle>
             <CardDescription>
               Question {currentStep} of {ASSESSMENT_QUESTIONS.length}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <RadioGroup 
-              value={selectedAnswer?.text} 
-              onValueChange={(value) => {
-                const option = question.options.find(o => o.text === value);
-                if (option) handleAnswerSelect(option);
-              }}
-            >
-              {question.options.map((option, idx) => (
-                <div key={idx} className="flex items-start space-x-3 mb-4 p-4 rounded-lg border hover:bg-accent/50 transition-colors">
-                  <RadioGroupItem value={option.text} id={`option-${idx}`} className="mt-1" />
-                  <Label htmlFor={`option-${idx}`} className="cursor-pointer flex-1">
-                    <div className="font-medium">{option.text}</div>
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+          <CardContent className="space-y-4">
+            {/* Answer Cards - Large Interactive Tiles */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-scale-in">
+              {question.options.map((option, idx) => {
+                const isSelected = selectedAnswer?.text === option.text;
+                const scorePercent = option.score_value;
+                const barColor = scorePercent >= 75 ? 'bg-green-500' : scorePercent >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                
+                return (
+                  <Card
+                    key={idx}
+                    className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                      isSelected
+                        ? 'border-primary border-2 bg-primary/10 shadow-md'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                    onClick={() => {
+                      handleAnswerSelect(option);
+                      // Auto-advance after 400ms
+                      setTimeout(() => handleNext(), 400);
+                    }}
+                  >
+                    <CardContent className="p-6 text-center space-y-3">
+                      {/* Option Text */}
+                      <h4 className="font-semibold text-base leading-relaxed">
+                        {option.text}
+                      </h4>
+                      
+                      {/* Color-coded Score Bar */}
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${barColor} transition-all duration-300`}
+                            style={{ width: `${scorePercent}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground font-medium min-w-[3ch]">
+                          {scorePercent}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
       );
