@@ -69,12 +69,31 @@ export const ProtocolItemCard = ({
     enabled: item.item_type === 'supplement'
   });
 
-  // Match supplement to product
+  // Extract core keywords from supplement/product names
+  const extractKeywords = (name: string): string[] => {
+    // Remove dosages and parentheses content
+    let cleaned = name.replace(/\([^)]*\)/g, '').trim();
+    // Remove common prefixes
+    cleaned = cleaned.replace(/^(ultra-pure|pure|high-potency|premium|advanced|complex)\s+/gi, '');
+    // Split on + and common separators, filter short words
+    return cleaned.split(/[\s+/]+/).filter(word => word.length > 2);
+  };
+
+  // Match supplement to product using keyword matching
   const matchProduct = (supplementName: string): Product | undefined => {
-    return products.find(product => 
-      product.name.toLowerCase().includes(supplementName.toLowerCase()) ||
-      supplementName.toLowerCase().includes(product.name.toLowerCase())
-    );
+    const suppKeywords = extractKeywords(supplementName);
+    
+    return products.find(product => {
+      const prodKeywords = extractKeywords(product.name);
+      
+      // Check if at least 1 major keyword matches
+      return suppKeywords.some(suppKey =>
+        prodKeywords.some(prodKey =>
+          suppKey.toLowerCase().includes(prodKey.toLowerCase()) ||
+          prodKey.toLowerCase().includes(suppKey.toLowerCase())
+        )
+      );
+    });
   };
 
   const matchedProduct = item.item_type === 'supplement' ? matchProduct(item.name) : undefined;
