@@ -36,11 +36,11 @@ export default function HormoneCompassDashboard() {
             <div className="flex gap-3">
               <Button 
                 variant="outline"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/')}
                 className="gap-2"
               >
                 <Home className="w-4 h-4" />
-                Back to My Plan
+                Back to Homepage
               </Button>
               <Button 
                 onClick={() => navigate('/menomap/assessment')}
