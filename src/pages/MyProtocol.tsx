@@ -18,6 +18,7 @@ import { useAssessments, useProtocols, useMultipleProtocolItems, useDeleteProtoc
 import { ProtocolSkeleton } from "@/components/skeletons/ProtocolSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Protocol } from "@/types/protocols";
+import EvidenceDrawer from "@/components/EvidenceDrawer";
 
 interface AssessmentData {
   id: string;
@@ -381,6 +382,7 @@ const MyProtocol = () => {
           </TabsContent>
         </Tabs>
         </main>
+        <EvidenceDrawer />
       </div>
     </ErrorBoundary>
   );

@@ -2,7 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Pill, Dumbbell, Heart, Utensils, Activity, ExternalLink, Edit, Trash2 } from "lucide-react";
+import { Pill, Dumbbell, Heart, Utensils, Activity, ExternalLink, Edit, Trash2, Info } from "lucide-react";
+import { useCart } from "@/hooks/useCart";
+import { useLocale } from "@/hooks/useLocale";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts, Product } from "@/services/productService";
+import { SupplementProductCard } from "@/components/SupplementProductCard";
+import { useEvidenceStore } from "@/stores/evidenceStore";
+import { toast } from "sonner";
 
 interface ProtocolItem {
   id: string;
@@ -51,6 +58,55 @@ export const ProtocolItemCard = ({
   showActions = false
 }: ProtocolItemCardProps) => {
   const Icon = typeIcons[item.item_type];
+  const { addToCart } = useCart();
+  const { getCurrentLocale } = useLocale();
+  const { openEvidence } = useEvidenceStore();
+
+  // Fetch products for matching
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+    enabled: item.item_type === 'supplement'
+  });
+
+  // Match supplement to product
+  const matchProduct = (supplementName: string): Product | undefined => {
+    return products.find(product => 
+      product.name.toLowerCase().includes(supplementName.toLowerCase()) ||
+      supplementName.toLowerCase().includes(product.name.toLowerCase())
+    );
+  };
+
+  const matchedProduct = item.item_type === 'supplement' ? matchProduct(item.name) : undefined;
+
+  const handleAddToCart = (product: Product) => {
+    const currency = getCurrentLocale().currency;
+    const price = currency === 'USD' ? product.price_usd :
+                  currency === 'AUD' ? product.price_aud :
+                  currency === 'CAD' ? product.price_cad :
+                  product.price_gbp;
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: price || 0,
+      image: product.image_url || '/placeholder.svg',
+      brand: product.brand || '',
+      dosage: product.usage_instructions || '',
+      quantity: 1
+    });
+    
+    toast.success(`${product.name} added to cart`);
+  };
+
+  const handleViewEvidence = () => {
+    openEvidence(
+      item.name,
+      `Research Evidence for ${item.name}`,
+      `Scientific research supporting ${item.name} for health optimization.`,
+      { category: item.item_type }
+    );
+  };
 
   return (
     <Card className={`transition-all ${completed ? 'opacity-60' : ''}`}>
@@ -128,6 +184,30 @@ export const ProtocolItemCard = ({
               >
                 View Product <ExternalLink className="h-3 w-3 ml-1" />
               </Button>
+            )}
+
+            {item.item_type === 'supplement' && (
+              <div className="flex gap-2 mt-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={handleViewEvidence}
+                >
+                  <Info className="h-3 w-3 mr-1" />
+                  Evidence
+                </Button>
+              </div>
+            )}
+
+            {matchedProduct && (
+              <div className="mt-3 pt-3 border-t">
+                <SupplementProductCard
+                  supplementText={item.name}
+                  matchedProduct={matchedProduct}
+                  onAddToCart={() => handleAddToCart(matchedProduct)}
+                />
+              </div>
             )}
           </div>
         </div>
