@@ -115,10 +115,11 @@ export const ProtocolItemRow = ({ item, completed, onToggle, showBuyButton }: Pr
           <Button size="sm" variant="ghost" className="flex-shrink-0 h-8 px-2" onClick={handleViewEvidence}>
             <Info className="w-4 h-4" />
           </Button>
-          <Button size="sm" variant="outline" className="flex-shrink-0" onClick={handleBuyNow} disabled={!matchedProduct}>
-            <ShoppingCart className="w-4 h-4 mr-1" />
-            Buy
-          </Button>
+          {matchedProduct && (
+            <Button size="sm" variant="outline" className="flex-shrink-0 h-8 px-2" onClick={handleBuyNow}>
+              <ShoppingCart className="w-4 h-4" />
+            </Button>
+          )}
         </>
       )}
     </div>

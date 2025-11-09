@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Pill, Dumbbell, Heart, Utensils, Activity, ExternalLink, Edit, Trash2, Info } from "lucide-react";
+import { Pill, Dumbbell, Heart, Utensils, Activity, ExternalLink, Edit, Trash2, Info, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useLocale } from "@/hooks/useLocale";
 import { useQuery } from "@tanstack/react-query";
@@ -197,6 +197,17 @@ export const ProtocolItemCard = ({
                   <Info className="h-3 w-3 mr-1" />
                   Evidence
                 </Button>
+                {matchedProduct && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() => handleAddToCart(matchedProduct)}
+                  >
+                    <ShoppingCart className="h-3 w-3 mr-1" />
+                    Add to Cart
+                  </Button>
+                )}
               </div>
             )}
 
