@@ -168,27 +168,6 @@ const MyProtocol = () => {
     );
   }
 
-  if (uniqueAssessments.length === 0) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <main className="container mx-auto px-4 py-12 max-w-4xl">
-          <Card>
-            <CardContent className="pt-12 pb-12 text-center">
-              <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">No Protocol Yet</h2>
-              <p className="text-muted-foreground mb-6">
-                Complete your first symptom assessment to receive personalized supplement recommendations.
-              </p>
-              <Button onClick={() => navigate('/pillars')}>
-                Take Your First Assessment
-              </Button>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <ErrorBoundary>
