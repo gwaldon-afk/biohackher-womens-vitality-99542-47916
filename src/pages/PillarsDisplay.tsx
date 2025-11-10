@@ -51,7 +51,7 @@ const PillarsDisplay = () => {
             <div
               key={pillar.name}
               className="flex flex-col items-center justify-center p-8 rounded-lg transition-transform hover:scale-105"
-              style={{ backgroundColor: `${pillar.color}10` }}
+              style={{ backgroundColor: `${pillar.color}80` }}
             >
               <div className="w-48 h-48 mb-6 flex items-center justify-center">
                 <img
@@ -62,7 +62,7 @@ const PillarsDisplay = () => {
               </div>
               <h2
                 className="text-4xl font-serif font-bold text-center tracking-tight"
-                style={{ color: pillar.color }}
+                style={{ color: '#000000' }}
               >
                 {pillar.name}
               </h2>
