@@ -10,22 +10,22 @@ const PillarsDisplay = () => {
     {
       name: "Body",
       image: bodyPillar,
-      color: "hsl(24, 95%, 53%)", // #f97316 orange
+      color: "#f97316", // Brand orange
     },
     {
       name: "Balance",
       image: balancePillar,
-      color: "hsl(0, 84%, 60%)", // #ef4444 red
+      color: "#ef4444", // Brand red
     },
     {
       name: "Brain",
       image: brainPillar,
-      color: "hsl(271, 91%, 65%)", // #a855f7 purple
+      color: "#a855f7", // Brand purple
     },
     {
       name: "Beauty",
       image: beautyPillar,
-      color: "hsl(330, 81%, 60%)", // #ec4899 pink
+      color: "#ec4899", // Brand pink
     },
   ];
 
@@ -61,7 +61,7 @@ const PillarsDisplay = () => {
                 />
               </div>
               <h2
-                className="text-2xl font-bold text-center"
+                className="text-4xl font-serif font-bold text-center tracking-tight"
                 style={{ color: pillar.color }}
               >
                 {pillar.name}
