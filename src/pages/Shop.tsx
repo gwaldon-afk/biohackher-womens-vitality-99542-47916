@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign, Sparkles, Zap, Shield } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +15,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/services/productService";
 import type { Product as DbProduct } from "@/services/productService";
+import bodyPillar from "@/assets/body-pillar.png";
+import balancePillar from "@/assets/balance-pillar.png";
+import brainPillar from "@/assets/brain-pillar.png";
+import beautyPillar from "@/assets/beauty-pillar.png";
 
 interface Product {
   id: string;
@@ -120,7 +125,21 @@ const Shop = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredProducts = products.filter(product => product.featured);
+  // Hero products - one from each pillar
+  const pillarHeroProducts = [
+    { name: "Collagen Peptides", pillar: "Body", logo: bodyPillar },
+    { name: "Ashwagandha KSM-66", pillar: "Balance", logo: balancePillar },
+    { name: "Ginkgo Biloba Extract", pillar: "Brain", logo: brainPillar },
+    { name: "Hyaluronic Acid", pillar: "Beauty", logo: beautyPillar }
+  ];
+
+  const heroProducts = pillarHeroProducts
+    .map(hero => ({
+      product: products.find(p => p.name === hero.name),
+      pillar: hero.pillar,
+      logo: hero.logo
+    }))
+    .filter(item => item.product);
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
@@ -175,13 +194,22 @@ const Shop = () => {
     }
   };
 
-  const ProductCard = ({ product }: { product: Product }) => (
+  const ProductCard = ({ product, pillarLogo, pillarName }: { product: Product; pillarLogo?: string; pillarName?: string }) => (
     <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary/20 hover:border-l-primary">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start mb-2">
-          <Badge variant="outline" className="text-xs">
-            {categories.find(cat => cat.id === product.category)?.name}
-          </Badge>
+          {pillarLogo && pillarName ? (
+            <div className="flex items-center gap-2">
+              <img src={pillarLogo} alt={pillarName} className="h-8 w-8 object-contain" />
+              <Badge variant="outline" className="text-xs">
+                {pillarName} Pillar
+              </Badge>
+            </div>
+          ) : (
+            <Badge variant="outline" className="text-xs">
+              {categories.find(cat => cat.id === product.category)?.name}
+            </Badge>
+          )}
           {product.featured && (
             <Badge className="bg-warning/10 text-warning border-warning/20">
               Featured
@@ -303,18 +331,34 @@ const Shop = () => {
           </Button>
         </div>
 
-        {/* Featured Products */}
-        {featuredProducts.length > 0 && selectedCategory === "all" && (
+        {/* Hero Products Carousel */}
+        {heroProducts.length > 0 && selectedCategory === "all" && (
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Star className="h-6 w-6 text-warning" />
-              Featured Products
+              Pillar Hero Products
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-2 md:-ml-4">
+                {heroProducts.map((item) => (
+                  <CarouselItem key={item.product!.id} className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/3">
+                    <ProductCard 
+                      product={item.product!} 
+                      pillarLogo={item.logo}
+                      pillarName={item.pillar}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
           </div>
         )}
 
