@@ -375,8 +375,8 @@ const Shop = () => {
 
           {categories.map((category) => (
             <TabsContent key={category.id} value={category.id}>
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-2">
+              <div className="mb-8 mt-6">
+                <h2 className="text-2xl font-bold mb-3">
                   {category.name}
                 </h2>
                 <p className="text-muted-foreground">
