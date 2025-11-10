@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign } from "lucide-react";
+import { Moon, Heart, Thermometer, Brain, Pill, ShoppingCart, Star, Search, Filter, DollarSign, Sparkles, Zap, Shield } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
@@ -104,10 +104,12 @@ const Shop = () => {
   const categories = [
     { id: "all", name: "All Products", icon: ShoppingCart },
     { id: "sleep", name: "Sleep Support", icon: Moon },
-    { id: "hot-flashes", name: "Hormone Balance", icon: Thermometer },
-    { id: "joint-pain", name: "Joint Health", icon: Heart },
-    { id: "gut", name: "Digestive Health", icon: Pill },
-    { id: "brain-fog", name: "Cognitive Support", icon: Brain }
+    { id: "hormone-balance", name: "Hormone Balance", icon: Thermometer },
+    { id: "stress", name: "Stress & Mood", icon: Heart },
+    { id: "brain-fog", name: "Cognitive Support", icon: Brain },
+    { id: "beauty", name: "Beauty & Skin", icon: Sparkles },
+    { id: "energy", name: "Energy & Vitality", icon: Zap },
+    { id: "immune", name: "Immune Support", icon: Shield }
   ];
 
   const filteredProducts = products.filter(product => {
@@ -336,10 +338,12 @@ const Shop = () => {
                 <p className="text-muted-foreground">
                   {category.id === "all" && "Browse our complete selection of wellness products"}
                   {category.id === "sleep" && "Natural supplements to improve sleep quality and duration"}
-                  {category.id === "hot-flashes" && "Hormone-balancing products for menopausal comfort"}
-                  {category.id === "joint-pain" && "Anti-inflammatory supplements for joint health and mobility"}
-                  {category.id === "gut" && "Digestive support for optimal gut health and comfort"}
+                  {category.id === "hormone-balance" && "Hormone-balancing products for women's health and vitality"}
+                  {category.id === "stress" && "Adaptogenic herbs and supplements for stress resilience and mood balance"}
                   {category.id === "brain-fog" && "Cognitive enhancers for mental clarity and focus"}
+                  {category.id === "beauty" && "Science-backed supplements for skin, hair, and beauty from within"}
+                  {category.id === "energy" && "Cellular energy support for vitality and endurance"}
+                  {category.id === "immune" && "Immune system strengthening and antioxidant protection"}
                 </p>
               </div>
 
