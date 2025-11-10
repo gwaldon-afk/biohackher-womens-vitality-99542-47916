@@ -10,22 +10,22 @@ const PillarsDisplay = () => {
     {
       name: "Body",
       image: bodyPillar,
-      color: "#f97316", // Brand orange
+      color: "#F8C5AC", // Brand PEACH
     },
     {
       name: "Balance",
       image: balancePillar,
-      color: "#ef4444", // Brand red
+      color: "#F8C5AC", // Brand PEACH
     },
     {
       name: "Brain",
       image: brainPillar,
-      color: "#a855f7", // Brand purple
+      color: "#F8C5AC", // Brand PEACH
     },
     {
       name: "Beauty",
       image: beautyPillar,
-      color: "#ec4899", // Brand pink
+      color: "#F8C5AC", // Brand PEACH
     },
   ];
 
