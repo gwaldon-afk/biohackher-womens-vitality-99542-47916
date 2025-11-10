@@ -336,7 +336,7 @@ const Shop = () => {
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
               <Star className="h-6 w-6 text-warning" />
-              Pillar Hero Products
+              Try these to get started
             </h2>
             <Carousel
               opts={{
