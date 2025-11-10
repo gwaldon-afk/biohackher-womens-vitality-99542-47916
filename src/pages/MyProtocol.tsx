@@ -4,6 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
 import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen } from "lucide-react";
+import beautyPillar from "@/assets/beauty-pillar.png";
+import brainPillar from "@/assets/brain-pillar.png";
+import bodyPillar from "@/assets/body-pillar.png";
+import balancePillar from "@/assets/balance-pillar.png";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,6 +111,18 @@ const MyProtocol = () => {
         description: "Failed to update protocol."
       });
     }
+  };
+
+  // Map item types to brand pillars
+  const getPillarForItemType = (itemType: string) => {
+    const pillarMap: Record<string, { name: string; logo: string; color: string }> = {
+      'supplement': { name: 'Body', logo: bodyPillar, color: 'text-orange-500' },
+      'diet': { name: 'Beauty', logo: beautyPillar, color: 'text-pink-500' },
+      'exercise': { name: 'Body', logo: bodyPillar, color: 'text-orange-500' },
+      'therapy': { name: 'Balance', logo: balancePillar, color: 'text-red-500' },
+      'habit': { name: 'Brain', logo: brainPillar, color: 'text-purple-500' }
+    };
+    return pillarMap[itemType] || { name: 'Body', logo: bodyPillar, color: 'text-orange-500' };
   };
 
   const getSymptomName = (symptomId: string) => {
@@ -265,7 +281,7 @@ const MyProtocol = () => {
                           </div>
                         )}
 
-                        {/* Organize by item type */}
+                        {/* Organize by item type with Brand Pillar logos */}
                         {['supplement', 'diet', 'exercise', 'therapy', 'habit'].map((type) => {
                           const itemsOfType = allProtocolItems.filter(
                             item => item.is_active && item.item_type === type && !(type === 'diet' && item.meal_template_id)
@@ -273,19 +289,31 @@ const MyProtocol = () => {
                           
                           if (itemsOfType.length === 0) return null;
                           
-                          const typeLabels: Record<string, { label: string; icon: any }> = {
-                            supplement: { label: '💊 Supplements', icon: Package },
-                            diet: { label: '🥗 Nutrition', icon: Package },
-                            exercise: { label: '🏃 Exercise', icon: Package },
-                            therapy: { label: '✨ Therapies', icon: Package },
-                            habit: { label: '🌟 Habits', icon: Package }
+                          const pillar = getPillarForItemType(type);
+                          
+                          const typeLabels: Record<string, string> = {
+                            supplement: 'Supplements',
+                            diet: 'Nutrition',
+                            exercise: 'Exercise',
+                            therapy: 'Therapies',
+                            habit: 'Habits'
                           };
                           
                           return (
                             <div key={type} className="space-y-2">
-                              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                                {typeLabels[type]?.label || type}
-                              </h3>
+                              <div className="flex items-center gap-2">
+                                <img 
+                                  src={pillar.logo} 
+                                  alt={pillar.name}
+                                  className="h-8 w-8 object-contain"
+                                />
+                                <h3 className="font-semibold text-sm uppercase tracking-wide">
+                                  {typeLabels[type] || type}
+                                </h3>
+                                <Badge variant="outline" className="text-xs">
+                                  {pillar.name} Pillar
+                                </Badge>
+                              </div>
                               <div className="space-y-2">
                                 {itemsOfType.map((item) => (
                                   <ProtocolItemCard
@@ -351,15 +379,33 @@ const MyProtocol = () => {
                               {protocol.description && (
                                 <CardDescription>{protocol.description}</CardDescription>
                               )}
-                              <div className="flex gap-2 mt-2">
+                              <div className="flex gap-2 mt-2 items-center">
                                 <Badge variant="outline">
                                   Started {new Date(protocol.start_date).toLocaleDateString()}
                                 </Badge>
-                                {protocol.created_from_pillar && (
-                                  <Badge variant="secondary">
-                                    {protocol.created_from_pillar}
-                                  </Badge>
-                                )}
+                                {protocol.created_from_pillar && (() => {
+                                  const pillarLogos: Record<string, string> = {
+                                    'Body': bodyPillar,
+                                    'Balance': balancePillar,
+                                    'Brain': brainPillar,
+                                    'Beauty': beautyPillar
+                                  };
+                                  const logo = pillarLogos[protocol.created_from_pillar];
+                                  return (
+                                    <div className="flex items-center gap-1">
+                                      {logo && (
+                                        <img 
+                                          src={logo} 
+                                          alt={protocol.created_from_pillar}
+                                          className="h-5 w-5 object-contain"
+                                        />
+                                      )}
+                                      <Badge variant="secondary">
+                                        {protocol.created_from_pillar} Pillar
+                                      </Badge>
+                                    </div>
+                                  );
+                                })()}
                               </div>
                             </div>
                             <Button
