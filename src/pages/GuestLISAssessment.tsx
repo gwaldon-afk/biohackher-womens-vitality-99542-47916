@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 interface QuestionOption {
   text: string;
@@ -965,8 +966,8 @@ export default function GuestLISAssessment() {
         smokingPenalty: scoreData.smokingPenalty
       };
 
-      // Handle authenticated users differently
-      if (user) {
+      // Handle authenticated users differently (but not in test mode)
+      if (user && !TEST_MODE_ENABLED) {
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
 
         // Determine activity level from answers (Q8 + Q9)
