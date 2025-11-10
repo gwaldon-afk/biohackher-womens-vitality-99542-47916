@@ -183,7 +183,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
 
         <CardContent className="space-y-6">
           {/* Score Display - Using ProgressCircle */}
-          <div className="flex flex-col items-center justify-center py-4">
+          <div id="score-circle" className="flex flex-col items-center justify-center py-4">
             <ProgressCircle value={progressValue} size="xl" className="mb-3">
               <motion.div 
                 key={currentScore}
@@ -222,7 +222,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
             </Collapsible>
 
             {/* Hydration Slider */}
-            <div className="space-y-2">
+            <div id="hydration-slider" className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Droplets className="h-5 w-5 text-blue-500" />
@@ -260,7 +260,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
             </div>
 
             {/* Vegetables Slider */}
-            <div className="space-y-2">
+            <div id="vegetables-slider" className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Leaf className="h-5 w-5 text-green-500" />
@@ -298,7 +298,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
             </div>
 
             {/* Protein Slider */}
-            <div className="space-y-2">
+            <div id="protein-slider" className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Beef className="h-5 w-5 text-red-500" />
@@ -336,7 +336,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
             </div>
 
             {/* Healthy Fats Slider */}
-            <div className="space-y-2">
+            <div id="fats-slider" className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Fish className="h-5 w-5 text-blue-500" />
@@ -383,7 +383,7 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
             </div>
 
             {/* Sugar Slider */}
-            <div className="space-y-2">
+            <div id="sugar-slider" className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Cookie className="h-5 w-5 text-orange-500" />

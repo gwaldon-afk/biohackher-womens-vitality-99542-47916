@@ -31,6 +31,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { GoalsReminderCard } from "@/components/GoalsReminderCard";
 import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import { GoalCheckInAlert } from "@/components/GoalCheckInAlert";
+import { FirstNutritionWelcomeModal } from "@/components/onboarding/FirstNutritionWelcomeModal";
 
 import { GoalWorkingTowards } from "@/components/GoalWorkingTowards";
 import { useGoals } from "@/hooks/useGoals";
@@ -88,11 +89,14 @@ interface UserSymptom {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'roadmap');
   const [loading, setLoading] = useState(false);
+  
+  // Nutrition onboarding state
+  const [showNutritionWelcome, setShowNutritionWelcome] = useState(false);
   
   const lisData = useLISData();
   const { currentStage, isEnabled: hormoneCompassEnabled } = useHormoneCompass();
@@ -144,6 +148,22 @@ const Dashboard = () => {
 
   // Check if we should auto-open the daily submission modal
   const shouldAutoOpenModal = searchParams.get('action') === 'submitDaily';
+
+  // Check for first login with nutrition source
+  useEffect(() => {
+    const firstLogin = searchParams.get('firstLogin');
+    const source = searchParams.get('source');
+    const onboardingCompleted = localStorage.getItem('nutrition_onboarding_completed');
+
+    if (firstLogin === 'true' && source === 'nutrition' && !onboardingCompleted) {
+      setShowNutritionWelcome(true);
+      
+      // Clean up URL params
+      searchParams.delete('firstLogin');
+      searchParams.delete('source');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Get unique assessments by symptom type (most recent for each type)
   const recentAssessments = assessments?.reduce((acc: SymptomAssessment[], current) => {
@@ -414,10 +434,23 @@ const Dashboard = () => {
     }
   };
 
+  const handleNutritionWelcomeComplete = () => {
+    setShowNutritionWelcome(false);
+    
+    // Navigate to Nutrition page with showTour query param
+    navigate('/nutrition?showTour=true');
+  };
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
         <Navigation />
+        
+        {/* Nutrition Onboarding Modal */}
+        <FirstNutritionWelcomeModal 
+          isOpen={showNutritionWelcome}
+          onComplete={handleNutritionWelcomeComplete}
+        />
         
         <main className="container mx-auto px-4 py-8 max-w-6xl">
 

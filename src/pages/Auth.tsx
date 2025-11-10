@@ -173,6 +173,9 @@ const Auth = () => {
     setIsLoading(true);
     const { error } = await signUp(data.email, data.password, data.preferredName);
     
+    // Check if user is signing up from nutrition preview
+    const fromNutrition = searchParams.get('source') === 'nutrition';
+    
     if (!error && guestSessionId) {
       // User is registering from guest results - claim their assessment
       const { data: { user: currentUser } } = await supabase.auth.getUser();
@@ -245,16 +248,29 @@ const Auth = () => {
             .eq('session_id', guestSessionId);
           
           toast.success("Welcome! Your assessment has been saved.");
-          navigate('/lis-results');
+          
+          // If from nutrition, redirect to dashboard with firstLogin flag
+          if (fromNutrition) {
+            navigate('/dashboard?firstLogin=true&source=nutrition');
+          } else {
+            navigate('/lis-results');
+          }
         }
       }
     } else if (!error) {
-      // New user without guest session - redirect to unified assessment
-      toast.success("Welcome! Let's set up your health profile.");
-      const onboardingPath = returnTo 
-        ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
-        : '/guest-lis-assessment';
-      navigate(onboardingPath);
+      // New user without guest session
+      if (fromNutrition) {
+        // Redirect to dashboard with firstLogin flag for nutrition onboarding
+        toast.success("Welcome! Let's get you started with nutrition tracking.");
+        navigate('/dashboard?firstLogin=true&source=nutrition');
+      } else {
+        // Standard flow - redirect to unified assessment
+        toast.success("Welcome! Let's set up your health profile.");
+        const onboardingPath = returnTo 
+          ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
+          : '/guest-lis-assessment';
+        navigate(onboardingPath);
+      }
     }
     
     setIsLoading(false);

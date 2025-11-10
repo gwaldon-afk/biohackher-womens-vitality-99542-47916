@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
@@ -9,6 +9,7 @@ import NutritionCalculator from "@/components/nutrition/NutritionCalculator";
 import FoodScienceTab from "@/components/nutrition/FoodScienceTab";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
 import NutritionalScorecard from "@/components/NutritionalScorecard";
+import { GuidedNutritionOnboarding } from "@/components/onboarding/GuidedNutritionOnboarding";
 
 const Nutrition = () => {
   console.log('[Nutrition] Component rendering');
@@ -25,10 +26,31 @@ const Nutrition = () => {
   console.log('[Nutrition] State:', { preferences, isLoading, hasPreferences });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showGuidedTour, setShowGuidedTour] = useState(false);
+
+  // Check if guided tour should be shown (from Dashboard navigation)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const showTour = urlParams.get('showTour');
+    const onboardingCompleted = localStorage.getItem('nutrition_onboarding_completed');
+    
+    if (showTour === 'true' && !onboardingCompleted) {
+      setShowGuidedTour(true);
+      
+      // Clean up URL
+      window.history.replaceState({}, '', '/nutrition');
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
+      
+      {/* Guided Nutrition Onboarding */}
+      <GuidedNutritionOnboarding
+        isActive={showGuidedTour}
+        onComplete={() => setShowGuidedTour(false)}
+      />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
