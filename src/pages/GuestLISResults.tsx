@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { TrendingUp, TrendingDown, AlertCircle, Sparkles, Lock } from 'lucide-react';
 import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
 import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
+import { NutritionPreviewCard } from '@/components/onboarding/NutritionPreviewCard';
 
 interface BriefResults {
   finalScore: number;
@@ -479,6 +480,62 @@ export default function GuestLISResults() {
             </div>
           </Card>
         )}
+
+        {/* Nutrition Preview Card - NEW */}
+        <Card className="p-6 mb-6 border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 to-background relative overflow-hidden">
+          {/* Blur overlay */}
+          <div className="absolute inset-0 backdrop-blur-sm bg-background/70 z-10 rounded-lg flex items-center justify-center">
+            <div className="text-center space-y-4 p-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
+                <Lock className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold">Daily Nutrition Tracking</h3>
+              <p className="text-muted-foreground max-w-md">
+                Track your anti-inflammatory score every day, see how nutrition impacts your LIS, 
+                and get personalized meal recommendations
+              </p>
+              
+              {/* Benefits list */}
+              <div className="grid grid-cols-1 gap-2 max-w-sm mx-auto text-left">
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Daily nutrition scoring (0-15 scale)</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Track hydration, protein, vegetables, and more</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>See how daily choices affect your biological age</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Build streaks and earn achievements</span>
+                </div>
+              </div>
+              
+              <Button 
+                size="lg" 
+                onClick={() => navigate(`/auth?session=${sessionId}&source=nutrition`)}
+                className="text-lg px-8 py-6 h-auto"
+              >
+                Sign Up to Start Tracking
+              </Button>
+              
+              <p className="text-xs text-muted-foreground">
+                Includes FREE 7-day Premium trial
+              </p>
+            </div>
+          </div>
+          
+          {/* Preview content (blurred behind overlay) */}
+          <div className="opacity-50">
+            <NutritionPreviewCard 
+              onUnlockClick={() => navigate(`/auth?session=${sessionId}&source=nutrition`)} 
+            />
+          </div>
+        </Card>
 
         {/* Detailed Pillar Analysis */}
         <div className="mb-6">

@@ -43,28 +43,10 @@ export const NutritionScorecardWidget = () => {
   };
 
   const handleScoreCalculated = async (score: number, grade: string) => {
+    // Note: Actual saving now happens in NutritionalScorecard via useNutritionTracking hook
+    // This callback just updates local state
     if (!user) return;
-    
-    const today = new Date().toISOString().split('T')[0];
-    
-    const { error } = await supabase
-      .from('daily_nutrition_scores')
-      .upsert({
-        user_id: user.id,
-        score_date: today,
-        score,
-        grade,
-        hydration: 0, // Basic tracking for now
-        vegetables: 0,
-        protein: 0,
-        processed_foods: 0,
-        sugar: 0,
-        dairy_gluten: 0,
-      }, { onConflict: 'user_id,score_date' });
-    
-    if (!error) {
-      setHasLoggedToday(true);
-    }
+    setHasLoggedToday(true);
   };
 
   return (

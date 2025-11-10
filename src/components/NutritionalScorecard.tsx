@@ -9,6 +9,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Utensils, Droplets, Leaf, Beef, Fish, Cookie, Wine, Milk, HelpCircle, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNutritionTracking } from "@/hooks/useNutritionTracking";
+import { useAuth } from "@/hooks/useAuth";
 
 // Emoji mapping functions
 const getHydrationEmoji = (value: number) => {
@@ -93,6 +95,9 @@ interface NutritionalScorecardProps {
 }
 
 const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }: NutritionalScorecardProps) => {
+  const { user } = useAuth();
+  const { saveLog } = useNutritionTracking();
+  
   const [nutritionalData, setNutritionalData] = useState<NutritionalData>({
     hydration: 3,
     vegetables: 3,
@@ -135,7 +140,25 @@ const NutritionalScorecard = ({ onScoreCalculated, hasDairySensitivity = false }
     const score = calculateScore();
     const { grade } = getGrade(score);
     onScoreCalculated(score, grade);
-  }, [nutritionalData, hasDairySensitivity, onScoreCalculated]);
+    
+    // Auto-save to database if user is logged in
+    if (user) {
+      // Debounce saves to avoid excessive writes
+      const timeoutId = setTimeout(() => {
+        saveLog(score, grade, {
+          hydration: nutritionalData.hydration,
+          vegetables: nutritionalData.vegetables,
+          protein: nutritionalData.protein,
+          fats_omegas: nutritionalData.fatsOmegas,
+          sugar_processed: nutritionalData.sugarProcessed,
+          alcohol: nutritionalData.alcohol,
+          dairy_gluten: nutritionalData.dairyGluten || 0
+        });
+      }, 2000); // 2 second debounce
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [nutritionalData, hasDairySensitivity, onScoreCalculated, user, saveLog]);
 
   const updateValue = (key: keyof NutritionalData, value: number) => {
     setNutritionalData(prev => ({ ...prev, [key]: value }));
