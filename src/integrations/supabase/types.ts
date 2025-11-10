@@ -2587,6 +2587,68 @@ export type Database = {
           },
         ]
       }
+      protocol_bundles: {
+        Row: {
+          base_price: number
+          bundle_name: string
+          bundle_status: string | null
+          created_at: string | null
+          discount_amount: number
+          discount_percentage: number | null
+          expires_at: string | null
+          final_price: number
+          id: string
+          items_snapshot: Json
+          protocol_id: string
+          purchased_at: string | null
+          total_items: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          base_price?: number
+          bundle_name: string
+          bundle_status?: string | null
+          created_at?: string | null
+          discount_amount?: number
+          discount_percentage?: number | null
+          expires_at?: string | null
+          final_price?: number
+          id?: string
+          items_snapshot?: Json
+          protocol_id: string
+          purchased_at?: string | null
+          total_items?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          base_price?: number
+          bundle_name?: string
+          bundle_status?: string | null
+          created_at?: string | null
+          discount_amount?: number
+          discount_percentage?: number | null
+          expires_at?: string | null
+          final_price?: number
+          id?: string
+          items_snapshot?: Json
+          protocol_id?: string
+          purchased_at?: string | null
+          total_items?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_bundles_protocol_id_fkey"
+            columns: ["protocol_id"]
+            isOneToOne: false
+            referencedRelation: "protocols"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       protocol_item_completions: {
         Row: {
           completed_at: string
@@ -2640,6 +2702,7 @@ export type Database = {
           meal_template_id: string | null
           name: string
           notes: string | null
+          product_id: string | null
           product_link: string | null
           protocol_id: string
           recipe_data: Json | null
@@ -2660,6 +2723,7 @@ export type Database = {
           meal_template_id?: string | null
           name: string
           notes?: string | null
+          product_id?: string | null
           product_link?: string | null
           protocol_id: string
           recipe_data?: Json | null
@@ -2680,6 +2744,7 @@ export type Database = {
           meal_template_id?: string | null
           name?: string
           notes?: string | null
+          product_id?: string | null
           product_link?: string | null
           protocol_id?: string
           recipe_data?: Json | null
@@ -2692,6 +2757,13 @@ export type Database = {
             columns: ["goal_id"]
             isOneToOne: false
             referencedRelation: "user_health_goals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protocol_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
           {

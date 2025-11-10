@@ -23,6 +23,10 @@ import { ProtocolSkeleton } from "@/components/skeletons/ProtocolSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Protocol } from "@/types/protocols";
 import EvidenceDrawer from "@/components/EvidenceDrawer";
+import { ProtocolBundleCard } from "@/components/ProtocolBundleCard";
+import { useProtocolBundle } from "@/hooks/useProtocolBundle";
+import { useCart } from "@/hooks/useCart";
+import { createProtocolBundle } from "@/services/protocolBundleService";
 
 interface AssessmentData {
   id: string;
@@ -36,6 +40,7 @@ const MyProtocol = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { adherence, toggleAdherence } = useAdherence();
+  const { addToCart } = useCart();
 
   // Use React Query hooks
   const { data: protocols = [], isLoading: loadingProtocols } = useProtocols(user?.id);
@@ -44,12 +49,16 @@ const MyProtocol = () => {
   const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
   
   const activeProtocols = protocols.filter(p => p.is_active);
+  const activeProtocol = activeProtocols[0]; // Get first active protocol
   
   // Get protocol items for ALL active protocols
   const activeProtocolIds = activeProtocols.map(p => p.id);
   
   // Fetch items for all active protocols in a single query
   const { data: allProtocolItems = [], isLoading: loadingItems } = useMultipleProtocolItems(activeProtocolIds);
+
+  // Fetch bundle calculation for active protocol
+  const { data: bundleCalculation, isLoading: bundleLoading } = useProtocolBundle(activeProtocol?.id);
 
   // Get unique assessments by symptom type (most recent for each)
   const uniqueAssessments = assessments?.reduce((acc: AssessmentData[], current) => {
@@ -157,6 +166,46 @@ const MyProtocol = () => {
     });
   };
 
+  // Handle adding complete protocol bundle to cart
+  const handleAddBundleToCart = async () => {
+    if (!bundleCalculation || !activeProtocol || !user) return;
+
+    try {
+      // Create bundle record in database
+      await createProtocolBundle(
+        user.id,
+        activeProtocol.id,
+        activeProtocol.name,
+        bundleCalculation
+      );
+
+      // Add each item to cart
+      bundleCalculation.items.forEach((item) => {
+        addToCart({
+          id: item.product_id || item.protocol_item_id,
+          name: item.name,
+          price: item.price,
+          image: "/placeholder.svg",
+          brand: "Protocol",
+          dosage: item.dosage || "",
+          quantity: 1,
+        });
+      });
+
+      toast({
+        title: "Bundle added to cart!",
+        description: `Added ${bundleCalculation.totalItems} items from your ${activeProtocol.name} protocol. ${bundleCalculation.eligibleForDiscount ? `Saved $${bundleCalculation.discountAmount.toFixed(2)}!` : ''}`,
+      });
+    } catch (error) {
+      console.error("Error adding bundle to cart:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add bundle to cart. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -206,6 +255,16 @@ const MyProtocol = () => {
 
           {/* Active Protocol Tab - Merged Today + By Type */}
           <TabsContent value="active" className="space-y-6">
+            {/* Protocol Bundle Card */}
+            {activeProtocols.length > 0 && allProtocolItems.length > 0 && (
+              <ProtocolBundleCard
+                protocolName={activeProtocol?.name || "My Protocol"}
+                bundleCalculation={bundleCalculation || null}
+                isLoading={bundleLoading}
+                onAddToCart={handleAddBundleToCart}
+              />
+            )}
+
             {activeProtocols.length === 0 ? (
               <Card>
                 <CardContent className="pt-12 pb-12 text-center">
