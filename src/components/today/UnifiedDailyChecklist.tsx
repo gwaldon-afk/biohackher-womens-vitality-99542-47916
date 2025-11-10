@@ -21,6 +21,7 @@ import { NutritionScorecardWidget } from "@/components/today/NutritionScorecardW
 import { MealDetailModal } from "@/components/today/MealDetailModal";
 import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummary";
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
+import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
@@ -303,6 +304,11 @@ export const UnifiedDailyChecklist = () => {
           })}
         </div>
       )}
+
+      {/* Daily Essentials */}
+      <div className="pb-6">
+        <DailyEssentialsCard />
+      </div>
 
       {/* LIS Impact & Biological Age Prediction */}
       <div className="pb-6">
