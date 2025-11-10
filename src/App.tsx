@@ -69,6 +69,7 @@ import ContentManagement from "./pages/admin/ContentManagement";
 import UserManagement from "./pages/admin/UserManagement";
 import Analytics from "./pages/admin/Analytics";
 import ShopManagement from "./pages/admin/ShopManagement";
+import ProductLinking from "./pages/admin/ProductLinking";
 import SystemHealth from "./pages/admin/SystemHealth";
 import { AdminRoute } from "./components/AdminRoute";
 import { AdminLayout } from "./components/AdminLayout";
@@ -214,6 +215,7 @@ const App = () => (
             <Route path="experts" element={<ExpertVerification />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="shop" element={<ShopManagement />} />
+            <Route path="product-linking" element={<ProductLinking />} />
             <Route path="system" element={<SystemHealth />} />
           </Route>
           

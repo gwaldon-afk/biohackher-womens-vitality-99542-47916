@@ -24,6 +24,7 @@ interface ProtocolItem {
   time_of_day: string[] | null;
   notes: string | null;
   product_link: string | null;
+  product_id: string | null;
   is_active: boolean;
 }
 
@@ -237,6 +238,7 @@ export const useProtocols = () => {
           time_of_day: item.time_of_day || null,
           notes: item.notes || `Added from ${protocolName}`,
           product_link: null,
+          product_id: null,
           is_active: true
         })
       );

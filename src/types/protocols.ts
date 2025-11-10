@@ -83,6 +83,7 @@ export interface ProtocolItem {
   time_of_day: string[] | null;
   notes: string | null;
   product_link: string | null;
+  product_id: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

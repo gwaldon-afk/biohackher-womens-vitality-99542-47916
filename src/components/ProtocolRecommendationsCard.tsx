@@ -87,7 +87,8 @@ export function ProtocolRecommendationsCard({ userSymptoms }: ProtocolRecommenda
         is_active: true,
         dosage: null,
         notes: null,
-        product_link: null
+        product_link: null,
+        product_id: null
       });
 
       toast({

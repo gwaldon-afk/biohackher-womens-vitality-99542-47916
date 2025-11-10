@@ -147,6 +147,10 @@ export const ProtocolBuilderDialog = ({ trigger, onProtocolCreated }: { trigger?
 
   const handleCreateProtocol = async () => {
     try {
+      // Import auto-match function
+      const { autoMatchProtocolItemToProduct } = await import('@/services/protocolProductLinkingService');
+      const { getProducts } = await import('@/services/productService');
+      
       const protocol = await createProtocol({
         ...protocolData,
         is_active: true,
@@ -158,14 +162,30 @@ export const ProtocolBuilderDialog = ({ trigger, onProtocolCreated }: { trigger?
       const selectedItems = items.filter(item => item.selected !== false);
       
       if (protocol && selectedItems.length > 0) {
+        // Fetch products for auto-matching
+        const products = await getProducts();
+        
         await Promise.all(
-          selectedItems.map(item => {
+          selectedItems.map(async (item) => {
             const { selected, ...itemData } = item;
+            
+            // Auto-match product for supplements
+            let productId = null;
+            if (itemData.item_type === 'supplement') {
+              const matchedProduct = autoMatchProtocolItemToProduct(
+                itemData.name,
+                itemData.item_type,
+                products
+              );
+              productId = matchedProduct?.id || null;
+            }
+            
             return addProtocolItem({
               protocol_id: protocol.id,
               ...itemData,
               notes: null,
               product_link: null,
+              product_id: productId,
               is_active: true
             });
           })

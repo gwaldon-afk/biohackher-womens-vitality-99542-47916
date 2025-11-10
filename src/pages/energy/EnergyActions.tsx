@@ -50,7 +50,8 @@ export default function EnergyActions() {
           is_active: true,
           dosage: null,
           notes: biohack.instructions ? biohack.instructions.join('. ') : null,
-          product_link: null
+          product_link: null,
+          product_id: null
         });
 
         toast({

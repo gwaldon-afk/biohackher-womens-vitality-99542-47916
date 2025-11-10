@@ -19,6 +19,7 @@ const adminNavItems = [
   { path: '/admin/experts', icon: GraduationCap, label: 'Expert Partners' },
   { path: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
   { path: '/admin/shop', icon: ShoppingBag, label: 'Shop' },
+  { path: '/admin/product-linking', icon: ShoppingBag, label: 'Product Linking' },
   { path: '/admin/system', icon: Settings, label: 'System' },
 ];
 
