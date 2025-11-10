@@ -32,6 +32,7 @@ import Settings from "./pages/Settings";
 import FAQ from "./pages/FAQ";
 import Shop from "./pages/Shop";
 import Pillars from "./pages/Pillars";
+import PillarsDisplay from "./pages/PillarsDisplay";
 import SevenDayPlan from "./pages/SevenDayPlan";
 import LongevityMindsetQuiz from "./pages/LongevityMindsetQuiz";
 import LIS2Research from "./pages/LIS2Research";
@@ -151,6 +152,7 @@ const App = () => (
             <Route path="/faq" element={<RedirectToAbout tab="faq" />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/pillars" element={<Pillars />} />
+            <Route path="/pillars-display" element={<PillarsDisplay />} />
             <Route path="/7-day-plan/:pillar" element={<SevenDayPlan />} />
             <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
             <Route path="/brain-assessment" element={<BrainAssessment />} />
