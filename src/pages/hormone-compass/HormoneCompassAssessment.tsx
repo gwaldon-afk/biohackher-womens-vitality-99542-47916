@@ -103,7 +103,7 @@ export default function HormoneCompassAssessment() {
       const { data: stageData, error } = await supabase
         .from('hormone_compass_stages')
         .insert({
-          user_id: user.id,
+          user_id: session.user.id,
           stage: result.stage,
           confidence_score: result.confidence,
           hormone_indicators: { 
