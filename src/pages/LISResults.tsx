@@ -246,7 +246,7 @@ const LISResults = () => {
       <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
       {/* Heading Card */}
-      <Card className="mb-6 text-center">
+      <Card className="mb-6 text-center bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/20">
         <CardHeader className="pb-4">
           <CardTitle className="text-2xl">Longevity Impact Results</CardTitle>
           <CardDescription>
@@ -257,7 +257,7 @@ const LISResults = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Score Display Card - NOW FIRST (LEFT) */}
-        <Card className="flex flex-col justify-center">
+        <Card className="flex flex-col justify-center bg-gradient-to-br from-primary/5 to-background border-primary/20">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="text-sm text-muted-foreground mb-2 font-medium">
               Your Longevity Impact Score
@@ -285,7 +285,7 @@ const LISResults = () => {
         </Card>
 
         {/* Radar Chart Card - NOW SECOND (RIGHT) */}
-        <Card>
+        <Card className="bg-gradient-to-br from-secondary/5 to-background border-primary/20">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-lg">Your Health Pillars</CardTitle>
             <CardDescription className="text-xs">
@@ -304,7 +304,7 @@ const LISResults = () => {
 
       {/* Biological Age Card - For ALL users with age data */}
       {chronologicalAge > 0 && bioAgeData && (
-        <Card className="p-8 mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+        <Card className="p-8 mb-6 border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-secondary/5 to-background shadow-lg">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
             
@@ -542,7 +542,7 @@ const LISResults = () => {
       )}
 
       {/* Individual Pillar Analysis Cards */}
-      <div className="mb-6">
+      <div className="mb-6 p-6 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Activity className="h-6 w-6 text-primary" />
           Detailed Pillar Analysis
@@ -568,59 +568,51 @@ const LISResults = () => {
       </div>
 
 
-      {/* AI Analysis Card - Button Triggered */}
-      {!isGuest && (
-        <div className="mb-6">
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <div className="mb-4">
-                <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
-                <h3 className="text-lg font-semibold mb-2">AI-Powered Deep Dive</h3>
-                <p className="text-sm text-muted-foreground">
-                  Get additional AI-driven pattern detection and personalized insights beyond your pillar analysis
-                </p>
-              </div>
-              <AssessmentAIAnalysisCard
-                assessmentType="lis"
-                assessmentId="longevity-impact-score"
-                score={score}
-                scoreCategory={getScoreCategory(score)}
-                answers={urlPillarScores || lisData.pillarScores}
-                metadata={{ 
-                  pillarScores: urlPillarScores || lisData.pillarScores,
-                  biologicalAge: bioAgeData?.bioAge,
-                  chronologicalAge: chronologicalAge
-                }}
-                autoGenerate={false}
-              />
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
 
       <Card className="mb-6">
         <CardContent className="pt-6">
           {/* Guest User - Prompt to Register */}
           {isGuest && (
-            <Alert className="mt-6 border-primary">
-              <Sparkles className="h-5 w-5" />
-              <AlertTitle>Want Your Detailed Analysis?</AlertTitle>
-              <AlertDescription className="mt-2">
-                <p className="mb-4">
-                  Register now to unlock your comprehensive longevity report including:
+            <Card className="border-2 border-primary bg-gradient-to-br from-primary/10 to-background">
+              <CardContent className="pt-6 text-center space-y-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
+                  <Sparkles className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold">Save Your Results & Get Your Protocol</h3>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Create a free account to unlock your personalized 7-day longevity protocol, track progress over time, and access daily nutrition scoring.
                 </p>
-                <ul className="list-disc list-inside space-y-1 text-sm mb-4">
-                  <li>Detailed breakdown of each pillar score</li>
-                  <li>Personalized recommendations for improvement</li>
-                  <li>Track your progress over time</li>
-                  <li>7-day free trial (no credit card required initially)</li>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left max-w-2xl mx-auto mb-4">
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Personalized supplement & lifestyle protocol</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Daily nutrition tracking with biological age impact</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>Track improvements over time with monthly reassessments</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>AI Health Assistant (5 free questions/day)</span>
+                  </li>
                 </ul>
-                <Button onClick={() => navigate('/auth')} className="w-full">
-                  Register for Detailed Analysis
+                <Button 
+                  onClick={() => navigate('/auth?source=lis-results')} 
+                  size="lg"
+                  className="text-lg px-8 py-6 h-auto"
+                >
+                  Create Free Account & Unlock Protocol
                 </Button>
-              </AlertDescription>
-            </Alert>
+                <p className="text-xs text-muted-foreground">
+                  Includes FREE 3-day trial • No credit card required
+                </p>
+              </CardContent>
+            </Card>
           )}
 
           {/* Registered User - Show Comprehensive Insights */}
@@ -628,16 +620,43 @@ const LISResults = () => {
             <div className="mt-6 space-y-6">
               {/* View Protocol CTA */}
               {user && (
-                <div className="flex justify-center mb-6">
+                <div className="flex flex-col items-center gap-3 mb-6">
                   <Button 
                     onClick={() => navigate('/my-protocol')}
                     size="lg"
-                    className="gap-2"
+                    className="gap-2 w-full md:w-auto"
                     disabled={protocolGenerating || protocolsLoading}
                   >
                     <Sparkles className="w-5 h-5" />
                     {protocolGenerating ? 'Generating Your Protocol...' : 'View Your Personalized Protocol'}
                   </Button>
+                  
+                  {/* AI Deep Dive - Compact Button */}
+                  <AssessmentAIAnalysisCard
+                    assessmentType="lis"
+                    assessmentId="longevity-impact-score"
+                    score={score}
+                    scoreCategory={getScoreCategory(score)}
+                    answers={urlPillarScores || lisData.pillarScores}
+                    metadata={{ 
+                      pillarScores: urlPillarScores || lisData.pillarScores,
+                      biologicalAge: bioAgeData?.bioAge,
+                      chronologicalAge: chronologicalAge
+                    }}
+                    autoGenerate={false}
+                    renderButton={(onClick, loading) => (
+                      <Button 
+                        onClick={onClick}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 text-sm"
+                        disabled={loading}
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        {loading ? 'Generating AI Analysis...' : 'Get AI-Powered Deep Dive (Optional)'}
+                      </Button>
+                    )}
+                  />
                 </div>
               )}
 
@@ -717,12 +736,16 @@ const LISResults = () => {
 
       {/* Subscription CTA for Registered Users */}
       {!isGuest && (
-        <Alert>
-          <Lock className="h-5 w-5" />
-          <AlertTitle>Free Trial Active</AlertTitle>
+        <Alert className="bg-gradient-to-r from-primary/10 to-secondary/5 border-primary/20">
+          <Lock className="h-5 w-5 text-primary" />
+          <AlertTitle className="font-semibold">Free Trial Active</AlertTitle>
           <AlertDescription>
             You're currently on a 7-day free trial. Continue tracking daily and we'll prompt you to subscribe before your trial ends.
-            <Button variant="outline" className="mt-2 w-full" onClick={() => navigate('/upgrade')}>
+            <Button 
+              variant="outline" 
+              className="mt-2 w-full border-primary/30 hover:bg-primary/10" 
+              onClick={() => navigate('/upgrade')}
+            >
               Learn About Subscription Plans
             </Button>
           </AlertDescription>
