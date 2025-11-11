@@ -568,67 +568,36 @@ const LISResults = () => {
       </div>
 
 
-      {/* AI Analysis Card */}
+      {/* AI Analysis Card - Button Triggered */}
       {!isGuest && (
         <div className="mb-6">
-          <AssessmentAIAnalysisCard
-            assessmentType="lis"
-            assessmentId="longevity-impact-score"
-            score={score}
-            scoreCategory={getScoreCategory(score)}
-            answers={urlPillarScores || lisData.pillarScores}
-            metadata={{ 
-              pillarScores: urlPillarScores || lisData.pillarScores,
-              biologicalAge: bioAgeData?.bioAge,
-              chronologicalAge: chronologicalAge
-            }}
-            autoGenerate={true}
-          />
-        </div>
-      )}
-
-      {/* Pillar Scores - Strengths and Improvements */}
-      {!isGuest && (urlPillarScores || Object.keys(lisData.pillarScores).length > 0) && (
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* Top Strengths */}
-          <Card className="p-6 border-2 border-green-500/20 bg-green-500/5">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-              <h3 className="text-xl font-semibold">Top Strengths</h3>
-            </div>
-            <div className="space-y-3">
-              {getTopStrengths().map(([pillar, score]: any) => (
-                <div key={pillar} className="flex items-center justify-between">
-                  <span className="font-medium">{pillar}</span>
-                  <div className="flex items-center gap-2">
-                    <Progress value={score} className="w-24 h-2" />
-                    <span className="text-sm font-semibold w-12 text-right">{Math.round(score)}/100</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          {/* Areas for Improvement */}
-          <Card className="p-6 border-2 border-orange-500/20 bg-orange-500/5">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingDown className="w-5 h-5 text-orange-600" />
-              <h3 className="text-xl font-semibold">Improvement Opportunities</h3>
-            </div>
-            <div className="space-y-3">
-              {getTopImprovements().map(([pillar, score]: any) => (
-                <div key={pillar} className="flex items-center justify-between">
-                  <span className="font-medium">{pillar}</span>
-                  <div className="flex items-center gap-2">
-                    <Progress value={score} className="w-24 h-2" />
-                    <span className="text-sm font-semibold w-12 text-right">{Math.round(score)}/100</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <Card>
+            <CardContent className="pt-6 text-center">
+              <div className="mb-4">
+                <Sparkles className="h-8 w-8 text-primary mx-auto mb-3" />
+                <h3 className="text-lg font-semibold mb-2">AI-Powered Deep Dive</h3>
+                <p className="text-sm text-muted-foreground">
+                  Get additional AI-driven pattern detection and personalized insights beyond your pillar analysis
+                </p>
+              </div>
+              <AssessmentAIAnalysisCard
+                assessmentType="lis"
+                assessmentId="longevity-impact-score"
+                score={score}
+                scoreCategory={getScoreCategory(score)}
+                answers={urlPillarScores || lisData.pillarScores}
+                metadata={{ 
+                  pillarScores: urlPillarScores || lisData.pillarScores,
+                  biologicalAge: bioAgeData?.bioAge,
+                  chronologicalAge: chronologicalAge
+                }}
+                autoGenerate={false}
+              />
+            </CardContent>
           </Card>
         </div>
       )}
+
 
       <Card className="mb-6">
         <CardContent className="pt-6">
@@ -657,170 +626,51 @@ const LISResults = () => {
           {/* Registered User - Show Comprehensive Insights */}
           {!isGuest && (
             <div className="mt-6 space-y-6">
-              <div className="border-t pt-6">
-                <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  Your Personalized Longevity Insights
-                </h3>
-                
-                <div className="space-y-4">
-                  {/* Biological Age Impact */}
-                  <Card className="bg-gradient-to-r from-primary/5 to-secondary/5">
-                    <CardHeader>
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <TrendingUp className="h-5 w-5 text-primary" />
-                        Biological Age Trajectory
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div className="bg-background/80 p-4 rounded-lg">
-                          <h4 className="font-semibold text-sm mb-2 text-primary">Your Aging Velocity</h4>
-                          <p className="text-xs text-muted-foreground mb-3">
-                            {score >= 80 ?
-                              'Exceptional! Your lifestyle is slowing biological aging by approximately 0.7-0.8 years per calendar year. You\'re effectively aging about 20% slower than your peers.' :
-                              score >= 60 ?
-                              'Good trajectory. You\'re aging close to the standard rate (1:1), with opportunities to slow this to 0.8-0.9 biological years per calendar year through targeted improvements.' :
-                              score >= 40 ?
-                              'Your current pace shows accelerated aging at approximately 1.1-1.2 biological years per calendar year. Strategic interventions can reverse this within 8-12 weeks.' :
-                              'Alert: Rapid biological aging at 1.3-1.5 years per calendar year. Immediate lifestyle changes are crucial, but improvements can be dramatic within 6-8 weeks.'
-                            }
-                          </p>
-                          <div className="flex items-center gap-2 text-xs">
-                            <div className={`px-3 py-1 rounded-full ${score >= 70 ? 'bg-success/20 text-success' : score >= 50 ? 'bg-warning/20 text-warning' : 'bg-destructive/20 text-destructive'}`}>
-                              {score >= 70 ? 'Decelerating' : score >= 50 ? 'Standard Pace' : 'Accelerating'}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-background/80 p-4 rounded-lg">
-                          <h4 className="font-semibold text-sm mb-2">Projected Healthspan Impact</h4>
-                          <p className="text-xs text-muted-foreground">
-                            Based on current habits, you could {score >= 70 ? 'add 10-20 healthy years' : score >= 50 ? 'maintain baseline healthspan with potential for 5-10 additional years' : 'be losing 5-10 potential healthy years'} compared to average aging trajectories. 
-                            Optimizing your lowest-scoring pillars could shift this significantly.
-                          </p>
-                        </div>
-
-                        {/* Medium Disclaimer */}
-                        <div className="bg-primary/5 border border-primary/20 p-4 rounded-lg">
-                          <p className="text-sm text-muted-foreground">
-                            <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For precise biological age determination, we recommend comprehensive blood work including inflammation markers, metabolic panels, and hormonal assessments.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Priority Action Plan */}
-                  <Card className="border-l-4 border-l-primary">
-                    <CardHeader>
-                      <CardTitle className="text-base flex items-center gap-2">
-                        <Activity className="h-5 w-5 text-primary" />
-                        Your Priority Action Plan
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Based on your assessment, these targeted interventions will have the biggest impact on your longevity trajectory:
-                        </p>
-                        
-                        <div className="space-y-3">
-                          <div className="bg-destructive/5 border border-destructive/20 p-3 rounded-lg">
-                            <div className="flex items-start gap-2">
-                              <div className="bg-destructive/20 p-1 rounded mt-0.5">
-                                <span className="text-xs font-bold text-destructive">1</span>
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="font-semibold text-sm mb-1">Immediate Priority</h5>
-                                <p className="text-xs text-muted-foreground">
-                                  Focus on your lowest-scoring pillar first - it typically offers the highest return on investment for longevity gains. 
-                                  Small improvements here can shift your entire aging trajectory within 4-6 weeks.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="bg-warning/5 border border-warning/20 p-3 rounded-lg">
-                            <div className="flex items-start gap-2">
-                              <div className="bg-warning/20 p-1 rounded mt-0.5">
-                                <span className="text-xs font-bold text-warning">2</span>
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="font-semibold text-sm mb-1">Build on Strengths</h5>
-                                <p className="text-xs text-muted-foreground">
-                                  Your highest-scoring pillars show effective habits. Maintain these while gradually incorporating improvements in weaker areas. 
-                                  Consistency in strong areas prevents backsliding.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="bg-primary/5 border border-primary/20 p-3 rounded-lg">
-                            <div className="flex items-start gap-2">
-                              <div className="bg-primary/20 p-1 rounded mt-0.5">
-                                <span className="text-xs font-bold text-primary">3</span>
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="font-semibold text-sm mb-1">Track & Optimize</h5>
-                                <p className="text-xs text-muted-foreground">
-                                  Daily tracking reveals patterns and provides accountability. Most members see measurable improvements in their LIS score within 2-3 weeks of consistent tracking.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* View Protocol CTA */}
-                  {user && (
-                    <div className="flex justify-center">
-                      <Button 
-                        onClick={() => navigate('/my-protocol')}
-                        size="lg"
-                        className="gap-2"
-                        disabled={protocolGenerating || protocolsLoading}
-                      >
-                        <Sparkles className="w-5 h-5" />
-                        {protocolGenerating ? 'Generating Your Protocol...' : 'View Your Personalized Protocol'}
-                      </Button>
-                    </div>
-                  )}
-
-                  {/* Only show if user hasn't done any daily check-ins yet */}
-                  {lisData.dailyScores.length === 0 && (
-                    <Alert className="bg-success/5 border-success/20">
-                      <Activity className="h-5 w-5 text-success" />
-                      <AlertTitle className="text-success">Continue with Daily Check-Ins</AlertTitle>
-                      <AlertDescription className="mt-2">
-                        <p className="text-sm mb-3">
-                          You've completed your baseline assessment! Now start daily check-ins to track how your lifestyle changes impact your longevity score over time.
-                        </p>
-                        <ul className="space-y-2 text-sm mb-4">
-                          <li className="flex gap-2">
-                            <span className="text-success">✓</span>
-                            <span>Quick 2-minute daily check-ins</span>
-                          </li>
-                          <li className="flex gap-2">
-                            <span className="text-success">✓</span>
-                            <span>See real-time changes in your biological age</span>
-                          </li>
-                          <li className="flex gap-2">
-                            <span className="text-success">✓</span>
-                            <span>Discover which habits move the needle</span>
-                          </li>
-                          <li className="flex gap-2">
-                            <span className="text-success">✓</span>
-                            <span>Get AI insights based on your patterns</span>
-                          </li>
-                        </ul>
-                      </AlertDescription>
-                    </Alert>
-                  )}
+              {/* View Protocol CTA */}
+              {user && (
+                <div className="flex justify-center mb-6">
+                  <Button 
+                    onClick={() => navigate('/my-protocol')}
+                    size="lg"
+                    className="gap-2"
+                    disabled={protocolGenerating || protocolsLoading}
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    {protocolGenerating ? 'Generating Your Protocol...' : 'View Your Personalized Protocol'}
+                  </Button>
                 </div>
-              </div>
+              )}
+
+              {/* Only show if user hasn't done any daily check-ins yet */}
+              {lisData.dailyScores.length === 0 && (
+                <Alert className="bg-success/5 border-success/20 mb-6">
+                  <Activity className="h-5 w-5 text-success" />
+                  <AlertTitle className="text-success">Continue with Daily Check-Ins</AlertTitle>
+                  <AlertDescription className="mt-2">
+                    <p className="text-sm mb-3">
+                      You've completed your baseline assessment! Now start daily check-ins to track how your lifestyle changes impact your longevity score over time.
+                    </p>
+                    <ul className="space-y-2 text-sm mb-4">
+                      <li className="flex gap-2">
+                        <span className="text-success">✓</span>
+                        <span>Quick 2-minute daily check-ins</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-success">✓</span>
+                        <span>See real-time changes in your biological age</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-success">✓</span>
+                        <span>Discover which habits move the needle</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="text-success">✓</span>
+                        <span>Get AI insights based on your patterns</span>
+                      </li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
 
               <div className="space-y-3">
                 {lisData.dailyScores.length === 0 ? (
