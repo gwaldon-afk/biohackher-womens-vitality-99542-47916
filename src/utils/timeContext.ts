@@ -75,3 +75,16 @@ export const matchesTimeOfDay = (itemTimeSlots: string[] | null): boolean => {
     return periods.includes(currentPeriod);
   });
 };
+
+export const getCurrentTimePeriod = (): 'morning' | 'afternoon' | 'evening' | 'night' => {
+  return getTimeOfDay();
+};
+
+export const isPastDue = (itemTimeSlot: string): boolean => {
+  const currentPeriod = getTimeOfDay();
+  const periodOrder = ['morning', 'afternoon', 'evening', 'night'];
+  const currentIndex = periodOrder.indexOf(currentPeriod);
+  const itemIndex = periodOrder.indexOf(itemTimeSlot);
+  
+  return itemIndex < currentIndex && itemIndex !== -1;
+};

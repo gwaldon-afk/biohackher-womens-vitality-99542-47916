@@ -27,6 +27,8 @@ interface CategoryBlockProps {
   isUsingSampleData?: boolean;
   user?: any;
   onNavigate?: () => void;
+  timeContext?: 'now' | 'upcoming' | 'later';
+  isPastDue?: boolean;
 }
 
 export const CategoryBlock = ({
@@ -45,6 +47,8 @@ export const CategoryBlock = ({
   isUsingSampleData,
   user,
   onNavigate,
+  timeContext,
+  isPastDue = false,
 }: CategoryBlockProps) => {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
@@ -64,6 +68,7 @@ export const CategoryBlock = ({
     purple: { bg: 'bg-purple-50 dark:bg-purple-950/30', border: 'border-purple-200 dark:border-purple-800', text: 'text-purple-700 dark:text-purple-300' },
     pink: { bg: 'bg-pink-50 dark:bg-pink-950/30', border: 'border-pink-200 dark:border-pink-800', text: 'text-pink-700 dark:text-pink-300' },
     yellow: { bg: 'bg-yellow-50 dark:bg-yellow-950/30', border: 'border-yellow-200 dark:border-yellow-800', text: 'text-yellow-700 dark:text-yellow-300' },
+    red: { bg: 'bg-red-50 dark:bg-red-950/20', border: 'border-red-500 dark:border-red-500', text: 'text-red-700 dark:text-red-300' },
   };
 
   const colors = colorMap[color] || colorMap.blue;
@@ -152,14 +157,26 @@ export const CategoryBlock = ({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div className={cn("rounded-xl border-2 overflow-hidden", colors.border, colors.bg)}>
+      <div className={cn(
+        "rounded-xl border-2 overflow-hidden",
+        isPastDue && "border-l-4",
+        colors.border, 
+        colors.bg
+      )}>
         {/* Header */}
         <CollapsibleTrigger asChild>
           <div className="flex items-center justify-between p-4 cursor-pointer hover:opacity-80 transition-opacity">
             <div className="flex items-center gap-3">
               <span className="text-2xl">{icon}</span>
               <div>
-                <h3 className="font-semibold text-lg text-foreground">{title}</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-lg text-foreground">{title}</h3>
+                  {timeContext === 'now' && (
+                    <Badge variant="destructive" className="animate-pulse">
+                      NOW
+                    </Badge>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   {completedCount}/{totalCount} complete • {totalMinutes} min total
                 </p>

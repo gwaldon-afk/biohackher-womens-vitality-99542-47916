@@ -135,63 +135,75 @@ export const UnifiedDailyChecklist = () => {
     toast.success("Added to cart!");
   };
 
-  // Categorize actions by type using itemType field from database
-  const categorizeActions = () => {
-    const supplements = actions.filter((a: any) => a.itemType === 'supplement');
-    const movement = actions.filter((a: any) => a.itemType === 'exercise');
+  // Helper to check if current time period matches
+  const isCurrentPeriod = (period: 'morning' | 'afternoon' | 'evening'): boolean => {
+    const hour = new Date().getHours();
+    if (period === 'morning') return hour >= 6 && hour < 12;
+    if (period === 'afternoon') return hour >= 12 && hour < 17;
+    if (period === 'evening') return hour >= 17 && hour < 22;
+    return false;
+  };
+
+  // Categorize actions by time of day
+  const categorizeByTime = () => {
+    const currentHour = new Date().getHours();
     
-    // Filter meals - exclude protein reminders if user has a meal plan
-    const meals = actions.filter((a: any) => {
-      // Include actual meal plans
-      if (a.type === 'meal') return true;
+    const morning = actions.filter((a: any) => {
+      // Morning: 6am-12pm
+      if (a.timeOfDay?.includes('morning')) return true;
+      if (a.mealType === 'breakfast') return true;
+      if (a.itemType === 'supplement' && !a.timeOfDay) return true; // Default supplements to morning
+      return false;
+    });
+
+    const afternoon = actions.filter((a: any) => {
+      // Afternoon: 12pm-5pm
+      if (a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday')) return true;
+      if (a.mealType === 'lunch') return true;
+      if (a.itemType === 'exercise' && !a.timeOfDay) return true; // Default exercise to afternoon
+      return false;
+    });
+
+    const evening = actions.filter((a: any) => {
+      // Evening: 5pm-10pm
+      if (a.timeOfDay?.includes('evening')) return true;
+      if (a.mealType === 'dinner') return true;
+      if (a.itemType === 'therapy' && !a.timeOfDay) return true; // Default therapy to evening
+      return false;
+    });
+
+    // "Still To Do" = incomplete actions from past time blocks
+    const stillToDo = actions.filter((a: any) => {
+      if (a.completed) return false; // Only incomplete actions
       
-      // Handle diet items
-      if (a.itemType === 'diet') {
-        const isProteinReminder = a.title?.toLowerCase().includes('protein');
-        const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
-        
-        // Exclude protein reminders if user has a meal plan (meals show protein already)
-        if (isProteinReminder && hasMealPlan) return false;
-        
-        // Include other diet items
-        return true;
+      // Determine if action is "past due"
+      const isMorningAction = morning.some(m => m.id === a.id);
+      const isAfternoonAction = afternoon.some(m => m.id === a.id);
+      
+      // If it's currently evening, show incomplete morning/afternoon actions
+      if (currentHour >= 17) {
+        return isMorningAction || isAfternoonAction;
+      }
+      // If it's currently afternoon, show incomplete morning actions
+      if (currentHour >= 12) {
+        return isMorningAction;
       }
       
       return false;
     });
-    const tracking = actions.filter((a: any) => 
-      a.type === 'energy' ||
-      a.title?.toLowerCase().includes('log') ||
-      a.title?.toLowerCase().includes('track') ||
-      a.title?.toLowerCase().includes('check-in')
-    );
-    const therapy = actions.filter((a: any) => 
-      a.itemType === 'therapy' ||
-      a.title?.toLowerCase().includes('red light') ||
-      a.title?.toLowerCase().includes('sauna') ||
-      a.title?.toLowerCase().includes('meditation') ||
-      a.title?.toLowerCase().includes('breathwork')
-    );
-    const habits = actions.filter((a: any) => 
-      a.type === 'habit' ||
-      a.itemType === 'habit'
-    );
 
-    // Remaining items that don't fit other categories
-    const categorizedIds = new Set([
-      ...supplements.map(a => a.id),
-      ...movement.map(a => a.id),
-      ...meals.map(a => a.id),
-      ...tracking.map(a => a.id),
-      ...therapy.map(a => a.id),
-      ...habits.map(a => a.id),
-    ]);
-    const other = actions.filter((a: any) => !categorizedIds.has(a.id));
-
-    return { supplements, movement, meals, tracking, therapy, habits, other };
+    // Remove "Still To Do" items from their original time blocks
+    const stillToDoIds = new Set(stillToDo.map(a => a.id));
+    
+    return {
+      morning: morning.filter(a => !stillToDoIds.has(a.id)),
+      afternoon: afternoon.filter(a => !stillToDoIds.has(a.id)),
+      evening: evening.filter(a => !stillToDoIds.has(a.id)),
+      stillToDo
+    };
   };
 
-  const categories = categorizeActions();
+  const timeBlocks = categorizeByTime();
 
   const getItemCompleted = (actionId: string) => {
     if (isUsingSampleData) {
@@ -257,19 +269,15 @@ export const UnifiedDailyChecklist = () => {
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
           TODAY - {dateString}
         </h1>
-        {/* Motivational Quote - Enhanced with Brand Colors */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-secondary p-8 shadow-lg">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/30 rounded-full blur-2xl" />
-          
-          <div className="relative flex flex-col items-center gap-4 text-center">
-            <span className="text-5xl drop-shadow-sm">💫</span>
+        {/* Motivational Quote - Compact */}
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/70 p-4 shadow-md">
+          <div className="relative flex items-center gap-3 text-center justify-center">
+            <span className="text-3xl">💫</span>
             <div>
-              <p className="text-3xl md:text-4xl font-semibold text-foreground italic leading-tight drop-shadow-sm">
+              <p className="text-xl font-semibold text-foreground italic leading-tight">
                 "{todaysQuote.quote}"
               </p>
-              <p className="text-base text-foreground/80 mt-3 font-medium">
+              <p className="text-sm text-foreground/80 mt-1">
                 — {todaysQuote.author}
               </p>
             </div>
@@ -354,144 +362,84 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* Category-Based Sections */}
+      {/* Time-Based Sections */}
       <div className="space-y-4">
+        {/* Morning Block */}
         <CategoryBlock
-          icon="💊"
-          title="Supplements"
-          items={categories.supplements}
-          completedCount={getCategoryStats(categories.supplements).completed}
-          totalCount={getCategoryStats(categories.supplements).total}
-          totalMinutes={getCategoryStats(categories.supplements).minutes}
-          color="orange"
-          defaultExpanded={false}
+          icon="☀️"
+          title="DO THIS NOW (Morning)"
+          items={timeBlocks.morning}
+          completedCount={getCategoryStats(timeBlocks.morning).completed}
+          totalCount={getCategoryStats(timeBlocks.morning).total}
+          totalMinutes={getCategoryStats(timeBlocks.morning).minutes}
+          color="yellow"
+          defaultExpanded={isCurrentPeriod('morning')}
+          timeContext={isCurrentPeriod('morning') ? 'now' : 'later'}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
           onBuySupplements={handleBuySupplements}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
-
-        <CategoryBlock
-          icon="💪"
-          title="Movement & Exercise"
-          items={categories.movement}
-          completedCount={getCategoryStats(categories.movement).completed}
-          totalCount={getCategoryStats(categories.movement).total}
-          totalMinutes={getCategoryStats(categories.movement).minutes}
-          color="blue"
-          defaultExpanded={false}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
-
-        {/* Protein Tracking Summary */}
-        {nutritionPrefs?.weight && categories.meals.length > 0 && (
-          <ProteinTrackingSummary 
-            completedMeals={categories.meals.filter(m => getItemCompleted(m.id))}
-            nutritionPreferences={nutritionPrefs}
-          />
-        )}
-
-        {/* Meal Plan Header */}
-        {nutritionPrefs?.selectedMealPlanTemplate && categories.meals.length > 0 && (
-          <div className="mb-3 p-3 bg-primary/10 rounded-lg border border-primary/20">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium">
-                📋 Following: {nutritionPrefs.selectedMealPlanTemplate} Plan • Day {new Date().getDay() || 7}/7
-              </p>
-              <Button 
-                variant="link" 
-                onClick={() => navigate('/nutrition?tab=meal-plans')}
-                className="text-xs h-auto p-0"
-              >
-                View full plan & shopping list →
-              </Button>
-            </div>
-          </div>
-        )}
-
-        <CategoryBlock
-          icon="🍽️"
-          title="Meals & Nutrition"
-          items={categories.meals}
-          completedCount={getCategoryStats(categories.meals).completed}
-          totalCount={getCategoryStats(categories.meals).total}
-          totalMinutes={getCategoryStats(categories.meals).minutes}
-          color="green"
-          defaultExpanded={false}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
           onViewMeal={handleViewMeal}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
         />
 
+        {/* Afternoon Block */}
         <CategoryBlock
-          icon="📊"
-          title="Tracking & Check-ins"
-          items={categories.tracking}
-          completedCount={getCategoryStats(categories.tracking).completed}
-          totalCount={getCategoryStats(categories.tracking).total}
-          totalMinutes={getCategoryStats(categories.tracking).minutes}
+          icon="🌤️"
+          title="COMING UP (Afternoon)"
+          items={timeBlocks.afternoon}
+          completedCount={getCategoryStats(timeBlocks.afternoon).completed}
+          totalCount={getCategoryStats(timeBlocks.afternoon).total}
+          totalMinutes={getCategoryStats(timeBlocks.afternoon).minutes}
+          color="blue"
+          defaultExpanded={isCurrentPeriod('afternoon')}
+          timeContext={isCurrentPeriod('afternoon') ? 'now' : isCurrentPeriod('morning') ? 'upcoming' : 'later'}
+          onToggle={handleToggle}
+          getItemCompleted={getItemCompleted}
+          onBuySupplements={handleBuySupplements}
+          onViewMeal={handleViewMeal}
+          isUsingSampleData={isUsingSampleData}
+          user={user}
+          onNavigate={() => navigate('/auth')}
+        />
+
+        {/* Evening Block */}
+        <CategoryBlock
+          icon="🌅"
+          title="TONIGHT (Evening)"
+          items={timeBlocks.evening}
+          completedCount={getCategoryStats(timeBlocks.evening).completed}
+          totalCount={getCategoryStats(timeBlocks.evening).total}
+          totalMinutes={getCategoryStats(timeBlocks.evening).minutes}
           color="purple"
-          defaultExpanded={false}
+          defaultExpanded={isCurrentPeriod('evening')}
+          timeContext={isCurrentPeriod('evening') ? 'now' : 'later'}
           onToggle={handleToggle}
           getItemCompleted={getItemCompleted}
+          onBuySupplements={handleBuySupplements}
+          onViewMeal={handleViewMeal}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
         />
 
-        <CategoryBlock
-          icon="🧘"
-          title="Therapy & Wellness"
-          items={categories.therapy}
-          completedCount={getCategoryStats(categories.therapy).completed}
-          totalCount={getCategoryStats(categories.therapy).total}
-          totalMinutes={getCategoryStats(categories.therapy).minutes}
-          color="pink"
-          defaultExpanded={false}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
-
-        <CategoryBlock
-          icon="✨"
-          title="Habits & Routines"
-          items={categories.habits}
-          completedCount={getCategoryStats(categories.habits).completed}
-          totalCount={getCategoryStats(categories.habits).total}
-          totalMinutes={getCategoryStats(categories.habits).minutes}
-          color="yellow"
-          defaultExpanded={false}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
-
-        {categories.other.length > 0 && (
+        {/* Still To Do - Only if incomplete past items exist */}
+        {timeBlocks.stillToDo.length > 0 && (
           <CategoryBlock
-            icon="📋"
-            title="Other Actions"
-            items={categories.other}
-            completedCount={getCategoryStats(categories.other).completed}
-            totalCount={getCategoryStats(categories.other).total}
-            totalMinutes={getCategoryStats(categories.other).minutes}
-            color="blue"
+            icon="⏰"
+            title="STILL TO DO (From Earlier)"
+            items={timeBlocks.stillToDo}
+            completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
+            totalCount={getCategoryStats(timeBlocks.stillToDo).total}
+            totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
+            color="red"
             defaultExpanded={false}
+            isPastDue={true}
             onToggle={handleToggle}
             getItemCompleted={getItemCompleted}
+            onBuySupplements={handleBuySupplements}
+            onViewMeal={handleViewMeal}
             isUsingSampleData={isUsingSampleData}
             user={user}
             onNavigate={() => navigate('/auth')}
