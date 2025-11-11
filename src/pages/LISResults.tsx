@@ -245,25 +245,18 @@ const LISResults = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* Radar Chart Card */}
-        <Card>
-          <CardHeader className="text-center pb-2">
-            <CardTitle className="text-lg">Your Health Pillars</CardTitle>
-            <CardDescription className="text-xs">
-              Six key dimensions of longevity
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center pt-2 pb-4">
-            <LISRadarChart 
-              pillarScores={pillarScores}
-              compositeScore={displayScore}
-              size={400}
-            />
-          </CardContent>
-        </Card>
+      {/* Heading Card */}
+      <Card className="mb-6 text-center">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-2xl">Longevity Impact Results</CardTitle>
+          <CardDescription>
+            Your personalized health assessment and longevity profile
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
-        {/* Score Display Card */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Score Display Card - NOW FIRST (LEFT) */}
         <Card className="flex flex-col justify-center">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="text-sm text-muted-foreground mb-2 font-medium">
@@ -288,6 +281,23 @@ const LISResults = () => {
             <p className="text-sm text-muted-foreground mt-4 text-center max-w-xs">
               A comprehensive measure of your current healthspan and longevity potential
             </p>
+          </CardContent>
+        </Card>
+
+        {/* Radar Chart Card - NOW SECOND (RIGHT) */}
+        <Card>
+          <CardHeader className="text-center pb-2">
+            <CardTitle className="text-lg">Your Health Pillars</CardTitle>
+            <CardDescription className="text-xs">
+              Six key dimensions of longevity
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center pt-2 pb-4">
+            <LISRadarChart 
+              pillarScores={pillarScores}
+              compositeScore={displayScore}
+              size={400}
+            />
           </CardContent>
         </Card>
       </div>
