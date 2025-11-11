@@ -11,7 +11,7 @@ import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome'
 import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
-import { LISRadarChart } from '@/components/LISRadarChart';
+import { LISRadarChart, getScoreColor, getScoreCategory } from '@/components/LISRadarChart';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
@@ -150,18 +150,6 @@ const LISResults = () => {
     loadMissingAssessmentData();
   }, [score, urlPillarScores, user, loading, navigate, toast]);
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
-  };
-
-  const getScoreCategory = (score: number) => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Good';
-    if (score >= 40) return 'Fair';
-    return 'Needs Attention';
-  };
 
   const calculateBiologicalAge = (lisScore: number, chronoAge: number): { 
     bioAge: number; 
@@ -257,24 +245,52 @@ const LISResults = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
-      <Card className="mb-6">
-        <CardHeader className="text-center pb-2 pt-4">
-          <CardTitle className="text-xl mb-1">Your Longevity Impact Score</CardTitle>
-          <CardDescription className="text-xs">
-            A comprehensive view of your healthspan across 6 key pillars
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-0 pb-4 px-2">
-          {/* Radar Chart Visualization */}
-          <div className="flex justify-center -mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Radar Chart Card */}
+        <Card>
+          <CardHeader className="text-center pb-2">
+            <CardTitle className="text-lg">Your Health Pillars</CardTitle>
+            <CardDescription className="text-xs">
+              Six key dimensions of longevity
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center pt-2 pb-4">
             <LISRadarChart 
               pillarScores={pillarScores}
               compositeScore={displayScore}
-              size={500}
+              size={400}
             />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        {/* Score Display Card */}
+        <Card className="flex flex-col justify-center">
+          <CardContent className="flex flex-col items-center justify-center py-8">
+            <div className="text-sm text-muted-foreground mb-2 font-medium">
+              Your Longevity Impact Score
+            </div>
+            <div 
+              className="text-7xl font-bold mb-3"
+              style={{ color: getScoreColor(displayScore) }}
+            >
+              {Math.round(displayScore)}
+            </div>
+            <div 
+              className="text-xl font-semibold px-6 py-2 rounded-full border-2"
+              style={{ 
+                color: getScoreColor(displayScore),
+                borderColor: getScoreColor(displayScore),
+                backgroundColor: `${getScoreColor(displayScore)}10`
+              }}
+            >
+              {getScoreCategory(displayScore)}
+            </div>
+            <p className="text-sm text-muted-foreground mt-4 text-center max-w-xs">
+              A comprehensive measure of your current healthspan and longevity potential
+            </p>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Biological Age Card - For ALL users with age data */}
       {chronologicalAge > 0 && bioAgeData && (
