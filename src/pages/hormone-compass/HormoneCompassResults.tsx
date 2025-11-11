@@ -105,6 +105,18 @@ export default function MenoMapResults() {
   const stage = assessmentData?.stage || stateData.stage;
   const confidence = assessmentData?.confidence_score || stateData.confidence;
 
+  // Fetch products based on stage-specific symptoms - ALWAYS call this hook
+  const { data: recommendedProducts, isLoading: productsLoading } = useQuery({
+    queryKey: ['stage-products', stage],
+    queryFn: () => {
+      if (!stage) return [];
+      const stageInfo = STAGE_INFO[stage as keyof typeof STAGE_INFO];
+      return searchProductsBySymptoms(stageInfo.targetSymptoms || []);
+    },
+    enabled: !!stage,
+  });
+
+  // Now check conditions AFTER all hooks are called
   if (isLoading) {
     return (
       <div className="container max-w-4xl py-8">
@@ -119,13 +131,6 @@ export default function MenoMapResults() {
   }
 
   const stageInfo = STAGE_INFO[stage as keyof typeof STAGE_INFO];
-
-  // Fetch products based on stage-specific symptoms
-  const { data: recommendedProducts, isLoading: productsLoading } = useQuery({
-    queryKey: ['stage-products', stage],
-    queryFn: () => searchProductsBySymptoms(stageInfo.targetSymptoms || []),
-    enabled: !!stage,
-  });
 
   const handleAddToCart = (product: Product) => {
     addToCart({
