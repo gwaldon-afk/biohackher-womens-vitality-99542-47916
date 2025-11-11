@@ -1,102 +1,58 @@
 export const HORMONE_COMPASS_ASSESSMENT = {
-  id: 'hormone-compass-full',
+  id: 'hormone-compass-complete',
   name: 'HormoneCompass™ Complete Assessment',
-  description: 'Comprehensive menopause stage and symptom evaluation across 6 key domains',
-  duration: '5-7 minutes',
+  description: 'Comprehensive hormone health assessment across 6 key domains—for women at every life stage',
+  duration: '5 minutes',
   domains: [
     {
-      id: 'cycle',
+      id: 'cycle-patterns',
       name: 'Cycle & Period Patterns',
       icon: '🩸',
       questions: [
         {
           id: 'cycle_regularity',
           text: 'How regular are your menstrual cycles?',
-          type: 'scale',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
             minLabel: 'Very irregular or absent',
-            maxLabel: 'Very regular (21-35 days)'
+            maxLabel: 'Completely regular'
           }
         },
         {
-          id: 'flow_changes',
-          text: 'Have you noticed changes in your menstrual flow?',
-          type: 'scale',
+          id: 'flow_heaviness',
+          text: 'How would you describe your period flow?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Much heavier or lighter',
-            maxLabel: 'No change'
-          }
-        },
-        {
-          id: 'spotting',
-          text: 'Do you experience spotting between periods?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Frequently',
-            maxLabel: 'Never'
+            minLabel: 'Very heavy or very light',
+            maxLabel: 'Normal and consistent'
           }
         },
         {
           id: 'cycle_length',
-          text: 'How has your cycle length changed?',
-          type: 'scale',
+          text: 'How much does your cycle length vary?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Significantly shorter/longer',
-            maxLabel: 'No change'
-          }
-        },
-        {
-          id: 'cramping',
-          text: 'How are your menstrual cramps compared to before?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Much worse',
-            maxLabel: 'No change or better'
+            minLabel: 'Highly variable (>7 days)',
+            maxLabel: 'Very consistent'
           }
         }
       ]
     },
     {
-      id: 'thermoregulation',
+      id: 'sleep-thermo',
       name: 'Sleep & Thermoregulation',
       icon: '🌡️',
       questions: [
         {
-          id: 'hot_flashes',
-          text: 'How often do you experience hot flashes?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Multiple times daily',
-            maxLabel: 'Never'
-          }
-        },
-        {
-          id: 'night_sweats',
-          text: 'Do you wake up sweating at night?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Every night',
-            maxLabel: 'Never'
-          }
-        },
-        {
           id: 'sleep_quality',
-          text: 'How would you rate your sleep quality?',
-          type: 'scale',
+          text: 'How would you rate your overall sleep quality?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
@@ -105,257 +61,129 @@ export const HORMONE_COMPASS_ASSESSMENT = {
           }
         },
         {
-          id: 'temperature_sensitivity',
-          text: 'Do you feel more sensitive to temperature changes?',
-          type: 'scale',
+          id: 'night_sweats',
+          text: 'How often do you experience night sweats?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Extremely sensitive',
-            maxLabel: 'Not at all'
-          }
-        },
-        {
-          id: 'restless_sleep',
-          text: 'How restless is your sleep?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very restless',
-            maxLabel: 'Very peaceful'
-          }
-        }
-      ]
-    },
-    {
-      id: 'mood',
-      name: 'Mood & Focus',
-      icon: '🧠',
-      questions: [
-        {
-          id: 'anxiety',
-          text: 'How would you rate your anxiety levels?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Severe anxiety',
-            maxLabel: 'No anxiety'
-          }
-        },
-        {
-          id: 'irritability',
-          text: 'How irritable do you feel?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very irritable',
-            maxLabel: 'Not irritable'
-          }
-        },
-        {
-          id: 'brain_fog',
-          text: 'Do you experience brain fog or difficulty concentrating?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Constantly',
+            minLabel: 'Most nights',
             maxLabel: 'Never'
           }
         },
         {
-          id: 'motivation',
-          text: 'How is your motivation level?',
-          type: 'scale',
+          id: 'temperature_regulation',
+          text: 'How well can you regulate your body temperature?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Very low',
-            maxLabel: 'Very high'
-          }
-        },
-        {
-          id: 'memory',
-          text: 'Have you noticed changes in your memory?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Significant decline',
-            maxLabel: 'No change'
+            minLabel: 'Very poorly (hot flashes)',
+            maxLabel: 'Very well'
           }
         }
       ]
     },
     {
-      id: 'energy',
+      id: 'mood-focus',
+      name: 'Mood & Focus',
+      icon: '🧠',
+      questions: [
+        {
+          id: 'mood_swings',
+          text: 'How stable is your mood throughout the day?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Very unstable',
+            maxLabel: 'Very stable'
+          }
+        },
+        {
+          id: 'anxiety',
+          text: 'How would you rate your anxiety levels?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Severe anxiety',
+            maxLabel: 'Minimal or none'
+          }
+        },
+        {
+          id: 'brain_fog',
+          text: 'How often do you experience brain fog or difficulty concentrating?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Very frequently',
+            maxLabel: 'Rarely or never'
+          }
+        }
+      ]
+    },
+    {
+      id: 'energy-weight',
       name: 'Energy & Weight',
       icon: '⚡',
       questions: [
         {
           id: 'fatigue',
-          text: 'How is your daily energy level?',
-          type: 'scale',
+          text: 'How would you rate your overall energy levels?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
             minLabel: 'Constantly fatigued',
-            maxLabel: 'Very energetic'
+            maxLabel: 'Energetic and vital'
           }
         },
         {
           id: 'weight_gain',
-          text: 'Have you experienced weight gain, especially around your midsection?',
-          type: 'scale',
+          text: 'Have you experienced unexplained weight gain?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
             minLabel: 'Significant gain',
-            maxLabel: 'No change'
+            maxLabel: 'No change or intentional'
           }
         },
         {
-          id: 'afternoon_slumps',
-          text: 'Do you experience afternoon energy slumps?',
-          type: 'scale',
+          id: 'energy_crashes',
+          text: 'How often do you experience energy crashes?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Every day',
-            maxLabel: 'Never'
-          }
-        },
-        {
-          id: 'exercise_recovery',
-          text: 'How is your exercise recovery?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very slow',
-            maxLabel: 'Very quick'
-          }
-        },
-        {
-          id: 'metabolism',
-          text: 'Have you noticed changes in your metabolism?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Much slower',
-            maxLabel: 'No change'
+            minLabel: 'Multiple times daily',
+            maxLabel: 'Rarely or never'
           }
         }
       ]
     },
     {
-      id: 'libido',
+      id: 'libido-sexual',
       name: 'Libido & Sexual Health',
       icon: '💕',
       questions: [
         {
-          id: 'libido_changes',
-          text: 'How has your libido changed?',
-          type: 'scale',
+          id: 'libido',
+          text: 'How would you rate your sex drive?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Significantly decreased',
-            maxLabel: 'No change or increased'
+            minLabel: 'Very low or absent',
+            maxLabel: 'Strong and healthy'
           }
         },
         {
           id: 'vaginal_dryness',
           text: 'Do you experience vaginal dryness?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Severe',
-            maxLabel: 'Not at all'
-          }
-        },
-        {
-          id: 'intimacy_discomfort',
-          text: 'Is intimacy uncomfortable or painful?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very uncomfortable',
-            maxLabel: 'Not at all'
-          }
-        },
-        {
-          id: 'arousal',
-          text: 'How easily do you become aroused?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very difficult',
-            maxLabel: 'Easily'
-          }
-        },
-        {
-          id: 'satisfaction',
-          text: 'How satisfied are you with your sexual health overall?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very dissatisfied',
-            maxLabel: 'Very satisfied'
-          }
-        }
-      ]
-    },
-    {
-      id: 'skin',
-      name: 'Skin, Hair & Nails',
-      icon: '✨',
-      questions: [
-        {
-          id: 'skin_dryness',
-          text: 'How is your skin dryness?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Very dry',
-            maxLabel: 'Well-hydrated'
-          }
-        },
-        {
-          id: 'hair_thinning',
-          text: 'Have you noticed hair thinning?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Significant thinning',
-            maxLabel: 'No change'
-          }
-        },
-        {
-          id: 'skin_changes',
-          text: 'Have you noticed changes in skin texture or elasticity?',
-          type: 'scale',
-          scale: {
-            min: 1,
-            max: 5,
-            minLabel: 'Significant changes',
-            maxLabel: 'No change'
-          }
-        },
-        {
-          id: 'acne',
-          text: 'Do you experience adult acne or breakouts?',
-          type: 'scale',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
@@ -364,57 +192,99 @@ export const HORMONE_COMPASS_ASSESSMENT = {
           }
         },
         {
-          id: 'healing',
-          text: 'How quickly does your skin heal from cuts or blemishes?',
-          type: 'scale',
+          id: 'discomfort',
+          text: 'Do you experience discomfort during intimacy?',
+          type: 'scale' as const,
           scale: {
             min: 1,
             max: 5,
-            minLabel: 'Very slowly',
-            maxLabel: 'Quickly'
+            minLabel: 'Frequently',
+            maxLabel: 'Never'
+          }
+        }
+      ]
+    },
+    {
+      id: 'skin-hair-nails',
+      name: 'Skin, Hair & Nails',
+      icon: '✨',
+      questions: [
+        {
+          id: 'skin_dryness',
+          text: 'How would you describe your skin moisture levels?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Very dry and irritated',
+            maxLabel: 'Well-moisturized'
+          }
+        },
+        {
+          id: 'hair_changes',
+          text: 'Have you noticed changes in your hair (thinning, loss)?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Significant changes',
+            maxLabel: 'No changes'
+          }
+        },
+        {
+          id: 'nail_health',
+          text: 'How would you rate your nail health?',
+          type: 'scale' as const,
+          scale: {
+            min: 1,
+            max: 5,
+            minLabel: 'Brittle and weak',
+            maxLabel: 'Strong and healthy'
           }
         }
       ]
     }
   ],
   scoring: {
-    'pre': { min: 23, max: 30, label: 'Pre-Menopause' },
-    'early-peri': { min: 18, max: 22, label: 'Early Perimenopause' },
-    'mid-peri': { min: 12, max: 17, label: 'Mid Perimenopause' },
-    'late-peri': { min: 6, max: 11, label: 'Late Perimenopause' },
-    'post': { min: 1, max: 5, label: 'Post-Menopause' }
+    ranges: {
+      'feeling-great': { min: 4.5, max: 5.0, label: 'Feeling Great' },
+      'doing-well': { min: 3.5, max: 4.49, label: 'Doing Well' },
+      'having-challenges': { min: 2.5, max: 3.49, label: 'Having Challenges' },
+      'really-struggling': { min: 1.5, max: 2.49, label: 'Really Struggling' },
+      'need-support': { min: 1.0, max: 1.49, label: 'Need Support Now' }
+    }
   }
 };
 
-export function calculateHormoneStage(answers: Record<string, number>) {
-  // Calculate average score across all answers (inverted so lower = more severe symptoms)
+// Calculate hormone health level from assessment answers
+export function calculateHormoneHealth(answers: Record<string, number>) {
   const scores = Object.values(answers);
-  const avgScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-
-  // Determine stage based on score
-  let stage: string;
-  let confidence: number;
-
-  if (avgScore >= 4.5) {
-    stage = 'pre';
-    confidence = 90 + (avgScore - 4.5) * 20;
-  } else if (avgScore >= 3.5) {
-    stage = 'early-peri';
-    confidence = 75 + (avgScore - 3.5) * 15;
-  } else if (avgScore >= 2.5) {
-    stage = 'mid-peri';
-    confidence = 80 + (avgScore - 2.5) * 10;
-  } else if (avgScore >= 1.5) {
-    stage = 'late-peri';
-    confidence = 75 + (avgScore - 1.5) * 15;
-  } else {
-    stage = 'post';
-    confidence = 85 + avgScore * 10;
+  const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+  
+  const { scoring } = HORMONE_COMPASS_ASSESSMENT;
+  
+  // Determine health level based on score
+  let healthLevel = 'having-challenges';
+  let confidence = 0;
+  
+  for (const [key, range] of Object.entries(scoring.ranges)) {
+    if (averageScore >= range.min && averageScore <= range.max) {
+      healthLevel = key;
+      // Calculate confidence based on how close to range center
+      const rangeMid = (range.min + range.max) / 2;
+      const rangeSize = range.max - range.min;
+      const distanceFromMid = Math.abs(averageScore - rangeMid);
+      confidence = Math.max(0.6, 1 - (distanceFromMid / rangeSize));
+      break;
+    }
   }
-
-  return {
-    stage,
-    confidence: Math.min(Math.round(confidence), 100),
-    avgScore
+  
+  return { 
+    stage: healthLevel, 
+    confidence: Math.min(Math.round(confidence * 100), 100),
+    avgScore: averageScore
   };
-};
+}
+
+// Legacy export for backward compatibility
+export const calculateHormoneStage = calculateHormoneHealth;

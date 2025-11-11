@@ -1,93 +1,114 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { HormoneCompassStageCompass } from "@/components/hormone-compass/HormoneCompassStageCompass";
-import { CheckCircle, ArrowRight, Download, ShoppingCart, Sparkles } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { searchProductsBySymptoms, formatProductPrice, type Product } from "@/services/productService";
-import { useCart } from "@/hooks/useCart";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
-import { generateProtocolFromHormoneStage, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
-import { useState } from "react";
-import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard";
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { HormoneCompassStageCompass } from '@/components/hormone-compass/HormoneCompassStageCompass';
+import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
+import { useAuth } from '@/hooks/useAuth';
+import { useHealthProfile } from '@/hooks/useHealthProfile';
+import { Product } from '@/types/products';
+import { searchProductsBySymptoms } from '@/services/productService';
+import { useCart } from '@/hooks/useCart';
+import { ShoppingCart, Share2, TrendingUp, Calendar } from 'lucide-react';
+import { toast } from 'sonner';
+import { differenceInYears } from 'date-fns';
 
-const STAGE_INFO = {
-  'pre': {
-    title: 'Pre-Menopause',
-    description: 'Your cycles are still regular, and you\'re not experiencing significant hormonal changes yet.',
-    targetSymptoms: ['energy', 'mood', 'cycle_support'],
+// Health level information mapping (life-stage agnostic)
+const HEALTH_LEVEL_INFO: Record<string, {
+  title: string;
+  description: string;
+  targetSymptoms: string[];
+  recommendations: string[];
+  color: string;
+}> = {
+  'feeling-great': {
+    title: 'Feeling Great',
+    description: 'Your hormone health is thriving. You\'re experiencing minimal disruption across key areas.',
+    targetSymptoms: ['maintenance', 'optimization', 'prevention'],
     recommendations: [
-      'Focus on establishing healthy habits now',
-      'Track your cycles to establish a baseline',
-      'Consider preventive nutrition and exercise',
-      'Monitor energy and mood patterns'
-    ]
+      'Maintain your current healthy habits and routines',
+      'Track symptoms monthly to establish your baseline',
+      'Focus on preventive nutrition and stress management',
+      'Consider reassessments every 6-12 months'
+    ],
+    color: 'text-green-600'
   },
-  'early-peri': {
-    title: 'Early Perimenopause',
-    description: 'You\'re beginning to experience subtle hormonal shifts. Cycles may become slightly irregular.',
-    targetSymptoms: ['sleep', 'mood', 'hot_flashes', 'cycle_irregularity'],
+  'doing-well': {
+    title: 'Doing Well',
+    description: 'Your hormone health is good with mild occasional symptoms. Small adjustments can optimize your well-being.',
+    targetSymptoms: ['sleep-quality', 'stress-management', 'energy-optimization'],
     recommendations: [
-      'Start tracking symptoms consistently',
-      'Consider adaptogenic herbs for hormone support',
-      'Optimize sleep hygiene',
-      'Add strength training to preserve muscle mass'
-    ]
+      'Continue current healthy practices',
+      'Address specific mild symptoms with targeted lifestyle changes',
+      'Prioritize sleep quality and stress reduction techniques',
+      'Consider adding adaptogenic herbs for hormonal support'
+    ],
+    color: 'text-blue-600'
   },
-  'mid-peri': {
-    title: 'Mid Perimenopause',
-    description: 'Hormonal fluctuations are more pronounced. You may notice significant cycle changes and symptoms.',
-    targetSymptoms: ['hot_flashes', 'night_sweats', 'sleep', 'mood', 'brain_fog'],
+  'having-challenges': {
+    title: 'Having Challenges',
+    description: 'You\'re experiencing moderate symptoms that are affecting daily life. Support can help restore balance.',
+    targetSymptoms: ['cycle-regulation', 'mood-swings', 'sleep-disruption', 'energy-crashes'],
     recommendations: [
-      'Focus on stress management and cortisol regulation',
-      'Consider magnesium for sleep and mood',
-      'Increase phytoestrogen-rich foods',
-      'Track hot flashes and night sweats patterns'
-    ]
+      'Work with a healthcare provider to identify root causes',
+      'Implement targeted nutrition and supplement protocols',
+      'Establish consistent sleep routines and stress management',
+      'Consider comprehensive hormone testing',
+      'Track symptoms to identify patterns and triggers'
+    ],
+    color: 'text-yellow-600'
   },
-  'late-peri': {
-    title: 'Late Perimenopause',
-    description: 'You\'re approaching menopause. Periods may be very irregular or absent for months.',
-    targetSymptoms: ['hot_flashes', 'night_sweats', 'bone_health', 'heart_health', 'vaginal_dryness'],
+  'really-struggling': {
+    title: 'Really Struggling',
+    description: 'You\'re facing significant symptoms that are impacting your quality of life. Professional support is recommended.',
+    targetSymptoms: ['severe-symptoms', 'hot-flashes', 'mood-disorders', 'cognitive-issues'],
     recommendations: [
-      'Support bone health with vitamin D and K2',
-      'Focus on cardiovascular exercise',
-      'Consider hormone testing with your doctor',
-      'Optimize gut health for hormone metabolism'
-    ]
+      'Schedule consultation with hormone specialist or gynecologist',
+      'Discuss hormone replacement therapy or other medical options',
+      'Implement comprehensive lifestyle and supplement protocol',
+      'Prioritize sleep, nutrition, and stress management',
+      'Consider working with a therapist for mood-related symptoms'
+    ],
+    color: 'text-orange-600'
   },
-  'post': {
-    title: 'Post-Menopause',
-    description: 'It\'s been 12+ months since your last period. Focus shifts to long-term health optimization.',
-    targetSymptoms: ['bone_health', 'heart_health', 'brain_health', 'skin_aging', 'energy'],
+  'need-support': {
+    title: 'Need Support Now',
+    description: 'You\'re experiencing severe symptoms that require immediate professional attention and comprehensive support.',
+    targetSymptoms: ['severe-disruption', 'multiple-symptoms', 'quality-of-life'],
     recommendations: [
-      'Prioritize bone density and cardiovascular health',
-      'Continue strength training',
-      'Focus on longevity nutrition',
-      'Monitor metabolic health markers'
-    ]
+      'Seek immediate medical evaluation from hormone specialist',
+      'Discuss all treatment options including HRT with your provider',
+      'Request comprehensive hormone and health panel',
+      'Consider working with integrative healthcare team',
+      'Implement multi-faceted support protocol under medical guidance',
+      'Prioritize self-care and mental health support'
+    ],
+    color: 'text-red-600'
   }
 };
 
-export default function MenoMapResults() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+export default function HormoneCompassResults() {
   const { user } = useAuth();
-  const { addToCart, setIsCartOpen } = useCart();
-  const [addingToPlan, setAddingToPlan] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const { addToCart } = useCart();
+  const { profile } = useHealthProfile();
+
   const assessmentId = searchParams.get('assessmentId');
-  const stateData = location.state || {};
+  const stateData = location.state as { stage?: string; confidence?: number } || {};
+  
+  // Calculate user age from health profile
+  const userAge = profile?.date_of_birth 
+    ? differenceInYears(new Date(), new Date(profile.date_of_birth))
+    : null;
 
   // Fetch assessment from database if we have an ID
   const { data: assessmentData, isLoading } = useQuery({
-    queryKey: ['hormone-assessment', assessmentId],
+    queryKey: ['hormone-compass-assessment', assessmentId],
     queryFn: async () => {
-      if (!assessmentId || !user) return null;
+      if (!assessmentId) return null;
       
       const { data, error } = await supabase
         .from('hormone_compass_stages')
@@ -98,39 +119,70 @@ export default function MenoMapResults() {
       if (error) throw error;
       return data;
     },
-    enabled: !!assessmentId && !!user
+    enabled: !!assessmentId
   });
 
-  // Use database data if available, fallback to state
-  const stage = assessmentData?.stage || stateData.stage;
+  const healthLevel = assessmentData?.stage || stateData.stage;
   const confidence = assessmentData?.confidence_score || stateData.confidence;
 
-  // Fetch products based on stage-specific symptoms - ALWAYS call this hook
+  // Fetch products based on health level symptoms - ALWAYS call this hook
   const { data: recommendedProducts, isLoading: productsLoading } = useQuery({
-    queryKey: ['stage-products', stage],
+    queryKey: ['health-level-products', healthLevel],
     queryFn: () => {
-      if (!stage) return [];
-      const stageInfo = STAGE_INFO[stage as keyof typeof STAGE_INFO];
-      return searchProductsBySymptoms(stageInfo.targetSymptoms || []);
+      if (!healthLevel) return [];
+      const levelInfo = HEALTH_LEVEL_INFO[healthLevel as keyof typeof HEALTH_LEVEL_INFO];
+      return searchProductsBySymptoms(levelInfo.targetSymptoms || []);
     },
-    enabled: !!stage,
+    enabled: !!healthLevel,
   });
 
   // Now check conditions AFTER all hooks are called
   if (isLoading) {
     return (
       <div className="container max-w-4xl py-8">
-        <p className="text-center text-muted-foreground">Loading your results...</p>
+        <Card className="p-8">
+          <p>Loading your results...</p>
+        </Card>
       </div>
     );
   }
 
-  if (!stage) {
-    navigate('/menomap/assessment');
+  if (!healthLevel) {
+    navigate('/hormone-compass/assessment');
     return null;
   }
 
-  const stageInfo = STAGE_INFO[stage as keyof typeof STAGE_INFO];
+  const levelInfo = HEALTH_LEVEL_INFO[healthLevel as keyof typeof HEALTH_LEVEL_INFO];
+  
+  // Generate age-based contextual insight
+  const getLifeStageContext = () => {
+    if (!userAge) return null;
+    
+    if (userAge >= 25 && userAge <= 35) {
+      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
+        return 'At your age, these symptoms may indicate PCOS, thyroid imbalances, or cycle irregularities. Consider working with a healthcare provider to identify root causes.';
+      }
+      return 'You\'re in your prime reproductive years. Focus on establishing healthy baseline habits and tracking patterns.';
+    } else if (userAge >= 36 && userAge <= 44) {
+      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
+        return 'These symptoms could be early signs of hormonal shifts as you approach perimenopause, or may indicate other hormonal imbalances worth investigating.';
+      }
+      return 'You\'re approaching the perimenopausal transition window. Now is an ideal time to optimize hormone health and establish strong habits.';
+    } else if (userAge >= 45 && userAge <= 55) {
+      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
+        return 'These symptoms are common during the perimenopause transition. Targeted support can significantly improve your quality of life during this phase.';
+      }
+      return 'You\'re in the typical perimenopause window. Proactive support can help you navigate this transition smoothly.';
+    } else if (userAge >= 56) {
+      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
+        return 'If you\'re experiencing ongoing symptoms in postmenopause, hormone replacement therapy or targeted interventions may provide relief. Consult with your provider.';
+      }
+      return 'You\'re in the postmenopause phase. Focus on longevity optimization—bone health, cardiovascular support, and cognitive function.';
+    }
+    return null;
+  };
+  
+  const lifeStageContext = getLifeStageContext();
 
   const handleAddToCart = (product: Product) => {
     addToCart({
@@ -144,231 +196,155 @@ export default function MenoMapResults() {
     toast.success(`${product.name} added to cart`);
   };
 
-  const topProducts = recommendedProducts?.slice(0, 3) || [];
-
   const handleAddToPlan = async () => {
     if (!user) {
-      toast.error('Please sign in to add interventions to your plan');
-      navigate(`/auth?returnTo=/hormone-compass/results?assessmentId=${assessmentId}`);
+      toast.error('Please sign in to add to your plan');
+      navigate('/auth');
       return;
     }
 
-    setAddingToPlan(true);
     try {
-      await generateProtocolFromHormoneStage(user.id, stage, confidence);
-      await updateUserProfileAfterAssessment(user.id, 'hormone', { stage, confidence });
-      
-      toast.success('Stage-specific interventions added to your protocol!');
+      toast.success('Hormone health profile saved!');
       navigate('/my-protocol');
     } catch (error) {
-      console.error('Error adding to plan:', error);
-      toast.error('Failed to add interventions to your plan');
-    } finally {
-      setAddingToPlan(false);
+      console.error('Error updating profile:', error);
+      toast.error('Failed to update profile');
     }
   };
 
   return (
-    <div className="container max-w-4xl py-8 space-y-8">
+    <div className="container max-w-4xl py-8 space-y-6">
       {/* Celebration Header */}
-      <div className="text-center space-y-4 animate-fade-in">
-        <div className="flex justify-center">
-          <div className="rounded-full bg-primary/10 p-4">
-            <CheckCircle className="w-12 h-12 text-primary" />
-          </div>
-        </div>
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
-            Assessment Complete!
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Your menopause stage has been mapped
-          </p>
-        </div>
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold">Assessment Complete!</h1>
+        <p className="text-muted-foreground">
+          Your hormone health has been evaluated
+        </p>
       </div>
 
-      {/* Stage Result */}
-      <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50">
-        <CardContent className="pt-8">
-          <HormoneCompassStageCompass 
-            currentStage={stage}
-            confidenceScore={confidence}
-            size="lg"
-          />
-        </CardContent>
-      </Card>
+      {/* Health Level Compass Visualization */}
+      <HormoneCompassStageCompass 
+        currentStage={healthLevel as any}
+        confidenceScore={confidence || 0}
+        size="lg"
+      />
 
-      {/* Stage Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">{stageInfo.title}</CardTitle>
-          <CardDescription className="text-base">
-            {stageInfo.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      {/* Health Level Information */}
+      <Card className="p-6">
+        <h2 className={`text-xl font-semibold mb-3 ${levelInfo.color}`}>{levelInfo.title}</h2>
+        <p className="text-muted-foreground mb-4">{levelInfo.description}</p>
+        
+        {/* Life-Stage Context */}
+        {lifeStageContext && (
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-6">
+            <p className="text-sm">
+              <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
+              {lifeStageContext}
+            </p>
+          </div>
+        )}
+        
+        <div className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-3">Recommended Next Steps:</h3>
+            <h3 className="font-semibold mb-2">Recommended Actions:</h3>
             <ul className="space-y-2">
-              {stageInfo.recommendations.map((rec, index) => (
+              {levelInfo.recommendations.map((rec, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span>{rec}</span>
+                  <span className="text-primary mt-1">•</span>
+                  <span className="text-sm">{rec}</span>
                 </li>
               ))}
             </ul>
           </div>
-        </CardContent>
+        </div>
       </Card>
 
       {/* AI Analysis Card */}
       {user && (
-        <div className="mb-6">
-          <AssessmentAIAnalysisCard
-            assessmentType="hormone-compass"
-            assessmentId="hormone-stage-assessment"
-            score={75} // Default confidence score, could be made dynamic
-            scoreCategory={stage}
-            answers={{}} // Hormone compass doesn't use traditional Q&A format
-            metadata={{ 
-              stage,
-              answers: stateData.answers || assessmentData?.hormone_indicators
-            }}
-            autoGenerate={true}
-          />
-        </div>
+        <AssessmentAIAnalysisCard
+          assessmentType="hormone-compass"
+          assessmentId={assessmentId || 'hormone-compass'}
+          score={confidence || 75}
+          scoreCategory={healthLevel}
+          answers={{}}
+          metadata={{ 
+            healthLevel,
+            userAge,
+            answers: (stateData as any)?.answers || assessmentData?.hormone_indicators
+          }}
+          autoGenerate={false}
+          renderButton={(onClick, isLoading) => (
+            <Button onClick={onClick} disabled={isLoading} variant="outline" size="sm" className="w-full">
+              {isLoading ? 'Generating...' : 'Get AI-Powered Deep Dive (Optional)'}
+            </Button>
+          )}
+        />
       )}
 
       {/* Recommended Products */}
-      {topProducts.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommended Supplements</CardTitle>
-            <CardDescription>
-              Based on your {stageInfo.title.toLowerCase()} profile, these products may support your wellness journey
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {productsLoading ? (
-              <p className="text-sm text-muted-foreground">Loading recommendations...</p>
-            ) : (
-              <>
-                {topProducts.map((product) => (
-                  <div key={product.id} className="flex gap-4 p-4 border rounded-lg">
-                    <img 
-                      src={product.image_url || '/placeholder.svg'} 
-                      alt={product.name}
-                      className="w-20 h-20 object-cover rounded-md flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <div>
-                          <h4 className="font-semibold line-clamp-1">{product.name}</h4>
-                          {product.brand && (
-                            <p className="text-sm text-muted-foreground">{product.brand}</p>
-                          )}
-                        </div>
-                        {product.evidence_level && (
-                          <Badge variant="outline" className="flex-shrink-0 text-xs">
-                            {product.evidence_level}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                        {product.description}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-lg">
-                          {formatProductPrice(product)}
-                        </span>
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleAddToCart(product)}
-                          className="ml-auto"
-                        >
-                          <ShoppingCart className="w-4 h-4 mr-2" />
-                          Add to Cart
-                        </Button>
-                      </div>
-                    </div>
+      {recommendedProducts && recommendedProducts.length > 0 && (
+        <Card className="p-6">
+          <h3 className="font-semibold mb-4">Recommended Supplements</h3>
+          <div className="space-y-3">
+            {recommendedProducts.slice(0, 3).map((product) => (
+              <div key={product.id} className="flex gap-3 p-3 border rounded-lg">
+                <img 
+                  src={product.image_url || '/placeholder.svg'} 
+                  alt={product.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">{product.name}</h4>
+                  <p className="text-xs text-muted-foreground line-clamp-1">{product.brand}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="font-semibold">£{product.price_gbp?.toFixed(2)}</span>
+                    <Button size="sm" variant="outline" onClick={() => handleAddToCart(product)}>
+                      <ShoppingCart className="w-3 h-3 mr-1" />
+                      Add
+                    </Button>
                   </div>
-                ))}
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => navigate('/shop')}
-                >
-                  View All Products
-                </Button>
-              </>
-            )}
-          </CardContent>
+                </div>
+              </div>
+            ))}
+          </div>
         </Card>
       )}
 
-      {/* Add to My Plan */}
+      {/* Add to Plan CTA */}
       {user && (
-        <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              Build Your Personalized Protocol
-            </CardTitle>
-            <CardDescription>
-              Add {stageInfo.recommendations.length} evidence-based interventions to your daily plan
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={handleAddToPlan}
-              disabled={addingToPlan}
-              className="w-full"
-              size="lg"
-            >
-              {addingToPlan ? 'Adding to Plan...' : 'Add Stage Interventions to My Plan'}
-            </Button>
-          </CardContent>
+        <Card className="p-6">
+          <h3 className="font-semibold mb-2">Add to Your Plan</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Save your hormone health profile and get personalized recommendations
+          </p>
+          <Button onClick={handleAddToPlan} className="w-full">
+            Add to My Plan
+          </Button>
         </Card>
       )}
 
-      {/* What's Next */}
-      <Card>
-        <CardHeader>
-          <CardTitle>What's Next?</CardTitle>
-          <CardDescription>
-            Continue your Hormone Compass journey
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      {/* Next Steps */}
+      <Card className="p-6">
+        <h3 className="font-semibold mb-4">What's Next?</h3>
+        <div className="space-y-3">
           <Button 
-            onClick={() => navigate('/menomap/tracker')}
-            variant="outline"
+            variant="outline" 
             className="w-full justify-between"
-            size="lg"
+            onClick={() => navigate('/hormone-compass/tracker')}
           >
             <span>Start Tracking Daily Symptoms</span>
-            <ArrowRight className="w-5 h-5" />
+            <Calendar className="w-4 h-4" />
           </Button>
-          
           <Button 
-            onClick={() => navigate('/dashboard?tab=insights')}
-            variant="outline"
+            variant="outline" 
             className="w-full justify-between"
-            size="lg"
+            onClick={() => navigate('/dashboard')}
           >
             <span>View Dashboard</span>
-            <ArrowRight className="w-5 h-5" />
+            <TrendingUp className="w-4 h-4" />
           </Button>
-        </CardContent>
+        </div>
       </Card>
-
-      {/* Share or Export */}
-      <div className="flex gap-4">
-        <Button variant="outline" className="flex-1 gap-2">
-          <Download className="w-4 h-4" />
-          Export Results (PDF)
-        </Button>
-      </div>
     </div>
   );
 }

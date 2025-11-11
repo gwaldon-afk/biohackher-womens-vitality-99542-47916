@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { useHormoneCompass } from "@/hooks/useHormoneCompass";
 import { useAuth } from "@/hooks/useAuth";
-import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneStage } from "@/data/hormoneCompassAssessment";
+import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneHealth } from "@/data/hormoneCompassAssessment";
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,14 +46,12 @@ export default function HormoneCompassAssessment() {
       return;
     }
 
-    // Move to next question or domain
     if (currentQuestionIndex < currentDomain.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (currentDomainIndex < HORMONE_COMPASS_ASSESSMENT.domains.length - 1) {
       setCurrentDomainIndex(currentDomainIndex + 1);
       setCurrentQuestionIndex(0);
     } else {
-      // Assessment complete
       handleComplete();
     }
   };
@@ -72,91 +70,51 @@ export default function HormoneCompassAssessment() {
     setIsCalculating(true);
 
     try {
-      // Calculate stage
-      const result = calculateHormoneStage(answers);
+      const result = calculateHormoneHealth(answers);
 
       if (!user) {
-        // For guest users, just navigate with state
         navigate('/hormone-compass/results', {
-          state: {
-            stage: result.stage,
-            confidence: result.confidence,
-            answers
-          }
+          state: { stage: result.stage, confidence: result.confidence, answers }
         });
         return;
       }
 
-      // Verify we have a valid session before saving
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to save your assessment results.",
-          variant: "destructive"
-        });
+        toast({ title: "Authentication Required", description: "Please log in to save your assessment results.", variant: "destructive" });
         navigate('/auth');
         return;
       }
 
-      // Save assessment to database for authenticated users
       const { data: stageData, error } = await supabase
         .from('hormone_compass_stages')
         .insert({
           user_id: session.user.id,
           stage: result.stage,
           confidence_score: result.confidence,
-          hormone_indicators: { 
-            domainScores: answers,
-            avgScore: result.avgScore,
-            completedAt: new Date().toISOString()
-          }
+          hormone_indicators: { domainScores: answers, avgScore: result.avgScore, completedAt: new Date().toISOString() }
         })
         .select('id')
         .single();
 
       if (error) throw error;
 
-      // Navigate with assessment ID for fetching from database
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error: any) {
       console.error('Error completing assessment:', error);
-      console.error('Error details:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
-      });
-      toast({
-        title: "Error",
-        description: `Failed to save assessment: ${error.message || 'Please try again.'}`,
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: `Failed to save assessment: ${error.message || 'Please try again.'}`, variant: "destructive" });
     } finally {
       setIsCalculating(false);
     }
   };
 
-  const isLastQuestion = 
-    currentDomainIndex === HORMONE_COMPASS_ASSESSMENT.domains.length - 1 &&
-    currentQuestionIndex === currentDomain.questions.length - 1;
+  const isLastQuestion = currentDomainIndex === HORMONE_COMPASS_ASSESSMENT.domains.length - 1 && currentQuestionIndex === currentDomain.questions.length - 1;
 
   return (
     <div className="container max-w-3xl py-8">
       <div className="space-y-8">
-        {/* Header */}
         <div className="space-y-4">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              if (window.history.length > 1) {
-                navigate(-1);
-              } else {
-                navigate(user ? '/dashboard' : '/');
-              }
-            }}
-            className="gap-2"
-          >
+          <Button variant="ghost" onClick={() => navigate(user ? '/dashboard' : '/')} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             Back to My Plan
           </Button>
@@ -166,24 +124,18 @@ export default function HormoneCompassAssessment() {
               <Moon className="w-8 h-8 text-primary" />
               HormoneCompass™ Assessment
             </h1>
-            <p className="text-muted-foreground">
-              Answer honestly to get the most accurate stage mapping
-            </p>
+            <p className="text-muted-foreground">Answer honestly to get the most accurate evaluation</p>
           </div>
 
-          {/* Progress */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                Question {answeredQuestions + 1} of {totalQuestions}
-              </span>
+              <span className="text-muted-foreground">Question {answeredQuestions + 1} of {totalQuestions}</span>
               <span className="font-medium">{Math.round(progress)}% Complete</span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
         </div>
 
-        {/* Question Card */}
         <Card className="border-2">
           <CardHeader className="bg-gradient-to-br from-purple-50 to-pink-50">
             <div className="space-y-2">
@@ -195,80 +147,32 @@ export default function HormoneCompassAssessment() {
             </div>
           </CardHeader>
           <CardContent className="pt-8 space-y-8">
-            {/* Slider */}
             <div className="space-y-6">
-              <Slider
-                value={[answers[currentQuestion.id] || 3]}
-                onValueChange={([value]) => handleAnswer(value)}
-                min={currentQuestion.scale.min}
-                max={currentQuestion.scale.max}
-                step={1}
-                className="w-full"
-              />
-
-              {/* Value Display */}
+              <Slider value={[answers[currentQuestion.id] || 3]} onValueChange={([value]) => handleAnswer(value)} min={currentQuestion.scale.min} max={currentQuestion.scale.max} step={1} className="w-full" />
               <div className="text-center">
-                <p className="text-4xl font-bold text-primary">
-                  {answers[currentQuestion.id] || 3}
-                </p>
+                <p className="text-4xl font-bold text-primary">{answers[currentQuestion.id] || 3}</p>
               </div>
-
-              {/* Scale Labels */}
               <div className="flex justify-between text-sm text-muted-foreground">
-                <span className="text-left max-w-[45%]">
-                  {currentQuestion.scale.minLabel}
-                </span>
-                <span className="text-right max-w-[45%]">
-                  {currentQuestion.scale.maxLabel}
-                </span>
+                <span className="text-left max-w-[45%]">{currentQuestion.scale.minLabel}</span>
+                <span className="text-right max-w-[45%]">{currentQuestion.scale.maxLabel}</span>
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex gap-4">
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={currentDomainIndex === 0 && currentQuestionIndex === 0}
-                className="flex-1 gap-2"
-              >
+              <Button variant="outline" onClick={handleBack} disabled={currentDomainIndex === 0 && currentQuestionIndex === 0} className="flex-1 gap-2">
                 <ArrowLeft className="w-4 h-4" />
                 Previous
               </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!answers[currentQuestion.id] || isCalculating}
-                className="flex-1 gap-2"
-              >
-                {isLastQuestion ? (
-                  <>
-                    {isCalculating ? "Calculating..." : "Complete"}
-                    <CheckCircle className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    Next
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+              <Button onClick={handleNext} disabled={!answers[currentQuestion.id] || isCalculating} className="flex-1 gap-2">
+                {isLastQuestion ? <>{isCalculating ? "Calculating..." : "Complete"}<CheckCircle className="w-4 h-4" /></> : <> Next<ArrowRight className="w-4 h-4" /></>}
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        {/* Domain Progress Indicators */}
         <div className="flex gap-2 justify-center">
           {HORMONE_COMPASS_ASSESSMENT.domains.map((domain, index) => (
-            <div
-              key={domain.id}
-              className={`h-2 flex-1 rounded-full transition-all ${
-                index < currentDomainIndex
-                  ? 'bg-primary'
-                  : index === currentDomainIndex
-                  ? 'bg-primary/50'
-                  : 'bg-muted'
-              }`}
-            />
+            <div key={domain.id} className={`h-2 flex-1 rounded-full transition-all ${index < currentDomainIndex ? 'bg-primary' : index === currentDomainIndex ? 'bg-primary/50' : 'bg-muted'}`} />
           ))}
         </div>
       </div>
