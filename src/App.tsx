@@ -75,7 +75,6 @@ import { AdminRoute } from "./components/AdminRoute";
 import { AdminLayout } from "./components/AdminLayout";
 import { LIS2InitialAssessment } from "./components/LIS2InitialAssessment";
 import GuestLISAssessment from "./pages/GuestLISAssessment";
-import GuestLISResults from "./pages/GuestLISResults";
 import BrainAssessment from "./pages/BrainAssessment";
 import ToolkitCategory from "./pages/ToolkitCategory";
 import Achievements from "./pages/Achievements";
@@ -130,7 +129,6 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/today" element={<MyDailyPlan />} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
-                <Route path="/guest-lis-results/:sessionId" element={<GuestLISResults />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
                 <Route path="/dashboard" element={<Navigate to="/today" replace />} />

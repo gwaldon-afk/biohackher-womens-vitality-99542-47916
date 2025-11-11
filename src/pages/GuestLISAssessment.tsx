@@ -1103,8 +1103,9 @@ export default function GuestLISAssessment() {
           return;
         }
 
-        // Navigate to results page for guests
-        navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true&isGuest=true`);
+        // Navigate to results page for guests with age parameter
+        const age = calculateAgeFromDOB(baselineData.dateOfBirth);
+        navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true&isGuest=true&age=${age}`);
       }
     } catch (error) {
       console.error('Error submitting assessment:', error);

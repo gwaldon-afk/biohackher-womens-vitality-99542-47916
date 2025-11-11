@@ -26,6 +26,7 @@ const LISResults = () => {
   const [searchParams] = useSearchParams();
   const isGuest = !user;
   const score = parseFloat(searchParams.get('score') || '0');
+  const urlAge = searchParams.get('age');
   const lisData = useLISData();
   const { toast } = useToast();
   const { generateProtocolFromAssessments, loading: protocolGenerating } = useProtocolGeneration();
@@ -38,7 +39,9 @@ const LISResults = () => {
   
   // State for baseline data
   const [baselineData, setBaselineData] = useState<any>(null);
-  const [chronologicalAge, setChronologicalAge] = useState<number>(0);
+  const [chronologicalAge, setChronologicalAge] = useState<number>(
+    urlAge ? parseInt(urlAge) : 0
+  );
   const [protocolGenerated, setProtocolGenerated] = useState(false);
   
   // Check if user has an active protocol
@@ -272,8 +275,8 @@ const LISResults = () => {
         </CardContent>
       </Card>
 
-      {/* Biological Age Card - Only for users with baseline data */}
-      {!isGuest && chronologicalAge > 0 && bioAgeData && (
+      {/* Biological Age Card - For ALL users with age data */}
+      {chronologicalAge > 0 && bioAgeData && (
         <Card className="p-8 mb-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-background">
           <div className="text-center">
             <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
@@ -416,6 +419,95 @@ const LISResults = () => {
                 <p className="text-sm text-muted-foreground">
                   <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For a more accurate cellular-level biological age measurement, we recommend taking a clinical test including comprehensive blood work, inflammation markers, metabolic panels, and hormonal assessments.
                 </p>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Nutrition Preview Card - For Guests Only */}
+      {isGuest && (
+        <Card className="p-6 mb-6 border-2 border-primary/20 bg-gradient-to-br from-orange-500/5 to-background relative overflow-hidden">
+          {/* Blur overlay */}
+          <div className="absolute inset-0 backdrop-blur-sm bg-background/70 z-10 rounded-lg flex items-center justify-center">
+            <div className="text-center space-y-4 p-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
+                <Lock className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold">Daily Nutrition Tracking</h3>
+              <p className="text-muted-foreground max-w-md">
+                Track your anti-inflammatory score every day, see how nutrition impacts your LIS, 
+                and get personalized meal recommendations
+              </p>
+              
+              {/* Benefits list */}
+              <div className="grid grid-cols-1 gap-2 max-w-sm mx-auto text-left">
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Daily nutrition scoring (0-15 scale)</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Track hydration, protein, vegetables, and more</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>See how daily choices affect your biological age</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Build streaks and earn achievements</span>
+                </div>
+              </div>
+              
+              <Button 
+                size="lg" 
+                onClick={() => navigate('/auth?source=nutrition')}
+                className="text-lg px-8 py-6 h-auto"
+              >
+                Sign Up to Start Tracking
+              </Button>
+              
+              <p className="text-xs text-muted-foreground">
+                Includes FREE 3-day trial
+              </p>
+            </div>
+          </div>
+          
+          {/* Preview content (blurred behind overlay) */}
+          <div className="opacity-50">
+            <div className="p-6 relative">
+              {/* Subtle overlay to indicate disabled state */}
+              <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px] rounded-lg pointer-events-none z-10" />
+              
+              <div className="space-y-6 relative opacity-60">
+                {/* Score Circle */}
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-foreground">11</div>
+                    <div className="text-sm text-muted-foreground">out of 15</div>
+                    <div className="text-2xl font-bold text-primary mt-1">Grade A</div>
+                  </div>
+                  <p className="text-sm text-center text-muted-foreground max-w-md">
+                    Your daily anti-inflammatory nutrition score
+                  </p>
+                </div>
+
+                {/* Demo Sliders */}
+                <div className="space-y-4 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span>💧 Hydration</span>
+                    <span className="text-muted-foreground">3 glasses</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>🥬 Vegetables & Greens</span>
+                    <span className="text-muted-foreground">3 servings</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>🍗 Protein Quality</span>
+                    <span className="text-muted-foreground">Good sources</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
