@@ -12,6 +12,7 @@ interface PillarAnalysisCardProps {
   color: string;
   overallLIS: number;
   userAge?: number;
+  hideHeader?: boolean;
 }
 
 export const LISPillarAnalysisCard = ({ 
@@ -22,7 +23,8 @@ export const LISPillarAnalysisCard = ({
   icon: Icon, 
   color,
   overallLIS,
-  userAge 
+  userAge,
+  hideHeader = false
 }: PillarAnalysisCardProps) => {
   
   const getScoreLabel = (score: number) => {
@@ -322,32 +324,37 @@ export const LISPillarAnalysisCard = ({
   return (
     <Card className="border-l-4" style={{ borderLeftColor: color }}>
       <CardContent className="p-6">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div 
-              className="p-2 rounded-lg"
-              style={{ backgroundColor: `${color}20` }}
-            >
-              <Icon className="h-5 w-5" style={{ color }} />
+        {/* Conditionally render header */}
+        {!hideHeader && (
+          <>
+            {/* Header */}
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div 
+                  className="p-2 rounded-lg"
+                  style={{ backgroundColor: `${color}20` }}
+                >
+                  <Icon className="h-5 w-5" style={{ color }} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">{pillarDisplayName}</h3>
+                  <Badge variant={getBadgeVariant(pillarScore)} className="mt-1">
+                    {scoreLabel}
+                  </Badge>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className={`text-3xl font-bold ${getScoreColor(pillarScore)}`}>
+                  {pillarScore}
+                </div>
+                <div className="text-xs text-muted-foreground">/ 100</div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-lg">{pillarDisplayName}</h3>
-              <Badge variant={getBadgeVariant(pillarScore)} className="mt-1">
-                {scoreLabel}
-              </Badge>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className={`text-3xl font-bold ${getScoreColor(pillarScore)}`}>
-              {pillarScore}
-            </div>
-            <div className="text-xs text-muted-foreground">/ 100</div>
-          </div>
-        </div>
 
-        {/* Progress Bar */}
-        <Progress value={pillarScore} className="mb-4 h-2" />
+            {/* Progress Bar */}
+            <Progress value={pillarScore} className="mb-4 h-2" />
+          </>
+        )}
 
         {/* Impact Statement */}
         <div className="mb-4 p-3 bg-muted/30 rounded-lg">

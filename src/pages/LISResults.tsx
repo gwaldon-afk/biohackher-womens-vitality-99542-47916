@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import LISInputForm from '@/components/LISInputForm';
 import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome';
 import { useLISData } from '@/hooks/useLISData';
@@ -576,30 +577,93 @@ const LISResults = () => {
         </Card>
       )}
 
-      {/* Individual Pillar Analysis Cards */}
+      {/* Individual Pillar Analysis Cards - Accordion Version */}
       <div className="mb-6 p-6 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Activity className="h-6 w-6 text-primary" />
           Detailed Pillar Analysis
         </h2>
         <p className="text-muted-foreground mb-6">
-          Deep dive into each longevity pillar with personalized insights and actionable recommendations.
+          Deep dive into each longevity pillar with personalized insights and actionable recommendations. Click any pillar to expand.
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <Accordion 
+          type="multiple" 
+          defaultValue={[pillarAnalyses.reduce((lowest, current) => 
+            current.score < lowest.score ? current : lowest
+          ).name]} 
+          className="space-y-4"
+        >
           {pillarAnalyses.map((pillar) => (
-            <LISPillarAnalysisCard
-              key={pillar.name}
-              pillarName={pillar.name}
-              pillarDisplayName={pillar.displayName}
-              pillarAnalysisName={pillar.analysisName}
-              pillarScore={pillar.score}
-              icon={pillar.icon}
-              color={pillar.color}
-              overallLIS={displayScore}
-              userAge={chronologicalAge}
-            />
+            <AccordionItem 
+              key={pillar.name} 
+              value={pillar.name}
+              className="border rounded-lg overflow-hidden"
+              style={{ borderLeftWidth: '4px', borderLeftColor: pillar.color }}
+            >
+              <AccordionTrigger className="px-6 py-4 hover:bg-muted/50 [&[data-state=open]]:bg-muted/30">
+                <div className="flex items-center justify-between w-full pr-4">
+                  {/* Left: Icon + Name + Badge */}
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="p-2 rounded-lg flex-shrink-0"
+                      style={{ backgroundColor: `${pillar.color}20` }}
+                    >
+                      <pillar.icon className="h-5 w-5" style={{ color: pillar.color }} />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold text-base">{pillar.displayName}</h3>
+                      <Badge 
+                        variant={
+                          pillar.score >= 80 ? 'default' : 
+                          pillar.score >= 60 ? 'secondary' : 
+                          pillar.score >= 40 ? 'outline' : 'destructive'
+                        } 
+                        className="mt-1"
+                      >
+                        {pillar.score >= 80 ? 'Excellent' : 
+                         pillar.score >= 60 ? 'Good' : 
+                         pillar.score >= 40 ? 'Fair' : 'Needs Work'}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  {/* Right: Score */}
+                  <div className="text-right flex-shrink-0">
+                    <div 
+                      className={`text-2xl font-bold ${
+                        pillar.score >= 80 ? 'text-green-600' : 
+                        pillar.score >= 60 ? 'text-yellow-600' : 
+                        pillar.score >= 40 ? 'text-orange-600' : 'text-red-600'
+                      }`}
+                    >
+                      {pillar.score}
+                    </div>
+                    <div className="text-xs text-muted-foreground">/ 100</div>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              
+              <AccordionContent className="px-6 pb-6">
+                <div className="pt-4">
+                  <Progress value={pillar.score} className="mb-4 h-2" />
+                  
+                  <LISPillarAnalysisCard
+                    pillarName={pillar.name}
+                    pillarDisplayName={pillar.displayName}
+                    pillarAnalysisName={pillar.analysisName}
+                    pillarScore={pillar.score}
+                    icon={pillar.icon}
+                    color={pillar.color}
+                    overallLIS={displayScore}
+                    userAge={chronologicalAge}
+                    hideHeader={true}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </div>
 
 
