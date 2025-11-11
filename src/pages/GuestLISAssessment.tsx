@@ -9,7 +9,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
   Brain, Heart, Activity, Sparkles, User, Calendar, Ruler, Scale, 
-  ArrowRight, Shield, Moon, TrendingUp, Users, Home, X, Check, ArrowLeft 
+  ArrowRight, Shield, Moon, TrendingUp, Users, Home, X, Check, ArrowLeft,
+  CloudMoon, Sunrise, Smile, Frown, AlertCircle, Zap, Dumbbell,
+  XCircle, AlertTriangle, Leaf, Apple, Droplets, Coffee,
+  UserPlus, Target, Lightbulb, BookOpen, GraduationCap,
+  Cigarette, ShieldCheck, CheckCircle2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -1115,6 +1119,128 @@ export default function GuestLISAssessment() {
     }
   };
 
+  // Icon mapping for female-focused wellness icons
+  const getIconForOption = (questionId: string, optionIndex: number): { Icon: any, color: string } => {
+    const iconMap: Record<string, Array<{ Icon: any, color: string }>> = {
+      'Q1_SleepDuration': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: CloudMoon, color: '#f97316' },
+        { Icon: Moon, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q2_SleepQuality': [
+        { Icon: Frown, color: '#ef4444' },
+        { Icon: Moon, color: '#f97316' },
+        { Icon: Smile, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q3_SleepConsistency': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: CloudMoon, color: '#f97316' },
+        { Icon: Moon, color: '#a855f7' },
+        { Icon: Sunrise, color: '#22c55e' }
+      ],
+      'Q4_SubjectiveCalmness': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: Frown, color: '#f97316' },
+        { Icon: Smile, color: '#a855f7' },
+        { Icon: Heart, color: '#22c55e' }
+      ],
+      'Q5_SubjectiveAge': [
+        { Icon: User, color: '#ef4444' },
+        { Icon: Frown, color: '#f97316' },
+        { Icon: Smile, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q6_StressResilience': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: Frown, color: '#f97316' },
+        { Icon: Smile, color: '#a855f7' },
+        { Icon: Heart, color: '#22c55e' }
+      ],
+      'Q8_ActivityLevel': [
+        { Icon: Home, color: '#ef4444' },
+        { Icon: User, color: '#f97316' },
+        { Icon: Activity, color: '#a855f7' },
+        { Icon: Zap, color: '#22c55e' }
+      ],
+      'Q9_ExerciseIntensity': [
+        { Icon: User, color: '#f97316' },
+        { Icon: Activity, color: '#a855f7' },
+        { Icon: Zap, color: '#22c55e' },
+        { Icon: Heart, color: '#22c55e' }
+      ],
+      'Q10_MovementVariety': [
+        { Icon: XCircle, color: '#ef4444' },
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: Dumbbell, color: '#a855f7' },
+        { Icon: Heart, color: '#22c55e' }
+      ],
+      'Q11_NutritionQuality': [
+        { Icon: XCircle, color: '#ef4444' },
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: Leaf, color: '#a855f7' },
+        { Icon: Apple, color: '#22c55e' }
+      ],
+      'Q12_ProteinIntake': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: Heart, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q13_Hydration': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: Droplets, color: '#f97316' },
+        { Icon: Droplets, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q14_VegetableIntake': [
+        { Icon: XCircle, color: '#ef4444' },
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: Leaf, color: '#a855f7' },
+        { Icon: Apple, color: '#22c55e' }
+      ],
+      'Q15_SocialEngagement': [
+        { Icon: Frown, color: '#ef4444' },
+        { Icon: User, color: '#f97316' },
+        { Icon: Users, color: '#a855f7' },
+        { Icon: UserPlus, color: '#22c55e' }
+      ],
+      'Q17_Purpose': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: Frown, color: '#f97316' },
+        { Icon: Target, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q18_CognitiveEngagement': [
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: BookOpen, color: '#f97316' },
+        { Icon: Lightbulb, color: '#a855f7' },
+        { Icon: GraduationCap, color: '#22c55e' }
+      ],
+      'Q19_LearningNew': [
+        { Icon: AlertCircle, color: '#ef4444' },
+        { Icon: BookOpen, color: '#f97316' },
+        { Icon: Lightbulb, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q20_Meditation': [
+        { Icon: AlertTriangle, color: '#f97316' },
+        { Icon: Heart, color: '#f97316' },
+        { Icon: Heart, color: '#a855f7' },
+        { Icon: Sparkles, color: '#22c55e' }
+      ],
+      'Q21_SmokingStatus': [
+        { Icon: Cigarette, color: '#ef4444' },
+        { Icon: AlertCircle, color: '#f97316' },
+        { Icon: ShieldCheck, color: '#a855f7' },
+        { Icon: CheckCircle2, color: '#22c55e' }
+      ]
+    };
+
+    return iconMap[questionId]?.[optionIndex] || { Icon: Sparkles, color: '#a855f7' };
+  };
+
   const bmi = calculateBMI();
   const isFirstQuestion = currentPillar === 0 && currentQuestionIndex === 0 && !isOnModifier;
 
@@ -1172,40 +1298,58 @@ export default function GuestLISAssessment() {
           Discover your science-backed Longevity Impact Score
         </p>
 
-        {/* Minimal Progress Header */}
+        {/* Enhanced Progress Header */}
         {!showBaseline && (
-          <div className="mb-8 sticky top-0 bg-background/95 backdrop-blur-sm z-10 py-4 -mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                Question {isOnModifier ? totalQuestions : absoluteQuestionNumber} of {totalQuestions}
-              </span>
+          <div className="mb-8 sticky top-0 bg-gradient-to-b from-background via-background to-transparent backdrop-blur-md z-10 py-4 -mt-4 border-b border-primary/10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="text-sm font-medium text-muted-foreground">
+                  Question {isOnModifier ? totalQuestions : absoluteQuestionNumber} of {totalQuestions}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  • {Math.round(progress)}% complete
+                </div>
+              </div>
               {!isOnModifier && currentPillarInfo && (
-                <Badge variant="secondary" className="gap-1.5">
-                  <currentPillarInfo.icon className="h-3 w-3" style={{ color: currentPillarInfo.color }} />
-                  {currentPillarInfo.name}
+                <Badge className="gap-2 px-3 py-1" style={{ 
+                  backgroundColor: `${currentPillarInfo.color}15`,
+                  color: currentPillarInfo.color,
+                  borderColor: `${currentPillarInfo.color}30`
+                }}>
+                  <currentPillarInfo.icon className="h-4 w-4" />
+                  <span className="font-medium">{currentPillarInfo.name}</span>
                 </Badge>
               )}
               {isOnModifier && (
-                <Badge variant="secondary" className="gap-1.5 bg-purple-500/10 text-purple-500">
-                  <Sparkles className="h-3 w-3" />
-                  Risk Modifier
+                <Badge className="gap-2 px-3 py-1 bg-purple-500/10 text-purple-500 border-purple-500/30">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="font-medium">Risk Modifier</span>
                 </Badge>
               )}
             </div>
-            <Progress value={progress} className="h-1.5" />
+            <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+              <div 
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+              </div>
+            </div>
           </div>
         )}
 
         {/* Baseline Data Collection or Question Card */}
         {showBaseline ? (
-          <Card className="border-primary/20">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 shadow-xl">
             <div className="p-8">
-              {/* Centered Header */}
+              {/* Enhanced Header with gradient icon background */}
               <div className="text-center mb-8">
-                <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="h-8 w-8 text-primary" />
+                <div className="mx-auto mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                  <User className="h-10 w-10 text-primary" />
                 </div>
-                <h2 className="text-3xl font-bold mb-3">Before We Begin</h2>
+                <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Before We Begin
+                </h2>
                 <p className="text-muted-foreground text-base max-w-2xl mx-auto">
                   We need a few baseline metrics to calculate your personalized Longevity Impact Score based on peer-reviewed research
                 </p>
@@ -1224,7 +1368,7 @@ export default function GuestLISAssessment() {
                     value={baselineData.dateOfBirth}
                     onChange={(e) => setBaselineData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
                     max={new Date().toISOString().split('T')[0]}
-                    className="h-12 text-base"
+                    className="h-12 text-base focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   {baselineData.dateOfBirth && (
                     <p className="text-sm text-muted-foreground">
@@ -1247,7 +1391,7 @@ export default function GuestLISAssessment() {
                     onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
                     min="100"
                     max="250"
-                    className="h-12 text-base"
+                    className="h-12 text-base focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   {baselineData.heightCm && parseFloat(baselineData.heightCm) > 0 && (
                     <p className="text-sm text-muted-foreground">
@@ -1271,7 +1415,7 @@ export default function GuestLISAssessment() {
                     min="30"
                     max="300"
                     step="0.1"
-                    className="h-12 text-base"
+                    className="h-12 text-base focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   {baselineData.weightKg && parseFloat(baselineData.weightKg) > 0 && (
                     <p className="text-sm text-muted-foreground">
@@ -1311,53 +1455,110 @@ export default function GuestLISAssessment() {
           </Card>
         ) : currentQuestion ? (
           <div className="space-y-8 mb-8">
-            {/* Question text - large and centered */}
-            <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold leading-tight max-w-3xl mx-auto">
-                {currentQuestion.text}
-              </h2>
-            </div>
+            {/* Enhanced Question Card with gradient background */}
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+              <CardContent className="p-8">
+                {/* Pillar Badge - More prominent */}
+                {!isOnModifier && currentPillarInfo && (
+                  <div className="flex justify-center mb-6">
+                    <Badge className="text-base px-4 py-2 gap-2" style={{ 
+                      backgroundColor: `${currentPillarInfo.color}20`,
+                      color: currentPillarInfo.color,
+                      borderColor: `${currentPillarInfo.color}40`
+                    }}>
+                      <currentPillarInfo.icon className="h-5 w-5" />
+                      {currentPillarInfo.name} Health
+                    </Badge>
+                  </div>
+                )}
+                
+                {/* Question text - Enhanced typography */}
+                <h2 className="text-2xl md:text-3xl font-bold leading-tight max-w-3xl mx-auto text-center mb-2">
+                  {currentQuestion.text}
+                </h2>
+                
+                {/* Subtitle hint */}
+                <p className="text-center text-muted-foreground text-sm max-w-2xl mx-auto">
+                  Select the option that best describes you
+                </p>
+              </CardContent>
+            </Card>
 
-            {/* Option cards - grid layout */}
+            {/* Option cards - grid layout with female-focused icons */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
               {currentQuestion.options.map((option, idx) => {
                 const isSelected = answers[currentQuestion.question_id]?.text === option.text;
                 const scorePercent = option.score_value;
-                const barColor = scorePercent >= 75 ? 'bg-green-500' : 
-                                scorePercent >= 40 ? 'bg-yellow-500' : 'bg-red-500';
+                const { Icon, color } = getIconForOption(currentQuestion.question_id, idx);
                 
                 return (
                   <Card
                     key={idx}
                     className={cn(
-                      "cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg min-h-[160px]",
+                      "cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group relative overflow-hidden",
                       isSelected 
-                        ? "border-primary border-2 bg-primary/10 shadow-md"
+                        ? "border-primary border-2 shadow-lg"
                         : "border-border hover:border-primary/50"
                     )}
                     onClick={() => handleAnswerSelect(currentQuestion.question_id, option)}
                   >
-                    <CardContent className="p-6 text-center space-y-3 flex flex-col items-center justify-center h-full">
-                      {/* Large emoji */}
-                      {option.emoji && (
-                        <div className="text-6xl animate-scale-in">
-                          {option.emoji}
+                    {/* Gradient Background Overlay */}
+                    <div className={cn(
+                      "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                      isSelected ? "opacity-100" : "",
+                      scorePercent >= 75 ? "bg-gradient-to-br from-green-500/10 to-green-600/5" :
+                      scorePercent >= 40 ? "bg-gradient-to-br from-yellow-500/10 to-orange-500/5" :
+                      "bg-gradient-to-br from-red-500/10 to-red-600/5"
+                    )} />
+                    
+                    <CardContent className="p-6 relative z-10">
+                      <div className="flex flex-col items-center text-center space-y-4">
+                        {/* Icon with circular background */}
+                        <div className={cn(
+                          "w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300",
+                          isSelected ? "scale-110" : "group-hover:scale-105",
+                          scorePercent >= 75 ? "bg-green-500/20" :
+                          scorePercent >= 40 ? "bg-yellow-500/20" :
+                          "bg-red-500/20"
+                        )}>
+                          <Icon 
+                            className="h-8 w-8 transition-transform duration-300"
+                            style={{ color }}
+                          />
                         </div>
-                      )}
-                      
-                      {/* Option text - remove letter prefix */}
-                      <h4 className="font-semibold text-lg leading-relaxed">
-                        {option.text.replace(/^[A-D]\.\s*/, '')}
-                      </h4>
-                      
-                      {/* Score bar indicator */}
-                      <div className="flex items-center justify-center gap-2 w-full">
-                        <div className={cn("h-2 flex-1 rounded-full", barColor)} 
-                          style={{ width: `${scorePercent}%` }} 
-                        />
-                        <span className="text-xs text-muted-foreground font-medium">
-                          {scorePercent}
-                        </span>
+                        
+                        {/* Option text */}
+                        <h4 className="font-semibold text-base leading-relaxed">
+                          {option.text.replace(/^[A-D]\.\s*/, '')}
+                        </h4>
+                        
+                        {/* Score indicator - redesigned */}
+                        <div className="w-full space-y-1.5">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>Health Impact</span>
+                            <span className="font-semibold">{scorePercent}%</span>
+                          </div>
+                          <div className="h-2 bg-muted rounded-full overflow-hidden">
+                            <div 
+                              className={cn(
+                                "h-full transition-all duration-500 rounded-full",
+                                scorePercent >= 75 ? "bg-gradient-to-r from-green-500 to-green-600" :
+                                scorePercent >= 40 ? "bg-gradient-to-r from-yellow-500 to-orange-500" :
+                                "bg-gradient-to-r from-red-500 to-red-600"
+                              )}
+                              style={{ width: `${scorePercent}%` }}
+                            />
+                          </div>
+                        </div>
+                        
+                        {/* Selection indicator */}
+                        {isSelected && (
+                          <div className="absolute top-3 right-3">
+                            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                              <Check className="h-4 w-4 text-white" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
