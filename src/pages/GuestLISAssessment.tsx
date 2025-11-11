@@ -1159,22 +1159,22 @@ export default function GuestLISAssessment() {
         { Icon: Heart, color: '#22c55e' }
       ],
       'Q8_ActivityLevel': [
-        { Icon: Home, color: '#ef4444' },
-        { Icon: User, color: '#f97316' },
-        { Icon: Activity, color: '#a855f7' },
-        { Icon: Zap, color: '#22c55e' }
+        { Icon: Home, color: '#e86060' },
+        { Icon: User, color: '#f4b93f' },
+        { Icon: Activity, color: '#f2a97a' },
+        { Icon: Zap, color: '#4ca64c' }
       ],
       'Q9_ExerciseIntensity': [
-        { Icon: User, color: '#f97316' },
-        { Icon: Activity, color: '#a855f7' },
-        { Icon: Zap, color: '#22c55e' },
-        { Icon: Heart, color: '#22c55e' }
+        { Icon: User, color: '#f4b93f' },
+        { Icon: Activity, color: '#f2a97a' },
+        { Icon: Zap, color: '#4ca64c' },
+        { Icon: Heart, color: '#4ca64c' }
       ],
       'Q10_MovementVariety': [
-        { Icon: XCircle, color: '#ef4444' },
-        { Icon: AlertTriangle, color: '#f97316' },
-        { Icon: Dumbbell, color: '#a855f7' },
-        { Icon: Heart, color: '#22c55e' }
+        { Icon: XCircle, color: '#e86060' },
+        { Icon: AlertTriangle, color: '#f4b93f' },
+        { Icon: Dumbbell, color: '#f2a97a' },
+        { Icon: Heart, color: '#4ca64c' }
       ],
       'Q11_NutritionQuality': [
         { Icon: XCircle, color: '#ef4444' },
