@@ -57,7 +57,7 @@ export const useHormoneCompass = () => {
         .from('hormone_compass_stages')
         .select('*')
         .eq('user_id', user.id)
-        .order('assessment_date', { ascending: false })
+        .order('calculated_at', { ascending: false })
         .limit(1)
         .single();
 

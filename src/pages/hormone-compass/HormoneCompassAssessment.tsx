@@ -87,6 +87,18 @@ export default function HormoneCompassAssessment() {
         return;
       }
 
+      // Verify we have a valid session before saving
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please log in to save your assessment results.",
+          variant: "destructive"
+        });
+        navigate('/auth');
+        return;
+      }
+
       // Save assessment to database for authenticated users
       const { data: stageData, error } = await supabase
         .from('hormone_compass_stages')
@@ -107,11 +119,17 @@ export default function HormoneCompassAssessment() {
 
       // Navigate with assessment ID for fetching from database
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error completing assessment:', error);
+      console.error('Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       toast({
         title: "Error",
-        description: "Failed to save assessment. Please try again.",
+        description: `Failed to save assessment: ${error.message || 'Please try again.'}`,
         variant: "destructive"
       });
     } finally {
