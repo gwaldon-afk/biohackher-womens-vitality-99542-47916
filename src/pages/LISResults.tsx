@@ -257,19 +257,20 @@ const LISResults = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
-      <Card className="mb-4">
-        <CardHeader className="text-center pb-1">
-          <CardTitle className="text-2xl mb-0">Your Longevity Impact Score</CardTitle>
-          <CardDescription className="text-sm">
+      <Card className="mb-6">
+        <CardHeader className="text-center pb-2 pt-4">
+          <CardTitle className="text-xl mb-1">Your Longevity Impact Score</CardTitle>
+          <CardDescription className="text-xs">
             A comprehensive view of your healthspan across 6 key pillars
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-0 pb-0 px-0">
+        <CardContent className="pt-0 pb-4 px-2">
           {/* Radar Chart Visualization */}
-          <div className="flex justify-center -mt-8">
+          <div className="flex justify-center -mt-4">
             <LISRadarChart 
               pillarScores={pillarScores}
               compositeScore={displayScore}
+              size={500}
             />
           </div>
         </CardContent>
@@ -540,118 +541,6 @@ const LISResults = () => {
         </div>
       </div>
 
-      <Card className="mb-6">
-        <CardContent className="pt-6">
-          {/* Comprehensive Analysis */}
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
-                <Activity className="h-5 w-5 text-primary" />
-                Your Longevity Profile Summary
-              </h3>
-              
-              <div className="bg-muted/30 p-4 rounded-lg mb-4">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Your Longevity Impact Score of <strong className={getScoreColor(score)}>{score.toFixed(1)}</strong> places you in the <strong>{getScoreCategory(score)}</strong> category. 
-                  This comprehensive assessment measures how your daily habits across 6 key pillars influence your biological aging trajectory and overall healthspan.
-                </p>
-                <div className="bg-background/80 p-3 rounded-lg">
-                  <h4 className="font-semibold text-sm mb-2">What This Score Means:</h4>
-                  <p className="text-xs text-muted-foreground">
-                    {score >= 80 ? 
-                      'Outstanding! Your lifestyle habits are significantly slowing biological aging. Research suggests individuals in this range may experience 15-20 years of extended healthspan and reduced disease risk.' :
-                      score >= 60 ?
-                      'Good progress! Your habits are positively impacting longevity, but there\'s room for optimization. Addressing your lowest-scoring pillars could add 10-15 years of healthy life expectancy.' :
-                      score >= 40 ?
-                      'Your current habits show moderate longevity impact. Strategic improvements in your weaker pillars could dramatically improve your healthspan trajectory and reverse accelerated aging patterns.' :
-                      'Action needed. Your current lifestyle patterns may be accelerating biological aging. The good news: targeted interventions can quickly reverse this trajectory and add significant healthy years to your life.'
-                    }
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                Six Pillars of Longevity
-              </h4>
-              <p className="text-sm text-muted-foreground mb-4">
-                Your longevity is determined by these interconnected health domains. Each pillar contributes uniquely to your biological age and healthspan.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Heart className="h-4 w-4 text-destructive" />
-                    <span className="font-semibold text-sm">Stress & Biological Age</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    How you perceive your age affects your actual biological aging. Chronic stress accelerates cellular aging through cortisol dysregulation and telomere shortening.
-                  </p>
-                </div>
-
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Activity className="h-4 w-4 text-orange-600" />
-                    <span className="font-semibold text-sm">Physical Activity</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Regular movement maintains mitochondrial function, reduces inflammation, and preserves muscle mass - key factors in slowing biological aging by 5-10 years.
-                  </p>
-                </div>
-
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Moon className="h-4 w-4 text-indigo-600" />
-                    <span className="font-semibold text-sm">Sleep Quality</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Quality sleep enables cellular repair, memory consolidation, and metabolic regulation. Poor sleep accelerates aging by 3-5 years and increases disease risk significantly.
-                  </p>
-                </div>
-
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    <span className="font-semibold text-sm">Nutrition & Metabolism</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Your nutritional choices directly impact inflammation, cellular energy, and metabolic health - determining up to 40% of your aging trajectory.
-                  </p>
-                </div>
-
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users className="h-4 w-4 text-pink-600" />
-                    <span className="font-semibold text-sm">Social Connection</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Strong social bonds reduce mortality risk by 50% and protect against cognitive decline. Social isolation ages you faster than smoking 15 cigarettes daily.
-                  </p>
-                </div>
-
-                <div className="bg-background/80 p-4 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Brain className="h-4 w-4 text-purple-600" />
-                    <span className="font-semibold text-sm">Cognitive Engagement</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Mental stimulation and mindfulness practices build cognitive reserve, reducing dementia risk by 40% and maintaining brain plasticity throughout life.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Short Disclaimer */}
-          <div className="mt-6 p-4 bg-muted/50 border border-muted rounded-lg">
-            <p className="text-xs text-muted-foreground text-center">
-              <strong>Note:</strong> This LIS assessment is a guide based on your responses. For accurate biological age measurement, we recommend comprehensive blood testing and biomarker analysis.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* AI Analysis Card */}
       {!isGuest && (
