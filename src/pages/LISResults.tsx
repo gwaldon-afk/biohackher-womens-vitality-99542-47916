@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown } from 'lucide-react';
+import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import LISInputForm from '@/components/LISInputForm';
@@ -19,6 +19,7 @@ import { useProtocolGeneration } from '@/hooks/useProtocolGeneration';
 import { useProtocols } from '@/hooks/useProtocols';
 import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
 import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
+import { EmailShareDialog } from '@/components/EmailShareDialog';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const LISResults = () => {
     urlAge ? parseInt(urlAge) : 0
   );
   const [protocolGenerated, setProtocolGenerated] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   
   // Check if user has an active protocol
   const hasActiveProtocol = protocols && protocols.length > 0;
@@ -241,10 +243,43 @@ const LISResults = () => {
   const pillarScores = urlPillarScores || lisData.pillarScores;
   const pillarAnalyses = generatePillarAnalysis(pillarScores);
 
+  // Share link functionality
+  const copyShareLink = () => {
+    const shareUrl = `${window.location.origin}/lis-results?score=${displayScore}&pillarScores=${encodeURIComponent(JSON.stringify(pillarScores))}${chronologicalAge ? `&age=${chronologicalAge}` : ''}${user ? `&referrer=${user.id}` : ''}&shared=true`;
+    
+    navigator.clipboard.writeText(shareUrl);
+    toast({
+      title: "Link Copied!",
+      description: "Share this link to help others optimize their longevity",
+    });
+  };
+
+  // Check if this is a shared link
+  const isSharedLink = searchParams.get('shared') === 'true';
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
+      
+      {/* Shared Link Banner */}
+      {isSharedLink && (
+        <Alert className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/5 border-primary/20">
+          <Sparkles className="h-5 w-5 text-primary" />
+          <AlertTitle>Someone Shared Their Results With You!</AlertTitle>
+          <AlertDescription>
+            <p className="mb-3">Take your own free assessment to get personalized longevity insights.</p>
+            <Button 
+              variant="outline" 
+              className="border-primary/30 hover:bg-primary/10" 
+              onClick={() => navigate('/guest-lis-assessment')}
+            >
+              Take Your Free Assessment
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+      
       {/* Heading Card */}
       <Card className="mb-6 text-center bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/20">
         <CardHeader className="pb-4">
@@ -611,6 +646,26 @@ const LISResults = () => {
                 <p className="text-xs text-muted-foreground">
                   Includes FREE 3-day trial • No credit card required
                 </p>
+                
+                {/* Email and Share Buttons for Guests */}
+                <div className="flex gap-3 justify-center mt-4">
+                  <Button 
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => setEmailDialogOpen(true)}
+                  >
+                    <Mail className="w-4 h-4" />
+                    Email My Results
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="gap-2"
+                    onClick={() => copyShareLink()}
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Copy Share Link
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -657,6 +712,28 @@ const LISResults = () => {
                       </Button>
                     )}
                   />
+                  
+                  {/* Email and Share Buttons for Authenticated Users */}
+                  <div className="flex gap-3 justify-center mt-4">
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setEmailDialogOpen(true)}
+                    >
+                      <Mail className="w-4 h-4" />
+                      Email Report
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => copyShareLink()}
+                    >
+                      <Share2 className="w-4 h-4" />
+                      Share Link
+                    </Button>
+                  </div>
                 </div>
               )}
 
@@ -751,6 +828,19 @@ const LISResults = () => {
           </AlertDescription>
         </Alert>
       )}
+      
+      {/* Email Share Dialog */}
+      <EmailShareDialog
+        open={emailDialogOpen}
+        onOpenChange={setEmailDialogOpen}
+        score={displayScore}
+        pillarScores={pillarScores}
+        bioAge={bioAgeData?.bioAge}
+        chronologicalAge={chronologicalAge}
+        isGuest={isGuest}
+        userEmail={user?.email}
+        userId={user?.id}
+      />
     </div>
     </div>
   );

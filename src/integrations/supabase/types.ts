@@ -696,6 +696,48 @@ export type Database = {
         }
         Relationships: []
       }
+      email_shares: {
+        Row: {
+          assessment_type: string
+          clicked_at: string | null
+          converted_at: string | null
+          id: string
+          opened_at: string | null
+          recipient_email: string
+          score: number | null
+          share_source: string | null
+          share_type: string
+          shared_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          assessment_type?: string
+          clicked_at?: string | null
+          converted_at?: string | null
+          id?: string
+          opened_at?: string | null
+          recipient_email: string
+          score?: number | null
+          share_source?: string | null
+          share_type: string
+          shared_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          assessment_type?: string
+          clicked_at?: string | null
+          converted_at?: string | null
+          id?: string
+          opened_at?: string | null
+          recipient_email?: string
+          score?: number | null
+          share_source?: string | null
+          share_type?: string
+          shared_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       energy_actions: {
         Row: {
           action_name: string
