@@ -432,7 +432,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Moon className="h-4 w-4 text-blue-500" />
                       Sleep Quality
-                      <Badge variant="secondary">25%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Quality sleep is crucial for cellular repair, memory consolidation, and hormone regulation.
@@ -494,7 +493,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Heart className="h-4 w-4 text-red-500" />
                       Stress & Subjective Age
-                      <Badge variant="secondary">30%</Badge>
                       <Badge variant="outline" className="text-xs">LIS 2.0</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
@@ -563,7 +561,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Activity className="h-4 w-4 text-green-500" />
                       Physical Activity
-                      <Badge variant="secondary">15%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Regular movement improves cardiovascular health and maintains muscle mass.
@@ -640,7 +637,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Utensils className="h-4 w-4 text-orange-500" />
                       Nutrition
-                      <Badge variant="secondary">15%</Badge>
                       {nutritionalScore !== 0 && (
                         <Badge variant="outline" className="ml-auto">
                           Score: {nutritionalScore} ({nutritionalGrade})
@@ -753,7 +749,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Users className="h-4 w-4 text-purple-500" />
                       Social Connections
-                      <Badge variant="secondary">15%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Strong social bonds reduce stress hormones and boost immune function.
@@ -797,7 +792,6 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
                     <CardTitle className="flex items-center gap-2 text-sm">
                       <Brain className="h-4 w-4 text-pink-500" />
                       Cognitive Engagement
-                      <Badge variant="secondary">10%</Badge>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       Mental stimulation promotes neuroplasticity and supports brain health.
