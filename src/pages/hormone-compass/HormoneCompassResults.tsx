@@ -31,6 +31,7 @@ import { useState, useEffect } from 'react';
 const HEALTH_LEVEL_INFO: Record<string, {
   title: string;
   description: string;
+  spectrumContext: string;
   targetSymptoms: string[];
   recommendations: string[];
   color: string;
@@ -38,6 +39,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
   'feeling-great': {
     title: 'Feeling Great',
     description: 'Your hormone health is thriving. You\'re experiencing minimal disruption across key areas.',
+    spectrumContext: 'This is the optimal level — the top tier of hormone health. You\'re doing everything right to support your hormonal balance.',
     targetSymptoms: ['maintenance', 'optimization', 'prevention'],
     recommendations: [
       'Maintain your current healthy habits and routines',
@@ -50,6 +52,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
   'doing-well': {
     title: 'Doing Well',
     description: 'Your hormone health is good with mild occasional symptoms. Small adjustments can optimize your well-being.',
+    spectrumContext: 'This is above average — the second-best tier out of five. You\'re in good shape with room for minor optimization to reach peak hormone health.',
     targetSymptoms: ['sleep-quality', 'stress-management', 'energy-optimization'],
     recommendations: [
       'Continue current healthy practices',
@@ -62,6 +65,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
   'having-challenges': {
     title: 'Having Challenges',
     description: 'You\'re experiencing moderate symptoms that are affecting daily life. Support can help restore balance.',
+    spectrumContext: 'This is the middle level out of five tiers. You\'re experiencing noticeable disruption that warrants attention and targeted intervention.',
     targetSymptoms: ['cycle-regulation', 'mood-swings', 'sleep-disruption', 'energy-crashes'],
     recommendations: [
       'Work with a healthcare provider to identify root causes',
@@ -75,6 +79,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
   'really-struggling': {
     title: 'Really Struggling',
     description: 'You\'re facing significant symptoms that are impacting your quality of life. Professional support is recommended.',
+    spectrumContext: 'This is the second-lowest level out of five tiers. You\'re experiencing substantial hormone-related impacts that need comprehensive support.',
     targetSymptoms: ['severe-symptoms', 'hot-flashes', 'mood-disorders', 'cognitive-issues'],
     recommendations: [
       'Schedule consultation with hormone specialist or gynecologist',
@@ -88,6 +93,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
   'need-support': {
     title: 'Need Support Now',
     description: 'You\'re experiencing severe symptoms that require immediate professional attention and comprehensive support.',
+    spectrumContext: 'This is the most critical level. You\'re experiencing severe hormone disruption that requires immediate medical attention and comprehensive intervention.',
     targetSymptoms: ['severe-disruption', 'multiple-symptoms', 'quality-of-life'],
     recommendations: [
       'Seek immediate medical evaluation from hormone specialist',
@@ -741,6 +747,9 @@ export default function HormoneCompassResults() {
               <Sparkles className="w-8 h-8 text-primary" />
               <h2 className={`text-3xl font-bold ${levelInfo.color}`}>{levelInfo.title}</h2>
             </div>
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto mt-3 bg-muted/30 rounded-lg p-3">
+              {levelInfo.spectrumContext}
+            </p>
           </div>
           
           {lifeStageContext && (
