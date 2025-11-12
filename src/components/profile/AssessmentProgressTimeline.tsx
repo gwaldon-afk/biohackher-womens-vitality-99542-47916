@@ -1,14 +1,21 @@
 import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { format } from "date-fns";
+import { format, subMonths, subYears } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Activity, Sparkles, ExternalLink } from "lucide-react";
+import { Activity, Sparkles, ExternalLink, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AssessmentData {
   id: string;
@@ -49,12 +56,36 @@ export function AssessmentProgressTimeline({ assessments }: AssessmentProgressTi
   const navigate = useNavigate();
   const [selectedAssessment, setSelectedAssessment] = useState<AssessmentDetails | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [dateRange, setDateRange] = useState<"3m" | "6m" | "1y" | "all">("6m");
+
+  const filteredAssessments = useMemo(() => {
+    if (dateRange === "all") return assessments;
+
+    const now = new Date();
+    let cutoffDate: Date;
+
+    switch (dateRange) {
+      case "3m":
+        cutoffDate = subMonths(now, 3);
+        break;
+      case "6m":
+        cutoffDate = subMonths(now, 6);
+        break;
+      case "1y":
+        cutoffDate = subYears(now, 1);
+        break;
+      default:
+        return assessments;
+    }
+
+    return assessments.filter(assessment => assessment.completedAt >= cutoffDate);
+  }, [assessments, dateRange]);
 
   const chartData = useMemo(() => {
     // Group assessments by date and type
     const dataMap = new Map<string, any>();
 
-    assessments.forEach((assessment) => {
+    filteredAssessments.forEach((assessment) => {
       const date = format(assessment.completedAt, "MMM dd, yyyy");
       
       if (!dataMap.has(date)) {
@@ -83,7 +114,7 @@ export function AssessmentProgressTimeline({ assessments }: AssessmentProgressTi
     return Array.from(dataMap.values())
       .sort((a, b) => a.timestamp - b.timestamp)
       .map(({ timestamp, ...rest }) => rest);
-  }, [assessments]);
+  }, [filteredAssessments]);
 
   const handleDataPointClick = async (data: any, dataKey: string) => {
     const assessmentId = dataKey === "lis" ? data.lisId : data.hormoneCompassId;
@@ -179,8 +210,24 @@ export function AssessmentProgressTimeline({ assessments }: AssessmentProgressTi
   return (
     <>
       <Card className="p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background border-primary/20">
-        <h3 className="text-lg font-semibold mb-4">Assessment Progress Timeline</h3>
-        <p className="text-sm text-muted-foreground mb-4">Click on any data point to view full assessment details</p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold">Assessment Progress Timeline</h3>
+            <p className="text-sm text-muted-foreground mt-1">Click on any data point to view full assessment details</p>
+          </div>
+          <Select value={dateRange} onValueChange={(value: any) => setDateRange(value)}>
+            <SelectTrigger className="w-[160px]">
+              <Calendar className="h-4 w-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="3m">Last 3 months</SelectItem>
+              <SelectItem value="6m">Last 6 months</SelectItem>
+              <SelectItem value="1y">Last year</SelectItem>
+              <SelectItem value="all">All time</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
