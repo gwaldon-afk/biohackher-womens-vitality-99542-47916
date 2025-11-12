@@ -328,7 +328,7 @@ export default function HormoneCompassResults() {
             {/* Product match with Add to Cart button */}
             {matchedProduct && (
               <div className="mt-3 p-3 bg-background/80 rounded border border-border/50">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-start gap-3 mb-3">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{matchedProduct.name}</p>
                     <p className="text-xs text-muted-foreground">{matchedProduct.brand}</p>
@@ -336,6 +336,10 @@ export default function HormoneCompassResults() {
                       {formatProductPrice(matchedProduct, locale.currency)}
                     </p>
                   </div>
+                </div>
+                
+                {/* Buttons row */}
+                <div className="flex gap-2">
                   <Button
                     size="sm"
                     variant="outline"
@@ -351,16 +355,61 @@ export default function HormoneCompassResults() {
                       });
                       toast.success(`${matchedProduct.name} added to cart`);
                     }}
+                    className="flex-1"
                   >
                     <ShoppingCart className="w-4 h-4 mr-1" />
-                    Add
+                    Add to Cart
                   </Button>
+                  
+                  {user && (
+                    <Button
+                      size="sm"
+                      variant={
+                        existingProtocolItems.has(item.name.toLowerCase().trim()) || addedItems.has(item.name)
+                          ? "secondary"
+                          : "default"
+                      }
+                      disabled={
+                        existingProtocolItems.has(item.name.toLowerCase().trim()) || addedItems.has(item.name)
+                      }
+                      onClick={() => handleInlineAddToProtocol(item, matchedProduct)}
+                      className="flex-1"
+                    >
+                      {existingProtocolItems.has(item.name.toLowerCase().trim()) ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-1" />
+                          In Protocol
+                        </>
+                      ) : addedItems.has(item.name) ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-1" />
+                          Added
+                        </>
+                      ) : (
+                        <>
+                          <Target className="w-4 h-4 mr-1" />
+                          Add to Protocol
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  
+                  {!user && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => navigate('/auth')}
+                      className="flex-1"
+                    >
+                      Sign in to add
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
             
-            {/* Add to Protocol button (authenticated users only) */}
-            {user && (
+            {/* No product match - show compact Add to Protocol button */}
+            {!matchedProduct && user && (
               <div className="mt-3">
                 <Button
                   size="sm"
@@ -373,40 +422,35 @@ export default function HormoneCompassResults() {
                     existingProtocolItems.has(item.name.toLowerCase().trim()) || addedItems.has(item.name)
                   }
                   onClick={() => handleInlineAddToProtocol(item, matchedProduct)}
-                  className="w-full"
                 >
                   {existingProtocolItems.has(item.name.toLowerCase().trim()) ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      <CheckCircle2 className="w-4 h-4 mr-1" />
                       Already in Protocol
                     </>
                   ) : addedItems.has(item.name) ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      <CheckCircle2 className="w-4 h-4 mr-1" />
                       Added to Protocol
                     </>
                   ) : (
                     <>
-                      <Target className="w-4 h-4 mr-2" />
+                      <Target className="w-4 h-4 mr-1" />
                       Add to My Protocol
                     </>
                   )}
                 </Button>
               </div>
             )}
-
-            {/* Guest CTA */}
-            {!user && (
-              <div className="mt-3">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => navigate('/auth')}
-                  className="w-full"
-                >
-                  Sign in to Add to Protocol
-                </Button>
-              </div>
+            
+            {/* Guest CTA for no product match */}
+            {!matchedProduct && !user && (
+              <button
+                onClick={() => navigate('/auth')}
+                className="mt-2 text-xs text-primary hover:underline"
+              >
+                Sign in to add to protocol →
+              </button>
             )}
           </div>
         </div>
