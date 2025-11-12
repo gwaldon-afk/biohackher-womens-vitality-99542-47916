@@ -4,7 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HormoneCompassStageCompass } from '@/components/hormone-compass/HormoneCompassStageCompass';
 import { HormoneCompassDomainCard } from '@/components/hormone-compass/HormoneCompassDomainCard';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
@@ -517,13 +516,6 @@ export default function HormoneCompassResults() {
           Personalized insights and actionable protocol based on your assessment
         </p>
       </div>
-
-      {/* Health Level Compass Visualization */}
-      <HormoneCompassStageCompass 
-        currentStage={healthLevel as any}
-        confidenceScore={confidence || 0}
-        size="lg"
-      />
 
       {/* Overall Health Level Summary */}
       <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
