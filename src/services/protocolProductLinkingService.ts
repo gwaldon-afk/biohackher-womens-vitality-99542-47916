@@ -14,7 +14,7 @@ const normalizeSupplementName = (name: string): string => {
     // Normalize multiple spaces
     .replace(/\s+/g, ' ')
     // Remove common suffixes
-    .replace(/\s+(supplement|capsule|tablet|powder|extract|complex|form)$/i, '')
+    .replace(/\s+(supplement|capsule|tablet|powder|extract|form)$/i, '')
     .trim();
 };
 
