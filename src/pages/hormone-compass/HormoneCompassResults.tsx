@@ -11,7 +11,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { useLocale } from '@/hooks/useLocale';
-import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice } from '@/services/productService';
+import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice, getProducts } from '@/services/productService';
+import { autoMatchProtocolItemToProduct } from '@/services/protocolProductLinkingService';
 import { useCart } from '@/hooks/useCart';
 import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -157,27 +158,33 @@ export default function HormoneCompassResults() {
   const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
   const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
   
-  // Fetch matching products for protocol items with productKeywords
+  // Fetch matching products for protocol items using name-based fuzzy matching
   useEffect(() => {
     const matchProducts = async () => {
+      // Include ALL protocol items (immediate, foundation, optimization)
       const allItems = [
+        ...protocol.immediate,
         ...protocol.foundation,
         ...protocol.optimization
       ];
       
-      const itemsWithKeywords = allItems.filter(item => item.productKeywords && item.productKeywords.length > 0);
+      // Fetch all products once
+      const products = await getProducts();
       
       const matches: Record<string, Product | null> = {};
       
-      for (const item of itemsWithKeywords) {
-        if (item.productKeywords) {
-          try {
-            const products = await searchProductsBySymptoms(item.productKeywords);
-            matches[item.name] = products.length > 0 ? products[0] : null;
-          } catch (error) {
-            console.error(`Error matching product for ${item.name}:`, error);
-            matches[item.name] = null;
-          }
+      // Use name-based matching for each item
+      for (const item of allItems) {
+        try {
+          const matchedProduct = autoMatchProtocolItemToProduct(
+            item.name,
+            'supplement', // treat all protocol items as supplements for matching
+            products
+          );
+          matches[item.name] = matchedProduct;
+        } catch (error) {
+          console.error(`Error matching product for ${item.name}:`, error);
+          matches[item.name] = null;
         }
       }
       
