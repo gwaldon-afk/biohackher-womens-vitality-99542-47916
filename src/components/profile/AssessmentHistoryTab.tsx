@@ -4,10 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw } from "lucide-react";
+import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
 
 interface AssessmentRecord {
   id: string;
@@ -24,6 +25,11 @@ export const AssessmentHistoryTab = () => {
   const navigate = useNavigate();
   const [assessments, setAssessments] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [comparisonDialog, setComparisonDialog] = useState<{
+    open: boolean;
+    type: "lis" | "hormone_compass" | "symptom";
+    title: string;
+  }>({ open: false, type: "lis", title: "" });
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -175,12 +181,65 @@ export const AssessmentHistoryTab = () => {
     );
   }
 
+  // Group assessments by type to show comparison button when multiple exist
+  const lisCount = assessments.filter((a) => a.type === "lis").length;
+  const hcCount = assessments.filter((a) => a.type === "hormone_compass").length;
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">Assessment History</h3>
-        <p className="text-sm text-muted-foreground">{assessments.length} total assessments</p>
-      </div>
+    <>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Assessment History</h3>
+          <p className="text-sm text-muted-foreground">{assessments.length} total assessments</p>
+        </div>
+
+        {/* Comparison Quick Actions */}
+        {(lisCount >= 2 || hcCount >= 2) && (
+          <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/20">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-2">
+                  <GitCompare className="h-5 w-5 text-primary" />
+                  <p className="text-sm font-medium">Compare Your Progress</p>
+                </div>
+                <div className="flex gap-2 flex-wrap">
+                  {lisCount >= 2 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setComparisonDialog({
+                          open: true,
+                          type: "lis",
+                          title: "LIS Assessment",
+                        })
+                      }
+                    >
+                      <Activity className="h-3 w-3 mr-2" />
+                      Compare LIS ({lisCount})
+                    </Button>
+                  )}
+                  {hcCount >= 2 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setComparisonDialog({
+                          open: true,
+                          type: "hormone_compass",
+                          title: "Hormone Compass",
+                        })
+                      }
+                    >
+                      <Sparkles className="h-3 w-3 mr-2" />
+                      Compare Hormone ({hcCount})
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
       {assessments.map((assessment) => (
         <Card key={assessment.id} className="hover:border-primary/50 transition-colors">
@@ -226,6 +285,15 @@ export const AssessmentHistoryTab = () => {
           </CardContent>
         </Card>
       ))}
-    </div>
+      </div>
+
+      {/* Comparison Dialog */}
+      <AssessmentComparisonDialog
+        open={comparisonDialog.open}
+        onOpenChange={(open) => setComparisonDialog({ ...comparisonDialog, open })}
+        assessmentType={comparisonDialog.type}
+        assessmentTitle={comparisonDialog.title}
+      />
+    </>
   );
 };
