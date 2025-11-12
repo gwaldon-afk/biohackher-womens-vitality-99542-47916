@@ -38,7 +38,6 @@ const Navigation = () => {
     { href: "/my-goals", label: "My Goals" },
     { href: "/my-protocol", label: "My Protocols" },
     { href: "/nutrition", label: "Nutrition" },
-    { href: "/hormone-compass", label: "HormoneCompass™" },
     { href: "/experts", label: "Find Experts" },
     { href: "/shop", label: t('navigation.shop') },
   ];
@@ -150,6 +149,12 @@ const Navigation = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center cursor-pointer">
+                    <User className="h-4 w-4 mr-2" />
+                    My Profile
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings" className="flex items-center cursor-pointer">
                     <Settings className="h-4 w-4 mr-2" />
@@ -279,16 +284,18 @@ const Navigation = () => {
                     Upgrade to Premium
                   </Button>
                 </Link>
+                <Link to="/profile" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">
+                    <User className="h-4 w-4 mr-2" />
+                    My Profile
+                  </Button>
+                </Link>
                 <Link to="/settings" onClick={() => setIsOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start">
                     <Settings className="h-4 w-4 mr-2" />
                     Settings
                   </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
               </div>
             </div>
           </div>

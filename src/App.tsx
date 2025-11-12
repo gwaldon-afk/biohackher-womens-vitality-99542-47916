@@ -103,6 +103,7 @@ import ExpertFinderMap from "./pages/ExpertFinderMap";
 import ProfileSettings from "./pages/ProfileSettings";
 import HormonalHealthTriage from "./pages/HormonalHealthTriage";
 import LISDailyCheckIn from "./pages/LISDailyCheckIn";
+import Profile from "./pages/Profile";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -182,16 +183,16 @@ const App = () => (
             {/* Dynamic toolkit category route - MUST be before catch-all */}
             <Route path="/:categorySlug" element={<ToolkitCategory />} />
             
-            {/* HormoneCompass™ Routes */}
-          <Route path="/hormone-compass" element={<ProtectedRoute><HormoneCompassDashboard /></ProtectedRoute>} />
+            {/* HormoneCompass™ Routes - Assessment only (dashboard deprecated) */}
           <Route path="/hormone-compass/assessment" element={<ProtectedRoute><HormoneCompassAssessment /></ProtectedRoute>} />
           <Route path="/hormone-compass/results" element={<ProtectedRoute><HormoneCompassResults /></ProtectedRoute>} />
-          <Route path="/hormone-compass/tracker" element={<ProtectedRoute><HormoneCompassTracker /></ProtectedRoute>} />
-          {/* Legacy MenoMap redirects */}
-          <Route path="/menomap" element={<Navigate to="/hormone-compass" replace />} />
+          {/* Legacy redirects - redirect dashboard to profile */}
+          <Route path="/hormone-compass" element={<Navigate to="/profile" replace />} />
+          <Route path="/hormone-compass/tracker" element={<Navigate to="/profile" replace />} />
+          <Route path="/menomap" element={<Navigate to="/profile" replace />} />
           <Route path="/menomap/assessment" element={<Navigate to="/hormone-compass/assessment" replace />} />
           <Route path="/menomap/results" element={<Navigate to="/hormone-compass/results" replace />} />
-          <Route path="/menomap/tracker" element={<Navigate to="/hormone-compass/tracker" replace />} />
+          <Route path="/menomap/tracker" element={<Navigate to="/profile" replace />} />
           
           {/* Energy Loop Routes */}
           <Route path="/energy-loop" element={<ProtectedRoute><EnergyLoopDashboard /></ProtectedRoute>} />
@@ -245,6 +246,7 @@ const App = () => (
           <Route path="/insights-detail" element={<ProtectedRoute><InsightsDetail /></ProtectedRoute>} />
           <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
           <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
