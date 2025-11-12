@@ -13,7 +13,7 @@ import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Product } from '@/types/products';
 import { searchProductsBySymptoms } from '@/services/productService';
 import { useCart } from '@/hooks/useCart';
-import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target } from 'lucide-react';
+import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { differenceInYears } from 'date-fns';
 import { HORMONE_COMPASS_ASSESSMENT } from '@/data/hormoneCompassAssessment';
@@ -156,46 +156,46 @@ export default function HormoneCompassResults() {
   const getDomainPreviewInsight = (domainName: string, score: number): string => {
     const insights: Record<string, { critical: string; struggling: string; challenges: string; good: string; thriving: string }> = {
       'Cycle & Period Patterns': {
-        critical: 'Urgent: Severe cycle disruption requires immediate medical evaluation',
-        struggling: 'Significant irregularity affecting fertility and long-term health',
-        challenges: 'Hormone imbalance is disrupting your cycle regularity',
+        critical: 'Urgent: Severe symptoms may require immediate medical evaluation',
+        struggling: 'Significant irregularity may affect fertility and long-term health',
+        challenges: 'May indicate hormone imbalance affecting your cycle regularity',
         good: 'Minor fluctuations—small optimizations can enhance balance',
-        thriving: 'Healthy regular cycles indicate balanced hormone production'
+        thriving: 'Healthy regular cycles suggest balanced hormone production'
       },
       'Sleep & Thermoregulation': {
-        critical: 'Urgent: Sleep deprivation is critically impacting your health',
-        struggling: 'Temperature dysregulation is significantly disrupting sleep quality',
-        challenges: 'Sleep disruption is affecting hormone production and repair',
+        critical: 'Urgent: Severe sleep issues may critically impact your health',
+        struggling: 'Temperature dysregulation may significantly disrupt sleep quality',
+        challenges: 'Sleep disruption could affect hormone production and repair',
         good: 'Occasional disruptions—optimization can further support hormones',
-        thriving: 'Excellent sleep quality supports optimal hormone production'
+        thriving: 'Excellent sleep quality may support optimal hormone production'
       },
       'Mood & Focus': {
-        critical: 'Urgent: Severe mood instability requires immediate professional support',
-        struggling: 'Significant disruption is interfering with daily quality of life',
+        critical: 'Urgent: Severe symptoms may require immediate professional support',
+        struggling: 'Significant disruption could interfere with daily quality of life',
         challenges: 'Mood instability may indicate hormone or neurotransmitter dysfunction',
         good: 'Generally stable with occasional challenges—targeted support helps',
-        thriving: 'Balanced mood and clarity indicate healthy neurotransmitter levels'
+        thriving: 'Balanced mood and clarity suggest healthy neurotransmitter levels'
       },
       'Energy & Weight': {
-        critical: 'Urgent: Extreme fatigue requires immediate medical attention',
-        struggling: 'Severe fatigue indicates metabolic or endocrine disruption',
-        challenges: 'Fatigue and weight changes indicate metabolic disruption',
+        critical: 'Urgent: Extreme fatigue may require immediate medical attention',
+        struggling: 'Severe fatigue could indicate metabolic or endocrine disruption',
+        challenges: 'Could suggest metabolic disruption affecting energy and weight',
         good: 'Generally stable—optimization can enhance vitality',
-        thriving: 'Stable energy and weight indicate healthy metabolism'
+        thriving: 'Stable energy and weight suggest healthy metabolism'
       },
       'Libido & Sexual Health': {
-        critical: 'Urgent: Severe symptoms require immediate medical evaluation',
-        struggling: 'Significant loss of libido is impacting intimacy and wellbeing',
+        critical: 'Urgent: Severe symptoms may require immediate medical evaluation',
+        struggling: 'Significant loss of libido may impact intimacy and wellbeing',
         challenges: 'Reduced libido and discomfort may indicate hormone changes',
         good: 'Minor concerns—small adjustments can enhance comfort',
-        thriving: 'Strong sexual health indicates healthy sex hormone levels'
+        thriving: 'Strong sexual health suggests healthy sex hormone levels'
       },
       'Skin, Hair & Nails': {
         critical: 'Urgent: Severe changes may indicate serious nutrient deficiency',
-        struggling: 'Significant changes indicate hormone or nutrient imbalance',
+        struggling: 'Significant changes may indicate hormone or nutrient imbalance',
         challenges: 'Changes suggest collagen loss or nutrient depletion',
         good: 'Minor changes—optimization can enhance appearance',
-        thriving: 'Healthy appearance indicates good hormone balance and nutrients'
+        thriving: 'Healthy appearance suggests good hormone balance and nutrients'
       }
     };
 
@@ -438,6 +438,33 @@ export default function HormoneCompassResults() {
         </CardContent>
       </Card>
 
+      {/* Clinical Disclaimer */}
+      <Card className="bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/50 dark:border-amber-900/50">
+        <CardContent className="pt-6">
+          <div className="flex gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="space-y-2">
+              <p className="font-semibold text-amber-900 dark:text-amber-100">Important Medical Disclaimer</p>
+              <p className="text-sm text-amber-800 dark:text-amber-200/90">
+                Your Hormone Compass assessment is based on self-reported symptoms and lifestyle factors. 
+                <strong> This is not a medical diagnosis</strong> and should not replace professional medical advice, 
+                diagnosis, or treatment.
+              </p>
+              <p className="text-sm text-amber-800 dark:text-amber-200/90">
+                <strong>We strongly recommend consulting with a qualified healthcare provider</strong> (gynecologist, 
+                endocrinologist, or hormone specialist) if you're experiencing concerning symptoms, especially if marked 
+                as "critical" or "struggling" in any domain. Clinical hormone testing (blood work, salivary tests) 
+                provides more accurate assessment than self-reported data.
+              </p>
+              <p className="text-sm text-amber-800 dark:text-amber-200/90">
+                The recommendations provided are evidence-based general wellness suggestions and do not constitute 
+                medical advice for your specific situation.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Personalized Protocol Preview */}
       <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
         <CardHeader>
@@ -450,6 +477,12 @@ export default function HormoneCompassResults() {
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
+          <p className="text-xs text-muted-foreground bg-primary/5 p-3 rounded border border-primary/10">
+            <strong>Note:</strong> This protocol is generated based on your assessment responses and represents 
+            general wellness recommendations. It is not personalized medical advice. Consult your healthcare 
+            provider before starting any new supplement regimen, especially if you have existing health conditions 
+            or take medications.
+          </p>
           {/* Immediate Actions */}
           {protocol.immediate.length > 0 && (
             <div>
@@ -564,6 +597,9 @@ export default function HormoneCompassResults() {
               </Button>
               <p className="text-xs text-muted-foreground">
                 Includes FREE 3-day trial • No credit card required
+              </p>
+              <p className="text-xs text-amber-600/80 dark:text-amber-400/80 mt-2">
+                Platform provides wellness guidance, not medical diagnosis. Consult healthcare providers for medical concerns.
               </p>
             </div>
           </CardContent>
