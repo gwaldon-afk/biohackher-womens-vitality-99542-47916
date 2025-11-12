@@ -9,6 +9,7 @@ import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
+import { ProtocolRecommendationsNotifier } from "@/components/ProtocolRecommendationsNotifier";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -125,6 +126,7 @@ const App = () => (
           <EvidenceDrawer />
           <BrowserRouter>
             <ErrorBoundary>
+              <ProtocolRecommendationsNotifier />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/today" element={<MyDailyPlan />} />
