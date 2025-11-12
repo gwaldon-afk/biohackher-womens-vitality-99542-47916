@@ -24,6 +24,7 @@ import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummar
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
+import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
@@ -293,33 +294,10 @@ export const UnifiedDailyChecklist = () => {
         </div>
       </div>
 
-      {/* Goals Section */}
-      {displayGoals.length > 0 && (
-        <div className="space-y-3 pb-6 border-b border-border">
-          <h2 className="text-lg font-semibold text-foreground uppercase tracking-wide">
-            YOUR GOALS TODAY
-          </h2>
-          {displayGoals.map(goal => {
-            const daysSinceStart = isUsingSampleData 
-              ? goal.days_active 
-              : Math.floor((Date.now() - new Date(goal.created_at).getTime()) / (1000 * 60 * 60 * 24));
-            const progress = isUsingSampleData 
-              ? goal.progress_percentage 
-              : Math.min(Math.round((daysSinceStart / 90) * 100), 100);
-            
-            return (
-              <div key={goal.id} className="flex items-start gap-2">
-                <Checkbox checked={progress >= 50} className="mt-1" disabled />
-                <div className="flex-1">
-                  <p className="font-medium text-foreground">
-                    {goal.title} - Day {daysSinceStart}/90 ({progress}% complete)
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* Goal Progress Tracking */}
+      <div className="pb-6">
+        <TodayGoalProgressCard />
+      </div>
 
       {/* Daily Essentials */}
       <div className="pb-6">
