@@ -1,18 +1,28 @@
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { HormoneCompassStageCompass } from '@/components/hormone-compass/HormoneCompassStageCompass';
+import { HormoneCompassDomainCard } from '@/components/hormone-compass/HormoneCompassDomainCard';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Product } from '@/types/products';
 import { searchProductsBySymptoms } from '@/services/productService';
 import { useCart } from '@/hooks/useCart';
-import { ShoppingCart, Share2, TrendingUp, Calendar } from 'lucide-react';
+import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target } from 'lucide-react';
 import { toast } from 'sonner';
 import { differenceInYears } from 'date-fns';
+import { HORMONE_COMPASS_ASSESSMENT } from '@/data/hormoneCompassAssessment';
+import { 
+  calculateDomainScores, 
+  generateHormoneProtocol, 
+  generateSymptomPatternAnalysis 
+} from '@/utils/hormoneCompassProtocolGenerator';
+import { useState } from 'react';
 
 // Health level information mapping (life-stage agnostic)
 const HEALTH_LEVEL_INFO: Record<string, {
@@ -219,13 +229,43 @@ export default function HormoneCompassResults() {
     }
   };
 
+  // Calculate domain scores and protocols
+  const assessmentAnswers = (stateData as any)?.answers || assessmentData?.hormone_indicators || {};
+  const domainScores = calculateDomainScores(assessmentAnswers);
+  const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
+  const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
+  
+  // Find lowest scoring domain for auto-expand
+  const lowestDomain = Object.entries(domainScores)
+    .sort(([, a], [, b]) => a - b)[0];
+  
+  const [openDomains, setOpenDomains] = useState<string[]>(
+    lowestDomain ? [lowestDomain[0]] : []
+  );
+
+  const handleAddToProtocol = async () => {
+    if (!user) {
+      toast.error('Please sign in to save your protocol');
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      toast.success('Protocol saved to your plan!');
+      navigate('/my-protocol');
+    } catch (error) {
+      console.error('Error saving protocol:', error);
+      toast.error('Failed to save protocol');
+    }
+  };
+
   return (
     <div className="container max-w-4xl py-8 space-y-6">
-      {/* Celebration Header */}
+      {/* Results Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Assessment Complete!</h1>
+        <h1 className="text-3xl font-bold">Your Hormone Health Analysis</h1>
         <p className="text-muted-foreground">
-          Your hormone health has been evaluated
+          Personalized insights and actionable protocol based on your assessment
         </p>
       </div>
 
@@ -236,35 +276,237 @@ export default function HormoneCompassResults() {
         size="lg"
       />
 
-      {/* Health Level Information */}
-      <Card className="p-6">
-        <h2 className={`text-xl font-semibold mb-3 ${levelInfo.color}`}>{levelInfo.title}</h2>
-        <p className="text-muted-foreground mb-4">{levelInfo.description}</p>
-        
-        {/* Life-Stage Context */}
-        {lifeStageContext && (
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-6">
-            <p className="text-sm">
-              <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
-              {lifeStageContext}
-            </p>
+      {/* Overall Health Level Summary */}
+      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h2 className={`text-2xl font-bold mb-2 ${levelInfo.color}`}>{levelInfo.title}</h2>
+              <p className="text-muted-foreground">{levelInfo.description}</p>
+            </div>
+            <Badge variant="outline" className="text-lg px-4 py-2">
+              {confidence}% Confidence
+            </Badge>
           </div>
-        )}
-        
-        <div className="space-y-4">
-          <div>
-            <h3 className="font-semibold mb-2">Recommended Actions:</h3>
-            <ul className="space-y-2">
-              {levelInfo.recommendations.map((rec, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
-                  <span className="text-sm">{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+          
+          {lifeStageContext && (
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mt-4">
+              <p className="text-sm">
+                <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
+                {lifeStageContext}
+              </p>
+            </div>
+          )}
+        </CardContent>
       </Card>
+
+      {/* Symptom Pattern Analysis */}
+      {symptomInsights.length > 0 && (
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              What Your Symptoms Reveal
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {symptomInsights.map((insight, index) => (
+              <div key={index} className="flex gap-3 bg-muted/30 rounded-lg p-4">
+                <div className="text-primary mt-1">•</div>
+                <p className="text-sm leading-relaxed">{insight}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Domain-by-Domain Breakdown */}
+      <Card className="border-primary/30">
+        <CardHeader>
+          <CardTitle>Detailed Domain Analysis</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Expand each domain to see specific insights and recommendations
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {HORMONE_COMPASS_ASSESSMENT.domains.map((domain) => {
+            const score = domainScores[domain.id] || 0;
+            const isOpen = openDomains.includes(domain.id);
+            
+            return (
+              <Collapsible
+                key={domain.id}
+                open={isOpen}
+                onOpenChange={(open) => {
+                  setOpenDomains(prev => 
+                    open 
+                      ? [...prev, domain.id]
+                      : prev.filter(id => id !== domain.id)
+                  );
+                }}
+              >
+                <CollapsibleTrigger className="w-full">
+                  <div className="flex items-center justify-between p-4 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{domain.icon}</span>
+                      <div className="text-left">
+                        <h3 className="font-semibold">{domain.name}</h3>
+                        <p className="text-xs text-muted-foreground">
+                          Score: {score.toFixed(1)}/5.0
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronDown className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="mt-3">
+                    <HormoneCompassDomainCard
+                      domainName={domain.name}
+                      domainIcon={domain.icon}
+                      domainScore={score}
+                      userAge={userAge || undefined}
+                      hideHeader={true}
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            );
+          })}
+        </CardContent>
+      </Card>
+
+      {/* Personalized Protocol Preview */}
+      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-primary" />
+            Your Personalized Hormone Protocol
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            3-tier action plan based on your specific domain scores
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Immediate Actions */}
+          {protocol.immediate.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="destructive">DO TODAY</Badge>
+                <h3 className="font-semibold">Immediate Actions</h3>
+              </div>
+              <div className="space-y-2">
+                {protocol.immediate.map((item, index) => (
+                  <div key={index} className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
+                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Foundation Protocol */}
+          {protocol.foundation.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="secondary">THIS WEEK</Badge>
+                <h3 className="font-semibold">Foundation Protocol</h3>
+              </div>
+              <div className="space-y-2">
+                {protocol.foundation.map((item, index) => (
+                  <div key={index} className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
+                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Optimization Layer */}
+          {protocol.optimization.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Badge variant="outline">NEXT 30 DAYS</Badge>
+                <h3 className="font-semibold">Optimization Layer</h3>
+              </div>
+              <div className="space-y-2">
+                {protocol.optimization.map((item, index) => (
+                  <div key={index} className="bg-muted/30 border rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
+                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {user ? (
+            <Button onClick={handleAddToProtocol} className="w-full" size="lg">
+              Save Protocol to My Plan
+            </Button>
+          ) : (
+            <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
+              Create Free Account to Save Protocol
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Guest Registration CTA */}
+      {!user && (
+        <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <Sparkles className="w-12 h-12 text-primary mx-auto" />
+              <h3 className="text-xl font-bold">Unlock Your Complete Hormone Health Journey</h3>
+              <div className="grid grid-cols-2 gap-4 text-left">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">Save your personalized protocol</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">Daily symptom tracking with pattern detection</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">Monthly reassessments to track improvement</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm">AI-powered insights as patterns emerge</span>
+                </div>
+              </div>
+              <Button onClick={() => navigate('/auth')} size="lg" className="w-full">
+                Create Free Account & Unlock Protocol
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Includes FREE 3-day trial • No credit card required
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* AI Analysis Card */}
       {user && (
@@ -277,7 +519,7 @@ export default function HormoneCompassResults() {
           metadata={{ 
             healthLevel,
             userAge,
-            answers: (stateData as any)?.answers || assessmentData?.hormone_indicators
+            answers: assessmentAnswers
           }}
           autoGenerate={false}
           renderButton={(onClick, isLoading) => (
@@ -288,52 +530,12 @@ export default function HormoneCompassResults() {
         />
       )}
 
-      {/* Recommended Products */}
-      {recommendedProducts && recommendedProducts.length > 0 && (
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4">Recommended Supplements</h3>
-          <div className="space-y-3">
-            {recommendedProducts.slice(0, 3).map((product) => (
-              <div key={product.id} className="flex gap-3 p-3 border rounded-lg">
-                <img 
-                  src={product.image_url || '/placeholder.svg'} 
-                  alt={product.name}
-                  className="w-16 h-16 object-cover rounded"
-                />
-                <div className="flex-1">
-                  <h4 className="font-medium text-sm">{product.name}</h4>
-                  <p className="text-xs text-muted-foreground line-clamp-1">{product.brand}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="font-semibold">£{product.price_gbp?.toFixed(2)}</span>
-                    <Button size="sm" variant="outline" onClick={() => handleAddToCart(product)}>
-                      <ShoppingCart className="w-3 h-3 mr-1" />
-                      Add
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Add to Plan CTA */}
-      {user && (
-        <Card className="p-6">
-          <h3 className="font-semibold mb-2">Add to Your Plan</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Save your hormone health profile and get personalized recommendations
-          </p>
-          <Button onClick={handleAddToPlan} className="w-full">
-            Add to My Plan
-          </Button>
-        </Card>
-      )}
-
       {/* Next Steps */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-4">What's Next?</h3>
-        <div className="space-y-3">
+      <Card>
+        <CardHeader>
+          <CardTitle>What's Next?</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
           <Button 
             variant="outline" 
             className="w-full justify-between"
@@ -345,12 +547,12 @@ export default function HormoneCompassResults() {
           <Button 
             variant="outline" 
             className="w-full justify-between"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/today')}
           >
-            <span>View Dashboard</span>
-            <TrendingUp className="w-4 h-4" />
+            <span>View Today's Action Plan</span>
+            <Target className="w-4 h-4" />
           </Button>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );
