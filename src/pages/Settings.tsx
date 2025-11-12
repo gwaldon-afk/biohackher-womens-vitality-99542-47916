@@ -37,8 +37,10 @@ const Settings = () => {
     weeklyReports: true,
     symptomReminders: true,
     protocolUpdates: false,
-    marketingEmails: false
+    marketingEmails: false,
+    assessmentReminders: true
   });
+  const [loadingPreferences, setLoadingPreferences] = useState(false);
 
   const [privacy, setPrivacy] = useState({
     dataSharing: false,
@@ -55,8 +57,74 @@ const Settings = () => {
   useEffect(() => {
     if (user) {
       fetchBaselineData();
+      fetchNotificationPreferences();
     }
   }, [user]);
+  
+  const fetchNotificationPreferences = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('user_notification_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (!error && data) {
+        setNotifications({
+          dailyNudges: data.push_daily_nudges ?? true,
+          weeklyReports: data.email_weekly_reports ?? true,
+          symptomReminders: data.push_symptom_reminders ?? true,
+          protocolUpdates: data.email_protocol_updates ?? false,
+          marketingEmails: data.email_marketing ?? false,
+          assessmentReminders: data.email_assessment_reminders ?? true,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching notification preferences:', error);
+    }
+  };
+  
+  const updateNotificationPreference = async (key: string, value: boolean) => {
+    if (!user) return;
+    
+    setLoadingPreferences(true);
+    try {
+      const dbKey = key === 'dailyNudges' ? 'push_daily_nudges' :
+                   key === 'weeklyReports' ? 'email_weekly_reports' :
+                   key === 'symptomReminders' ? 'push_symptom_reminders' :
+                   key === 'protocolUpdates' ? 'email_protocol_updates' :
+                   key === 'assessmentReminders' ? 'email_assessment_reminders' :
+                   'email_marketing';
+      
+      const { error } = await supabase
+        .from('user_notification_preferences')
+        .upsert({
+          user_id: user.id,
+          [dbKey]: value,
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id'
+        });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Preferences Updated",
+        description: "Your notification preferences have been saved.",
+      });
+    } catch (error: any) {
+      console.error('Error updating preferences:', error);
+      toast({
+        title: "Update Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingPreferences(false);
+    }
+  };
 
   const fetchBaselineData = async () => {
     if (!user) return;
@@ -417,6 +485,24 @@ const Settings = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
+                  {/* Assessment Reminders */}
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">Assessment Reminders</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Email reminders when it's time to retake your LIS or Hormone Compass assessment
+                      </p>
+                    </div>
+                    <Switch
+                      checked={notifications.assessmentReminders}
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, assessmentReminders: checked});
+                        updateNotificationPreference('assessmentReminders', checked);
+                      }}
+                      disabled={loadingPreferences}
+                    />
+                  </div>
+                  
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <h3 className="font-medium">Daily Nudges</h3>
@@ -426,9 +512,11 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={notifications.dailyNudges}
-                      onCheckedChange={(checked) => 
-                        setNotifications({...notifications, dailyNudges: checked})
-                      }
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, dailyNudges: checked});
+                        updateNotificationPreference('dailyNudges', checked);
+                      }}
+                      disabled={loadingPreferences}
                     />
                   </div>
                   
@@ -441,9 +529,11 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={notifications.weeklyReports}
-                      onCheckedChange={(checked) => 
-                        setNotifications({...notifications, weeklyReports: checked})
-                      }
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, weeklyReports: checked});
+                        updateNotificationPreference('weeklyReports', checked);
+                      }}
+                      disabled={loadingPreferences}
                     />
                   </div>
                   
@@ -456,9 +546,11 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={notifications.symptomReminders}
-                      onCheckedChange={(checked) => 
-                        setNotifications({...notifications, symptomReminders: checked})
-                      }
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, symptomReminders: checked});
+                        updateNotificationPreference('symptomReminders', checked);
+                      }}
+                      disabled={loadingPreferences}
                     />
                   </div>
                   
@@ -471,9 +563,11 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={notifications.protocolUpdates}
-                      onCheckedChange={(checked) => 
-                        setNotifications({...notifications, protocolUpdates: checked})
-                      }
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, protocolUpdates: checked});
+                        updateNotificationPreference('protocolUpdates', checked);
+                      }}
+                      disabled={loadingPreferences}
                     />
                   </div>
                   
@@ -486,9 +580,11 @@ const Settings = () => {
                     </div>
                     <Switch
                       checked={notifications.marketingEmails}
-                      onCheckedChange={(checked) => 
-                        setNotifications({...notifications, marketingEmails: checked})
-                      }
+                      onCheckedChange={(checked) => {
+                        setNotifications({...notifications, marketingEmails: checked});
+                        updateNotificationPreference('marketingEmails', checked);
+                      }}
+                      disabled={loadingPreferences}
                     />
                   </div>
                 </div>

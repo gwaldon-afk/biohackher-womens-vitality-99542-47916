@@ -3,6 +3,9 @@ project_id = "ictdgxsynjnmsevcegvu"
 [functions.extract-protocol-keywords]
 verify_jwt = false
 
+[functions.send-assessment-reminder]
+verify_jwt = false
+
 [functions.send-lis-report]
 verify_jwt = false
 

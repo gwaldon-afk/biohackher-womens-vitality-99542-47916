@@ -2139,6 +2139,36 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          channel: string
+          id: string
+          metadata: Json | null
+          notification_type: string
+          sent_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          id?: string
+          metadata?: Json | null
+          notification_type: string
+          sent_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          id?: string
+          metadata?: Json | null
+          notification_type?: string
+          sent_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       nutrition_preferences: {
         Row: {
           activity_level: string | null
@@ -3865,6 +3895,45 @@ export type Database = {
           title?: string
           user_id?: string
           viewed_at?: string | null
+        }
+        Relationships: []
+      }
+      user_notification_preferences: {
+        Row: {
+          created_at: string | null
+          email_assessment_reminders: boolean | null
+          email_marketing: boolean | null
+          email_protocol_updates: boolean | null
+          email_weekly_reports: boolean | null
+          id: string
+          push_daily_nudges: boolean | null
+          push_symptom_reminders: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email_assessment_reminders?: boolean | null
+          email_marketing?: boolean | null
+          email_protocol_updates?: boolean | null
+          email_weekly_reports?: boolean | null
+          id?: string
+          push_daily_nudges?: boolean | null
+          push_symptom_reminders?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email_assessment_reminders?: boolean | null
+          email_marketing?: boolean | null
+          email_protocol_updates?: boolean | null
+          email_weekly_reports?: boolean | null
+          id?: string
+          push_daily_nudges?: boolean | null
+          push_symptom_reminders?: boolean | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
