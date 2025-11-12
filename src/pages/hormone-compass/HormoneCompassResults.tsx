@@ -147,10 +147,65 @@ export default function HormoneCompassResults() {
   });
 
   // Calculate domain scores and protocols - MUST be called before conditional returns
-  const assessmentAnswers = (stateData as any)?.answers || assessmentData?.hormone_indicators || {};
+  const assessmentAnswers = (stateData as any)?.answers || (assessmentData?.hormone_indicators as any)?.domainScores || {};
   const domainScores = calculateDomainScores(assessmentAnswers);
   const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
   const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
+  
+  // Helper function to generate preview insights for collapsed domains
+  const getDomainPreviewInsight = (domainName: string, score: number): string => {
+    const insights: Record<string, { critical: string; struggling: string; challenges: string; good: string; thriving: string }> = {
+      'Cycle & Period Patterns': {
+        critical: 'Urgent: Severe cycle disruption requires immediate medical evaluation',
+        struggling: 'Significant irregularity affecting fertility and long-term health',
+        challenges: 'Hormone imbalance is disrupting your cycle regularity',
+        good: 'Minor fluctuations—small optimizations can enhance balance',
+        thriving: 'Healthy regular cycles indicate balanced hormone production'
+      },
+      'Sleep & Thermoregulation': {
+        critical: 'Urgent: Sleep deprivation is critically impacting your health',
+        struggling: 'Temperature dysregulation is significantly disrupting sleep quality',
+        challenges: 'Sleep disruption is affecting hormone production and repair',
+        good: 'Occasional disruptions—optimization can further support hormones',
+        thriving: 'Excellent sleep quality supports optimal hormone production'
+      },
+      'Mood & Focus': {
+        critical: 'Urgent: Severe mood instability requires immediate professional support',
+        struggling: 'Significant disruption is interfering with daily quality of life',
+        challenges: 'Mood instability may indicate hormone or neurotransmitter dysfunction',
+        good: 'Generally stable with occasional challenges—targeted support helps',
+        thriving: 'Balanced mood and clarity indicate healthy neurotransmitter levels'
+      },
+      'Energy & Weight': {
+        critical: 'Urgent: Extreme fatigue requires immediate medical attention',
+        struggling: 'Severe fatigue indicates metabolic or endocrine disruption',
+        challenges: 'Fatigue and weight changes indicate metabolic disruption',
+        good: 'Generally stable—optimization can enhance vitality',
+        thriving: 'Stable energy and weight indicate healthy metabolism'
+      },
+      'Libido & Sexual Health': {
+        critical: 'Urgent: Severe symptoms require immediate medical evaluation',
+        struggling: 'Significant loss of libido is impacting intimacy and wellbeing',
+        challenges: 'Reduced libido and discomfort may indicate hormone changes',
+        good: 'Minor concerns—small adjustments can enhance comfort',
+        thriving: 'Strong sexual health indicates healthy sex hormone levels'
+      },
+      'Skin, Hair & Nails': {
+        critical: 'Urgent: Severe changes may indicate serious nutrient deficiency',
+        struggling: 'Significant changes indicate hormone or nutrient imbalance',
+        challenges: 'Changes suggest collagen loss or nutrient depletion',
+        good: 'Minor changes—optimization can enhance appearance',
+        thriving: 'Healthy appearance indicates good hormone balance and nutrients'
+      }
+    };
+
+    const scoreBand = score >= 4.5 ? 'thriving' :
+                      score >= 3.5 ? 'good' :
+                      score >= 2.5 ? 'challenges' :
+                      score >= 1.5 ? 'struggling' : 'critical';
+
+    return insights[domainName]?.[scoreBand] || 'Expand to see detailed insights and recommendations';
+  };
   
   // Find lowest scoring domain for auto-expand - MUST be called before conditional returns
   const lowestDomain = Object.entries(domainScores)
@@ -347,13 +402,20 @@ export default function HormoneCompassResults() {
               >
                 <CollapsibleTrigger className="w-full">
                   <div className="flex items-center justify-between p-4 bg-muted/30 hover:bg-muted/50 rounded-lg transition-colors">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-1">
                       <span className="text-2xl">{domain.icon}</span>
-                      <div className="text-left">
-                        <h3 className="font-semibold">{domain.name}</h3>
-                        <p className="text-xs text-muted-foreground">
-                          Score: {score.toFixed(1)}/5.0
-                        </p>
+                      <div className="text-left flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold">{domain.name}</h3>
+                          <span className="text-xs text-muted-foreground">
+                            {score.toFixed(1)}/5.0
+                          </span>
+                        </div>
+                        {!isOpen && (
+                          <p className="text-sm text-muted-foreground line-clamp-1">
+                            {getDomainPreviewInsight(domain.name, score)}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <ChevronDown className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
