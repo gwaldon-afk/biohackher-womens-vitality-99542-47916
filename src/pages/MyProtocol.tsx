@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
-import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen } from "lucide-react";
+import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen, Clock } from "lucide-react";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -27,6 +27,10 @@ import { ProtocolBundleCard } from "@/components/ProtocolBundleCard";
 import { useProtocolBundle } from "@/hooks/useProtocolBundle";
 import { useCart } from "@/hooks/useCart";
 import { createProtocolBundle } from "@/services/protocolBundleService";
+import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
+import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AssessmentData {
   id: string;
@@ -41,12 +45,22 @@ const MyProtocol = () => {
   const { user } = useAuth();
   const { adherence, toggleAdherence } = useAdherence();
   const { addToCart } = useCart();
+  const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
+  const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
 
   // Use React Query hooks
   const { data: protocols = [], isLoading: loadingProtocols } = useProtocols(user?.id);
   const deleteProtocolMutation = useDeleteProtocol();
   const updateProtocolMutation = useUpdateProtocol();
   const { data: assessments = [], isLoading: loadingAssessments } = useAssessments(user?.id);
+  
+  // Fetch protocol recommendations
+  const { 
+    recommendations, 
+    isLoading: loadingRecommendations,
+    dismissRecommendation,
+    pendingCount 
+  } = useProtocolRecommendations({ status: 'pending' });
   
   const activeProtocols = protocols.filter(p => p.is_active);
   const activeProtocol = activeProtocols[0]; // Get first active protocol
@@ -206,6 +220,77 @@ const MyProtocol = () => {
     }
   };
 
+  // Handle protocol selection from recommendation
+  const handleProtocolSelection = async (selectedItems: any[], cartItems: any[]) => {
+    if (!user || !selectedRecommendation) return;
+
+    try {
+      // 1. Create protocol in protocols table
+      const { data: newProtocol, error: protocolError } = await supabase
+        .from('protocols')
+        .insert({
+          user_id: user.id,
+          name: `Protocol - ${new Date().toLocaleDateString()}`,
+          description: `Generated from ${selectedRecommendation.source_type} assessment`,
+          source_recommendation_id: selectedRecommendation.id,
+          source_type: selectedRecommendation.source_type,
+          is_active: true,
+          start_date: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (protocolError) throw protocolError;
+
+      // 2. Map category to item_type
+      const mapCategoryToItemType = (category: string): 'habit' | 'supplement' | 'diet' | 'exercise' | 'therapy' => {
+        const mapping: Record<string, 'habit' | 'supplement' | 'diet' | 'exercise' | 'therapy'> = {
+          'immediate': 'habit',
+          'foundation': 'supplement',
+          'optimization': 'supplement'
+        };
+        return mapping[category] || 'habit';
+      };
+
+      // 3. Create protocol_items for selected items
+      const itemsToInsert = selectedItems.map(item => ({
+        protocol_id: newProtocol.id,
+        name: item.name,
+        description: item.description,
+        item_type: mapCategoryToItemType(item.category),
+        frequency: 'daily' as const,
+        is_active: true,
+        product_id: null
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(itemsToInsert);
+
+      if (itemsError) throw itemsError;
+
+      // 4. Update recommendation status
+      const allItemsSelected = selectedItems.length === (
+        (selectedRecommendation.protocol_data.immediate?.length || 0) +
+        (selectedRecommendation.protocol_data.foundation?.length || 0) +
+        (selectedRecommendation.protocol_data.optimization?.length || 0)
+      );
+      
+      await supabase
+        .from('protocol_recommendations')
+        .update({ 
+          status: allItemsSelected ? 'accepted' : 'partially_accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', selectedRecommendation.id);
+
+      // Success - dialog handles toast and navigation
+    } catch (error) {
+      console.error('Error saving protocol selection:', error);
+      throw error;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -247,8 +332,16 @@ const MyProtocol = () => {
         </div>
 
         <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "active"} className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl grid-cols-3">
+          <TabsList className="grid w-full max-w-3xl grid-cols-4">
             <TabsTrigger value="active">Active Protocol</TabsTrigger>
+            <TabsTrigger value="recommended" className="relative">
+              Recommended
+              {pendingCount > 0 && (
+                <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  {pendingCount}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="library">Library</TabsTrigger>
           </TabsList>
@@ -380,6 +473,149 @@ const MyProtocol = () => {
             )}
           </TabsContent>
 
+          {/* Recommended Protocols Tab */}
+          <TabsContent value="recommended" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recommended Protocols</CardTitle>
+                <CardDescription>
+                  Review and add assessment-generated protocols to your plan
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingRecommendations ? (
+                  <p className="text-muted-foreground">Loading recommendations...</p>
+                ) : recommendations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <CheckCircle2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No New Recommendations</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Complete an assessment to get personalized protocol suggestions
+                    </p>
+                    <Button onClick={() => navigate('/pillars')}>
+                      Take an Assessment
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {recommendations.map((recommendation) => {
+                      const protocol = recommendation.protocol_data;
+                      const totalItems = (protocol.immediate?.length || 0) + 
+                                       (protocol.foundation?.length || 0) + 
+                                       (protocol.optimization?.length || 0);
+                      
+                      const sourceLabels: Record<string, string> = {
+                        'hormone_compass': 'Hormone Compass Assessment',
+                        'lis': 'LIS Assessment',
+                        'symptom': 'Symptom Assessment',
+                        'goal': 'Goal Assessment'
+                      };
+
+                      return (
+                        <Card key={recommendation.id} className="border-primary/20">
+                          <CardHeader>
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Badge variant="secondary">
+                                    {sourceLabels[recommendation.source_type]}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    <Clock className="w-3 h-3 mr-1" />
+                                    {new Date(recommendation.created_at).toLocaleDateString()}
+                                  </Badge>
+                                </div>
+                                <CardTitle className="text-lg">
+                                  Personalized Protocol Recommendation
+                                </CardTitle>
+                                <CardDescription>
+                                  {totalItems} actions across immediate, foundation, and optimization layers
+                                </CardDescription>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {/* Preview of recommendations */}
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                              {protocol.immediate && protocol.immediate.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="destructive" className="text-xs">Immediate</Badge>
+                                    <span className="text-muted-foreground">
+                                      {protocol.immediate.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.immediate[0]?.name}
+                                    {protocol.immediate.length > 1 && ` +${protocol.immediate.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {protocol.foundation && protocol.foundation.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="secondary" className="text-xs">Foundation</Badge>
+                                    <span className="text-muted-foreground">
+                                      {protocol.foundation.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.foundation[0]?.name}
+                                    {protocol.foundation.length > 1 && ` +${protocol.foundation.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {protocol.optimization && protocol.optimization.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="text-xs">Optimization</Badge>
+                                    <span className="text-muted-foreground">
+                                      {protocol.optimization.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.optimization[0]?.name}
+                                    {protocol.optimization.length > 1 && ` +${protocol.optimization.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                              <Button 
+                                onClick={() => {
+                                  setSelectedRecommendation(recommendation);
+                                  setProtocolDialogOpen(true);
+                                }}
+                                className="flex-1"
+                              >
+                                Review & Add to Plan
+                              </Button>
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  dismissRecommendation({ 
+                                    recommendationId: recommendation.id,
+                                    reason: 'User dismissed from My Protocol page'
+                                  });
+                                }}
+                              >
+                                Dismiss
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Calendar Tab */}
           <TabsContent value="calendar" className="space-y-6">
             <AdherenceCalendar />
@@ -467,6 +703,20 @@ const MyProtocol = () => {
         </Tabs>
         </main>
         <EvidenceDrawer />
+        
+        {/* Protocol Selection Dialog */}
+        {selectedRecommendation && (
+          <ProtocolSelectionDialog
+            open={protocolDialogOpen}
+            onOpenChange={setProtocolDialogOpen}
+            protocol={selectedRecommendation.protocol_data}
+            onSave={handleProtocolSelection}
+            onCancel={() => {
+              setProtocolDialogOpen(false);
+              setSelectedRecommendation(null);
+            }}
+          />
+        )}
       </div>
     </ErrorBoundary>
   );
