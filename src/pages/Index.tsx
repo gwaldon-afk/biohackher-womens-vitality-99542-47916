@@ -14,11 +14,12 @@ const Index = () => {
   const { user, loading: authLoading } = useAuth();
 
   // Redirect authenticated users to Today page
-  useEffect(() => {
-    if (user && !authLoading) {
-      navigate('/today', { replace: true });
-    }
-  }, [user, authLoading, navigate]);
+  // TEMPORARILY DISABLED FOR REVIEW
+  // useEffect(() => {
+  //   if (user && !authLoading) {
+  //     navigate('/today', { replace: true });
+  //   }
+  // }, [user, authLoading, navigate]);
 
   return (
     <div className="min-h-screen bg-background">
