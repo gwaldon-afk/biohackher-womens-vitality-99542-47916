@@ -745,7 +745,9 @@ export default function HormoneCompassResults() {
           <div className="text-center mb-4">
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
-              <h2 className={`text-3xl font-bold ${levelInfo.color}`}>{levelInfo.title}</h2>
+              <h2 className={`text-3xl font-bold ${levelInfo.color}`}>
+                It sounds like you are "{levelInfo.title}"
+              </h2>
             </div>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto mt-3 bg-muted/30 rounded-lg p-3">
               {levelInfo.spectrumContext}
