@@ -1,14 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare, Search, SlidersHorizontal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface AssessmentRecord {
   id: string;
@@ -30,6 +46,20 @@ export const AssessmentHistoryTab = () => {
     type: "lis" | "hormone_compass" | "symptom";
     title: string;
   }>({ open: false, type: "lis", title: "" });
+
+  // Filter and sort states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "score">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [typeFilters, setTypeFilters] = useState<{
+    lis: boolean;
+    hormone_compass: boolean;
+    symptom: boolean;
+  }>({
+    lis: true,
+    hormone_compass: true,
+    symptom: true,
+  });
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -159,6 +189,26 @@ export const AssessmentHistoryTab = () => {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-5 w-64" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+                <Skeleton className="h-9 w-32" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   if (assessments.length === 0) {
     return (
       <Card>
@@ -181,16 +231,139 @@ export const AssessmentHistoryTab = () => {
     );
   }
 
+  // Filter and sort assessments
+  const filteredAndSortedAssessments = useMemo(() => {
+    let filtered = assessments;
+
+    // Apply type filters
+    filtered = filtered.filter((assessment) => typeFilters[assessment.type]);
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((assessment) =>
+        assessment.title.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply sorting
+    filtered = [...filtered].sort((a, b) => {
+      if (sortBy === "date") {
+        const dateCompare = a.completedAt.getTime() - b.completedAt.getTime();
+        return sortOrder === "asc" ? dateCompare : -dateCompare;
+      } else {
+        // Sort by score
+        const scoreA = a.score ?? -1;
+        const scoreB = b.score ?? -1;
+        const scoreCompare = scoreA - scoreB;
+        return sortOrder === "asc" ? scoreCompare : -scoreCompare;
+      }
+    });
+
+    return filtered;
+  }, [assessments, typeFilters, searchQuery, sortBy, sortOrder]);
+
   // Group assessments by type to show comparison button when multiple exist
   const lisCount = assessments.filter((a) => a.type === "lis").length;
   const hcCount = assessments.filter((a) => a.type === "hormone_compass").length;
 
+  const activeFilterCount = Object.values(typeFilters).filter((v) => !v).length;
+
   return (
     <>
       <div className="space-y-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Assessment History</h3>
-          <p className="text-sm text-muted-foreground">{assessments.length} total assessments</p>
+        {/* Header with search and filters */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Assessment History</h3>
+            <p className="text-sm text-muted-foreground">
+              {filteredAndSortedAssessments.length} of {assessments.length} assessments
+            </p>
+          </div>
+
+          {/* Search and Filter Controls */}
+          <div className="flex gap-2 flex-wrap">
+            {/* Search */}
+            <div className="flex-1 min-w-[200px]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search assessments..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+
+            {/* Type Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filter
+                  {activeFilterCount > 0 && (
+                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 flex items-center justify-center px-1.5">
+                      {activeFilterCount}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Assessment Type</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem
+                  checked={typeFilters.lis}
+                  onCheckedChange={(checked) =>
+                    setTypeFilters({ ...typeFilters, lis: checked })
+                  }
+                >
+                  <Activity className="h-4 w-4 mr-2 text-primary" />
+                  LIS Assessment
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={typeFilters.hormone_compass}
+                  onCheckedChange={(checked) =>
+                    setTypeFilters({ ...typeFilters, hormone_compass: checked })
+                  }
+                >
+                  <Sparkles className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
+                  Hormone Compass
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={typeFilters.symptom}
+                  onCheckedChange={(checked) =>
+                    setTypeFilters({ ...typeFilters, symptom: checked })
+                  }
+                >
+                  <Activity className="h-4 w-4 mr-2 text-blue-600 dark:text-blue-400" />
+                  Symptom Assessment
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Sort By */}
+            <Select value={sortBy} onValueChange={(value: "date" | "score") => setSortBy(value)}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Sort by Date</SelectItem>
+                <SelectItem value="score">Sort by Score</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Sort Order */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              className="gap-2"
+            >
+              {sortOrder === "desc" ? "↓" : "↑"}
+              {sortOrder === "desc" ? "Desc" : "Asc"}
+            </Button>
+          </div>
         </div>
 
         {/* Comparison Quick Actions */}
@@ -241,7 +414,27 @@ export const AssessmentHistoryTab = () => {
           </Card>
         )}
 
-      {assessments.map((assessment) => (
+      {filteredAndSortedAssessments.length === 0 ? (
+        <Card>
+          <CardContent className="p-12 text-center">
+            <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No matching assessments</h3>
+            <p className="text-muted-foreground mb-4">
+              Try adjusting your filters or search query
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setTypeFilters({ lis: true, hormone_compass: true, symptom: true });
+              }}
+            >
+              Clear Filters
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        filteredAndSortedAssessments.map((assessment) => (
         <Card key={assessment.id} className="hover:border-primary/50 transition-colors">
           <CardContent className="p-6">
             <div className="flex items-center justify-between gap-4">
@@ -284,7 +477,8 @@ export const AssessmentHistoryTab = () => {
             </div>
           </CardContent>
         </Card>
-      ))}
+        ))
+      )}
       </div>
 
       {/* Comparison Dialog */}
