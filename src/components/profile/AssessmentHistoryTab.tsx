@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Sparkles, Calendar, ExternalLink } from "lucide-react";
+import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,7 @@ interface AssessmentRecord {
   score: number | null;
   completedAt: Date;
   resultsPath: string;
+  retakePath: string;
 }
 
 export const AssessmentHistoryTab = () => {
@@ -65,6 +66,7 @@ export const AssessmentHistoryTab = () => {
             score: item.longevity_impact_score,
             completedAt: new Date(item.created_at),
             resultsPath: `/lis-results?assessmentId=${item.id}`,
+            retakePath: "/guest-lis-assessment",
           });
         });
 
@@ -77,6 +79,7 @@ export const AssessmentHistoryTab = () => {
             score: item.confidence_score ? Math.round(item.confidence_score) : null,
             completedAt: new Date(item.calculated_at),
             resultsPath: `/hormone-compass/results?stageId=${item.id}`,
+            retakePath: "/hormone-compass/assessment",
           });
         });
 
@@ -89,6 +92,7 @@ export const AssessmentHistoryTab = () => {
             score: item.overall_score,
             completedAt: new Date(item.completed_at),
             resultsPath: `/assessment/${item.symptom_type}/results`,
+            retakePath: `/assessment/${item.symptom_type}`,
           });
         });
 
@@ -181,12 +185,12 @@ export const AssessmentHistoryTab = () => {
       {assessments.map((assessment) => (
         <Card key={assessment.id} className="hover:border-primary/50 transition-colors">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div className="flex items-start gap-4 flex-1">
                 <div className="mt-1">{getAssessmentIcon(assessment.type)}</div>
                 <div className="flex-1">
                   <h4 className="font-semibold mb-1">{assessment.title}</h4>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {formatDistanceToNow(assessment.completedAt, { addSuffix: true })}
@@ -198,15 +202,26 @@ export const AssessmentHistoryTab = () => {
                   </div>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate(assessment.resultsPath)}
-                className="gap-2"
-              >
-                View Results
-                <ExternalLink className="h-3 w-3" />
-              </Button>
+              <div className="flex gap-2 flex-shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(assessment.retakePath)}
+                  className="gap-2"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  Retake
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(assessment.resultsPath)}
+                  className="gap-2"
+                >
+                  View Results
+                  <ExternalLink className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
