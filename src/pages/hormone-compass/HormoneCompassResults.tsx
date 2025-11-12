@@ -146,6 +146,20 @@ export default function HormoneCompassResults() {
     enabled: !!healthLevel,
   });
 
+  // Calculate domain scores and protocols - MUST be called before conditional returns
+  const assessmentAnswers = (stateData as any)?.answers || assessmentData?.hormone_indicators || {};
+  const domainScores = calculateDomainScores(assessmentAnswers);
+  const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
+  const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
+  
+  // Find lowest scoring domain for auto-expand - MUST be called before conditional returns
+  const lowestDomain = Object.entries(domainScores)
+    .sort(([, a], [, b]) => a - b)[0];
+  
+  const [openDomains, setOpenDomains] = useState<string[]>(
+    lowestDomain ? [lowestDomain[0]] : []
+  );
+
   // Now check conditions AFTER all hooks are called
   if (isLoading) {
     return (
@@ -228,20 +242,6 @@ export default function HormoneCompassResults() {
       toast.error('Failed to update profile');
     }
   };
-
-  // Calculate domain scores and protocols
-  const assessmentAnswers = (stateData as any)?.answers || assessmentData?.hormone_indicators || {};
-  const domainScores = calculateDomainScores(assessmentAnswers);
-  const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
-  const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
-  
-  // Find lowest scoring domain for auto-expand
-  const lowestDomain = Object.entries(domainScores)
-    .sort(([, a], [, b]) => a - b)[0];
-  
-  const [openDomains, setOpenDomains] = useState<string[]>(
-    lowestDomain ? [lowestDomain[0]] : []
-  );
 
   const handleAddToProtocol = async () => {
     if (!user) {
