@@ -518,24 +518,24 @@ export default function HormoneCompassResults() {
       </div>
 
       {/* Overall Health Level Summary */}
-      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
+      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
         <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <h2 className={`text-2xl font-bold mb-2 ${levelInfo.color}`}>{levelInfo.title}</h2>
-              <p className="text-muted-foreground">{levelInfo.description}</p>
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <Sparkles className="w-8 h-8 text-primary" />
+              <h2 className={`text-3xl font-bold ${levelInfo.color}`}>{levelInfo.title}</h2>
             </div>
-            <Badge variant="outline" className="text-lg px-4 py-2">
-              {confidence}% Confidence
-            </Badge>
           </div>
           
           {lifeStageContext && (
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mt-4">
-              <p className="text-sm">
-                <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
-                {lifeStageContext}
-              </p>
+            <div className="bg-gradient-to-r from-primary/10 to-secondary/5 border-2 border-primary/20 rounded-lg p-4 mt-4">
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <p className="text-sm">
+                  <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
+                  {lifeStageContext}
+                </p>
+              </div>
             </div>
           )}
         </CardContent>
@@ -543,8 +543,8 @@ export default function HormoneCompassResults() {
 
       {/* Symptom Pattern Analysis */}
       {symptomInsights.length > 0 && (
-        <Card className="border-primary/20">
-          <CardHeader>
+        <Card className="border-2 border-primary/20 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
               What Your Symptoms Reveal
@@ -562,10 +562,13 @@ export default function HormoneCompassResults() {
       )}
 
       {/* Domain-by-Domain Breakdown */}
-      <Card className="border-primary/30">
-        <CardHeader>
+      <Card className="border-2 border-primary/30 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
           <CardTitle>Detailed Domain Analysis</CardTitle>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mt-2">
+            {levelInfo.description}
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
             Expand each domain to see specific insights and recommendations
           </p>
         </CardHeader>
@@ -652,8 +655,8 @@ export default function HormoneCompassResults() {
       </Card>
 
       {/* Personalized Protocol Preview */}
-      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
-        <CardHeader>
+      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5 text-primary" />
             Your Personalized Hormone Protocol
