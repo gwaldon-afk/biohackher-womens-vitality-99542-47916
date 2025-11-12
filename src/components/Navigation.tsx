@@ -34,8 +34,6 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
-    { href: "/my-goals", label: "My Goals" },
-    { href: "/my-protocol", label: "My Protocols" },
     { href: "/nutrition", label: "Nutrition" },
     { href: "/experts", label: "Find Experts" },
     { href: "/shop", label: t('navigation.shop') },
@@ -123,14 +121,6 @@ const Navigation = () => {
                   )}
                 >
                   {item.label}
-                  {item.href === "/my-protocol" && pendingCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="ml-1 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
-                    >
-                      {pendingCount}
-                    </Badge>
-                  )}
                 </Button>
               </Link>
             ))}
@@ -300,14 +290,6 @@ const Navigation = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   <span>{item.label}</span>
-                  {item.href === "/my-protocol" && pendingCount > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
-                    >
-                      {pendingCount}
-                    </Badge>
-                  )}
                 </Link>
               ))}
 
