@@ -154,6 +154,13 @@ export default function HormoneCompassResults() {
 
   const levelInfo = HEALTH_LEVEL_INFO[healthLevel as keyof typeof HEALTH_LEVEL_INFO];
   
+  // Guard against invalid health level
+  if (!levelInfo) {
+    console.error('Invalid health level:', healthLevel);
+    navigate('/hormone-compass/assessment');
+    return null;
+  }
+  
   // Generate age-based contextual insight
   const getLifeStageContext = () => {
     if (!userAge) return null;
