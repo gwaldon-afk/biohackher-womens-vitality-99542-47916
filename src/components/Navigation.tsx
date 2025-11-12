@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, TrendingUp, Target, Award, Trophy, Heart, Dumbbell, Watch, Pill, Moon, Utensils, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
 import { LocaleSelector } from "@/components/LocaleSelector";
 import TrustBarWithSecurity from "@/components/TrustBar";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -28,6 +30,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { t } = useTranslation();
+  const { pendingCount } = useProtocolRecommendations({ status: 'pending' });
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
@@ -77,13 +80,21 @@ const Navigation = () => {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-sm font-medium transition-colors",
+                    "text-sm font-medium transition-colors relative",
                     isActive(item.href)
                       ? "text-primary bg-accent"
                       : "text-muted-foreground hover:text-primary"
                   )}
                 >
                   {item.label}
+                  {item.href === "/my-protocol" && pendingCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="ml-1 h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                    >
+                      {pendingCount}
+                    </Badge>
+                  )}
                 </Button>
               </Link>
             ))}
@@ -211,14 +222,22 @@ const Navigation = () => {
                   key={item.href}
                   to={item.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md",
+                    "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md flex items-center justify-between",
                     isActive(item.href)
                       ? "text-primary bg-primary/10"
                       : "text-muted-foreground"
                   )}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.href === "/my-protocol" && pendingCount > 0 && (
+                    <Badge 
+                      variant="destructive" 
+                      className="h-5 min-w-5 flex items-center justify-center px-1.5 text-xs"
+                    >
+                      {pendingCount}
+                    </Badge>
+                  )}
                 </Link>
               ))}
 
