@@ -10,6 +10,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
+import { AssessmentReminders } from "./AssessmentReminders";
 import {
   Select,
   SelectContent,
@@ -272,6 +273,9 @@ export const AssessmentHistoryTab = () => {
   return (
     <>
       <div className="space-y-4">
+        {/* Assessment Reminders */}
+        <AssessmentReminders />
+
         {/* Header with search and filters */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
