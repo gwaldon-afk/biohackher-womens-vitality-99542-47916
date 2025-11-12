@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { HormoneCompassDomainCard } from '@/components/hormone-compass/HormoneCompassDomainCard';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
+import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
@@ -121,6 +122,7 @@ export default function HormoneCompassResults() {
   const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
   const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
   const [existingProtocolItems, setExistingProtocolItems] = useState<Set<string>>(new Set());
+  const [goalDialogOpen, setGoalDialogOpen] = useState(false);
 
   const assessmentId = searchParams.get('assessmentId');
   const stateData = location.state as { stage?: string; confidence?: number } || {};
@@ -945,10 +947,21 @@ export default function HormoneCompassResults() {
           )}
 
           {user ? (
-            <Button onClick={handleAddToProtocol} className="w-full" size="lg">
-              <Target className="w-5 h-5 mr-2" />
-              Add All Items to Protocol
-            </Button>
+            <div className="space-y-3">
+              <Button onClick={handleAddToProtocol} className="w-full" size="lg">
+                <Target className="w-5 h-5 mr-2" />
+                Add All Items to Protocol
+              </Button>
+              <Button 
+                onClick={() => setGoalDialogOpen(true)}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                <Target className="w-5 h-5 mr-2" />
+                Create 90-Day Goal from Results
+              </Button>
+            </div>
           ) : (
             <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
               Create Free Account to Save Protocol
@@ -1060,6 +1073,20 @@ export default function HormoneCompassResults() {
         onCancel={() => {
           setProtocolDialogOpen(false);
           toast.info('You can review and add your protocol from My Protocol page anytime');
+        }}
+      />
+      
+      {/* Create Goal from Assessment Dialog */}
+      <CreateGoalFromAssessmentDialog
+        open={goalDialogOpen}
+        onOpenChange={setGoalDialogOpen}
+        assessmentType="hormone_compass"
+        assessmentData={{
+          healthLevel: levelInfo.title,
+          lowestDomains: Object.entries(domainScores)
+            .map(([name, score]) => ({ name, score }))
+            .sort((a, b) => a.score - b.score)
+            .slice(0, 2),
         }}
       />
     </div>

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2 } from 'lucide-react';
+import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2, Target } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -23,6 +23,7 @@ import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 import { EmailShareDialog } from '@/components/EmailShareDialog';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
+import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const LISResults = () => {
   const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
   const [generatedProtocol, setGeneratedProtocol] = useState<any>(null);
   const [generatingProtocol, setGeneratingProtocol] = useState(false);
+  const [goalDialogOpen, setGoalDialogOpen] = useState(false);
   const { refetch: refetchRecommendations } = useProtocolRecommendations();
   
   // Check if user has an active protocol
@@ -911,6 +913,17 @@ const LISResults = () => {
                     {generatingProtocol ? 'Generating Your Protocol...' : 'Review & Add Protocol to My Plan'}
                   </Button>
                   
+                  {/* Create Goal from Assessment */}
+                  <Button 
+                    onClick={() => setGoalDialogOpen(true)}
+                    variant="outline"
+                    size="lg"
+                    className="gap-2 w-full md:w-auto"
+                  >
+                    <Target className="w-5 h-5" />
+                    Create 90-Day Goal from Results
+                  </Button>
+                  
                   {/* AI Deep Dive - Compact Button */}
                   <AssessmentAIAnalysisCard
                     assessmentType="lis"
@@ -1077,6 +1090,18 @@ const LISResults = () => {
           onCancel={() => setProtocolDialogOpen(false)}
         />
       )}
+      
+      {/* Create Goal from Assessment Dialog */}
+      <CreateGoalFromAssessmentDialog
+        open={goalDialogOpen}
+        onOpenChange={setGoalDialogOpen}
+        assessmentType="lis"
+        assessmentData={{
+          score: displayScore,
+          lowestPillar: pillarAnalyses[0]?.displayName,
+          lowestScore: pillarAnalyses[0]?.score,
+        }}
+      />
     </div>
     </div>
   );
