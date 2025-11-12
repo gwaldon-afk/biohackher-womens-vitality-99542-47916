@@ -2915,6 +2915,45 @@ export type Database = {
           },
         ]
       }
+      protocol_recommendations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          dismissed_at: string | null
+          id: string
+          notes: string | null
+          protocol_data: Json
+          source_assessment_id: string
+          source_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          dismissed_at?: string | null
+          id?: string
+          notes?: string | null
+          protocol_data: Json
+          source_assessment_id: string
+          source_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          dismissed_at?: string | null
+          id?: string
+          notes?: string | null
+          protocol_data?: Json
+          source_assessment_id?: string
+          source_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       protocol_research_links: {
         Row: {
           authors: string | null
@@ -3037,6 +3076,8 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          source_recommendation_id: string | null
+          source_type: string | null
           start_date: string
           updated_at: string
           user_id: string
@@ -3049,6 +3090,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          source_recommendation_id?: string | null
+          source_type?: string | null
           start_date?: string
           updated_at?: string
           user_id: string
@@ -3061,11 +3104,21 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          source_recommendation_id?: string | null
+          source_type?: string | null
           start_date?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "protocols_source_recommendation_id_fkey"
+            columns: ["source_recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       research_studies: {
         Row: {
