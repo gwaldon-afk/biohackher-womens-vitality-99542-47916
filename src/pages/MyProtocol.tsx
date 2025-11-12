@@ -62,6 +62,12 @@ const MyProtocol = () => {
     pendingCount 
   } = useProtocolRecommendations({ status: 'pending' });
   
+  // Fetch historical recommendations (dismissed and partially accepted)
+  const {
+    recommendations: historicalRecommendations,
+    isLoading: loadingHistorical
+  } = useProtocolRecommendations({ status: ['dismissed', 'partially_accepted'] });
+  
   const activeProtocols = protocols.filter(p => p.is_active);
   const activeProtocol = activeProtocols[0]; // Get first active protocol
   
@@ -332,7 +338,7 @@ const MyProtocol = () => {
         </div>
 
         <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "active"} className="space-y-6">
-          <TabsList className="grid w-full max-w-3xl grid-cols-4">
+          <TabsList className="grid w-full max-w-4xl grid-cols-5">
             <TabsTrigger value="active">Active Protocol</TabsTrigger>
             <TabsTrigger value="recommended" className="relative">
               Recommended
@@ -342,6 +348,7 @@ const MyProtocol = () => {
                 </Badge>
               )}
             </TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
             <TabsTrigger value="library">Library</TabsTrigger>
           </TabsList>
@@ -604,6 +611,153 @@ const MyProtocol = () => {
                                 }}
                               >
                                 Dismiss
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Recommendations History Tab */}
+          <TabsContent value="history" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recommendations History</CardTitle>
+                <CardDescription>
+                  Review previously dismissed or partially accepted recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingHistorical ? (
+                  <p className="text-muted-foreground">Loading history...</p>
+                ) : !historicalRecommendations || historicalRecommendations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Clock className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No Historical Recommendations</h3>
+                    <p className="text-muted-foreground">
+                      Dismissed or partially accepted recommendations will appear here
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {historicalRecommendations.map((recommendation: any) => {
+                      const protocol = recommendation.protocol_data;
+                      const sourceNames: Record<string, string> = {
+                        'hormone_compass': 'Hormone Compass',
+                        'lis': 'Longevity Impact Score',
+                        'symptom': 'Symptom Assessment',
+                        'goal': 'Goal Setting'
+                      };
+
+                      const totalItems = 
+                        (protocol.immediate?.length || 0) + 
+                        (protocol.foundation?.length || 0) + 
+                        (protocol.optimization?.length || 0);
+
+                      return (
+                        <Card key={recommendation.id} className="border-2 border-muted">
+                          <CardContent className="pt-6">
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-semibold text-lg">
+                                    {sourceNames[recommendation.source_type] || recommendation.source_type}
+                                  </h3>
+                                  <Badge 
+                                    variant={recommendation.status === 'dismissed' ? 'secondary' : 'outline'}
+                                    className="text-xs"
+                                  >
+                                    {recommendation.status === 'dismissed' ? 'Dismissed' : 'Partially Accepted'}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {new Date(recommendation.created_at).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                  })}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-2xl font-bold text-muted-foreground">{totalItems}</p>
+                                <p className="text-xs text-muted-foreground">Total Items</p>
+                              </div>
+                            </div>
+
+                            {/* Protocol Preview */}
+                            <div className="space-y-3 mb-4">
+                              {protocol.immediate && protocol.immediate.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="destructive" className="text-xs">Immediate</Badge>
+                                    <span className="text-muted-foreground text-sm">
+                                      {protocol.immediate.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.immediate[0]?.name}
+                                    {protocol.immediate.length > 1 && ` +${protocol.immediate.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {protocol.foundation && protocol.foundation.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="secondary" className="text-xs">Foundation</Badge>
+                                    <span className="text-muted-foreground text-sm">
+                                      {protocol.foundation.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.foundation[0]?.name}
+                                    {protocol.foundation.length > 1 && ` +${protocol.foundation.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {protocol.optimization && protocol.optimization.length > 0 && (
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="text-xs">Optimization</Badge>
+                                    <span className="text-muted-foreground text-sm">
+                                      {protocol.optimization.length} actions
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground line-clamp-2">
+                                    {protocol.optimization[0]?.name}
+                                    {protocol.optimization.length > 1 && ` +${protocol.optimization.length - 1} more`}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Dismissal/Partial Acceptance Info */}
+                            {recommendation.dismissed_at && recommendation.notes && (
+                              <div className="p-3 bg-muted/50 rounded-lg mb-4">
+                                <p className="text-xs text-muted-foreground">
+                                  <strong>Note:</strong> {recommendation.notes}
+                                </p>
+                              </div>
+                            )}
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                              <Button 
+                                onClick={() => {
+                                  setSelectedRecommendation(recommendation);
+                                  setProtocolDialogOpen(true);
+                                }}
+                                variant="outline"
+                                className="flex-1"
+                              >
+                                Review Again
                               </Button>
                             </div>
                           </CardContent>

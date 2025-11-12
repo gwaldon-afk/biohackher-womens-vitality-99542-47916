@@ -17,7 +17,7 @@ export interface ProtocolRecommendation {
 }
 
 interface UseProtocolRecommendationsOptions {
-  status?: 'pending' | 'accepted' | 'dismissed' | 'partially_accepted';
+  status?: 'pending' | 'accepted' | 'dismissed' | 'partially_accepted' | ('dismissed' | 'partially_accepted')[];
   sourceType?: 'hormone_compass' | 'lis' | 'symptom' | 'goal';
 }
 
@@ -39,7 +39,11 @@ export const useProtocolRecommendations = (options?: UseProtocolRecommendationsO
 
       // Apply filters
       if (options?.status) {
-        query = query.eq('status', options.status);
+        if (Array.isArray(options.status)) {
+          query = query.in('status', options.status);
+        } else {
+          query = query.eq('status', options.status);
+        }
       }
 
       if (options?.sourceType) {
