@@ -1,4 +1,5 @@
 import heroImage from "@/assets/hero-main.jpg";
+import brandLogo from "@/assets/brand-face-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Brain, Sparkles, Target, Apple } from "lucide-react";
@@ -31,6 +32,11 @@ const Index = () => {
           <div className="container mx-auto px-4 py-20 lg:py-32">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left space-y-6">
+                <img 
+                  src={brandLogo} 
+                  alt="Biohackher" 
+                  className="h-32 w-auto mx-auto lg:mx-0 mb-6"
+                />
                 <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
                   Live well longer
                 </h1>
