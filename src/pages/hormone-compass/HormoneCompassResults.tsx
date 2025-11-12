@@ -11,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { useLocale } from '@/hooks/useLocale';
+import { useProtocols } from '@/hooks/useProtocols';
 import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice, getProducts } from '@/services/productService';
 import { autoMatchProtocolItemToProduct } from '@/services/protocolProductLinkingService';
 import { useCart } from '@/hooks/useCart';
@@ -108,9 +109,12 @@ export default function HormoneCompassResults() {
   const { addToCart } = useCart();
   const { profile } = useHealthProfile();
   const { isMetric, getCurrentLocale } = useLocale();
+  const { addProtocolFromLibrary, protocols, fetchProtocolItems } = useProtocols();
   const [productMatches, setProductMatches] = useState<Record<string, Product | null>>({});
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
   const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
+  const [existingProtocolItems, setExistingProtocolItems] = useState<Set<string>>(new Set());
 
   const assessmentId = searchParams.get('assessmentId');
   const stateData = location.state as { stage?: string; confidence?: number } || {};
@@ -196,6 +200,24 @@ export default function HormoneCompassResults() {
     }
   }, [protocol]);
   
+  // Fetch existing protocol items to prevent duplicates
+  useEffect(() => {
+    const loadExistingItems = async () => {
+      if (!user) return;
+      
+      const activeProtocol = protocols.find(p => p.is_active);
+      if (activeProtocol) {
+        const items = await fetchProtocolItems(activeProtocol.id);
+        const itemNames = new Set(
+          items.map(item => item.name.toLowerCase().trim())
+        );
+        setExistingProtocolItems(itemNames);
+      }
+    };
+    
+    loadExistingItems();
+  }, [user, protocols, fetchProtocolItems]);
+  
   // Helper function to localize protocol text
   const getLocalizedProtocolText = (text: string): string => {
     if (text === 'LOCALIZED:HYDRATION') {
@@ -204,6 +226,87 @@ export default function HormoneCompassResults() {
         : 'Drink half your body weight (lbs) in ounces of water daily';
     }
     return text;
+  };
+  
+  // Parse protocol item description to extract frequency and timing
+  const parseProtocolDetails = (description: string): {
+    frequency: 'daily' | 'twice_daily' | 'three_times_daily';
+    timeOfDay: string[];
+  } => {
+    const desc = description.toLowerCase();
+    
+    // Detect frequency
+    let frequency: 'daily' | 'twice_daily' | 'three_times_daily' = 'daily';
+    if (desc.includes('2x') || desc.includes('twice') || desc.includes('2-3x')) {
+      frequency = 'twice_daily';
+    } else if (desc.includes('3x') || desc.includes('three times')) {
+      frequency = 'three_times_daily';
+    }
+    
+    // Detect timing
+    const timeOfDay: string[] = [];
+    if (desc.includes('morning') || desc.includes('breakfast')) {
+      timeOfDay.push('morning');
+    }
+    if (desc.includes('evening') || desc.includes('before bed') || desc.includes('bedtime')) {
+      timeOfDay.push('evening');
+    }
+    if (desc.includes('with meals') && frequency === 'twice_daily') {
+      timeOfDay.push('morning', 'evening');
+    }
+    
+    // Fallback if no timing detected
+    if (timeOfDay.length === 0) {
+      timeOfDay.push('morning');
+    }
+    
+    return { frequency, timeOfDay };
+  };
+  
+  const handleInlineAddToProtocol = async (
+    item: ProtocolItem,
+    matchedProduct: Product | null
+  ) => {
+    if (!user) {
+      toast.error('Please sign in to add items to your protocol');
+      navigate('/auth');
+      return;
+    }
+
+    // Check if already exists in database
+    const normalizedName = item.name.toLowerCase().trim();
+    if (existingProtocolItems.has(normalizedName)) {
+      toast.info(`${item.name} is already in your protocol`);
+      return;
+    }
+
+    try {
+      // Parse description for frequency and timing
+      const { frequency, timeOfDay } = parseProtocolDetails(item.description);
+      
+      // Determine item type
+      const itemType: 'supplement' | 'habit' | 'therapy' = 
+        matchedProduct ? 'supplement' : 'habit';
+
+      await addProtocolFromLibrary('Hormone Compass', [{
+        item_type: itemType,
+        name: item.name,
+        description: item.description,
+        dosage: matchedProduct?.usage_instructions || item.description.split('\n')[0],
+        frequency: frequency,
+        time_of_day: timeOfDay,
+        notes: `Added from Hormone Compass - ${item.relevance || ''}`,
+      }]);
+
+      // Track as added and update existing items set
+      setAddedItems(prev => new Set(prev).add(item.name));
+      setExistingProtocolItems(prev => new Set(prev).add(normalizedName));
+      
+      toast.success(`${item.name} added to your protocol`);
+    } catch (error) {
+      console.error('Error adding to protocol:', error);
+      toast.error('Failed to add item to protocol');
+    }
   };
   
   // Helper function to render protocol item with optional cart button
@@ -253,6 +356,56 @@ export default function HormoneCompassResults() {
                     Add
                   </Button>
                 </div>
+              </div>
+            )}
+            
+            {/* Add to Protocol button (authenticated users only) */}
+            {user && (
+              <div className="mt-3">
+                <Button
+                  size="sm"
+                  variant={
+                    existingProtocolItems.has(item.name.toLowerCase().trim()) || addedItems.has(item.name)
+                      ? "secondary"
+                      : "default"
+                  }
+                  disabled={
+                    existingProtocolItems.has(item.name.toLowerCase().trim()) || addedItems.has(item.name)
+                  }
+                  onClick={() => handleInlineAddToProtocol(item, matchedProduct)}
+                  className="w-full"
+                >
+                  {existingProtocolItems.has(item.name.toLowerCase().trim()) ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Already in Protocol
+                    </>
+                  ) : addedItems.has(item.name) ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Added to Protocol
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4 mr-2" />
+                      Add to My Protocol
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {/* Guest CTA */}
+            {!user && (
+              <div className="mt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => navigate('/auth')}
+                  className="w-full"
+                >
+                  Sign in to Add to Protocol
+                </Button>
               </div>
             )}
           </div>
@@ -726,7 +879,8 @@ export default function HormoneCompassResults() {
 
           {user ? (
             <Button onClick={handleAddToProtocol} className="w-full" size="lg">
-              Review & Add to My Plan
+              <Target className="w-5 h-5 mr-2" />
+              Add All Items to Protocol
             </Button>
           ) : (
             <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
