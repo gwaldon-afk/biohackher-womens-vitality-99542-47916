@@ -114,9 +114,9 @@ export default function HormoneCompassAssessment() {
     <div className="container max-w-3xl py-8">
       <div className="space-y-8">
         <div className="space-y-4">
-          <Button variant="ghost" onClick={() => navigate(user ? '/dashboard' : '/')} className="gap-2">
+          <Button variant="ghost" onClick={() => navigate('/')} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back to My Plan
+            Back to Home
           </Button>
           
           <div className="space-y-2">
