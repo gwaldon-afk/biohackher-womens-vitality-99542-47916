@@ -49,6 +49,10 @@ const MyProtocol = () => {
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
   
+  // Recommended tab filters and sorting
+  const [recommendedSourceFilter, setRecommendedSourceFilter] = useState<string>('all');
+  const [recommendedSortBy, setRecommendedSortBy] = useState<string>('date-desc');
+  
   // History tab filters and sorting
   const [historySourceFilter, setHistorySourceFilter] = useState<string>('all');
   const [historyStatusFilter, setHistoryStatusFilter] = useState<string>('all');
@@ -67,6 +71,37 @@ const MyProtocol = () => {
     dismissRecommendation,
     pendingCount 
   } = useProtocolRecommendations({ status: 'pending' });
+  
+  // Filter and sort recommended protocols
+  const filteredRecommendations = useMemo(() => {
+    if (!recommendations) return [];
+    
+    let filtered = [...recommendations];
+    
+    // Apply source type filter
+    if (recommendedSourceFilter !== 'all') {
+      filtered = filtered.filter(rec => rec.source_type === recommendedSourceFilter);
+    }
+    
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (recommendedSortBy) {
+        case 'date-desc':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'date-asc':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'priority':
+          // Priority: immediate items count as highest priority
+          const aPriority = a.protocol_data.immediate?.length || 0;
+          const bPriority = b.protocol_data.immediate?.length || 0;
+          return bPriority - aPriority;
+        default:
+          return 0;
+      }
+    });
+    
+    return filtered;
+  }, [recommendations, recommendedSourceFilter, recommendedSortBy]);
   
   // Fetch historical recommendations (dismissed and partially accepted)
   const {
@@ -523,10 +558,43 @@ const MyProtocol = () => {
           <TabsContent value="recommended" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Recommended Protocols</CardTitle>
-                <CardDescription>
-                  Review and add assessment-generated protocols to your plan
-                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <CardTitle>Recommended Protocols</CardTitle>
+                    <CardDescription>
+                      Review and add assessment-generated protocols to your plan
+                    </CardDescription>
+                  </div>
+                  
+                  {/* Filter and Sort Controls */}
+                  {recommendations && recommendations.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      <Select value={recommendedSourceFilter} onValueChange={setRecommendedSourceFilter}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Filter by source" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Sources</SelectItem>
+                          <SelectItem value="lis">LIS Assessment</SelectItem>
+                          <SelectItem value="hormone_compass">Hormone Compass</SelectItem>
+                          <SelectItem value="symptom">Symptom Assessment</SelectItem>
+                          <SelectItem value="goal">Goal Setting</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Select value={recommendedSortBy} onValueChange={setRecommendedSortBy}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="date-desc">Newest First</SelectItem>
+                          <SelectItem value="date-asc">Oldest First</SelectItem>
+                          <SelectItem value="priority">By Priority</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {loadingRecommendations ? (
@@ -542,9 +610,17 @@ const MyProtocol = () => {
                       Take an Assessment
                     </Button>
                   </div>
+                ) : filteredRecommendations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No Matching Recommendations</h3>
+                    <p className="text-muted-foreground">
+                      Try adjusting your filters to see more results
+                    </p>
+                  </div>
                 ) : (
                   <div className="space-y-4">
-                    {recommendations.map((recommendation) => {
+                    {filteredRecommendations.map((recommendation) => {
                       const protocol = recommendation.protocol_data;
                       const totalItems = (protocol.immediate?.length || 0) + 
                                        (protocol.foundation?.length || 0) + 
