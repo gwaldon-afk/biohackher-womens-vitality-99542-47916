@@ -680,18 +680,9 @@ export default function HormoneCompassResults() {
                 <h3 className="font-semibold">Immediate Actions</h3>
               </div>
               <div className="space-y-2">
-                {protocol.immediate.map((item, index) => (
-                  <div key={index} className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {protocol.immediate.map((item, index) => 
+                  renderProtocolItem(item, index, 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50')
+                )}
               </div>
             </div>
           )}
