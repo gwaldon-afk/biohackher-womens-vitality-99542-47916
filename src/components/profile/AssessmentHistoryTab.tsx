@@ -30,7 +30,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-interface AssessmentRecord {
+export interface AssessmentRecord {
   id: string;
   type: "lis" | "hormone_compass" | "symptom";
   title: string;
