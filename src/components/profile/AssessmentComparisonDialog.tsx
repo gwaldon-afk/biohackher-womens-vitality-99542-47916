@@ -10,10 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, TrendingDown, Activity, Sparkles, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, Sparkles, Minus, Download } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { exportLISComparisonCSV, exportHormoneCompassComparisonCSV } from "@/utils/assessmentExport";
+import { useToast } from "@/hooks/use-toast";
 
 interface ComparisonDialogProps {
   open: boolean;
@@ -73,9 +76,35 @@ export const AssessmentComparisonDialog = ({
   assessmentTitle,
 }: ComparisonDialogProps) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [lisComparison, setLisComparison] = useState<LISComparison | null>(null);
   const [hcComparison, setHcComparison] = useState<HormoneCompassComparison | null>(null);
+
+  const handleExportComparison = () => {
+    try {
+      if (assessmentType === "lis" && lisComparison) {
+        exportLISComparisonCSV(lisComparison);
+        toast({
+          title: "Export successful",
+          description: "LIS comparison data exported to CSV",
+        });
+      } else if (assessmentType === "hormone_compass" && hcComparison) {
+        exportHormoneCompassComparisonCSV(hcComparison);
+        toast({
+          title: "Export successful",
+          description: "Hormone Compass comparison data exported to CSV",
+        });
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export failed",
+        description: "Could not export comparison data",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     if (open && user) {
@@ -461,17 +490,34 @@ export const AssessmentComparisonDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {assessmentType === "lis" ? (
-              <Activity className="h-5 w-5 text-primary" />
-            ) : (
-              <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-            )}
-            {assessmentTitle} Comparison
-          </DialogTitle>
-          <DialogDescription>
-            Compare your first and latest assessments to see your progress over time
-          </DialogDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="flex items-center gap-2">
+                {assessmentType === "lis" ? (
+                  <Activity className="h-5 w-5 text-primary" />
+                ) : (
+                  <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                )}
+                {assessmentTitle} Comparison
+              </DialogTitle>
+              <DialogDescription>
+                Compare your first and latest assessments to see your progress over time
+              </DialogDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportComparison}
+              disabled={
+                (assessmentType === "lis" && !lisComparison) ||
+                (assessmentType === "hormone_compass" && !hcComparison)
+              }
+              className="gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
         </DialogHeader>
 
         {loading ? (

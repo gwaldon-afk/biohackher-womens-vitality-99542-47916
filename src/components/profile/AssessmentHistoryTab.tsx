@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare, Search, SlidersHorizontal } from "lucide-react";
+import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare, Search, SlidersHorizontal, Download } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
 import { AssessmentReminders } from "./AssessmentReminders";
+import { exportAssessmentHistoryCSV } from "@/utils/assessmentExport";
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -40,6 +42,7 @@ interface AssessmentRecord {
 export const AssessmentHistoryTab = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [assessments, setAssessments] = useState<AssessmentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [comparisonDialog, setComparisonDialog] = useState<{
@@ -61,6 +64,23 @@ export const AssessmentHistoryTab = () => {
     hormone_compass: true,
     symptom: true,
   });
+
+  const handleExportHistory = () => {
+    try {
+      exportAssessmentHistoryCSV(filteredAndSortedAssessments);
+      toast({
+        title: "Export successful",
+        description: `Exported ${filteredAndSortedAssessments.length} assessments to CSV`,
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export failed",
+        description: "Could not export assessment history",
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchAssessments = async () => {
@@ -280,9 +300,21 @@ export const AssessmentHistoryTab = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Assessment History</h3>
-            <p className="text-sm text-muted-foreground">
-              {filteredAndSortedAssessments.length} of {assessments.length} assessments
-            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportHistory}
+                disabled={filteredAndSortedAssessments.length === 0}
+                className="gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export CSV
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {filteredAndSortedAssessments.length} of {assessments.length} assessments
+              </p>
+            </div>
           </div>
 
           {/* Search and Filter Controls */}
