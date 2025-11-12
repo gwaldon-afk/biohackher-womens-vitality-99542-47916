@@ -2,7 +2,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Lock } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Lock, Utensils } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,8 @@ export const UnifiedDailyChecklist = () => {
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
   const { currentScore: sustainedLIS } = useLISData();
-  const { preferences: nutritionPrefs } = useNutritionPreferences();
+  const { preferences: nutritionPrefs, isLoading: nutritionLoading } = useNutritionPreferences();
+  const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
   
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
@@ -149,7 +151,12 @@ export const UnifiedDailyChecklist = () => {
   const categorizeByTime = () => {
     const currentHour = new Date().getHours();
     
-    const morning = actions.filter((a: any) => {
+    // Filter out meal actions if user has no meal plan
+    const filteredActions = !hasMealPlan 
+      ? actions.filter((a: any) => a.type !== 'meal')
+      : actions;
+    
+    const morning = filteredActions.filter((a: any) => {
       // Morning: 6am-12pm
       if (a.timeOfDay?.includes('morning')) return true;
       if (a.mealType === 'breakfast') return true;
@@ -157,7 +164,7 @@ export const UnifiedDailyChecklist = () => {
       return false;
     });
 
-    const afternoon = actions.filter((a: any) => {
+    const afternoon = filteredActions.filter((a: any) => {
       // Afternoon: 12pm-5pm
       if (a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday')) return true;
       if (a.mealType === 'lunch') return true;
@@ -165,7 +172,7 @@ export const UnifiedDailyChecklist = () => {
       return false;
     });
 
-    const evening = actions.filter((a: any) => {
+    const evening = filteredActions.filter((a: any) => {
       // Evening: 5pm-10pm
       if (a.timeOfDay?.includes('evening')) return true;
       if (a.mealType === 'dinner') return true;
@@ -174,7 +181,7 @@ export const UnifiedDailyChecklist = () => {
     });
 
     // "Still To Do" = incomplete actions from past time blocks
-    const stillToDo = actions.filter((a: any) => {
+    const stillToDo = filteredActions.filter((a: any) => {
       if (a.completed) return false; // Only incomplete actions
       
       // Determine if action is "past due"
@@ -336,11 +343,38 @@ export const UnifiedDailyChecklist = () => {
         />
       </div>
 
-      {/* Nutrition Scorecard Widget */}
-      {user && (
+      {/* Nutrition Scorecard Widget or Generic Guidance */}
+      {user && hasMealPlan && (
         <div className="pb-6">
           <NutritionScorecardWidget />
         </div>
+      )}
+      
+      {user && !hasMealPlan && (
+        <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Utensils className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Nutrition Focus for Today</h3>
+            </div>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>• Aim for 25-30g protein per meal</p>
+              <p>• Include colorful vegetables</p>
+              <p>• Stay hydrated: drink half your body weight in ounces</p>
+              <p>• Prioritize whole foods over processed</p>
+            </div>
+            <Button 
+              variant="outline"
+              onClick={() => navigate('/nutrition/meal-plan')}
+              className="w-full mt-4"
+            >
+              Create Your Meal Plan
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              Get personalized daily meals with a 7-day meal plan
+            </p>
+          </div>
+        </Card>
       )}
 
       {/* Progress Summary */}

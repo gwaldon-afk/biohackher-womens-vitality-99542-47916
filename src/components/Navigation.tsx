@@ -34,7 +34,6 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
-    { href: "/today", label: "My Plans" },
     { href: "/my-goals", label: "My Goals" },
     { href: "/my-protocol", label: "My Protocols" },
     { href: "/nutrition", label: "Nutrition" },
@@ -42,10 +41,16 @@ const Navigation = () => {
     { href: "/shop", label: t('navigation.shop') },
   ];
 
+  // My Plans dropdown items
+  const myPlansItems = [
+    { href: "/today", label: "Today", icon: Activity },
+    { href: "/plans/90-day", label: "90-Day Plan", icon: TrendingUp },
+    { href: "/nutrition/meal-plan", label: "7-Day Meal Plan", icon: Utensils },
+  ];
+
   // Wellness Tools dropdown items
   const wellnessToolsItems = [
     { href: "/protocol-library", label: "Protocol Library", icon: Target },
-    { href: "/energy-loop", label: "Energy Loop", icon: TrendingUp },
     { href: "/pillars", label: "Symptom Tracking", icon: BarChart3 },
     { href: "/health-assistant", label: "Health Assistant", icon: Sparkles },
     { href: "/lis-results", label: "My LIS Results", icon: Activity },
@@ -73,6 +78,38 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
+            {/* My Plans dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium text-muted-foreground hover:text-primary"
+                >
+                  My Plans <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56 bg-popover border border-border shadow-lg z-50">
+                {myPlansItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <DropdownMenuItem key={item.href} asChild>
+                      <Link 
+                        to={item.href} 
+                        className={cn(
+                          "cursor-pointer flex items-center gap-2",
+                          isActive(item.href) && "text-primary bg-accent"
+                        )}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {coreNavItems.map((item) => (
               <Link key={item.href} to={item.href}>
                 <Button
@@ -222,6 +259,34 @@ const Navigation = () => {
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-2">
+              {/* My Plans - Mobile */}
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-md">
+                  My Plans <ChevronDown className="h-4 w-4" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pl-4">
+                  {myPlansItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className={cn(
+                          "text-sm font-medium transition-colors hover:text-primary px-4 py-2 rounded-md flex items-center gap-2",
+                          isActive(item.href)
+                            ? "text-primary bg-primary/10"
+                            : "text-muted-foreground"
+                        )}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </CollapsibleContent>
+              </Collapsible>
+
               {coreNavItems.map((item) => (
                 <Link
                   key={item.href}

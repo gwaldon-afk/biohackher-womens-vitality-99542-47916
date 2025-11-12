@@ -10,10 +10,12 @@ import FoodScienceTab from "@/components/nutrition/FoodScienceTab";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
 import NutritionalScorecard from "@/components/NutritionalScorecard";
 import { GuidedNutritionOnboarding } from "@/components/onboarding/GuidedNutritionOnboarding";
+import { useSearchParams } from "react-router-dom";
 
 const Nutrition = () => {
   console.log('[Nutrition] Component rendering');
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const {
     preferences,
     setPreferences,
@@ -27,6 +29,7 @@ const Nutrition = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [showGuidedTour, setShowGuidedTour] = useState(false);
+  const [activeTab, setActiveTab] = useState("assessment");
 
   // Check if guided tour should be shown (from Dashboard navigation)
   useEffect(() => {
@@ -41,6 +44,14 @@ const Nutrition = () => {
       window.history.replaceState({}, '', '/nutrition');
     }
   }, []);
+
+  // Handle tab parameter from URL
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'meal-plans') {
+      setActiveTab('meals');
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,7 +92,7 @@ const Nutrition = () => {
           onSave={savePreferences}
         />
 
-        <Tabs defaultValue="assessment" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="assessment">Daily Assessment</TabsTrigger>
             <TabsTrigger value="calculator">Calculator</TabsTrigger>

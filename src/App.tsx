@@ -104,6 +104,8 @@ import ProfileSettings from "./pages/ProfileSettings";
 import HormonalHealthTriage from "./pages/HormonalHealthTriage";
 import LISDailyCheckIn from "./pages/LISDailyCheckIn";
 import Profile from "./pages/Profile";
+import NinetyDayPlan from "./pages/plans/NinetyDayPlan";
+import MealPlanWeek from "./pages/nutrition/MealPlanWeek";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -131,6 +133,8 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/today" element={<MyDailyPlan />} />
+                <Route path="/plans/90-day" element={<ProtectedRoute><NinetyDayPlan /></ProtectedRoute>} />
+                <Route path="/nutrition/meal-plan" element={<ProtectedRoute><MealPlanWeek /></ProtectedRoute>} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
