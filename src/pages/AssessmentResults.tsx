@@ -23,6 +23,8 @@ import { ProgressiveHealthOverviewLocked } from "@/components/ProgressiveHealthO
 import { SymptomAssessment as SymptomAssessmentType } from "@/types/assessments";
 import { generateProtocolFromSymptom, updateUserProfileAfterAssessment } from "@/services/assessmentProtocolService";
 import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard";
+import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
+import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -34,6 +36,10 @@ const AssessmentResults = () => {
   const { toast } = useToast();
   const [savingRecommendations, setSavingRecommendations] = useState(false);
   const [addingToPlan, setAddingToPlan] = useState(false);
+  const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
+  const [generatedProtocol, setGeneratedProtocol] = useState<any>(null);
+  const { refetch: refetchRecommendations } = useProtocolRecommendations();
   
   const state = location.state as {
     score: number;
@@ -315,6 +321,206 @@ const AssessmentResults = () => {
   };
 
   const recommendations = getRecommendations();
+
+  // Generate symptom protocol structure (without saving)
+  const generateSymptomProtocolStructure = (symptomType: string, category: string) => {
+    const items: any[] = [];
+    const symptomLower = symptomType.toLowerCase();
+
+    const immediate: any[] = [];
+    const foundation: any[] = [];
+    const optimization: any[] = [];
+
+    // Only generate for poor/fair scores
+    if (category === 'poor' || category === 'fair') {
+      // Energy-related
+      if (symptomLower.includes('energy') || symptomLower.includes('fatigue')) {
+        immediate.push({
+          name: 'Strategic Rest Breaks',
+          description: '5-minute breaks every 90 minutes to prevent energy crashes',
+          category: 'immediate'
+        });
+        foundation.push({
+          name: 'Energy Optimization',
+          description: 'CoQ10 + B-Complex for mitochondrial support',
+          dosage: 'CoQ10 100-200mg, B-Complex as directed',
+          category: 'foundation'
+        });
+      }
+
+      // Sleep-related
+      if (symptomLower.includes('sleep') || symptomLower.includes('insomnia')) {
+        foundation.push({
+          name: 'Sleep Protocol',
+          description: 'Magnesium + L-Theanine before bed for sleep quality',
+          dosage: 'Mag 300mg, L-Theanine 200mg',
+          category: 'foundation'
+        });
+      }
+
+      // Mood/anxiety
+      if (symptomLower.includes('mood') || symptomLower.includes('anxiety') || symptomLower.includes('stress')) {
+        immediate.push({
+          name: 'Breathwork Practice',
+          description: '4-7-8 breathing technique - Inhale 4s, hold 7s, exhale 8s',
+          category: 'immediate'
+        });
+        foundation.push({
+          name: 'Stress Resilience',
+          description: 'Ashwagandha for cortisol regulation',
+          dosage: '300-600mg standardized extract',
+          category: 'foundation'
+        });
+      }
+
+      // Brain fog/cognitive
+      if (symptomLower.includes('brain') || symptomLower.includes('cognitive') || symptomLower.includes('fog')) {
+        foundation.push({
+          name: 'Cognitive Support',
+          description: 'Omega-3 + Lion\'s Mane for brain health',
+          dosage: 'Omega-3 2g, Lion\'s Mane 500-1000mg',
+          category: 'foundation'
+        });
+      }
+
+      // Pain/inflammation
+      if (symptomLower.includes('pain') || symptomLower.includes('inflammation') || symptomLower.includes('joint')) {
+        foundation.push({
+          name: 'Anti-Inflammatory Protocol',
+          description: 'Curcumin + Omega-3 for inflammation',
+          dosage: 'Curcumin 500mg (w/ black pepper), Omega-3 2g',
+          category: 'foundation'
+        });
+      }
+    }
+
+    return { immediate, foundation, optimization };
+  };
+
+  const handleAddToPlan = async () => {
+    if (!user || !symptomId) return;
+
+    setAddingToPlan(true);
+    try {
+      const protocol = generateSymptomProtocolStructure(symptomId, scoreCategory);
+
+      // Save to protocol_recommendations table
+      const { data: recommendation, error } = await supabase
+        .from('protocol_recommendations')
+        .insert({
+          user_id: user.id,
+          source_assessment_id: symptomId,
+          source_type: 'symptom',
+          protocol_data: protocol as any,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCurrentRecommendationId(recommendation.id);
+      setGeneratedProtocol(protocol);
+      setProtocolDialogOpen(true);
+
+      toast({
+        title: "Protocol Generated!",
+        description: "Review your personalized recommendations and select what works for you.",
+      });
+    } catch (error: any) {
+      console.error('Error generating protocol:', error);
+      toast({
+        title: "Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setAddingToPlan(false);
+    }
+  };
+
+  const handleProtocolSelection = async (selectedItems: any[]) => {
+    if (!user || !currentRecommendationId) return;
+
+    try {
+      // Create protocol entry
+      const { data: protocol, error: protocolError } = await supabase
+        .from('protocols')
+        .insert({
+          user_id: user.id,
+          name: `${symptomId} Management Protocol`,
+          description: `Personalized protocol for ${symptomId} based on assessment`,
+          source_recommendation_id: currentRecommendationId,
+          source_type: 'symptom',
+          is_active: true
+        })
+        .select()
+        .single();
+
+      if (protocolError) throw protocolError;
+
+      // Map category to item_type
+      const itemTypeMap: Record<string, 'habit' | 'supplement' | 'exercise' | 'diet' | 'therapy'> = {
+        'immediate': 'habit',
+        'foundation': 'supplement',
+        'optimization': 'supplement'
+      };
+
+      // Insert selected protocol items
+      const protocolItems = selectedItems.map(item => ({
+        protocol_id: protocol.id,
+        name: item.name,
+        description: item.description,
+        dosage: item.dosage || null,
+        frequency: 'daily' as const,
+        time_of_day: ['morning'],
+        item_type: itemTypeMap[item.category] || 'supplement',
+        category: item.category,
+        display_order: 0
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(protocolItems);
+
+      if (itemsError) throw itemsError;
+
+      // Update recommendation status
+      const allSelected = selectedItems.length === (
+        generatedProtocol.immediate.length + 
+        generatedProtocol.foundation.length + 
+        generatedProtocol.optimization.length
+      );
+
+      const { error: updateError } = await supabase
+        .from('protocol_recommendations')
+        .update({
+          status: allSelected ? 'accepted' : 'partially_accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', currentRecommendationId);
+
+      if (updateError) throw updateError;
+
+      await refetchRecommendations();
+      await updateUserProfileAfterAssessment(user.id, 'symptom', { symptomType: symptomId, score });
+
+      toast({
+        title: "Protocol Added!",
+        description: `${selectedItems.length} items added to your plan`,
+      });
+
+      setProtocolDialogOpen(false);
+      navigate('/my-protocol');
+    } catch (error: any) {
+      console.error('Error saving protocol:', error);
+      toast({
+        title: "Save Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   // Extract symptoms from poor-scoring categories for recommendation matching
   const symptomTags = areasForImprovement.map(area => 
@@ -775,24 +981,12 @@ const AssessmentResults = () => {
                   Convert these insights into actionable protocol items tailored to address your {symptomId} symptoms.
                 </p>
                 <Button 
-                  onClick={async () => {
-                    setAddingToPlan(true);
-                    try {
-                      await generateProtocolFromSymptom(user.id, symptomId || '', score, scoreCategory);
-                      await updateUserProfileAfterAssessment(user.id, 'symptom', { symptomType: symptomId, score });
-                      toast({ title: "Added to your protocol!", description: "Check My Protocol to see your new interventions" });
-                      navigate('/my-protocol');
-                    } catch (error) {
-                      toast({ title: "Error", description: "Failed to add to plan", variant: "destructive" });
-                    } finally {
-                      setAddingToPlan(false);
-                    }
-                  }}
+                  onClick={handleAddToPlan}
                   disabled={addingToPlan}
                   size="lg"
                   className="w-full"
                 >
-                  {addingToPlan ? 'Adding to Plan...' : 'Add Interventions to My Plan'}
+                  {addingToPlan ? 'Generating Protocol...' : 'Review & Add to My Plan'}
                 </Button>
               </CardContent>
             </Card>
@@ -1038,6 +1232,17 @@ const AssessmentResults = () => {
           )}
         </div>
       </div>
+
+      {/* Protocol Selection Dialog */}
+      {generatedProtocol && (
+        <ProtocolSelectionDialog
+          open={protocolDialogOpen}
+          onOpenChange={setProtocolDialogOpen}
+          protocol={generatedProtocol}
+          onSave={handleProtocolSelection}
+          onCancel={() => setProtocolDialogOpen(false)}
+        />
+      )}
     </div>
   );
 };
