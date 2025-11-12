@@ -29,8 +29,9 @@ import { useCart } from "@/hooks/useCart";
 import { createProtocolBundle } from "@/services/protocolBundleService";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface AssessmentData {
   id: string;
@@ -47,6 +48,11 @@ const MyProtocol = () => {
   const { addToCart } = useCart();
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  
+  // History tab filters and sorting
+  const [historySourceFilter, setHistorySourceFilter] = useState<string>('all');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<string>('all');
+  const [historySortBy, setHistorySortBy] = useState<string>('date-desc');
 
   // Use React Query hooks
   const { data: protocols = [], isLoading: loadingProtocols } = useProtocols(user?.id);
@@ -67,6 +73,39 @@ const MyProtocol = () => {
     recommendations: historicalRecommendations,
     isLoading: loadingHistorical
   } = useProtocolRecommendations({ status: ['dismissed', 'partially_accepted'] });
+  
+  // Filter and sort historical recommendations
+  const filteredHistoricalRecommendations = useMemo(() => {
+    if (!historicalRecommendations) return [];
+    
+    let filtered = [...historicalRecommendations];
+    
+    // Apply source type filter
+    if (historySourceFilter !== 'all') {
+      filtered = filtered.filter(rec => rec.source_type === historySourceFilter);
+    }
+    
+    // Apply status filter
+    if (historyStatusFilter !== 'all') {
+      filtered = filtered.filter(rec => rec.status === historyStatusFilter);
+    }
+    
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (historySortBy) {
+        case 'date-desc':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'date-asc':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        case 'status':
+          return a.status.localeCompare(b.status);
+        default:
+          return 0;
+      }
+    });
+    
+    return filtered;
+  }, [historicalRecommendations, historySourceFilter, historyStatusFilter, historySortBy]);
   
   const activeProtocols = protocols.filter(p => p.is_active);
   const activeProtocol = activeProtocols[0]; // Get first active protocol
@@ -627,10 +666,54 @@ const MyProtocol = () => {
           <TabsContent value="history" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Recommendations History</CardTitle>
-                <CardDescription>
-                  Review previously dismissed or partially accepted recommendations
-                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <CardTitle>Recommendations History</CardTitle>
+                    <CardDescription>
+                      Review previously dismissed or partially accepted recommendations
+                    </CardDescription>
+                  </div>
+                  
+                  {/* Filter and Sort Controls */}
+                  {historicalRecommendations && historicalRecommendations.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      <Select value={historySourceFilter} onValueChange={setHistorySourceFilter}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Filter by source" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Sources</SelectItem>
+                          <SelectItem value="lis">LIS Assessment</SelectItem>
+                          <SelectItem value="hormone_compass">Hormone Compass</SelectItem>
+                          <SelectItem value="symptom">Symptom Assessment</SelectItem>
+                          <SelectItem value="goal">Goal Setting</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Select value={historyStatusFilter} onValueChange={setHistoryStatusFilter}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="dismissed">Dismissed</SelectItem>
+                          <SelectItem value="partially_accepted">Partially Accepted</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <Select value={historySortBy} onValueChange={setHistorySortBy}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="date-desc">Newest First</SelectItem>
+                          <SelectItem value="date-asc">Oldest First</SelectItem>
+                          <SelectItem value="status">By Status</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 {loadingHistorical ? (
@@ -643,9 +726,17 @@ const MyProtocol = () => {
                       Dismissed or partially accepted recommendations will appear here
                     </p>
                   </div>
+                ) : filteredHistoricalRecommendations.length === 0 ? (
+                  <div className="text-center py-12">
+                    <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">No Matching Recommendations</h3>
+                    <p className="text-muted-foreground">
+                      Try adjusting your filters to see more results
+                    </p>
+                  </div>
                 ) : (
                   <div className="space-y-4">
-                    {historicalRecommendations.map((recommendation: any) => {
+                    {filteredHistoricalRecommendations.map((recommendation: any) => {
                       const protocol = recommendation.protocol_data;
                       const sourceNames: Record<string, string> = {
                         'hormone_compass': 'Hormone Compass',
