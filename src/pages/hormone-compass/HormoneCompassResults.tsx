@@ -717,11 +717,11 @@ export default function HormoneCompassResults() {
       <div className="mb-6">
         <Button
           variant="outline"
-          onClick={() => navigate(user ? '/dashboard' : '/')}
+          onClick={() => navigate(user ? '/today' : '/')}
           className="gap-2"
         >
           <Home className="w-4 h-4" />
-          Return to {user ? 'Dashboard' : 'Home'}
+          {user ? 'Return to Today' : 'Back to Home'}
         </Button>
       </div>
 
@@ -1032,10 +1032,10 @@ export default function HormoneCompassResults() {
           <Button 
             variant="default"
             className="w-full gap-2"
-            onClick={() => navigate(user ? '/dashboard' : '/')}
+            onClick={() => navigate(user ? '/today' : '/')}
           >
             <Home className="w-4 h-4" />
-            Return to {user ? 'Dashboard' : 'Home'}
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </CardContent>
       </Card>
