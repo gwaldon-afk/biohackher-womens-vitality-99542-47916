@@ -15,7 +15,7 @@ import { useProtocols } from '@/hooks/useProtocols';
 import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice, getProducts } from '@/services/productService';
 import { autoMatchProtocolItemToProduct } from '@/services/protocolProductLinkingService';
 import { useCart } from '@/hooks/useCart';
-import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle, Home, Lightbulb } from 'lucide-react';
 import { toast } from 'sonner';
 import { differenceInYears } from 'date-fns';
 import { HORMONE_COMPASS_ASSESSMENT } from '@/data/hormoneCompassAssessment';
@@ -713,6 +713,18 @@ export default function HormoneCompassResults() {
 
   return (
     <div className="container max-w-4xl py-8 space-y-6">
+      {/* Top Navigation - Return Home Button */}
+      <div className="mb-6">
+        <Button
+          variant="outline"
+          onClick={() => navigate(user ? '/dashboard' : '/')}
+          className="gap-2"
+        >
+          <Home className="w-4 h-4" />
+          Return to {user ? 'Dashboard' : 'Home'}
+        </Button>
+      </div>
+
       {/* Results Header */}
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold">Your Hormone Health Analysis</h1>
@@ -754,11 +766,11 @@ export default function HormoneCompassResults() {
               What Your Symptoms Reveal
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {symptomInsights.map((insight, index) => (
-              <div key={index} className="flex gap-3 bg-muted/30 rounded-lg p-4">
-                <div className="text-primary mt-1">•</div>
-                <p className="text-sm leading-relaxed">{insight}</p>
+              <div key={index} className="flex gap-3 bg-muted/30 rounded-lg p-5">
+                <Lightbulb className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <p className="text-base leading-relaxed">{insight}</p>
               </div>
             ))}
           </CardContent>
@@ -1016,6 +1028,14 @@ export default function HormoneCompassResults() {
           >
             <span>View Today's Action Plan</span>
             <Target className="w-4 h-4" />
+          </Button>
+          <Button 
+            variant="default"
+            className="w-full gap-2"
+            onClick={() => navigate(user ? '/dashboard' : '/')}
+          >
+            <Home className="w-4 h-4" />
+            Return to {user ? 'Dashboard' : 'Home'}
           </Button>
         </CardContent>
       </Card>

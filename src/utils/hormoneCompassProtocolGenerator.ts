@@ -416,35 +416,35 @@ export function generateSymptomPatternAnalysis(
     const nightSweats = answers['night_sweats'] || 3;
     const tempReg = answers['temperature_regulation'] || 3;
     if (nightSweats < 3 && tempReg < 3) {
-      insights.push('Your combination of night sweats and poor temperature regulation suggests vasomotor symptoms affecting your sleep quality. This is common during hormonal transitions.');
+      insights.push("Here's what stands out: Your combination of night sweats and temperature swings could point to vasomotor symptoms affecting your sleep quality—this is really common during hormonal transitions and very treatable.");
     }
   }
   
   // Mood + energy pattern
   if (domainScores['mood-focus'] && domainScores['energy-weight'] && 
       domainScores['mood-focus'] < 3 && domainScores['energy-weight'] < 3) {
-    insights.push('The pattern of mood instability combined with fatigue and energy crashes suggests cortisol dysregulation—your stress response may be affecting hormone balance.');
+    insights.push("What's interesting: The pattern of mood instability paired with fatigue and energy crashes suggests your stress response may be affecting hormone balance—essentially, cortisol dysregulation could be at play here.");
   }
   
   // Cycle + mood pattern
   if (domainScores['cycle-patterns'] && domainScores['mood-focus'] &&
       domainScores['cycle-patterns'] < 3 && domainScores['mood-focus'] < 3) {
-    insights.push('Your irregular cycles paired with mood symptoms indicate a strong cycle-mood connection. This suggests estrogen or progesterone fluctuation may be the root cause.');
+    insights.push("Based on your responses: Your irregular cycles combined with mood symptoms indicate a strong cycle-mood connection. This suggests estrogen or progesterone fluctuation might be the root cause, which is highly responsive to targeted support.");
   }
   
   // Multiple low scores
   const lowScoreDomains = Object.entries(domainScores).filter(([, score]) => score < 2.5);
   if (lowScoreDomains.length >= 3) {
-    insights.push('You\'re experiencing symptoms across multiple domains, which suggests systemic hormone imbalance rather than isolated issues. A comprehensive approach will be most effective.');
+    insights.push("You're experiencing symptoms across multiple domains, which actually suggests systemic hormone imbalance rather than isolated issues. The good news? A comprehensive approach addressing the root cause will be most effective.");
   }
   
   // Age-specific insights
   if (userAge) {
     if (userAge >= 45 && userAge <= 55 && domainScores['sleep-thermo'] < 3) {
-      insights.push(`At age ${userAge}, sleep and temperature symptoms are classic perimenopause indicators. Most women see significant improvement with targeted support.`);
+      insights.push(`At age ${userAge}, sleep and temperature symptoms are classic perimenopause indicators—and most women see significant improvement with targeted support. This is very treatable.`);
     }
     if (userAge >= 25 && userAge <= 35 && domainScores['cycle-patterns'] < 2.5) {
-      insights.push(`Cycle irregularities at your age often indicate PCOS, thyroid issues, or stress-related hormone disruption. Root cause investigation is recommended.`);
+      insights.push(`Cycle irregularities at your age often indicate PCOS, thyroid issues, or stress-related hormone disruption. Root cause investigation is recommended—but knowing what's happening is the first step to getting it under control.`);
     }
   }
   
