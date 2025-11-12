@@ -21,6 +21,8 @@ import { useProtocols } from '@/hooks/useProtocols';
 import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
 import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 import { EmailShareDialog } from '@/components/EmailShareDialog';
+import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
+import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -46,6 +48,11 @@ const LISResults = () => {
   );
   const [protocolGenerated, setProtocolGenerated] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
+  const [generatedProtocol, setGeneratedProtocol] = useState<any>(null);
+  const [generatingProtocol, setGeneratingProtocol] = useState(false);
+  const { refetch: refetchRecommendations } = useProtocolRecommendations();
   
   // Check if user has an active protocol
   const hasActiveProtocol = protocols && protocols.length > 0;
@@ -72,24 +79,178 @@ const LISResults = () => {
     }
   }, [isNewBaseline, user]);
 
-  // Auto-generate protocol if new baseline and no active protocol yet
-  useEffect(() => {
-    if (isNewBaseline && user && !protocolsLoading && !hasActiveProtocol && !protocolGenerated) {
-      const generateProtocol = async () => {
-        try {
-          console.log('Auto-generating protocol from baseline LIS assessment...');
-          await generateProtocolFromAssessments();
-          setProtocolGenerated(true);
-        } catch (error) {
-          console.error('Failed to auto-generate protocol:', error);
+  // Generate LIS-based protocol from pillar scores
+  const generateLISProtocol = (pillarScores: any) => {
+    // Sort pillars by score to identify areas needing most improvement
+    const sortedPillars = Object.entries(pillarScores)
+      .map(([name, score]) => ({ name, score: score as number }))
+      .sort((a, b) => a.score - b.score);
+
+    const immediate: any[] = [];
+    const foundation: any[] = [];
+    const optimization: any[] = [];
+
+    // Add items based on lowest-scoring pillars
+    sortedPillars.forEach((pillar, index) => {
+      if (index === 0) { // Lowest scoring pillar - immediate actions
+        if (pillar.name === 'sleep') {
+          immediate.push({ name: 'Magnesium Glycinate', description: 'Supports deep sleep and relaxation', dosage: '400mg before bed', category: 'immediate' });
+          immediate.push({ name: 'Sleep Hygiene Protocol', description: 'Cool room (65-68°F), complete darkness, no screens 1hr before bed', category: 'immediate' });
+        } else if (pillar.name === 'stress') {
+          immediate.push({ name: 'Ashwagandha', description: 'Adaptogen for cortisol regulation', dosage: '300mg twice daily', category: 'immediate' });
+          immediate.push({ name: 'Daily Breathwork', description: '5 minutes box breathing (4-4-4-4)', category: 'immediate' });
+        } else if (pillar.name === 'activity') {
+          immediate.push({ name: 'Daily Movement', description: 'Minimum 30 minutes moderate activity', category: 'immediate' });
+          immediate.push({ name: 'Strength Training', description: '2-3x per week, compound movements', category: 'immediate' });
+        } else if (pillar.name === 'nutrition') {
+          immediate.push({ name: 'Omega-3', description: 'EPA/DHA for inflammation', dosage: '2000mg daily', category: 'immediate' });
+          immediate.push({ name: 'Anti-Inflammatory Diet', description: 'Focus on vegetables, healthy fats, clean protein', category: 'immediate' });
+        } else if (pillar.name === 'social') {
+          immediate.push({ name: 'Social Connection', description: 'Schedule 2-3 meaningful interactions per week', category: 'immediate' });
+        } else if (pillar.name === 'cognitive') {
+          immediate.push({ name: 'Cognitive Training', description: '15 minutes daily learning or puzzles', category: 'immediate' });
         }
-      };
+      }
+
+      if (pillar.score < 60) { // Foundation for any pillar scoring below 60
+        foundation.push({ 
+          name: `${pillar.name.charAt(0).toUpperCase() + pillar.name.slice(1)} Foundation Protocol`, 
+          description: `Comprehensive support for ${pillar.name} optimization`,
+          category: 'foundation'
+        });
+      }
+    });
+
+    // Optimization items for overall longevity
+    optimization.push({ name: 'NAD+ Precursor (NMN)', description: 'Cellular energy and repair', dosage: '250-500mg daily', category: 'optimization' });
+    optimization.push({ name: 'Resveratrol', description: 'Sirtuin activation for longevity', dosage: '500mg daily', category: 'optimization' });
+
+    return { immediate, foundation, optimization };
+  };
+
+  const handleGenerateProtocol = async () => {
+    if (!user) return;
+
+    try {
+      setGeneratingProtocol(true);
+      const protocol = generateLISProtocol(pillarScores);
       
-      // Add a small delay to ensure assessment data is saved
-      const timer = setTimeout(generateProtocol, 1500);
-      return () => clearTimeout(timer);
+      // Save to protocol_recommendations table
+      const { data: recommendation, error } = await supabase
+        .from('protocol_recommendations')
+        .insert({
+          user_id: user.id,
+          source_assessment_id: 'lis-baseline',
+          source_type: 'lis',
+          protocol_data: protocol as any,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCurrentRecommendationId(recommendation.id);
+      setGeneratedProtocol(protocol);
+      setProtocolDialogOpen(true);
+      
+      toast({
+        title: "Protocol Generated!",
+        description: "Review your personalized recommendations and select what works for you.",
+      });
+    } catch (error: any) {
+      console.error('Error generating protocol:', error);
+      toast({
+        title: "Generation Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingProtocol(false);
     }
-  }, [isNewBaseline, user, protocolsLoading, hasActiveProtocol, protocolGenerated, generateProtocolFromAssessments]);
+  };
+
+  const handleProtocolSelection = async (selectedItems: any[]) => {
+    if (!user || !currentRecommendationId) return;
+
+    try {
+      // Create protocol entry
+      const { data: protocol, error: protocolError } = await supabase
+        .from('protocols')
+        .insert({
+          user_id: user.id,
+          name: 'LIS-Based Longevity Protocol',
+          description: 'Personalized protocol based on your Longevity Impact Score assessment',
+          source_recommendation_id: currentRecommendationId,
+          source_type: 'lis',
+          is_active: true
+        })
+        .select()
+        .single();
+
+      if (protocolError) throw protocolError;
+
+      // Map category to item_type
+      const itemTypeMap: Record<string, 'habit' | 'supplement' | 'exercise' | 'diet' | 'therapy'> = {
+        'immediate': 'habit',
+        'foundation': 'supplement',
+        'optimization': 'supplement'
+      };
+
+      // Insert selected protocol items
+      const protocolItems = selectedItems.map(item => ({
+        protocol_id: protocol.id,
+        name: item.name,
+        description: item.description,
+        dosage: item.dosage || null,
+        frequency: 'daily' as const,
+        time_of_day: ['morning'],
+        item_type: itemTypeMap[item.category] || 'supplement',
+        category: item.category,
+        display_order: 0
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(protocolItems);
+
+      if (itemsError) throw itemsError;
+
+      // Update recommendation status
+      const allSelected = selectedItems.length === (
+        generatedProtocol.immediate.length + 
+        generatedProtocol.foundation.length + 
+        generatedProtocol.optimization.length
+      );
+
+      const { error: updateError } = await supabase
+        .from('protocol_recommendations')
+        .update({
+          status: allSelected ? 'accepted' : 'partially_accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', currentRecommendationId);
+
+      if (updateError) throw updateError;
+
+      await refetchRecommendations();
+
+      toast({
+        title: "Protocol Added!",
+        description: `${selectedItems.length} items added to your plan`,
+      });
+
+      setProtocolDialogOpen(false);
+      navigate('/my-protocol');
+    } catch (error: any) {
+      console.error('Error saving protocol:', error);
+      toast({
+        title: "Save Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   // Auto-load assessment data if URL parameters are missing
   useEffect(() => {
@@ -741,13 +902,13 @@ const LISResults = () => {
               {user && (
                 <div className="flex flex-col items-center gap-3 mb-6">
                   <Button 
-                    onClick={() => navigate('/my-protocol')}
+                    onClick={handleGenerateProtocol}
                     size="lg"
                     className="gap-2 w-full md:w-auto"
-                    disabled={protocolGenerating || protocolsLoading}
+                    disabled={generatingProtocol}
                   >
                     <Sparkles className="w-5 h-5" />
-                    {protocolGenerating ? 'Generating Your Protocol...' : 'View Your Personalized Protocol'}
+                    {generatingProtocol ? 'Generating Your Protocol...' : 'Review & Add Protocol to My Plan'}
                   </Button>
                   
                   {/* AI Deep Dive - Compact Button */}
@@ -905,6 +1066,17 @@ const LISResults = () => {
         userEmail={user?.email}
         userId={user?.id}
       />
+
+      {/* Protocol Selection Dialog */}
+      {generatedProtocol && (
+        <ProtocolSelectionDialog
+          open={protocolDialogOpen}
+          onOpenChange={setProtocolDialogOpen}
+          protocol={generatedProtocol}
+          onSave={handleProtocolSelection}
+          onCancel={() => setProtocolDialogOpen(false)}
+        />
+      )}
     </div>
     </div>
   );
