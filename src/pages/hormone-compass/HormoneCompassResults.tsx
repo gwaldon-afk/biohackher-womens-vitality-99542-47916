@@ -10,8 +10,8 @@ import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
-import { Product } from '@/types/products';
-import { searchProductsBySymptoms } from '@/services/productService';
+import { useLocale } from '@/hooks/useLocale';
+import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice } from '@/services/productService';
 import { useCart } from '@/hooks/useCart';
 import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,9 +20,10 @@ import { HORMONE_COMPASS_ASSESSMENT } from '@/data/hormoneCompassAssessment';
 import { 
   calculateDomainScores, 
   generateHormoneProtocol, 
-  generateSymptomPatternAnalysis 
+  generateSymptomPatternAnalysis,
+  ProtocolItem
 } from '@/utils/hormoneCompassProtocolGenerator';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // Health level information mapping (life-stage agnostic)
 const HEALTH_LEVEL_INFO: Record<string, {
@@ -105,6 +106,8 @@ export default function HormoneCompassResults() {
   const [searchParams] = useSearchParams();
   const { addToCart } = useCart();
   const { profile } = useHealthProfile();
+  const { isMetric, getCurrentLocale } = useLocale();
+  const [productMatches, setProductMatches] = useState<Record<string, Product | null>>({});
 
   const assessmentId = searchParams.get('assessmentId');
   const stateData = location.state as { stage?: string; confidence?: number } || {};
@@ -151,6 +154,103 @@ export default function HormoneCompassResults() {
   const domainScores = calculateDomainScores(assessmentAnswers);
   const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
   const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
+  
+  // Fetch matching products for protocol items with productKeywords
+  useEffect(() => {
+    const matchProducts = async () => {
+      const allItems = [
+        ...protocol.foundation,
+        ...protocol.optimization
+      ];
+      
+      const itemsWithKeywords = allItems.filter(item => item.productKeywords && item.productKeywords.length > 0);
+      
+      const matches: Record<string, Product | null> = {};
+      
+      for (const item of itemsWithKeywords) {
+        if (item.productKeywords) {
+          try {
+            const products = await searchProductsBySymptoms(item.productKeywords);
+            matches[item.name] = products.length > 0 ? products[0] : null;
+          } catch (error) {
+            console.error(`Error matching product for ${item.name}:`, error);
+            matches[item.name] = null;
+          }
+        }
+      }
+      
+      setProductMatches(matches);
+    };
+    
+    if (protocol) {
+      matchProducts();
+    }
+  }, [protocol]);
+  
+  // Helper function to localize protocol text
+  const getLocalizedProtocolText = (text: string): string => {
+    if (text === 'LOCALIZED:HYDRATION') {
+      return isMetric 
+        ? 'Drink 30-35ml per kg of body weight daily'
+        : 'Drink half your body weight (lbs) in ounces of water daily';
+    }
+    return text;
+  };
+  
+  // Helper function to render protocol item with optional cart button
+  const renderProtocolItem = (item: ProtocolItem, index: number, backgroundColor: string) => {
+    const matchedProduct = productMatches[item.name];
+    const locale = getCurrentLocale();
+    
+    return (
+      <div key={index} className={`${backgroundColor} rounded-lg p-4`}>
+        <div className="flex items-start gap-3">
+          <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
+            <p className="text-sm text-muted-foreground mb-2">
+              {getLocalizedProtocolText(item.description)}
+            </p>
+            <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
+            
+            {/* Product match with Add to Cart button */}
+            {matchedProduct && (
+              <div className="mt-3 p-3 bg-background/80 rounded border border-border/50">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">{matchedProduct.name}</p>
+                    <p className="text-xs text-muted-foreground">{matchedProduct.brand}</p>
+                    <p className="text-sm font-bold text-primary mt-1">
+                      {formatProductPrice(matchedProduct, locale.currency)}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const price = getProductPrice(matchedProduct, locale.currency) || 0;
+                      addToCart({
+                        id: matchedProduct.id,
+                        name: matchedProduct.name,
+                        price: price,
+                        image: matchedProduct.image_url || '/placeholder.svg',
+                        brand: matchedProduct.brand || 'Unknown',
+                        dosage: matchedProduct.usage_instructions || 'As directed',
+                      });
+                      toast.success(`${matchedProduct.name} added to cart`);
+                    }}
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
   
   // Helper function to generate preview insights for collapsed domains
   const getDomainPreviewInsight = (domainName: string, score: number): string => {
@@ -515,18 +615,9 @@ export default function HormoneCompassResults() {
                 <h3 className="font-semibold">Foundation Protocol</h3>
               </div>
               <div className="space-y-2">
-                {protocol.foundation.map((item, index) => (
-                  <div key={index} className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {protocol.foundation.map((item, index) => 
+                  renderProtocolItem(item, index, 'bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50')
+                )}
               </div>
             </div>
           )}
@@ -539,18 +630,9 @@ export default function HormoneCompassResults() {
                 <h3 className="font-semibold">Optimization Layer</h3>
               </div>
               <div className="space-y-2">
-                {protocol.optimization.map((item, index) => (
-                  <div key={index} className="bg-muted/30 border rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm mb-1">{item.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-2">{item.description}</p>
-                        <p className="text-xs italic text-muted-foreground">{item.relevance}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {protocol.optimization.map((item, index) => 
+                  renderProtocolItem(item, index, 'bg-muted/30 border')
+                )}
               </div>
             </div>
           )}

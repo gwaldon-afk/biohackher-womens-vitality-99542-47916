@@ -220,7 +220,7 @@ function getDomainProtocol(
         },
         {
           name: 'Hydration Protocol',
-          description: 'Drink half your body weight (lbs) in ounces of water daily',
+          description: 'LOCALIZED:HYDRATION',
           category: 'immediate',
           relevance: 'Dehydration worsens fatigue and slows metabolism'
         }

@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { useLocale } from '@/hooks/useLocale';
 
 interface DomainCardProps {
   domainName: string;
@@ -17,6 +18,16 @@ export const HormoneCompassDomainCard = ({
   userAge,
   hideHeader = false
 }: DomainCardProps) => {
+  const { isMetric } = useLocale();
+  
+  const getLocalizedText = (text: string) => {
+    if (text === 'LOCALIZED:TEMP_BEDROOM') {
+      return isMetric 
+        ? 'Keep bedroom temperature cool (18-20°C) for better sleep'
+        : 'Keep bedroom temperature cool (65-68°F) for better sleep';
+    }
+    return text;
+  };
   
   const getScoreLabel = (score: number) => {
     if (score >= 4.5) return 'Thriving';
@@ -115,7 +126,7 @@ export const HormoneCompassDomainCard = ({
           recommendations: [
             'Establish consistent bedtime and wake time (even weekends)',
             'Reduce blue light exposure 2 hours before bed',
-            'Keep bedroom temperature cool (65-68°F) for better sleep'
+            'LOCALIZED:TEMP_BEDROOM'
           ],
           quickWin: 'Block blue light after 8pm with glasses or device settings'
         },
@@ -435,7 +446,7 @@ export const HormoneCompassDomainCard = ({
               {analysis.recommendations.map((rec, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-primary mt-0.5 text-xs">▸</span>
-                  <span className="text-sm">{rec}</span>
+                  <span className="text-sm">{getLocalizedText(rec)}</span>
                 </li>
               ))}
             </ul>
