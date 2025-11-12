@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
 import { AssessmentReminders } from "./AssessmentReminders";
+import { AssessmentProgressTimeline } from "./AssessmentProgressTimeline";
 import { exportAssessmentHistoryCSV } from "@/utils/assessmentExport";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -295,6 +296,9 @@ export const AssessmentHistoryTab = () => {
       <div className="space-y-4">
         {/* Assessment Reminders */}
         <AssessmentReminders />
+
+        {/* Progress Timeline */}
+        <AssessmentProgressTimeline assessments={assessments} />
 
         {/* Header with search and filters */}
         <div className="space-y-4">
