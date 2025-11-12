@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { HormoneCompassStageCompass } from '@/components/hormone-compass/HormoneCompassStageCompass';
 import { HormoneCompassDomainCard } from '@/components/hormone-compass/HormoneCompassDomainCard';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
+import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
@@ -108,6 +109,8 @@ export default function HormoneCompassResults() {
   const { profile } = useHealthProfile();
   const { isMetric, getCurrentLocale } = useLocale();
   const [productMatches, setProductMatches] = useState<Record<string, Product | null>>({});
+  const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
 
   const assessmentId = searchParams.get('assessmentId');
   const stateData = location.state as { stage?: string; confidence?: number } || {};
@@ -405,12 +408,103 @@ export default function HormoneCompassResults() {
       return;
     }
 
+    if (!assessmentId) {
+      toast.error('Assessment ID not found');
+      return;
+    }
+
     try {
-      toast.success('Protocol saved to your plan!');
-      navigate('/my-protocol');
+      // Save as recommendation first
+      const { data: recommendation, error } = await supabase
+        .from('protocol_recommendations')
+        .insert({
+          user_id: user.id,
+          source_assessment_id: assessmentId,
+          source_type: 'hormone_compass',
+          protocol_data: protocol as any,
+          status: 'pending'
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving recommendation:', error);
+        toast.error('Failed to save recommendation');
+        return;
+      }
+
+      // Store recommendation ID and open dialog
+      setCurrentRecommendationId(recommendation.id);
+      setProtocolDialogOpen(true);
     } catch (error) {
       console.error('Error saving protocol:', error);
       toast.error('Failed to save protocol');
+    }
+  };
+
+  const handleProtocolSelection = async (selectedItems: ProtocolItem[], cartItems: Product[]) => {
+    if (!user || !currentRecommendationId) return;
+
+    try {
+      // 1. Create protocol in protocols table
+      const { data: newProtocol, error: protocolError } = await supabase
+        .from('protocols')
+        .insert({
+          user_id: user.id,
+          name: `Hormone Health Protocol - ${new Date().toLocaleDateString()}`,
+          description: `Generated from Hormone Compass assessment`,
+          source_recommendation_id: currentRecommendationId,
+          source_type: 'hormone_compass',
+          is_active: true,
+          start_date: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (protocolError) throw protocolError;
+
+      // 2. Map category to item_type
+      const mapCategoryToItemType = (category: string): 'habit' | 'supplement' | 'diet' | 'exercise' | 'therapy' => {
+        const mapping: Record<string, 'habit' | 'supplement' | 'diet' | 'exercise' | 'therapy'> = {
+          'immediate': 'habit',
+          'foundation': 'supplement',
+          'optimization': 'supplement'
+        };
+        return mapping[category] || 'habit';
+      };
+
+      // 3. Create protocol_items for selected items
+      const itemsToInsert = selectedItems.map(item => ({
+        protocol_id: newProtocol.id,
+        name: item.name,
+        description: item.description,
+        item_type: mapCategoryToItemType(item.category),
+        frequency: 'daily' as const,
+        is_active: true,
+        product_id: null // Will be linked if product match exists
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(itemsToInsert);
+
+      if (itemsError) throw itemsError;
+
+      // 4. Update recommendation status
+      const allItemsSelected = selectedItems.length === (protocol.immediate.length + protocol.foundation.length + protocol.optimization.length);
+      
+      await supabase
+        .from('protocol_recommendations')
+        .update({ 
+          status: allItemsSelected ? 'accepted' : 'partially_accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', currentRecommendationId);
+
+      // Success handled by dialog component
+    } catch (error) {
+      console.error('Error saving protocol selection:', error);
+      throw error;
     }
   };
 
@@ -639,7 +733,7 @@ export default function HormoneCompassResults() {
 
           {user ? (
             <Button onClick={handleAddToProtocol} className="w-full" size="lg">
-              Save Protocol to My Plan
+              Review & Add to My Plan
             </Button>
           ) : (
             <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
@@ -734,6 +828,18 @@ export default function HormoneCompassResults() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Protocol Selection Dialog */}
+      <ProtocolSelectionDialog
+        open={protocolDialogOpen}
+        onOpenChange={setProtocolDialogOpen}
+        protocol={protocol}
+        onSave={handleProtocolSelection}
+        onCancel={() => {
+          setProtocolDialogOpen(false);
+          toast.info('You can review and add your protocol from My Protocol page anytime');
+        }}
+      />
     </div>
   );
 }
