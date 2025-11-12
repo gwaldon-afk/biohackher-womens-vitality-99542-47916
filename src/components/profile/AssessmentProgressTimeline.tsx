@@ -58,6 +58,29 @@ export function AssessmentProgressTimeline({ assessments }: AssessmentProgressTi
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [dateRange, setDateRange] = useState<"3m" | "6m" | "1y" | "all">("6m");
 
+  const getAssessmentCountForRange = (range: "3m" | "6m" | "1y" | "all") => {
+    if (range === "all") return assessments.length;
+
+    const now = new Date();
+    let cutoffDate: Date;
+
+    switch (range) {
+      case "3m":
+        cutoffDate = subMonths(now, 3);
+        break;
+      case "6m":
+        cutoffDate = subMonths(now, 6);
+        break;
+      case "1y":
+        cutoffDate = subYears(now, 1);
+        break;
+      default:
+        return assessments.length;
+    }
+
+    return assessments.filter(assessment => assessment.completedAt >= cutoffDate).length;
+  };
+
   const filteredAssessments = useMemo(() => {
     if (dateRange === "all") return assessments;
 
@@ -221,10 +244,38 @@ export function AssessmentProgressTimeline({ assessments }: AssessmentProgressTi
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="3m">Last 3 months</SelectItem>
-              <SelectItem value="6m">Last 6 months</SelectItem>
-              <SelectItem value="1y">Last year</SelectItem>
-              <SelectItem value="all">All time</SelectItem>
+              <SelectItem value="3m">
+                <div className="flex items-center justify-between w-full gap-3">
+                  <span>Last 3 months</span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {getAssessmentCountForRange("3m")}
+                  </Badge>
+                </div>
+              </SelectItem>
+              <SelectItem value="6m">
+                <div className="flex items-center justify-between w-full gap-3">
+                  <span>Last 6 months</span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {getAssessmentCountForRange("6m")}
+                  </Badge>
+                </div>
+              </SelectItem>
+              <SelectItem value="1y">
+                <div className="flex items-center justify-between w-full gap-3">
+                  <span>Last year</span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {getAssessmentCountForRange("1y")}
+                  </Badge>
+                </div>
+              </SelectItem>
+              <SelectItem value="all">
+                <div className="flex items-center justify-between w-full gap-3">
+                  <span>All time</span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {getAssessmentCountForRange("all")}
+                  </Badge>
+                </div>
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
