@@ -38,7 +38,7 @@ const Index = () => {
                   className="h-32 w-auto mx-auto lg:mx-0 mb-6 object-contain"
                 />
                 <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
-                  Live well longer
+                  LIVE WELL LONGER
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/90 leading-relaxed">
                   Empowering women to beat ageing through biohacking
