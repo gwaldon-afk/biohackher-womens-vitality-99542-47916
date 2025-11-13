@@ -1,5 +1,5 @@
 import heroImage from "@/assets/hero-main.jpg";
-import brandLogo from "@/assets/logos/biohackher-logo-web.png";
+import brandLogo from "@/assets/brand-face-logo.jpg";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Brain, Sparkles, Target, Apple } from "lucide-react";
@@ -35,10 +35,10 @@ const Index = () => {
                 <img 
                   src={brandLogo} 
                   alt="Biohackher" 
-                  className="h-32 w-auto mx-auto lg:mx-0 mb-6 object-contain"
+                  className="h-32 w-auto mx-auto lg:mx-0 mb-6"
                 />
                 <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
-                  LIVE WELL LONGER
+                  Live well longer
                 </h1>
                 <p className="text-xl lg:text-2xl text-white/90 leading-relaxed">
                   Empowering women to beat ageing through biohacking
