@@ -1,5 +1,5 @@
 import heroImage from "@/assets/hero-main.jpg";
-import brandLogo from "@/assets/biohackher-logo.png";
+import brandLogo from "@/assets/logos/biohackher-logo-web.png";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity, Brain, Sparkles, Target, Apple } from "lucide-react";
