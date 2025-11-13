@@ -1,4 +1,4 @@
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/hero-biohackher.jpg";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -28,8 +28,8 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="text-center lg:text-left space-y-8">
           <div>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight">
-              {t('home.hero.title')}
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight uppercase tracking-wider">
+              Live Well Longer
             </h1>
             <p className="text-xl lg:text-2xl text-white/80 leading-relaxed mb-2">
               Get your personalized longevity assessment in 5 minutes. Discover your biological age, identify health risks, and receive a science-backed protocol to optimize your healthspan.
@@ -39,7 +39,7 @@ const Index = () => {
             </p>
           </div>
 
-          {/* Single Primary CTA + Secondary */}
+          {/* Primary CTA */}
           <div className="space-y-4">
             <Button 
               size="lg"
@@ -53,18 +53,6 @@ const Index = () => {
             <div className="flex items-center justify-center lg:justify-start gap-2 text-white/90 text-sm">
               <Sparkles className="h-4 w-4" />
               <span>5-minute assessment • No signup required • Instant results</span>
-            </div>
-
-            {/* Secondary CTA - More Prominent */}
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                onClick={() => navigate("/health-assistant")}
-                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm text-white border-white/30 hover:bg-white/20 hover:border-white/50 px-8 py-6 h-auto text-base"
-              >
-                <MessageSquare className="h-5 w-5 mr-2" />
-                Ask Our Health Assistant Anything
-              </Button>
             </div>
           </div>
               </div>
@@ -205,6 +193,94 @@ const Index = () => {
         </div>
       </section>
 
+
+      {/* Featured Tools Section - Nutrition Guide & Hormone Compass */}
+      <section className="py-16 lg:py-20 bg-gradient-to-b from-muted/30 to-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">Powerful Tools for Your Journey</h2>
+              <p className="text-muted-foreground">Deep dive into specialized areas of your health</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-16">
+              {/* Nutrition Guide */}
+              <Card className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
+                <CardHeader className="bg-gradient-to-br from-primary/10 to-primary/5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-3 bg-primary/20 rounded-lg">
+                      <Package className="h-8 w-8 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">Nutrition Guide</CardTitle>
+                  </div>
+                  <CardDescription className="text-base">
+                    Personalized meal plans and supplement recommendations based on longevity science
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Science-backed meal templates</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Longevity-optimized food database</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Personalized supplement protocols</span>
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full"
+                    onClick={() => navigate("/nutrition")}
+                  >
+                    Explore Nutrition Guide
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Hormone Compass */}
+              <Card className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
+                <CardHeader className="bg-gradient-to-br from-primary/10 to-primary/5">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-3 bg-primary/20 rounded-lg">
+                      <Heart className="h-8 w-8 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">Hormone Compass</CardTitle>
+                  </div>
+                  <CardDescription className="text-base">
+                    Navigate your hormonal health journey with personalized insights and guidance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Comprehensive hormone assessment</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Perimenopause & menopause support</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span>Personalized protocol recommendations</span>
+                    </li>
+                  </ul>
+                  <Button 
+                    className="w-full"
+                    onClick={() => navigate("/hormone-compass/assessment")}
+                  >
+                    Start Hormone Assessment
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Your Free Assessment Includes */}
       <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-primary/5">
