@@ -35,7 +35,7 @@ const Index = () => {
                 <img 
                   src={brandLogo} 
                   alt="Biohackher" 
-                  className="h-32 w-auto mx-auto lg:mx-0 mb-6"
+                  className="h-32 w-auto mx-auto lg:mx-0 mb-6 object-contain"
                 />
                 <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
                   Live well longer
