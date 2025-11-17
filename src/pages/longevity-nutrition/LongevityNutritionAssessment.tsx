@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { TEST_MODE_ENABLED } from "@/config/testMode";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -67,11 +68,13 @@ export default function LongevityNutritionAssessment() {
         hydration_score: assessmentData.hydration_score || 3,
       });
 
-      const sessionId = user?.id || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // TEST MODE FIX: Use guest flow to prevent RLS violations
+      const isGuest = !user?.id || TEST_MODE_ENABLED;
+      const sessionId = isGuest ? `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : null;
 
       const { data, error } = await supabase.from("longevity_nutrition_assessments").insert({
-        user_id: user?.id || null,
-        session_id: !user?.id ? sessionId : null,
+        user_id: isGuest ? null : user.id,
+        session_id: sessionId,
         ...assessmentData,
         longevity_nutrition_score: score,
         completed_at: new Date().toISOString(),
