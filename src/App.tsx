@@ -26,6 +26,8 @@ import LISResults from "./pages/LISResults";
 import DailyScoreResults from "./pages/DailyScoreResults";
 import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
+import LongevityNutritionAssessment from "./pages/longevity-nutrition/LongevityNutritionAssessment";
+import LongevityNutritionResults from "./pages/longevity-nutrition/LongevityNutritionResults";
 import Coaching from "./pages/Coaching";
 import Reports from "./pages/Reports";
 import Upgrade from "./pages/Upgrade";
@@ -151,6 +153,8 @@ const App = () => (
             <Route path="/research-evidence" element={<ResearchEvidence />} />
             <Route path="/sleep" element={<Sleep />} />
             <Route path="/nutrition" element={<Nutrition />} />
+            <Route path="/longevity-nutrition" element={<LongevityNutritionAssessment />} />
+            <Route path="/longevity-nutrition/results" element={<LongevityNutritionResults />} />
             <Route path="/coaching" element={<Coaching />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/upgrade" element={<Upgrade />} />
