@@ -70,6 +70,8 @@ export interface Protocol {
   created_from_pillar: string | null;
   created_at: string;
   updated_at: string;
+  source_type?: string | null;
+  source_recommendation_id?: string | null;
 }
 
 export interface ProtocolItem {

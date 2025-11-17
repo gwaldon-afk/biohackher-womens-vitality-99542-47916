@@ -579,7 +579,10 @@ export default function LongevityNutritionResults() {
                   <div className="font-semibold">✓ Monthly Reassessments</div>
                 </div>
               </div>
-              <Button size="lg" onClick={() => navigate("/auth")} className="text-lg px-8">
+              <Button size="lg" onClick={() => {
+                const sessionId = assessment?.session_id || localStorage.getItem('nutrition_guest_session');
+                navigate(sessionId ? `/auth?session=${sessionId}&source=nutrition` : "/auth");
+              }} className="text-lg px-8">
                 Create Free Account & Start Now
               </Button>
               <p className="text-xs text-muted-foreground">Includes FREE 3-day trial • No credit card required</p>

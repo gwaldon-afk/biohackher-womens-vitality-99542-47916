@@ -1,20 +1,24 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from "@/hooks/useAuth";
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
-import NutritionPreferencesForm from "@/components/nutrition/NutritionPreferencesForm";
 import NutritionCalculator from "@/components/nutrition/NutritionCalculator";
 import FoodScienceTab from "@/components/nutrition/FoodScienceTab";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
-import NutritionalScorecard from "@/components/NutritionalScorecard";
+import { LongevityNutritionScoreCard } from "@/components/nutrition/LongevityNutritionScoreCard";
 import { GuidedNutritionOnboarding } from "@/components/onboarding/GuidedNutritionOnboarding";
 import { useSearchParams } from "react-router-dom";
 
 const Nutrition = () => {
   console.log('[Nutrition] Component rendering');
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const {
     preferences,
@@ -29,7 +33,7 @@ const Nutrition = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [showGuidedTour, setShowGuidedTour] = useState(false);
-  const [activeTab, setActiveTab] = useState("assessment");
+  const [activeTab, setActiveTab] = useState("score");
 
   // Check if guided tour should be shown (from Dashboard navigation)
   useEffect(() => {
@@ -65,13 +69,18 @@ const Nutrition = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <h1 className="text-3xl font-bold gradient-text">{t('nutrition.title')}</h1>
-            <ScienceBackedIcon className="h-6 w-6" />
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <h1 className="text-3xl font-bold gradient-text">{t('nutrition.title')}</h1>
+                <ScienceBackedIcon className="h-6 w-6" />
+              </div>
+              <p className="text-muted-foreground">Your personalized nutrition hub</p>
+            </div>
+            <Button onClick={() => navigate('/longevity-nutrition')} size="lg">
+              Take Longevity Nutrition Assessment
+            </Button>
           </div>
-          <p className="text-muted-foreground text-center">
-            {t('nutrition.description')}
-          </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 max-w-3xl mx-auto">
             <p className="text-sm text-blue-800">
               <strong>📚 Educational Information:</strong> This content presents evidence-based nutrition recommendations. 
@@ -81,31 +90,18 @@ const Nutrition = () => {
           </div>
         </div>
 
-        <NutritionPreferencesForm
-          preferences={preferences}
-          setPreferences={setPreferences}
-          isLoading={isLoading}
-          isSaving={isSaving}
-          hasPreferences={hasPreferences}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          onSave={savePreferences}
-        />
-
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="assessment">Daily Assessment</TabsTrigger>
+            <TabsTrigger value="score">Longevity Nutrition Score</TabsTrigger>
             <TabsTrigger value="calculator">Calculator</TabsTrigger>
             <TabsTrigger value="food-science">Food Science</TabsTrigger>
             <TabsTrigger value="meals">Meal Plans</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="assessment" className="mt-6">
-            <NutritionalScorecard 
-              onScoreCalculated={(score, grade) => {
-                console.log('Nutrition score:', score, grade);
-              }}
-              hasDairySensitivity={preferences.hasIBS || preferences.isLowFODMAP}
+          <TabsContent value="score" className="mt-6">
+            <LongevityNutritionScoreCard 
+              preferences={preferences}
+              onRetakeAssessment={() => navigate('/longevity-nutrition')}
             />
           </TabsContent>
           

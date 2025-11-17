@@ -451,6 +451,51 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_nutrition_actions: {
+        Row: {
+          action_date: string
+          action_id: string
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          pillar: string | null
+          target_value: string | null
+          time_of_day: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          action_date?: string
+          action_id: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          pillar?: string | null
+          target_value?: string | null
+          time_of_day?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          action_date?: string
+          action_id?: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          pillar?: string | null
+          target_value?: string | null
+          time_of_day?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_nutrition_scores: {
         Row: {
           created_at: string | null
@@ -2018,6 +2063,8 @@ export type Database = {
           allergies: string[] | null
           caffeine_score: number | null
           chrononutrition_type: string | null
+          claimed_at: string | null
+          claimed_by_user_id: string | null
           completed_at: string | null
           confidence_in_cooking: number | null
           craving_details: Json | null
@@ -2057,6 +2104,8 @@ export type Database = {
           allergies?: string[] | null
           caffeine_score?: number | null
           chrononutrition_type?: string | null
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
           completed_at?: string | null
           confidence_in_cooking?: number | null
           craving_details?: Json | null
@@ -2096,6 +2145,8 @@ export type Database = {
           allergies?: string[] | null
           caffeine_score?: number | null
           chrononutrition_type?: string | null
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
           completed_at?: string | null
           confidence_in_cooking?: number | null
           craving_details?: Json | null
@@ -2292,15 +2343,43 @@ export type Database = {
       nutrition_preferences: {
         Row: {
           activity_level: string | null
+          age: number | null
+          alcohol_intake: number | null
           allergies: string[] | null
+          assessment_completed_at: string | null
+          caffeine_score: number | null
+          chrononutrition_type: string | null
+          confidence_in_cooking: number | null
+          craving_details: Json | null
+          craving_pattern: number | null
           created_at: string
           disliked_foods: string[] | null
           dislikes: string[] | null
+          eats_after_8pm: boolean | null
+          fiber_score: number | null
+          first_meal_hour: number | null
           fitness_goal: string | null
+          food_preference_type: string | null
+          goal_primary: string | null
+          gut_symptom_score: number | null
+          gut_symptoms: string[] | null
           has_ibs: boolean | null
+          height_cm: number | null
+          hydration_score: number | null
           id: string
+          inflammation_score: number | null
+          inflammation_symptoms: string[] | null
           is_low_fodmap: boolean | null
+          last_meal_hour: number | null
           liked_foods: string[] | null
+          longevity_nutrition_score: number | null
+          meal_timing_window: number | null
+          menopause_stage: string | null
+          metabolic_symptom_flags: string[] | null
+          nutrition_identity_type: string | null
+          plant_diversity_score: number | null
+          protein_score: number | null
+          protein_sources: string[] | null
           selected_breakfast_recipe: string | null
           selected_dinner_recipe: string | null
           selected_lunch_recipe: string | null
@@ -2308,19 +2387,49 @@ export type Database = {
           selected_recipe_style: string | null
           updated_at: string
           user_id: string
+          values_dietary: string[] | null
           weight: number | null
+          weight_kg: number | null
         }
         Insert: {
           activity_level?: string | null
+          age?: number | null
+          alcohol_intake?: number | null
           allergies?: string[] | null
+          assessment_completed_at?: string | null
+          caffeine_score?: number | null
+          chrononutrition_type?: string | null
+          confidence_in_cooking?: number | null
+          craving_details?: Json | null
+          craving_pattern?: number | null
           created_at?: string
           disliked_foods?: string[] | null
           dislikes?: string[] | null
+          eats_after_8pm?: boolean | null
+          fiber_score?: number | null
+          first_meal_hour?: number | null
           fitness_goal?: string | null
+          food_preference_type?: string | null
+          goal_primary?: string | null
+          gut_symptom_score?: number | null
+          gut_symptoms?: string[] | null
           has_ibs?: boolean | null
+          height_cm?: number | null
+          hydration_score?: number | null
           id?: string
+          inflammation_score?: number | null
+          inflammation_symptoms?: string[] | null
           is_low_fodmap?: boolean | null
+          last_meal_hour?: number | null
           liked_foods?: string[] | null
+          longevity_nutrition_score?: number | null
+          meal_timing_window?: number | null
+          menopause_stage?: string | null
+          metabolic_symptom_flags?: string[] | null
+          nutrition_identity_type?: string | null
+          plant_diversity_score?: number | null
+          protein_score?: number | null
+          protein_sources?: string[] | null
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null
@@ -2328,19 +2437,49 @@ export type Database = {
           selected_recipe_style?: string | null
           updated_at?: string
           user_id: string
+          values_dietary?: string[] | null
           weight?: number | null
+          weight_kg?: number | null
         }
         Update: {
           activity_level?: string | null
+          age?: number | null
+          alcohol_intake?: number | null
           allergies?: string[] | null
+          assessment_completed_at?: string | null
+          caffeine_score?: number | null
+          chrononutrition_type?: string | null
+          confidence_in_cooking?: number | null
+          craving_details?: Json | null
+          craving_pattern?: number | null
           created_at?: string
           disliked_foods?: string[] | null
           dislikes?: string[] | null
+          eats_after_8pm?: boolean | null
+          fiber_score?: number | null
+          first_meal_hour?: number | null
           fitness_goal?: string | null
+          food_preference_type?: string | null
+          goal_primary?: string | null
+          gut_symptom_score?: number | null
+          gut_symptoms?: string[] | null
           has_ibs?: boolean | null
+          height_cm?: number | null
+          hydration_score?: number | null
           id?: string
+          inflammation_score?: number | null
+          inflammation_symptoms?: string[] | null
           is_low_fodmap?: boolean | null
+          last_meal_hour?: number | null
           liked_foods?: string[] | null
+          longevity_nutrition_score?: number | null
+          meal_timing_window?: number | null
+          menopause_stage?: string | null
+          metabolic_symptom_flags?: string[] | null
+          nutrition_identity_type?: string | null
+          plant_diversity_score?: number | null
+          protein_score?: number | null
+          protein_sources?: string[] | null
           selected_breakfast_recipe?: string | null
           selected_dinner_recipe?: string | null
           selected_lunch_recipe?: string | null
@@ -2348,7 +2487,9 @@ export type Database = {
           selected_recipe_style?: string | null
           updated_at?: string
           user_id?: string
+          values_dietary?: string[] | null
           weight?: number | null
+          weight_kg?: number | null
         }
         Relationships: []
       }
