@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Lock, Utensils } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
+import { NutritionActionCard } from "@/components/today/NutritionActionCard";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,16 +26,40 @@ import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 
 export const UnifiedDailyChecklist = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { goals } = useGoals();
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
   const { currentScore: sustainedLIS } = useLISData();
   const { preferences: nutritionPrefs, isLoading: nutritionLoading } = useNutritionPreferences();
   const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
+  
+  // Fetch nutrition actions
+  const { data: nutritionActions = [] } = useQuery({
+    queryKey: ['nutrition-actions', user?.id, new Date().toISOString().split('T')[0]],
+    queryFn: () => getTodaysNutritionActions(user!.id),
+    enabled: !!user?.id,
+  });
+
+  // Mutation for completing nutrition actions
+  const completeActionMutation = useMutation({
+    mutationFn: ({ actionId, completed }: { actionId: string; completed: boolean }) => {
+      const today = new Date().toISOString().split('T')[0];
+      return completed 
+        ? uncompleteNutritionAction(user!.id, actionId, today)
+        : completeNutritionAction(user!.id, actionId, today);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['nutrition-actions'] });
+      toast.success("Nutrition action updated");
+    },
+  });
   
   const isUsingSampleData = !loading && userActions.length === 0;
   const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;

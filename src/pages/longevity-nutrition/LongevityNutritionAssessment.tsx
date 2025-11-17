@@ -72,6 +72,12 @@ export default function LongevityNutritionAssessment() {
       const isGuest = !user?.id || TEST_MODE_ENABLED;
       const sessionId = isGuest ? `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : null;
 
+      // Store session_id in localStorage for guest-to-user migration
+      if (isGuest && sessionId) {
+        localStorage.setItem('nutrition_guest_session', sessionId);
+      }
+
+      // 1. Save to longevity_nutrition_assessments (audit trail)
       const { data, error } = await supabase.from("longevity_nutrition_assessments").insert({
         user_id: isGuest ? null : user.id,
         session_id: sessionId,
@@ -81,6 +87,57 @@ export default function LongevityNutritionAssessment() {
       }).select().single();
 
       if (error) throw error;
+
+      // 2. OVERWRITE nutrition_preferences for authenticated users
+      if (user?.id && !isGuest) {
+        const { error: prefsError } = await supabase
+          .from("nutrition_preferences")
+          .upsert({
+            user_id: user.id,
+            age: assessmentData.age,
+            height_cm: assessmentData.height_cm,
+            weight_kg: assessmentData.weight_kg,
+            weight: assessmentData.weight_kg,
+            goal_primary: assessmentData.goal_primary,
+            activity_level: assessmentData.activity_level,
+            nutrition_identity_type: assessmentData.nutrition_identity_type,
+            protein_score: assessmentData.protein_score,
+            protein_sources: assessmentData.protein_sources,
+            plant_diversity_score: assessmentData.plant_diversity_score,
+            fiber_score: assessmentData.fiber_score,
+            gut_symptom_score: assessmentData.gut_symptom_score,
+            gut_symptoms: assessmentData.gut_symptoms,
+            inflammation_score: assessmentData.inflammation_score,
+            inflammation_symptoms: assessmentData.inflammation_symptoms,
+            first_meal_hour: assessmentData.first_meal_hour,
+            last_meal_hour: assessmentData.last_meal_hour,
+            eats_after_8pm: assessmentData.eats_after_8pm,
+            chrononutrition_type: assessmentData.chrononutrition_type,
+            meal_timing_window: assessmentData.meal_timing_window,
+            menopause_stage: assessmentData.menopause_stage,
+            craving_pattern: cravingAverage,
+            craving_details: assessmentData.craving_details,
+            hydration_score: assessmentData.hydration_score,
+            caffeine_score: assessmentData.caffeine_score,
+            alcohol_intake: assessmentData.alcohol_intake,
+            allergies: assessmentData.allergies,
+            values_dietary: assessmentData.values_dietary,
+            confidence_in_cooking: assessmentData.confidence_in_cooking,
+            food_preference_type: assessmentData.food_preference_type,
+            metabolic_symptom_flags: assessmentData.metabolic_symptom_flags,
+            longevity_nutrition_score: score,
+            assessment_completed_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (prefsError) throw prefsError;
+        
+        // 3. Generate daily nutrition actions
+        const { generateAndSaveNutritionActions } = await import('@/services/nutritionActionService');
+        await generateAndSaveNutritionActions(user.id, assessmentData, cravingAverage);
+      }
 
       navigate(`/longevity-nutrition/results?id=${data.id}`);
     } catch (error) {
