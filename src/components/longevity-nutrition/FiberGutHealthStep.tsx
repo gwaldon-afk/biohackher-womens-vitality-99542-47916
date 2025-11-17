@@ -56,7 +56,7 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium">How many different plant foods do you eat weekly?</p>
+          <p className="font-bold text-lg">How many different plant foods do you eat weekly?</p>
           <p className="text-sm text-muted-foreground">
             Count all: vegetables, fruits, legumes, nuts, seeds, herbs, whole grains
           </p>
@@ -84,7 +84,7 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium">What's your daily fiber intake?</p>
+          <p className="font-bold text-lg">What's your daily fiber intake?</p>
           {fiberIntake.map((option) => {
             const isSelected = data.fiber_score === option.value;
             return (
@@ -109,7 +109,7 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium">Do you experience any gut symptoms?</p>
+          <p className="font-bold text-lg">Do you experience any gut symptoms?</p>
           <p className="text-sm text-muted-foreground">Select all that apply</p>
           <div className="space-y-2">
             {gutSymptoms.map((symptom) => {

@@ -43,7 +43,7 @@ export function InflammationStep({ data, onChange }: InflammationStepProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="font-medium">Do you experience any of these symptoms regularly?</p>
+        <p className="font-bold text-lg">Do you experience any of these symptoms regularly?</p>
         <p className="text-sm text-muted-foreground">Select all that apply</p>
         
         <div className="space-y-2">

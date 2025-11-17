@@ -49,7 +49,7 @@ export function HydrationStimulantsStep({ data, onChange }: HydrationStimulantsS
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium flex items-center gap-2">
+          <p className="font-bold text-lg flex items-center gap-2">
             <Droplets className="h-4 w-4" />
             How many cups of water do you drink daily?
           </p>
@@ -77,7 +77,7 @@ export function HydrationStimulantsStep({ data, onChange }: HydrationStimulantsS
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium flex items-center gap-2">
+          <p className="font-bold text-lg flex items-center gap-2">
             <Coffee className="h-4 w-4" />
             How much caffeine do you consume daily?
           </p>
@@ -105,7 +105,7 @@ export function HydrationStimulantsStep({ data, onChange }: HydrationStimulantsS
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium flex items-center gap-2">
+          <p className="font-bold text-lg flex items-center gap-2">
             <Wine className="h-4 w-4" />
             How much alcohol do you drink weekly?
           </p>

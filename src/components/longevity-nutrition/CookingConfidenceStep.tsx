@@ -32,7 +32,7 @@ export function CookingConfidenceStep({ data, onChange }: CookingConfidenceStepP
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium">How confident are you in the kitchen?</p>
+          <p className="font-bold text-lg">How confident are you in the kitchen?</p>
           {confidenceLevels.map((level) => {
             const isSelected = data.confidence_in_cooking === level.value;
             return (
@@ -57,7 +57,7 @@ export function CookingConfidenceStep({ data, onChange }: CookingConfidenceStepP
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium">Do you prefer structure or flexibility in meal plans?</p>
+          <p className="font-bold text-lg">Do you prefer structure or flexibility in meal plans?</p>
           <div className="grid md:grid-cols-2 gap-4">
             <button
               onClick={() => onChange('food_preference_type', 'structure')}
