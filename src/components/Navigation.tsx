@@ -34,6 +34,7 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
+    { href: "/longevity-nutrition", label: "Longevity Nutrition" },
     { href: "/nutrition", label: "My Nutrition" },
     { href: "/profile", label: "My Profile" },
     { href: "/experts", label: "Find Experts" },
