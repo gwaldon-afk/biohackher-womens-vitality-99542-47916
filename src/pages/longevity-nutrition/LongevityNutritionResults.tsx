@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -192,17 +192,21 @@ export default function LongevityNutritionResults() {
 
   if (!assessment) return null;
 
-  // Generate protocol recommendations
-  const nutritionProtocol = generateNutritionProtocol({
-    protein_score: assessment.protein_score,
-    fiber_score: assessment.fiber_score,
-    plant_diversity_score: assessment.plant_diversity_score,
-    gut_symptom_score: assessment.gut_symptom_score,
-    inflammation_score: assessment.inflammation_score,
-    hydration_score: assessment.hydration_score,
-    craving_pattern: assessment.craving_pattern,
-    eating_personality: assessment.eating_personality,
-  });
+  // Generate protocol recommendations (memoized to prevent infinite re-renders)
+  const nutritionProtocol = useMemo(() => {
+    if (!assessment) return { immediate: [], foundation: [], optimization: [] };
+    
+    return generateNutritionProtocol({
+      protein_score: assessment.protein_score,
+      fiber_score: assessment.fiber_score,
+      plant_diversity_score: assessment.plant_diversity_score,
+      gut_symptom_score: assessment.gut_symptom_score,
+      inflammation_score: assessment.inflammation_score,
+      hydration_score: assessment.hydration_score,
+      craving_pattern: assessment.craving_pattern,
+      eating_personality: assessment.eating_personality,
+    });
+  }, [assessment]);
 
   // Match protocol items to products
   useEffect(() => {
@@ -227,7 +231,7 @@ export default function LongevityNutritionResults() {
     });
 
     setProductMatches(matches);
-  }, [products, assessment]);
+  }, [products, nutritionProtocol]);
 
   // Handler for adding to cart
   const handleAddToCart = (product: Product) => {
