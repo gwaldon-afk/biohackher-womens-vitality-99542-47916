@@ -2010,6 +2010,126 @@ export type Database = {
         }
         Relationships: []
       }
+      longevity_nutrition_assessments: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          alcohol_intake: number | null
+          allergies: string[] | null
+          caffeine_score: number | null
+          chrononutrition_type: string | null
+          completed_at: string | null
+          confidence_in_cooking: number | null
+          craving_details: Json | null
+          craving_pattern: number | null
+          created_at: string | null
+          eats_after_8pm: boolean | null
+          fiber_score: number | null
+          first_meal_hour: number | null
+          food_preference_type: string | null
+          goal_primary: string | null
+          gut_symptom_score: number | null
+          gut_symptoms: string[] | null
+          height_cm: number | null
+          hydration_score: number | null
+          id: string
+          inflammation_score: number | null
+          inflammation_symptoms: string[] | null
+          last_meal_hour: number | null
+          longevity_nutrition_score: number | null
+          meal_timing_window: number | null
+          menopause_stage: string | null
+          metabolic_symptom_flags: string[] | null
+          nutrition_identity_type: string | null
+          plant_diversity_score: number | null
+          protein_score: number | null
+          protein_sources: string[] | null
+          session_id: string | null
+          updated_at: string | null
+          user_id: string | null
+          values_dietary: string[] | null
+          weight_kg: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          alcohol_intake?: number | null
+          allergies?: string[] | null
+          caffeine_score?: number | null
+          chrononutrition_type?: string | null
+          completed_at?: string | null
+          confidence_in_cooking?: number | null
+          craving_details?: Json | null
+          craving_pattern?: number | null
+          created_at?: string | null
+          eats_after_8pm?: boolean | null
+          fiber_score?: number | null
+          first_meal_hour?: number | null
+          food_preference_type?: string | null
+          goal_primary?: string | null
+          gut_symptom_score?: number | null
+          gut_symptoms?: string[] | null
+          height_cm?: number | null
+          hydration_score?: number | null
+          id?: string
+          inflammation_score?: number | null
+          inflammation_symptoms?: string[] | null
+          last_meal_hour?: number | null
+          longevity_nutrition_score?: number | null
+          meal_timing_window?: number | null
+          menopause_stage?: string | null
+          metabolic_symptom_flags?: string[] | null
+          nutrition_identity_type?: string | null
+          plant_diversity_score?: number | null
+          protein_score?: number | null
+          protein_sources?: string[] | null
+          session_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          values_dietary?: string[] | null
+          weight_kg?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          alcohol_intake?: number | null
+          allergies?: string[] | null
+          caffeine_score?: number | null
+          chrononutrition_type?: string | null
+          completed_at?: string | null
+          confidence_in_cooking?: number | null
+          craving_details?: Json | null
+          craving_pattern?: number | null
+          created_at?: string | null
+          eats_after_8pm?: boolean | null
+          fiber_score?: number | null
+          first_meal_hour?: number | null
+          food_preference_type?: string | null
+          goal_primary?: string | null
+          gut_symptom_score?: number | null
+          gut_symptoms?: string[] | null
+          height_cm?: number | null
+          hydration_score?: number | null
+          id?: string
+          inflammation_score?: number | null
+          inflammation_symptoms?: string[] | null
+          last_meal_hour?: number | null
+          longevity_nutrition_score?: number | null
+          meal_timing_window?: number | null
+          menopause_stage?: string | null
+          metabolic_symptom_flags?: string[] | null
+          nutrition_identity_type?: string | null
+          plant_diversity_score?: number | null
+          protein_score?: number | null
+          protein_sources?: string[] | null
+          session_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          values_dietary?: string[] | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       meal_completions: {
         Row: {
           calories: number | null
