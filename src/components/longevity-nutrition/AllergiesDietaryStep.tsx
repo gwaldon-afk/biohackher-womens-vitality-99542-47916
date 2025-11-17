@@ -57,7 +57,7 @@ export function AllergiesDietaryStep({ data, onChange }: AllergiesDietaryStepPro
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium">Do you have any food allergies or intolerances?</p>
+          <p className="font-bold text-lg">Do you have any food allergies or intolerances?</p>
           <p className="text-sm text-muted-foreground">Select all that apply</p>
           <div className="grid md:grid-cols-2 gap-2">
             {commonAllergies.map((allergy) => {
@@ -85,7 +85,7 @@ export function AllergiesDietaryStep({ data, onChange }: AllergiesDietaryStepPro
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium flex items-center gap-2">
+          <p className="font-bold text-lg flex items-center gap-2">
             <Leaf className="h-4 w-4" />
             Do you follow any dietary frameworks?
           </p>

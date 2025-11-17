@@ -74,7 +74,7 @@ export function CravingsStep({ data, onChange }: CravingsStepProps) {
       <CardContent className="space-y-6">
         {cravingQuestions.map((item) => (
           <div key={item.key} className="space-y-3">
-            <p className="font-medium">{item.question}</p>
+            <p className="font-bold text-lg">{item.question}</p>
             <div className="space-y-2">
               <Slider
                 value={[cravingDetails[item.key as keyof typeof cravingDetails]]}

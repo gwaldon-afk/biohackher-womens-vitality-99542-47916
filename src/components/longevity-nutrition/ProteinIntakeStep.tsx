@@ -47,7 +47,7 @@ export function ProteinIntakeStep({ data, onChange }: ProteinIntakeStepProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium">How many palm-sized protein servings do you eat daily?</p>
+          <p className="font-bold text-lg">How many palm-sized protein servings do you eat daily?</p>
           <p className="text-sm text-muted-foreground">
             (1 serving = palm-sized portion: 100g meat, 2 eggs, 200g Greek yogurt, or 1.5 cups legumes)
           </p>
@@ -75,7 +75,7 @@ export function ProteinIntakeStep({ data, onChange }: ProteinIntakeStepProps) {
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium">What are your primary protein sources?</p>
+          <p className="font-bold text-lg">What are your primary protein sources?</p>
           <div className="space-y-2">
             {proteinSources.map((source) => {
               const isSelected = (data.protein_sources || []).includes(source.value);

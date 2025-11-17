@@ -50,7 +50,7 @@ export function MenopauseStageStep({ data, onChange }: MenopauseStageStepProps) 
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="font-medium">Where are you in your hormone journey?</p>
+        <p className="font-bold text-lg">Where are you in your hormone journey?</p>
         {menopauseStages.map((stage) => {
           const isSelected = data.menopause_stage === stage.value;
           return (

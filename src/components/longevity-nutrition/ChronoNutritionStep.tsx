@@ -50,7 +50,7 @@ export function ChronoNutritionStep({ data, onChange }: ChronoNutritionStepProps
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-medium">When do you typically eat your first meal?</p>
+          <p className="font-bold text-lg">When do you typically eat your first meal?</p>
           {firstMealOptions.map((option) => {
             const isSelected = data.first_meal_hour === option.value;
             return (
@@ -75,7 +75,7 @@ export function ChronoNutritionStep({ data, onChange }: ChronoNutritionStepProps
         </div>
 
         <div className="space-y-3">
-          <p className="font-medium">When do you typically eat your last meal?</p>
+          <p className="font-bold text-lg">When do you typically eat your last meal?</p>
           {lastMealOptions.map((option) => {
             const isSelected = data.last_meal_hour === option.value;
             return (
