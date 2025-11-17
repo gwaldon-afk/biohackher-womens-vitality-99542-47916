@@ -52,15 +52,18 @@ export default function LongevityNutritionAssessment() {
 
   const handleSubmit = async () => {
     try {
+      // Calculate average craving pattern
+      const cravingAverage = assessmentData.craving_details
+        ? (Object.values(assessmentData.craving_details).reduce((sum: number, val: any) => sum + val, 0) as number) / 4
+        : 3;
+
       const score = calculateLongevityNutritionScore({
         protein_score: assessmentData.protein_score || 0,
         fiber_score: assessmentData.fiber_score || 1,
         plant_diversity_score: assessmentData.plant_diversity_score || 1,
         gut_symptom_score: assessmentData.gut_symptom_score || 0,
         inflammation_score: assessmentData.inflammation_score || 0,
-        craving_pattern: assessmentData.craving_details
-          ? Object.values(assessmentData.craving_details).reduce((sum: number, val: any) => sum + val, 0) / 4
-          : 3,
+        craving_pattern: cravingAverage,
         hydration_score: assessmentData.hydration_score || 3,
       });
 
