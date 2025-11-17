@@ -28,6 +28,7 @@ import Sleep from "./pages/Sleep";
 import Nutrition from "./pages/Nutrition";
 import LongevityNutritionAssessment from "./pages/longevity-nutrition/LongevityNutritionAssessment";
 import LongevityNutritionResults from "./pages/longevity-nutrition/LongevityNutritionResults";
+import MasterDashboard from "./pages/MasterDashboard";
 import Coaching from "./pages/Coaching";
 import Reports from "./pages/Reports";
 import Upgrade from "./pages/Upgrade";
@@ -172,6 +173,7 @@ const App = () => (
             <Route path="/lis2-research" element={<LIS2Research />} />
             <Route path="/my-protocol" element={<ProtectedRoute><MyProtocol /></ProtectedRoute>} />
             <Route path="/protocol-library" element={<ProtectedRoute><ProtocolLibrary /></ProtectedRoute>} />
+            <Route path="/master-dashboard" element={<ProtectedRoute><MasterDashboard /></ProtectedRoute>} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
             <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
