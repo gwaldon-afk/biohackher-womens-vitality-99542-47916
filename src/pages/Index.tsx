@@ -1,447 +1,122 @@
-import heroImage from "@/assets/hero-biohackher.jpg";
-import beautyPillar from "@/assets/beauty-pillar.png";
-import brainPillar from "@/assets/brain-pillar.png";
-import bodyPillar from "@/assets/body-pillar.png";
-import balancePillar from "@/assets/balance-pillar.png";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Brain, Sparkles, Zap, Target, TrendingUp, Package, MessageSquare, BookOpen, FileText, Heart, Moon, Scale } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Navigation from "@/components/Navigation";
-import CTAButton from "@/components/CTAButton";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Activity, Package, Heart } from "lucide-react";
+import biohackherLogo from "@/assets/logos/biohackher-logo-web.png";
+import heroImage from "@/assets/hero-biohackher.jpg";
+import Navigation from "@/components/Navigation";
+import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
+import StatisticsBar from "@/components/StatisticsBar";
+import TestimonialCarousel from "@/components/TestimonialCarousel";
+import TrustIndicators from "@/components/TrustIndicators";
 
 const Index = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useAuth();
 
+  // Redirect authenticated users to /today
+  useEffect(() => {
+    if (user) {
+      navigate("/today");
+    }
+  }, [user, navigate]);
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      {/* Hero Section - Complete Health Hub */}
-      <section className="relative overflow-hidden">
-        <div className="hero-gradient">
-          <div className="container mx-auto px-4 py-20 lg:py-32">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="text-center lg:text-left space-y-8">
-          <div>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-white leading-tight uppercase tracking-wider">
-              Live Well Longer
-            </h1>
-            <p className="text-xl lg:text-2xl text-white/80 leading-relaxed mb-2">
-              Get your personalized longevity assessment in 5 minutes. Discover your biological age, identify health risks, and receive a science-backed protocol to optimize your healthspan.
-            </p>
-            <p className="text-lg text-white/70 leading-relaxed">
-              Understand how fast you're aging—and exactly what to do about it.
-            </p>
-          </div>
-
-          {/* Primary CTA */}
-          <div className="space-y-4">
-            <Button 
-              size="lg"
-              className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 px-8 py-6 h-auto shadow-xl text-lg"
-              onClick={() => navigate("/guest-lis-assessment")}
-            >
-              <Target className="h-6 w-6 mr-2" />
-              Get Your Free Longevity Score
-            </Button>
-            
-            <div className="flex items-center justify-center lg:justify-start gap-2 text-white/90 text-sm">
-              <Sparkles className="h-4 w-4" />
-              <span>5-minute assessment • No signup required • Instant results</span>
-            </div>
-          </div>
-              </div>
-              
-              <div className="relative">
-                <img 
-                  src={heroImage} 
-                  alt="Women's health and longevity optimization" 
-                  className="rounded-lg shadow-2xl w-full max-w-md mx-auto"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* You're Not Alone - Women's Top Health Concerns */}
-      <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                You're Not Alone — We Cover What Matters Most
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                These are the top health concerns women face. Our comprehensive assessment addresses all of them.
+      {/* Hero Section - Triple Assessment Cards */}
+      <section className="relative overflow-hidden py-12 md:py-24">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="space-y-12">
+            {/* Hero Header */}
+            <div className="text-center space-y-4">
+              <img 
+                src={biohackherLogo} 
+                alt="Biohackher Logo" 
+                className="h-32 w-auto object-contain mx-auto"
+              />
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
+                LIVE WELL LONGER
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+                Empowering women to beat ageing through biohacking
               </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {/* Hormone Balance */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Heart className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Hormone Balance & Menopause</h3>
-                <p className="text-sm text-muted-foreground">
-                  Navigate perimenopause symptoms, hot flashes, and hormonal shifts with confidence
-                </p>
-              </div>
-
-              {/* Energy & Fatigue */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Zap className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Energy & Fatigue</h3>
-                <p className="text-sm text-muted-foreground">
-                  Combat exhaustion, brain fog, and afternoon crashes that disrupt your day
-                </p>
-              </div>
-
-              {/* Weight & Metabolism */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Scale className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Weight & Metabolism</h3>
-                <p className="text-sm text-muted-foreground">
-                  Understand metabolic changes, stubborn weight, and how to optimize body composition
-                </p>
-              </div>
-
-              {/* Sleep Quality */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Moon className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Sleep Quality</h3>
-                <p className="text-sm text-muted-foreground">
-                  Address insomnia, night waking, and poor sleep that leaves you feeling drained
-                </p>
-              </div>
-
-              {/* Brain Fog & Mental Clarity */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Brain className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Brain Fog & Mental Clarity</h3>
-                <p className="text-sm text-muted-foreground">
-                  Sharpen focus, improve memory, and clear mental cloudiness affecting your performance
-                </p>
-              </div>
-
-              {/* Stress & Emotional Balance */}
-              <div className="p-6 bg-background rounded-lg border border-primary/20 relative overflow-hidden">
-                <div className="absolute top-4 right-4">
-                  <div className="flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Covered</span>
-                  </div>
-                </div>
-                <Activity className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-lg font-bold mb-2">Stress & Emotional Balance</h3>
-                <p className="text-sm text-muted-foreground">
-                  Manage overwhelm, mood swings, and find calm amidst life's demands
-                </p>
-              </div>
-            </div>
-
-            {/* Trust Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-primary" />
-                <span>All 6 areas assessed in 5 minutes</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4 text-primary" />
-                <span>Evidence-based insights</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>Science-backed for women</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* Featured Tools Section - Nutrition Guide & Hormone Compass */}
-      <section className="py-16 lg:py-20 bg-gradient-to-b from-muted/30 to-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Powerful Tools for Your Journey</h2>
-              <p className="text-muted-foreground">Deep dive into specialized areas of your health</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
-              {/* Nutrition Guide */}
-              <Card className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
-                <CardHeader className="bg-gradient-to-br from-primary/10 to-primary/5">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-3 bg-primary/20 rounded-lg">
-                      <Package className="h-8 w-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl">Nutrition Guide</CardTitle>
-                  </div>
-                  <CardDescription className="text-base">
-                    Personalized meal plans and supplement recommendations based on longevity science
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Science-backed meal templates</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Longevity-optimized food database</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Personalized supplement protocols</span>
-                    </li>
-                  </ul>
-                  <Button 
-                    className="w-full"
-                    onClick={() => navigate("/nutrition")}
-                  >
-                    Explore Nutrition Guide
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Hormone Compass */}
-              <Card className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-all hover:shadow-xl">
-                <CardHeader className="bg-gradient-to-br from-primary/10 to-primary/5">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-3 bg-primary/20 rounded-lg">
-                      <Heart className="h-8 w-8 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl">Hormone Compass</CardTitle>
-                  </div>
-                  <CardDescription className="text-base">
-                    Navigate your hormonal health journey with personalized insights and guidance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Comprehensive hormone assessment</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Perimenopause & menopause support</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Sparkles className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>Personalized protocol recommendations</span>
-                    </li>
-                  </ul>
-                  <Button 
-                    className="w-full"
-                    onClick={() => navigate("/hormone-compass/assessment")}
-                  >
-                    Start Hormone Assessment
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Your Free Assessment Includes */}
-      <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-primary/5">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Your Free Assessment Includes</h2>
-              <p className="text-muted-foreground">See exactly where you stand—no signup required</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-12">
-              <div className="p-6 bg-background rounded-lg border border-primary/10">
-                <Target className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-xl font-bold mb-2">Your Longevity Impact Score (0-100)</h3>
-                <p className="text-sm text-muted-foreground">Know exactly where you stand—and how much room you have to improve your healthspan and lifespan</p>
-              </div>
-              <div className="p-6 bg-background rounded-lg border border-primary/10">
-                <Activity className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-xl font-bold mb-2">Scores Across 6 Health Pillars</h3>
-                <p className="text-sm text-muted-foreground">See your Sleep, Stress, Activity, Nutrition, Social, and Cognitive ratings so you know which areas need the most attention</p>
-              </div>
-              <div className="p-6 bg-background rounded-lg border border-primary/10">
-                <Brain className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-xl font-bold mb-2">Your Top Risk Categories</h3>
-                <p className="text-sm text-muted-foreground">Identify hidden health vulnerabilities before they become problems—early detection saves years</p>
-              </div>
-              <div className="p-6 bg-background rounded-lg border border-primary/10">
-                <TrendingUp className="h-8 w-8 text-primary mb-3" />
-                <h3 className="text-xl font-bold mb-2">Longevity Projections</h3>
-                <p className="text-sm text-muted-foreground">Understand your biological age vs. chronological age, and see how lifestyle changes could add years to your life</p>
-              </div>
-            </div>
-
-            {/* Benefits of Creating Account */}
-            <div className="max-w-2xl mx-auto">
-              <div className="text-center mb-6">
-                <p className="text-lg text-muted-foreground">
-                  Create a free account after your assessment to unlock:
-                </p>
-              </div>
-              
-              <div className="grid gap-4">
-                {[
-                  "Save & Track Your Progress",
-                  "Personalized 7-Day Protocol",
-                  "Science-Backed Supplement Recommendations",
-                  "AI Health Assistant (5 free questions/day)",
-                  "Monthly Reassessments"
-                ].map((benefit, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-lg">{benefit}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Your Personalized Longevity Journey */}
-      <section className="py-16 bg-muted/20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Your Personalized Longevity Journey
+              <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
+                Choose Your Starting Point
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Here's what happens after your free assessment
-              </p>
             </div>
 
-            <div className="space-y-6">
-              {/* Step 1 */}
-              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  1
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Get Your Longevity Score</h3>
-                  <p className="text-muted-foreground">
-                    See your score across Sleep, Stress, Activity, Nutrition, Social, and Cognitive health. Understand your biological age and risk factors.
-                  </p>
-                </div>
-              </div>
+            {/* Hero Image */}
+            <div className="max-w-4xl mx-auto">
+              <img 
+                src={heroImage} 
+                alt="Woman embodying vitality and longevity"
+                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+              />
+            </div>
 
-              {/* Step 2 */}
-              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  2
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Receive Your Custom Protocol</h3>
-                  <p className="text-muted-foreground">
-                    Create a free account to unlock your personalized 7-day plan with supplement recommendations and lifestyle optimizations.
-                  </p>
-                </div>
-              </div>
+            {/* Triple Assessment Cards */}
+            <div className="grid md:grid-cols-3 gap-6">
+              <AssessmentHeroCard
+                icon={Activity}
+                headline="Discover Your Longevity Impact Score"
+                painPoint="How fast are you aging?"
+                benefits={[
+                  "Get your biological age in 5 minutes",
+                  "Identify your weakest health pillar",
+                  "Receive personalized protocol"
+                ]}
+                duration="Free • 5 min • No signup"
+                ctaText="Get My Longevity Score"
+                ctaRoute="/guest-lis-assessment"
+                socialProof="50,000+ women completed"
+              />
 
-              {/* Step 3 */}
-              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  3
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Track Your Progress</h3>
-                  <p className="text-muted-foreground">
-                    Monitor daily scores, log symptoms, and see how your interventions impact your longevity metrics over time.
-                  </p>
-                </div>
-              </div>
+              <AssessmentHeroCard
+                icon={Package}
+                headline="Get Your Nutrition Longevity Score"
+                painPoint="Is your diet aging you faster?"
+                benefits={[
+                  "Score your nutrition on 15 longevity factors",
+                  "Identify missing nutrients hurting healthspan",
+                  "Get supplement + meal recommendations"
+                ]}
+                duration="Free • 8 min • No signup"
+                ctaText="Score My Nutrition"
+                ctaRoute="/longevity-nutrition"
+                socialProof="Avg score: 62/100"
+              />
 
-              {/* Step 4 */}
-              <div className="flex gap-6 items-start p-6 bg-background rounded-lg border">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  4
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Optimize with AI Guidance</h3>
-                  <p className="text-muted-foreground">
-                    Ask questions, refine protocols, and get research-backed answers from our AI health assistant.
-                  </p>
-                </div>
-              </div>
+              <AssessmentHeroCard
+                icon={Heart}
+                headline="Navigate Your Hormone Health"
+                painPoint="Struggling with hormonal symptoms?"
+                benefits={[
+                  "Assess hormone health across 6 domains",
+                  "Understand your hormone life stage",
+                  "Get targeted symptom relief protocols"
+                ]}
+                duration="Free • 6 min • No signup"
+                ctaText="Check My Hormones"
+                ctaRoute="/menomap/assessment"
+                socialProof="Works for ages 25-80"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold">
-              Ready to Optimize Your Healthspan?
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Your personalized longevity roadmap is 5 minutes away
-            </p>
-            
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-6 h-auto shadow-lg"
-              onClick={() => navigate("/guest-lis-assessment")}
-            >
-              <Target className="h-5 w-5 mr-2" />
-              Start Free Assessment
-            </Button>
-
-            <div className="flex items-center justify-center gap-6 pt-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span>No signup required</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-primary" />
-                <span>Results in 5 minutes</span>
-              </div>
-            </div>
-          </div>
+      {/* Social Proof Section */}
+      <StatisticsBar />
+      
+      <section className="py-12 bg-gradient-to-b from-muted/20 to-background">
+        <div className="max-w-6xl mx-auto px-4 space-y-12">
+          <h2 className="text-3xl font-bold text-center">What Women Are Saying</h2>
+          <TestimonialCarousel />
+          <TrustIndicators />
         </div>
       </section>
     </div>

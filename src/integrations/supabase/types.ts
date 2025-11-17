@@ -196,6 +196,48 @@ export type Database = {
           },
         ]
       }
+      assessment_progress: {
+        Row: {
+          created_at: string | null
+          hormone_completed: boolean | null
+          hormone_completed_at: string | null
+          id: string
+          lis_completed: boolean | null
+          lis_completed_at: string | null
+          master_dashboard_unlocked: boolean | null
+          nutrition_completed: boolean | null
+          nutrition_completed_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          hormone_completed?: boolean | null
+          hormone_completed_at?: string | null
+          id?: string
+          lis_completed?: boolean | null
+          lis_completed_at?: string | null
+          master_dashboard_unlocked?: boolean | null
+          nutrition_completed?: boolean | null
+          nutrition_completed_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          hormone_completed?: boolean | null
+          hormone_completed_at?: string | null
+          id?: string
+          lis_completed?: boolean | null
+          lis_completed_at?: string | null
+          master_dashboard_unlocked?: boolean | null
+          nutrition_completed?: boolean | null
+          nutrition_completed_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       assessment_question_options: {
         Row: {
           created_at: string | null
