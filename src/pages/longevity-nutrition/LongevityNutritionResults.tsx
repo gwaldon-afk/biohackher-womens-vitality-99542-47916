@@ -182,16 +182,6 @@ export default function LongevityNutritionResults() {
     fetchExistingProtocols();
   }, [user]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!assessment) return null;
-
   // Generate protocol recommendations (memoized to prevent infinite re-renders)
   const nutritionProtocol = useMemo(() => {
     if (!assessment) return { immediate: [], foundation: [], optimization: [] };
@@ -210,7 +200,7 @@ export default function LongevityNutritionResults() {
 
   // Match protocol items to products
   useEffect(() => {
-    if (products.length === 0) return;
+    if (products.length === 0 || !assessment) return;
 
     const matches: Record<string, Product | null> = {};
     const allItems = [
@@ -231,7 +221,17 @@ export default function LongevityNutritionResults() {
     });
 
     setProductMatches(matches);
-  }, [products, nutritionProtocol]);
+  }, [products, nutritionProtocol, assessment]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!assessment) return null;
 
   // Handler for adding to cart
   const handleAddToCart = (product: Product) => {
