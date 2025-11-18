@@ -132,11 +132,14 @@ export const SmartAssessmentTriage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadRecommendations = async () => {
-      if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
-    try {
-      setLoading(true);
+    const loadRecommendations = async () => {
+      try {
+        setLoading(true);
 
       // Fetch latest LIS assessment
       const { data: lisData } = await supabase
@@ -274,16 +277,14 @@ export const SmartAssessmentTriage = () => {
       }
 
       setRecommended(recommendations.slice(0, 4)); // Limit to 4
-    } catch (error) {
-      console.error("Error loading recommendations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (error) {
+        console.error("Error loading recommendations:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (user) {
-      loadRecommendations();
-    }
+    loadRecommendations();
   }, [user]);
 
   const getPillarColor = (pillar: string) => {
