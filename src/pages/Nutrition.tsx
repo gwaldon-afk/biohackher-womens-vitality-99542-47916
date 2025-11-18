@@ -75,7 +75,7 @@ const Nutrition = () => {
                 <h1 className="text-3xl font-bold gradient-text">{t('nutrition.title')}</h1>
                 <ScienceBackedIcon className="h-6 w-6" />
               </div>
-              <p className="text-muted-foreground">Your personalized nutrition hub</p>
+              <p className="text-muted-foreground">Discover your personalized nutrition blueprint for longevity, gut health, and hormone balance</p>
             </div>
             <Button onClick={() => navigate('/longevity-nutrition')} size="lg">
               Take Longevity Nutrition Assessment
