@@ -68,23 +68,6 @@ export const AssessmentHistoryTab = () => {
     symptom: true,
   });
 
-  const handleExportHistory = () => {
-    try {
-      exportAssessmentHistoryCSV(filteredAndSortedAssessments);
-      toast({
-        title: "Export successful",
-        description: `Exported ${filteredAndSortedAssessments.length} assessments to CSV`,
-      });
-    } catch (error) {
-      console.error("Export error:", error);
-      toast({
-        title: "Export failed",
-        description: "Could not export assessment history",
-        variant: "destructive",
-      });
-    }
-  };
-
   useEffect(() => {
     const fetchAssessments = async () => {
       if (!user) return;
@@ -264,6 +247,24 @@ export const AssessmentHistoryTab = () => {
 
     return filtered;
   }, [assessments, typeFilters, searchQuery, sortBy, sortOrder]);
+
+  // Export handler - defined after filteredAndSortedAssessments is available
+  const handleExportHistory = () => {
+    try {
+      exportAssessmentHistoryCSV(filteredAndSortedAssessments);
+      toast({
+        title: "Export successful",
+        description: `Exported ${filteredAndSortedAssessments.length} assessments to CSV`,
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export failed",
+        description: "Could not export assessment history",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Group assessments by type to show comparison button when multiple exist
   const lisCount = assessments.filter((a) => a.type === "lis").length;
