@@ -209,37 +209,40 @@ export const SmartAssessmentTriage = () => {
       // Analyze Hormone Compass scores
       if (hormoneData?.hormone_indicators) {
         const indicators = hormoneData.hormone_indicators as Record<string, any>;
-        const scores = indicators.domain_scores as Record<string, number> | undefined;
+        const scores = indicators?.domain_scores as Record<string, number> | undefined;
         
-        if ((scores.mood || 0) < 3) {
-          recommendations.push({
-            id: "mood-tracking",
-            name: "Mood Tracking Assessment",
-            description: "Your hormone compass mood score suggests emotional support needed",
-            pillar: "balance",
-            reason: "Hormone Compass mood score low",
-            icon: Smile
-          });
-        }
-        if ((scores.energy || 0) < 3) {
-          recommendations.push({
-            id: "energy-levels",
-            name: "Energy Levels Assessment",
-            description: "Your hormone compass energy score indicates fatigue patterns",
-            pillar: "body",
-            reason: "Hormone Compass energy score low",
-            icon: Zap
-          });
-        }
-        if ((scores.cognitive || 0) < 3) {
-          recommendations.push({
-            id: "brain-fog",
-            name: "Brain Fog Assessment",
-            description: "Your cognitive symptoms warrant deeper investigation",
-            pillar: "brain",
-            reason: "Hormone Compass cognitive score low",
-            icon: Focus
-          });
+        // Only proceed if scores exists
+        if (scores) {
+          if ((scores.mood || 0) < 3) {
+            recommendations.push({
+              id: "mood-tracking",
+              name: "Mood Tracking Assessment",
+              description: "Your hormone compass mood score suggests emotional support needed",
+              pillar: "balance",
+              reason: "Hormone Compass mood score low",
+              icon: Smile
+            });
+          }
+          if ((scores.energy || 0) < 3) {
+            recommendations.push({
+              id: "energy-levels",
+              name: "Energy Levels Assessment",
+              description: "Your hormone compass energy score indicates fatigue patterns",
+              pillar: "body",
+              reason: "Hormone Compass energy score low",
+              icon: Zap
+            });
+          }
+          if ((scores.cognitive || 0) < 3) {
+            recommendations.push({
+              id: "brain-fog",
+              name: "Brain Fog Assessment",
+              description: "Your cognitive symptoms warrant deeper investigation",
+              pillar: "brain",
+              reason: "Hormone Compass cognitive score low",
+              icon: Focus
+            });
+          }
         }
       }
 
