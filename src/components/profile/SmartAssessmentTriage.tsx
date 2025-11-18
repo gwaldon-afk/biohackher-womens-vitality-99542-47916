@@ -132,123 +132,155 @@ export const SmartAssessmentTriage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
     const loadRecommendations = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
 
-      // Fetch latest LIS assessment
-      const { data: lisData } = await supabase
-        .from("daily_scores")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("is_baseline", true)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+        // Fetch latest LIS assessment
+        const { data: lisData } = await supabase
+          .from("daily_scores")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("is_baseline", true)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
 
-      // Fetch latest Hormone Compass
-      const { data: hormoneData } = await supabase
-        .from("hormone_compass_stages")
-        .select("hormone_indicators")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+        // Fetch latest Hormone Compass
+        const { data: hormoneData } = await supabase
+          .from("hormone_compass_stages")
+          .select("hormone_indicators")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
 
-      const recommendations: RecommendedAssessment[] = [];
+        const recommendations: RecommendedAssessment[] = [];
 
-      // Analyze LIS scores
-      if (lisData) {
-        if ((lisData.sleep_score || 0) < 70) {
-          recommendations.push({
-            id: "sleep",
-            name: "Sleep Quality Assessment",
-            description: "Your LIS sleep score suggests room for improvement",
-            pillar: "body",
-            reason: "LIS sleep score below optimal",
-            icon: Moon
-          });
-        }
-        if ((lisData.cognitive_engagement_score || 0) < 70) {
-          recommendations.push({
-            id: "cognitive-function",
-            name: "Cognitive Function Assessment",
-            description: "Your cognitive engagement could benefit from deeper analysis",
-            pillar: "brain",
-            reason: "LIS cognitive score below optimal",
-            icon: Brain
-          });
-        }
-        if ((lisData.stress_score || 0) < 70) {
-          recommendations.push({
-            id: "stress-assessment",
-            name: "Stress Assessment",
-            description: "Your stress levels indicate a need for stress management support",
-            pillar: "balance",
-            reason: "LIS stress score below optimal",
-            icon: Heart
-          });
-        }
-        if ((lisData.physical_activity_score || 0) < 70) {
-          recommendations.push({
-            id: "physical-performance",
-            name: "Physical Performance Assessment",
-            description: "Your activity levels suggest potential for optimization",
-            pillar: "body",
-            reason: "LIS activity score below optimal",
-            icon: Dumbbell
-          });
-        }
-      }
-
-      // Analyze Hormone Compass scores
-      if (hormoneData?.hormone_indicators) {
-        const indicators = hormoneData.hormone_indicators as Record<string, any>;
-        const scores = indicators?.domain_scores as Record<string, number> | undefined;
-        
-        // Only proceed if scores exists
-        if (scores) {
-          if ((scores.mood || 0) < 3) {
+        // Analyze LIS scores
+        if (lisData) {
+          if ((lisData.sleep_score || 0) < 70) {
             recommendations.push({
-              id: "mood-tracking",
-              name: "Mood Tracking Assessment",
-              description: "Your hormone compass mood score suggests emotional support needed",
-              pillar: "balance",
-              reason: "Hormone Compass mood score low",
-              icon: Smile
+              id: "sleep",
+              name: "Sleep Quality Assessment",
+              description: "Your LIS sleep score suggests room for improvement",
+              pillar: "body",
+              reason: "LIS sleep score below optimal",
+              icon: Moon
             });
           }
-          if ((scores.energy || 0) < 3) {
+          if ((lisData.cognitive_engagement_score || 0) < 70) {
             recommendations.push({
+              id: "cognitive-function",
+              name: "Cognitive Function Assessment",
+              description: "Your cognitive engagement could benefit from deeper analysis",
+              pillar: "brain",
+              reason: "LIS cognitive score below optimal",
+              icon: Brain
+            });
+          }
+          if ((lisData.stress_score || 0) < 70) {
+            recommendations.push({
+              id: "stress-assessment",
+              name: "Stress Assessment",
+              description: "Your stress levels indicate a need for stress management support",
+              pillar: "balance",
+              reason: "LIS stress score below optimal",
+              icon: Heart
+            });
+          }
+          if ((lisData.physical_activity_score || 0) < 70) {
+            recommendations.push({
+              id: "physical-performance",
+              name: "Physical Performance Assessment",
+              description: "Your activity levels suggest potential for optimization",
+              pillar: "body",
+              reason: "LIS activity score below optimal",
+              icon: Dumbbell
+            });
+          }
+        }
+
+        // Analyze Hormone Compass scores
+        if (hormoneData?.hormone_indicators) {
+          const indicators = hormoneData.hormone_indicators as Record<string, any>;
+          const scores = indicators?.domain_scores as Record<string, number> | undefined;
+          
+          // Only proceed if scores exists
+          if (scores) {
+            if ((scores.mood || 0) < 3) {
+              recommendations.push({
+                id: "mood-tracking",
+                name: "Mood Tracking Assessment",
+                description: "Your hormone compass mood score suggests emotional support needed",
+                pillar: "balance",
+                reason: "Hormone Compass mood score low",
+                icon: Smile
+              });
+            }
+            if ((scores.energy || 0) < 3) {
+              recommendations.push({
+                id: "energy-levels",
+                name: "Energy Levels Assessment",
+                description: "Your hormone compass energy score indicates fatigue patterns",
+                pillar: "body",
+                reason: "Hormone Compass energy score low",
+                icon: Zap
+              });
+            }
+            if ((scores.cognitive || 0) < 3) {
+              recommendations.push({
+                id: "brain-fog",
+                name: "Brain Fog Assessment",
+                description: "Your cognitive symptoms warrant deeper investigation",
+                pillar: "brain",
+                reason: "Hormone Compass cognitive score low",
+                icon: Focus
+              });
+            }
+          }
+        }
+
+        // Fallback recommendations if no data
+        if (recommendations.length === 0) {
+          recommendations.push(
+            {
               id: "energy-levels",
               name: "Energy Levels Assessment",
-              description: "Your hormone compass energy score indicates fatigue patterns",
+              description: "Start with understanding your daily energy patterns",
               pillar: "body",
-              reason: "Hormone Compass energy score low",
+              reason: "Foundation assessment",
               icon: Zap
-            });
-          }
-          if ((scores.cognitive || 0) < 3) {
-            recommendations.push({
-              id: "brain-fog",
-              name: "Brain Fog Assessment",
-              description: "Your cognitive symptoms warrant deeper investigation",
-              pillar: "brain",
-              reason: "Hormone Compass cognitive score low",
-              icon: Focus
-            });
-          }
+            },
+            {
+              id: "sleep",
+              name: "Sleep Quality Assessment",
+              description: "Sleep is the foundation of health optimization",
+              pillar: "body",
+              reason: "Foundation assessment",
+              icon: Moon
+            },
+            {
+              id: "stress-assessment",
+              name: "Stress Assessment",
+              description: "Understand your stress patterns for better balance",
+              pillar: "balance",
+              reason: "Foundation assessment",
+              icon: Heart
+            }
+          );
         }
-      }
 
-      // Fallback recommendations if no data
-      if (recommendations.length === 0) {
-        recommendations.push(
+        setRecommended(recommendations.slice(0, 4));
+      } catch (error) {
+        console.error("Error loading recommendations:", error);
+        // Set fallback recommendations even on error
+        setRecommended([
           {
             id: "energy-levels",
             name: "Energy Levels Assessment",
@@ -273,12 +305,7 @@ export const SmartAssessmentTriage = () => {
             reason: "Foundation assessment",
             icon: Heart
           }
-        );
-      }
-
-      setRecommended(recommendations.slice(0, 4)); // Limit to 4
-      } catch (error) {
-        console.error("Error loading recommendations:", error);
+        ]);
       } finally {
         setLoading(false);
       }
