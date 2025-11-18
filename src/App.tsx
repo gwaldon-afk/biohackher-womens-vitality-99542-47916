@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
+import { DevModeToggle } from "@/components/DevModeToggle";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 import { ProtocolRecommendationsNotifier } from "@/components/ProtocolRecommendationsNotifier";
@@ -262,6 +263,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <FloatingAIAssistant />
+          <DevModeToggle />
         </ErrorBoundary>
       </BrowserRouter>
       </TooltipProvider>
