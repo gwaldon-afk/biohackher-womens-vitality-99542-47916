@@ -15,7 +15,7 @@ const StatisticsBar = () => {
   const stats = [
     {
       value: "12-14 Years",
-      label: "Life Expectancy Increase",
+      label: "Potential Life Expectancy Increase",
       id: "lifespan",
       evidence: {
         title: "Healthy Lifestyle Factors and Life Expectancy",
