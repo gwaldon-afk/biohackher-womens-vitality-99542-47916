@@ -162,70 +162,7 @@ export const AssessmentHistoryTab = () => {
     fetchAssessments();
   }, [user]);
 
-  const getAssessmentIcon = (type: string) => {
-    switch (type) {
-      case "lis":
-        return <Activity className="h-5 w-5 text-primary" />;
-      case "hormone_compass":
-        return <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />;
-      default:
-        return <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
-    }
-  };
-
-  const getScoreBadge = (score: number | null) => {
-    if (score === null) return null;
-    
-    if (score >= 80) {
-      return <Badge className="bg-green-500">Excellent</Badge>;
-    } else if (score >= 60) {
-      return <Badge className="bg-yellow-500">Good</Badge>;
-    } else {
-      return <Badge className="bg-orange-500">Needs Attention</Badge>;
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <Card key={i}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2 flex-1">
-                  <Skeleton className="h-5 w-64" />
-                  <Skeleton className="h-4 w-32" />
-                </div>
-                <Skeleton className="h-9 w-32" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <Card key={i}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2 flex-1">
-                  <Skeleton className="h-5 w-64" />
-                  <Skeleton className="h-4 w-32" />
-                </div>
-                <Skeleton className="h-9 w-32" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  // Filter and sort assessments
+  // Filter and sort assessments - MUST be defined before any early returns
   const filteredAndSortedAssessments = useMemo(() => {
     let filtered = assessments;
 
@@ -274,6 +211,49 @@ export const AssessmentHistoryTab = () => {
       });
     }
   };
+
+  const getAssessmentIcon = (type: string) => {
+    switch (type) {
+      case "lis":
+        return <Activity className="h-5 w-5 text-primary" />;
+      case "hormone_compass":
+        return <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />;
+      default:
+        return <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />;
+    }
+  };
+
+  const getScoreBadge = (score: number | null) => {
+    if (score === null) return null;
+    
+    if (score >= 80) {
+      return <Badge className="bg-green-500">Excellent</Badge>;
+    } else if (score >= 60) {
+      return <Badge className="bg-yellow-500">Good</Badge>;
+    } else {
+      return <Badge className="bg-orange-500">Needs Attention</Badge>;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3].map((i) => (
+          <Card key={i}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-5 w-64" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+                <Skeleton className="h-9 w-32" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   // Group assessments by type to show comparison button when multiple exist
   const lisCount = assessments.filter((a) => a.type === "lis").length;
