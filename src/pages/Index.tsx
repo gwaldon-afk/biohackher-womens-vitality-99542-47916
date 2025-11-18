@@ -10,6 +10,7 @@ import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
 import StatisticsBar from "@/components/StatisticsBar";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import TrustIndicators from "@/components/TrustIndicators";
+import BenefitsSection from "@/components/BenefitsSection";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -100,6 +101,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Benefits Section */}
+      <BenefitsSection />
 
       {/* Social Proof Section */}
       <StatisticsBar />
