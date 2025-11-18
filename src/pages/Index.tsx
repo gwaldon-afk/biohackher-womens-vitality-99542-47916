@@ -38,7 +38,7 @@ const Index = () => {
                   LIVE WELL LONGER
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground">
-                  Empowering women to beat ageing through biohacking
+                  Finally, health insights designed for women—by science that includes us.
                 </p>
                 <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
                   Choose Your Starting Point
