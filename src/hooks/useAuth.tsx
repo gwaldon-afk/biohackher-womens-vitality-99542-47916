@@ -56,10 +56,23 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(TEST_MODE_ENABLED ? (MOCK_USER as User) : null);
+  // Check dev mode preference for TEST_MODE
+  const getInitialDevMode = () => {
+    if (!TEST_MODE_ENABLED) return 'auth';
+    return (localStorage.getItem('devMode') as 'guest' | 'auth') || 'auth';
+  };
+  
+  const devMode = getInitialDevMode();
+  const isGuestMode = TEST_MODE_ENABLED && devMode === 'guest';
+  
+  const [user, setUser] = useState<User | null>(
+    TEST_MODE_ENABLED && !isGuestMode ? (MOCK_USER as User) : null
+  );
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(TEST_MODE_ENABLED ? MOCK_PROFILE : null);
-  const [loading, setLoading] = useState(!TEST_MODE_ENABLED);
+  const [profile, setProfile] = useState<Profile | null>(
+    TEST_MODE_ENABLED && !isGuestMode ? MOCK_PROFILE : null
+  );
+  const [loading, setLoading] = useState(!TEST_MODE_ENABLED || isGuestMode);
   const { toast } = useToast();
   const { i18n } = useTranslation();
 
