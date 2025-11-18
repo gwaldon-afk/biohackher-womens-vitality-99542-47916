@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -131,8 +131,9 @@ export const SmartAssessmentTriage = () => {
   const [recommended, setRecommended] = useState<RecommendedAssessment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadRecommendations = useCallback(async () => {
-    if (!user) return;
+  useEffect(() => {
+    const loadRecommendations = async () => {
+      if (!user) return;
 
     try {
       setLoading(true);
@@ -278,13 +279,12 @@ export const SmartAssessmentTriage = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  };
 
-  useEffect(() => {
     if (user) {
       loadRecommendations();
     }
-  }, [user, loadRecommendations]);
+  }, [user]);
 
   const getPillarColor = (pillar: string) => {
     const colors: Record<string, string> = {
