@@ -54,7 +54,7 @@ const Index = () => {
             </div>
 
             {/* Triple Assessment Cards */}
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6 items-stretch">
               <AssessmentHeroCard
                 icon={Activity}
                 headline="Discover Your Longevity Impact Score"
