@@ -6,13 +6,28 @@ import { useNavigate } from "react-router-dom";
 import { Calendar, Utensils, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { mealTemplates, templateMealPlans } from "@/data/mealTemplates";
+import { useAuth } from "@/hooks/useAuth";
+import AssessmentGatewayScreen from "@/components/AssessmentGatewayScreen";
 
 export default function MealPlanWeek() {
+  const { user } = useAuth();
   const { preferences, isLoading } = useNutritionPreferences();
   const navigate = useNavigate();
   const hasMealPlan = preferences?.selectedMealPlanTemplate;
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  // Guest users see assessment gateway
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <main className="container mx-auto px-4 py-8 max-w-5xl">
+          <AssessmentGatewayScreen pageName="meal-plan" />
+        </main>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
