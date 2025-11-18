@@ -73,8 +73,10 @@ export const AssessmentHistoryTab = () => {
       if (!user) return;
 
       try {
+        console.log("Fetching assessments for user:", user.id);
+        
         // Fetch LIS assessments (daily_scores with is_baseline=true)
-        const { data: lisData } = await supabase
+        const { data: lisData, error: lisError } = await supabase
           .from("daily_scores")
           .select("*")
           .eq("user_id", user.id)
@@ -82,21 +84,27 @@ export const AssessmentHistoryTab = () => {
           .order("created_at", { ascending: false })
           .limit(10);
 
+        console.log("LIS data:", lisData, "LIS error:", lisError);
+
         // Fetch Hormone Compass assessments
-        const { data: hcData } = await supabase
+        const { data: hcData, error: hcError } = await supabase
           .from("hormone_compass_stages")
           .select("*")
           .eq("user_id", user.id)
           .order("calculated_at", { ascending: false })
           .limit(10);
 
+        console.log("HC data:", hcData, "HC error:", hcError);
+
         // Fetch Symptom assessments
-        const { data: symptomData } = await supabase
+        const { data: symptomData, error: symptomError } = await supabase
           .from("symptom_assessments")
           .select("*")
           .eq("user_id", user.id)
           .order("completed_at", { ascending: false })
           .limit(10);
+
+        console.log("Symptom data:", symptomData, "Symptom error:", symptomError);
 
         const allAssessments: AssessmentRecord[] = [];
 
@@ -142,6 +150,7 @@ export const AssessmentHistoryTab = () => {
         // Sort by completion date (newest first)
         allAssessments.sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime());
 
+        console.log("All assessments processed:", allAssessments);
         setAssessments(allAssessments);
       } catch (error) {
         console.error("Error fetching assessments:", error);
