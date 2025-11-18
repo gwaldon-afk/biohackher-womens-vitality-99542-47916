@@ -1,9 +1,9 @@
 import { Check } from "lucide-react";
 
 const trustIndicators = [
-  "Science-backed by 500+ peer-reviewed studies",
-  "Designed by longevity researchers & hormone specialists",
-  "Used by 50,000+ women aged 25-80"
+  "Women excluded from medical research until 1993",
+  "Built by women's health researchers & longevity experts",
+  "Evidence-based protocols from 500+ peer-reviewed studies"
 ];
 
 const TrustIndicators = () => {
