@@ -255,7 +255,7 @@ export const AssessmentHistoryTab = () => {
     });
 
     return filtered;
-  }, [assessments, typeFilters, searchQuery, sortBy, sortOrder]);
+  }, [assessments, typeFilters.lis, typeFilters.hormone_compass, typeFilters.symptom, searchQuery, sortBy, sortOrder]);
 
   // Export handler - defined after filteredAndSortedAssessments is available
   const handleExportHistory = () => {
