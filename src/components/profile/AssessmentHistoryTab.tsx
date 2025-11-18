@@ -538,8 +538,10 @@ export const AssessmentHistoryTab = () => {
         </Card>
         ))
       )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
 
     {/* Comparison Dialog */}
     <AssessmentComparisonDialog
