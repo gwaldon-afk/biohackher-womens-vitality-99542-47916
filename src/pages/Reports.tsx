@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, TrendingUp, Crown, Lock, Activity, Heart, Brain, Users, CheckCircle2, ChevronRight } from "lucide-react";
+import { FileText, TrendingUp, Crown, Lock, Activity, Heart, Brain, Users, CheckCircle2, ChevronRight, Home } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
+import { useNavigate } from "react-router-dom";
 
 const Reports = () => {
+  const navigate = useNavigate();
   const [selectedReport, setSelectedReport] = useState<string | null>(null);
   const [symptomAssessments, setSymptomAssessments] = useState<any[]>([]);
   const [loadingSymptoms, setLoadingSymptoms] = useState(true);
@@ -1261,6 +1263,16 @@ const Reports = () => {
               )}
             </div>
           )}
+          
+          {/* Bottom Return Button */}
+          <div className="flex justify-center gap-4 mt-8">
+            <Button 
+              onClick={() => navigate('/today')} 
+              size="lg"
+            >
+              Return to Today
+            </Button>
+          </div>
         </div>
       </main>
     </div>

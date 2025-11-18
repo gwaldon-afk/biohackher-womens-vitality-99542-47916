@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2, Target } from 'lucide-react';
+import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2, Target, Home } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -1102,6 +1102,16 @@ const LISResults = () => {
           lowestScore: pillarAnalyses[0]?.score,
         }}
       />
+      
+      {/* Bottom Return Button */}
+      <div className="flex justify-center gap-4 mt-8 pb-8">
+        <Button 
+          onClick={() => navigate(user ? '/today' : '/')} 
+          size="lg"
+        >
+          {user ? 'Return to Today' : 'Back to Home'}
+        </Button>
+      </div>
     </div>
     </div>
   );

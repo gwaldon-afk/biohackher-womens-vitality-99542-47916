@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
-import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen, Clock } from "lucide-react";
+import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen, Clock, Home } from "lucide-react";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -1038,6 +1038,16 @@ const MyProtocol = () => {
             }}
           />
         )}
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8 pb-8">
+          <Button 
+            onClick={() => navigate('/today')} 
+            size="lg"
+          >
+            Return to Today
+          </Button>
+        </div>
       </div>
     </ErrorBoundary>
   );

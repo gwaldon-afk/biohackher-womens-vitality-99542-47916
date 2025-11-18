@@ -282,6 +282,16 @@ const AssessmentHistory = () => {
               <TabsTrigger value="recent">Recent Assessments</TabsTrigger>
               <TabsTrigger value="trends">Trends & Progress</TabsTrigger>
             </TabsList>
+            
+            {/* Bottom Return Button */}
+            <div className="flex justify-center gap-4 mt-8">
+              <Button 
+                onClick={() => navigate('/today')} 
+                size="lg"
+              >
+                Return to Today
+              </Button>
+            </div>
 
             <TabsContent value="overview" className="mt-6">
               {assessments.length >= 2 ? (
