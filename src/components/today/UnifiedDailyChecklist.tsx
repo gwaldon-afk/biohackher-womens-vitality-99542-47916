@@ -319,6 +319,45 @@ export const UnifiedDailyChecklist = () => {
         </div>
       </div>
 
+      {/* Guest Top Banner CTA */}
+      {!user && (
+        <div className="mb-6 p-6 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-secondary border-2 border-primary/30 shadow-lg">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/20 backdrop-blur-sm">
+              <span className="text-2xl">👋</span>
+              <span className="text-sm font-semibold text-foreground">You're viewing a sample daily plan</span>
+            </div>
+            <h3 className="text-2xl font-bold text-foreground">
+              Ready to Create Your Personalized Plan?
+            </h3>
+            <p className="text-foreground/90 max-w-2xl mx-auto">
+              Take a 5-minute assessment to get a personalized daily plan based on your unique health profile, goals, and needs.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <Button 
+                size="lg" 
+                variant="secondary"
+                onClick={() => navigate('/guest-lis-assessment')}
+                className="font-semibold"
+              >
+                Take LIS Assessment (5 min)
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => navigate('/longevity-nutrition')}
+                className="bg-background/10 backdrop-blur-sm border-background/30 hover:bg-background/20"
+              >
+                Nutrition Assessment
+              </Button>
+            </div>
+            <p className="text-xs text-foreground/70">
+              Already have an account? <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">Sign in</button>
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Goal Progress Tracking */}
       <div className="pb-6">
         <TodayGoalProgressCard />
