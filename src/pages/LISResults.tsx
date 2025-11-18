@@ -24,6 +24,7 @@ import { EmailShareDialog } from '@/components/EmailShareDialog';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
+import ShopYourProtocolButton from '@/components/ShopYourProtocolButton';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -1048,6 +1049,16 @@ const LISResults = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Shop Your Protocol CTA */}
+      {!isGuest && (
+        <div className="mb-6">
+          <ShopYourProtocolButton 
+            assessmentType="lis"
+            itemCount={pillarAnalyses.filter(p => p.score < 70).length}
+          />
+        </div>
+      )}
 
       {/* Subscription CTA for Registered Users */}
       {!isGuest && (

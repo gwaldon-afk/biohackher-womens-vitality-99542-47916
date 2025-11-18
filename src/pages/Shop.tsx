@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Activity, Heart, Brain, ShoppingCart, Star, Search, Sparkles, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SmartProductRecommendations from "@/components/SmartProductRecommendations";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocale } from "@/hooks/useLocale";
+import { getProductPrice } from "@/services/productService";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/services/productService";
 import type { Product as DbProduct } from "@/services/productService";
@@ -35,8 +39,28 @@ const Shop = () => {
   const { toast } = useToast();
   const { user } = useAuth();
   const { addToCart } = useCart();
+  const { getCurrentLocale, formatCurrency } = useLocale();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPillar, setSelectedPillar] = useState("all");
+  const [searchParams] = useSearchParams();
+  
+  const locale = getCurrentLocale();
+  const userCurrency = locale.currency;
+  
+  // Check for query parameters
+  const highlightedProductId = searchParams.get('product');
+  const fromAssessment = searchParams.get('from');
+  const initialSearch = searchParams.get('search') || "";
+  
+  // Set initial search term from URL
+  useState(() => {
+    if (initialSearch) {
+      setSearchTerm(initialSearch);
+    }
+  });
+  
+  // Show contextual banner if coming from assessment
+  const showAssessmentBanner = fromAssessment && highlightedProductId;
 
   // Fetch products from database
   const { data: dbProducts, isLoading } = useQuery({
@@ -44,12 +68,12 @@ const Shop = () => {
     queryFn: getProducts
   });
 
-  // Convert database products to local format
+  // Convert database products to local format with localized pricing
   const products: Product[] = (dbProducts || []).map(dbProduct => ({
     id: dbProduct.id,
     name: dbProduct.name,
     description: dbProduct.description,
-    price: dbProduct.price_gbp || dbProduct.price_usd || 0,
+    price: getProductPrice(dbProduct, userCurrency) || 0,
     rating: 4.5,
     category: dbProduct.category,
     target_pillars: dbProduct.target_pillars,
@@ -132,6 +156,16 @@ const Shop = () => {
           </p>
         </div>
 
+        {/* Assessment Context Banner */}
+        {showAssessmentBanner && (
+          <Alert className="mb-6 border-primary/50 bg-primary/5">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <AlertDescription>
+              Based on your assessment results, we recommend this product to support your health goals.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Smart Recommendations - Authenticated Users Only */}
         {user && (
           <div className="mb-8">
@@ -182,7 +216,12 @@ const Shop = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                  <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={product.id} 
+                    className={`overflow-hidden hover:shadow-lg transition-shadow ${
+                      highlightedProductId === product.id ? 'ring-2 ring-primary shadow-xl' : ''
+                    }`}
+                  >
                     <div className="relative">
                       <img
                         src={product.image}
@@ -223,7 +262,7 @@ const Shop = () => {
                         {/* Price and Add to Cart */}
                         <div className="flex items-center justify-between pt-4 border-t">
                           <div>
-                            <span className="text-2xl font-bold">£{product.price.toFixed(2)}</span>
+                            <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
                             <p className="text-xs text-muted-foreground">{product.brand}</p>
                           </div>
                           <Button
