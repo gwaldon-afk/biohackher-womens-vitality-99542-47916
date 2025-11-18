@@ -27,10 +27,10 @@ import { toast } from "sonner";
 export default function LongevityNutritionAssessment() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [assessmentData, setAssessmentData] = useState<any>({});
 
-  const totalSteps = 15;
+  const totalSteps = 14;
   const progress = (currentStep / totalSteps) * 100;
 
   const updateData = (field: string, value: any) => {
@@ -46,7 +46,9 @@ export default function LongevityNutritionAssessment() {
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
+    if (currentStep === 1) {
+      navigate('/nutrition');
+    } else if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
@@ -147,7 +149,7 @@ export default function LongevityNutritionAssessment() {
   };
 
   const steps = [
-    <AssessmentWelcome onStart={() => setCurrentStep(1)} />,
+    null, // Index 0 unused (step numbering starts at 1)
     <CoreDetailsStep data={assessmentData} onChange={updateData} />,
     <PrimaryGoalStep data={assessmentData} onChange={updateData} />,
     <ActivityLevelStep data={assessmentData} onChange={updateData} />,
@@ -167,7 +169,7 @@ export default function LongevityNutritionAssessment() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {currentStep > 0 && (
+        {currentStep >= 1 && (
           <div className="mb-8">
             <Progress value={progress} className="mb-2" />
             <p className="text-sm text-muted-foreground text-center">
@@ -178,11 +180,11 @@ export default function LongevityNutritionAssessment() {
 
         {steps[currentStep]}
 
-        {currentStep > 0 && (
+        {currentStep >= 1 && (
           <div className="flex justify-between mt-8 max-w-4xl mx-auto">
-            <Button variant="outline" onClick={handleBack} disabled={currentStep === 0}>
+            <Button variant="outline" onClick={handleBack}>
               <ChevronLeft className="h-4 w-4 mr-2" />
-              Back
+              {currentStep === 1 ? 'Back to Nutrition' : 'Back'}
             </Button>
             <Button onClick={handleNext}>
               {currentStep === totalSteps ? "Complete Assessment" : "Next"}
