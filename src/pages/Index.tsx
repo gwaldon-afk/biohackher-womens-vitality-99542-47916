@@ -32,19 +32,22 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="space-y-12">
             {/* Hero Header */}
-            <div className="text-center space-y-4">
-              {/* Small decorative hero image */}
-              <div className="flex justify-center mb-4">
-                <img 
-                  src={heroImage} 
-                  alt="Woman embodying vitality and longevity"
-                  className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-primary/20"
-                />
+            <div className="flex items-center justify-center gap-8 mb-8">
+              <div>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
+                  LIVE WELL LONGER
+                </h1>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
-                LIVE WELL LONGER
-              </h1>
+              {/* Hero image - rectangular, right of headline */}
+              <img 
+                src={heroImage} 
+                alt="Woman embodying vitality and longevity"
+                className="h-32 w-48 object-cover shadow-lg border-2 border-primary/20"
+              />
+            </div>
+            
+            <div className="text-center space-y-4">
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                 Empowering women to beat ageing through biohacking
               </p>
