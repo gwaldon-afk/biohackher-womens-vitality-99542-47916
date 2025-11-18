@@ -6,12 +6,14 @@ import Navigation from "@/components/Navigation";
 import { useMeasurements } from "@/hooks/useMeasurements";
 import { MeasurementForm } from "@/components/MeasurementForm";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { TrendingUp, TrendingDown, Plus } from "lucide-react";
+import { TrendingUp, TrendingDown, Plus, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { AIInsightsCard } from "@/components/AIInsightsCard";
 import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 
 const ProgressTracking = () => {
+  const navigate = useNavigate();
   const { measurements, addMeasurement, loading } = useMeasurements();
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
@@ -57,6 +59,17 @@ const ProgressTracking = () => {
       <Navigation />
       
       <main className="container mx-auto px-4 py-12 max-w-6xl">
+        {/* Top Return Button */}
+        <div className="flex justify-start mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/today')}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Return to Today
+          </Button>
+        </div>
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold mb-2">
@@ -279,6 +292,16 @@ const ProgressTracking = () => {
             </div>
           </>
         )}
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/today')} 
+            size="lg"
+          >
+            Return to Today
+          </Button>
+        </div>
       </main>
     </div>
   );

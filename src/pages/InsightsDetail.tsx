@@ -41,6 +41,16 @@ const InsightsDetail = () => {
             </Card>
           ))}
         </div>
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/dashboard-main')} 
+            size="lg"
+          >
+            Return to Dashboard
+          </Button>
+        </div>
       </div>
     </div>
   );

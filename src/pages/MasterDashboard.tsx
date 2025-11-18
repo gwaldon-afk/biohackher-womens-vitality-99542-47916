@@ -2,10 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import { Navigate } from "react-router-dom";
-import { Trophy, TrendingUp, Activity, Package, Heart } from "lucide-react";
+import { Trophy, TrendingUp, Activity, Package, Heart, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const MasterDashboard = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { progress, isLoading, allComplete } = useAssessmentProgress();
 
@@ -35,6 +38,18 @@ const MasterDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4">
       <div className="max-w-6xl mx-auto space-y-8 pt-8 pb-16">
+        {/* Top Return Button */}
+        <div className="flex justify-start mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/today')}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Return to Today
+          </Button>
+        </div>
+        
         <div className="flex items-center gap-3">
           <Trophy className="h-10 w-10 text-primary" />
           <div>
@@ -142,7 +157,7 @@ const MasterDashboard = () => {
               <p className="text-muted-foreground mb-4">
                 Your personalized protocol combines recommendations from LIS, Nutrition, and Hormone Compass 
                 assessments, removing duplicates and prioritizing actions for maximum impact.
-              </p>
+               </p>
               <div className="bg-muted/30 rounded-lg p-4">
                 <p className="text-sm text-muted-foreground">
                   Visit your <span className="font-semibold text-foreground">My Protocol</span> page to view 
@@ -152,6 +167,16 @@ const MasterDashboard = () => {
             </CardContent>
           </Card>
         </section>
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/today')} 
+            size="lg"
+          >
+            Return to Today
+          </Button>
+        </div>
       </div>
     </div>
   );

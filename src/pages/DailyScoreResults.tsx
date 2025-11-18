@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Sparkles, TrendingUp, Activity, ArrowRight, PartyPopper } from 'lucide-react';
+import { Sparkles, TrendingUp, Activity, ArrowRight, PartyPopper, Home } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import { format } from 'date-fns';
 
@@ -39,6 +39,18 @@ const DailyScoreResults = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container max-w-3xl mx-auto py-8 px-4">
+        {/* Top Return Button */}
+        <div className="flex justify-start mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/today')}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Return to Today
+          </Button>
+        </div>
+        
         {/* Success Header */}
         {isFirstTime && (
           <div className="text-center mb-6">
@@ -146,6 +158,16 @@ const DailyScoreResults = () => {
             </Button>
           </CardContent>
         </Card>
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/today')} 
+            size="lg"
+          >
+            Return to Today
+          </Button>
+        </div>
       </div>
     </div>
   );

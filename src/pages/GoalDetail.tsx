@@ -419,6 +419,16 @@ const GoalDetail = () => {
             </div>
           </TabsContent>
         </Tabs>
+        
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/my-goals')} 
+            size="lg"
+          >
+            Return to My Goals
+          </Button>
+        </div>
       </main>
 
       {/* Quick Check-In Dialog */}

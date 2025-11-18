@@ -1,19 +1,34 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { HealthSummaryCard } from "@/components/profile/HealthSummaryCard";
 import { AssessmentHistoryTab } from "@/components/profile/AssessmentHistoryTab";
 import { HealthGoalsTab } from "@/components/profile/HealthGoalsTab";
 import { PreferencesTab } from "@/components/profile/PreferencesTab";
 import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
-import { User, ClipboardList, Target, Settings, Sliders } from "lucide-react";
+import { User, ClipboardList, Target, Settings, Sliders, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("assessments");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Top Return Button */}
+        <div className="flex justify-start mb-6">
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/today')}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            Return to Today
+          </Button>
+        </div>
+        
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -71,6 +86,16 @@ const Profile = () => {
             </TabsContent>
           </Tabs>
         </Card>
+
+        {/* Bottom Return Button */}
+        <div className="flex justify-center gap-4 mt-8">
+          <Button 
+            onClick={() => navigate('/today')} 
+            size="lg"
+          >
+            Return to Today
+          </Button>
+        </div>
       </div>
     </div>
   );
