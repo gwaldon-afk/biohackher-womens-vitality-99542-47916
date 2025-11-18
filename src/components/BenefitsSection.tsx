@@ -20,7 +20,7 @@ const benefits = [
 
 const BenefitsSection = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+    <section className="py-8 md:py-12 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">

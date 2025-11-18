@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
-import biohackherLogo from "@/assets/brand-face-logo.jpg";
+import biohackherLogo from "@/assets/logos/biohackher-logo-master.png";
 import heroImage from "@/assets/hero-biohackher.jpg";
 import Navigation from "@/components/Navigation";
 import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
@@ -29,9 +29,18 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section - Header Only */}
-      <section className="relative overflow-hidden py-12 md:py-24">
+      <section className="relative overflow-hidden py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-8 mb-8">
+          {/* Logo centered above headline */}
+          <div className="flex justify-center mb-6">
+            <img 
+              src={biohackherLogo} 
+              alt="Biohackher Logo"
+              className="h-auto w-auto max-w-md lg:max-w-lg object-contain"
+            />
+          </div>
+          
+          <div className="flex items-center justify-center gap-8 mb-4">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                 LIVE WELL LONGER
