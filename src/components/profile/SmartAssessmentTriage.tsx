@@ -37,97 +37,99 @@ interface AssessmentCategory {
   }[];
 }
 
+// Category groupings for "Browse by Concern" - defined outside component for stable reference
+const ASSESSMENT_CATEGORIES: AssessmentCategory[] = [
+  {
+    name: "Energy & Fatigue",
+    icon: Zap,
+    assessments: [
+      { id: "energy-levels", name: "Energy Levels", description: "Assess daily energy patterns" },
+      { id: "energy-fluctuations", name: "Energy Fluctuations", description: "Track energy variability" },
+      { id: "energy-optimization", name: "Energy Optimization", description: "Peak performance energy" },
+      { id: "sleep-disruption", name: "Sleep Disruption", description: "Sleep quality assessment" }
+    ]
+  },
+  {
+    name: "Cognitive & Focus",
+    icon: Brain,
+    assessments: [
+      { id: "cognitive-function", name: "Cognitive Function", description: "Memory and processing speed" },
+      { id: "brain-fog", name: "Brain Fog", description: "Mental clarity assessment" },
+      { id: "focus-optimization", name: "Focus Optimization", description: "Attention and concentration" },
+      { id: "cognitive-peak", name: "Cognitive Peak", description: "Peak mental performance" },
+      { id: "memory-changes", name: "Memory Changes", description: "Memory retention tracking" }
+    ]
+  },
+  {
+    name: "Physical Performance",
+    icon: Dumbbell,
+    assessments: [
+      { id: "physical-performance", name: "Physical Performance", description: "Strength and endurance" },
+      { id: "muscle-maintenance", name: "Muscle Maintenance", description: "Muscle health tracking" },
+      { id: "body-composition", name: "Body Composition", description: "Body composition analysis" },
+      { id: "pain-assessment", name: "Pain Assessment", description: "Physical discomfort tracking" }
+    ]
+  },
+  {
+    name: "Emotional Wellbeing",
+    icon: Heart,
+    assessments: [
+      { id: "mood-tracking", name: "Mood Tracking", description: "Daily mood patterns" },
+      { id: "mood-changes", name: "Mood Changes", description: "Emotional stability assessment" },
+      { id: "anxiety-assessment", name: "Anxiety Assessment", description: "Anxiety levels tracking" },
+      { id: "stress-assessment", name: "Stress Assessment", description: "Stress impact evaluation" },
+      { id: "mental-resilience", name: "Mental Resilience", description: "Emotional strength assessment" }
+    ]
+  },
+  {
+    name: "Hormone Health",
+    icon: Sparkles,
+    assessments: [
+      { id: "hormone-symptoms", name: "Hormone Symptoms", description: "Hormonal imbalance tracking" },
+      { id: "hormone-optimization", name: "Hormone Optimization", description: "Hormone health optimization" },
+      { id: "hot-flushes", name: "Hot Flushes", description: "Hot flush frequency tracking" },
+      { id: "weight-changes", name: "Weight Changes", description: "Weight pattern analysis" }
+    ]
+  },
+  {
+    name: "Appearance & Vitality",
+    icon: Sparkles,
+    assessments: [
+      { id: "skin-health", name: "Skin Health", description: "Skin condition assessment" },
+      { id: "skin-changes", name: "Skin Changes", description: "Skin aging tracking" },
+      { id: "skin-performance", name: "Skin Performance", description: "Skin vitality optimization" },
+      { id: "hair-vitality", name: "Hair Vitality", description: "Hair health assessment" },
+      { id: "aging-concerns", name: "Aging Concerns", description: "Visible aging tracking" },
+      { id: "collagen-loss", name: "Collagen Loss", description: "Collagen health assessment" },
+      { id: "recovery-appearance", name: "Recovery & Appearance", description: "Recovery impact on appearance" }
+    ]
+  },
+  {
+    name: "Sleep & Recovery",
+    icon: Moon,
+    assessments: [
+      { id: "sleep", name: "Sleep Quality", description: "Sleep pattern analysis" },
+      { id: "sleep-disruption", name: "Sleep Disruption", description: "Sleep disturbance tracking" },
+      { id: "deep-sleep", name: "Deep Sleep", description: "Deep sleep optimization" },
+      { id: "recovery-optimization", name: "Recovery Optimization", description: "Physical recovery tracking" }
+    ]
+  },
+  {
+    name: "Metabolic Health",
+    icon: Flame,
+    assessments: [
+      { id: "weight-changes", name: "Weight Changes", description: "Weight pattern analysis" },
+      { id: "metabolic-assessment", name: "Metabolic Assessment", description: "Metabolic health tracking" },
+      { id: "blood-sugar", name: "Blood Sugar", description: "Glucose stability assessment" }
+    ]
+  }
+];
+
 export const SmartAssessmentTriage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [recommended, setRecommended] = useState<RecommendedAssessment[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Category groupings for "Browse by Concern"
-  const categories: AssessmentCategory[] = [
-    {
-      name: "Energy & Fatigue",
-      icon: Zap,
-      assessments: [
-        { id: "energy-levels", name: "Energy Levels", description: "Assess daily energy patterns" },
-        { id: "energy-fluctuations", name: "Energy Fluctuations", description: "Track energy variability" },
-        { id: "energy-optimization", name: "Energy Optimization", description: "Peak performance energy" },
-        { id: "sleep-disruption", name: "Sleep Disruption", description: "Sleep quality assessment" }
-      ]
-    },
-    {
-      name: "Cognitive & Focus",
-      icon: Brain,
-      assessments: [
-        { id: "cognitive-function", name: "Cognitive Function", description: "Memory and processing speed" },
-        { id: "brain-fog", name: "Brain Fog", description: "Mental clarity assessment" },
-        { id: "focus-optimization", name: "Focus Optimization", description: "Attention and concentration" },
-        { id: "cognitive-peak", name: "Cognitive Peak", description: "Peak mental performance" },
-        { id: "memory-changes", name: "Memory Changes", description: "Memory retention tracking" }
-      ]
-    },
-    {
-      name: "Physical Performance",
-      icon: Dumbbell,
-      assessments: [
-        { id: "physical-performance", name: "Physical Performance", description: "Strength and endurance" },
-        { id: "muscle-maintenance", name: "Muscle Maintenance", description: "Muscle health tracking" },
-        { id: "body-composition", name: "Body Composition", description: "Body composition analysis" },
-        { id: "pain-assessment", name: "Pain Assessment", description: "Physical discomfort tracking" }
-      ]
-    },
-    {
-      name: "Emotional Wellbeing",
-      icon: Heart,
-      assessments: [
-        { id: "mood-tracking", name: "Mood Tracking", description: "Daily mood patterns" },
-        { id: "mood-changes", name: "Mood Changes", description: "Emotional stability assessment" },
-        { id: "anxiety-assessment", name: "Anxiety Assessment", description: "Anxiety levels tracking" },
-        { id: "stress-assessment", name: "Stress Assessment", description: "Stress impact evaluation" },
-        { id: "mental-resilience", name: "Mental Resilience", description: "Emotional strength assessment" }
-      ]
-    },
-    {
-      name: "Hormone Health",
-      icon: Sparkles,
-      assessments: [
-        { id: "hormone-symptoms", name: "Hormone Symptoms", description: "Hormonal imbalance tracking" },
-        { id: "hormone-optimization", name: "Hormone Optimization", description: "Hormone health optimization" },
-        { id: "hot-flushes", name: "Hot Flushes", description: "Hot flush frequency tracking" },
-        { id: "weight-changes", name: "Weight Changes", description: "Weight pattern analysis" }
-      ]
-    },
-    {
-      name: "Appearance & Vitality",
-      icon: Sparkles,
-      assessments: [
-        { id: "skin-health", name: "Skin Health", description: "Skin condition assessment" },
-        { id: "skin-changes", name: "Skin Changes", description: "Skin aging tracking" },
-        { id: "skin-performance", name: "Skin Performance", description: "Skin vitality optimization" },
-        { id: "hair-vitality", name: "Hair Vitality", description: "Hair health assessment" },
-        { id: "aging-concerns", name: "Aging Concerns", description: "Visible aging tracking" },
-        { id: "collagen-loss", name: "Collagen Loss", description: "Collagen health assessment" },
-        { id: "recovery-appearance", name: "Recovery & Appearance", description: "Recovery impact on appearance" }
-      ]
-    },
-    {
-      name: "Sleep & Recovery",
-      icon: Moon,
-      assessments: [
-        { id: "sleep", name: "Sleep Quality", description: "Sleep pattern analysis" },
-        { id: "sleep-disruption", name: "Sleep Disruption", description: "Sleep disturbance tracking" },
-        { id: "cellular-vitality", name: "Cellular Vitality", description: "Cellular recovery assessment" }
-      ]
-    },
-    {
-      name: "Longevity Optimization",
-      icon: Activity,
-      assessments: [
-        { id: "aging-acceleration", name: "Aging Acceleration", description: "Biological aging assessment" },
-        { id: "cellular-vitality", name: "Cellular Vitality", description: "Cellular health tracking" }
-      ]
-    }
-  ];
 
   const loadRecommendations = useCallback(async () => {
     if (!user) return;
@@ -373,7 +375,7 @@ export const SmartAssessmentTriage = () => {
         </div>
 
         <div className="grid gap-4">
-          {categories.map(category => {
+          {ASSESSMENT_CATEGORIES.map(category => {
             const Icon = category.icon;
             return (
               <Card key={category.name}>
