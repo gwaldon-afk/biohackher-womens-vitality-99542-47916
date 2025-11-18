@@ -284,8 +284,8 @@ export const AssessmentHistoryTab = () => {
   return (
     <>
       <div className="space-y-8">
-        {/* Smart Triage - Recommended & Browse by Concern */}
-        <SmartAssessmentTriage />
+        {/* Smart Triage - Temporarily disabled for debugging */}
+        {/* <SmartAssessmentTriage /> */}
 
         {/* Your Completed Assessments */}
         <div className="space-y-4">
