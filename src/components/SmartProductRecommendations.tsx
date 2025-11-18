@@ -7,17 +7,24 @@ import { useAssessmentProducts } from "@/hooks/useAssessmentProducts";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocale } from "@/hooks/useLocale";
+import { getProductPrice } from "@/services/productService";
 
 const SmartProductRecommendations = () => {
   const { data: products, isLoading } = useAssessmentProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { getCurrentLocale, formatCurrency } = useLocale();
+  
+  const locale = getCurrentLocale();
+  const userCurrency = locale.currency;
 
   const handleAddToCart = (product: any) => {
+    const price = getProductPrice(product, userCurrency) || 0;
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price_gbp || product.price_usd || 0,
+      price: price,
       image: product.image_url || "/placeholder.svg",
       brand: product.brand || "Quality Brand",
       dosage: product.usage_instructions || "Follow package directions",
@@ -97,7 +104,7 @@ const SmartProductRecommendations = () => {
                     
                     <div className="flex items-center justify-between mt-auto">
                       <span className="text-lg font-bold">
-                        £{(product.price_gbp || 0).toFixed(2)}
+                        {formatCurrency(getProductPrice(product, userCurrency) || 0)}
                       </span>
                       <Button
                         size="sm"
