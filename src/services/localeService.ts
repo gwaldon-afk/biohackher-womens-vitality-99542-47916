@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
-interface LocaleInfo {
+export interface LocaleInfo {
   country: string;
   language: string;
   currency: string;

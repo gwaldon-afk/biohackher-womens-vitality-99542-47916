@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Activity, Heart, Brain, ShoppingCart, Star, Search, Sparkles, Zap } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SmartProductRecommendations from "@/components/SmartProductRecommendations";
+import { EmptyShopState } from "@/components/shop/EmptyShopState";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +19,8 @@ import { getProductPrice } from "@/services/productService";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/services/productService";
 import type { Product as DbProduct } from "@/services/productService";
+import { shopAnalytics } from "@/utils/shopAnalytics";
+import { FEATURE_FLAGS } from "@/config/featureFlags";
 
 interface Product {
   id: string;
@@ -53,11 +56,11 @@ const Shop = () => {
   const initialSearch = searchParams.get('search') || "";
   
   // Set initial search term from URL
-  useState(() => {
+  useEffect(() => {
     if (initialSearch) {
       setSearchTerm(initialSearch);
     }
-  });
+  }, [initialSearch]);
   
   // Show contextual banner if coming from assessment
   const showAssessmentBanner = fromAssessment && highlightedProductId;
@@ -98,15 +101,51 @@ const Shop = () => {
            product.target_pillars?.some(p => p.toLowerCase() === selectedPillar);
   });
 
+  // Track page view
+  useEffect(() => {
+    shopAnalytics.viewShop(selectedPillar);
+  }, [selectedPillar]);
+
+  // Track search
+  useEffect(() => {
+    if (searchTerm) {
+      const timer = setTimeout(() => {
+        shopAnalytics.search(searchTerm, filteredProducts.length);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchTerm, filteredProducts.length]);
+
+  // Highlight product if coming from assessment
+  useEffect(() => {
+    if (highlightedProductId && fromAssessment) {
+      setTimeout(() => {
+        const element = document.getElementById(`product-${highlightedProductId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => {
+            element.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }, 3000);
+        }
+      }, 500);
+    }
+  }, [highlightedProductId, fromAssessment]);
+
   const handleAddToCart = (product: Product) => {
+    const price = product.price;
+    
     addToCart({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price,
       image: product.image,
       brand: product.brand,
       dosage: product.dosage,
     });
+    
+    // Track analytics
+    shopAnalytics.addToCart(product.id, product.name, price, fromAssessment ? 'assessment' : 'shop');
     
     toast({
       title: "Added to cart",
@@ -115,28 +154,28 @@ const Shop = () => {
   };
 
   const pillarConfig = [
-    { value: "all", label: "All Products", icon: Sparkles, color: "text-primary" },
-    { value: "beauty", label: "BEAUTY", icon: Sparkles, color: "text-pink-500" },
-    { value: "brain", label: "BRAIN", icon: Brain, color: "text-purple-500" },
-    { value: "body", label: "BODY", icon: Activity, color: "text-orange-500" },
-    { value: "balance", label: "BALANCE", icon: Heart, color: "text-red-500" },
+    { value: "all", label: "All Products", icon: Sparkles },
+    { value: "beauty", label: "Beauty", icon: Sparkles },
+    { value: "brain", label: "Brain", icon: Brain },
+    { value: "body", label: "Body", icon: Activity },
+    { value: "balance", label: "Balance", icon: Heart },
   ];
 
-  const getEvidenceBadge = (level: string | null) => {
-    if (!level) return null;
+  const getEvidenceBadge = (evidenceLevel: string | null) => {
+    if (!evidenceLevel) return null;
     
     const config = {
-      gold: { className: "bg-yellow-500 text-black", label: "Gold" },
-      silver: { className: "bg-gray-400 text-white", label: "Silver" },
-      bronze: { className: "bg-orange-700 text-white", label: "Bronze" },
-      emerging: { className: "bg-blue-500 text-white", label: "Emerging" }
+      gold: { color: "bg-yellow-500 text-black", label: "Gold" },
+      silver: { color: "bg-gray-400 text-black", label: "Silver" },
+      bronze: { color: "bg-orange-600 text-white", label: "Bronze" },
+      emerging: { color: "bg-blue-500 text-white", label: "Emerging" }
     };
-    
-    const badge = config[level as keyof typeof config];
+
+    const badge = config[evidenceLevel as keyof typeof config];
     if (!badge) return null;
-    
+
     return (
-      <Badge className={badge.className}>
+      <Badge className={badge.color}>
         <Star className="h-3 w-3 mr-1" />
         {badge.label}
       </Badge>
@@ -147,27 +186,27 @@ const Shop = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container py-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Shop Wellness Products</h1>
+          <h1 className="text-4xl font-bold mb-2">Shop</h1>
           <p className="text-muted-foreground">
-            Evidence-based supplements and products to support your longevity journey
+            Science-backed supplements and wellness products
           </p>
         </div>
 
-        {/* Assessment Context Banner */}
+        {/* Assessment Banner */}
         {showAssessmentBanner && (
-          <Alert className="mb-6 border-primary/50 bg-primary/5">
-            <Sparkles className="h-4 w-4 text-primary" />
+          <Alert className="mb-6 border-primary bg-primary/5">
+            <Sparkles className="h-4 w-4" />
             <AlertDescription>
-              Based on your assessment results, we recommend this product to support your health goals.
+              Product recommendations based on your assessment results
             </AlertDescription>
           </Alert>
         )}
 
         {/* Smart Recommendations - Authenticated Users Only */}
-        {user && (
+        {user && FEATURE_FLAGS.SHOP_SMART_RECOMMENDATIONS && (
           <div className="mb-8">
             <SmartProductRecommendations />
           </div>
@@ -176,9 +215,8 @@ const Shop = () => {
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -187,111 +225,111 @@ const Shop = () => {
           </div>
         </div>
 
-        {/* Pillar Navigation Tabs */}
-        <Tabs value={selectedPillar} onValueChange={setSelectedPillar} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+        {/* Pillar Navigation */}
+        <Tabs value={selectedPillar} onValueChange={setSelectedPillar} className="mb-8">
+          <TabsList className="grid w-full grid-cols-5 h-auto">
             {pillarConfig.map((pillar) => {
               const Icon = pillar.icon;
               return (
-                <TabsTrigger key={pillar.value} value={pillar.value} className="gap-2">
-                  <Icon className={`h-4 w-4 ${pillar.color}`} />
-                  {pillar.label}
+                <TabsTrigger
+                  key={pillar.value}
+                  value={pillar.value}
+                  className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{pillar.label}</span>
+                  <span className="sm:hidden">{pillar.label.charAt(0)}</span>
                 </TabsTrigger>
               );
             })}
           </TabsList>
-
-          {/* Products Grid */}
-          <TabsContent value={selectedPillar}>
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Skeleton key={i} className="h-96 w-full" />
-                ))}
-              </div>
-            ) : filteredProducts.length === 0 ? (
-              <Card className="p-12 text-center">
-                <p className="text-muted-foreground">No products found matching your criteria.</p>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <Card 
-                    key={product.id} 
-                    className={`overflow-hidden hover:shadow-lg transition-shadow ${
-                      highlightedProductId === product.id ? 'ring-2 ring-primary shadow-xl' : ''
-                    }`}
-                  >
-                    <div className="relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute top-2 right-2">
-                        {getEvidenceBadge(product.evidence_level)}
-                      </div>
-                      {product.target_pillars && product.target_pillars.length > 0 && (
-                        <Badge className="absolute top-2 left-2 bg-primary/90">
-                          {product.target_pillars[0].toUpperCase()}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <CardHeader>
-                      <CardTitle className="line-clamp-2">{product.name}</CardTitle>
-                      <CardDescription className="line-clamp-2">
-                        {product.description}
-                      </CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent>
-                      <div className="space-y-4">
-                        {/* Benefits */}
-                        {product.benefits.length > 0 && (
-                          <ul className="text-sm space-y-1">
-                            {product.benefits.slice(0, 3).map((benefit, idx) => (
-                              <li key={idx} className="flex items-start gap-2">
-                                <Zap className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{benefit}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                        
-                        {/* Price and Add to Cart */}
-                        <div className="flex items-center justify-between pt-4 border-t">
-                          <div>
-                            <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
-                            <p className="text-xs text-muted-foreground">{product.brand}</p>
-                          </div>
-                          <Button
-                            onClick={() => handleAddToCart(product)}
-                            className="gap-2"
-                          >
-                            <ShoppingCart className="h-4 w-4" />
-                            Add to Cart
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
         </Tabs>
 
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoading && (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton key={i} className="h-96 w-full" />
+              ))}
+            </>
+          )}
+
+          {!isLoading && filteredProducts.map((product) => (
+            <Card 
+              key={product.id} 
+              id={`product-${product.id}`}
+              className="flex flex-col transition-all hover:shadow-lg"
+            >
+              <CardHeader className="pb-4">
+                <div className="relative mb-4 rounded-lg overflow-hidden">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute top-2 right-2 flex gap-2">
+                    {getEvidenceBadge(product.evidence_level)}
+                  </div>
+                  {product.target_pillars && product.target_pillars.length > 0 && (
+                    <div className="absolute top-2 left-2">
+                      <Badge className="bg-primary/90">
+                        {product.target_pillars[0].toUpperCase()}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+                <CardTitle className="text-lg line-clamp-2 h-14">{product.name}</CardTitle>
+                <CardDescription className="line-clamp-2">{product.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                {product.benefits && product.benefits.length > 0 && (
+                  <div className="mb-4">
+                    <ul className="space-y-1">
+                      {product.benefits.slice(0, 3).map((benefit, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground flex items-start">
+                          <span className="text-primary mr-2">•</span>
+                          <span className="line-clamp-1">{benefit}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <div className="mt-auto space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {product.inStock ? "In Stock" : "Out of Stock"}
+                    </Badge>
+                  </div>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleAddToCart(product)}
+                    disabled={!product.inStock}
+                  >
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Add to Cart
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Empty State */}
+          {!isLoading && filteredProducts.length === 0 && (
+            <div className="col-span-full">
+              <EmptyShopState variant="no-products" />
+            </div>
+          )}
+        </div>
+
         {/* Health Disclaimer */}
-        <Card className="mt-12 bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800">
-          <CardContent className="pt-6">
-            <p className="text-sm text-amber-900 dark:text-amber-100">
-              <strong>Health Disclaimer:</strong> These statements have not been evaluated by the FDA. 
-              Products are not intended to diagnose, treat, cure, or prevent any disease. 
-              Consult your healthcare provider before starting any supplement regimen.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="mt-12 p-6 bg-muted/50 rounded-lg">
+          <h3 className="font-semibold mb-2">Health & Safety Information</h3>
+          <p className="text-sm text-muted-foreground">
+            The information provided about these products is for educational purposes only and is not intended to diagnose, treat, cure, or prevent any disease. Always consult with a healthcare professional before starting any new supplement regimen, especially if you are pregnant, nursing, have a medical condition, or are taking medications.
+          </p>
+        </div>
       </div>
     </div>
   );
