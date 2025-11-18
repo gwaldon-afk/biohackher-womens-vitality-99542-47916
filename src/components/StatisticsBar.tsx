@@ -26,7 +26,7 @@ const StatisticsBar = () => {
     },
     {
       value: "80%",
-      label: "In Your Control",
+      label: "80% of how you age is in your control",
       id: "control",
       evidence: {
         title: "Lifestyle vs Genetics in Longevity",
