@@ -2749,6 +2749,7 @@ export type Database = {
           target_symptoms: Json | null
           updated_at: string | null
           usage_instructions: string | null
+          use_cases: Json | null
         }
         Insert: {
           affiliate_link?: string | null
@@ -2775,6 +2776,7 @@ export type Database = {
           target_symptoms?: Json | null
           updated_at?: string | null
           usage_instructions?: string | null
+          use_cases?: Json | null
         }
         Update: {
           affiliate_link?: string | null
@@ -2801,6 +2803,7 @@ export type Database = {
           target_symptoms?: Json | null
           updated_at?: string | null
           usage_instructions?: string | null
+          use_cases?: Json | null
         }
         Relationships: []
       }
