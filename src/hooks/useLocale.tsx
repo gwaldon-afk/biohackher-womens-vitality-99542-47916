@@ -1,17 +1,52 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
+import { detectUserLocale, type LocaleInfo } from '@/services/localeService';
+
+const LOCALE_CACHE_KEY = 'biohackher_detected_locale';
 
 export const useLocale = () => {
   const { i18n } = useTranslation();
   const { profile } = useAuth();
+  
+  // Load cached locale detection on mount
+  const [detectedLocale, setDetectedLocale] = useState<LocaleInfo | null>(() => {
+    try {
+      const cached = localStorage.getItem(LOCALE_CACHE_KEY);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Detect locale for guests or when profile is unavailable
+  useEffect(() => {
+    if (!profile && !detectedLocale) {
+      detectUserLocale().then(locale => {
+        setDetectedLocale(locale);
+        localStorage.setItem(LOCALE_CACHE_KEY, JSON.stringify(locale));
+      }).catch(err => {
+        console.error('Failed to detect locale:', err);
+      });
+    }
+  }, [profile, detectedLocale]);
+
+  // Clear cache when profile is loaded (handled in useAuth)
+  useEffect(() => {
+    if (profile) {
+      localStorage.removeItem(LOCALE_CACHE_KEY);
+      setDetectedLocale(null);
+    }
+  }, [profile]);
 
   const getCurrentLocale = () => {
+    // Priority: profile → detected → fallback to GB
     return {
-      language: i18n.language,
-      country: profile?.country || 'GB',
-      currency: profile?.currency || 'GBP',
-      measurementSystem: profile?.measurement_system || 'metric',
-      timezone: profile?.timezone || 'Europe/London'
+      language: profile?.language || detectedLocale?.language || i18n.language,
+      country: profile?.country || detectedLocale?.country || 'GB',
+      currency: profile?.currency || detectedLocale?.currency || 'GBP',
+      measurementSystem: profile?.measurement_system || detectedLocale?.measurementSystem || 'metric',
+      timezone: profile?.timezone || detectedLocale?.timezone || 'Europe/London'
     };
   };
 

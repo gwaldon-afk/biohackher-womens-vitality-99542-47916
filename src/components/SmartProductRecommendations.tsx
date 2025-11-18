@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "@/hooks/useLocale";
 import { getProductPrice } from "@/services/productService";
+import { shopAnalytics } from "@/utils/shopAnalytics";
 
 const SmartProductRecommendations = () => {
   const { data: products, isLoading } = useAssessmentProducts();
@@ -19,16 +21,28 @@ const SmartProductRecommendations = () => {
   const locale = getCurrentLocale();
   const userCurrency = locale.currency;
 
-  const handleAddToCart = (product: any) => {
+  // Track when recommendations are viewed
+  useEffect(() => {
+    if (products && products.length > 0) {
+      shopAnalytics.viewRecommendations('assessment', products.length);
+    }
+  }, [products]);
+
+  const handleAddToCart = (product: any, position: number) => {
     const price = getProductPrice(product, userCurrency) || 0;
+    
     addToCart({
       id: product.id,
       name: product.name,
-      price: price,
+      price,
       image: product.image_url || "/placeholder.svg",
       brand: product.brand || "Quality Brand",
       dosage: product.usage_instructions || "Follow package directions",
     });
+    
+    // Track analytics
+    shopAnalytics.addToCart(product.id, product.name, price, 'recommendations');
+    shopAnalytics.clickRecommendation(product.id, position);
     
     toast({
       title: "Added to cart",
@@ -74,7 +88,7 @@ const SmartProductRecommendations = () => {
       <CardContent>
         <Carousel className="w-full">
           <CarouselContent>
-            {products.map((product) => (
+            {products.map((product, index) => (
               <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
                 <Card className="h-full">
                   <CardContent className="p-4">
@@ -98,30 +112,29 @@ const SmartProductRecommendations = () => {
                     </div>
                     
                     <h3 className="font-semibold text-sm mb-1 line-clamp-2">{product.name}</h3>
-                    <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                      {product.description}
-                    </p>
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{product.description}</p>
                     
-                    <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center justify-between mb-3">
                       <span className="text-lg font-bold">
                         {formatCurrency(getProductPrice(product, userCurrency) || 0)}
                       </span>
-                      <Button
-                        size="sm"
-                        onClick={() => handleAddToCart(product)}
-                        className="gap-2"
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        Add
-                      </Button>
                     </div>
+                    
+                    <Button 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => handleAddToCart(product, index)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      Add to Cart
+                    </Button>
                   </CardContent>
                 </Card>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="hidden md:flex" />
+          <CarouselNext className="hidden md:flex" />
         </Carousel>
       </CardContent>
     </Card>
