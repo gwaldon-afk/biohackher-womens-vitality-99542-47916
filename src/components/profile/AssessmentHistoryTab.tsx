@@ -233,28 +233,6 @@ export const AssessmentHistoryTab = () => {
     );
   }
 
-  if (assessments.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-12 text-center">
-          <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No assessments yet</h3>
-          <p className="text-muted-foreground mb-4">
-            Complete your first assessment to see your health baseline
-          </p>
-          <div className="flex gap-2 justify-center flex-wrap">
-            <Button onClick={() => navigate("/guest-lis-assessment")}>
-              Take LIS Assessment
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/hormone-compass/assessment")}>
-              Take Hormone Compass
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   // Filter and sort assessments
   const filteredAndSortedAssessments = useMemo(() => {
     let filtered = assessments;
@@ -304,15 +282,42 @@ export const AssessmentHistoryTab = () => {
           <div className="mb-4">
             <h3 className="text-xl font-semibold mb-2">Your Completed Assessments</h3>
             <p className="text-sm text-muted-foreground">
-              View your assessment history and track your progress over time
+              {assessments.length > 0 
+                ? "View your assessment history and track your progress over time"
+                : "Complete your first assessment to start tracking your health journey"}
             </p>
           </div>
 
           {/* Assessment Reminders */}
           <AssessmentReminders />
 
-          {/* Progress Timeline */}
-          <AssessmentProgressTimeline assessments={assessments} />
+          {/* Progress Timeline - Only show if assessments exist */}
+          {assessments.length > 0 && <AssessmentProgressTimeline assessments={assessments} />}
+
+          {/* Empty State for No Assessments */}
+          {assessments.length === 0 ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No assessment history yet</h3>
+                <p className="text-muted-foreground mb-4">
+                  Take your first assessment to see your health baseline
+                </p>
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <Button onClick={() => navigate("/guest-lis-assessment")}>
+                    Take LIS Assessment
+                  </Button>
+                  <Button variant="outline" onClick={() => navigate("/longevity-nutrition")}>
+                    Nutrition Assessment
+                  </Button>
+                  <Button variant="outline" onClick={() => navigate("/hormone-compass/assessment")}>
+                    Hormone Compass
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
 
           {/* Header with search and filters */}
           <div className="space-y-4">
