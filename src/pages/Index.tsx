@@ -67,7 +67,6 @@ const Index = () => {
                 duration="Free • 5 min • No signup"
                 ctaText="Get My Longevity Score"
                 ctaRoute="/guest-lis-assessment"
-                socialProof="50,000+ women completed"
               />
 
               <AssessmentHeroCard
@@ -82,7 +81,6 @@ const Index = () => {
                 duration="Free • 8 min • No signup"
                 ctaText="Score My Nutrition"
                 ctaRoute="/longevity-nutrition"
-                socialProof="Avg score: 62/100"
               />
 
               <AssessmentHeroCard
@@ -97,7 +95,6 @@ const Index = () => {
                 duration="Free • 6 min • No signup"
                 ctaText="Check My Hormones"
                 ctaRoute="/menomap/assessment"
-                socialProof="Works for ages 25-80"
               />
             </div>
           </div>
