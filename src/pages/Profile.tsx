@@ -7,6 +7,7 @@ import { AssessmentHistoryTab } from "@/components/profile/AssessmentHistoryTab"
 import { HealthGoalsTab } from "@/components/profile/HealthGoalsTab";
 import { PreferencesTab } from "@/components/profile/PreferencesTab";
 import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
+import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
 import { User, ClipboardList, Target, Settings, Sliders, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -39,6 +40,9 @@ const Profile = () => {
             View your health summary, assessment history, goals, and preferences
           </p>
         </div>
+
+        {/* Assessment Overview Cards - Main 3 assessments */}
+        <AssessmentOverviewCards />
 
         {/* Health Summary Card - Always visible at top */}
         <HealthSummaryCard />
