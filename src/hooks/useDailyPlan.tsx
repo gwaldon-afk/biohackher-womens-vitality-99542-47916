@@ -50,6 +50,9 @@ export const useDailyPlan = () => {
   useEffect(() => {
     if (user) {
       loadDailyPlan();
+    } else {
+      // Guest users should not be in loading state
+      setLoading(false);
     }
   }, [user, protocols, goals, energyActions, completions, nutritionPrefs]);
 
