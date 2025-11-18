@@ -9,11 +9,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, TrendingDown, Plus, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { AIInsightsCard } from "@/components/AIInsightsCard";
 import { MonthlyReportCard } from "@/components/MonthlyReportCard";
 
 const ProgressTracking = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { measurements, addMeasurement, loading } = useMeasurements();
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
@@ -63,11 +65,11 @@ const ProgressTracking = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/today')}
+            onClick={() => navigate(user ? '/today' : '/')}
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            Return to Today
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </div>
         <div className="mb-8 flex items-center justify-between">

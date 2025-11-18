@@ -6,10 +6,12 @@ import { Progress } from '@/components/ui/progress';
 import { Sparkles, TrendingUp, Activity, ArrowRight, PartyPopper, Home } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import { format } from 'date-fns';
+import { useAuth } from '@/hooks/useAuth';
 
 const DailyScoreResults = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const score = parseFloat(searchParams.get('score') || '0');
   const dateStr = searchParams.get('date') || '';
   const version = searchParams.get('version') || 'LIS 1.0';
@@ -43,11 +45,11 @@ const DailyScoreResults = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/today')}
+            onClick={() => navigate(user ? '/today' : '/')}
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            Return to Today
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </div>
         
@@ -162,10 +164,10 @@ const DailyScoreResults = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate('/today')} 
+            onClick={() => navigate(user ? '/today' : '/')} 
             size="lg"
           >
-            Return to Today
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </div>
       </div>

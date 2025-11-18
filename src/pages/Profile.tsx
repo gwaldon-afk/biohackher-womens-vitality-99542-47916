@@ -10,9 +10,11 @@ import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
 import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
 import { User, ClipboardList, Target, Settings, Sliders, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("assessments");
 
   return (
@@ -22,11 +24,11 @@ const Profile = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/today')}
+            onClick={() => navigate(user ? '/today' : '/')}
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            Return to Today
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </div>
         
@@ -94,10 +96,10 @@ const Profile = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate('/today')} 
+            onClick={() => navigate(user ? '/today' : '/')} 
             size="lg"
           >
-            Return to Today
+            {user ? 'Return to Today' : 'Back to Home'}
           </Button>
         </div>
       </div>
