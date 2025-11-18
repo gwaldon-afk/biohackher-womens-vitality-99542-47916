@@ -40,6 +40,8 @@ export interface AssessmentRecord {
   retakePath: string;
 }
 
+import { SmartAssessmentTriage } from "./SmartAssessmentTriage";
+
 export const AssessmentHistoryTab = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -293,35 +295,47 @@ export const AssessmentHistoryTab = () => {
 
   return (
     <>
-      <div className="space-y-4">
-        {/* Assessment Reminders */}
-        <AssessmentReminders />
+      <div className="space-y-8">
+        {/* Smart Triage - Recommended & Browse by Concern */}
+        <SmartAssessmentTriage />
 
-        {/* Progress Timeline */}
-        <AssessmentProgressTimeline assessments={assessments} />
-
-        {/* Header with search and filters */}
+        {/* Your Completed Assessments */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Assessment History</h3>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportHistory}
-                disabled={filteredAndSortedAssessments.length === 0}
-                className="gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Export CSV
-              </Button>
-              <p className="text-sm text-muted-foreground">
-                {filteredAndSortedAssessments.length} of {assessments.length} assessments
-              </p>
-            </div>
+          <div className="mb-4">
+            <h3 className="text-xl font-semibold mb-2">Your Completed Assessments</h3>
+            <p className="text-sm text-muted-foreground">
+              View your assessment history and track your progress over time
+            </p>
           </div>
 
-          {/* Search and Filter Controls */}
+          {/* Assessment Reminders */}
+          <AssessmentReminders />
+
+          {/* Progress Timeline */}
+          <AssessmentProgressTimeline assessments={assessments} />
+
+          {/* Header with search and filters */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-lg font-semibold">History</h4>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExportHistory}
+                  disabled={filteredAndSortedAssessments.length === 0}
+                  className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Export CSV
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                 {filteredAndSortedAssessments.length} of {assessments.length} assessments
+               </p>
+             </div>
+           </div>
+
+           {/* Search and Filter Controls */}
           <div className="flex gap-2 flex-wrap">
             {/* Search */}
             <div className="flex-1 min-w-[200px]">
@@ -520,14 +534,15 @@ export const AssessmentHistoryTab = () => {
         ))
       )}
       </div>
+    </div>
 
-      {/* Comparison Dialog */}
-      <AssessmentComparisonDialog
-        open={comparisonDialog.open}
-        onOpenChange={(open) => setComparisonDialog({ ...comparisonDialog, open })}
-        assessmentType={comparisonDialog.type}
-        assessmentTitle={comparisonDialog.title}
-      />
-    </>
+    {/* Comparison Dialog */}
+    <AssessmentComparisonDialog
+      open={comparisonDialog.open}
+      onOpenChange={(open) => setComparisonDialog({ ...comparisonDialog, open })}
+      assessmentType={comparisonDialog.type}
+      assessmentTitle={comparisonDialog.title}
+    />
+  </>
   );
 };
