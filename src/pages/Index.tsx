@@ -31,30 +31,46 @@ const Index = () => {
       {/* Hero Section - Header Only */}
       <section className="relative overflow-hidden py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4">
-          {/* Logo centered above headline */}
-          <div className="flex justify-center mb-6">
-            <img 
-              src={biohackherLogo} 
-              alt="Biohackher Logo"
-              className="h-auto w-auto max-w-md lg:max-w-lg object-contain"
-            />
-          </div>
-          
-          <div className="flex items-center justify-center gap-8 mb-4">
-            <div className="flex flex-col gap-4">
+          <div className="flex items-start justify-center gap-8 mb-4">
+            <div className="flex flex-col gap-6 max-w-3xl">
+              {/* Logo directly above headline */}
+              <img 
+                src={biohackherLogo} 
+                alt="Biohackher Logo"
+                className="h-auto w-full object-contain mb-2"
+              />
+              
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                 LIVE WELL LONGER
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground">
-                Finally, health insights designed for women—by science that includes us.
-              </p>
+              
+              <div className="space-y-4 text-base md:text-lg text-muted-foreground leading-relaxed">
+                <p className="font-semibold text-foreground">
+                  Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer
+                </p>
+                <p>
+                  Designed exclusively for women, the Biohackher App is your science-backed hub for mastering your healthspan. Forget guesswork. Here, data becomes actionable, longevity becomes personalised, and feeling incredible becomes your new baseline.
+                </p>
+                <p>
+                  Inside, you'll discover powerful assessment tools that reveal where you sit on the healthspan spectrum — from metabolic resilience to stress load, mitochondrial vitality, recovery capacity, hormonal balance, gut health and more. Each insight comes with evidence-based biohacks tailored to your biology, your goals, and your season of life.
+                </p>
+                <p>
+                  No fluff. No overwhelm. Just clear, research-driven strategies to help you boost energy, sharpen your brain, balance your hormones, age vibrantly, and take control of the years ahead.
+                </p>
+                <p>
+                  This is where women rewrite the rules of ageing — with science, self-awareness, and a whole lot of biohacking brilliance.
+                </p>
+                <p className="font-semibold text-foreground">
+                  Live well longer. Thrive harder. Biohack like a woman.
+                </p>
+              </div>
             </div>
             
-            {/* Hero image - rectangular, right of text */}
+            {/* Hero image - expanded to align with text */}
             <img 
               src={heroImage} 
               alt="Woman embodying vitality and longevity"
-              className="h-48 w-auto object-contain shadow-lg border-2 border-primary/20"
+              className="hidden lg:block h-auto w-80 object-contain shadow-lg border-2 border-primary/20"
             />
           </div>
         </div>
