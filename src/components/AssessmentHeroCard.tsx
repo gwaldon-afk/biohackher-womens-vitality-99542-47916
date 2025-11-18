@@ -12,7 +12,7 @@ interface AssessmentHeroCardProps {
   duration: string;
   ctaText: string;
   ctaRoute: string;
-  socialProof: string;
+  socialProof?: string;
 }
 
 export const AssessmentHeroCard = ({
@@ -67,7 +67,9 @@ export const AssessmentHeroCard = ({
             {ctaText}
           </Button>
 
-          <p className="text-xs text-center text-muted-foreground">{socialProof}</p>
+          {socialProof && (
+            <p className="text-xs text-center text-muted-foreground">{socialProof}</p>
+          )}
         </div>
       </CardContent>
     </Card>
