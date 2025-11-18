@@ -33,27 +33,24 @@ const Index = () => {
           <div className="space-y-12">
             {/* Hero Header */}
             <div className="flex items-center justify-center gap-8 mb-8">
-              <div>
+              <div className="flex flex-col gap-4">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                   LIVE WELL LONGER
                 </h1>
+                <p className="text-lg md:text-xl text-muted-foreground">
+                  Empowering women to beat ageing through biohacking
+                </p>
+                <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
+                  Choose Your Starting Point
+                </h2>
               </div>
               
-              {/* Hero image - rectangular, right of headline */}
+              {/* Hero image - rectangular, right of text */}
               <img 
                 src={heroImage} 
                 alt="Woman embodying vitality and longevity"
-                className="h-32 w-48 object-cover shadow-lg border-2 border-primary/20"
+                className="h-48 w-auto object-contain shadow-lg border-2 border-primary/20"
               />
-            </div>
-            
-            <div className="text-center space-y-4">
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                Empowering women to beat ageing through biohacking
-              </p>
-              <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
-                Choose Your Starting Point
-              </h2>
             </div>
 
             {/* Triple Assessment Cards */}
