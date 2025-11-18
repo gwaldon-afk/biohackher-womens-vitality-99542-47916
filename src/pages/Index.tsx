@@ -42,11 +42,6 @@ const Index = () => {
                 />
               </div>
               
-              <img 
-                src={biohackherLogo} 
-                alt="Biohackher Logo" 
-                className="h-32 w-auto object-contain mx-auto"
-              />
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                 LIVE WELL LONGER
               </h1>
