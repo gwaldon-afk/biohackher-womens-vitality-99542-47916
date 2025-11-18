@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
-import biohackherLogo from "@/assets/logos/biohackher-logo-web.png";
+import biohackherLogo from "@/assets/brand-face-logo.jpg";
 import heroImage from "@/assets/hero-biohackher.jpg";
 import Navigation from "@/components/Navigation";
 import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
