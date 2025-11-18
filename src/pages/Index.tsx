@@ -33,6 +33,15 @@ const Index = () => {
           <div className="space-y-12">
             {/* Hero Header */}
             <div className="text-center space-y-4">
+              {/* Small decorative hero image */}
+              <div className="flex justify-center mb-4">
+                <img 
+                  src={heroImage} 
+                  alt="Woman embodying vitality and longevity"
+                  className="h-24 w-24 rounded-full object-cover shadow-lg border-2 border-primary/20"
+                />
+              </div>
+              
               <img 
                 src={biohackherLogo} 
                 alt="Biohackher Logo" 
@@ -47,15 +56,6 @@ const Index = () => {
               <h2 className="text-2xl md:text-3xl font-semibold text-foreground">
                 Choose Your Starting Point
               </h2>
-            </div>
-
-            {/* Hero Image */}
-            <div className="max-w-4xl mx-auto">
-              <img 
-                src={heroImage} 
-                alt="Woman embodying vitality and longevity"
-                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
-              />
             </div>
 
             {/* Triple Assessment Cards */}
