@@ -49,16 +49,7 @@ const Index = () => {
                   Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer
                 </p>
                 <p>
-                  Designed exclusively for women, the Biohackher App is your science-backed hub for mastering your healthspan. Forget guesswork. Here, data becomes actionable, longevity becomes personalised, and feeling incredible becomes your new baseline.
-                </p>
-                <p>
-                  Inside, you'll discover powerful assessment tools that reveal where you sit on the healthspan spectrum — from metabolic resilience to stress load, mitochondrial vitality, recovery capacity, hormonal balance, gut health and more. Each insight comes with evidence-based biohacks tailored to your biology, your goals, and your season of life.
-                </p>
-                <p>
-                  No fluff. No overwhelm. Just clear, research-driven strategies to help you boost energy, sharpen your brain, balance your hormones, age vibrantly, and take control of the years ahead.
-                </p>
-                <p>
-                  This is where women rewrite the rules of ageing — with science, self-awareness, and a whole lot of biohacking brilliance.
+                  The Biohackher App is your one-stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology — the place where women go to check in, level up and feel incredible. You'll get science-backed assessments to understand your healthspan, hormones, stress, gut, metabolism and overall vitality, plus personalised biohacks and supplement suggestions that actually work. Everything you need to live well longer is finally in one place. Simple, smart and seriously empowering.
                 </p>
                 <p className="font-semibold text-foreground">
                   Live well longer. Thrive harder. Biohack like a woman.
