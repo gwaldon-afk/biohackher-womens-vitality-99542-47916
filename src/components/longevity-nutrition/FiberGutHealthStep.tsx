@@ -13,17 +13,57 @@ interface FiberGutHealthStepProps {
 }
 
 const plantDiversity = [
-  { value: 1, label: '<10 different plants/week', description: 'Limited microbiome diversity' },
-  { value: 2, label: '10-20 different plants/week', description: 'Moderate diversity' },
-  { value: 3, label: '20-30 different plants/week', description: 'Good diversity' },
-  { value: 4, label: '30+ different plants/week', description: 'Excellent microbiome support' },
+  { 
+    value: 1, 
+    label: '🍞 I eat the same 5-7 foods most days', 
+    description: 'Limited variety — your microbiome craves diversity',
+    example: 'Chicken, rice, bread, pasta, same veggies'
+  },
+  { 
+    value: 2, 
+    label: '🥗 I mix it up but stick to familiar foods', 
+    description: 'Moderate variety — room to expand',
+    example: '10-15 different plants weekly'
+  },
+  { 
+    value: 3, 
+    label: '🌈 I actively seek variety each week', 
+    description: 'Good diversity — microbiome thriving',
+    example: '20-30 different plants weekly'
+  },
+  { 
+    value: 4, 
+    label: '🌿 I prioritize eating 30+ different plants weekly', 
+    description: 'Excellent diversity — optimal microbiome support',
+    example: 'Vegetables, fruits, nuts, seeds, herbs, whole grains'
+  },
 ];
 
 const fiberIntake = [
-  { value: 1, label: '<10g fiber/day', description: 'Well below target' },
-  { value: 2, label: '10-20g fiber/day', description: 'Below optimal' },
-  { value: 3, label: '20-30g fiber/day', description: 'Good baseline' },
-  { value: 4, label: '30g+ fiber/day', description: 'Optimal for gut and longevity' },
+  { 
+    value: 1, 
+    label: '🍕 Mostly refined carbs & protein', 
+    description: 'Fiber gap — gut health at risk',
+    example: 'White bread, pasta, meat, minimal vegetables'
+  },
+  { 
+    value: 2, 
+    label: '🥙 Some vegetables, mostly cooked', 
+    description: 'Below optimal — room for improvement',
+    example: '1-2 servings of veggies per day'
+  },
+  { 
+    value: 3, 
+    label: '🥦 Vegetables with most meals', 
+    description: 'Good foundation — nearing optimal',
+    example: '3-4 servings daily, some raw foods'
+  },
+  { 
+    value: 4, 
+    label: '🥗 Plants dominate my meals', 
+    description: 'Optimal fiber — excellent gut health support',
+    example: '5+ servings daily, diverse colors & types'
+  },
 ];
 
 const gutSymptoms = [
@@ -56,9 +96,9 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
-          <p className="font-bold text-lg">How many different plant foods do you eat weekly?</p>
+          <p className="font-bold text-lg">How varied is your weekly diet?</p>
           <p className="text-sm text-muted-foreground">
-            Count all: vegetables, fruits, legumes, nuts, seeds, herbs, whole grains
+            Think about the variety of plants you eat — vegetables, fruits, legumes, nuts, seeds, herbs, whole grains
           </p>
           {plantDiversity.map((option) => {
             const isSelected = data.plant_diversity_score === option.value;
@@ -72,11 +112,12 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{option.label}</h3>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-base mb-1">{option.label}</h3>
+                    <p className="text-sm text-muted-foreground mb-1">{option.description}</p>
+                    <p className="text-xs text-muted-foreground/80 italic">e.g., {option.example}</p>
                   </div>
-                  {isSelected && <div className="w-5 h-5 rounded-full bg-primary" />}
+                  {isSelected && <div className="w-5 h-5 rounded-full bg-primary flex-shrink-0" />}
                 </div>
               </button>
             );
@@ -84,7 +125,10 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
         </div>
 
         <div className="space-y-3">
-          <p className="font-bold text-lg">What's your daily fiber intake?</p>
+          <p className="font-bold text-lg">What best describes your typical plate?</p>
+          <p className="text-sm text-muted-foreground">
+            How do fiber-rich foods show up in your meals?
+          </p>
           {fiberIntake.map((option) => {
             const isSelected = data.fiber_score === option.value;
             return (
@@ -97,11 +141,12 @@ export function FiberGutHealthStep({ data, onChange }: FiberGutHealthStepProps) 
                 )}
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">{option.label}</h3>
-                    <p className="text-sm text-muted-foreground">{option.description}</p>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-base mb-1">{option.label}</h3>
+                    <p className="text-sm text-muted-foreground mb-1">{option.description}</p>
+                    <p className="text-xs text-muted-foreground/80 italic">e.g., {option.example}</p>
                   </div>
-                  {isSelected && <div className="w-5 h-5 rounded-full bg-primary" />}
+                  {isSelected && <div className="w-5 h-5 rounded-full bg-primary flex-shrink-0" />}
                 </div>
               </button>
             );
