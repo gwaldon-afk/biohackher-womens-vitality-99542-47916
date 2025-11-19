@@ -67,12 +67,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <BenefitsSection />
-
-      {/* Social Proof Section */}
-      <StatisticsBar />
-      
       {/* Assessment CTAs Section */}
       <section className="py-12 md:py-16 bg-gradient-to-b from-muted/20 to-background">
         <div className="max-w-6xl mx-auto px-4">
@@ -130,6 +124,12 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Benefits Section */}
+      <BenefitsSection />
+
+      {/* Social Proof Section */}
+      <StatisticsBar />
       
       <section className="py-12 bg-gradient-to-b from-muted/20 to-background">
         <div className="max-w-6xl mx-auto px-4 space-y-12">
