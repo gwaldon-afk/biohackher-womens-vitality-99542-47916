@@ -865,11 +865,18 @@ const LISResults = () => {
                   </li>
                 </ul>
                 <Button 
-                  onClick={() => navigate('/auth?source=lis-results')} 
+                  onClick={() => {
+                    if (user) {
+                      handleGenerateProtocol();
+                    } else {
+                      navigate('/auth?source=lis-results&returnTo=/lis-results');
+                    }
+                  }} 
                   size="lg"
                   className="text-lg px-8 py-6 h-auto"
+                  disabled={user && generatingProtocol}
                 >
-                  Create Free Account & Unlock Protocol
+                  {user ? 'Unlock Your Protocol' : 'Create Free Account & Unlock Protocol'}
                 </Button>
                 <p className="text-xs text-muted-foreground">
                   Includes FREE 3-day trial • No credit card required

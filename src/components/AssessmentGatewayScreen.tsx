@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, TrendingUp, Heart, Check, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface AssessmentGatewayScreenProps {
   pageName: string;
@@ -9,6 +10,7 @@ interface AssessmentGatewayScreenProps {
 
 export default function AssessmentGatewayScreen({ pageName }: AssessmentGatewayScreenProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const getPageContent = () => {
     switch (pageName) {
@@ -125,13 +127,19 @@ export default function AssessmentGatewayScreen({ pageName }: AssessmentGatewayS
           </div>
 
           <div className="pt-4 border-t">
-            <p className="text-sm text-muted-foreground mb-3">Already have an account?</p>
+            <p className="text-sm text-muted-foreground mb-3">{user ? "Ready to get started?" : "Already have an account?"}</p>
             <Button 
               variant="secondary"
-              onClick={() => navigate('/auth')}
+              onClick={() => {
+                if (user) {
+                  navigate('/dashboard');
+                } else {
+                  navigate('/auth');
+                }
+              }}
               className="w-full"
             >
-              Sign In
+              {user ? 'Go to Dashboard' : 'Sign In'}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
