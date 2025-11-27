@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,7 @@ export const LIS2InitialAssessment = () => {
   const { toast } = useToast();
   const { createOrUpdateProfile } = useHealthProfile();
   const { user } = useAuth();
+  const { updateProgress } = useAssessmentProgress();
 
   const [step, setStep] = useState(1);
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -100,6 +102,14 @@ export const LIS2InitialAssessment = () => {
 
       // Calculate a simple baseline score for demonstration
       const baselineScore = 70 + (formData.social_engagement_baseline * 2);
+
+      // Update assessment progress tracking
+      if (user) {
+        updateProgress({
+          lis_completed: true,
+          lis_completed_at: new Date().toISOString(),
+        });
+      }
 
       toast({
         title: "Profile Created!",

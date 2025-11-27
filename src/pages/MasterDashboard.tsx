@@ -2,15 +2,28 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import { Navigate } from "react-router-dom";
-import { Trophy, TrendingUp, Activity, Package, Heart, Home } from "lucide-react";
+import { Trophy, TrendingUp, Activity, Package, Heart, Home, Sparkles, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const MasterDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { progress, isLoading, allComplete } = useAssessmentProgress();
+
+  // Fetch AI-powered cross-assessment insights
+  const { data: aiInsights, isLoading: aiLoading } = useQuery({
+    queryKey: ['cross-assessment-insights', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('analyze-cross-assessments');
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && allComplete,
+  });
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -118,27 +131,59 @@ const MasterDashboard = () => {
           <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
+                <Sparkles className="h-5 w-5 text-primary" />
                 How Your Scores Connect
               </CardTitle>
               <CardDescription>
-                Understanding the relationships between your assessments
+                AI-powered analysis of your complete health profile
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                Your complete health profile shows how different aspects of your wellbeing influence each other. 
-                By completing all three assessments, you've unlocked personalized insights that consider your 
-                longevity impact, nutritional status, and hormonal health together.
-              </p>
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                <p className="font-semibold mb-2">Key Connections Identified:</p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>• Your nutrition choices directly impact your LIS score and biological aging</li>
-                  <li>• Hormonal balance influences your energy levels and recovery</li>
-                  <li>• Combined protocols address root causes across all three dimensions</li>
-                </ul>
-              </div>
+              {aiLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <span className="ml-2 text-muted-foreground">Generating personalized insights...</span>
+                </div>
+              ) : (
+                <>
+                  <p className="text-muted-foreground">
+                    Your complete health profile shows how different aspects of your wellbeing influence each other. 
+                    By completing all three assessments, you've unlocked personalized insights that consider your 
+                    longevity impact, nutritional status, and hormonal health together.
+                  </p>
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <p className="font-semibold mb-3">Key Connections Identified:</p>
+                    <ul className="space-y-2">
+                      {aiInsights?.insights?.map((insight: string, index: number) => (
+                        <li key={index} className="text-sm text-muted-foreground flex gap-2">
+                          <TrendingUp className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                          <span>{insight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {aiInsights?.priorities && aiInsights.priorities.length > 0 && (
+                    <div className="bg-secondary/10 border border-secondary/30 rounded-lg p-4 mt-4">
+                      <p className="font-semibold mb-3">Priority Actions:</p>
+                      <ul className="space-y-2">
+                        {aiInsights.priorities.map((priority: string, index: number) => (
+                          <li key={index} className="text-sm text-muted-foreground flex gap-2">
+                            <span className="text-secondary font-bold flex-shrink-0">{index + 1}.</span>
+                            <span>{priority}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {aiInsights?.synergies && (
+                    <div className="bg-muted/30 rounded-lg p-4 mt-4">
+                      <p className="text-sm text-muted-foreground italic">
+                        {aiInsights.synergies}
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         </section>
