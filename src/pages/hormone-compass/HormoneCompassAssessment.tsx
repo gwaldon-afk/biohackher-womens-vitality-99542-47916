@@ -10,11 +10,13 @@ import { HORMONE_COMPASS_ASSESSMENT, calculateHormoneHealth } from "@/data/hormo
 import { Moon, ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 
 export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { trackSymptom: _trackSymptom } = useHormoneCompass();
+  const { updateProgress } = useAssessmentProgress();
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -98,6 +100,12 @@ export default function HormoneCompassAssessment() {
         .single();
 
       if (error) throw error;
+
+      // Update assessment progress tracking
+      updateProgress({
+        hormone_completed: true,
+        hormone_completed_at: new Date().toISOString(),
+      });
 
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error: any) {

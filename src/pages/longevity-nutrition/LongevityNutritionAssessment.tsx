@@ -23,10 +23,12 @@ import { CookingConfidenceStep } from "@/components/longevity-nutrition/CookingC
 import { MetabolicSymptomsStep } from "@/components/longevity-nutrition/MetabolicSymptomsStep";
 import { calculateLongevityNutritionScore } from "@/utils/longevityNutritionScoring";
 import { toast } from "sonner";
+import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 
 export default function LongevityNutritionAssessment() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { updateProgress } = useAssessmentProgress();
   const [currentStep, setCurrentStep] = useState(1);
   const [assessmentData, setAssessmentData] = useState<any>({});
 
@@ -139,6 +141,12 @@ export default function LongevityNutritionAssessment() {
         // 3. Generate daily nutrition actions
         const { generateAndSaveNutritionActions } = await import('@/services/nutritionActionService');
         await generateAndSaveNutritionActions(user.id, assessmentData, cravingAverage);
+
+        // 4. Update assessment progress tracking
+        updateProgress({
+          nutrition_completed: true,
+          nutrition_completed_at: new Date().toISOString(),
+        });
       }
 
       navigate(`/longevity-nutrition/results?id=${data.id}`);
