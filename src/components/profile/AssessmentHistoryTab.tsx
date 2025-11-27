@@ -33,7 +33,7 @@ import { SmartAssessmentTriage } from "./SmartAssessmentTriage";
 
 export interface AssessmentRecord {
   id: string;
-  type: "lis" | "hormone_compass" | "symptom";
+  type: "lis" | "hormone_compass" | "symptom" | "nutrition" | "pillar";
   title: string;
   score: number | null;
   completedAt: Date;
@@ -61,10 +61,14 @@ export const AssessmentHistoryTab = () => {
     lis: boolean;
     hormone_compass: boolean;
     symptom: boolean;
+    nutrition: boolean;
+    pillar: boolean;
   }>({
     lis: true,
     hormone_compass: true,
     symptom: true,
+    nutrition: true,
+    pillar: true,
   });
 
   useEffect(() => {
@@ -89,6 +93,20 @@ export const AssessmentHistoryTab = () => {
 
         const { data: symptomData } = await supabase
           .from("symptom_assessments")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("completed_at", { ascending: false })
+          .limit(10);
+
+        const { data: nutritionData } = await supabase
+          .from("longevity_nutrition_assessments")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("completed_at", { ascending: false })
+          .limit(10);
+
+        const { data: pillarData } = await supabase
+          .from("user_assessment_completions")
           .select("*")
           .eq("user_id", user.id)
           .order("completed_at", { ascending: false })
@@ -129,6 +147,30 @@ export const AssessmentHistoryTab = () => {
             completedAt: new Date(item.completed_at),
             resultsPath: `/symptom-assessment/${item.symptom_type}`,
             retakePath: `/symptom-assessment/${item.symptom_type}`,
+          });
+        });
+
+        nutritionData?.forEach((item) => {
+          allAssessments.push({
+            id: item.id,
+            type: "nutrition",
+            title: "Longevity Nutrition",
+            score: item.longevity_nutrition_score,
+            completedAt: new Date(item.completed_at),
+            resultsPath: `/longevity-nutrition/results?id=${item.id}`,
+            retakePath: "/longevity-nutrition",
+          });
+        });
+
+        pillarData?.forEach((item) => {
+          allAssessments.push({
+            id: item.id,
+            type: "pillar",
+            title: `Pillar Assessment: ${item.pillar}`,
+            score: item.score,
+            completedAt: new Date(item.completed_at),
+            resultsPath: `/assessment-results?id=${item.id}`,
+            retakePath: `/pillars`,
           });
         });
 
@@ -320,6 +362,18 @@ export const AssessmentHistoryTab = () => {
                         onCheckedChange={(checked) => setTypeFilters((prev) => ({ ...prev, symptom: checked }))}
                       >
                         Symptom
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={typeFilters.nutrition}
+                        onCheckedChange={(checked) => setTypeFilters((prev) => ({ ...prev, nutrition: checked }))}
+                      >
+                        Nutrition
+                      </DropdownMenuCheckboxItem>
+                      <DropdownMenuCheckboxItem
+                        checked={typeFilters.pillar}
+                        onCheckedChange={(checked) => setTypeFilters((prev) => ({ ...prev, pillar: checked }))}
+                      >
+                        Pillar
                       </DropdownMenuCheckboxItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

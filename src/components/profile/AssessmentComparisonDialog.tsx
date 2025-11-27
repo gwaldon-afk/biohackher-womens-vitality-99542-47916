@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 interface ComparisonDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  assessmentType: "lis" | "hormone_compass" | "symptom";
+  assessmentType: "lis" | "hormone_compass" | "symptom" | "nutrition" | "pillar";
   assessmentTitle: string;
 }
 

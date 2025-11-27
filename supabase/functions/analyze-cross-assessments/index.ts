@@ -33,8 +33,8 @@ serve(async (req) => {
 
     console.log('Fetching assessment data for user:', user.id);
 
-    // Fetch all three assessment data
-    const [lisResult, nutritionResult, hormoneResult] = await Promise.all([
+    // Fetch all assessment data including targeted assessments
+    const [lisResult, nutritionResult, hormoneResult, symptomResult, pillarResult] = await Promise.all([
       supabase
         .from('daily_scores')
         .select('longevity_impact_score, biological_age_impact, date')
@@ -56,31 +56,57 @@ serve(async (req) => {
         .order('calculated_at', { ascending: false })
         .limit(1)
         .single(),
+      supabase
+        .from('symptom_assessments')
+        .select('symptom_type, overall_score, score_category, completed_at')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false })
+        .limit(5),
+      supabase
+        .from('user_assessment_completions')
+        .select('pillar, score, completed_at')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false })
+        .limit(10),
     ]);
 
     const lisData = lisResult.data;
     const nutritionData = nutritionResult.data;
     const hormoneData = hormoneResult.data;
+    const symptomData = symptomResult.data || [];
+    const pillarData = pillarResult.data || [];
 
     console.log('Assessment data:', { 
       lis: !!lisData, 
       nutrition: !!nutritionData, 
-      hormone: !!hormoneData 
+      hormone: !!hormoneData,
+      symptoms: symptomData.length,
+      pillars: pillarData.length
     });
+
+    // Build pillar assessment summary
+    const pillarSummary = pillarData.length > 0
+      ? pillarData.map((p: any) => `${p.pillar}: ${p.score}/100`).join(', ')
+      : 'None completed';
+
+    // Build symptom assessment summary
+    const symptomSummary = symptomData.length > 0
+      ? symptomData.map((s: any) => `${s.symptom_type}: ${s.overall_score}/100 (${s.score_category})`).join(', ')
+      : 'None completed';
 
     // If no AI key, return basic analysis
     if (!openAIApiKey) {
       console.log('No OpenAI key, returning basic analysis');
       return new Response(JSON.stringify({
-        insights: generateBasicInsights(lisData, nutritionData, hormoneData),
-        connections: generateBasicConnections(lisData, nutritionData, hormoneData),
+        insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
+        connections: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
     // Generate AI-powered consolidated analysis
-    const prompt = `You are a women's health and longevity expert. Analyze these three assessment results and provide consolidated insights:
+    const prompt = `You are a women's health and longevity expert. Analyze these assessment results and provide consolidated insights:
 
 LIS Assessment: ${lisData ? `Score ${lisData.longevity_impact_score}, Biological Age Impact ${lisData.biological_age_impact}` : 'Not completed'}
 
@@ -88,8 +114,12 @@ Longevity Nutrition: ${nutritionData ? `Score ${nutritionData.longevity_nutritio
 
 Hormone Compass: ${hormoneData ? `Stage: ${hormoneData.stage}, Confidence ${hormoneData.confidence_score}%` : 'Not completed'}
 
+Pillar Assessments: ${pillarSummary}
+
+Symptom Assessments: ${symptomSummary}
+
 Provide:
-1. Three key cross-assessment insights showing how these dimensions interact
+1. Three key cross-assessment insights showing how these dimensions interact (including pillar and symptom patterns)
 2. Top priority recommendations that address multiple areas simultaneously
 3. Expected synergistic benefits when all protocols are followed
 
@@ -130,8 +160,8 @@ Format as JSON: { "insights": ["insight1", "insight2", "insight3"], "priorities"
     } catch (e) {
       console.error('Failed to parse AI response, using basic insights');
       parsedAnalysis = {
-        insights: generateBasicInsights(lisData, nutritionData, hormoneData),
-        priorities: generateBasicConnections(lisData, nutritionData, hormoneData),
+        insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
+        priorities: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
         synergies: "Your combined protocols work together to optimize longevity, nutrition, and hormonal health."
       };
     }
@@ -156,11 +186,11 @@ Format as JSON: { "insights": ["insight1", "insight2", "insight3"], "priorities"
   }
 });
 
-function generateBasicInsights(lisData: any, nutritionData: any, hormoneData: any): string[] {
+function generateBasicInsights(lisData: any, nutritionData: any, hormoneData: any, symptomData: any[], pillarData: any[]): string[] {
   const insights = [
     "Your nutrition choices directly impact your LIS score and biological aging",
     "Hormonal balance influences your energy levels and recovery capacity",
-    "Combined protocols address root causes across all three health dimensions"
+    "Combined protocols address root causes across all health dimensions"
   ];
 
   if (nutritionData && nutritionData.protein_score < 3) {
@@ -171,13 +201,33 @@ function generateBasicInsights(lisData: any, nutritionData: any, hormoneData: an
     insights.push("Inflammation markers suggest gut-hormone-aging connection requiring integrated approach");
   }
 
+  // Add pillar-specific insights
+  const lowPillars = pillarData.filter((p: any) => p.score < 50);
+  if (lowPillars.length > 0) {
+    insights.push(`Your ${lowPillars[0].pillar} pillar needs attention and may be impacting your overall longevity score`);
+  }
+
+  // Add symptom-specific insights
+  const highSeveritySymptoms = symptomData.filter((s: any) => s.overall_score < 40);
+  if (highSeveritySymptoms.length > 0) {
+    insights.push(`${highSeveritySymptoms[0].symptom_type} symptoms are affecting multiple health dimensions`);
+  }
+
   return insights;
 }
 
-function generateBasicConnections(lisData: any, nutritionData: any, hormoneData: any): string[] {
-  return [
+function generateBasicConnections(lisData: any, nutritionData: any, hormoneData: any, symptomData: any[], pillarData: any[]): string[] {
+  const priorities = [
     "Prioritize protein intake (30g+ per meal) to support muscle health, hormone production, and longevity",
     "Address inflammation through nutrition to improve both gut health and hormone balance",
-    "Optimize sleep quality and stress management as they impact all three assessment areas"
+    "Optimize sleep quality and stress management as they impact all assessment areas"
   ];
+
+  // Add pillar-specific priorities
+  const lowestPillar = pillarData.sort((a: any, b: any) => a.score - b.score)[0];
+  if (lowestPillar && lowestPillar.score < 60) {
+    priorities.unshift(`Focus on ${lowestPillar.pillar} pillar improvements to boost overall health`);
+  }
+
+  return priorities;
 }
