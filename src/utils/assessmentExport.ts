@@ -2,7 +2,7 @@ import { format } from "date-fns";
 
 interface AssessmentRecord {
   id: string;
-  type: "lis" | "hormone_compass" | "symptom";
+  type: "lis" | "hormone_compass" | "symptom" | "nutrition" | "pillar";
   title: string;
   score: number | null;
   completedAt: Date;
