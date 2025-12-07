@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2, Target, Home } from 'lucide-react';
+import { Sparkles, Lock, TrendingUp, Activity, Brain, Heart, Users, Moon, AlertCircle, TrendingDown, Mail, Share2, Target, Home, CheckCircle2, AlertTriangle, Lightbulb } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -501,6 +501,82 @@ const LISResults = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Consolidated LIS Summary Card */}
+      <Card className="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
+        <CardContent className="pt-6">
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
+            Your Longevity Summary
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Strengths */}
+            <div>
+              <h4 className="font-semibold mb-3 flex items-center gap-2 text-green-600">
+                <CheckCircle2 className="h-4 w-4" />
+                Your Strengths
+              </h4>
+              {getTopStrengths().slice(0, 2).map((item) => {
+                const pillar = item[0] as string;
+                const pillarScore = item[1] as number;
+                return (
+                  <div key={pillar} className="flex justify-between items-center text-sm mb-2">
+                    <span className="capitalize">{pillar}</span>
+                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">{pillarScore}</Badge>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Priority Areas */}
+            <div>
+              <h4 className="font-semibold mb-3 flex items-center gap-2 text-amber-600">
+                <AlertTriangle className="h-4 w-4" />
+                Priority Areas
+              </h4>
+              {getTopImprovements().slice(0, 2).map((item) => {
+                const pillar = item[0] as string;
+                const pillarScore = item[1] as number;
+                return (
+                  <div key={pillar} className="flex justify-between items-center text-sm mb-2">
+                    <span className="capitalize">{pillar}</span>
+                    <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">{pillarScore}</Badge>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Key Insight */}
+            <div className="p-3 bg-background rounded-lg border">
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-primary" />
+                Key Insight
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                {(() => {
+                  const lowestPillar = getTopImprovements()[0];
+                  const lowestScore = lowestPillar ? (lowestPillar[1] as number) : 0;
+                  const lowestName = lowestPillar ? (lowestPillar[0] as string) : '';
+                  const improvementAreas = getTopImprovements().filter((item) => (item[1] as number) < 50);
+                  
+                  if (displayScore < 50) {
+                    return `Your longevity fundamentals need attention. Focus on ${lowestName} first for the biggest impact.`;
+                  } else if (lowestScore < 40) {
+                    return `Your ${lowestName} score of ${lowestScore} is significantly impacting your overall longevity potential.`;
+                  } else if (improvementAreas.length >= 2) {
+                    return `Multiple pillars below optimal. A comprehensive protocol addressing ${improvementAreas[0][0]} and ${improvementAreas[1][0]} will have the biggest impact.`;
+                  } else if (lowestScore >= 60) {
+                    return `Strong foundation across all pillars. Fine-tune ${lowestName} to maximize your longevity potential.`;
+                  } else {
+                    return `Focus on improving your ${lowestName} score to boost your overall longevity trajectory.`;
+                  }
+                })()}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Biological Age Card - For ALL users with age data */}
       {chronologicalAge > 0 && bioAgeData && (
