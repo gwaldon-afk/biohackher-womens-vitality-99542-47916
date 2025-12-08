@@ -8,6 +8,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
 import { DevModeToggle } from "@/components/DevModeToggle";
+import { DevTestingPanel } from "@/components/dev/DevTestingPanel";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 import { ProtocolRecommendationsNotifier } from "@/components/ProtocolRecommendationsNotifier";
@@ -264,6 +265,7 @@ const App = () => (
           </Routes>
           <FloatingAIAssistant />
           <DevModeToggle />
+          <DevTestingPanel />
         </ErrorBoundary>
       </BrowserRouter>
       </TooltipProvider>
