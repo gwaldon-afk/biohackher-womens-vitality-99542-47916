@@ -1077,6 +1077,15 @@ export default function GuestLISAssessment() {
           .update({ onboarding_completed: true })
           .eq('user_id', user.id);
 
+        // 6. Trigger incremental AI analysis (non-blocking)
+        try {
+          await supabase.functions.invoke('analyze-cross-assessments', {
+            body: { trigger_assessment: 'lis' }
+          });
+        } catch (e) {
+          console.error('Analysis trigger failed:', e);
+        }
+
         // Navigate to results page with score data
         setTimeout(() => {
           if (returnTo) {

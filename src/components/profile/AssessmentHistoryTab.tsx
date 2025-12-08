@@ -5,13 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare, Search, SlidersHorizontal, Download } from "lucide-react";
+import { Activity, Sparkles, Calendar, ExternalLink, RotateCcw, GitCompare, Search, SlidersHorizontal, Download, FileText } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AssessmentComparisonDialog } from "./AssessmentComparisonDialog";
 import { AssessmentReminders } from "./AssessmentReminders";
 import { AssessmentProgressTimeline } from "./AssessmentProgressTimeline";
+import { AssessmentResponsesDialog } from "./AssessmentResponsesDialog";
 import { exportAssessmentHistoryCSV } from "@/utils/assessmentExport";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -54,6 +55,12 @@ export const AssessmentHistoryTab = () => {
     type: "lis" | "hormone_compass" | "symptom";
     title: string;
   }>({ open: false, type: "lis", title: "" });
+  const [responsesDialog, setResponsesDialog] = useState<{
+    open: boolean;
+    assessmentId: string;
+    type: "lis" | "hormone_compass" | "symptom" | "nutrition" | "pillar";
+    title: string;
+  }>({ open: false, assessmentId: "", type: "lis", title: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "score">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -458,6 +465,20 @@ export const AssessmentHistoryTab = () => {
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => setResponsesDialog({
+                              open: true,
+                              assessmentId: assessment.id,
+                              type: assessment.type,
+                              title: assessment.title
+                            })}
+                            className="gap-2"
+                          >
+                            <FileText className="h-3 w-3" />
+                            Responses
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => navigate(assessment.retakePath)}
                             className="gap-2"
                           >
@@ -489,6 +510,14 @@ export const AssessmentHistoryTab = () => {
         onOpenChange={(open) => setComparisonDialog({ ...comparisonDialog, open })}
         assessmentType={comparisonDialog.type}
         assessmentTitle={comparisonDialog.title}
+      />
+
+      <AssessmentResponsesDialog
+        open={responsesDialog.open}
+        onOpenChange={(open) => setResponsesDialog({ ...responsesDialog, open })}
+        assessmentId={responsesDialog.assessmentId}
+        assessmentType={responsesDialog.type}
+        assessmentTitle={responsesDialog.title}
       />
     </>
   );
