@@ -146,15 +146,21 @@ export const useTestPersonas = () => {
               .insert({
                 user_id: persona.testUserId,
                 session_id: `test-session-${Date.now()}`,
-                overall_score: persona.nutritionData.overallScore,
-                grade: persona.nutritionData.grade,
-                pillar_scores: {
-                  body: persona.nutritionData.proteinScore * 20,
-                  brain: (5 - persona.nutritionData.inflammationScore) * 20,
-                  balance: persona.nutritionData.hydrationScore * 20,
-                  beauty: (5 - persona.nutritionData.gutSymptomScore) * 20,
-                },
-                assessment_data: persona.nutritionData.answers,
+                longevity_nutrition_score: persona.nutritionData.overallScore,
+                protein_score: persona.nutritionData.proteinScore,
+                fiber_score: persona.nutritionData.fiberScore,
+                plant_diversity_score: persona.nutritionData.plantDiversityScore,
+                gut_symptom_score: persona.nutritionData.gutSymptomScore,
+                inflammation_score: persona.nutritionData.inflammationScore,
+                craving_pattern: persona.nutritionData.cravingPattern,
+                hydration_score: persona.nutritionData.hydrationScore,
+                nutrition_identity_type: persona.nutritionData.eatingPersonality,
+                age: persona.demographics.age,
+                height_cm: persona.demographics.height,
+                weight_kg: persona.demographics.weight,
+                activity_level: persona.demographics.activityLevel,
+                goal_primary: persona.demographics.primaryGoal,
+                menopause_stage: persona.demographics.menopauseStage,
                 completed_at: new Date().toISOString(),
               });
 
@@ -182,7 +188,7 @@ export const useTestPersonas = () => {
                   metabolic_health: persona.hormoneData.metabolicHealthScore,
                   intimate_wellness: persona.hormoneData.intimateWellnessScore,
                 },
-                assessment_id: `test-assessment-${Date.now()}`,
+                assessment_id: crypto.randomUUID(),
                 calculated_at: new Date().toISOString(),
               });
 

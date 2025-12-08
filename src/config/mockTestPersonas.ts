@@ -101,7 +101,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test1',
     name: 'Test1',
     description: '35yo, Weight Loss focus, Struggling health state',
-    testUserId: 'test-user-1',
+    testUserId: '00000000-0000-0000-0000-000000000001',
     demographics: {
       age: 35,
       dateOfBirth: getDateOfBirth(35),
@@ -190,7 +190,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test2',
     name: 'Test2',
     description: '35yo, Energy focus, Fair health state',
-    testUserId: 'test-user-2',
+    testUserId: '00000000-0000-0000-0000-000000000002',
     demographics: {
       age: 35,
       dateOfBirth: getDateOfBirth(35),
@@ -279,7 +279,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test3',
     name: 'Test3',
     description: '45yo, Hormone Balance focus, Fair health state',
-    testUserId: 'test-user-3',
+    testUserId: '00000000-0000-0000-0000-000000000003',
     demographics: {
       age: 45,
       dateOfBirth: getDateOfBirth(45),
@@ -368,7 +368,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test4',
     name: 'Test4',
     description: '45yo, Brain Health focus, Good health state',
-    testUserId: 'test-user-4',
+    testUserId: '00000000-0000-0000-0000-000000000004',
     demographics: {
       age: 45,
       dateOfBirth: getDateOfBirth(45),
@@ -457,7 +457,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test5',
     name: 'Test5',
     description: '60yo, Sleep focus, Fair health state',
-    testUserId: 'test-user-5',
+    testUserId: '00000000-0000-0000-0000-000000000005',
     demographics: {
       age: 60,
       dateOfBirth: getDateOfBirth(60),
@@ -546,7 +546,7 @@ export const TEST_PERSONAS: TestPersona[] = [
     id: 'test6',
     name: 'Test6',
     description: '60yo, Longevity focus, Optimal health state',
-    testUserId: 'test-user-6',
+    testUserId: '00000000-0000-0000-0000-000000000006',
     demographics: {
       age: 60,
       dateOfBirth: getDateOfBirth(60),
@@ -643,5 +643,5 @@ export const getTestUserIds = (): string[] => {
 
 // Check if a user ID is a test user
 export const isTestUserId = (userId: string): boolean => {
-  return userId.startsWith('test-user-');
+  return userId.startsWith('00000000-0000-0000-0000-00000000000');
 };
