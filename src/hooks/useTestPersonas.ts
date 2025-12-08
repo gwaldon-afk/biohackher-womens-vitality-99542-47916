@@ -13,6 +13,64 @@ interface PersonaOverrides {
   [personaId: string]: Partial<TestPersona>;
 }
 
+// === Database Value Mapping Functions ===
+// These map test persona values to valid database constraint values
+
+const mapGoalToDb = (goal: string): string => {
+  const mapping: Record<string, string> = {
+    'weight_loss': 'fat-loss',
+    'energy': 'energy',
+    'hormone_balance': 'menopause-support',
+    'cognitive': 'cognitive-performance',
+    'sleep': 'longevity',
+    'longevity': 'longevity',
+  };
+  return mapping[goal] || 'longevity';
+};
+
+const mapEatingPersonalityToDb = (personality: string): string => {
+  const mapping: Record<string, string> = {
+    'emotional_eater': 'emotional-eater',
+    'busy_grazer': 'grazer',
+    'mindful_but_inconsistent': 'grazer',
+    'health_conscious': 'high-protein-performer',
+    'traditional_homecook': 'gut-healer',
+    'biohacker': 'high-protein-performer',
+  };
+  return mapping[personality] || 'grazer';
+};
+
+const mapActivityLevelToDb = (level: string): string => {
+  const mapping: Record<string, string> = {
+    'sedentary': 'sedentary',
+    'light': 'light',
+    'moderate': 'moderate',
+    'active': 'active',
+    'very_active': 'athletic',
+  };
+  return mapping[level] || 'moderate';
+};
+
+const mapMenopauseStageToDb = (stage: string): string => {
+  const mapping: Record<string, string> = {
+    'cycling': 'cycling',
+    'perimenopause': 'perimenopause',
+    'postmenopause': 'post-menopause',
+  };
+  return mapping[stage] || 'perimenopause';
+};
+
+const mapHealthLevelToDb = (level: string): string => {
+  const mapping: Record<string, string> = {
+    'feeling_great': 'feeling-great',
+    'doing_well': 'doing-well',
+    'having_challenges': 'having-challenges',
+    'really_struggling': 'really-struggling',
+    'need_support': 'need-support-now',
+  };
+  return mapping[level] || 'having-challenges';
+};
+
 export const useTestPersonas = () => {
   const [overrides, setOverrides] = useState<PersonaOverrides>({});
   const [isRunning, setIsRunning] = useState(false);
@@ -135,7 +193,7 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('daily_scores')
               .upsert({
-                user_id: userId, // Use current user's ID
+                user_id: userId,
                 date: new Date().toISOString().split('T')[0],
                 longevity_impact_score: persona.lisData.overallScore,
                 biological_age_impact: persona.lisData.biologicalAgeOffset,
@@ -152,7 +210,7 @@ export const useTestPersonas = () => {
                   _test_persona: persona.id,
                   _test_source: 'dev_test_panel'
                 },
-                source_type: 'dev_test_panel',
+                source_type: 'manual_entry', // Valid constraint value
               }, { onConflict: 'user_id,date' });
 
             if (error) throw error;
@@ -168,7 +226,7 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('longevity_nutrition_assessments')
               .insert({
-                user_id: userId, // Use current user's ID
+                user_id: userId,
                 session_id: `test-${persona.id}-${Date.now()}`,
                 longevity_nutrition_score: persona.nutritionData.overallScore,
                 protein_score: persona.nutritionData.proteinScore,
@@ -178,13 +236,13 @@ export const useTestPersonas = () => {
                 inflammation_score: persona.nutritionData.inflammationScore,
                 craving_pattern: persona.nutritionData.cravingPattern,
                 hydration_score: persona.nutritionData.hydrationScore,
-                nutrition_identity_type: persona.nutritionData.eatingPersonality,
+                nutrition_identity_type: mapEatingPersonalityToDb(persona.nutritionData.eatingPersonality),
                 age: persona.demographics.age,
                 height_cm: persona.demographics.height,
                 weight_kg: persona.demographics.weight,
-                activity_level: persona.demographics.activityLevel,
-                goal_primary: persona.demographics.primaryGoal,
-                menopause_stage: persona.demographics.menopauseStage,
+                activity_level: mapActivityLevelToDb(persona.demographics.activityLevel),
+                goal_primary: mapGoalToDb(persona.demographics.primaryGoal),
+                menopause_stage: mapMenopauseStageToDb(persona.demographics.menopauseStage),
                 completed_at: new Date().toISOString(),
               });
 
@@ -201,8 +259,8 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('hormone_compass_stages')
               .insert({
-                user_id: userId, // Use current user's ID
-                stage: persona.demographics.menopauseStage,
+                user_id: userId,
+                stage: mapHealthLevelToDb(persona.hormoneData.healthLevel), // Health level, NOT menopause stage
                 confidence_score: 0.85,
                 hormone_indicators: {
                   energy_vitality: persona.hormoneData.energyVitalityScore,
