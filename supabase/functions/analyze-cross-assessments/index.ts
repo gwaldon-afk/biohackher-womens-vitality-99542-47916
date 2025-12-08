@@ -15,7 +15,7 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -31,20 +31,29 @@ serve(async (req) => {
       });
     }
 
-    console.log('Fetching assessment data for user:', user.id);
+    // Parse optional trigger_assessment from body
+    let triggerAssessment = null;
+    try {
+      const body = await req.json();
+      triggerAssessment = body?.trigger_assessment || null;
+    } catch {
+      // No body provided, that's fine
+    }
+
+    console.log('Fetching assessment data for user:', user.id, 'Trigger:', triggerAssessment);
 
     // Fetch all assessment data including targeted assessments
     const [lisResult, nutritionResult, hormoneResult, symptomResult, pillarResult] = await Promise.all([
       supabase
         .from('daily_scores')
-        .select('longevity_impact_score, biological_age_impact, date')
+        .select('longevity_impact_score, biological_age_impact, date, questionnaire_data')
         .eq('user_id', user.id)
         .order('date', { ascending: false })
         .limit(1)
         .single(),
       supabase
         .from('longevity_nutrition_assessments')
-        .select('longevity_nutrition_score, protein_score, fiber_score, inflammation_score, completed_at')
+        .select('*')
         .eq('user_id', user.id)
         .order('completed_at', { ascending: false })
         .limit(1)
@@ -76,13 +85,16 @@ serve(async (req) => {
     const symptomData = symptomResult.data || [];
     const pillarData = pillarResult.data || [];
 
-    console.log('Assessment data:', { 
-      lis: !!lisData, 
-      nutrition: !!nutritionData, 
+    // Count completed assessments
+    const completedAssessments = {
+      lis: !!lisData,
+      nutrition: !!nutritionData,
       hormone: !!hormoneData,
       symptoms: symptomData.length,
       pillars: pillarData.length
-    });
+    };
+
+    console.log('Assessment data:', completedAssessments);
 
     // Build pillar assessment summary
     const pillarSummary = pillarData.length > 0
@@ -94,79 +106,170 @@ serve(async (req) => {
       ? symptomData.map((s: any) => `${s.symptom_type}: ${s.overall_score}/100 (${s.score_category})`).join(', ')
       : 'None completed';
 
-    // If no AI key, return basic analysis
-    if (!openAIApiKey) {
-      console.log('No OpenAI key, returning basic analysis');
-      return new Response(JSON.stringify({
-        insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
-        connections: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Generate AI-powered consolidated analysis
-    const prompt = `You are a women's health and longevity expert. Analyze these assessment results and provide consolidated insights:
-
-LIS Assessment: ${lisData ? `Score ${lisData.longevity_impact_score}, Biological Age Impact ${lisData.biological_age_impact}` : 'Not completed'}
-
-Longevity Nutrition: ${nutritionData ? `Score ${nutritionData.longevity_nutrition_score}, Protein ${nutritionData.protein_score}/5, Fiber ${nutritionData.fiber_score}/5, Inflammation ${nutritionData.inflammation_score}/5` : 'Not completed'}
-
-Hormone Compass: ${hormoneData ? `Stage: ${hormoneData.stage}, Confidence ${hormoneData.confidence_score}%` : 'Not completed'}
-
-Pillar Assessments: ${pillarSummary}
-
-Symptom Assessments: ${symptomSummary}
-
-Provide:
-1. Three key cross-assessment insights showing how these dimensions interact (including pillar and symptom patterns)
-2. Top priority recommendations that address multiple areas simultaneously
-3. Expected synergistic benefits when all protocols are followed
-
-Format as JSON: { "insights": ["insight1", "insight2", "insight3"], "priorities": ["priority1", "priority2"], "synergies": "explanation" }`;
-
-    console.log('Calling OpenAI API...');
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: 'You are a women\'s health and longevity expert providing cross-assessment insights.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000,
-      }),
-    });
-
-    if (!openAIResponse.ok) {
-      const errorText = await openAIResponse.text();
-      console.error('OpenAI API error:', errorText);
-      throw new Error(`OpenAI API error: ${openAIResponse.status}`);
-    }
-
-    const aiData = await openAIResponse.json();
-    const aiContent = aiData.choices[0].message.content;
-    
-    console.log('AI response received');
-    
+    // Generate insights (AI-powered if available, otherwise basic)
     let parsedAnalysis;
-    try {
-      parsedAnalysis = JSON.parse(aiContent);
-    } catch (e) {
-      console.error('Failed to parse AI response, using basic insights');
+    
+    if (lovableApiKey) {
+      // Use Lovable AI for evidence-based analysis
+      const prompt = buildEvidenceBasedPrompt(
+        lisData, 
+        nutritionData, 
+        hormoneData, 
+        symptomData, 
+        pillarData, 
+        pillarSummary, 
+        symptomSummary,
+        triggerAssessment
+      );
+
+      console.log('Calling Lovable AI Gateway...');
+      
+      try {
+        const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${lovableApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              { 
+                role: 'system', 
+                content: `You are a women's health and longevity expert with deep knowledge of peer-reviewed research. 
+You analyze health assessment data and provide evidence-based insights referencing established longevity science.
+Always organize findings by the 4 pillars: BEAUTY (skin, hair, anti-aging), BRAIN (cognitive, focus, mood), 
+BODY (physical performance, recovery, structure), and BALANCE (hormones, stress, sleep).
+Provide actionable, empathetic guidance that empowers women to optimize their healthspan.` 
+              },
+              { role: 'user', content: prompt }
+            ],
+          }),
+        });
+
+        if (!aiResponse.ok) {
+          const errorText = await aiResponse.text();
+          console.error('Lovable AI error:', aiResponse.status, errorText);
+          throw new Error(`AI API error: ${aiResponse.status}`);
+        }
+
+        const aiData = await aiResponse.json();
+        const aiContent = aiData.choices[0].message.content;
+        
+        console.log('AI response received, parsing...');
+        
+        // Try to parse JSON from AI response
+        try {
+          // Extract JSON from response (it might be wrapped in markdown code blocks)
+          const jsonMatch = aiContent.match(/```json\s*([\s\S]*?)\s*```/) || 
+                           aiContent.match(/\{[\s\S]*\}/);
+          const jsonStr = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : aiContent;
+          parsedAnalysis = JSON.parse(jsonStr);
+        } catch (parseError) {
+          console.error('Failed to parse AI response as JSON, using structured extraction');
+          // Fallback: create structured response from text
+          parsedAnalysis = {
+            insights: [aiContent.substring(0, 500)],
+            priorities: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
+            synergies: "Your combined health data reveals interconnected patterns across your assessments.",
+            pillar_breakdown: generatePillarBreakdown(lisData, nutritionData, hormoneData),
+            completed_count: Object.values(completedAssessments).filter(v => v === true || (typeof v === 'number' && v > 0)).length
+          };
+        }
+      } catch (aiError) {
+        console.error('AI call failed, falling back to basic insights:', aiError);
+        parsedAnalysis = {
+          insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
+          priorities: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
+          synergies: "Your combined protocols work together to optimize longevity, nutrition, and hormonal health.",
+          pillar_breakdown: generatePillarBreakdown(lisData, nutritionData, hormoneData),
+          completed_count: Object.values(completedAssessments).filter(v => v === true || (typeof v === 'number' && v > 0)).length
+        };
+      }
+    } else {
+      console.log('No Lovable API key, returning basic analysis');
       parsedAnalysis = {
         insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
         priorities: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
-        synergies: "Your combined protocols work together to optimize longevity, nutrition, and hormonal health."
+        synergies: "Your combined protocols work together to optimize longevity, nutrition, and hormonal health.",
+        pillar_breakdown: generatePillarBreakdown(lisData, nutritionData, hormoneData),
+        completed_count: Object.values(completedAssessments).filter(v => v === true || (typeof v === 'number' && v > 0)).length
       };
     }
 
-    return new Response(JSON.stringify(parsedAnalysis), {
+    // Save insights to user_insights table for persistence
+    try {
+      // Delete existing cross_assessment insights for this user
+      await supabase
+        .from('user_insights')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('insight_type', 'cross_assessment');
+
+      // Insert new consolidated insights
+      const insightsToInsert: any[] = [
+        {
+          user_id: user.id,
+          insight_type: 'cross_assessment',
+          category: 'consolidated',
+          title: 'Consolidated Health Analysis',
+          description: parsedAnalysis.synergies || 'Your health assessments reveal interconnected patterns.',
+          recommendations: {
+            insights: parsedAnalysis.insights || [],
+            priorities: parsedAnalysis.priorities || [],
+            pillar_breakdown: parsedAnalysis.pillar_breakdown || {},
+            completed_count: parsedAnalysis.completed_count || 0,
+            trigger_assessment: triggerAssessment,
+            generated_at: new Date().toISOString()
+          },
+          priority: 'high',
+          generated_at: new Date().toISOString()
+        }
+      ];
+
+      // Add pillar-specific insights if available
+      if (parsedAnalysis.pillar_breakdown) {
+        const pillars = ['BEAUTY', 'BRAIN', 'BODY', 'BALANCE'];
+        for (const pillar of pillars) {
+          const pillarInsightData = parsedAnalysis.pillar_breakdown[pillar];
+          if (pillarInsightData) {
+            insightsToInsert.push({
+              user_id: user.id,
+              insight_type: 'cross_assessment',
+              category: pillar,
+              title: `${pillar} Pillar Insights`,
+              description: pillarInsightData.summary || `Your ${pillar.toLowerCase()} health based on completed assessments.`,
+              recommendations: {
+                findings: pillarInsightData.findings || [],
+                actions: pillarInsightData.actions || [],
+                score: pillarInsightData.score || null
+              },
+              priority: pillarInsightData.priority || 'medium',
+              generated_at: new Date().toISOString()
+            });
+          }
+        }
+      }
+
+      const { error: insertError } = await supabase
+        .from('user_insights')
+        .insert(insightsToInsert);
+
+      if (insertError) {
+        console.error('Error saving insights:', insertError);
+      } else {
+        console.log('Saved', insightsToInsert.length, 'insights to user_insights table');
+      }
+    } catch (saveError) {
+      console.error('Error saving insights to database:', saveError);
+      // Continue - don't fail the request if save fails
+    }
+
+    return new Response(JSON.stringify({
+      ...parsedAnalysis,
+      completedAssessments,
+      generated_at: new Date().toISOString()
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
@@ -185,6 +288,140 @@ Format as JSON: { "insights": ["insight1", "insight2", "insight3"], "priorities"
     });
   }
 });
+
+function buildEvidenceBasedPrompt(
+  lisData: any, 
+  nutritionData: any, 
+  hormoneData: any, 
+  symptomData: any[], 
+  pillarData: any[],
+  pillarSummary: string,
+  symptomSummary: string,
+  triggerAssessment: string | null
+): string {
+  const completedList = [];
+  const missingList = [];
+  
+  if (lisData) {
+    completedList.push(`LIS Assessment: Score ${lisData.longevity_impact_score}/100, Biological Age Impact ${lisData.biological_age_impact > 0 ? '+' : ''}${lisData.biological_age_impact} years`);
+  } else {
+    missingList.push('LIS Assessment');
+  }
+  
+  if (nutritionData) {
+    completedList.push(`Longevity Nutrition: Score ${nutritionData.longevity_nutrition_score}/100, Protein ${nutritionData.protein_score}/5, Fiber ${nutritionData.fiber_score}/5, Inflammation ${nutritionData.inflammation_score}/5`);
+  } else {
+    missingList.push('Longevity Nutrition Assessment');
+  }
+  
+  if (hormoneData) {
+    completedList.push(`Hormone Compass: Stage "${hormoneData.stage}", Health Level ${hormoneData.confidence_score}%`);
+  } else {
+    missingList.push('Hormone Compass Assessment');
+  }
+
+  return `Analyze these women's health assessment results and provide consolidated, evidence-based insights.
+
+${triggerAssessment ? `This analysis was triggered by completing the ${triggerAssessment} assessment.` : ''}
+
+COMPLETED ASSESSMENTS:
+${completedList.length > 0 ? completedList.join('\n') : 'None completed yet'}
+
+${missingList.length > 0 ? `ASSESSMENTS NOT YET COMPLETED:\n${missingList.join('\n')}` : ''}
+
+${pillarSummary !== 'None completed' ? `PILLAR ASSESSMENTS: ${pillarSummary}` : ''}
+${symptomSummary !== 'None completed' ? `SYMPTOM ASSESSMENTS: ${symptomSummary}` : ''}
+
+Based on available data, provide:
+1. Three to five key cross-assessment insights showing how these health dimensions interact
+2. Top 3 priority recommendations that address multiple areas simultaneously  
+3. A synergy statement explaining how addressing these together creates compounding benefits
+4. A pillar_breakdown object with findings for each pillar (BEAUTY, BRAIN, BODY, BALANCE)
+
+If some assessments are incomplete, still provide valuable insights from available data and explain what additional assessments would reveal.
+
+Format your response as valid JSON:
+{
+  "insights": ["insight1", "insight2", "insight3"],
+  "priorities": ["priority1", "priority2", "priority3"],
+  "synergies": "explanation of how combined protocols work together",
+  "pillar_breakdown": {
+    "BEAUTY": { "summary": "...", "findings": ["..."], "actions": ["..."], "score": null, "priority": "medium" },
+    "BRAIN": { "summary": "...", "findings": ["..."], "actions": ["..."], "score": null, "priority": "medium" },
+    "BODY": { "summary": "...", "findings": ["..."], "actions": ["..."], "score": null, "priority": "medium" },
+    "BALANCE": { "summary": "...", "findings": ["..."], "actions": ["..."], "score": null, "priority": "medium" }
+  }
+}`;
+}
+
+function generatePillarBreakdown(lisData: any, nutritionData: any, hormoneData: any): Record<string, any> {
+  const breakdown: Record<string, any> = {};
+  
+  // BEAUTY pillar
+  breakdown.BEAUTY = {
+    summary: "Skin, hair, and anti-aging health indicators",
+    findings: [],
+    actions: ["Focus on hydration and antioxidant-rich foods", "Consider collagen-supporting nutrients"],
+    score: null,
+    priority: "medium"
+  };
+  
+  if (nutritionData?.hydration_score < 3) {
+    breakdown.BEAUTY.findings.push("Low hydration may affect skin elasticity and appearance");
+    breakdown.BEAUTY.priority = "high";
+  }
+  
+  // BRAIN pillar
+  breakdown.BRAIN = {
+    summary: "Cognitive function, focus, and mood indicators",
+    findings: [],
+    actions: ["Prioritize omega-3 fatty acids", "Maintain consistent sleep schedule"],
+    score: null,
+    priority: "medium"
+  };
+  
+  if (nutritionData?.inflammation_score > 3) {
+    breakdown.BRAIN.findings.push("Elevated inflammation may impact cognitive clarity");
+    breakdown.BRAIN.priority = "high";
+  }
+  
+  // BODY pillar
+  breakdown.BODY = {
+    summary: "Physical performance, recovery, and structural health",
+    findings: [],
+    actions: ["Ensure adequate protein intake", "Include resistance training"],
+    score: null,
+    priority: "medium"
+  };
+  
+  if (nutritionData?.protein_score < 3) {
+    breakdown.BODY.findings.push("Low protein intake may affect muscle maintenance and recovery");
+    breakdown.BODY.priority = "high";
+  }
+  
+  if (lisData?.longevity_impact_score < 60) {
+    breakdown.BODY.findings.push("LIS score suggests room for improvement in overall physical health markers");
+  }
+  
+  // BALANCE pillar
+  breakdown.BALANCE = {
+    summary: "Hormonal health, stress management, and sleep quality",
+    findings: [],
+    actions: ["Practice stress-reduction techniques", "Optimize sleep environment"],
+    score: null,
+    priority: "medium"
+  };
+  
+  if (hormoneData) {
+    breakdown.BALANCE.findings.push(`Hormone Compass indicates "${hormoneData.stage}" stage`);
+    if (hormoneData.confidence_score < 60) {
+      breakdown.BALANCE.priority = "high";
+      breakdown.BALANCE.findings.push("Hormone health may benefit from targeted support");
+    }
+  }
+  
+  return breakdown;
+}
 
 function generateBasicInsights(lisData: any, nutritionData: any, hormoneData: any, symptomData: any[], pillarData: any[]): string[] {
   const insights = [

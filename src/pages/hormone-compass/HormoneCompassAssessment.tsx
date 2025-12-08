@@ -113,6 +113,16 @@ export default function HormoneCompassAssessment() {
         .update({ hormone_compass_enabled: true })
         .eq('user_id', session.user.id);
 
+      // Trigger incremental AI analysis (non-blocking)
+      try {
+        await supabase.functions.invoke('analyze-cross-assessments', {
+          body: { trigger_assessment: 'hormone_compass' }
+        });
+      } catch (e) {
+        console.error('Analysis trigger failed:', e);
+        // Non-blocking - don't fail the assessment completion
+      }
+
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error: any) {
       console.error('Error completing assessment:', error);

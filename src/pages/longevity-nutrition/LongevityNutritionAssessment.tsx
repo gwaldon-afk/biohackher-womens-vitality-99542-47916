@@ -147,6 +147,16 @@ export default function LongevityNutritionAssessment() {
           nutrition_completed: true,
           nutrition_completed_at: new Date().toISOString(),
         });
+
+        // 5. Trigger incremental AI analysis (non-blocking)
+        try {
+          await supabase.functions.invoke('analyze-cross-assessments', {
+            body: { trigger_assessment: 'nutrition' }
+          });
+        } catch (e) {
+          console.error('Analysis trigger failed:', e);
+          // Non-blocking - don't fail the assessment completion
+        }
       }
 
       navigate(`/longevity-nutrition/results?id=${data.id}`);

@@ -8,6 +8,7 @@ import { HealthGoalsTab } from "@/components/profile/HealthGoalsTab";
 import { PreferencesTab } from "@/components/profile/PreferencesTab";
 import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
 import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
+import { ConsolidatedInsightsCard } from "@/components/profile/ConsolidatedInsightsCard";
 import { User, ClipboardList, Target, Settings, Sliders, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -48,6 +49,11 @@ const Profile = () => {
 
         {/* Health Summary Card - Always visible at top */}
         <HealthSummaryCard />
+
+        {/* Consolidated AI Insights Card */}
+        <div className="mt-6">
+          <ConsolidatedInsightsCard />
+        </div>
 
         {/* Tabbed Content */}
         <Card className="mt-6 p-6 bg-gradient-to-br from-background via-background to-primary/5 border-2 border-primary/20 shadow-lg">
