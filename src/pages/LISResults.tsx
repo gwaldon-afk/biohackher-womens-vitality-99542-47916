@@ -502,78 +502,89 @@ const LISResults = () => {
         </Card>
       </div>
 
-      {/* Consolidated LIS Summary Card */}
+      {/* Consolidated LIS Summary Card - Sentence-form narrative */}
       <Card className="mb-6 bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20">
-        <CardContent className="pt-6">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <CardContent className="pt-6 space-y-4">
+          <h3 className="text-lg font-bold flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
             Your Longevity Summary
           </h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Strengths */}
-            <div>
-              <h4 className="font-semibold mb-3 flex items-center gap-2 text-green-600">
-                <CheckCircle2 className="h-4 w-4" />
-                Your Strengths
-              </h4>
-              {getTopStrengths().slice(0, 2).map((item) => {
-                const pillar = item[0] as string;
-                const pillarScore = item[1] as number;
-                return (
-                  <div key={pillar} className="flex justify-between items-center text-sm mb-2">
-                    <span className="capitalize">{pillar}</span>
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100">{pillarScore}</Badge>
-                  </div>
-                );
-              })}
-            </div>
-            
-            {/* Priority Areas */}
-            <div>
-              <h4 className="font-semibold mb-3 flex items-center gap-2 text-amber-600">
-                <AlertTriangle className="h-4 w-4" />
-                Priority Areas
-              </h4>
-              {getTopImprovements().slice(0, 2).map((item) => {
-                const pillar = item[0] as string;
-                const pillarScore = item[1] as number;
-                return (
-                  <div key={pillar} className="flex justify-between items-center text-sm mb-2">
-                    <span className="capitalize">{pillar}</span>
-                    <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">{pillarScore}</Badge>
-                  </div>
-                );
-              })}
-            </div>
-            
-            {/* Key Insight */}
-            <div className="p-3 bg-background rounded-lg border">
-              <h4 className="font-semibold mb-2 flex items-center gap-2">
-                <Lightbulb className="h-4 w-4 text-primary" />
-                Key Insight
-              </h4>
-              <p className="text-sm text-muted-foreground">
+          {/* Primary Statement */}
+          <p className="text-foreground leading-relaxed">
+            {(() => {
+              if (displayScore >= 80) {
+                return `Your Longevity Impact Score of ${displayScore} demonstrates exceptional health fundamentals. You're in the top tier of longevity optimization, with lifestyle choices that are actively supporting healthy cellular aging.`;
+              } else if (displayScore >= 65) {
+                return `Your Longevity Impact Score of ${displayScore} shows a strong foundation for healthy aging. Your current lifestyle strategies are working well, and with some targeted improvements, you could see significant gains in your longevity trajectory.`;
+              } else if (displayScore >= 50) {
+                return `Your Longevity Impact Score of ${displayScore} reveals both areas of strength and meaningful opportunities for improvement. While some of your lifestyle habits are supporting your health, there's significant potential to optimize your longevity trajectory.`;
+              } else {
+                return `Your Longevity Impact Score of ${displayScore} indicates that your current lifestyle patterns are significantly impacting your biological aging. The good news? This presents a valuable opportunity for transformative improvement—small, consistent changes can make a big difference.`;
+              }
+            })()}
+          </p>
+
+          <div className="h-px bg-border my-2" />
+
+          {/* Strengths Statement */}
+          <p className="text-foreground leading-relaxed">
+            {(() => {
+              const topStrengths = getTopStrengths().slice(0, 2);
+              if (topStrengths.length >= 2) {
+                const [first, second] = topStrengths;
+                return `Your ${first[0]} score of ${first[1]} and ${second[0]} score of ${second[1]} are your most powerful longevity drivers. These pillars are actively supporting healthy cellular aging and contributing positively to your overall healthspan.`;
+              } else if (topStrengths.length === 1) {
+                const [first] = topStrengths;
+                return `Your ${first[0]} score of ${first[1]} is your strongest longevity driver, actively supporting healthy cellular aging.`;
+              }
+              return '';
+            })()}
+          </p>
+
+          <div className="h-px bg-border my-2" />
+
+          {/* Priority Statement */}
+          <p className="text-foreground leading-relaxed">
+            {(() => {
+              const improvements = getTopImprovements().slice(0, 2);
+              if (improvements.length >= 2) {
+                const [first, second] = improvements;
+                const potentialYears = Math.round((100 - displayScore) * 0.08);
+                return `However, your ${first[0]} score of ${first[1]} and ${second[0]} score of ${second[1]} are holding back your overall potential. Addressing these areas could help reduce your biological age by an estimated ${potentialYears} years over time.`;
+              } else if (improvements.length === 1) {
+                const [first] = improvements;
+                return `Your ${first[0]} score of ${first[1]} represents your biggest opportunity for improvement. Focusing here could meaningfully impact your biological age.`;
+              }
+              return '';
+            })()}
+          </p>
+
+          <div className="h-px bg-border my-2" />
+
+          {/* Key Insight / Action Statement */}
+          <div className="p-4 bg-background rounded-lg border border-primary/20">
+            <p className="text-foreground leading-relaxed flex items-start gap-2">
+              <Lightbulb className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+              <span>
                 {(() => {
                   const lowestPillar = getTopImprovements()[0];
                   const lowestScore = lowestPillar ? (lowestPillar[1] as number) : 0;
                   const lowestName = lowestPillar ? (lowestPillar[0] as string) : '';
                   const improvementAreas = getTopImprovements().filter((item) => (item[1] as number) < 50);
                   
-                  if (displayScore < 50) {
-                    return `Your longevity fundamentals need attention. Focus on ${lowestName} first for the biggest impact.`;
+                  if (improvementAreas.length >= 2) {
+                    return `The interconnection between ${improvementAreas[0][0]} and ${improvementAreas[1][0]} suggests that improving one may naturally enhance the other—consider starting with ${lowestName} for the biggest cascade effect on your overall score.`;
                   } else if (lowestScore < 40) {
-                    return `Your ${lowestName} score of ${lowestScore} is significantly impacting your overall longevity potential.`;
-                  } else if (improvementAreas.length >= 2) {
-                    return `Multiple pillars below optimal. A comprehensive protocol addressing ${improvementAreas[0][0]} and ${improvementAreas[1][0]} will have the biggest impact.`;
+                    return `Your ${lowestName} score is significantly below your other pillars, making it your highest-leverage area for improvement. Even modest changes here could have an outsized impact on your overall longevity trajectory.`;
                   } else if (lowestScore >= 60) {
-                    return `Strong foundation across all pillars. Fine-tune ${lowestName} to maximize your longevity potential.`;
+                    return `Your pillars are relatively balanced, which is excellent! A holistic approach that fine-tunes all areas will yield the best results for maximizing your longevity potential.`;
                   } else {
-                    return `Focus on improving your ${lowestName} score to boost your overall longevity trajectory.`;
+                    return `Focus your energy on improving your ${lowestName} score first—this is where you'll see the quickest wins and build momentum for your longevity journey.`;
                   }
                 })()}
-              </p>
-            </div>
+              </span>
+            </p>
           </div>
         </CardContent>
       </Card>
