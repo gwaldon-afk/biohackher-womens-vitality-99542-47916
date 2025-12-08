@@ -1,8 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { LucideIcon, TrendingUp, AlertCircle } from 'lucide-react';
-
+import { Button } from '@/components/ui/button';
+import { LucideIcon, TrendingUp, AlertCircle, Info, ShoppingCart } from 'lucide-react';
+import { useEvidenceStore } from '@/stores/evidenceStore';
+import { useCart } from '@/hooks/useCart';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/services/productService';
+import { toast } from 'sonner';
 interface PillarAnalysisCardProps {
   pillarName: string;
   pillarDisplayName: string;
@@ -321,6 +326,61 @@ export const LISPillarAnalysisCard = ({
   const analysis = getAnalysis();
   const scoreLabel = getScoreLabel(pillarScore);
 
+  // Evidence store for opening research drawer
+  const { openEvidence } = useEvidenceStore();
+
+  // Cart functionality
+  const { addToCart } = useCart();
+
+  // Fetch products matching this pillar
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  });
+
+  // Map pillar names to product target_pillars
+  const pillarToTargetPillar: Record<string, string> = {
+    'sleep': 'sleep',
+    'stress': 'stress',
+    'activity': 'body',
+    'nutrition': 'nutrition',
+    'social': 'balance',
+    'cognitive': 'brain',
+  };
+
+  const targetPillar = pillarToTargetPillar[pillarName.toLowerCase()] || pillarName.toLowerCase();
+
+  // Get products that match this pillar
+  const matchedProducts = products.filter(product => 
+    product.target_pillars?.some((p: string) => 
+      p.toLowerCase().includes(targetPillar) || targetPillar.includes(p.toLowerCase())
+    )
+  );
+
+  const handleViewEvidence = () => {
+    openEvidence(
+      `pillar:${pillarName.toLowerCase()}`,
+      `${pillarDisplayName} Research`,
+      `Scientific evidence supporting ${pillarDisplayName.toLowerCase()} recommendations for longevity and healthspan.`
+    );
+  };
+
+  const handleAddToCart = () => {
+    if (matchedProducts.length > 0) {
+      const product = matchedProducts[0];
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price_gbp || product.price_usd || 0,
+        quantity: 1,
+        image: product.image_url || undefined,
+      });
+      toast.success(`${product.name} added to cart`);
+    } else {
+      toast.info(`No supplements found for ${pillarDisplayName}`);
+    }
+  };
+
   return (
     <Card className="border-l-4" style={{ borderLeftColor: color }}>
       <CardContent className="p-6">
@@ -386,6 +446,30 @@ export const LISPillarAnalysisCard = ({
         <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
           <h4 className="font-semibold text-sm mb-1 text-primary">Quick Win</h4>
           <p className="text-sm text-muted-foreground">{analysis.quickWin}</p>
+        </div>
+
+        {/* Action Buttons: Evidence & Cart */}
+        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleViewEvidence}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <Info className="h-4 w-4" />
+            <span className="text-xs">View Evidence</span>
+          </Button>
+          {matchedProducts.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleAddToCart}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <span className="text-xs">Add Supplement</span>
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
