@@ -9,10 +9,10 @@ import { PreferencesTab } from "@/components/profile/PreferencesTab";
 import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
 import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
 import { ConsolidatedInsightsCard } from "@/components/profile/ConsolidatedInsightsCard";
-import { User, ClipboardList, Target, Settings, Sliders, Home } from "lucide-react";
+import { UnifiedSymptomView } from "@/components/profile/UnifiedSymptomView";
+import { User, ClipboardList, Target, Settings, Sliders, Home, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-
 const Profile = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -58,15 +58,20 @@ const Profile = () => {
         {/* Tabbed Content */}
         <Card className="mt-6 p-6 bg-gradient-to-br from-background via-background to-primary/5 border-2 border-primary/20 shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsList className="grid w-full grid-cols-5 mb-6">
               <TabsTrigger value="assessments" className="flex items-center gap-2">
                 <ClipboardList className="h-4 w-4" />
-                <span className="hidden sm:inline">My Assessments</span>
+                <span className="hidden sm:inline">Assessments</span>
                 <span className="sm:hidden">Assess</span>
+              </TabsTrigger>
+              <TabsTrigger value="symptoms" className="flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                <span className="hidden sm:inline">Health Profile</span>
+                <span className="sm:hidden">Health</span>
               </TabsTrigger>
               <TabsTrigger value="goals" className="flex items-center gap-2">
                 <Target className="h-4 w-4" />
-                <span className="hidden sm:inline">Health Goals</span>
+                <span className="hidden sm:inline">Goals</span>
                 <span className="sm:hidden">Goals</span>
               </TabsTrigger>
               <TabsTrigger value="preferences" className="flex items-center gap-2">
@@ -83,6 +88,10 @@ const Profile = () => {
 
             <TabsContent value="assessments">
               <AssessmentHistoryTab />
+            </TabsContent>
+
+            <TabsContent value="symptoms">
+              <UnifiedSymptomView />
             </TabsContent>
 
             <TabsContent value="goals">
