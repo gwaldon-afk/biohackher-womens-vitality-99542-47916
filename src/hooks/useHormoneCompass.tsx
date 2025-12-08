@@ -64,7 +64,7 @@ export const useHormoneCompass = () => {
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
-    enabled: !!user && isEnabled
+    enabled: !!user
   });
 
   // Fetch recent symptoms
@@ -83,7 +83,7 @@ export const useHormoneCompass = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && isEnabled
+    enabled: !!user
   });
 
   // Fetch active insights
@@ -102,7 +102,7 @@ export const useHormoneCompass = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && isEnabled
+    enabled: !!user
   });
 
   // Track new symptom

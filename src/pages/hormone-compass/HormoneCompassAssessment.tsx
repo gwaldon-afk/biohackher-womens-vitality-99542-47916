@@ -107,6 +107,12 @@ export default function HormoneCompassAssessment() {
         hormone_completed_at: new Date().toISOString(),
       });
 
+      // Enable hormone compass feature flag in user profile
+      await supabase
+        .from('profiles')
+        .update({ hormone_compass_enabled: true })
+        .eq('user_id', session.user.id);
+
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error: any) {
       console.error('Error completing assessment:', error);
