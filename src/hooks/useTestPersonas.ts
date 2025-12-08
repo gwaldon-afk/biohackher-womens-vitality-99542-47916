@@ -1,5 +1,6 @@
 /**
  * Hook for managing test personas with LocalStorage overrides
+ * Uses current authenticated user's ID for database inserts (RLS compliance)
  */
 import { useState, useEffect, useCallback } from 'react';
 import { TEST_PERSONAS, TestPersona, getTestPersona } from '@/config/mockTestPersonas';
@@ -15,8 +16,9 @@ interface PersonaOverrides {
 export const useTestPersonas = () => {
   const [overrides, setOverrides] = useState<PersonaOverrides>({});
   const [isRunning, setIsRunning] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Load overrides from LocalStorage on mount
+  // Load overrides from LocalStorage and get current user on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -26,6 +28,11 @@ export const useTestPersonas = () => {
     } catch (error) {
       console.error('Failed to load persona overrides:', error);
     }
+
+    // Get current authenticated user
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setCurrentUserId(user?.id ?? null);
+    });
   }, []);
 
   // Save overrides to LocalStorage
@@ -94,7 +101,7 @@ export const useTestPersonas = () => {
     saveOverrides({});
   }, [saveOverrides]);
 
-  // Run assessments for selected personas
+  // Run assessments for selected personas using CURRENT USER's ID
   const runAssessments = useCallback(async (
     personaIds: string[],
     assessmentTypes: ('lis' | 'nutrition' | 'hormone')[]
@@ -103,6 +110,18 @@ export const useTestPersonas = () => {
     const results: string[] = [];
 
     try {
+      // Get current authenticated user - REQUIRED for RLS
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('You must be logged in to run test assessments');
+        return { success: false, results: ['Not authenticated - please log in first'] };
+      }
+
+      const userId = user.id;
+
+      // Note: Sequential testing - only one persona's data at a time
+      // Each run overwrites previous test data for this user
       for (const personaId of personaIds) {
         const persona = getPersona(personaId);
         if (!persona) {
@@ -116,7 +135,7 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('daily_scores')
               .upsert({
-                user_id: persona.testUserId,
+                user_id: userId, // Use current user's ID
                 date: new Date().toISOString().split('T')[0],
                 longevity_impact_score: persona.lisData.overallScore,
                 biological_age_impact: persona.lisData.biologicalAgeOffset,
@@ -128,7 +147,12 @@ export const useTestPersonas = () => {
                 cognitive_engagement_score: persona.lisData.cognitiveScore,
                 color_code: persona.lisData.overallScore >= 70 ? 'green' : persona.lisData.overallScore >= 50 ? 'yellow' : 'red',
                 user_chronological_age: persona.demographics.age,
-                questionnaire_data: persona.lisData.answers,
+                questionnaire_data: {
+                  ...persona.lisData.answers,
+                  _test_persona: persona.id,
+                  _test_source: 'dev_test_panel'
+                },
+                source_type: 'dev_test_panel',
               }, { onConflict: 'user_id,date' });
 
             if (error) throw error;
@@ -144,8 +168,8 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('longevity_nutrition_assessments')
               .insert({
-                user_id: persona.testUserId,
-                session_id: `test-session-${Date.now()}`,
+                user_id: userId, // Use current user's ID
+                session_id: `test-${persona.id}-${Date.now()}`,
                 longevity_nutrition_score: persona.nutritionData.overallScore,
                 protein_score: persona.nutritionData.proteinScore,
                 fiber_score: persona.nutritionData.fiberScore,
@@ -177,7 +201,7 @@ export const useTestPersonas = () => {
             const { error } = await supabase
               .from('hormone_compass_stages')
               .insert({
-                user_id: persona.testUserId,
+                user_id: userId, // Use current user's ID
                 stage: persona.demographics.menopauseStage,
                 confidence_score: 0.85,
                 hormone_indicators: {
@@ -204,7 +228,7 @@ export const useTestPersonas = () => {
           await supabase
             .from('assessment_progress')
             .upsert({
-              user_id: persona.testUserId,
+              user_id: userId, // Use current user's ID
               lis_completed: assessmentTypes.includes('lis'),
               lis_completed_at: assessmentTypes.includes('lis') ? new Date().toISOString() : null,
               nutrition_completed: assessmentTypes.includes('nutrition'),
@@ -217,7 +241,7 @@ export const useTestPersonas = () => {
         }
       }
 
-      toast.success(`Ran ${assessmentTypes.length} assessment(s) for ${personaIds.length} persona(s)`);
+      toast.success(`Applied ${personaIds[personaIds.length - 1]} persona data to your account`);
       return { success: true, results };
     } catch (error) {
       toast.error('Failed to run assessments');
@@ -227,21 +251,28 @@ export const useTestPersonas = () => {
     }
   }, [getPersona]);
 
-  // Clear all test data from database
+  // Clear test data for current user
   const clearTestData = useCallback(async () => {
     setIsRunning(true);
     try {
-      const testUserIds = TEST_PERSONAS.map(p => p.testUserId);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error('You must be logged in to clear test data');
+        return;
+      }
 
-      // Clear from all assessment tables
+      const userId = user.id;
+
+      // Clear current user's test data
       await Promise.all([
-        supabase.from('daily_scores').delete().in('user_id', testUserIds),
-        supabase.from('longevity_nutrition_assessments').delete().in('user_id', testUserIds),
-        supabase.from('hormone_compass_stages').delete().in('user_id', testUserIds),
-        supabase.from('assessment_progress').delete().in('user_id', testUserIds),
+        supabase.from('daily_scores').delete().eq('user_id', userId),
+        supabase.from('longevity_nutrition_assessments').delete().eq('user_id', userId),
+        supabase.from('hormone_compass_stages').delete().eq('user_id', userId),
+        supabase.from('assessment_progress').delete().eq('user_id', userId),
       ]);
 
-      toast.success('Cleared all test data');
+      toast.success('Cleared your test data');
     } catch (error) {
       toast.error('Failed to clear test data');
       console.error('Clear test data error:', error);
@@ -260,5 +291,6 @@ export const useTestPersonas = () => {
     clearTestData,
     isRunning,
     hasOverrides: Object.keys(overrides).length > 0,
+    currentUserId,
   };
 };

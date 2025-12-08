@@ -44,8 +44,14 @@ export const DevTestingPanel = () => {
     clearTestData, 
     resetAllOverrides,
     isRunning,
-    hasOverrides 
+    hasOverrides,
+    currentUserId
   } = useTestPersonas();
+
+  // Only allow single persona selection for sequential testing
+  const togglePersona = useCallback((id: string) => {
+    setSelectedPersonas([id]); // Single selection only
+  }, []);
 
   // Keyboard shortcut: Ctrl+Shift+T
   useEffect(() => {
@@ -60,13 +66,7 @@ export const DevTestingPanel = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const togglePersona = useCallback((id: string) => {
-    setSelectedPersonas(prev => 
-      prev.includes(id) 
-        ? prev.filter(p => p !== id)
-        : [...prev, id]
-    );
-  }, []);
+  // Removed - now defined above with single-selection logic
 
   const toggleAssessment = useCallback((type: AssessmentType) => {
     setSelectedAssessments(prev =>
@@ -76,13 +76,7 @@ export const DevTestingPanel = () => {
     );
   }, []);
 
-  const selectAllPersonas = useCallback(() => {
-    setSelectedPersonas(personas.map(p => p.id));
-  }, [personas]);
-
-  const deselectAllPersonas = useCallback(() => {
-    setSelectedPersonas([]);
-  }, []);
+  // Remove select all - single selection mode only
 
   const handleRun = useCallback(async () => {
     if (selectedPersonas.length === 0) return;
@@ -150,37 +144,37 @@ export const DevTestingPanel = () => {
 
       {!isMinimized && (
         <CardContent className="p-4 pt-0 space-y-4">
-          {/* Persona Selection */}
+          {/* User Info Banner */}
+          {currentUserId ? (
+            <div className="text-xs bg-muted/50 rounded p-2 text-muted-foreground">
+              Testing as: <span className="font-mono">{currentUserId.slice(0, 8)}...</span>
+              <br />
+              <span className="text-[10px]">Data writes to your account (one persona at a time)</span>
+            </div>
+          ) : (
+            <div className="text-xs bg-destructive/10 text-destructive rounded p-2">
+              Please log in to run tests
+            </div>
+          )}
+
+          {/* Persona Selection - Single Select */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium flex items-center gap-1">
-                <Users className="h-3 w-3" /> Test Personas
+                <Users className="h-3 w-3" /> Select Persona
               </span>
-              <div className="flex gap-1">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-5 text-xs px-1"
-                  onClick={selectAllPersonas}
-                >
-                  All
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-5 text-xs px-1"
-                  onClick={deselectAllPersonas}
-                >
-                  None
-                </Button>
-              </div>
             </div>
             <ScrollArea className="h-32">
               <div className="space-y-1">
                 {personas.map(persona => (
                   <label
                     key={persona.id}
-                    className="flex items-center gap-2 p-1.5 rounded hover:bg-muted/50 cursor-pointer"
+                    className={cn(
+                      "flex items-center gap-2 p-1.5 rounded cursor-pointer",
+                      selectedPersonas.includes(persona.id) 
+                        ? "bg-purple-500/20 border border-purple-500/50" 
+                        : "hover:bg-muted/50"
+                    )}
                   >
                     <Checkbox
                       checked={selectedPersonas.includes(persona.id)}
@@ -237,18 +231,19 @@ export const DevTestingPanel = () => {
           <div className="flex gap-2">
             <Button
               onClick={handleRun}
-              disabled={isRunning || selectedPersonas.length === 0 || selectedAssessments.length === 0}
+              disabled={isRunning || selectedPersonas.length === 0 || selectedAssessments.length === 0 || !currentUserId}
               size="sm"
               className="flex-1 bg-purple-600 hover:bg-purple-700"
             >
               <Play className="h-3 w-3 mr-1" />
-              Run ({selectedPersonas.length})
+              Apply Persona
             </Button>
             <Button
               onClick={handleClear}
-              disabled={isRunning}
+              disabled={isRunning || !currentUserId}
               variant="outline"
               size="sm"
+              title="Clear all your test data"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
