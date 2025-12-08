@@ -151,11 +151,21 @@ const SymptomAssessment = () => {
           });
 
         if (error) throw error;
+
+        // Trigger incremental cross-assessment AI analysis
+        try {
+          await supabase.functions.invoke('analyze-cross-assessments', {
+            body: { trigger_assessment: 'symptom' }
+          });
+        } catch (analysisError) {
+          console.error('Cross-assessment analysis trigger failed:', analysisError);
+          // Non-blocking - don't fail the assessment completion
+        }
       } catch (error) {
         console.error('Error saving assessment:', error);
         toast.error('Failed to save assessment results');
       }
-    } 
+    }
     // For guest users in multi-assessment flow, save to guest table
     else if (isMultiAssessmentFlow && flowState.sessionId) {
       try {
