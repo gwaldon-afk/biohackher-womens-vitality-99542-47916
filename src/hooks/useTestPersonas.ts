@@ -205,12 +205,13 @@ export const useTestPersonas = () => {
                 cognitive_engagement_score: persona.lisData.cognitiveScore,
                 color_code: persona.lisData.overallScore >= 70 ? 'green' : persona.lisData.overallScore >= 50 ? 'yellow' : 'red',
                 user_chronological_age: persona.demographics.age,
+                is_baseline: true, // Required for Profile page to find it
                 questionnaire_data: {
                   ...persona.lisData.answers,
                   _test_persona: persona.id,
                   _test_source: 'dev_test_panel'
                 },
-                source_type: 'manual_entry', // Valid constraint value
+                source_type: 'manual_entry',
               }, { onConflict: 'user_id,date' });
 
             if (error) throw error;
