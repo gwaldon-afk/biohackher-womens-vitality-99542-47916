@@ -8,6 +8,7 @@ import { ExternalLink, AlertTriangle, Loader2, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import EvidenceBadge from "./EvidenceBadge";
+import { PersonalizedRelevance } from "./research/PersonalizedRelevance";
 
 interface AdditionalResearchModalProps {
   open: boolean;
@@ -160,6 +161,14 @@ const AdditionalResearchModal = ({
                       {study.keyFindings}
                     </p>
                   )}
+
+                  {/* Personalized Relevance Section */}
+                  <PersonalizedRelevance
+                    studyTitle={study.title}
+                    studyAbstract={study.keyFindings}
+                    interventionName={interventionName}
+                    className="mt-3"
+                  />
 
                   <div className="flex gap-2 pt-2">
                     {study.doi && (
