@@ -113,15 +113,15 @@ const Index = () => {
 
             <AssessmentHeroCard
               icon={Heart}
-              headline="Navigate Your Hormone Health"
-              painPoint="Struggling with hormonal symptoms?"
+              headline="Discover Your Hormone Age"
+              painPoint="Are your hormones aging faster than you?"
               benefits={[
-                "Assess hormone health across 6 domains",
-                "Understand your hormone life stage",
-                "Get targeted symptom relief protocols"
+                "Get your Hormone Age in 6 minutes",
+                "Compare to women your age",
+                "Receive targeted protocols to reverse it"
               ]}
               duration="Free • 6 min • No signup"
-              ctaText="Check My Hormones"
+              ctaText="Get My Hormone Age"
               ctaRoute="/menomap/assessment"
             />
           </div>
