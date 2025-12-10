@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HormoneCompassDomainCard } from '@/components/hormone-compass/HormoneCompassDomainCard';
+import { HormoneAgeDisplay } from '@/components/hormone-compass/HormoneAgeDisplay';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
 import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
@@ -125,7 +126,15 @@ export default function HormoneCompassResults() {
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
 
   const assessmentId = searchParams.get('assessmentId');
-  const stateData = location.state as { stage?: string; confidence?: number } || {};
+  const stateData = location.state as { 
+    stage?: string; 
+    confidence?: number; 
+    answers?: Record<string, number>;
+    hormoneAge?: number;
+    chronologicalAge?: number;
+    ageOffset?: number;
+    severityScore?: number;
+  } || {};
   
   // Calculate user age from health profile
   const userAge = profile?.date_of_birth 
@@ -149,6 +158,12 @@ export default function HormoneCompassResults() {
     },
     enabled: !!assessmentId
   });
+
+  // Extract Hormone Age data from database or state
+  const hormoneAge = (assessmentData as any)?.hormone_age ?? stateData.hormoneAge;
+  const chronologicalAge = (assessmentData as any)?.chronological_age ?? stateData.chronologicalAge ?? userAge;
+  const ageOffset = (assessmentData as any)?.age_offset ?? stateData.ageOffset;
+  const hasHormoneAge = hormoneAge !== null && hormoneAge !== undefined && chronologicalAge !== null;
 
   const healthLevel = assessmentData?.stage || stateData.stage;
   const confidence = assessmentData?.confidence_score || stateData.confidence;
@@ -740,6 +755,15 @@ export default function HormoneCompassResults() {
           Personalized insights and actionable protocol based on your assessment
         </p>
       </div>
+
+      {/* Hormone Age Display - Primary Result */}
+      {hasHormoneAge && (
+        <HormoneAgeDisplay
+          hormoneAge={hormoneAge}
+          chronologicalAge={chronologicalAge}
+          ageOffset={ageOffset || 0}
+        />
+      )}
 
       {/* Overall Health Level Summary */}
       <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">

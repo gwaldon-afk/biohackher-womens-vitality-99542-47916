@@ -2030,10 +2030,13 @@ export type Database = {
       }
       hormone_compass_stages: {
         Row: {
+          age_offset: number | null
           assessment_id: string | null
           calculated_at: string | null
+          chronological_age: number | null
           confidence_score: number | null
           created_at: string | null
+          hormone_age: number | null
           hormone_indicators: Json | null
           id: string
           stage: string
@@ -2041,10 +2044,13 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          age_offset?: number | null
           assessment_id?: string | null
           calculated_at?: string | null
+          chronological_age?: number | null
           confidence_score?: number | null
           created_at?: string | null
+          hormone_age?: number | null
           hormone_indicators?: Json | null
           id?: string
           stage: string
@@ -2052,10 +2058,13 @@ export type Database = {
           user_id: string
         }
         Update: {
+          age_offset?: number | null
           assessment_id?: string | null
           calculated_at?: string | null
+          chronological_age?: number | null
           confidence_score?: number | null
           created_at?: string | null
+          hormone_age?: number | null
           hormone_indicators?: Json | null
           id?: string
           stage?: string
