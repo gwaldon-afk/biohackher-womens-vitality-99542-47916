@@ -25,6 +25,7 @@ import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
 import ShopYourProtocolButton from '@/components/ShopYourProtocolButton';
+import { MethodologyDisclaimer } from '@/components/assessment/MethodologyDisclaimer';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -738,6 +739,9 @@ const LISResults = () => {
           </div>
         </Card>
       )}
+
+      {/* Methodology Disclaimer */}
+      <MethodologyDisclaimer assessmentType="lis" className="mb-6" />
 
       {/* Nutrition Preview Card - For Guests Only */}
       {isGuest && (
