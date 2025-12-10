@@ -6,6 +6,10 @@ export interface ProtocolItem {
   category: 'immediate' | 'foundation' | 'optimization';
   relevance: string;
   productKeywords?: string[];
+  // Phase 4: Add tier/weight/pillar metadata for protocol persistence
+  priority_tier?: 'immediate' | 'foundation' | 'optimization';
+  impact_weight?: number;
+  lis_pillar_contribution?: string[];
 }
 
 export interface DomainProtocol {

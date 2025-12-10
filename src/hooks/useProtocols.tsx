@@ -26,6 +26,10 @@ interface ProtocolItem {
   product_link: string | null;
   product_id: string | null;
   is_active: boolean;
+  // Phase 4: Protocol tier and impact fields
+  priority_tier?: string | null;
+  impact_weight?: number | null;
+  lis_pillar_contribution?: string[] | null;
 }
 
 export const useProtocols = () => {
@@ -144,13 +148,27 @@ export const useProtocols = () => {
 
   const addProtocolItem = async (item: Omit<ProtocolItem, 'id' | 'created_at'>) => {
     try {
+      // Ensure priority_tier, impact_weight, and lis_pillar_contribution are included
+      const itemWithDefaults = {
+        ...item,
+        priority_tier: item.priority_tier || 'foundation',
+        impact_weight: item.impact_weight ?? 5,
+        lis_pillar_contribution: item.lis_pillar_contribution || [],
+      };
+
       const { data, error } = await supabase
         .from('protocol_items')
-        .insert(item)
+        .insert(itemWithDefaults)
         .select()
         .single();
 
       if (error) throw error;
+      console.log('[useProtocols] Added protocol item with tier/weight:', {
+        name: data.name,
+        priority_tier: data.priority_tier,
+        impact_weight: data.impact_weight,
+        lis_pillar_contribution: data.lis_pillar_contribution
+      });
       return data;
     } catch (error) {
       console.error('Error adding protocol item:', error);
@@ -202,6 +220,9 @@ export const useProtocols = () => {
       frequency: 'daily' | 'twice_daily' | 'three_times_daily' | 'weekly' | 'as_needed';
       time_of_day?: string[];
       notes?: string;
+      priority_tier?: 'immediate' | 'foundation' | 'optimization';
+      impact_weight?: number;
+      lis_pillar_contribution?: string[];
     }>
   ) => {
     if (!user) return;
@@ -226,7 +247,7 @@ export const useProtocols = () => {
         throw new Error('Failed to create protocol');
       }
 
-      // Add all items to the protocol
+      // Add all items to the protocol with tier/weight/pillar data
       const promises = items.map(item =>
         addProtocolItem({
           protocol_id: activeProtocol!.id,
@@ -239,7 +260,10 @@ export const useProtocols = () => {
           notes: item.notes || `Added from ${protocolName}`,
           product_link: null,
           product_id: null,
-          is_active: true
+          is_active: true,
+          priority_tier: item.priority_tier || 'foundation',
+          impact_weight: item.impact_weight ?? 5,
+          lis_pillar_contribution: item.lis_pillar_contribution || []
         })
       );
 

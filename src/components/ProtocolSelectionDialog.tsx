@@ -133,10 +133,26 @@ export const ProtocolSelectionDialog = ({
   const handleSaveSelected = async () => {
     setIsSaving(true);
     try {
+      // Enhance selected items with tier/weight/pillar data before saving
+      const enhanceItemWithMetadata = (item: SelectableProtocolItem, tier: 'immediate' | 'foundation' | 'optimization') => {
+        // Determine impact weight based on tier
+        const impactWeight = tier === 'immediate' ? 9 : tier === 'foundation' ? 7 : 5;
+        
+        // Infer pillar contributions from item type and name
+        const pillarContribution = inferPillarContribution(item);
+        
+        return {
+          ...item,
+          priority_tier: tier,
+          impact_weight: item.impact_weight ?? impactWeight,
+          lis_pillar_contribution: item.lis_pillar_contribution ?? pillarContribution,
+        };
+      };
+
       const selectedItems = [
-        ...items.immediate.filter(item => item.selected),
-        ...items.foundation.filter(item => item.selected),
-        ...items.optimization.filter(item => item.selected)
+        ...items.immediate.filter(item => item.selected).map(item => enhanceItemWithMetadata(item, 'immediate')),
+        ...items.foundation.filter(item => item.selected).map(item => enhanceItemWithMetadata(item, 'foundation')),
+        ...items.optimization.filter(item => item.selected).map(item => enhanceItemWithMetadata(item, 'optimization'))
       ];
 
       if (selectedItems.length === 0) {
@@ -181,6 +197,46 @@ export const ProtocolSelectionDialog = ({
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Helper to infer pillar contributions from item characteristics
+  const inferPillarContribution = (item: SelectableProtocolItem): string[] => {
+    const pillars: string[] = [];
+    const nameLower = item.name.toLowerCase();
+    const descLower = (item.description || '').toLowerCase();
+    const combined = nameLower + ' ' + descLower;
+
+    // Sleep-related
+    if (combined.includes('sleep') || combined.includes('melatonin') || combined.includes('magnesium') || combined.includes('rest')) {
+      pillars.push('sleep');
+    }
+    // Stress-related  
+    if (combined.includes('stress') || combined.includes('cortisol') || combined.includes('adapto') || combined.includes('ashwagandha') || combined.includes('calm')) {
+      pillars.push('stress');
+    }
+    // Activity-related
+    if (combined.includes('exercise') || combined.includes('movement') || combined.includes('walk') || combined.includes('strength') || combined.includes('activity')) {
+      pillars.push('activity');
+    }
+    // Nutrition-related
+    if (combined.includes('nutrition') || combined.includes('protein') || combined.includes('vitamin') || combined.includes('omega') || combined.includes('diet') || combined.includes('supplement')) {
+      pillars.push('nutrition');
+    }
+    // Social-related
+    if (combined.includes('social') || combined.includes('connection') || combined.includes('community') || combined.includes('friend') || combined.includes('family')) {
+      pillars.push('social');
+    }
+    // Cognitive-related
+    if (combined.includes('cognitive') || combined.includes('brain') || combined.includes('meditat') || combined.includes('mindful') || combined.includes('learning') || combined.includes('focus')) {
+      pillars.push('cognitive');
+    }
+
+    // Default to nutrition if nothing matched (most supplements fall here)
+    if (pillars.length === 0) {
+      pillars.push('nutrition');
+    }
+
+    return pillars;
   };
 
   const getTotalSelected = () => {

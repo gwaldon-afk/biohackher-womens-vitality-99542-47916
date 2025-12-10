@@ -610,6 +610,7 @@ export type Database = {
           nutritional_detailed_score: number | null
           nutritional_grade: string | null
           physical_activity_score: number | null
+          protocol_adherence_score: number | null
           questionnaire_data: Json | null
           related_goal_ids: string[] | null
           rem_hours: number | null
@@ -654,6 +655,7 @@ export type Database = {
           nutritional_detailed_score?: number | null
           nutritional_grade?: string | null
           physical_activity_score?: number | null
+          protocol_adherence_score?: number | null
           questionnaire_data?: Json | null
           related_goal_ids?: string[] | null
           rem_hours?: number | null
@@ -698,6 +700,7 @@ export type Database = {
           nutritional_detailed_score?: number | null
           nutritional_grade?: string | null
           physical_activity_score?: number | null
+          protocol_adherence_score?: number | null
           questionnaire_data?: Json | null
           related_goal_ids?: string[] | null
           rem_hours?: number | null
