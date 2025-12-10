@@ -2116,6 +2116,7 @@ export type Database = {
           alcohol_intake: number | null
           allergies: string[] | null
           caffeine_score: number | null
+          chronological_age: number | null
           chrononutrition_type: string | null
           claimed_at: string | null
           claimed_by_user_id: string | null
@@ -2140,6 +2141,9 @@ export type Database = {
           longevity_nutrition_score: number | null
           meal_timing_window: number | null
           menopause_stage: string | null
+          metabolic_age: number | null
+          metabolic_age_offset: number | null
+          metabolic_severity_score: number | null
           metabolic_symptom_flags: string[] | null
           nutrition_identity_type: string | null
           plant_diversity_score: number | null
@@ -2157,6 +2161,7 @@ export type Database = {
           alcohol_intake?: number | null
           allergies?: string[] | null
           caffeine_score?: number | null
+          chronological_age?: number | null
           chrononutrition_type?: string | null
           claimed_at?: string | null
           claimed_by_user_id?: string | null
@@ -2181,6 +2186,9 @@ export type Database = {
           longevity_nutrition_score?: number | null
           meal_timing_window?: number | null
           menopause_stage?: string | null
+          metabolic_age?: number | null
+          metabolic_age_offset?: number | null
+          metabolic_severity_score?: number | null
           metabolic_symptom_flags?: string[] | null
           nutrition_identity_type?: string | null
           plant_diversity_score?: number | null
@@ -2198,6 +2206,7 @@ export type Database = {
           alcohol_intake?: number | null
           allergies?: string[] | null
           caffeine_score?: number | null
+          chronological_age?: number | null
           chrononutrition_type?: string | null
           claimed_at?: string | null
           claimed_by_user_id?: string | null
@@ -2222,6 +2231,9 @@ export type Database = {
           longevity_nutrition_score?: number | null
           meal_timing_window?: number | null
           menopause_stage?: string | null
+          metabolic_age?: number | null
+          metabolic_age_offset?: number | null
+          metabolic_severity_score?: number | null
           metabolic_symptom_flags?: string[] | null
           nutrition_identity_type?: string | null
           plant_diversity_score?: number | null

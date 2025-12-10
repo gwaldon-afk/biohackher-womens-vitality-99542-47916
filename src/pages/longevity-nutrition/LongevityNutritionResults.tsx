@@ -16,6 +16,7 @@ import { getProducts, Product } from "@/services/productService";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { MethodologyDisclaimer } from "@/components/assessment/MethodologyDisclaimer";
+import { MetabolicAgeDisplay } from "@/components/nutrition/MetabolicAgeDisplay";
 
 // Protocol Item Card Component
 interface ProtocolItemCardProps {
@@ -387,6 +388,15 @@ export default function LongevityNutritionResults() {
           <div className="text-2xl font-semibold mb-4">{scoreResult.category}</div>
           <p className="text-muted-foreground max-w-2xl mx-auto">{scoreResult.description}</p>
         </Card>
+
+        {/* Metabolic Age Display - only show if we have the data */}
+        {assessment.metabolic_age && assessment.chronological_age && (
+          <MetabolicAgeDisplay
+            metabolicAge={assessment.metabolic_age}
+            chronologicalAge={assessment.chronological_age}
+            ageOffset={assessment.metabolic_age_offset || 0}
+          />
+        )}
 
         {/* Methodology Disclaimer */}
         <MethodologyDisclaimer assessmentType="nutrition" />

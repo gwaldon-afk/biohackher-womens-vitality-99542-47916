@@ -75,27 +75,32 @@ const METHODOLOGY_DATA: Record<string, {
     researchLink: '/lis2-research'
   },
   nutrition: {
-    title: 'Nutritional Science Foundation',
-    intro: 'Our Nutrition Score is developed using metabolic health research and validated nutritional science.',
+    title: 'Metabolic Age Methodology',
+    intro: 'Our Metabolic Age calculation is informed by validated metabolic health research and population biomarker studies.',
     frameworks: [
       {
         name: 'NHANES Population Data',
-        description: 'National Health and Nutrition Examination Survey data informing healthy intake benchmarks.',
+        description: 'National Health and Nutrition Examination Survey data providing age-stratified metabolic health benchmarks.',
         externalUrl: 'https://www.cdc.gov/nchs/nhanes/index.htm'
       },
       {
-        name: 'Phenotypic Age Research',
-        description: 'Levine et al. (2018) methodology for metabolic biomarker assessment.',
+        name: 'Phenotypic Age Calculator',
+        description: 'Levine et al. (2018) research on biological age estimation using metabolic biomarkers.',
         externalUrl: 'https://pubmed.ncbi.nlm.nih.gov/29676998/'
       },
       {
+        name: 'Metabolic Syndrome Research',
+        description: 'Population studies on metabolic dysfunction prevalence across age groups.',
+        externalUrl: 'https://pubmed.ncbi.nlm.nih.gov/27664051/'
+      },
+      {
         name: 'Time-Restricted Eating Studies',
-        description: 'Circadian nutrition research by Dr. Satchin Panda and colleagues.',
+        description: 'Circadian nutrition research by Dr. Satchin Panda on metabolic timing.',
         externalUrl: 'https://pubmed.ncbi.nlm.nih.gov/31339000/'
       },
       {
-        name: 'Protein & Muscle Health Research',
-        description: 'Evidence on optimal protein intake for longevity and metabolic health.',
+        name: 'Protein & Metabolic Health',
+        description: 'Evidence on protein intake requirements for metabolic optimization across life stages.',
         externalUrl: 'https://pubmed.ncbi.nlm.nih.gov/26797090/'
       }
     ],

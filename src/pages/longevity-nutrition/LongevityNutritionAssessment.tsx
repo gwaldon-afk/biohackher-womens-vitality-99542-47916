@@ -22,6 +22,7 @@ import { AllergiesDietaryStep } from "@/components/longevity-nutrition/Allergies
 import { CookingConfidenceStep } from "@/components/longevity-nutrition/CookingConfidenceStep";
 import { MetabolicSymptomsStep } from "@/components/longevity-nutrition/MetabolicSymptomsStep";
 import { calculateLongevityNutritionScore } from "@/utils/longevityNutritionScoring";
+import { calculateMetabolicAge } from "@/utils/metabolicAgeCalculator";
 import { toast } from "sonner";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 
@@ -72,6 +73,26 @@ export default function LongevityNutritionAssessment() {
         hydration_score: assessmentData.hydration_score || 3,
       });
 
+      // Calculate Metabolic Age if age is available
+      const chronologicalAge = assessmentData.age;
+      let metabolicAgeResult = null;
+      
+      if (chronologicalAge && chronologicalAge > 0) {
+        metabolicAgeResult = calculateMetabolicAge({
+          protein_score: assessmentData.protein_score || 3,
+          fiber_score: assessmentData.fiber_score || 3,
+          plant_diversity_score: assessmentData.plant_diversity_score || 3,
+          gut_symptom_score: assessmentData.gut_symptom_score || 0,
+          inflammation_score: assessmentData.inflammation_score || 0,
+          hydration_score: assessmentData.hydration_score || 3,
+          craving_pattern: cravingAverage,
+          metabolic_symptom_flags: assessmentData.metabolic_symptom_flags,
+          activity_level: assessmentData.activity_level,
+          weight_kg: assessmentData.weight_kg,
+          height_cm: assessmentData.height_cm,
+        }, chronologicalAge);
+      }
+
       // TEST MODE FIX: Use guest flow to prevent RLS violations
       const isGuest = !user?.id || TEST_MODE_ENABLED;
       const sessionId = isGuest ? `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : null;
@@ -87,6 +108,11 @@ export default function LongevityNutritionAssessment() {
         session_id: sessionId,
         ...assessmentData,
         longevity_nutrition_score: score,
+        // Metabolic Age fields
+        metabolic_age: metabolicAgeResult?.metabolicAge || null,
+        chronological_age: chronologicalAge || null,
+        metabolic_age_offset: metabolicAgeResult?.ageOffset || null,
+        metabolic_severity_score: metabolicAgeResult?.severityScore || null,
         completed_at: new Date().toISOString(),
       }).select().single();
 
