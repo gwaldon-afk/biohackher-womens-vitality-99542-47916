@@ -244,30 +244,37 @@ serve(async (req) => {
       isLIS2
     );
 
+    // Calculate protocol adherence score (Phase 5)
+    const protocolAdherence = await calculateProtocolAdherence(supabase, metrics.user_id, metrics.date);
+
     console.log('Pillar scores:', {
       sleep: sleepScore,
       stress: stressScore,
       activity: activityScore,
       nutrition: nutritionScore,
       social: socialScore,
-      cognitive: cognitiveScore
+      cognitive: cognitiveScore,
+      protocolAdherence: protocolAdherence.score
     });
 
-    // LIS 2.0 weights vs LIS 1.0 weights
+    // LIS 2.0 weights vs LIS 1.0 weights (scaled by 0.85 to accommodate 15% adherence)
+    const adherenceWeight = 0.15;
+    const scaleFactor = 1 - adherenceWeight; // 0.85
+
     const weights = isLIS2 ? {
-      stress: 0.30,
-      social: 0.25,
-      sleep: 0.20,
-      activity: 0.15,
-      nutrition: 0.10,
-      cognitive: 0.10
+      stress: 0.30 * scaleFactor,
+      social: 0.25 * scaleFactor,
+      sleep: 0.20 * scaleFactor,
+      activity: 0.15 * scaleFactor,
+      nutrition: 0.10 * scaleFactor,
+      cognitive: 0.10 * scaleFactor
     } : {
-      sleep: 0.25,
-      stress: 0.20,
-      activity: 0.15,
-      nutrition: 0.15,
-      social: 0.15,
-      cognitive: 0.10
+      sleep: 0.25 * scaleFactor,
+      stress: 0.20 * scaleFactor,
+      activity: 0.15 * scaleFactor,
+      nutrition: 0.15 * scaleFactor,
+      social: 0.15 * scaleFactor,
+      cognitive: 0.10 * scaleFactor
     };
 
     const longevityImpactScore = Math.round(
@@ -276,7 +283,8 @@ serve(async (req) => {
       activityScore * weights.activity +
       nutritionScore * weights.nutrition +
       socialScore * weights.social +
-      cognitiveScore * weights.cognitive
+      cognitiveScore * weights.cognitive +
+      protocolAdherence.score * adherenceWeight
     );
 
     const biologicalAgeImpact = calculateBiologicalAgeImpact(longevityImpactScore);
@@ -298,6 +306,7 @@ serve(async (req) => {
       nutrition_score: nutritionScore,
       social_connections_score: socialScore,
       cognitive_engagement_score: cognitiveScore,
+      protocol_adherence_score: protocolAdherence.score,
       color_code: colorCode,
       is_baseline: metrics.is_baseline || false,
       source_type: metrics.source_type || 'manual_entry',
@@ -566,4 +575,90 @@ function calculateDailyDeltaBA(lisScore: number): number {
   const neutralScore = 50;
   const unitChange = (lisScore - neutralScore) / 10;
   return Number((unitChange * BETA).toFixed(4));
+}
+
+// Phase 5: Calculate weighted protocol adherence score
+async function calculateProtocolAdherence(
+  supabase: any,
+  userId: string,
+  date: string
+): Promise<{ score: number; itemsCompleted: number; totalItems: number }> {
+  try {
+    // 1. Get user's active protocols
+    const { data: protocols, error: protocolsError } = await supabase
+      .from('protocols')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('is_active', true);
+
+    if (protocolsError) {
+      console.error('Error fetching protocols:', protocolsError);
+      return { score: 0, itemsCompleted: 0, totalItems: 0 };
+    }
+
+    if (!protocols?.length) {
+      console.log('No active protocols found for user');
+      return { score: 0, itemsCompleted: 0, totalItems: 0 };
+    }
+
+    const protocolIds = protocols.map((p: any) => p.id);
+
+    // 2. Get active protocol items with impact weights
+    const { data: items, error: itemsError } = await supabase
+      .from('protocol_items')
+      .select('id, impact_weight')
+      .in('protocol_id', protocolIds)
+      .eq('is_active', true);
+
+    if (itemsError) {
+      console.error('Error fetching protocol items:', itemsError);
+      return { score: 0, itemsCompleted: 0, totalItems: 0 };
+    }
+
+    if (!items?.length) {
+      console.log('No active protocol items found');
+      return { score: 0, itemsCompleted: 0, totalItems: 0 };
+    }
+
+    // 3. Get completions for this date
+    const { data: completions, error: completionsError } = await supabase
+      .from('protocol_item_completions')
+      .select('protocol_item_id')
+      .eq('user_id', userId)
+      .eq('completed_date', date);
+
+    if (completionsError) {
+      console.error('Error fetching completions:', completionsError);
+      return { score: 0, itemsCompleted: 0, totalItems: items.length };
+    }
+
+    const completedIds = new Set(completions?.map((c: any) => c.protocol_item_id) || []);
+
+    // 4. Calculate weighted adherence score
+    let completedWeight = 0;
+    let totalWeight = 0;
+    let itemsCompleted = 0;
+
+    items.forEach((item: any) => {
+      const weight = item.impact_weight || 5; // Default weight of 5
+      totalWeight += weight;
+      if (completedIds.has(item.id)) {
+        completedWeight += weight;
+        itemsCompleted++;
+      }
+    });
+
+    const score = totalWeight > 0 ? (completedWeight / totalWeight) * 100 : 0;
+
+    console.log(`Protocol adherence: ${itemsCompleted}/${items.length} items, score: ${Math.round(score)}`);
+
+    return {
+      score: Math.round(score),
+      itemsCompleted,
+      totalItems: items.length
+    };
+  } catch (error) {
+    console.error('Error calculating protocol adherence:', error);
+    return { score: 0, itemsCompleted: 0, totalItems: 0 };
+  }
 }
