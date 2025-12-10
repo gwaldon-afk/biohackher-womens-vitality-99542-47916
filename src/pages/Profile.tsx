@@ -10,7 +10,8 @@ import { AccountSettingsTab } from "@/components/profile/AccountSettingsTab";
 import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
 import { ConsolidatedInsightsCard } from "@/components/profile/ConsolidatedInsightsCard";
 import { UnifiedSymptomView } from "@/components/profile/UnifiedSymptomView";
-import { User, ClipboardList, Target, Settings, Sliders, Home, Activity } from "lucide-react";
+import { MasterProtocolSheet } from "@/components/profile/MasterProtocolSheet";
+import { User, ClipboardList, Target, Settings, Sliders, Home, Activity, FileStack } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 const Profile = () => {
@@ -58,11 +59,16 @@ const Profile = () => {
         {/* Tabbed Content */}
         <Card className="mt-6 p-6 bg-gradient-to-br from-background via-background to-primary/5 border-2 border-primary/20 shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsList className="grid w-full grid-cols-6 mb-6">
               <TabsTrigger value="assessments" className="flex items-center gap-2">
                 <ClipboardList className="h-4 w-4" />
                 <span className="hidden sm:inline">Assessments</span>
                 <span className="sm:hidden">Assess</span>
+              </TabsTrigger>
+              <TabsTrigger value="protocols" className="flex items-center gap-2">
+                <FileStack className="h-4 w-4" />
+                <span className="hidden sm:inline">Protocols</span>
+                <span className="sm:hidden">Protocol</span>
               </TabsTrigger>
               <TabsTrigger value="symptoms" className="flex items-center gap-2">
                 <Activity className="h-4 w-4" />
@@ -88,6 +94,10 @@ const Profile = () => {
 
             <TabsContent value="assessments">
               <AssessmentHistoryTab />
+            </TabsContent>
+
+            <TabsContent value="protocols">
+              <MasterProtocolSheet />
             </TabsContent>
 
             <TabsContent value="symptoms">
