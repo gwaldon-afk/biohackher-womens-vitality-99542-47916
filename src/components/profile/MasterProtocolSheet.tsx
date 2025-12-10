@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useEvidenceStore } from "@/stores/evidenceStore";
+import { useCart } from "@/hooks/useCart";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "@/services/productService";
 import EvidenceDrawer from "@/components/EvidenceDrawer";
 import { 
   FileStack, 
@@ -73,10 +76,41 @@ const PILLAR_SUMMARIES: Record<string, { title: string; summary: string }> = {
   cognitive: { title: "Cognitive Function", summary: "Research on brain health, memory, and mental clarity." }
 };
 
+// Infer pillars from item type when not explicitly set
+const inferPillarsFromType = (itemType: string, name: string): string[] => {
+  const nameLC = name.toLowerCase();
+  
+  if (itemType === 'supplement') {
+    if (nameLC.includes('magnesium') || nameLC.includes('melatonin') || nameLC.includes('glycine')) return ['sleep'];
+    if (nameLC.includes('omega') || nameLC.includes('fish oil')) return ['cognitive', 'nutrition'];
+    if (nameLC.includes('vitamin d') || nameLC.includes('d3')) return ['activity', 'nutrition'];
+    if (nameLC.includes('ashwagandha') || nameLC.includes('rhodiola')) return ['stress'];
+    if (nameLC.includes('probiotic') || nameLC.includes('fiber')) return ['nutrition'];
+    if (nameLC.includes('creatine') || nameLC.includes('protein')) return ['activity'];
+    return ['nutrition'];
+  }
+  if (itemType === 'exercise') return ['activity'];
+  if (itemType === 'habit') {
+    if (nameLC.includes('sleep') || nameLC.includes('bed')) return ['sleep'];
+    if (nameLC.includes('meditat') || nameLC.includes('breath')) return ['stress'];
+    if (nameLC.includes('walk') || nameLC.includes('stretch')) return ['activity'];
+    if (nameLC.includes('social') || nameLC.includes('connect')) return ['social'];
+    return ['cognitive'];
+  }
+  if (itemType === 'therapy') {
+    if (nameLC.includes('sauna') || nameLC.includes('cold') || nameLC.includes('light')) return ['activity', 'stress'];
+    return ['stress'];
+  }
+  if (itemType === 'diet') return ['nutrition'];
+  
+  return [];
+};
+
 export function MasterProtocolSheet() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { openEvidence } = useEvidenceStore();
+  const { addToCart } = useCart();
   const [protocolItems, setProtocolItems] = useState<ProtocolItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -218,12 +252,56 @@ export function MasterProtocolSheet() {
 
   const itemTypes = [...new Set(protocolItems.map(item => item.item_type))];
 
+  // Fetch products for cart matching
+  const { data: products = [] } = useQuery({
+    queryKey: ['products-for-protocol'],
+    queryFn: getProducts,
+    staleTime: 1000 * 60 * 10
+  });
+
+  // Create a map for product matching by name
+  const productMap = useMemo(() => {
+    const map = new Map<string, typeof products[0]>();
+    products.forEach(p => {
+      map.set(p.name.toLowerCase(), p);
+    });
+    return map;
+  }, [products]);
+
+  const findProductForItem = (itemName: string) => {
+    const nameLower = itemName.toLowerCase();
+    // Direct match
+    if (productMap.has(nameLower)) return productMap.get(nameLower);
+    // Partial match
+    for (const [key, product] of productMap) {
+      if (nameLower.includes(key) || key.includes(nameLower)) return product;
+    }
+    return null;
+  };
+
   const openEvidenceForPillar = (pillar: string) => {
     const pillarInfo = PILLAR_SUMMARIES[pillar.toLowerCase()] || { 
       title: pillar, 
       summary: `Evidence for ${pillar} interventions.` 
     };
     openEvidence(pillar.toLowerCase(), pillarInfo.title, pillarInfo.summary);
+  };
+
+  const handleAddToCart = (item: ProtocolItem) => {
+    const product = findProductForItem(item.name);
+    if (product) {
+      addToCart(product);
+      toast({
+        title: "Added to cart",
+        description: `${product.name} added to your cart.`
+      });
+    } else {
+      toast({
+        title: "Product not found",
+        description: "This item is not available for purchase.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (loading) {
@@ -380,25 +458,31 @@ export function MasterProtocolSheet() {
                           </p>
                         )}
 
-                        {/* LIS Pillar contributions */}
-                        {item.lis_pillar_contribution && item.lis_pillar_contribution.length > 0 && (
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs text-muted-foreground">Pillars:</span>
-                            <div className="flex gap-1">
-                              {item.lis_pillar_contribution.map(pillar => (
-                                <Badge 
-                                  key={pillar} 
-                                  variant="outline" 
-                                  className="text-xs gap-1 cursor-pointer hover:bg-primary/10"
-                                  onClick={() => openEvidenceForPillar(pillar)}
-                                >
-                                  {PILLAR_ICONS[pillar.toLowerCase()] || null}
-                                  {pillar}
-                                </Badge>
-                              ))}
+                        {/* LIS Pillar contributions - use inferred if not set */}
+                        {(() => {
+                          const pillars = (item.lis_pillar_contribution && item.lis_pillar_contribution.length > 0)
+                            ? item.lis_pillar_contribution
+                            : inferPillarsFromType(item.item_type, item.name);
+                          
+                          return pillars.length > 0 && (
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xs text-muted-foreground">Pillars:</span>
+                              <div className="flex gap-1 flex-wrap">
+                                {pillars.map(pillar => (
+                                  <Badge 
+                                    key={pillar} 
+                                    variant="outline" 
+                                    className="text-xs gap-1 cursor-pointer hover:bg-primary/10"
+                                    onClick={() => openEvidenceForPillar(pillar)}
+                                  >
+                                    {PILLAR_ICONS[pillar.toLowerCase()] || null}
+                                    {pillar}
+                                  </Badge>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
                         {/* Evidence and weight */}
                         <div className="flex items-center gap-4 text-xs">
@@ -436,7 +520,10 @@ export function MasterProtocolSheet() {
                           size="sm"
                           className="h-8 text-xs"
                           onClick={() => {
-                            const pillar = item.lis_pillar_contribution?.[0] || 'body';
+                            const pillars = (item.lis_pillar_contribution && item.lis_pillar_contribution.length > 0)
+                              ? item.lis_pillar_contribution
+                              : inferPillarsFromType(item.item_type, item.name);
+                            const pillar = pillars[0] || 'nutrition';
                             openEvidenceForPillar(pillar);
                           }}
                         >
@@ -444,18 +531,13 @@ export function MasterProtocolSheet() {
                           Evidence
                         </Button>
 
-                        {/* Add to Cart for purchasable items */}
-                        {item.product_id && (
+                        {/* Add to Cart for supplements */}
+                        {(item.item_type === 'supplement' || item.product_id) && (
                           <Button
                             variant="outline"
                             size="sm"
                             className="h-8 text-xs"
-                            onClick={() => {
-                              toast({
-                                title: "Added to cart",
-                                description: `${item.name} added to your cart.`
-                              });
-                            }}
+                            onClick={() => handleAddToCart(item)}
                           >
                             <ShoppingCart className="h-3 w-3 mr-1" />
                             Add to Cart
