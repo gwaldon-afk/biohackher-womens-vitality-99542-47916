@@ -99,15 +99,15 @@ const Index = () => {
 
             <AssessmentHeroCard
               icon={Package}
-              headline="Get Your Nutrition Longevity Score"
-              painPoint="Is your diet aging you faster?"
+              headline="Discover Your Metabolic Age"
+              painPoint="Is your metabolism aging faster than you?"
               benefits={[
-                "Score your nutrition on 15 longevity factors",
-                "Identify missing nutrients hurting healthspan",
-                "Get supplement + meal recommendations"
+                "Get your Metabolic Age in 8 minutes",
+                "Compare to women your age",
+                "Receive targeted nutrition protocols"
               ]}
               duration="Free • 8 min • No signup"
-              ctaText="Score My Nutrition"
+              ctaText="Get My Metabolic Age"
               ctaRoute="/longevity-nutrition"
             />
 
