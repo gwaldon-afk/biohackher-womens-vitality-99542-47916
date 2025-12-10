@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Activity, Brain, Heart, Sparkles, Mail, ShoppingCart } from "lucide-react";
+import { Loader2, Activity, Brain, Heart, Sparkles, Mail, ShoppingCart, Target, CheckCircle2 } from "lucide-react";
 import { getScoreCategory, calculatePillarScores, getEatingPersonalityInsights } from "@/utils/longevityNutritionScoring";
 import { NutritionPillarAnalysisCard } from "@/components/NutritionPillarAnalysisCard";
 import { Accordion } from "@/components/ui/accordion";
@@ -17,6 +17,8 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { MethodologyDisclaimer } from "@/components/assessment/MethodologyDisclaimer";
 import { MetabolicAgeDisplay } from "@/components/nutrition/MetabolicAgeDisplay";
+import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
+import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 
 // Protocol Item Card Component
 interface ProtocolItemCardProps {
@@ -28,7 +30,7 @@ interface ProtocolItemCardProps {
   isGuest: boolean;
 }
 
-function ProtocolItemCard({ 
+function ProtocolItemCard({
   item, 
   matchedProduct, 
   onAddToCart, 
@@ -118,6 +120,11 @@ export default function LongevityNutritionResults() {
   const [products, setProducts] = useState<Product[]>([]);
   const [productMatches, setProductMatches] = useState<Record<string, Product | null>>({});
   const [addedToProtocol, setAddedToProtocol] = useState<Set<string>>(new Set());
+  
+  // Protocol selection dialog state
+  const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
+  const { refetch: refetchRecommendations } = useProtocolRecommendations();
 
   // Fetch assessment and products
   useEffect(() => {
@@ -336,6 +343,157 @@ export default function LongevityNutritionResults() {
     }
   };
 
+  // Handler to open protocol selection dialog (saves recommendation first)
+  const handleReviewFullProtocol = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Create an account to review and save your protocol.",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
+    if (!assessment?.id) {
+      toast({
+        title: "Error",
+        description: "Assessment ID not found",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Save as recommendation first
+      const { data: recommendation, error } = await supabase
+        .from('protocol_recommendations')
+        .insert({
+          user_id: user.id,
+          source_assessment_id: assessment.id,
+          source_type: 'nutrition',
+          protocol_data: nutritionProtocol as any,
+          status: 'pending'
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving recommendation:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save recommendation",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Store recommendation ID and open dialog
+      setCurrentRecommendationId(recommendation.id);
+      setProtocolDialogOpen(true);
+    } catch (error) {
+      console.error('Error saving protocol:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save protocol",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handler for protocol selection from dialog
+  const handleProtocolSelection = async (selectedItems: ProtocolItem[], cartItems: Product[]) => {
+    if (!user || !currentRecommendationId) return;
+
+    try {
+      // Get or create active protocol
+      let { data: protocols } = await supabase
+        .from('protocols')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .limit(1);
+
+      let protocolId: string;
+
+      if (!protocols || protocols.length === 0) {
+        // Create new protocol
+        const { data: newProtocol, error: protocolError } = await supabase
+          .from('protocols')
+          .insert({
+            user_id: user.id,
+            name: `Longevity Nutrition Protocol - ${new Date().toLocaleDateString()}`,
+            description: 'Generated from Longevity Nutrition assessment',
+            source_recommendation_id: currentRecommendationId,
+            source_type: 'nutrition',
+            is_active: true,
+            start_date: new Date().toISOString()
+          })
+          .select('id')
+          .single();
+
+        if (protocolError) throw protocolError;
+        protocolId = newProtocol.id;
+      } else {
+        protocolId = protocols[0].id;
+      }
+
+      // Map selected items to protocol_items format
+      const protocolItems = selectedItems.map(item => ({
+        protocol_id: protocolId,
+        name: item.name,
+        description: item.description || '',
+        dosage: (item as any).dosage || null,
+        frequency: (item as any).frequency || 'daily',
+        time_of_day: (item as any).time_of_day ? [(item as any).time_of_day] : ['morning'],
+        item_type: 'supplement' as const,
+        is_active: true,
+        priority_tier: (item as any).priority_tier || 'foundation',
+        product_id: productMatches[item.name]?.id || null,
+        notes: item.relevance || null
+      }));
+
+      // Insert protocol items
+      const { error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(protocolItems);
+
+      if (itemsError) throw itemsError;
+
+      // Update recommendation status
+      const allSelected = selectedItems.length === (
+        nutritionProtocol.immediate.length + 
+        nutritionProtocol.foundation.length + 
+        nutritionProtocol.optimization.length
+      );
+
+      await supabase
+        .from('protocol_recommendations')
+        .update({
+          status: allSelected ? 'accepted' : 'partially_accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', currentRecommendationId);
+
+      await refetchRecommendations();
+
+      toast({
+        title: "Protocol saved!",
+        description: `${selectedItems.length} items added to your plan`,
+      });
+
+      setProtocolDialogOpen(false);
+      navigate('/my-protocol');
+    } catch (error) {
+      console.error('Error saving protocol selection:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save protocol selection",
+        variant: "destructive"
+      });
+    }
+  };
+
   const scoreResult = getScoreCategory(assessment.longevity_nutrition_score);
   
   const pillarScores = calculatePillarScores({
@@ -491,10 +649,24 @@ export default function LongevityNutritionResults() {
         {/* Protocol Recommendations Section */}
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-2">Your Personalized Nutrition Protocol</h2>
-            <p className="text-muted-foreground">
-              Based on your assessment, these evidence-based supplements and actions will support your longevity goals.
-            </p>
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Your Personalized Nutrition Protocol</h2>
+                <p className="text-muted-foreground">
+                  Based on your assessment, these evidence-based supplements and actions will support your longevity goals.
+                </p>
+              </div>
+              {user && (
+                <Button 
+                  onClick={handleReviewFullProtocol}
+                  size="lg"
+                  className="gap-2"
+                >
+                  <Target className="w-4 h-4" />
+                  Review Full Protocol
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Immediate Actions */}
@@ -611,6 +783,15 @@ export default function LongevityNutritionResults() {
           </Button>
         </div>
       </div>
+      
+      {/* Protocol Selection Dialog */}
+      <ProtocolSelectionDialog
+        open={protocolDialogOpen}
+        onOpenChange={setProtocolDialogOpen}
+        protocol={nutritionProtocol}
+        onSave={handleProtocolSelection}
+        onCancel={() => setProtocolDialogOpen(false)}
+      />
     </div>
   );
 }
