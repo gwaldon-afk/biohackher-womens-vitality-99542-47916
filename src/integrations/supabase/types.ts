@@ -3477,21 +3477,29 @@ export type Database = {
       research_studies: {
         Row: {
           abstract: string | null
+          ai_summary: string | null
           authors: string
+          category: string | null
           created_at: string | null
           display_order: number | null
           doi: string | null
           evidence_level: string | null
           id: string
+          intervention_name: string | null
           is_active: boolean | null
           is_women_specific: boolean | null
           journal: string | null
           key_findings: Json | null
+          last_synced_at: string | null
+          pillar: string | null
+          pmid: string | null
+          raw_abstract: string | null
           related_pillars: Json | null
           related_products: string[] | null
           related_symptoms: Json | null
           related_toolkit_items: string[] | null
           sample_size: number | null
+          source: string | null
           study_type: string | null
           title: string
           updated_at: string | null
@@ -3500,21 +3508,29 @@ export type Database = {
         }
         Insert: {
           abstract?: string | null
+          ai_summary?: string | null
           authors: string
+          category?: string | null
           created_at?: string | null
           display_order?: number | null
           doi?: string | null
           evidence_level?: string | null
           id?: string
+          intervention_name?: string | null
           is_active?: boolean | null
           is_women_specific?: boolean | null
           journal?: string | null
           key_findings?: Json | null
+          last_synced_at?: string | null
+          pillar?: string | null
+          pmid?: string | null
+          raw_abstract?: string | null
           related_pillars?: Json | null
           related_products?: string[] | null
           related_symptoms?: Json | null
           related_toolkit_items?: string[] | null
           sample_size?: number | null
+          source?: string | null
           study_type?: string | null
           title: string
           updated_at?: string | null
@@ -3523,21 +3539,29 @@ export type Database = {
         }
         Update: {
           abstract?: string | null
+          ai_summary?: string | null
           authors?: string
+          category?: string | null
           created_at?: string | null
           display_order?: number | null
           doi?: string | null
           evidence_level?: string | null
           id?: string
+          intervention_name?: string | null
           is_active?: boolean | null
           is_women_specific?: boolean | null
           journal?: string | null
           key_findings?: Json | null
+          last_synced_at?: string | null
+          pillar?: string | null
+          pmid?: string | null
+          raw_abstract?: string | null
           related_pillars?: Json | null
           related_products?: string[] | null
           related_symptoms?: Json | null
           related_toolkit_items?: string[] | null
           sample_size?: number | null
+          source?: string | null
           study_type?: string | null
           title?: string
           updated_at?: string | null
