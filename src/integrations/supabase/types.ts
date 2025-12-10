@@ -3097,19 +3097,24 @@ export type Database = {
       }
       protocol_items: {
         Row: {
+          accessibility: string | null
           contributes_to_metrics: string[] | null
           created_at: string
           description: string | null
           dosage: string | null
+          evidence_level: string | null
           frequency: Database["public"]["Enums"]["protocol_frequency"]
           goal_id: string | null
           goal_ids: string[] | null
           id: string
+          impact_weight: number | null
           is_active: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
+          lis_pillar_contribution: string[] | null
           meal_template_id: string | null
           name: string
           notes: string | null
+          priority_tier: string | null
           product_id: string | null
           product_link: string | null
           protocol_id: string
@@ -3118,19 +3123,24 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          accessibility?: string | null
           contributes_to_metrics?: string[] | null
           created_at?: string
           description?: string | null
           dosage?: string | null
+          evidence_level?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
           goal_id?: string | null
           goal_ids?: string[] | null
           id?: string
+          impact_weight?: number | null
           is_active?: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
+          lis_pillar_contribution?: string[] | null
           meal_template_id?: string | null
           name: string
           notes?: string | null
+          priority_tier?: string | null
           product_id?: string | null
           product_link?: string | null
           protocol_id: string
@@ -3139,19 +3149,24 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          accessibility?: string | null
           contributes_to_metrics?: string[] | null
           created_at?: string
           description?: string | null
           dosage?: string | null
+          evidence_level?: string | null
           frequency?: Database["public"]["Enums"]["protocol_frequency"]
           goal_id?: string | null
           goal_ids?: string[] | null
           id?: string
+          impact_weight?: number | null
           is_active?: boolean
           item_type?: Database["public"]["Enums"]["protocol_item_type"]
+          lis_pillar_contribution?: string[] | null
           meal_template_id?: string | null
           name?: string
           notes?: string | null
+          priority_tier?: string | null
           product_id?: string | null
           product_link?: string | null
           protocol_id?: string
