@@ -18,6 +18,7 @@ import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice,
 import { autoMatchProtocolItemToProduct } from '@/services/protocolProductLinkingService';
 import { useCart } from '@/hooks/useCart';
 import { ShoppingCart, Calendar, ChevronDown, Sparkles, CheckCircle2, Target, AlertCircle, Home, Lightbulb } from 'lucide-react';
+import { MethodologyDisclaimer } from '@/components/assessment/MethodologyDisclaimer';
 import { toast } from 'sonner';
 import { differenceInYears } from 'date-fns';
 import { HORMONE_COMPASS_ASSESSMENT } from '@/data/hormoneCompassAssessment';
@@ -764,6 +765,9 @@ export default function HormoneCompassResults() {
           ageOffset={ageOffset || 0}
         />
       )}
+
+      {/* Methodology Disclaimer */}
+      <MethodologyDisclaimer assessmentType="hormone" />
 
       {/* Overall Health Level Summary */}
       <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">

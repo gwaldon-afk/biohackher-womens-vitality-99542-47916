@@ -15,6 +15,7 @@ import { autoMatchProtocolItemToProduct } from "@/services/protocolProductLinkin
 import { getProducts, Product } from "@/services/productService";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { MethodologyDisclaimer } from "@/components/assessment/MethodologyDisclaimer";
 
 // Protocol Item Card Component
 interface ProtocolItemCardProps {
@@ -386,6 +387,9 @@ export default function LongevityNutritionResults() {
           <div className="text-2xl font-semibold mb-4">{scoreResult.category}</div>
           <p className="text-muted-foreground max-w-2xl mx-auto">{scoreResult.description}</p>
         </Card>
+
+        {/* Methodology Disclaimer */}
+        <MethodologyDisclaimer assessmentType="nutrition" />
 
         {/* Pillar Breakdown Visual */}
         <Card className="p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background border-primary/20">
