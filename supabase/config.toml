@@ -62,3 +62,9 @@ verify_jwt = true
 
 [functions.score-history]
 verify_jwt = true
+
+[functions.populate-research]
+verify_jwt = false
+
+[functions.sync-research-delta]
+verify_jwt = false
