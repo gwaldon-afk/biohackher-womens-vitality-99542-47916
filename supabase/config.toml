@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.sync-research-delta]
 verify_jwt = false
+
+[functions.personalize-research]
+verify_jwt = true
