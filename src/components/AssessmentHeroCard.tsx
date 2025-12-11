@@ -25,7 +25,8 @@ export const AssessmentHeroCard = ({
       className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer bg-[#F8C5AC]/20 hover:bg-[#F8C5AC]/30" 
       onClick={() => navigate(ctaRoute)}
     >
-      <CardContent className="p-6 h-full flex flex-col justify-center">
+      <CardContent className="p-6 h-full flex flex-col justify-between">
+        {/* Top section - icon, headline, benefit */}
         <div className="space-y-4">
           <div className="flex justify-center">
             <div className="w-12 h-12 rounded-full bg-[#F8C5AC]/40 flex items-center justify-center group-hover:bg-[#F8C5AC]/60 transition-colors">
@@ -37,12 +38,13 @@ export const AssessmentHeroCard = ({
             <h3 className="text-xl font-bold leading-tight">{headline}</h3>
             <p className="text-muted-foreground">{benefit}</p>
           </div>
+        </div>
 
-          <div className="flex justify-center">
-            <Badge variant="secondary" className="bg-[#F8C5AC]/30 text-foreground text-sm px-3 py-1">
-              {duration}
-            </Badge>
-          </div>
+        {/* Bottom section - duration badge */}
+        <div className="flex justify-center mt-4">
+          <Badge variant="secondary" className="bg-[#F8C5AC]/30 text-foreground text-sm px-3 py-1">
+            {duration}
+          </Badge>
         </div>
       </CardContent>
     </Card>
