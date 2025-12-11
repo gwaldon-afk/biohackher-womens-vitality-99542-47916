@@ -94,7 +94,7 @@ const Index = () => {
 
             <AssessmentHeroCard 
               icon={Heart} 
-              headline="Feeling Off But Don't Know Why?" 
+              headline="How are your hormones?" 
               benefit="Get clarity on confusing symptoms"
               duration="Free • 6 min • No signup" 
               ctaText="Check My Hormones" 
