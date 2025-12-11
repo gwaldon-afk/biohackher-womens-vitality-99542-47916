@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -9,9 +8,7 @@ interface AssessmentHeroCardProps {
   headline: string;
   benefit: string;
   duration: string;
-  ctaText: string;
   ctaRoute: string;
-  socialProof?: string;
 }
 
 export const AssessmentHeroCard = ({
@@ -19,18 +16,16 @@ export const AssessmentHeroCard = ({
   headline,
   benefit,
   duration,
-  ctaText,
   ctaRoute,
-  socialProof,
 }: AssessmentHeroCardProps) => {
   const navigate = useNavigate();
 
   return (
     <Card className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer" onClick={() => navigate(ctaRoute)}>
-      <CardContent className="p-6 h-full flex flex-col">
-        <div className="flex-1 space-y-3">
+      <CardContent className="p-6 h-full flex flex-col justify-center">
+        <div className="space-y-3">
           <div className="flex justify-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Icon className="h-6 w-6 text-primary" />
             </div>
           </div>
@@ -45,20 +40,6 @@ export const AssessmentHeroCard = ({
               {duration}
             </Badge>
           </div>
-        </div>
-
-        <div className="space-y-2 mt-3">
-          <Button
-            onClick={(e) => { e.stopPropagation(); navigate(ctaRoute); }}
-            className="w-full group-hover:scale-105 transition-transform text-sm"
-            size="default"
-          >
-            {ctaText}
-          </Button>
-
-          {socialProof && (
-            <p className="text-xs text-center text-muted-foreground">{socialProof}</p>
-          )}
         </div>
       </CardContent>
     </Card>

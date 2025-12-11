@@ -76,7 +76,6 @@ const Index = () => {
               headline="How Old Are You Really?" 
               benefit="Find out your Biological Age"
               duration="Free • 5 min • No signup" 
-              ctaText="Get My Longevity Score" 
               ctaRoute="/guest-lis-assessment" 
             />
 
@@ -85,7 +84,6 @@ const Index = () => {
               headline="Is Your Metabolism Sabotaging You?" 
               benefit="Discover why diets may not be working for you"
               duration="Free • 8 min • No signup" 
-              ctaText="Assess My Metabolic Age" 
               ctaRoute="/longevity-nutrition" 
             />
 
@@ -94,7 +92,6 @@ const Index = () => {
               headline="How are your hormones?" 
               benefit="Find out if your hormones are aging faster than you"
               duration="Free • 6 min • No signup" 
-              ctaText="Check My Hormones" 
               ctaRoute="/menomap/assessment" 
             />
           </div>
