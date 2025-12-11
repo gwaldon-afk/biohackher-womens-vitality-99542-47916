@@ -5,27 +5,47 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { AlertTriangle, TrendingUp, Calendar, ChevronRight } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Calendar, ChevronRight, Loader2 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { NutritionPreferences } from '@/hooks/useNutritionPreferences';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useProtocols, useMultipleProtocolItems } from '@/queries/protocolQueries';
 import { useAuth } from '@/hooks/useAuth';
 import { ProtocolItemRow } from '@/components/ProtocolItemRow';
 import { AssessmentHistoryDialog } from './AssessmentHistoryDialog';
 
 interface Props {
-  preferences: NutritionPreferences;
   onRetakeAssessment: () => void;
 }
 
-export function LongevityNutritionScoreCard({ preferences, onRetakeAssessment }: Props) {
+export function LongevityNutritionScoreCard({ onRetakeAssessment }: Props) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showHistory, setShowHistory] = useState(false);
+
+  // Fetch from correct table: longevity_nutrition_assessments
+  const { data: latestAssessment, isLoading } = useQuery({
+    queryKey: ['longevity-nutrition-assessment', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('longevity_nutrition_assessments')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id
+  });
   
-  const hasScore = preferences.longevityNutritionScore !== undefined;
-  const assessmentDate = preferences.assessmentCompletedAt 
-    ? new Date(preferences.assessmentCompletedAt) 
+  const hasScore = !!latestAssessment?.longevity_nutrition_score;
+  const assessmentDate = latestAssessment?.completed_at 
+    ? new Date(latestAssessment.completed_at) 
+    : latestAssessment?.created_at
+    ? new Date(latestAssessment.created_at)
     : null;
   
   const isStale = assessmentDate 
@@ -67,25 +87,40 @@ export function LongevityNutritionScoreCard({ preferences, onRetakeAssessment }:
     return "destructive";
   };
 
-  const calculateBodyScore = (prefs: NutritionPreferences): number => {
-    return Math.round(((prefs.proteinScore || 0) / 5) * 100);
+  // Calculate pillar scores from assessment data
+  const calculateBodyScore = (): number => {
+    if (!latestAssessment) return 0;
+    return Math.round(((latestAssessment.protein_score || 0) / 5) * 100);
   };
 
-  const calculateBrainScore = (prefs: NutritionPreferences): number => {
-    return Math.round((1 - ((prefs.inflammationScore || 0) / 6)) * 100);
+  const calculateBrainScore = (): number => {
+    if (!latestAssessment) return 0;
+    return Math.round((1 - ((latestAssessment.inflammation_score || 0) / 6)) * 100);
   };
 
-  const calculateBalanceScore = (prefs: NutritionPreferences): number => {
-    const chrono = prefs.eatsAfter8pm ? 40 : 80;
-    const craving = ((5 - (prefs.cravingPattern || 3)) / 5) * 100;
+  const calculateBalanceScore = (): number => {
+    if (!latestAssessment) return 0;
+    const chrono = latestAssessment.eats_after_8pm ? 40 : 80;
+    const craving = ((5 - (latestAssessment.craving_pattern || 3)) / 5) * 100;
     return Math.round((chrono + craving) / 2);
   };
 
-  const calculateBeautyScore = (prefs: NutritionPreferences): number => {
-    const gut = ((5 - (prefs.gutSymptomScore || 0)) / 5) * 100;
-    const hydration = ((prefs.hydrationScore || 3) / 5) * 100;
+  const calculateBeautyScore = (): number => {
+    if (!latestAssessment) return 0;
+    const gut = ((5 - (latestAssessment.gut_symptom_score || 0)) / 5) * 100;
+    const hydration = ((latestAssessment.hydration_score || 3) / 5) * 100;
     return Math.round((gut + hydration) / 2);
   };
+
+  if (isLoading) {
+    return (
+      <Card className="border-2 border-primary/20">
+        <CardContent className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!hasScore) {
     return (
@@ -104,6 +139,8 @@ export function LongevityNutritionScoreCard({ preferences, onRetakeAssessment }:
       </Card>
     );
   }
+
+  const score = latestAssessment.longevity_nutrition_score!;
 
   return (
     <div className="space-y-6">
@@ -145,7 +182,7 @@ export function LongevityNutritionScoreCard({ preferences, onRetakeAssessment }:
           {/* Large Score Display */}
           <div className="flex items-center justify-center py-8">
             <div className="text-6xl font-bold text-primary">
-              {preferences.longevityNutritionScore}
+              {score}
             </div>
             <div className="ml-4 text-xl text-muted-foreground">/100</div>
           </div>
@@ -153,19 +190,19 @@ export function LongevityNutritionScoreCard({ preferences, onRetakeAssessment }:
           {/* Grade Badge */}
           <div className="flex justify-center mb-6">
             <Badge 
-              variant={getGradeVariant(preferences.longevityNutritionScore!)} 
+              variant={getGradeVariant(score)} 
               className="text-lg px-6 py-2"
             >
-              {getScoreGrade(preferences.longevityNutritionScore!)}
+              {getScoreGrade(score)}
             </Badge>
           </div>
 
           {/* Pillar Breakdown */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <PillarScoreCard pillar="BODY" score={calculateBodyScore(preferences)} />
-            <PillarScoreCard pillar="BRAIN" score={calculateBrainScore(preferences)} />
-            <PillarScoreCard pillar="BALANCE" score={calculateBalanceScore(preferences)} />
-            <PillarScoreCard pillar="BEAUTY" score={calculateBeautyScore(preferences)} />
+            <PillarScoreCard pillar="BODY" score={calculateBodyScore()} />
+            <PillarScoreCard pillar="BRAIN" score={calculateBrainScore()} />
+            <PillarScoreCard pillar="BALANCE" score={calculateBalanceScore()} />
+            <PillarScoreCard pillar="BEAUTY" score={calculateBeautyScore()} />
           </div>
 
           {/* Action Buttons */}
