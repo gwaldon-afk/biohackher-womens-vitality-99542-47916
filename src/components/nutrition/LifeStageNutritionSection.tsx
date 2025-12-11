@@ -55,7 +55,26 @@ export function LifeStageNutritionSection() {
   const currentLifeStage = userAge ? getLifeStageByAge(userAge) : null;
   const currentDecade = userAge ? getDecadeLabel(userAge) : null;
 
-  if (!currentLifeStage || !userAge) {
+  // Show nothing if not authenticated
+  if (!user) {
+    return null;
+  }
+
+  // Show prompt to complete profile if no DOB
+  if (!userAge) {
+    return (
+      <Card className="border-2 border-dashed border-muted-foreground/30">
+        <CardContent className="py-8 text-center">
+          <Cake className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
+          <p className="text-muted-foreground">
+            Complete your health profile to see personalized life stage nutrition guidance.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!currentLifeStage) {
     return null;
   }
 

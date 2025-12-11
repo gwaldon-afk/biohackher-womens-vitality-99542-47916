@@ -81,7 +81,6 @@ const Nutrition = () => {
 
         {/* Score Card with Assessment CTA */}
         <LongevityNutritionScoreCard 
-          preferences={preferences}
           onRetakeAssessment={() => navigate('/longevity-nutrition')}
         />
         
