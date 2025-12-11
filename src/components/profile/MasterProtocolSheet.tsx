@@ -34,6 +34,7 @@ interface ProtocolItem {
   description: string | null;
   item_type: string;
   is_active: boolean;
+  included_in_plan: boolean;
   priority_tier: string | null;
   impact_weight: number | null;
   evidence_level: string | null;
@@ -167,25 +168,25 @@ export function MasterProtocolSheet() {
     }
   };
 
-  const toggleItemActive = async (itemId: string, currentActive: boolean) => {
+  const toggleItemInPlan = async (itemId: string, currentIncluded: boolean) => {
     setUpdating(itemId);
     try {
       const { error } = await supabase
         .from('protocol_items')
-        .update({ is_active: !currentActive })
+        .update({ included_in_plan: !currentIncluded })
         .eq('id', itemId);
 
       if (error) throw error;
 
       setProtocolItems(prev => 
         prev.map(item => 
-          item.id === itemId ? { ...item, is_active: !currentActive } : item
+          item.id === itemId ? { ...item, included_in_plan: !currentIncluded } : item
         )
       );
 
       toast({
-        title: !currentActive ? "Added to Plan" : "Removed from Plan",
-        description: `Protocol item ${!currentActive ? 'activated' : 'deactivated'}.`
+        title: !currentIncluded ? "Added to Plan" : "Removed from Plan",
+        description: `Protocol item ${!currentIncluded ? 'will now appear' : 'removed from'} your Today and 90-Day plans.`
       });
     } catch (error) {
       console.error('Error updating protocol item:', error);
@@ -243,9 +244,9 @@ export function MasterProtocolSheet() {
       return 0;
     });
 
-  const activeCount = protocolItems.filter(item => item.is_active).length;
+  const includedCount = protocolItems.filter(item => item.included_in_plan).length;
   const totalWeight = protocolItems
-    .filter(item => item.is_active)
+    .filter(item => item.included_in_plan)
     .reduce((sum, item) => sum + (item.impact_weight || 5), 0);
   
   const projectedImpact = Math.min(Math.round(totalWeight / 10), 15);
@@ -325,8 +326,8 @@ export function MasterProtocolSheet() {
             </CardTitle>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1">
-                <span className="text-muted-foreground">Selected:</span>
-                <Badge variant="secondary">{activeCount} items</Badge>
+                <span className="text-muted-foreground">In Plan:</span>
+                <Badge variant="secondary">{includedCount} items</Badge>
               </div>
               <div className="flex items-center gap-1">
                 <span className="text-muted-foreground">LIS Impact:</span>
@@ -405,16 +406,16 @@ export function MasterProtocolSheet() {
               return (
                 <Card 
                   key={item.id} 
-                  className={`transition-all ${item.is_active ? 'border-primary/40 bg-primary/5' : 'border-border/50 opacity-75'}`}
+                  className={`transition-all ${item.included_in_plan ? 'border-primary/40 bg-primary/5' : 'border-border/50 opacity-75'}`}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      {/* Selection checkbox */}
+                      {/* Selection checkbox - controls included_in_plan */}
                       <div className="pt-1">
                         <Checkbox
-                          checked={item.is_active}
+                          checked={item.included_in_plan}
                           disabled={updating === item.id}
-                          onCheckedChange={() => toggleItemActive(item.id, item.is_active)}
+                          onCheckedChange={() => toggleItemInPlan(item.id, item.included_in_plan)}
                         />
                       </div>
 

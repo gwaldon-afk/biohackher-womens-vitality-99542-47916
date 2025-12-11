@@ -87,6 +87,7 @@ export interface ProtocolItem {
   product_link: string | null;
   product_id: string | null;
   is_active: boolean;
+  included_in_plan?: boolean;
   created_at: string;
   updated_at: string;
   meal_template_id?: string | null;
