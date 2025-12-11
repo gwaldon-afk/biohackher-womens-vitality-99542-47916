@@ -11,11 +11,14 @@ import StatisticsBar from "@/components/StatisticsBar";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import TrustIndicators from "@/components/TrustIndicators";
 import BenefitsSection from "@/components/BenefitsSection";
-
 const Index = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { user } = useAuth();
+  const {
+    t
+  } = useTranslation();
+  const {
+    user
+  } = useAuth();
 
   // Redirect authenticated users to /today
   useEffect(() => {
@@ -23,9 +26,7 @@ const Index = () => {
       navigate("/today");
     }
   }, [user, navigate]);
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section - Header Only */}
@@ -34,11 +35,7 @@ const Index = () => {
           <div className="flex items-start justify-center gap-8 mb-4">
             <div className="flex flex-col gap-6 max-w-3xl">
               {/* Logo directly above headline */}
-              <img 
-                src={biohackherLogo} 
-                alt="Biohackher Logo"
-                className="h-auto w-full object-contain mb-2"
-              />
+              <img src={biohackherLogo} alt="Biohackher Logo" className="h-auto w-full object-contain mb-2" />
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                 LIVE WELL LONGER
@@ -51,9 +48,7 @@ const Index = () => {
                 <p>
                   The Biohackher App is your one-stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology — the place where women go to check in, level up and feel incredible.
                 </p>
-                <p>
-                  You'll get science-backed assessments to understand your healthspan, hormones, stress, gut, metabolism and overall vitality, plus personalised biohacks and supplement suggestions that actually work. Everything you need to live well longer is finally in one place. Simple, smart and seriously empowering.
-                </p>
+                <p>​</p>
                 <p className="font-semibold text-foreground">
                   Live well longer. Thrive harder. Biohack like a woman.
                 </p>
@@ -61,11 +56,7 @@ const Index = () => {
             </div>
             
             {/* Hero image - expanded to align with text */}
-            <img 
-              src={heroImage} 
-              alt="Woman embodying vitality and longevity"
-              className="hidden lg:block h-auto w-80 object-contain shadow-lg border-2 border-primary/20"
-            />
+            <img src={heroImage} alt="Woman embodying vitality and longevity" className="hidden lg:block h-auto w-80 object-contain shadow-lg border-2 border-primary/20" />
           </div>
         </div>
       </section>
@@ -83,47 +74,11 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            <AssessmentHeroCard
-              icon={Activity}
-              headline="Discover Your Longevity Impact Score"
-              painPoint="How fast are you aging?"
-              benefits={[
-                "Get your biological age in 5 minutes",
-                "Identify your weakest health pillar",
-                "Receive personalized protocol"
-              ]}
-              duration="Free • 5 min • No signup"
-              ctaText="Get My Longevity Score"
-              ctaRoute="/guest-lis-assessment"
-            />
+            <AssessmentHeroCard icon={Activity} headline="Discover Your Longevity Impact Score" painPoint="How fast are you aging?" benefits={["Get your biological age in 5 minutes", "Identify your weakest health pillar", "Receive personalized protocol"]} duration="Free • 5 min • No signup" ctaText="Get My Longevity Score" ctaRoute="/guest-lis-assessment" />
 
-            <AssessmentHeroCard
-              icon={Package}
-              headline="Discover Your Metabolic Age"
-              painPoint="Is your metabolism aging faster than you?"
-              benefits={[
-                "Get your Metabolic Age in 8 minutes",
-                "Compare to women your age",
-                "Receive targeted nutrition protocols"
-              ]}
-              duration="Free • 8 min • No signup"
-              ctaText="Get My Metabolic Age"
-              ctaRoute="/longevity-nutrition"
-            />
+            <AssessmentHeroCard icon={Package} headline="Discover Your Metabolic Age" painPoint="Is your metabolism aging faster than you?" benefits={["Get your Metabolic Age in 8 minutes", "Compare to women your age", "Receive targeted nutrition protocols"]} duration="Free • 8 min • No signup" ctaText="Get My Metabolic Age" ctaRoute="/longevity-nutrition" />
 
-            <AssessmentHeroCard
-              icon={Heart}
-              headline="Discover Your Hormone Age"
-              painPoint="Are your hormones aging faster than you?"
-              benefits={[
-                "Get your Hormone Age in 6 minutes",
-                "Compare to women your age",
-                "Receive targeted protocols to reverse it"
-              ]}
-              duration="Free • 6 min • No signup"
-              ctaText="Get My Hormone Age"
-              ctaRoute="/menomap/assessment"
-            />
+            <AssessmentHeroCard icon={Heart} headline="Discover Your Hormone Age" painPoint="Are your hormones aging faster than you?" benefits={["Get your Hormone Age in 6 minutes", "Compare to women your age", "Receive targeted protocols to reverse it"]} duration="Free • 6 min • No signup" ctaText="Get My Hormone Age" ctaRoute="/menomap/assessment" />
           </div>
         </div>
       </section>
@@ -141,8 +96,6 @@ const Index = () => {
           <TrustIndicators />
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
