@@ -26,6 +26,7 @@ interface ProtocolItem {
   product_link: string | null;
   product_id: string | null;
   is_active: boolean;
+  included_in_plan?: boolean;
   // Phase 4: Protocol tier and impact fields
   priority_tier?: string | null;
   impact_weight?: number | null;

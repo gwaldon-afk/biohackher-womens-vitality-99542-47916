@@ -3132,6 +3132,7 @@ export type Database = {
           goal_ids: string[] | null
           id: string
           impact_weight: number | null
+          included_in_plan: boolean
           is_active: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
           lis_pillar_contribution: string[] | null
@@ -3158,6 +3159,7 @@ export type Database = {
           goal_ids?: string[] | null
           id?: string
           impact_weight?: number | null
+          included_in_plan?: boolean
           is_active?: boolean
           item_type: Database["public"]["Enums"]["protocol_item_type"]
           lis_pillar_contribution?: string[] | null
@@ -3184,6 +3186,7 @@ export type Database = {
           goal_ids?: string[] | null
           id?: string
           impact_weight?: number | null
+          included_in_plan?: boolean
           is_active?: boolean
           item_type?: Database["public"]["Enums"]["protocol_item_type"]
           lis_pillar_contribution?: string[] | null

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, addDays, differenceInDays, startOfDay } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { AssessmentPromptCard } from "@/components/AssessmentPromptCard";
 
 interface ProtocolItemWithTier {
   id: string;
@@ -18,6 +19,7 @@ interface ProtocolItemWithTier {
   priority_tier: string | null;
   impact_weight: number | null;
   is_active: boolean;
+  included_in_plan: boolean;
   item_type: string;
 }
 
@@ -51,9 +53,10 @@ export const NinetyDayPlanOverview = () => {
       const protocolIds = protocols.map(p => p.id);
       const { data: items, error } = await supabase
         .from('protocol_items')
-        .select('id, name, priority_tier, impact_weight, is_active, item_type')
+        .select('id, name, priority_tier, impact_weight, is_active, included_in_plan, item_type')
         .in('protocol_id', protocolIds)
-        .eq('is_active', true);
+        .eq('is_active', true)
+        .eq('included_in_plan', true);
 
       if (error) throw error;
       setProtocolItems(items || []);
@@ -129,6 +132,9 @@ export const NinetyDayPlanOverview = () => {
 
   return (
     <div className="space-y-6">
+      {/* Assessment Prompt Card - shows incomplete assessments */}
+      <AssessmentPromptCard />
+      
       {/* Hero Section */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
         <CardHeader>

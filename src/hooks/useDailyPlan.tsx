@@ -79,8 +79,9 @@ export const useDailyPlan = () => {
         const items = await fetchProtocolItems(protocol.id);
         console.log(`[useDailyPlan] Protocol ${protocol.id} items fetched:`, items);
         
-        const relevantItems = items.filter(item => item.is_active);
-        console.log(`[useDailyPlan] Active items from protocol ${protocol.id}:`, relevantItems);
+        // Filter by included_in_plan (not just is_active) to respect user's plan selection
+        const relevantItems = items.filter(item => item.is_active && item.included_in_plan !== false);
+        console.log(`[useDailyPlan] Items included in plan from protocol ${protocol.id}:`, relevantItems);
 
         relevantItems.forEach((item: ProtocolItem) => {
           const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
