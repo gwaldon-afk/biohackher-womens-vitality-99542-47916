@@ -86,7 +86,7 @@ const Index = () => {
             <AssessmentHeroCard 
               icon={Package} 
               headline="Is Your Metabolism Sabotaging You?" 
-              benefit="Discover why diets haven't worked for you"
+              benefit="Discover why diets may not be working for you"
               duration="Free • 8 min • No signup" 
               ctaText="Assess My Metabolic Age" 
               ctaRoute="/longevity-nutrition" 
