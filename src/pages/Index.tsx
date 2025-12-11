@@ -46,9 +46,9 @@ const Index = () => {
                   Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer
                 </p>
                 <p>
-                  The Biohackher App is your one-stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology — the place where women go to check in, level up and feel incredible.
+                   Your one-stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology — the place where women go to check in, level up and feel incredible.
                 </p>
-                <p>​</p>
+                
                 <p className="font-semibold text-foreground">
                   Live well longer. Thrive harder. Biohack like a woman.
                 </p>
