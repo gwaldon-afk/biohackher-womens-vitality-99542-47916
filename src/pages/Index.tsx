@@ -56,7 +56,7 @@ const Index = () => {
             </div>
             
             {/* Hero image - expanded to align with text */}
-            <img src={heroImage} alt="Woman embodying vitality and longevity" className="hidden lg:block h-auto w-80 object-contain shadow-lg border-2 border-primary/20" />
+            <img src={heroImage} alt="Woman embodying vitality and longevity" className="hidden lg:block h-auto w-64 object-contain shadow-lg border-2 border-primary/20" />
           </div>
         </div>
       </section>
