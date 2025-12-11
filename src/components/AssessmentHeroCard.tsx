@@ -21,12 +21,15 @@ export const AssessmentHeroCard = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer" onClick={() => navigate(ctaRoute)}>
+    <Card 
+      className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer bg-[#F8C5AC]/20 hover:bg-[#F8C5AC]/30" 
+      onClick={() => navigate(ctaRoute)}
+    >
       <CardContent className="p-6 h-full flex flex-col justify-center">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="flex justify-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <Icon className="h-6 w-6 text-primary" />
+            <div className="w-12 h-12 rounded-full bg-[#F8C5AC]/40 flex items-center justify-center group-hover:bg-[#F8C5AC]/60 transition-colors">
+              <Icon className="h-6 w-6 text-foreground" />
             </div>
           </div>
 
@@ -36,7 +39,7 @@ export const AssessmentHeroCard = ({
           </div>
 
           <div className="flex justify-center">
-            <Badge variant="secondary" className="bg-primary/5 text-xs">
+            <Badge variant="secondary" className="bg-[#F8C5AC]/30 text-foreground text-sm px-3 py-1">
               {duration}
             </Badge>
           </div>

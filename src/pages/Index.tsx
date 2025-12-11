@@ -75,7 +75,7 @@ const Index = () => {
               icon={Activity} 
               headline="How Old Are You Really?" 
               benefit="Find out your Biological Age"
-              duration="Free • 5 min • No signup" 
+              duration="Free • 8 min • No signup" 
               ctaRoute="/guest-lis-assessment" 
             />
 
@@ -91,7 +91,7 @@ const Index = () => {
               icon={Heart} 
               headline="How are your hormones?" 
               benefit="Find out if your hormones are aging faster than you"
-              duration="Free • 6 min • No signup" 
+              duration="Free • 8 min • No signup" 
               ctaRoute="/menomap/assessment" 
             />
           </div>
