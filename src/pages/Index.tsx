@@ -74,11 +74,32 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            <AssessmentHeroCard icon={Activity} headline="Discover Your Longevity Impact Score" painPoint="How fast are you aging?" benefits={["Get your biological age in 5 minutes", "Identify your weakest health pillar", "Receive personalized protocol"]} duration="Free • 5 min • No signup" ctaText="Get My Longevity Score" ctaRoute="/guest-lis-assessment" />
+            <AssessmentHeroCard 
+              icon={Activity} 
+              headline="How Old Are You Really?" 
+              benefit="Find out your Biological Age"
+              duration="Free • 5 min • No signup" 
+              ctaText="Get My Longevity Score" 
+              ctaRoute="/guest-lis-assessment" 
+            />
 
-            <AssessmentHeroCard icon={Package} headline="Discover Your Metabolic Age" painPoint="Is your metabolism aging faster than you?" benefits={["Get your Metabolic Age in 8 minutes", "Compare to women your age", "Receive targeted nutrition protocols"]} duration="Free • 8 min • No signup" ctaText="Get My Metabolic Age" ctaRoute="/longevity-nutrition" />
+            <AssessmentHeroCard 
+              icon={Package} 
+              headline="Is Your Metabolism Sabotaging You?" 
+              benefit="Discover why diets haven't worked for you"
+              duration="Free • 8 min • No signup" 
+              ctaText="Assess My Metabolic Age" 
+              ctaRoute="/longevity-nutrition" 
+            />
 
-            <AssessmentHeroCard icon={Heart} headline="Discover Your Hormone Age" painPoint="Are your hormones aging faster than you?" benefits={["Get your Hormone Age in 6 minutes", "Compare to women your age", "Receive targeted protocols to reverse it"]} duration="Free • 6 min • No signup" ctaText="Get My Hormone Age" ctaRoute="/menomap/assessment" />
+            <AssessmentHeroCard 
+              icon={Heart} 
+              headline="Feeling Off But Don't Know Why?" 
+              benefit="Get clarity on confusing symptoms"
+              duration="Free • 6 min • No signup" 
+              ctaText="Check My Hormones" 
+              ctaRoute="/menomap/assessment" 
+            />
           </div>
         </div>
       </section>

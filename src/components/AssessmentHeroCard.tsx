@@ -1,14 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface AssessmentHeroCardProps {
   icon: LucideIcon;
   headline: string;
-  painPoint: string;
-  benefits: string[];
+  benefit: string;
   duration: string;
   ctaText: string;
   ctaRoute: string;
@@ -18,8 +17,7 @@ interface AssessmentHeroCardProps {
 export const AssessmentHeroCard = ({
   icon: Icon,
   headline,
-  painPoint,
-  benefits,
+  benefit,
   duration,
   ctaText,
   ctaRoute,
@@ -28,7 +26,7 @@ export const AssessmentHeroCard = ({
   const navigate = useNavigate();
 
   return (
-    <Card className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full">
+    <Card className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer" onClick={() => navigate(ctaRoute)}>
       <CardContent className="p-4 h-full flex flex-col">
         <div className="flex-1 space-y-3">
           <div className="flex justify-center">
@@ -37,18 +35,9 @@ export const AssessmentHeroCard = ({
             </div>
           </div>
 
-          <div className="space-y-1 text-center">
+          <div className="space-y-2 text-center">
             <h3 className="text-base font-bold leading-tight">{headline}</h3>
-            <p className="text-xs text-muted-foreground italic">{painPoint}</p>
-          </div>
-
-          <div className="space-y-1.5">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="flex items-start gap-1.5">
-                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                <span className="text-xs">{benefit}</span>
-              </div>
-            ))}
+            <p className="text-sm text-muted-foreground">{benefit}</p>
           </div>
 
           <div className="flex justify-center">
@@ -60,7 +49,7 @@ export const AssessmentHeroCard = ({
 
         <div className="space-y-2 mt-3">
           <Button
-            onClick={() => navigate(ctaRoute)}
+            onClick={(e) => { e.stopPropagation(); navigate(ctaRoute); }}
             className="w-full group-hover:scale-105 transition-transform text-sm"
             size="default"
           >
