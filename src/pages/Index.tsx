@@ -62,13 +62,13 @@ const Index = () => {
       </section>
 
       {/* Assessment CTAs Section */}
-      <section className="py-12 md:py-16 bg-gradient-to-b from-muted/20 to-background">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">
+      <section className="py-8 md:py-10 bg-gradient-to-b from-muted/20 to-background">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1">
               Choose Your Starting Point
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Pick the assessment that matters most to you right now
             </p>
           </div>
