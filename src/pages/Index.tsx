@@ -63,14 +63,11 @@ const Index = () => {
 
       {/* Assessment CTAs Section */}
       <section className="py-8 md:py-10 bg-gradient-to-b from-muted/20 to-background">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-6">
-            <h2 className="text-xl md:text-2xl font-semibold text-foreground mb-1">
-              Choose Your Starting Point
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
+              Assess Your Longevity
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Pick the assessment that matters most to you right now
-            </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
@@ -95,7 +92,7 @@ const Index = () => {
             <AssessmentHeroCard 
               icon={Heart} 
               headline="How are your hormones?" 
-              benefit="Get clarity on confusing symptoms"
+              benefit="Find out if your hormones are aging faster than you"
               duration="Free • 6 min • No signup" 
               ctaText="Check My Hormones" 
               ctaRoute="/menomap/assessment" 

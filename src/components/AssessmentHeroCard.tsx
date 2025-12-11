@@ -27,17 +27,17 @@ export const AssessmentHeroCard = ({
 
   return (
     <Card className="border-2 border-primary/30 hover:border-primary/50 transition-all hover:shadow-lg group h-full cursor-pointer" onClick={() => navigate(ctaRoute)}>
-      <CardContent className="p-4 h-full flex flex-col">
+      <CardContent className="p-6 h-full flex flex-col">
         <div className="flex-1 space-y-3">
           <div className="flex justify-center">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Icon className="h-5 w-5 text-primary" />
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <Icon className="h-6 w-6 text-primary" />
             </div>
           </div>
 
           <div className="space-y-2 text-center">
-            <h3 className="text-base font-bold leading-tight">{headline}</h3>
-            <p className="text-sm text-muted-foreground">{benefit}</p>
+            <h3 className="text-xl font-bold leading-tight">{headline}</h3>
+            <p className="text-muted-foreground">{benefit}</p>
           </div>
 
           <div className="flex justify-center">
