@@ -88,9 +88,11 @@ import SymptomTrends from "./pages/SymptomTrends";
 import WearableIntegrations from "./pages/WearableIntegrations";
 import HealthAssistant from "./pages/HealthAssistant";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { RequireHealthProfile } from "./components/RequireHealthProfile";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import ImportResearch from "./pages/ImportResearch";
 import MyDailyPlan from "./pages/MyDailyPlan";
+import CompleteHealthProfile from "./pages/CompleteHealthProfile";
 import EvidenceDrawer from "./components/EvidenceDrawer";
 import Intro3Step from "./pages/onboarding/Intro3Step";
 import PermissionSetup from "./pages/onboarding/PermissionSetup";
@@ -137,9 +139,10 @@ const App = () => (
               <ProtocolRecommendationsNotifier />
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/today" element={<MyDailyPlan />} />
-                <Route path="/plans/90-day" element={<ProtectedRoute><NinetyDayPlan /></ProtectedRoute>} />
-                <Route path="/nutrition/meal-plan" element={<ProtectedRoute><MealPlanWeek /></ProtectedRoute>} />
+                <Route path="/complete-profile" element={<ProtectedRoute><CompleteHealthProfile /></ProtectedRoute>} />
+                <Route path="/today" element={<ProtectedRoute><RequireHealthProfile><MyDailyPlan /></RequireHealthProfile></ProtectedRoute>} />
+                <Route path="/plans/90-day" element={<ProtectedRoute><RequireHealthProfile><NinetyDayPlan /></RequireHealthProfile></ProtectedRoute>} />
+                <Route path="/nutrition/meal-plan" element={<ProtectedRoute><RequireHealthProfile><MealPlanWeek /></RequireHealthProfile></ProtectedRoute>} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/onboarding" element={<OnboardingFlow />} />
@@ -155,7 +158,7 @@ const App = () => (
             <Route path="/biohacking-toolkit" element={<BiohackingToolkit />} />
             <Route path="/research-evidence" element={<ResearchEvidence />} />
             <Route path="/sleep" element={<Sleep />} />
-            <Route path="/nutrition" element={<Nutrition />} />
+            <Route path="/nutrition" element={<ProtectedRoute><RequireHealthProfile><Nutrition /></RequireHealthProfile></ProtectedRoute>} />
             <Route path="/longevity-nutrition" element={<LongevityNutritionAssessment />} />
             <Route path="/longevity-nutrition/results" element={<LongevityNutritionResults />} />
             <Route path="/coaching" element={<Coaching />} />
@@ -173,9 +176,9 @@ const App = () => (
             <Route path="/lis-results" element={<LISResults />} />
             <Route path="/daily-score-results" element={<DailyScoreResults />} />
             <Route path="/lis2-research" element={<LIS2Research />} />
-            <Route path="/my-protocol" element={<ProtectedRoute><MyProtocol /></ProtectedRoute>} />
+            <Route path="/my-protocol" element={<ProtectedRoute><RequireHealthProfile><MyProtocol /></RequireHealthProfile></ProtectedRoute>} />
             <Route path="/protocol-library" element={<ProtectedRoute><ProtocolLibrary /></ProtectedRoute>} />
-            <Route path="/master-dashboard" element={<ProtectedRoute><MasterDashboard /></ProtectedRoute>} />
+            <Route path="/master-dashboard" element={<ProtectedRoute><RequireHealthProfile><MasterDashboard /></RequireHealthProfile></ProtectedRoute>} />
             <Route path="/progress" element={<ProgressTracking />} />
             <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
             <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
