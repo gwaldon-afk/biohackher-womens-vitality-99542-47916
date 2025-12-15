@@ -31,6 +31,12 @@ interface HealthProfile {
   protein_per_meal?: number;
   allergies_sensitivities?: string[];
   medication_list?: string[];
+  activity_level?: string;
+  // Calculated nutrition targets
+  recommended_protein_min?: number;
+  recommended_protein_max?: number;
+  recommended_daily_calories?: number;
+  nutrition_calculation_date?: string;
   created_at?: string;
   updated_at?: string;
 }

@@ -4141,8 +4141,12 @@ export type Database = {
           latest_energy_category: string | null
           latest_energy_score: number | null
           medication_list: Json | null
+          nutrition_calculation_date: string | null
           previous_injuries: string | null
           protein_per_meal: number | null
+          recommended_daily_calories: number | null
+          recommended_protein_max: number | null
+          recommended_protein_min: number | null
           social_engagement_baseline: number | null
           training_experience: string | null
           updated_at: string | null
@@ -4175,8 +4179,12 @@ export type Database = {
           latest_energy_category?: string | null
           latest_energy_score?: number | null
           medication_list?: Json | null
+          nutrition_calculation_date?: string | null
           previous_injuries?: string | null
           protein_per_meal?: number | null
+          recommended_daily_calories?: number | null
+          recommended_protein_max?: number | null
+          recommended_protein_min?: number | null
           social_engagement_baseline?: number | null
           training_experience?: string | null
           updated_at?: string | null
@@ -4209,8 +4217,12 @@ export type Database = {
           latest_energy_category?: string | null
           latest_energy_score?: number | null
           medication_list?: Json | null
+          nutrition_calculation_date?: string | null
           previous_injuries?: string | null
           protein_per_meal?: number | null
+          recommended_daily_calories?: number | null
+          recommended_protein_max?: number | null
+          recommended_protein_min?: number | null
           social_engagement_baseline?: number | null
           training_experience?: string | null
           updated_at?: string | null
