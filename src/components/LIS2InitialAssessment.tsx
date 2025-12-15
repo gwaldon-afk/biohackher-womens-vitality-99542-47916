@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useSessionMetrics } from "@/hooks/useSessionMetrics";
 import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
@@ -29,6 +30,7 @@ export const LIS2InitialAssessment = () => {
   const { toast } = useToast();
   const { createOrUpdateProfile } = useHealthProfile();
   const { user } = useAuth();
+  const { setMetrics: setSessionMetrics } = useSessionMetrics();
   const { updateProgress } = useAssessmentProgress();
 
   const [step, setStep] = useState(1);
@@ -76,6 +78,16 @@ export const LIS2InitialAssessment = () => {
 
       // Convert year to date format (January 1st of birth year)
       const dateOfBirth = `${formData.year_of_birth}-01-01`;
+
+      // Save to session storage for guest users (7 day expiry)
+      setSessionMetrics({
+        weight_kg: parseFloat(formData.weight_kg),
+        height_cm: parseFloat(formData.height_cm),
+        date_of_birth: dateOfBirth,
+        activity_level: formData.training_experience === 'beginner' ? 'sedentary' : 
+                       formData.training_experience === 'intermediate' ? 'moderate' : 'active',
+        fitness_goal: 'maintenance', // Default, can be adjusted
+      });
 
       await createOrUpdateProfile({
         date_of_birth: dateOfBirth,

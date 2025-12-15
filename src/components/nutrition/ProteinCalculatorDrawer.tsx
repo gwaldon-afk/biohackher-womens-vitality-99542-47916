@@ -1,21 +1,51 @@
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Calculator } from 'lucide-react';
 import NutritionCalculator from '@/components/nutrition/NutritionCalculator';
-import { NutritionPreferences } from '@/hooks/useNutritionPreferences';
+import { useHealthProfile } from '@/hooks/useHealthProfile';
+import { useSessionMetrics } from '@/hooks/useSessionMetrics';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ProteinCalculatorDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  preferences: NutritionPreferences;
-  setPreferences: (prefs: NutritionPreferences) => void;
 }
 
 export function ProteinCalculatorDrawer({ 
   open, 
-  onOpenChange, 
-  preferences, 
-  setPreferences 
+  onOpenChange 
 }: ProteinCalculatorDrawerProps) {
+  const { user } = useAuth();
+  const { profile } = useHealthProfile();
+  const { metrics } = useSessionMetrics();
+
+  // Local state for calculator inputs
+  const [weight, setWeight] = useState('');
+  const [activityLevel, setActivityLevel] = useState('moderate');
+  const [goal, setGoal] = useState('maintenance');
+
+  // Pre-populate from health profile (authenticated) or session metrics (guest)
+  useEffect(() => {
+    if (user && profile) {
+      // Authenticated user: use health profile data
+      if (profile.weight_kg) setWeight(profile.weight_kg.toString());
+      // Map training experience to activity level
+      if (profile.training_experience) {
+        const activityMap: Record<string, string> = {
+          'beginner': 'sedentary',
+          'intermediate': 'moderate',
+          'advanced': 'active'
+        };
+        setActivityLevel(activityMap[profile.training_experience] || 'moderate');
+      }
+    } else if (!user && metrics) {
+      // Guest user: use session storage data
+      if (metrics.weight_kg) setWeight(metrics.weight_kg.toString());
+      if (metrics.activity_level) setActivityLevel(metrics.activity_level);
+      if (metrics.fitness_goal) setGoal(metrics.fitness_goal);
+    }
+  }, [user, profile, metrics]);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
@@ -30,12 +60,12 @@ export function ProteinCalculatorDrawer({
         </SheetHeader>
         <div className="mt-6">
           <NutritionCalculator
-            weight={preferences.weight}
-            setWeight={(value) => setPreferences({ ...preferences, weight: value })}
-            activityLevel={preferences.activityLevel}
-            setActivityLevel={(value) => setPreferences({ ...preferences, activityLevel: value })}
-            goal={preferences.goal}
-            setGoal={(value) => setPreferences({ ...preferences, goal: value })}
+            weight={weight}
+            setWeight={setWeight}
+            activityLevel={activityLevel}
+            setActivityLevel={setActivityLevel}
+            goal={goal}
+            setGoal={setGoal}
           />
         </div>
       </SheetContent>

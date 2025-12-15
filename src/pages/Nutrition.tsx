@@ -110,8 +110,6 @@ const Nutrition = () => {
       <ProteinCalculatorDrawer
         open={showCalculator}
         onOpenChange={setShowCalculator}
-        preferences={preferences}
-        setPreferences={setPreferences}
       />
       <FoodSearchDrawer
         open={showFoodSearch}
