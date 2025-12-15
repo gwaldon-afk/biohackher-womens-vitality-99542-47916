@@ -3,8 +3,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Calculator } from 'lucide-react';
 import NutritionCalculator from '@/components/nutrition/NutritionCalculator';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
-import { useSessionMetrics } from '@/hooks/useSessionMetrics';
-import { useAuth } from '@/hooks/useAuth';
 
 interface ProteinCalculatorDrawerProps {
   open: boolean;
@@ -15,45 +13,25 @@ export function ProteinCalculatorDrawer({
   open, 
   onOpenChange 
 }: ProteinCalculatorDrawerProps) {
-  const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useHealthProfile();
-  const { metrics } = useSessionMetrics();
 
   // Local state for calculator inputs
   const [weight, setWeight] = useState('');
   const [activityLevel, setActivityLevel] = useState('moderate');
   const [goal, setGoal] = useState('maintenance');
 
-  // Pre-populate from health profile (authenticated) or session metrics (guest)
+  // Pre-populate from health profile (guaranteed to exist for authenticated users via RequireHealthProfile)
   useEffect(() => {
-    // Wait for auth to determine if user is logged in
-    if (authLoading) return;
-    
-    // Wait for profile to finish loading (only relevant if user exists)
-    if (user && profileLoading) return;
+    if (profileLoading) return;
 
-    if (user && profile) {
-      // Authenticated user: use health profile data
-      if (profile.weight_kg) setWeight(profile.weight_kg.toString());
-      
-      // Check direct activity_level first, then fall back to training_experience mapping
-      if (profile.activity_level) {
-        setActivityLevel(profile.activity_level);
-      } else if (profile.training_experience) {
-        const activityMap: Record<string, string> = {
-          'beginner': 'sedentary',
-          'intermediate': 'moderate',
-          'advanced': 'active'
-        };
-        setActivityLevel(activityMap[profile.training_experience] || 'moderate');
-      }
-    } else if (!user && metrics) {
-      // Guest user: use session storage data
-      if (metrics.weight_kg) setWeight(metrics.weight_kg.toString());
-      if (metrics.activity_level) setActivityLevel(metrics.activity_level);
-      if (metrics.fitness_goal) setGoal(metrics.fitness_goal);
+    if (profile?.weight_kg) {
+      setWeight(profile.weight_kg.toString());
     }
-  }, [user, authLoading, profile, profileLoading, metrics]);
+    
+    if (profile?.activity_level) {
+      setActivityLevel(profile.activity_level);
+    }
+  }, [profile, profileLoading]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
