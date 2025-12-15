@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Info } from "lucide-react";
 import {
   Dialog,
@@ -10,41 +11,36 @@ import {
 } from "@/components/ui/dialog";
 
 const StatisticsBar = () => {
+  const { t } = useTranslation();
   const [openDialog, setOpenDialog] = useState<string | null>(null);
 
   const stats = [
     {
-      value: "12-14 Years",
-      label: "Potential Life Expectancy Increase",
       id: "lifespan",
-      evidence: {
-        title: "Healthy Lifestyle Factors and Life Expectancy",
-        citation: "Li Y, Pan A, Wang DD, et al. (2018). Impact of Healthy Lifestyle Factors on Life Expectancies in the US Population. Circulation, 138(4):345-355.",
-        doi: "10.1161/CIRCULATIONAHA.117.032047",
-        finding: "Following 5 low-risk lifestyle factors (never smoking, healthy BMI, regular physical activity, moderate alcohol intake, high-quality diet) was associated with a 12-14 year increase in life expectancy at age 50 compared to those following none of these factors."
-      }
+      valueKey: "home.statistics.lifespan.value",
+      labelKey: "home.statistics.lifespan.label",
+      evidenceTitleKey: "home.statistics.lifespan.evidenceTitle",
+      citationKey: "home.statistics.lifespan.citation",
+      findingKey: "home.statistics.lifespan.finding",
+      doi: "10.1161/CIRCULATIONAHA.117.032047"
     },
     {
-      value: "80%",
-      label: "Of how you age is in your control",
       id: "control",
-      evidence: {
-        title: "Lifestyle vs Genetics in Longevity",
-        citation: "Kaplanis J, et al. (2018). Quantitative analysis of population-scale family trees with millions of relatives. Science, 360(6385):171-175.",
-        doi: "10.1126/science.aam9309",
-        finding: "Genetic factors account for only 20-30% of longevity variation. The remaining 70-80% is attributed to modifiable lifestyle and environmental factors, demonstrating the profound impact of daily choices on healthspan and lifespan."
-      }
+      valueKey: "home.statistics.control.value",
+      labelKey: "home.statistics.control.label",
+      evidenceTitleKey: "home.statistics.control.evidenceTitle",
+      citationKey: "home.statistics.control.citation",
+      findingKey: "home.statistics.control.finding",
+      doi: "10.1126/science.aam9309"
     },
     {
-      value: "500+",
-      label: "Scientific Evidence Based",
       id: "evidence",
-      evidence: {
-        title: "Evidence-Based Women's Health Protocols",
-        citation: "BiohackHer Research Database (2024). Peer-reviewed studies from PubMed, Cochrane Library, and women's health journals.",
-        doi: "",
-        finding: "All protocol recommendations are derived from 500+ peer-reviewed studies specifically focused on women's health, longevity, and hormonal optimization. Each recommendation is linked to primary research evidence."
-      }
+      valueKey: "home.statistics.evidence.value",
+      labelKey: "home.statistics.evidence.label",
+      evidenceTitleKey: "home.statistics.evidence.evidenceTitle",
+      citationKey: "home.statistics.evidence.citation",
+      findingKey: "home.statistics.evidence.finding",
+      doi: ""
     }
   ];
 
@@ -57,29 +53,29 @@ const StatisticsBar = () => {
             <Dialog key={stat.id} open={openDialog === stat.id} onOpenChange={(open) => setOpenDialog(open ? stat.id : null)}>
               <DialogTrigger asChild>
                 <button className="text-center group cursor-pointer hover:opacity-80 transition-opacity">
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-2xl font-bold text-foreground">{t(stat.valueKey)}</p>
                   <p className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-                    {stat.label}
+                    {t(stat.labelKey)}
                     <Info className="h-3 w-3 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
                   </p>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle className="text-xl font-bold">{stat.evidence.title}</DialogTitle>
+                  <DialogTitle className="text-xl font-bold">{t(stat.evidenceTitleKey)}</DialogTitle>
                   <DialogDescription className="text-left space-y-4 pt-4">
                     <div>
-                      <p className="font-semibold text-foreground mb-2">Research Citation:</p>
-                      <p className="text-sm italic">{stat.evidence.citation}</p>
-                      {stat.evidence.doi && (
+                      <p className="font-semibold text-foreground mb-2">{t('home.statistics.researchCitation')}</p>
+                      <p className="text-sm italic">{t(stat.citationKey)}</p>
+                      {stat.doi && (
                         <p className="text-sm text-primary mt-1">
-                          DOI: <a href={`https://doi.org/${stat.evidence.doi}`} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">{stat.evidence.doi}</a>
+                          DOI: <a href={`https://doi.org/${stat.doi}`} target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">{stat.doi}</a>
                         </p>
                       )}
                     </div>
                     <div>
-                      <p className="font-semibold text-foreground mb-2">Key Finding:</p>
-                      <p className="text-sm">{stat.evidence.finding}</p>
+                      <p className="font-semibold text-foreground mb-2">{t('home.statistics.keyFinding')}</p>
+                      <p className="text-sm">{t(stat.findingKey)}</p>
                     </div>
                   </DialogDescription>
                 </DialogHeader>

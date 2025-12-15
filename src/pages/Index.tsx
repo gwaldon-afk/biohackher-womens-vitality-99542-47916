@@ -11,14 +11,11 @@ import StatisticsBar from "@/components/StatisticsBar";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import TrustIndicators from "@/components/TrustIndicators";
 import BenefitsSection from "@/components/BenefitsSection";
+
 const Index = () => {
   const navigate = useNavigate();
-  const {
-    t
-  } = useTranslation();
-  const {
-    user
-  } = useAuth();
+  const { t } = useTranslation();
+  const { user } = useAuth();
 
   // Redirect authenticated users to /today
   useEffect(() => {
@@ -26,7 +23,9 @@ const Index = () => {
       navigate("/today");
     }
   }, [user, navigate]);
-  return <div className="min-h-screen bg-background">
+
+  return (
+    <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section - Header Only */}
@@ -38,19 +37,19 @@ const Index = () => {
               <img src={biohackherLogo} alt="Biohackher Logo" className="h-auto w-full object-contain mb-2" />
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
-                LIVE WELL LONGER
+                {t('home.hero.tagline')}
               </h1>
               
               <div className="space-y-4 text-base md:text-lg text-muted-foreground leading-relaxed">
                 <p className="font-semibold text-foreground">
-                  Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer
+                  {t('home.hero.welcomeTitle')}
                 </p>
                 <p>
-                   •	Your one stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology to feel incredible.
+                   •	{t('home.hero.welcomeDescription')}
                 </p>
                 
                 <p className="font-semibold text-foreground">
-                  Live well longer. Thrive harder. Biohack like a woman.
+                  {t('home.hero.slogan')}
                 </p>
               </div>
             </div>
@@ -66,16 +65,34 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-6">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground mb-1">
-              Assess Your Longevity
+              {t('home.assessments.sectionTitle')}
             </h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            <AssessmentHeroCard icon={Activity} headline="How Old Are You Really?" benefit="Find out your Biological Age" duration="Free • 8 min • No signup" ctaRoute="/guest-lis-assessment" />
+            <AssessmentHeroCard 
+              icon={Activity} 
+              headline={t('home.assessments.lis.headline')} 
+              benefit={t('home.assessments.lis.benefit')} 
+              duration={t('home.assessments.lis.duration')} 
+              ctaRoute="/guest-lis-assessment" 
+            />
 
-            <AssessmentHeroCard icon={Package} headline="Is Your Metabolism Sabotaging You?" benefit="Discover why diets may not be working for you" duration="Free • 8 min • No signup" ctaRoute="/longevity-nutrition" />
+            <AssessmentHeroCard 
+              icon={Package} 
+              headline={t('home.assessments.nutrition.headline')} 
+              benefit={t('home.assessments.nutrition.benefit')} 
+              duration={t('home.assessments.nutrition.duration')} 
+              ctaRoute="/longevity-nutrition" 
+            />
 
-            <AssessmentHeroCard icon={Heart} headline="How are your hormones?" benefit="Find out if your hormones are aging faster than you" duration="Free • 8 min • No signup" ctaRoute="/menomap/assessment" />
+            <AssessmentHeroCard 
+              icon={Heart} 
+              headline={t('home.assessments.hormone.headline')} 
+              benefit={t('home.assessments.hormone.benefit')} 
+              duration={t('home.assessments.hormone.duration')} 
+              ctaRoute="/menomap/assessment" 
+            />
           </div>
         </div>
       </section>
@@ -88,11 +105,13 @@ const Index = () => {
       
       <section className="py-12 bg-gradient-to-b from-muted/20 to-background">
         <div className="max-w-6xl mx-auto px-4 space-y-12">
-          <h2 className="text-3xl font-bold text-center">What Women Are Saying</h2>
+          <h2 className="text-3xl font-bold text-center">{t('home.testimonials.sectionTitle')}</h2>
           <TestimonialCarousel />
           <TrustIndicators />
         </div>
       </section>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

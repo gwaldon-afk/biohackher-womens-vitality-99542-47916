@@ -85,6 +85,10 @@
   "home": {
     "hero": {
       "title": "Biohack. Thrive. Live Well Longer.",
+      "tagline": "LIVE WELL LONGER",
+      "welcomeTitle": "Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer",
+      "welcomeDescription": "Your one stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology to feel incredible.",
+      "slogan": "Live well longer. Thrive harder. Biohack like a woman.",
       "subtitle": "",
       "description": "Empowering women with personalized evidence-based health optimization designed for our unique biology",
       "ctaPrimary": "Take Your Free Longevity Assessment",
@@ -96,6 +100,94 @@
     "pillars": {
       "title": "Four Pillars of Women's Longevity",
       "subtitle": "Science-backed protocols personalized to your unique biology"
+    },
+    "assessments": {
+      "sectionTitle": "Assess Your Longevity",
+      "lis": {
+        "headline": "How Old Are You Really?",
+        "benefit": "Find out your Biological Age",
+        "duration": "Free • 8 min • No signup"
+      },
+      "nutrition": {
+        "headline": "Is Your Metabolism Sabotaging You?",
+        "benefit": "Discover why diets may not be working for you",
+        "duration": "Free • 8 min • No signup"
+      },
+      "hormone": {
+        "headline": "How are your hormones?",
+        "benefit": "Find out if your hormones are aging faster than you",
+        "duration": "Free • 8 min • No signup"
+      }
+    },
+    "benefits": {
+      "sectionTitle": "Your Complete Longevity System",
+      "sectionSubtitle": "Everything you need to transform your health—in one place",
+      "energy": {
+        "headline": "Reclaim Your Energy, Focus & Vitality",
+        "description": "Feel like yourself again with protocols designed for women's biology—not adapted from male studies."
+      },
+      "blueprint": {
+        "headline": "Your Personal Blueprint for Aging Well",
+        "description": "Integrated plans connecting nutrition, hormones, sleep, and movement that work together—not in isolation."
+      },
+      "confidence": {
+        "headline": "Start Free, Transform with Confidence",
+        "description": "Free assessments and protocols show what's possible. Add supplements and expert guidance when you're ready."
+      }
+    },
+    "statistics": {
+      "lifespan": {
+        "value": "12-14 Years",
+        "label": "Potential Life Expectancy Increase",
+        "evidenceTitle": "Healthy Lifestyle Factors and Life Expectancy",
+        "citation": "Li Y, Pan A, Wang DD, et al. (2018). Impact of Healthy Lifestyle Factors on Life Expectancies in the US Population. Circulation, 138(4):345-355.",
+        "finding": "Following 5 low-risk lifestyle factors (never smoking, healthy BMI, regular physical activity, moderate alcohol intake, high-quality diet) was associated with a 12-14 year increase in life expectancy at age 50 compared to those following none of these factors."
+      },
+      "control": {
+        "value": "80%",
+        "label": "Of how you age is in your control",
+        "evidenceTitle": "Lifestyle vs Genetics in Longevity",
+        "citation": "Kaplanis J, et al. (2018). Quantitative analysis of population-scale family trees with millions of relatives. Science, 360(6385):171-175.",
+        "finding": "Genetic factors account for only 20-30% of longevity variation. The remaining 70-80% is attributed to modifiable lifestyle and environmental factors, demonstrating the profound impact of daily choices on healthspan and lifespan."
+      },
+      "evidence": {
+        "value": "500+",
+        "label": "Scientific Evidence Based",
+        "evidenceTitle": "Evidence-Based Women's Health Protocols",
+        "citation": "BiohackHer Research Database (2024). Peer-reviewed studies from PubMed, Cochrane Library, and women's health journals.",
+        "finding": "All protocol recommendations are derived from 500+ peer-reviewed studies specifically focused on women's health, longevity, and hormonal optimization. Each recommendation is linked to primary research evidence."
+      },
+      "researchCitation": "Research Citation:",
+      "keyFinding": "Key Finding:"
+    },
+    "testimonials": {
+      "sectionTitle": "What Women Are Saying",
+      "lis": {
+        "type": "LIS Success",
+        "quote": "I discovered I was aging 8 years faster than my chronological age. After following my protocol for 3 months, my LIS score improved from 58 to 74. I feel like I've reversed the clock.",
+        "author": "Sarah M., 47, Sydney",
+        "metric1": "LIS 58→74",
+        "metric2": "Bio Age reduced by 5 years"
+      },
+      "nutrition": {
+        "type": "Nutrition Success",
+        "quote": "My nutrition score was 51—I had no idea I was missing so much. The supplement protocol fixed my energy crashes and brain fog within 2 weeks. Game changer.",
+        "author": "Emma L., 52, Melbourne",
+        "metric1": "Nutrition Score 51→82",
+        "metric2": "Energy levels transformed"
+      },
+      "hormone": {
+        "type": "Hormone Success",
+        "quote": "The Hormone Compass helped me understand my perimenopause symptoms weren't 'just stress.' The targeted protocol reduced hot flashes by 80% in 6 weeks.",
+        "author": "Lisa K., 49, Brisbane",
+        "metric1": "Hormone symptoms reduced 80%",
+        "metric2": "Sleep quality improved"
+      }
+    },
+    "trust": {
+      "indicator1": "Women excluded from medical research until 1993",
+      "indicator2": "Built by women's health researchers & longevity experts",
+      "indicator3": "Evidence-based protocols from 500+ peer-reviewed studies"
     }
   },
   "trustBar": {
