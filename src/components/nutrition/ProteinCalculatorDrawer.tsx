@@ -15,7 +15,7 @@ export function ProteinCalculatorDrawer({
   open, 
   onOpenChange 
 }: ProteinCalculatorDrawerProps) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useHealthProfile();
   const { metrics } = useSessionMetrics();
 
@@ -26,8 +26,11 @@ export function ProteinCalculatorDrawer({
 
   // Pre-populate from health profile (authenticated) or session metrics (guest)
   useEffect(() => {
-    // Wait for profile to finish loading
-    if (profileLoading) return;
+    // Wait for auth to determine if user is logged in
+    if (authLoading) return;
+    
+    // Wait for profile to finish loading (only relevant if user exists)
+    if (user && profileLoading) return;
 
     if (user && profile) {
       // Authenticated user: use health profile data
@@ -50,7 +53,7 @@ export function ProteinCalculatorDrawer({
       if (metrics.activity_level) setActivityLevel(metrics.activity_level);
       if (metrics.fitness_goal) setGoal(metrics.fitness_goal);
     }
-  }, [user, profile, profileLoading, metrics]);
+  }, [user, authLoading, profile, profileLoading, metrics]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
