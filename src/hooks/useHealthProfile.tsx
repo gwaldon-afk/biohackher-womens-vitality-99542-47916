@@ -104,7 +104,7 @@ export const useHealthProfile = () => {
 
       const { data, error: upsertError } = await supabase
         .from('user_health_profile')
-        .upsert(dataToSave)
+        .upsert(dataToSave, { onConflict: 'user_id' })
         .select()
         .single();
 
