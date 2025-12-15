@@ -42,7 +42,7 @@ const TestimonialCarousel = () => {
         <CarouselContent>
           {testimonials.map((testimonial, index) => (
             <CarouselItem key={index}>
-              <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+              <Card className="border-2 border-[#F8C5AC]/30 bg-[#F8C5AC]/20">
                 <CardContent className="p-8">
                   <div className="space-y-6">
                     <div className="flex justify-center">
