@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, TrendingUp, Target, Award, Trophy, Heart, Dumbbell, Watch, Pill, Moon, Utensils, Sparkles } from "lucide-react";
+import { Menu, X, Activity, User, Settings, Crown, ChevronDown, BarChart3, TrendingUp, Target, Award, Trophy, Heart, Dumbbell, Watch, Pill, Moon, Utensils, Sparkles, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCartIcon } from "@/components/ShoppingCart";
@@ -9,6 +9,7 @@ import TrustBarWithSecurity from "@/components/TrustBar";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
+import { useAuth } from "@/hooks/useAuth";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -31,6 +32,7 @@ const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
   const { pendingCount } = useProtocolRecommendations({ status: 'pending' });
+  const { user, signOut } = useAuth();
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
@@ -163,74 +165,92 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-3">
             <LocaleSelector />
             <ShoppingCartIcon />
-            <Link to="/upgrade">
-              <Button variant="outline" size="sm" className="border-primary/30 hover:bg-primary/10">
-                <Crown className="h-4 w-4 mr-1 text-primary" />
-                {t('navigation.upgrade')}
-              </Button>
-            </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1">
-                  <User className="h-4 w-4" />
-                  <ChevronDown className="h-3 w-3" />
+            {user ? (
+              <>
+                <Link to="/upgrade">
+                  <Button variant="outline" size="sm" className="border-primary/30 hover:bg-primary/10">
+                    <Crown className="h-4 w-4 mr-1 text-primary" />
+                    {t('navigation.upgrade')}
+                  </Button>
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      <User className="h-4 w-4" />
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center cursor-pointer">
+                        <User className="h-4 w-4 mr-2" />
+                        My Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="flex items-center cursor-pointer">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
+                    <DropdownMenuItem asChild>
+                      <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
+                        <Award className="h-3 w-3 mr-2" />
+                        Achievements
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
+                        <Sparkles className="h-3 w-3 mr-2" />
+                        Toolkit
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/about" className="flex items-center cursor-pointer text-xs">
+                        <Heart className="h-3 w-3 mr-2" />
+                        About & Science
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">Expert Partners</div>
+                    <DropdownMenuItem asChild>
+                      <Link to="/experts" className="flex items-center cursor-pointer text-xs">
+                        <User className="h-3 w-3 mr-2" />
+                        Find Experts
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/expert/register" className="flex items-center cursor-pointer text-xs">
+                        <Crown className="h-3 w-3 mr-2" />
+                        Become an Expert
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center cursor-pointer text-xs">
+                        <Settings className="h-3 w-3 mr-2 text-destructive" />
+                        <span className="text-destructive font-semibold">Admin Panel</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={signOut}
+                      className="flex items-center cursor-pointer text-destructive focus:text-destructive"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Link to="/auth">
+                <Button size="sm">
+                  Sign In
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
-                <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center cursor-pointer">
-                    <User className="h-4 w-4 mr-2" />
-                    My Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings" className="flex items-center cursor-pointer">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
-                <DropdownMenuItem asChild>
-                  <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
-                    <Award className="h-3 w-3 mr-2" />
-                    Achievements
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
-                    <Sparkles className="h-3 w-3 mr-2" />
-                    Toolkit
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/about" className="flex items-center cursor-pointer text-xs">
-                    <Heart className="h-3 w-3 mr-2" />
-                    About & Science
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-1.5 text-xs text-muted-foreground">Expert Partners</div>
-                <DropdownMenuItem asChild>
-                  <Link to="/experts" className="flex items-center cursor-pointer text-xs">
-                    <User className="h-3 w-3 mr-2" />
-                    Find Experts
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/expert/register" className="flex items-center cursor-pointer text-xs">
-                    <Crown className="h-3 w-3 mr-2" />
-                    Become an Expert
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/admin" className="flex items-center cursor-pointer text-xs">
-                    <Settings className="h-3 w-3 mr-2 text-destructive" />
-                    <span className="text-destructive font-semibold">Admin Panel</span>
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Link>
+            )}
           </div>
 
           {/* Mobile actions */}
@@ -326,24 +346,45 @@ const Navigation = () => {
                 <div className="px-2">
                   <LocaleSelector />
                 </div>
-                <Link to="/upgrade" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full border-primary/30">
-                    <Crown className="h-4 w-4 mr-2 text-primary" />
-                    Upgrade to Premium
-                  </Button>
-                </Link>
-                <Link to="/profile" onClick={() => setIsOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <User className="h-4 w-4 mr-2" />
-                    My Profile
-                  </Button>
-                </Link>
-                <Link to="/settings" onClick={() => setIsOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Button>
-                </Link>
+                {user ? (
+                  <>
+                    <Link to="/upgrade" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full border-primary/30">
+                        <Crown className="h-4 w-4 mr-2 text-primary" />
+                        Upgrade to Premium
+                      </Button>
+                    </Link>
+                    <Link to="/profile" onClick={() => setIsOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        <User className="h-4 w-4 mr-2" />
+                        My Profile
+                      </Button>
+                    </Link>
+                    <Link to="/settings" onClick={() => setIsOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Settings
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        signOut();
+                        setIsOpen(false);
+                      }}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>
+                    <Button className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
