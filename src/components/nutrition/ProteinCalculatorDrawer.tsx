@@ -16,7 +16,7 @@ export function ProteinCalculatorDrawer({
   onOpenChange 
 }: ProteinCalculatorDrawerProps) {
   const { user } = useAuth();
-  const { profile } = useHealthProfile();
+  const { profile, loading: profileLoading } = useHealthProfile();
   const { metrics } = useSessionMetrics();
 
   // Local state for calculator inputs
@@ -26,11 +26,17 @@ export function ProteinCalculatorDrawer({
 
   // Pre-populate from health profile (authenticated) or session metrics (guest)
   useEffect(() => {
+    // Wait for profile to finish loading
+    if (profileLoading) return;
+
     if (user && profile) {
       // Authenticated user: use health profile data
       if (profile.weight_kg) setWeight(profile.weight_kg.toString());
-      // Map training experience to activity level
-      if (profile.training_experience) {
+      
+      // Check direct activity_level first, then fall back to training_experience mapping
+      if (profile.activity_level) {
+        setActivityLevel(profile.activity_level);
+      } else if (profile.training_experience) {
         const activityMap: Record<string, string> = {
           'beginner': 'sedentary',
           'intermediate': 'moderate',
@@ -44,7 +50,7 @@ export function ProteinCalculatorDrawer({
       if (metrics.activity_level) setActivityLevel(metrics.activity_level);
       if (metrics.fitness_goal) setGoal(metrics.fitness_goal);
     }
-  }, [user, profile, metrics]);
+  }, [user, profile, profileLoading, metrics]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
