@@ -53,7 +53,7 @@ export function ActivityLevelStep({ data, onChange }: ActivityLevelStepProps) {
       <CardHeader>
         <div className="flex items-center gap-2 mb-2">
           <Dumbbell className="h-5 w-5 text-primary" />
-          <CardTitle>What's Your Activity Level?</CardTitle>
+          <CardTitle>What's Your Current Activity Level?</CardTitle>
         </div>
         <CardDescription>
           This helps us calculate your protein and calorie needs for optimal longevity

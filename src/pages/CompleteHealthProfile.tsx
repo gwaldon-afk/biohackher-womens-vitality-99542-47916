@@ -138,7 +138,7 @@ export default function CompleteHealthProfile() {
 
             {/* Activity Level */}
             <div className="space-y-2">
-              <Label htmlFor="activity">Activity Level</Label>
+              <Label htmlFor="activity">Current Activity Level</Label>
               <Select
                 value={formData.activity_level}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, activity_level: value }))}
