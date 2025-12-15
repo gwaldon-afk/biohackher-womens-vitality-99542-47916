@@ -1,33 +1,36 @@
+import { useTranslation } from "react-i18next";
 import { Sparkles, Target, Shield } from "lucide-react";
 
-const benefits = [
-  {
-    icon: Sparkles,
-    headline: "Reclaim Your Energy, Focus & Vitality",
-    description: "Feel like yourself again with protocols designed for women's biology—not adapted from male studies."
-  },
-  {
-    icon: Target,
-    headline: "Your Personal Blueprint for Aging Well",
-    description: "Integrated plans connecting nutrition, hormones, sleep, and movement that work together—not in isolation."
-  },
-  {
-    icon: Shield,
-    headline: "Start Free, Transform with Confidence",
-    description: "Free assessments and protocols show what's possible. Add supplements and expert guidance when you're ready."
-  }
-];
-
 const BenefitsSection = () => {
+  const { t } = useTranslation();
+
+  const benefits = [
+    {
+      icon: Sparkles,
+      headlineKey: "home.benefits.energy.headline",
+      descriptionKey: "home.benefits.energy.description"
+    },
+    {
+      icon: Target,
+      headlineKey: "home.benefits.blueprint.headline",
+      descriptionKey: "home.benefits.blueprint.description"
+    },
+    {
+      icon: Shield,
+      headlineKey: "home.benefits.confidence.headline",
+      descriptionKey: "home.benefits.confidence.description"
+    }
+  ];
+
   return (
     <section className="py-8 md:py-12 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-            Your Complete Longevity System
+            {t('home.benefits.sectionTitle')}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to transform your health—in one place
+            {t('home.benefits.sectionSubtitle')}
           </p>
         </div>
 
@@ -43,10 +46,10 @@ const BenefitsSection = () => {
                   <Icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3 tracking-tight">
-                  {benefit.headline}
+                  {t(benefit.headlineKey)}
                 </h3>
                 <p className="text-muted-foreground">
-                  {benefit.description}
+                  {t(benefit.descriptionKey)}
                 </p>
               </div>
             );
