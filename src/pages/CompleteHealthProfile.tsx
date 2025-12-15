@@ -69,10 +69,10 @@ export default function CompleteHealthProfile() {
 
   const activityLevels = [
     { value: 'sedentary', label: 'Sedentary', description: 'Little to no exercise' },
-    { value: 'light', label: 'Lightly Active', description: 'Light exercise 1-3 days/week' },
-    { value: 'moderate', label: 'Moderately Active', description: 'Moderate exercise 3-5 days/week' },
-    { value: 'active', label: 'Very Active', description: 'Hard exercise 6-7 days/week' },
-    { value: 'very_active', label: 'Extremely Active', description: 'Very hard exercise & physical job' }
+    { value: 'lightly_active', label: 'Lightly Active', description: 'Light exercise 1-3 days/week' },
+    { value: 'moderately_active', label: 'Moderately Active', description: 'Moderate exercise 3-5 days/week' },
+    { value: 'very_active', label: 'Very Active', description: 'Hard exercise 6-7 days/week' },
+    { value: 'extremely_active', label: 'Extremely Active', description: 'Very hard exercise & physical job' }
   ];
 
   return (
