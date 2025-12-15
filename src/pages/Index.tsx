@@ -46,7 +46,7 @@ const Index = () => {
                   Welcome to the Biohackher App — Your Personal Playbook to Living Well Longer
                 </p>
                 <p>
-                   Your one-stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology — the place where women go to check in, level up and feel incredible.
+                   •	Your one stop hub for all your healthspan needs, created exclusively for women who want to understand and upgrade their biology to feel incredible.
                 </p>
                 
                 <p className="font-semibold text-foreground">
@@ -71,29 +71,11 @@ const Index = () => {
           </div>
           
           <div className="grid md:grid-cols-3 gap-6 items-stretch">
-            <AssessmentHeroCard 
-              icon={Activity} 
-              headline="How Old Are You Really?" 
-              benefit="Find out your Biological Age"
-              duration="Free • 8 min • No signup" 
-              ctaRoute="/guest-lis-assessment" 
-            />
+            <AssessmentHeroCard icon={Activity} headline="How Old Are You Really?" benefit="Find out your Biological Age" duration="Free • 8 min • No signup" ctaRoute="/guest-lis-assessment" />
 
-            <AssessmentHeroCard 
-              icon={Package} 
-              headline="Is Your Metabolism Sabotaging You?" 
-              benefit="Discover why diets may not be working for you"
-              duration="Free • 8 min • No signup" 
-              ctaRoute="/longevity-nutrition" 
-            />
+            <AssessmentHeroCard icon={Package} headline="Is Your Metabolism Sabotaging You?" benefit="Discover why diets may not be working for you" duration="Free • 8 min • No signup" ctaRoute="/longevity-nutrition" />
 
-            <AssessmentHeroCard 
-              icon={Heart} 
-              headline="How are your hormones?" 
-              benefit="Find out if your hormones are aging faster than you"
-              duration="Free • 8 min • No signup" 
-              ctaRoute="/menomap/assessment" 
-            />
+            <AssessmentHeroCard icon={Heart} headline="How are your hormones?" benefit="Find out if your hormones are aging faster than you" duration="Free • 8 min • No signup" ctaRoute="/menomap/assessment" />
           </div>
         </div>
       </section>
