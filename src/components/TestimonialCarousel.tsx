@@ -46,9 +46,9 @@ const TestimonialCarousel = () => {
                 <CardContent className="p-8">
                   <div className="space-y-6">
                     <div className="flex justify-center">
-                      <Badge variant="secondary" className="bg-primary/10">
+                      <h3 className="text-xl font-bold text-foreground">
                         {testimonial.type}
-                      </Badge>
+                      </h3>
                     </div>
                     
                     <blockquote className="text-lg text-center italic text-foreground leading-relaxed">
