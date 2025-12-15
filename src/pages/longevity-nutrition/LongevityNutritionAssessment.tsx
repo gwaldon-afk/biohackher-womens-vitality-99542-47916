@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,13 +25,58 @@ import { calculateLongevityNutritionScore } from "@/utils/longevityNutritionScor
 import { calculateMetabolicAge } from "@/utils/metabolicAgeCalculator";
 import { toast } from "sonner";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
+import { useHealthProfile } from "@/hooks/useHealthProfile";
+import { useSessionMetrics } from "@/hooks/useSessionMetrics";
+import { useNutritionCalculations } from "@/hooks/useNutritionCalculations";
 
 export default function LongevityNutritionAssessment() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { updateProgress } = useAssessmentProgress();
+  const { profile, loading: profileLoading, createOrUpdateProfile } = useHealthProfile();
+  const { metrics: sessionMetrics } = useSessionMetrics();
   const [currentStep, setCurrentStep] = useState(1);
   const [assessmentData, setAssessmentData] = useState<any>({});
+  const [isPrePopulated, setIsPrePopulated] = useState(false);
+
+  // Pre-populate from existing profile data (authenticated) or session storage (guest)
+  useEffect(() => {
+    if (isPrePopulated || profileLoading) return;
+
+    // For authenticated users, use profile data
+    if (profile) {
+      const age = profile.date_of_birth 
+        ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear()
+        : undefined;
+      
+      setAssessmentData((prev: any) => ({
+        ...prev,
+        age: prev.age || age,
+        height_cm: prev.height_cm || profile.height_cm,
+        weight_kg: prev.weight_kg || profile.weight_kg,
+        activity_level: prev.activity_level || profile.activity_level || 
+          (profile.training_experience === 'beginner' ? 'sedentary' : 
+           profile.training_experience === 'intermediate' ? 'moderate' : 
+           profile.training_experience === 'advanced' ? 'active' : undefined),
+      }));
+      setIsPrePopulated(true);
+    } 
+    // For guests, use session storage
+    else if (!user && sessionMetrics) {
+      const age = sessionMetrics.date_of_birth 
+        ? new Date().getFullYear() - new Date(sessionMetrics.date_of_birth).getFullYear()
+        : undefined;
+      
+      setAssessmentData((prev: any) => ({
+        ...prev,
+        age: prev.age || age,
+        height_cm: prev.height_cm || sessionMetrics.height_cm,
+        weight_kg: prev.weight_kg || sessionMetrics.weight_kg,
+        activity_level: prev.activity_level || sessionMetrics.activity_level,
+      }));
+      setIsPrePopulated(true);
+    }
+  }, [profile, profileLoading, user, sessionMetrics, isPrePopulated]);
 
   const totalSteps = 14;
   const progress = (currentStep / totalSteps) * 100;
@@ -164,17 +209,64 @@ export default function LongevityNutritionAssessment() {
 
         if (prefsError) throw prefsError;
         
-        // 3. Generate daily nutrition actions
+        // 3. Calculate and store personalized protein/calorie targets in user_health_profile
+        if (assessmentData.weight_kg) {
+          const weight = assessmentData.weight_kg.toString();
+          const activityLevel = assessmentData.activity_level || 'moderate';
+          const goal = assessmentData.goal_primary || 'maintenance';
+          
+          // Calculate protein targets based on activity level
+          let proteinMultipliers;
+          switch (activityLevel) {
+            case "sedentary": proteinMultipliers = { min: 1.4, max: 1.6 }; break;
+            case "moderate": proteinMultipliers = { min: 1.6, max: 2.0 }; break;
+            case "active": proteinMultipliers = { min: 2.0, max: 2.4 }; break;
+            case "athlete": proteinMultipliers = { min: 2.4, max: 2.8 }; break;
+            default: proteinMultipliers = { min: 1.6, max: 2.0 };
+          }
+          
+          const proteinMin = Math.round(assessmentData.weight_kg * proteinMultipliers.min * 10) / 10;
+          const proteinMax = Math.round(assessmentData.weight_kg * proteinMultipliers.max * 10) / 10;
+          
+          // Calculate calorie target
+          let bmr = assessmentData.weight_kg * 22;
+          let activityMultiplier;
+          switch (activityLevel) {
+            case "sedentary": activityMultiplier = 1.2; break;
+            case "moderate": activityMultiplier = 1.5; break;
+            case "active": activityMultiplier = 1.7; break;
+            case "athlete": activityMultiplier = 1.9; break;
+            default: activityMultiplier = 1.5;
+          }
+          
+          let calories = bmr * activityMultiplier;
+          switch (goal) {
+            case "weight-loss": calories = calories * 0.85; break;
+            case "muscle-gain": calories = calories * 1.15; break;
+            default: break;
+          }
+          
+          // Update user_health_profile with calculated targets
+          await createOrUpdateProfile({
+            recommended_protein_min: proteinMin,
+            recommended_protein_max: proteinMax,
+            recommended_daily_calories: Math.round(calories),
+            nutrition_calculation_date: new Date().toISOString().split('T')[0],
+            activity_level: activityLevel,
+          });
+        }
+        
+        // 4. Generate daily nutrition actions
         const { generateAndSaveNutritionActions } = await import('@/services/nutritionActionService');
         await generateAndSaveNutritionActions(user.id, assessmentData, cravingAverage);
 
-        // 4. Update assessment progress tracking
+        // 5. Update assessment progress tracking
         updateProgress({
           nutrition_completed: true,
           nutrition_completed_at: new Date().toISOString(),
         });
 
-        // 5. Trigger incremental AI analysis (non-blocking)
+        // 6. Trigger incremental AI analysis (non-blocking)
         try {
           await supabase.functions.invoke('analyze-cross-assessments', {
             body: { trigger_assessment: 'nutrition' }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useSessionMetrics } from "@/hooks/useSessionMetrics";
-import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X } from "lucide-react";
+import { Heart, Scale, Cigarette, Users, Calendar, Sparkles, ArrowLeft, X, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import {
@@ -28,13 +28,14 @@ import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 export const LIS2InitialAssessment = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { createOrUpdateProfile } = useHealthProfile();
+  const { profile, loading: profileLoading, createOrUpdateProfile } = useHealthProfile();
   const { user } = useAuth();
-  const { setMetrics: setSessionMetrics } = useSessionMetrics();
+  const { metrics: sessionMetrics, setMetrics: setSessionMetrics } = useSessionMetrics();
   const { updateProgress } = useAssessmentProgress();
 
   const [step, setStep] = useState(1);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [isPrePopulated, setIsPrePopulated] = useState(false);
   const [formData, setFormData] = useState({
     year_of_birth: "",
     height_cm: "",
@@ -60,6 +61,44 @@ export const LIS2InitialAssessment = () => {
     allergies_sensitivities: [] as string[],
     medication_list: [] as string[],
   });
+
+  // Pre-populate form from existing profile data (authenticated) or session storage (guest)
+  useEffect(() => {
+    if (isPrePopulated) return;
+    
+    // For authenticated users, use profile data
+    if (profile && !profileLoading) {
+      setFormData(prev => ({
+        ...prev,
+        year_of_birth: profile.date_of_birth ? profile.date_of_birth.split('-')[0] : prev.year_of_birth,
+        height_cm: profile.height_cm?.toString() || prev.height_cm,
+        weight_kg: profile.weight_kg?.toString() || prev.weight_kg,
+        smoking_cessation_category: (profile as any).smoking_cessation_category || prev.smoking_cessation_category,
+        social_engagement_baseline: profile.social_engagement_baseline ?? prev.social_engagement_baseline,
+        training_experience: (profile.training_experience as any) || prev.training_experience,
+        exercise_routine_frequency: profile.exercise_routine_frequency ?? prev.exercise_routine_frequency,
+        compound_lift_experience: (profile.compound_lift_experience as any) || prev.compound_lift_experience,
+        previous_injuries: profile.previous_injuries || prev.previous_injuries,
+        exercise_preferences: (profile.exercise_preferences as string[]) || prev.exercise_preferences,
+        current_supplements: (profile.current_supplements as string[]) || prev.current_supplements,
+        known_deficiencies: (profile.known_deficiencies as string[]) || prev.known_deficiencies,
+        protein_per_meal: profile.protein_per_meal ?? prev.protein_per_meal,
+        allergies_sensitivities: (profile.allergies_sensitivities as string[]) || prev.allergies_sensitivities,
+        medication_list: (profile.medication_list as string[]) || prev.medication_list,
+      }));
+      setIsPrePopulated(true);
+    } 
+    // For guests, use session storage
+    else if (!user && sessionMetrics && !profileLoading) {
+      setFormData(prev => ({
+        ...prev,
+        year_of_birth: sessionMetrics.date_of_birth ? sessionMetrics.date_of_birth.split('-')[0] : prev.year_of_birth,
+        height_cm: sessionMetrics.height_cm?.toString() || prev.height_cm,
+        weight_kg: sessionMetrics.weight_kg?.toString() || prev.weight_kg,
+      }));
+      setIsPrePopulated(true);
+    }
+  }, [profile, profileLoading, user, sessionMetrics, isPrePopulated]);
 
   const calculateAge = (yearOfBirth: string) => {
     const today = new Date();
