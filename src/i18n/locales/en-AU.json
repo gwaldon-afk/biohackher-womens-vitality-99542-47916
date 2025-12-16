@@ -414,7 +414,9 @@
     "settings": "Settings",
     "profile": "Profile",
     "viewAll": "View All",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "returnToToday": "Return to Today",
+    "backToHome": "Back to Home"
   },
   "auth": {
     "signIn": "Sign In",

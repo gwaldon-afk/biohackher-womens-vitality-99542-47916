@@ -1112,8 +1112,8 @@ const LISResults = () => {
                     <FirstTimeDailyScoreWelcome onScoreCalculated={() => {
                       lisData.refetch();
                       toast({
-                        title: "Great Start! 🎉",
-                        description: "Your first daily score has been recorded. You can now view your dashboard!",
+                        title: t('lisResults.toast.greatStart'),
+                        description: t('lisResults.toast.greatStartDesc'),
                       });
                       // Optional: Auto-navigate after submission
                       setTimeout(() => navigate('/dashboard'), 2000);
@@ -1123,7 +1123,7 @@ const LISResults = () => {
                         size="lg"
                       >
                         <Activity className="h-5 w-5 mr-2" />
-                        Submit Your First Daily Score Now
+                        {t('lisResults.authenticated.submitFirst')}
                       </Button>
                     </FirstTimeDailyScoreWelcome>
                     <Button 
@@ -1131,7 +1131,7 @@ const LISResults = () => {
                       variant="outline"
                       className="w-full"
                     >
-                      Skip for Now - View Dashboard
+                      {t('lisResults.authenticated.skipForNow')}
                     </Button>
                   </>
                 ) : (
@@ -1140,7 +1140,7 @@ const LISResults = () => {
                     className="w-full"
                     size="lg"
                   >
-                    View Your Dashboard
+                    {t('lisResults.authenticated.viewDashboard')}
                   </Button>
                 )}
               </div>
@@ -1163,15 +1163,15 @@ const LISResults = () => {
       {!isGuest && (
         <Alert className="bg-gradient-to-r from-primary/10 to-secondary/5 border-primary/20">
           <Lock className="h-5 w-5 text-primary" />
-          <AlertTitle className="font-semibold">Free Trial Active</AlertTitle>
+          <AlertTitle className="font-semibold">{t('lisResults.authenticated.freeTrialActive')}</AlertTitle>
           <AlertDescription>
-            You're currently on a 7-day free trial. Continue tracking daily and we'll prompt you to subscribe before your trial ends.
+            {t('lisResults.authenticated.freeTrialDescription')}
             <Button 
               variant="outline" 
               className="mt-2 w-full border-primary/30 hover:bg-primary/10" 
               onClick={() => navigate('/upgrade')}
             >
-              Learn About Subscription Plans
+              {t('lisResults.authenticated.learnPlans')}
             </Button>
           </AlertDescription>
         </Alert>
@@ -1219,7 +1219,7 @@ const LISResults = () => {
           onClick={() => navigate(user ? '/today' : '/')} 
           size="lg"
         >
-          {user ? 'Return to Today' : 'Back to Home'}
+          {user ? t('common.returnToToday') : t('common.backToHome')}
         </Button>
       </div>
     </div>
