@@ -31,82 +31,35 @@ import {
 } from '@/utils/hormoneCompassProtocolGenerator';
 import { useState, useEffect } from 'react';
 
-// Health level information mapping (life-stage agnostic)
-const HEALTH_LEVEL_INFO: Record<string, {
-  title: string;
-  description: string;
-  spectrumContext: string;
+// Health level key mapping for translations
+const HEALTH_LEVEL_KEYS: Record<string, {
+  translationKey: string;
   targetSymptoms: string[];
-  recommendations: string[];
   color: string;
 }> = {
   'feeling-great': {
-    title: 'Feeling Great',
-    description: 'Your hormone health is thriving. You\'re experiencing minimal disruption across key areas.',
-    spectrumContext: 'It sounds like you\'re feeling great — this is the optimal level of hormone health (the best of five tiers). You\'re doing everything right to support your hormonal balance.',
+    translationKey: 'feelingGreat',
     targetSymptoms: ['maintenance', 'optimization', 'prevention'],
-    recommendations: [
-      'Maintain your current healthy habits and routines',
-      'Track symptoms monthly to establish your baseline',
-      'Focus on preventive nutrition and stress management',
-      'Consider reassessments every 6-12 months'
-    ],
     color: 'text-green-600'
   },
   'doing-well': {
-    title: 'Doing Well',
-    description: 'Your hormone health is good with mild occasional symptoms. Small adjustments can optimize your well-being.',
-    spectrumContext: 'It sounds like you\'re doing well — this is above average, the second-best tier out of five. You\'re in good shape with room for minor optimization to reach peak hormone health.',
+    translationKey: 'doingWell',
     targetSymptoms: ['sleep-quality', 'stress-management', 'energy-optimization'],
-    recommendations: [
-      'Continue current healthy practices',
-      'Address specific mild symptoms with targeted lifestyle changes',
-      'Prioritize sleep quality and stress reduction techniques',
-      'Consider adding adaptogenic herbs for hormonal support'
-    ],
     color: 'text-blue-600'
   },
   'having-challenges': {
-    title: 'Having Challenges',
-    description: 'You\'re experiencing moderate symptoms that are affecting daily life. Support can help restore balance.',
-    spectrumContext: 'It sounds like you\'re having challenges — this is the middle level out of five tiers. You\'re experiencing noticeable disruption that warrants attention and targeted intervention.',
+    translationKey: 'havingChallenges',
     targetSymptoms: ['cycle-regulation', 'mood-swings', 'sleep-disruption', 'energy-crashes'],
-    recommendations: [
-      'Work with a healthcare provider to identify root causes',
-      'Implement targeted nutrition and supplement protocols',
-      'Establish consistent sleep routines and stress management',
-      'Consider comprehensive hormone testing',
-      'Track symptoms to identify patterns and triggers'
-    ],
     color: 'text-yellow-600'
   },
   'really-struggling': {
-    title: 'Really Struggling',
-    description: 'You\'re facing significant symptoms that are impacting your quality of life. Professional support is recommended.',
-    spectrumContext: 'It sounds like you\'re really struggling — this is the second-lowest level out of five tiers. You\'re experiencing substantial hormone-related impacts that need comprehensive support.',
+    translationKey: 'reallyStruggling',
     targetSymptoms: ['severe-symptoms', 'hot-flashes', 'mood-disorders', 'cognitive-issues'],
-    recommendations: [
-      'Schedule consultation with hormone specialist or gynecologist',
-      'Discuss hormone replacement therapy or other medical options',
-      'Implement comprehensive lifestyle and supplement protocol',
-      'Prioritize sleep, nutrition, and stress management',
-      'Consider working with a therapist for mood-related symptoms'
-    ],
     color: 'text-orange-600'
   },
   'need-support': {
-    title: 'Need Support Now',
-    description: 'You\'re experiencing severe symptoms that require immediate professional attention and comprehensive support.',
-    spectrumContext: 'It sounds like you need support now — this is the most critical level out of five tiers. You\'re experiencing severe hormone disruption that requires immediate medical attention and comprehensive intervention.',
+    translationKey: 'needSupport',
     targetSymptoms: ['severe-disruption', 'multiple-symptoms', 'quality-of-life'],
-    recommendations: [
-      'Seek immediate medical evaluation from hormone specialist',
-      'Discuss all treatment options including HRT with your provider',
-      'Request comprehensive hormone and health panel',
-      'Consider working with integrative healthcare team',
-      'Implement multi-faceted support protocol under medical guidance',
-      'Prioritize self-care and mental health support'
-    ],
     color: 'text-red-600'
   }
 };
@@ -176,8 +129,8 @@ export default function HormoneCompassResults() {
     queryKey: ['health-level-products', healthLevel],
     queryFn: () => {
       if (!healthLevel) return [];
-      const levelInfo = HEALTH_LEVEL_INFO[healthLevel as keyof typeof HEALTH_LEVEL_INFO];
-      return searchProductsBySymptoms(levelInfo.targetSymptoms || []);
+      const levelKeys = HEALTH_LEVEL_KEYS[healthLevel as keyof typeof HEALTH_LEVEL_KEYS];
+      return searchProductsBySymptoms(levelKeys?.targetSymptoms || []);
     },
     enabled: !!healthLevel,
   });
@@ -486,49 +439,13 @@ export default function HormoneCompassResults() {
   
   // Helper function to generate preview insights for collapsed domains
   const getDomainPreviewInsight = (domainName: string, score: number): string => {
-    const insights: Record<string, { critical: string; struggling: string; challenges: string; good: string; thriving: string }> = {
-      'Cycle & Period Patterns': {
-        critical: 'Urgent: Severe symptoms may require immediate medical evaluation',
-        struggling: 'Significant irregularity may affect fertility and long-term health',
-        challenges: 'May indicate hormone imbalance affecting your cycle regularity',
-        good: 'Minor fluctuations—small optimizations can enhance balance',
-        thriving: 'Healthy regular cycles suggest balanced hormone production'
-      },
-      'Sleep & Thermoregulation': {
-        critical: 'Urgent: Severe sleep issues may critically impact your health',
-        struggling: 'Temperature dysregulation may significantly disrupt sleep quality',
-        challenges: 'Sleep disruption could affect hormone production and repair',
-        good: 'Occasional disruptions—optimization can further support hormones',
-        thriving: 'Excellent sleep quality may support optimal hormone production'
-      },
-      'Mood & Focus': {
-        critical: 'Urgent: Severe symptoms may require immediate professional support',
-        struggling: 'Significant disruption could interfere with daily quality of life',
-        challenges: 'Mood instability may indicate hormone or neurotransmitter dysfunction',
-        good: 'Generally stable with occasional challenges—targeted support helps',
-        thriving: 'Balanced mood and clarity suggest healthy neurotransmitter levels'
-      },
-      'Energy & Weight': {
-        critical: 'Urgent: Extreme fatigue may require immediate medical attention',
-        struggling: 'Severe fatigue could indicate metabolic or endocrine disruption',
-        challenges: 'Could suggest metabolic disruption affecting energy and weight',
-        good: 'Generally stable—optimization can enhance vitality',
-        thriving: 'Stable energy and weight suggest healthy metabolism'
-      },
-      'Libido & Sexual Health': {
-        critical: 'Urgent: Severe symptoms may require immediate medical evaluation',
-        struggling: 'Significant loss of libido may impact intimacy and wellbeing',
-        challenges: 'Reduced libido and discomfort may indicate hormone changes',
-        good: 'Minor concerns—small adjustments can enhance comfort',
-        thriving: 'Strong sexual health suggests healthy sex hormone levels'
-      },
-      'Skin, Hair & Nails': {
-        critical: 'Urgent: Severe changes may indicate serious nutrient deficiency',
-        struggling: 'Significant changes may indicate hormone or nutrient imbalance',
-        challenges: 'Changes suggest collagen loss or nutrient depletion',
-        good: 'Minor changes—optimization can enhance appearance',
-        thriving: 'Healthy appearance suggests good hormone balance and nutrients'
-      }
+    const domainKeyMap: Record<string, string> = {
+      'Cycle & Period Patterns': 'cyclePeriodPatterns',
+      'Sleep & Thermoregulation': 'sleepThermoregulation',
+      'Mood & Focus': 'moodFocus',
+      'Energy & Weight': 'energyWeight',
+      'Libido & Sexual Health': 'libidoSexualHealth',
+      'Skin, Hair & Nails': 'skinHairNails'
     };
 
     const scoreBand = score >= 4.5 ? 'thriving' :
@@ -536,7 +453,11 @@ export default function HormoneCompassResults() {
                       score >= 2.5 ? 'challenges' :
                       score >= 1.5 ? 'struggling' : 'critical';
 
-    return insights[domainName]?.[scoreBand] || 'Expand to see detailed insights and recommendations';
+    const domainKey = domainKeyMap[domainName];
+    if (domainKey) {
+      return t(`hormoneResults.domainInsights.${domainKey}.${scoreBand}`);
+    }
+    return t('hormoneResults.domainInsights.default');
   };
   
   // Find lowest scoring domain for auto-expand - MUST be called before conditional returns
@@ -563,39 +484,45 @@ export default function HormoneCompassResults() {
     return null;
   }
 
-  const levelInfo = HEALTH_LEVEL_INFO[healthLevel as keyof typeof HEALTH_LEVEL_INFO];
+  const levelKeys = HEALTH_LEVEL_KEYS[healthLevel as keyof typeof HEALTH_LEVEL_KEYS];
   
   // Guard against invalid health level
-  if (!levelInfo) {
+  if (!levelKeys) {
     console.error('Invalid health level:', healthLevel);
     navigate('/hormone-compass/assessment');
     return null;
   }
+
+  // Get translated level info
+  const levelInfo = {
+    title: t(`hormoneResults.healthLevels.${levelKeys.translationKey}.title`),
+    description: t(`hormoneResults.healthLevels.${levelKeys.translationKey}.description`),
+    spectrumContext: t(`hormoneResults.healthLevels.${levelKeys.translationKey}.spectrumContext`),
+    color: levelKeys.color
+  };
   
   // Generate age-based contextual insight
   const getLifeStageContext = () => {
     if (!userAge) return null;
     
+    const hasChallenges = healthLevel === 'having-challenges' || healthLevel === 'really-struggling';
+    
     if (userAge >= 25 && userAge <= 35) {
-      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
-        return 'At your age, these symptoms may indicate PCOS, thyroid imbalances, or cycle irregularities. Consider working with a healthcare provider to identify root causes.';
-      }
-      return 'You\'re in your prime reproductive years. Focus on establishing healthy baseline habits and tracking patterns.';
+      return hasChallenges 
+        ? t('hormoneResults.lifeStageContexts.age25to35Challenges')
+        : t('hormoneResults.lifeStageContexts.age25to35Normal');
     } else if (userAge >= 36 && userAge <= 44) {
-      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
-        return 'These symptoms could be early signs of hormonal shifts as you approach perimenopause, or may indicate other hormonal imbalances worth investigating.';
-      }
-      return 'You\'re approaching the perimenopausal transition window. Now is an ideal time to optimize hormone health and establish strong habits.';
+      return hasChallenges
+        ? t('hormoneResults.lifeStageContexts.age36to44Challenges')
+        : t('hormoneResults.lifeStageContexts.age36to44Normal');
     } else if (userAge >= 45 && userAge <= 55) {
-      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
-        return 'These symptoms are common during the perimenopause transition. Targeted support can significantly improve your quality of life during this phase.';
-      }
-      return 'You\'re in the typical perimenopause window. Proactive support can help you navigate this transition smoothly.';
+      return hasChallenges
+        ? t('hormoneResults.lifeStageContexts.age45to55Challenges')
+        : t('hormoneResults.lifeStageContexts.age45to55Normal');
     } else if (userAge >= 56) {
-      if (healthLevel === 'having-challenges' || healthLevel === 'really-struggling') {
-        return 'If you\'re experiencing ongoing symptoms in postmenopause, hormone replacement therapy or targeted interventions may provide relief. Consult with your provider.';
-      }
-      return 'You\'re in the postmenopause phase. Focus on longevity optimization—bone health, cardiovascular support, and cognitive function.';
+      return hasChallenges
+        ? t('hormoneResults.lifeStageContexts.age56PlusChallenges')
+        : t('hormoneResults.lifeStageContexts.age56PlusNormal');
     }
     return null;
   };
@@ -929,8 +856,8 @@ export default function HormoneCompassResults() {
           {protocol.immediate.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Badge variant="destructive">DO TODAY</Badge>
-                <h3 className="font-semibold">Immediate Actions</h3>
+                <Badge variant="destructive">{t('hormoneResults.doToday')}</Badge>
+                <h3 className="font-semibold">{t('hormoneResults.immediateActions')}</h3>
               </div>
               <div className="space-y-2">
                 {protocol.immediate.map((item, index) => 
@@ -944,8 +871,8 @@ export default function HormoneCompassResults() {
           {protocol.foundation.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Badge variant="secondary">THIS WEEK</Badge>
-                <h3 className="font-semibold">Foundation Protocol</h3>
+                <Badge variant="secondary">{t('hormoneResults.thisWeek')}</Badge>
+                <h3 className="font-semibold">{t('hormoneResults.foundationProtocol')}</h3>
               </div>
               <div className="space-y-2">
                 {protocol.foundation.map((item, index) => 
@@ -959,8 +886,8 @@ export default function HormoneCompassResults() {
           {protocol.optimization.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Badge variant="outline">NEXT 30 DAYS</Badge>
-                <h3 className="font-semibold">Optimization Layer</h3>
+                <Badge variant="outline">{t('hormoneResults.next30Days')}</Badge>
+                <h3 className="font-semibold">{t('hormoneResults.optimisationLayer')}</h3>
               </div>
               <div className="space-y-2">
                 {protocol.optimization.map((item, index) => 
@@ -974,7 +901,7 @@ export default function HormoneCompassResults() {
             <div className="space-y-3">
               <Button onClick={handleAddToProtocol} className="w-full" size="lg">
                 <Target className="w-5 h-5 mr-2" />
-                Add All Items to Protocol
+                {t('hormoneResults.addAllToProtocol')}
               </Button>
               <Button 
                 onClick={() => setGoalDialogOpen(true)}
@@ -983,12 +910,12 @@ export default function HormoneCompassResults() {
                 size="lg"
               >
                 <Target className="w-5 h-5 mr-2" />
-                Create 90-Day Goal from Results
+                {t('hormoneResults.createGoal')}
               </Button>
             </div>
           ) : (
             <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
-              Create Free Account to Save Protocol
+              {t('hormoneResults.createFreeAccountSave')}
             </Button>
           )}
         </CardContent>
@@ -1000,33 +927,33 @@ export default function HormoneCompassResults() {
           <CardContent className="p-6">
             <div className="text-center space-y-4">
               <Sparkles className="w-12 h-12 text-primary mx-auto" />
-              <h3 className="text-xl font-bold">Unlock Your Complete Hormone Health Journey</h3>
+              <h3 className="text-xl font-bold">{t('hormoneResults.guestCtaTitle')}</h3>
               <div className="grid grid-cols-2 gap-4 text-left">
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Save your personalized protocol</span>
+                  <span className="text-sm">{t('hormoneResults.saveProtocol')}</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Daily symptom tracking with pattern detection</span>
+                  <span className="text-sm">{t('hormoneResults.dailyTracking')}</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">Monthly reassessments to track improvement</span>
+                  <span className="text-sm">{t('hormoneResults.monthlyReassessments')}</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">AI-powered insights as patterns emerge</span>
+                  <span className="text-sm">{t('hormoneResults.aiInsights')}</span>
                 </div>
               </div>
               <Button onClick={() => navigate('/auth')} size="lg" className="w-full">
-                Create Free Account & Unlock Protocol
+                {t('hormoneResults.createFreeAccount')}
               </Button>
               <p className="text-xs text-muted-foreground">
-                Includes FREE 3-day trial • No credit card required
+                {t('hormoneResults.freeTrial')}
               </p>
               <p className="text-xs text-amber-600/80 dark:text-amber-400/80 mt-2">
-                Platform provides wellness guidance, not medical diagnosis. Consult healthcare providers for medical concerns.
+                {t('hormoneResults.guestDisclaimer')}
               </p>
             </div>
           </CardContent>
@@ -1049,7 +976,7 @@ export default function HormoneCompassResults() {
           autoGenerate={false}
           renderButton={(onClick, isLoading) => (
             <Button onClick={onClick} disabled={isLoading} variant="outline" size="sm" className="w-full">
-              {isLoading ? 'Generating...' : 'Get AI-Powered Deep Dive (Optional)'}
+              {isLoading ? t('hormoneResults.generating') : t('hormoneResults.aiDeepDive')}
             </Button>
           )}
         />

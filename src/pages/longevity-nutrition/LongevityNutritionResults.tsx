@@ -46,7 +46,7 @@ function ProtocolItemCard({
         <div>
           <h4 className="font-semibold text-foreground">{item.name}</h4>
           <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
-          <p className="text-xs text-primary mt-2 italic">Why: {item.relevance}</p>
+          <p className="text-xs text-primary mt-2 italic">{t('nutritionResults.why')} {item.relevance}</p>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -100,7 +100,7 @@ function ProtocolItemCard({
                   onClick={() => onAddToProtocol(item)}
                   className="text-xs"
                 >
-                  Sign in to add to protocol
+                  {t('nutritionResults.signInToAdd')}
                 </Button>
               )}
             </>
