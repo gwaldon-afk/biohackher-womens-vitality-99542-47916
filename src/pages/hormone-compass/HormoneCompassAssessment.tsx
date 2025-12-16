@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,6 +19,7 @@ import { differenceInYears, parse, isValid } from "date-fns";
 
 export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { profile } = useHealthProfile();
   const { trackSymptom: _trackSymptom } = useHormoneCompass();

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -698,6 +699,7 @@ interface BaselineData {
 export default function GuestLISAssessment() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
   const returnTo = searchParams.get('returnTo');
   const { user } = useAuth();
   const [showBaseline, setShowBaseline] = useState(true);
@@ -769,23 +771,23 @@ export default function GuestLISAssessment() {
 
   const handleBaselineSubmit = () => {
     if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
-      toast.error('Please fill in all baseline information');
+      toast.error(t('lisAssessment.toasts.fillBaseline'));
       return;
     }
 
     const age = calculateAgeFromDOB(baselineData.dateOfBirth);
     if (age < 18 || age > 120) {
-      toast.error('Please enter a valid date of birth (age 18-120 years)');
+      toast.error(t('lisAssessment.toasts.invalidDob'));
       return;
     }
 
     if (parseFloat(baselineData.heightCm) < 100 || parseFloat(baselineData.heightCm) > 250) {
-      toast.error('Please enter a valid height (100-250 cm)');
+      toast.error(t('lisAssessment.toasts.invalidHeight'));
       return;
     }
 
     if (parseFloat(baselineData.weightKg) < 30 || parseFloat(baselineData.weightKg) > 300) {
-      toast.error('Please enter a valid weight (30-300 kg)');
+      toast.error(t('lisAssessment.toasts.invalidWeight'));
       return;
     }
 
@@ -815,7 +817,7 @@ export default function GuestLISAssessment() {
   const handleNext = () => {
     // Don't auto-advance if manually clicking Continue - question must be answered
     if (!isCurrentQuestionAnswered()) {
-      toast.error('Please select an answer to continue');
+      toast.error(t('lisAssessment.toasts.selectAnswer'));
       return;
     }
 
@@ -1005,7 +1007,7 @@ export default function GuestLISAssessment() {
 
         if (profileError) {
           console.error('Error saving health profile:', profileError);
-          toast.error('Failed to save health profile. Please try again.');
+          toast.error(t('lisAssessment.toasts.failedSaveProfile'));
           return;
         }
 
@@ -1062,12 +1064,12 @@ export default function GuestLISAssessment() {
         toast.promise(
           supabase.functions.invoke('generate-protocol-from-assessments', { body: {} }),
           {
-            loading: 'Generating your personalized protocol...',
+            loading: t('lisAssessment.toasts.generatingProtocol'),
             success: (result) => {
               const data = result.data;
-              return `Protocol created with ${data?.items_count || 0} personalized recommendations!`;
+              return t('lisAssessment.toasts.protocolCreated', { count: data?.items_count || 0 });
             },
-            error: 'Protocol generation will complete in the background'
+            error: t('lisAssessment.toasts.protocolBackground')
           }
         );
 
@@ -1112,7 +1114,7 @@ export default function GuestLISAssessment() {
 
         if (error) {
           console.error('Error saving guest assessment:', error);
-          toast.error('Failed to save assessment. Please try again.');
+          toast.error(t('lisAssessment.toasts.failedSave'));
           return;
         }
 
@@ -1122,7 +1124,7 @@ export default function GuestLISAssessment() {
       }
     } catch (error) {
       console.error('Error submitting assessment:', error);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('lisAssessment.toasts.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -1259,14 +1261,14 @@ export default function GuestLISAssessment() {
       <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Exit Assessment?</AlertDialogTitle>
+            <AlertDialogTitle>{t('lisAssessment.exitDialog.title')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Your progress will be lost. Are you sure you want to exit?
+              {t('lisAssessment.exitDialog.description')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Continue Assessment</AlertDialogCancel>
-            <AlertDialogAction onClick={handleExitToHome}>Exit to Home</AlertDialogAction>
+            <AlertDialogCancel>{t('lisAssessment.exitDialog.continueBtn')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleExitToHome}>{t('lisAssessment.exitDialog.exitBtn')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -1281,12 +1283,12 @@ export default function GuestLISAssessment() {
             className="gap-2"
           >
             <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Home</span>
+            <span className="hidden sm:inline">{t('lisAssessment.header.home')}</span>
           </Button>
           
           <div className="text-center flex-1">
             <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              LIS 2.0 Assessment
+              {t('lisAssessment.header.title')}
             </h1>
           </div>
 
@@ -1298,13 +1300,13 @@ export default function GuestLISAssessment() {
               className="gap-2"
             >
               <X className="h-4 w-4" />
-              <span className="hidden sm:inline">Exit</span>
+              <span className="hidden sm:inline">{t('lisAssessment.header.exit')}</span>
             </Button>
           )}
         </div>
 
         <p className="text-center text-muted-foreground mb-8">
-          Discover your science-backed Longevity Impact Score
+          {t('lisAssessment.subtitle')}
         </p>
 
         {/* Enhanced Progress Header */}
@@ -1313,10 +1315,13 @@ export default function GuestLISAssessment() {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <div className="text-sm font-medium text-muted-foreground">
-                  Question {isOnModifier ? totalQuestions : absoluteQuestionNumber} of {totalQuestions}
+                  {t('lisAssessment.progress.questionOf', { 
+                    current: isOnModifier ? totalQuestions : absoluteQuestionNumber, 
+                    total: totalQuestions 
+                  })}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  • {Math.round(progress)}% complete
+                  • {t('lisAssessment.progress.complete', { percent: Math.round(progress) })}
                 </div>
               </div>
               {!isOnModifier && currentPillarInfo && (
@@ -1326,13 +1331,13 @@ export default function GuestLISAssessment() {
                   borderColor: `${currentPillarInfo.color}30`
                 }}>
                   <currentPillarInfo.icon className="h-4 w-4" />
-                  <span className="font-medium">{currentPillarInfo.name}</span>
+                  <span className="font-medium">{t(`lisAssessment.pillars.${currentPillarInfo.pillar}`)}</span>
                 </Badge>
               )}
               {isOnModifier && (
                 <Badge className="gap-2 px-3 py-1 bg-purple-500/10 text-purple-500 border-purple-500/30">
                   <Sparkles className="h-4 w-4" />
-                  <span className="font-medium">Risk Modifier</span>
+                  <span className="font-medium">{t('lisAssessment.progress.riskModifier')}</span>
                 </Badge>
               )}
             </div>
@@ -1357,10 +1362,10 @@ export default function GuestLISAssessment() {
                   <User className="h-10 w-10 text-primary" />
                 </div>
                 <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  Before We Begin
+                  {t('lisAssessment.baseline.title')}
                 </h2>
                 <p className="text-muted-foreground text-base max-w-2xl mx-auto">
-                  We need a few baseline metrics to calculate your personalized Longevity Impact Score based on peer-reviewed research
+                  {t('lisAssessment.baseline.subtitle')}
                 </p>
               </div>
 
@@ -1369,7 +1374,7 @@ export default function GuestLISAssessment() {
                 <div className="space-y-2">
                   <Label htmlFor="dob" className="text-base font-medium flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-primary" />
-                    Date of Birth
+                    {t('lisAssessment.baseline.dateOfBirth')}
                   </Label>
                   <Input
                     id="dob"
@@ -1381,7 +1386,7 @@ export default function GuestLISAssessment() {
                   />
                   {baselineData.dateOfBirth && (
                     <p className="text-sm text-muted-foreground">
-                      Age: {calculateAgeFromDOB(baselineData.dateOfBirth)} years
+                      {t('lisAssessment.baseline.ageYears', { age: calculateAgeFromDOB(baselineData.dateOfBirth) })}
                     </p>
                   )}
                 </div>
@@ -1390,12 +1395,12 @@ export default function GuestLISAssessment() {
                 <div className="space-y-2">
                   <Label htmlFor="height" className="text-base font-medium flex items-center gap-2">
                     <Ruler className="w-4 h-4 text-primary" />
-                    Height (cm)
+                    {t('lisAssessment.baseline.heightCm')}
                   </Label>
                   <Input
                     id="height"
                     type="number"
-                    placeholder="e.g., 165"
+                    placeholder={t('lisAssessment.baseline.heightPlaceholder')}
                     value={baselineData.heightCm}
                     onChange={(e) => setBaselineData(prev => ({ ...prev, heightCm: e.target.value }))}
                     min="100"
@@ -1404,7 +1409,10 @@ export default function GuestLISAssessment() {
                   />
                   {baselineData.heightCm && parseFloat(baselineData.heightCm) > 0 && (
                     <p className="text-sm text-muted-foreground">
-                      About {Math.floor(parseFloat(baselineData.heightCm) / 30.48 / 12)}'{Math.round((parseFloat(baselineData.heightCm) / 30.48) % 12)}" in feet
+                      {t('lisAssessment.baseline.aboutFeet', { 
+                        feet: Math.floor(parseFloat(baselineData.heightCm) / 30.48 / 12), 
+                        inches: Math.round((parseFloat(baselineData.heightCm) / 30.48) % 12) 
+                      })}
                     </p>
                   )}
                 </div>
@@ -1413,12 +1421,12 @@ export default function GuestLISAssessment() {
                 <div className="space-y-2">
                   <Label htmlFor="weight" className="text-base font-medium flex items-center gap-2">
                     <Scale className="w-4 h-4 text-primary" />
-                    Weight (kg)
+                    {t('lisAssessment.baseline.weightKg')}
                   </Label>
                   <Input
                     id="weight"
                     type="number"
-                    placeholder="e.g., 65"
+                    placeholder={t('lisAssessment.baseline.weightPlaceholder')}
                     value={baselineData.weightKg}
                     onChange={(e) => setBaselineData(prev => ({ ...prev, weightKg: e.target.value }))}
                     min="30"
@@ -1428,7 +1436,7 @@ export default function GuestLISAssessment() {
                   />
                   {baselineData.weightKg && parseFloat(baselineData.weightKg) > 0 && (
                     <p className="text-sm text-muted-foreground">
-                      About {Math.round(parseFloat(baselineData.weightKg) * 2.20462)} lbs
+                      {t('lisAssessment.baseline.aboutLbs', { lbs: Math.round(parseFloat(baselineData.weightKg) * 2.20462) })}
                     </p>
                   )}
                 </div>
@@ -1438,10 +1446,10 @@ export default function GuestLISAssessment() {
                   <div className="p-5 bg-primary/5 rounded-lg border border-primary/10">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground mb-1">Your BMI</p>
+                        <p className="text-sm text-muted-foreground mb-1">{t('lisAssessment.baseline.yourBmi')}</p>
                         <p className="text-4xl font-bold text-primary">{bmi}</p>
                         <p className="text-sm text-muted-foreground mt-2">
-                          {bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal weight' : bmi < 30 ? 'Overweight' : 'Obese'}
+                          {bmi < 18.5 ? t('lisAssessment.baseline.underweight') : bmi < 25 ? t('lisAssessment.baseline.normalWeight') : bmi < 30 ? t('lisAssessment.baseline.overweight') : t('lisAssessment.baseline.obese')}
                         </p>
                       </div>
                       <Activity className="w-12 h-12 text-primary/20" />
@@ -1453,9 +1461,9 @@ export default function GuestLISAssessment() {
                 <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg border">
                   <Shield className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium mb-1">Your data is private and secure</p>
+                    <p className="text-sm font-medium mb-1">{t('lisAssessment.baseline.privacyTitle')}</p>
                     <p className="text-xs text-muted-foreground">
-                      We use these metrics solely to personalize your assessment results
+                      {t('lisAssessment.baseline.privacyDesc')}
                     </p>
                   </div>
                 </div>
@@ -1476,7 +1484,7 @@ export default function GuestLISAssessment() {
                       borderColor: `${currentPillarInfo.color}40`
                     }}>
                       <currentPillarInfo.icon className="h-5 w-5" />
-                      {currentPillarInfo.name} Health
+                      {t('lisAssessment.question.healthBadge', { pillar: t(`lisAssessment.pillars.${currentPillarInfo.pillar}`) })}
                     </Badge>
                   </div>
                 )}
@@ -1488,7 +1496,7 @@ export default function GuestLISAssessment() {
                 
                 {/* Subtitle hint */}
                 <p className="text-center text-muted-foreground text-sm max-w-2xl mx-auto">
-                  Select the option that best describes you
+                  {t('lisAssessment.question.selectOption')}
                 </p>
               </CardContent>
             </Card>
@@ -1544,7 +1552,7 @@ export default function GuestLISAssessment() {
                         {/* Score indicator - redesigned */}
                         <div className="w-full space-y-1.5">
                           <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>Health Impact</span>
+                            <span>{t('lisAssessment.question.healthImpact')}</span>
                             <span className="font-semibold">{scorePercent}%</span>
                           </div>
                           <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -1591,7 +1599,7 @@ export default function GuestLISAssessment() {
                   }
                 }}
               >
-                Cancel
+                {t('lisAssessment.buttons.cancel')}
               </Button>
               <Button
                 onClick={handleBaselineSubmit}
@@ -1599,7 +1607,7 @@ export default function GuestLISAssessment() {
                 size="lg"
                 className="min-w-48"
               >
-                Start Assessment
+                {t('lisAssessment.buttons.startAssessment')}
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </>
@@ -1612,7 +1620,7 @@ export default function GuestLISAssessment() {
                 className="gap-2"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Back
+                {t('lisAssessment.buttons.back')}
               </Button>
 
               <Button
@@ -1622,12 +1630,12 @@ export default function GuestLISAssessment() {
                 className="min-w-48 gap-2"
               >
                 {isSubmitting ? (
-                  'Calculating...'
+                  t('lisAssessment.buttons.calculating')
                 ) : isOnModifier ? (
-                  'Get My Score'
+                  t('lisAssessment.buttons.getMyScore')
                 ) : (
                   <>
-                    Continue
+                    {t('lisAssessment.buttons.continue')}
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -1639,8 +1647,11 @@ export default function GuestLISAssessment() {
         {/* Footer Note */}
         <p className="text-center text-sm text-muted-foreground mt-8">
           {showBaseline 
-            ? 'This assessment takes approximately 2 minutes to complete'
-            : `${totalQuestions - answeredQuestions} questions remaining • ~${Math.ceil((totalQuestions - answeredQuestions) / 10)} min`
+            ? t('lisAssessment.footer.assessmentTime')
+            : t('lisAssessment.footer.questionsRemaining', { 
+                count: totalQuestions - answeredQuestions, 
+                minutes: Math.ceil((totalQuestions - answeredQuestions) / 10) 
+              })
           }
         </p>
       </div>
