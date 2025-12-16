@@ -1784,7 +1784,363 @@
         "errorTitle": "Error",
         "errorDescription": "Failed to update profile. Please try again.",
         "profileComplete": "Profile Complete!",
-        "takingYouTo": "Taking you to {{destination}}..."
+      "takingYouTo": "Taking you to {{destination}}..."
+      }
+    }
+  },
+  "myProtocol": {
+    "pageTitle": "Protocol",
+    "pageTitleHighlight": "Manager",
+    "pageSubtitle": "Your complete wellness protocol: supplements, nutrition, exercise, therapies & daily habits",
+    "browseTemplates": "Browse Templates",
+    "tabs": {
+      "active": "Active Protocol",
+      "recommended": "Recommended",
+      "history": "History",
+      "calendar": "Calendar",
+      "library": "Library"
+    },
+    "activeProtocol": {
+      "title": "Your Active Protocol",
+      "description": "Complete your daily protocol to optimise health outcomes",
+      "loading": "Loading protocol items...",
+      "noItems": "No items in your protocol yet.",
+      "noItemsHint": "Use the Builder tab to add supplements, nutrition plans, exercises, and wellness practices.",
+      "yourMealPlan": "🍽️ Your Meal Plan"
+    },
+    "emptyState": {
+      "title": "No Active Protocol",
+      "description": "Build your complete wellness protocol including supplements, nutrition, exercise, therapies, and daily habits.",
+      "cta": "Start with an Assessment"
+    },
+    "itemTypes": {
+      "supplement": "Supplements",
+      "diet": "Nutrition",
+      "exercise": "Exercise",
+      "therapy": "Therapies",
+      "habit": "Habits"
+    },
+    "pillars": {
+      "body": "Body Pillar",
+      "beauty": "Beauty Pillar",
+      "brain": "Brain Pillar",
+      "balance": "Balance Pillar"
+    },
+    "recommended": {
+      "title": "Recommended Protocols",
+      "description": "Review and add assessment-generated protocols to your plan",
+      "loading": "Loading recommendations...",
+      "noNew": "No New Recommendations",
+      "noNewDescription": "Complete an assessment to get personalised protocol suggestions",
+      "takeAssessment": "Take an Assessment",
+      "noMatching": "No Matching Recommendations",
+      "noMatchingDescription": "Try adjusting your filters to see more results",
+      "reviewAndAdd": "Review & Add to Plan",
+      "dismiss": "Dismiss",
+      "personalisedRecommendation": "Personalised Protocol Recommendation",
+      "actionsAcross": "{{count}} actions across immediate, foundation, and optimisation layers",
+      "immediate": "Immediate",
+      "foundation": "Foundation",
+      "optimisation": "Optimisation",
+      "actions": "{{count}} actions",
+      "more": "+{{count}} more"
+    },
+    "sources": {
+      "all": "All Sources",
+      "lis": "LIS Assessment",
+      "hormoneCompass": "Hormone Compass",
+      "symptom": "Symptom Assessment",
+      "goal": "Goal Setting"
+    },
+    "sorting": {
+      "newestFirst": "Newest First",
+      "oldestFirst": "Oldest First",
+      "byPriority": "By Priority",
+      "byStatus": "By Status"
+    },
+    "filters": {
+      "filterBySource": "Filter by source",
+      "sortBy": "Sort by",
+      "filterByStatus": "Filter by status",
+      "allStatuses": "All Statuses",
+      "dismissed": "Dismissed",
+      "partiallyAccepted": "Partially Accepted"
+    },
+    "history": {
+      "title": "Recommendations History",
+      "description": "Review previously dismissed or partially accepted recommendations",
+      "loading": "Loading history...",
+      "empty": "No History Yet",
+      "emptyDescription": "Your dismissed and partially accepted recommendations will appear here"
+    },
+    "calendar": {
+      "title": "Protocol Calendar",
+      "description": "View your protocol adherence over time"
+    },
+    "library": {
+      "title": "Protocol Library",
+      "description": "Browse and add from our curated protocol templates",
+      "browseAll": "Browse All Templates"
+    },
+    "toast": {
+      "protocolDeleted": "Protocol Deleted",
+      "protocolDeletedDesc": "Your protocol has been removed.",
+      "deleteError": "Error",
+      "deleteErrorDesc": "Failed to delete protocol.",
+      "protocolUpdated": "Protocol Updated",
+      "protocolUpdatedDesc": "Your changes have been saved.",
+      "updateError": "Error",
+      "updateErrorDesc": "Failed to update protocol.",
+      "addedToCart": "Added to Cart",
+      "addedToCartDesc": "{{name}} has been added to your cart.",
+      "protocolAdded": "Protocol Added!",
+      "protocolAddedDesc": "Complete protocol with {{count}} supplements added to cart.",
+      "bundleAdded": "Bundle added to cart!",
+      "bundleAddedDesc": "Added {{count}} items from your {{name}} protocol. {{savings}}",
+      "bundleError": "Error",
+      "bundleErrorDesc": "Failed to add bundle to cart. Please try again.",
+      "itemRemoved": "Item Removed",
+      "itemRemovedDesc": "Protocol item has been deleted."
+    }
+  },
+  "brainAssessment": {
+    "pageTitle": "Brain Health Assessment",
+    "pageTitleMenopause": "Menopause Brain Health",
+    "pageSubtitle": "Evaluate your cognitive performance",
+    "pageSubtitleMenopause": "Assess how hormonal changes affect your cognition",
+    "progress": "Question {{current}} of {{total}}",
+    "back": "Back",
+    "next": "Next",
+    "submit": "View Results",
+    "results": {
+      "title": "Brain Health Results",
+      "titleMenopause": "Menopause Brain Health Results",
+      "subtitle": "Your brain assessment is complete",
+      "overallScore": "Overall Brain Score",
+      "profileAnalysis": "Your Cognitive Profile Analysis",
+      "excellent": "<strong>Excellent cognitive performance!</strong> Your overall score of {{score}}/100 indicates optimal brain function across multiple domains. You're operating at a high level cognitively, with particularly strong performance in areas scoring above 75.",
+      "good": "<strong>Good cognitive function</strong> with your score of {{score}}/100. While you're performing well overall, there are specific areas where targeted optimisation could elevate your cognitive performance to the next level.",
+      "fair": "<strong>Fair cognitive performance.</strong> Your score of {{score}}/100 suggests you're experiencing notable cognitive challenges that are likely impacting your daily function. The good news is that with targeted, evidence-based interventions, significant improvements are achievable.",
+      "needsAttention": "<strong>Your cognitive function requires immediate attention.</strong> A score of {{score}}/100 indicates substantial challenges across multiple cognitive domains that are significantly affecting your quality of life. A comprehensive, multi-faceted approach is strongly recommended."
+    },
+    "categories": {
+      "memory": "Memory & Recall",
+      "focus": "Focus & Concentration",
+      "processing": "Processing Speed",
+      "clarity": "Mental Clarity",
+      "memoryStrong": "Strong memory function",
+      "memoryImprove": "Room for improvement",
+      "memorySupport": "Needs focused support",
+      "focusExcellent": "Excellent concentration",
+      "focusModerate": "Moderate focus issues",
+      "focusSignificant": "Significant attention challenges",
+      "processingFast": "Fast mental processing",
+      "processingAverage": "Average processing speed",
+      "processingSlow": "Slower cognitive processing",
+      "claritySharp": "Sharp and clear thinking",
+      "clarityFog": "Some mental fog",
+      "clarityFrequent": "Frequent brain fog"
+    },
+    "strengths": {
+      "title": "Your Strengths",
+      "memory": "Strong memory and recall capabilities - maintain this with continued cognitive engagement",
+      "focus": "Excellent concentration and sustained attention abilities",
+      "processing": "Fast processing speed and quick decision-making capacity",
+      "clarity": "Clear, sharp thinking with minimal brain fog",
+      "noStrengths": "Your cognitive profile shows areas that would benefit from targeted support. The recommendations below will help you build new strengths."
+    },
+    "priorities": {
+      "title": "Priority Focus Areas",
+      "memoryNeeded": "Significant improvement needed",
+      "memoryOptimise": "Can be optimised with specific strategies",
+      "focusDeficits": "Attention deficits require structured support",
+      "focusSharpen": "Concentration can be sharpened",
+      "processingSupport": "Cognitive processing needs support",
+      "processingEnhance": "Can be enhanced with targeted exercises",
+      "clarityFogImpact": "Brain fog significantly affecting function",
+      "clarityAchievable": "Clarity improvements achievable",
+      "allExcellent": "Excellent performance across all categories! Focus on maintenance and continued optimisation."
+    },
+    "actionPlan": {
+      "title": "Your Personalised Action Plan",
+      "subtitle": "Evidence-based interventions tailored to your cognitive profile"
+    },
+    "nextSteps": {
+      "title": "Recommended Next Steps",
+      "step1": "Review your detailed results above and identify your top 1-2 priority areas",
+      "step2": "Start with the first recommendation from your action plan within the next 48 hours",
+      "step3": "Track your progress daily to monitor improvements and adjust strategies",
+      "step4": "Consider booking a consultation with a healthcare provider specialising in cognitive health",
+      "step5": "Reassess your cognitive performance in 4-6 weeks to measure progress"
+    },
+    "navigation": {
+      "viewDashboard": "View Your Dashboard",
+      "resultsSaved": "Your results have been saved and will be tracked over time to monitor your progress"
+    },
+    "questions": {
+      "performance": {
+        "q1": {
+          "category": "Memory & Recall",
+          "question": "How would you rate your short-term memory and ability to recall information?",
+          "poor": "Poor - Frequently forget things within minutes",
+          "fair": "Fair - Sometimes forget details or names",
+          "good": "Good - Generally remember most things",
+          "excellent": "Excellent - Sharp recall and retention"
+        },
+        "q2": {
+          "category": "Focus & Concentration",
+          "question": "How easily can you maintain focus on demanding cognitive tasks?",
+          "veryDifficult": "Very difficult - Constantly distracted",
+          "challenging": "Challenging - Struggle to concentrate for long",
+          "moderate": "Moderate - Can focus with effort",
+          "excellent": "Excellent - Deep focus for extended periods"
+        },
+        "q3": {
+          "category": "Processing Speed",
+          "question": "How quickly do you process new information and make decisions?",
+          "slow": "Slow - Takes time to understand and respond",
+          "belowAverage": "Below average - Processing feels sluggish",
+          "average": "Average - Normal processing speed",
+          "fast": "Fast - Quick comprehension and response"
+        },
+        "q4": {
+          "category": "Mental Clarity",
+          "question": "How clear and sharp does your thinking feel throughout the day?",
+          "foggy": "Foggy - Frequent brain fog",
+          "unclear": "Unclear - Often feel mentally cloudy",
+          "clear": "Clear - Generally sharp thinking",
+          "crystal": "Crystal clear - Consistently sharp and alert"
+        },
+        "q5": {
+          "category": "Working Memory",
+          "question": "How well can you hold and manipulate information in your mind?",
+          "poor": "Poor - Difficult to juggle multiple pieces of info",
+          "fair": "Fair - Can handle simple mental tasks",
+          "good": "Good - Can manage complex mental tasks",
+          "excellent": "Excellent - Easily handle multiple complex inputs"
+        },
+        "q6": {
+          "category": "Mental Energy",
+          "question": "How would you describe your mental energy levels?",
+          "depleted": "Depleted - Mentally exhausted most of the day",
+          "low": "Low - Energy drops significantly after tasks",
+          "moderate": "Moderate - Steady energy with some dips",
+          "high": "High - Sustained mental energy throughout day"
+        },
+        "q7": {
+          "category": "Learning Ability",
+          "question": "How easily do you learn and retain new skills or information?",
+          "difficult": "Difficult - Takes many repetitions to learn",
+          "slow": "Slow - Need significant time to master new things",
+          "moderate": "Moderate - Learn at a normal pace",
+          "fast": "Fast - Quickly grasp and retain new information"
+        },
+        "q8": {
+          "category": "Sleep Quality Impact",
+          "question": "How does your sleep quality affect your cognitive performance?",
+          "severe": "Severe - Poor sleep significantly impairs cognition",
+          "moderate": "Moderate - Noticeable cognitive impact from sleep",
+          "mild": "Mild - Slight impact from sleep quality",
+          "minimal": "Minimal - Maintain performance despite sleep variation"
+        },
+        "q9": {
+          "category": "Stress Resilience",
+          "question": "How well does your cognitive performance hold up under stress?",
+          "poor": "Poor - Performance drops significantly under pressure",
+          "fair": "Fair - Noticeable decline when stressed",
+          "good": "Good - Mostly maintain performance under stress",
+          "excellent": "Excellent - Thrive under pressure"
+        },
+        "q10": {
+          "category": "Problem Solving",
+          "question": "How effectively can you solve complex problems?",
+          "struggle": "Struggle - Have difficulty with complex problems",
+          "basic": "Basic - Can solve simple problems",
+          "proficient": "Proficient - Handle most complex problems well",
+          "advanced": "Advanced - Excel at complex problem-solving"
+        }
+      },
+      "menopause": {
+        "q1": {
+          "category": "Brain Fog",
+          "question": "How often do you experience brain fog or mental cloudiness?",
+          "daily": "Daily - Constantly feel foggy",
+          "frequent": "Several times a week",
+          "occasional": "Occasionally - A few times a month",
+          "rare": "Rarely or never"
+        },
+        "q2": {
+          "category": "Memory Changes",
+          "question": "Have you noticed changes in your memory since perimenopause/menopause?",
+          "significant": "Significant - Much worse than before",
+          "moderate": "Moderate - Noticeable decline",
+          "mild": "Mild - Slight changes",
+          "none": "No change - Memory remains sharp"
+        },
+        "q3": {
+          "category": "Word Finding",
+          "question": "Do you struggle to find the right words when speaking?",
+          "constantly": "Constantly - Very frustrating",
+          "often": "Often - Multiple times daily",
+          "sometimes": "Sometimes - Occasionally happens",
+          "rarely": "Rarely - Not a problem"
+        },
+        "q4": {
+          "category": "Concentration",
+          "question": "How has your ability to concentrate been affected?",
+          "severely": "Severely - Can barely focus",
+          "moderately": "Moderately - Significantly harder to focus",
+          "mildly": "Mildly - Some difficulty focusing",
+          "unaffected": "Unaffected - No change in concentration"
+        },
+        "q5": {
+          "category": "Mental Fatigue",
+          "question": "How quickly does mental fatigue set in during cognitive tasks?",
+          "immediate": "Immediately - Exhausted very quickly",
+          "fast": "Fast - Within 30 minutes",
+          "moderate": "Moderate - After 1-2 hours",
+          "slow": "Slow - Sustained mental energy"
+        },
+        "q6": {
+          "category": "Sleep Disruption",
+          "question": "How are hot flushes or night sweats affecting your sleep and cognition?",
+          "severe": "Severe - Major sleep disruption, significant cognitive impact",
+          "moderate": "Moderate - Regular disruption affecting mental clarity",
+          "mild": "Mild - Some disruption but manageable",
+          "none": "None - No sleep disruption"
+        },
+        "q7": {
+          "category": "Mood & Cognition",
+          "question": "How do mood changes affect your cognitive function?",
+          "major": "Major impact - Mood swings severely affect thinking",
+          "significant": "Significant - Clear cognitive impact from mood",
+          "moderate": "Moderate - Some impact on cognition",
+          "minimal": "Minimal - Mood stable, cognition unaffected"
+        },
+        "q8": {
+          "category": "Task Completion",
+          "question": "How often do you forget what you're doing mid-task?",
+          "constantly": "Constantly - Lose track multiple times daily",
+          "often": "Often - Several times a week",
+          "occasionally": "Occasionally - Once in a while",
+          "rarely": "Rarely - Stay on task well"
+        },
+        "q9": {
+          "category": "Decision Making",
+          "question": "How has your decision-making ability been affected?",
+          "muchWorse": "Much worse - Very indecisive",
+          "worse": "Worse - Takes longer to decide",
+          "slightlyAffected": "Slightly affected - Minor changes",
+          "unaffected": "Unaffected - No change"
+        },
+        "q10": {
+          "category": "Overall Impact",
+          "question": "Overall, how much are hormonal changes affecting your cognitive function?",
+          "severely": "Severely - Major decline in all areas",
+          "significantly": "Significantly - Clear impact across multiple areas",
+          "moderately": "Moderately - Some areas affected",
+          "minimally": "Minimally - Little to no impact"
+        }
       }
     }
   }
