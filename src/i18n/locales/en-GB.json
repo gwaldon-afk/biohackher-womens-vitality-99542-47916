@@ -1356,5 +1356,436 @@
       "complete": "Complete",
       "calculating": "Calculating..."
     }
+  },
+  "onboarding": {
+    "flow": {
+      "steps": {
+        "welcome": "Welcome",
+        "goals": "Goals",
+        "assessment": "Assessment",
+        "protocol": "Protocol"
+      },
+      "toasts": {
+        "welcomeTitle": "Welcome aboard!",
+        "welcomeDescription": "Your health journey begins now.",
+        "errorTitle": "Error",
+        "errorDescription": "Failed to complete onboarding. Please try again."
+      }
+    },
+    "welcome": {
+      "greeting": "Welcome",
+      "greetingWithName": "Welcome, {{userName}}! 👋",
+      "description": "Let's set up your personalised health journey in just 4 simple steps",
+      "scienceBacked": {
+        "title": "Science-Backed Approach",
+        "description": "Evidence-based recommendations tailored to your unique health profile"
+      },
+      "aiPowered": {
+        "title": "AI-Powered Insights",
+        "description": "Get personalised recommendations based on your assessment results"
+      },
+      "trackProgress": {
+        "title": "Track Your Progress",
+        "description": "Monitor improvements and optimise your healthspan over time"
+      },
+      "getStarted": "Get Started"
+    },
+    "assessment": {
+      "loading": "Loading your assessment...",
+      "title": "Take Your Longevity Impact Assessment",
+      "description": "Get your personalised Longevity Impact Score and Biological Age estimate in just 10 minutes",
+      "discover": {
+        "title": "What You'll Discover",
+        "lis": {
+          "title": "Your Longevity Impact Score (LIS)",
+          "description": "A comprehensive score reflecting how your daily habits impact your healthspan"
+        },
+        "bioAge": {
+          "title": "Biological Age Estimation",
+          "description": "Understand how your body is ageing compared to your chronological age"
+        },
+        "protocol": {
+          "title": "Personalised Protocol Preview",
+          "description": "See which interventions can make the biggest impact on your health"
+        }
+      },
+      "startButton": "Start Assessment (10 minutes)",
+      "back": "Back",
+      "skipForNow": "Skip for Now"
+    },
+    "goals": {
+      "title": "What are your primary health goals?",
+      "description": "Select all that apply - we'll tailor your experience to these priorities",
+      "available": {
+        "energy": {
+          "title": "Boost Energy & Vitality",
+          "description": "Combat fatigue and feel more energised throughout the day"
+        },
+        "cognitive": {
+          "title": "Enhance Cognitive Performance",
+          "description": "Improve focus, memory, and mental clarity"
+        },
+        "bodyComposition": {
+          "title": "Optimise Body Composition",
+          "description": "Build lean muscle and manage healthy weight"
+        },
+        "hormonalBalance": {
+          "title": "Balance Hormones",
+          "description": "Address hormonal symptoms and restore equilibrium"
+        },
+        "sleepQuality": {
+          "title": "Improve Sleep Quality",
+          "description": "Enhance sleep duration and wake feeling refreshed"
+        },
+        "fitness": {
+          "title": "Increase Physical Performance",
+          "description": "Enhance strength, endurance, and recovery"
+        }
+      },
+      "pillars": {
+        "body": "Body",
+        "brain": "Brain",
+        "balance": "Balance",
+        "beauty": "Beauty"
+      },
+      "back": "Back",
+      "continue": "Continue ({{count}} selected)"
+    },
+    "protocol": {
+      "complete": "Assessment Complete!",
+      "title": "Your Personalised Protocol Preview",
+      "description": "Based on your Longevity Impact Score of {{score}}, here's what we recommend focusing on",
+      "ready": {
+        "title": "Your Protocol is Ready",
+        "description": "We've created a science-backed protocol with {{count}} key focus areas"
+      },
+      "categories": {
+        "sleepOptimisation": "Sleep Optimisation",
+        "cognitiveEnhancement": "Cognitive Enhancement",
+        "energyRecovery": "Energy & Recovery"
+      },
+      "priority": {
+        "high": "High Priority",
+        "medium": "Medium Priority"
+      },
+      "dashboardAccess": "You'll have full access to your detailed protocol, progress tracking, and AI health assistant in your dashboard",
+      "back": "Back",
+      "goToDashboard": "Go to Dashboard"
+    },
+    "nutritionPreview": {
+      "outOf15": "out of 15",
+      "grade": "Grade {{grade}}",
+      "description": "Your daily anti-inflammatory nutrition score",
+      "categories": {
+        "hydration": "💧 Hydration",
+        "vegetables": "🥬 Vegetables & Greens",
+        "protein": "🍗 Protein Quality",
+        "fats": "🥑 Healthy Fats & Omega-3s",
+        "sugar": "🍬 Sugar & Processed Foods",
+        "alcohol": "🍷 Alcohol"
+      },
+      "values": {
+        "glasses": "{{count}} glasses",
+        "servings": "{{count}} servings",
+        "goodSources": "Good sources",
+        "excellent": "Excellent",
+        "nonePerfect": "None - Perfect!",
+        "none": "None"
+      }
+    },
+    "nutritionWelcome": {
+      "stepOf": "Step {{current}} of {{total}}",
+      "skipTour": "Skip tour",
+      "next": "Next",
+      "startLogging": "Start Logging",
+      "steps": {
+        "step1": {
+          "title": "Welcome to Daily Nutrition Tracking",
+          "description": "Track your anti-inflammatory score every day to see how your food choices impact your longevity.",
+          "features": ["Simple daily scoring (0-15 scale)", "Track key nutrients and hydration", "See immediate impact on your LIS score"]
+        },
+        "step2": {
+          "title": "Build Your Nutrition Streak",
+          "description": "Consistency is key! Log daily to build streaks and watch your biological age improve over time.",
+          "features": ["Daily streak tracking with fire badges", "Milestone celebrations at 3, 7, and 30 days", "Visual progress with sparkline charts"]
+        },
+        "step3": {
+          "title": "Get Personalised Insights",
+          "description": "After 7 days of tracking, unlock AI-powered insights about your eating patterns and recommendations.",
+          "features": ["Pattern detection in your nutrition", "Personalised meal suggestions", "Longevity-focused food recommendations"]
+        },
+        "step4": {
+          "title": "Let's Log Your First Day!",
+          "description": "We'll guide you through your first nutrition log. It takes just 2 minutes.",
+          "features": ["Interactive guided tour", "Helpful tooltips for each category", "Easy-to-use sliders for quick logging"]
+        }
+      }
+    },
+    "nutritionGuided": {
+      "stepOf": "Step {{current}} of {{total}}",
+      "skip": "Skip",
+      "next": "Next",
+      "finishTour": "Finish Tour",
+      "steps": {
+        "hydration": {
+          "title": "Start with Hydration",
+          "description": "Water is the foundation of health. Move this slider to log how many glasses of water you drank today."
+        },
+        "vegetables": {
+          "title": "Track Your Vegetables",
+          "description": "Vegetables and greens are powerhouses for longevity. Log how many servings you ate today."
+        },
+        "protein": {
+          "title": "Protein Quality Matters",
+          "description": "High-quality protein supports muscle maintenance and healthy ageing. Rate your protein sources today."
+        },
+        "fats": {
+          "title": "Healthy Fats & Omega-3s",
+          "description": "Fish, nuts, and seeds reduce inflammation. Did you consume omega-3s today?"
+        },
+        "sugar": {
+          "title": "Minimise Processed Foods",
+          "description": "Sugar and processed foods accelerate ageing. Use this slider to track inflammatory foods."
+        },
+        "complete": {
+          "title": "Great Job! You're All Set",
+          "description": "Your nutrition score is calculated automatically. Come back tomorrow to build your streak!"
+        }
+      }
+    },
+    "goalAffirmation": {
+      "title": "You're All Set!",
+      "description": "Your personalised vitality protocol is ready",
+      "checklist": {
+        "assessment": "Assessment completed",
+        "goals": "Goals defined",
+        "protocol": "Protocol customised"
+      },
+      "startJourney": "Start Your Journey"
+    },
+    "intro": {
+      "slides": {
+        "assess": {
+          "title": "Assess",
+          "description": "Complete your personalised health assessment to understand your unique needs and current state."
+        },
+        "plan": {
+          "title": "Plan",
+          "description": "Receive a tailored protocol designed specifically for your goals and health journey."
+        },
+        "track": {
+          "title": "Track",
+          "description": "Monitor your progress with daily check-ins and see your vitality scores improve over time."
+        }
+      },
+      "previous": "Previous",
+      "next": "Next",
+      "getStarted": "Get Started"
+    },
+    "permissions": {
+      "title": "Setup Permissions",
+      "description": "Enable features to get the most personalised experience",
+      "items": {
+        "camera": {
+          "title": "Camera",
+          "description": "For progress photos and nutrition scanning"
+        },
+        "microphone": {
+          "title": "Microphone",
+          "description": "For voice notes and mood check-ins"
+        },
+        "lightSensor": {
+          "title": "Light Sensor",
+          "description": "For circadian rhythm tracking"
+        },
+        "motion": {
+          "title": "Motion",
+          "description": "For activity and movement tracking"
+        }
+      },
+      "continue": "Continue",
+      "errorTitle": "Error",
+      "errorDescription": "Failed to save permissions. Please try again."
+    },
+    "goalSetup": {
+      "title": "What are your goals?",
+      "description": "Select all that apply",
+      "goals": {
+        "increaseEnergy": "Increase energy levels",
+        "improveClarity": "Improve mental clarity",
+        "enhanceAthletic": "Enhance athletic performance",
+        "optimiseSleep": "Optimise sleep quality",
+        "reduceStress": "Reduce stress",
+        "buildMuscle": "Build muscle",
+        "manageHotFlushes": "Manage hot flushes",
+        "balanceMoodSwings": "Balance mood swings",
+        "maintainBoneHealth": "Maintain bone health",
+        "supportSkinHealth": "Support skin health",
+        "boostEnergy": "Boost energy"
+      },
+      "toasts": {
+        "errorTitle": "Error",
+        "signInRequired": "Please sign in to continue",
+        "successTitle": "Success!",
+        "successDescription": "Your personalised protocol has been created",
+        "failedTitle": "Error",
+        "failedDescription": "Failed to create your protocol. Please try again."
+      },
+      "creating": "Creating your protocol...",
+      "continue": "Continue ({{count}} selected)",
+      "protocolName": "Personalised Health Protocol"
+    },
+    "hormoneCompassMenopause": {
+      "questions": {
+        "stage": {
+          "label": "How would you describe your menstrual cycle?",
+          "options": {
+            "regular": "Regular cycles",
+            "irregular": "Irregular cycles",
+            "noCycles": "No cycles currently",
+            "notSure": "Not sure"
+          }
+        },
+        "medication": {
+          "label": "Are you taking any hormone medication?",
+          "options": {
+            "birthControl": "Birth control pill",
+            "hormonalIUD": "Hormonal IUD",
+            "hrt": "Hormone replacement therapy (HRT)",
+            "thyroid": "Thyroid medication",
+            "fertility": "Fertility medications",
+            "testosterone": "Testosterone therapy",
+            "other": "Other hormone medication",
+            "none": "None"
+          }
+        },
+        "symptoms": {
+          "label": "What other symptoms are you experiencing?",
+          "options": {
+            "hotFlashes": "Hot flashes or night sweats",
+            "irregularPeriods": "Irregular or heavy periods",
+            "brainFog": "Brain fog or memory issues",
+            "weightChanges": "Weight changes",
+            "lowLibido": "Low libido",
+            "digestive": "Digestive issues",
+            "jointPain": "Joint pain or stiffness",
+            "headaches": "Headaches or migraines",
+            "none": "None"
+          }
+        }
+      },
+      "back": "Back",
+      "exit": "Exit"
+    },
+    "hormoneCompassResults": {
+      "loading": "Loading your results...",
+      "title": "Your HormoneCompass™ Analysis",
+      "description": "Here's what your responses reveal about your hormonal health journey",
+      "navigation": {
+        "back": "Back",
+        "home": "Home"
+      },
+      "sections": {
+        "whatsHappening": "What's Actually Happening in Your Body",
+        "biologicalMechanism": "Biological Mechanism:",
+        "timelineContext": "Timeline Context:",
+        "womenLikeYou": "What Women Like You Experience:",
+        "symptomPatternAnalysis": "Your Symptom Pattern Analysis",
+        "symptomPatternDescription": "How your symptoms interconnect and create feedback loops",
+        "mechanism": "Mechanism:",
+        "impact": "Impact:",
+        "severityBreakdown": "Symptom Severity Breakdown",
+        "severityDescription": "How your responses map across key health domains",
+        "healthInsights": "Health Insights: What's Happening in Your Body",
+        "physiologically": "What's Happening Physiologically",
+        "systemWideImpact": "System-Wide Impact:",
+        "cascadeEffect": "Cascade Effect",
+        "whyThisMatters": "Why This Matters for You:",
+        "basedOn": "Based on:",
+        "testingToConsider": "Consider testing:",
+        "whatsComingNext": "What's Coming Next",
+        "predictiveInsights": "Predictive insights about your symptom progression",
+        "timeline": "Timeline:",
+        "optimalPreparation": "Optimal Preparation:",
+        "fromUnderstandingToAction": "From Understanding to Action",
+        "understandingDesc": "Now that you understand the specific physiological patterns in your body, the section below shows evidence-based interventions that may support these mechanisms.",
+        "interventionsDesc": "Each intervention is explicitly linked to the insights above and organised by type—lifestyle changes first, optional nutritional support last. This helps you make informed decisions based on your unique physiology."
+      },
+      "stages": {
+        "pre": {
+          "title": "Pre-Menopause",
+          "description": "Your cycles are still regular, and you're not experiencing significant hormonal changes yet.",
+          "recommendations": ["Focus on establishing healthy habits now", "Track your cycles to establish a baseline", "Consider preventive nutrition and exercise", "Monitor energy and mood patterns"]
+        },
+        "earlyPeri": {
+          "title": "Early Perimenopause",
+          "description": "You're beginning to experience subtle hormonal shifts. Cycles may become slightly irregular.",
+          "recommendations": ["Start tracking symptoms consistently", "Consider adaptogenic herbs for hormone support", "Optimise sleep hygiene", "Add strength training to preserve muscle mass"]
+        },
+        "midPeri": {
+          "title": "Mid Perimenopause",
+          "description": "Hormonal fluctuations are more pronounced. You may notice significant cycle changes and symptoms.",
+          "recommendations": ["Focus on stress management and cortisol regulation", "Consider magnesium for sleep and mood", "Increase phytoestrogen-rich foods", "Track hot flashes and night sweats patterns"]
+        },
+        "latePeri": {
+          "title": "Late Perimenopause",
+          "description": "You're approaching menopause. Periods may be very irregular or absent for months.",
+          "recommendations": ["Support bone health with vitamin D and K2", "Focus on cardiovascular exercise", "Consider hormone testing with your doctor", "Optimise gut health for hormone metabolism"]
+        },
+        "post": {
+          "title": "Post-Menopause",
+          "description": "It's been 12+ months since your last period. Focus shifts to long-term health optimisation.",
+          "recommendations": ["Prioritise bone density and cardiovascular health", "Continue strength training", "Focus on longevity nutrition", "Monitor metabolic health markers"]
+        }
+      },
+      "severity": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "moderate": "Moderate",
+        "needsAttention": "Needs Attention"
+      },
+      "domains": {
+        "vasomotor": "Vasomotor",
+        "sleep": "Sleep",
+        "mood": "Mood",
+        "energy": "Energy",
+        "skinBody": "Skin & Body",
+        "lowerIsBetter": "(lower is better)"
+      },
+      "urgency": {
+        "priority": "Priority",
+        "addressSoon": "Address Soon",
+        "routine": "Routine"
+      },
+      "disclaimer": {
+        "title": "Important: Educational Purposes Only",
+        "text": "This analysis is based on your symptom responses and published research. It is for educational purposes only and should not replace professional medical advice. Always consult with qualified healthcare professionals before starting any supplementation, treatment protocol, or making significant health decisions."
+      },
+      "interventions": {
+        "title": "Evidence-Based Interventions to Consider",
+        "description": "These interventions are organised by type and mapped to your specific physiological insights above. Remember: these are educational suggestions based on research, not medical advice.",
+        "categories": {
+          "exercise": "Exercise & Movement",
+          "lifestyle": "Lifestyle & Habits",
+          "testing": "Testing to Consider",
+          "therapy": "Therapeutic Approaches",
+          "supplement": "Nutritional Support"
+        },
+        "addresses": "Addresses:",
+        "mechanism": "Mechanism:"
+      },
+      "cta": {
+        "title": "Ready to Take Action?",
+        "descriptionGuest": "Create your free account to save these results and get your personalised wellness protocol",
+        "descriptionAuth": "Set your health goals and get a personalised protocol based on your assessment",
+        "button": "Save Your Results & Continue Your Journey"
+      },
+      "toasts": {
+        "errorTitle": "Error",
+        "errorDescription": "Failed to update profile. Please try again.",
+        "profileComplete": "Profile Complete!",
+        "takingYouTo": "Taking you to {{destination}}..."
+      }
+    }
   }
 }
