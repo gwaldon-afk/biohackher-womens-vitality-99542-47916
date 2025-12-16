@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -111,6 +112,7 @@ const HEALTH_LEVEL_INFO: Record<string, {
 };
 
 export default function HormoneCompassResults() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -745,15 +747,15 @@ export default function HormoneCompassResults() {
           className="gap-2"
         >
           <Home className="w-4 h-4" />
-          {user ? 'Return to Today' : 'Back to Home'}
+          {user ? t('hormoneResults.returnToToday') : t('hormoneResults.backToHome')}
         </Button>
       </div>
 
       {/* Results Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Your Hormone Health Analysis</h1>
+        <h1 className="text-3xl font-bold">{t('hormoneResults.pageTitle')}</h1>
         <p className="text-muted-foreground">
-          Personalized insights and actionable protocol based on your assessment
+          {t('hormoneResults.pageSubtitle')}
         </p>
       </div>
 
@@ -802,10 +804,10 @@ export default function HormoneCompassResults() {
       {symptomInsights.length > 0 && (
         <Card className="border-2 border-primary/20 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              What Your Symptoms Reveal
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-primary" />
+            {t('hormoneResults.symptomAnalysisTitle')}
+          </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {symptomInsights.map((insight, index) => (
@@ -821,12 +823,12 @@ export default function HormoneCompassResults() {
       {/* Domain-by-Domain Breakdown */}
       <Card className="border-2 border-primary/30 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
-          <CardTitle>Detailed Domain Analysis</CardTitle>
+          <CardTitle>{t('hormoneResults.domainAnalysisTitle')}</CardTitle>
           <p className="text-sm text-muted-foreground mt-2">
             {levelInfo.description}
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Expand each domain to see specific insights and recommendations
+            {t('hormoneResults.domainAnalysisSubtitle')}
           </p>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -890,21 +892,15 @@ export default function HormoneCompassResults() {
           <div className="flex gap-3">
             <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <div className="space-y-2">
-              <p className="font-semibold text-amber-900 dark:text-amber-100">Important Medical Disclaimer</p>
+              <p className="font-semibold text-amber-900 dark:text-amber-100">{t('hormoneResults.disclaimerTitle')}</p>
               <p className="text-sm text-amber-800 dark:text-amber-200/90">
-                Your Hormone Compass assessment is based on self-reported symptoms and lifestyle factors. 
-                <strong> This is not a medical diagnosis</strong> and should not replace professional medical advice, 
-                diagnosis, or treatment.
+                {t('hormoneResults.disclaimerParagraph1')}
               </p>
               <p className="text-sm text-amber-800 dark:text-amber-200/90">
-                <strong>We strongly recommend consulting with a qualified healthcare provider</strong> (gynecologist, 
-                endocrinologist, or hormone specialist) if you're experiencing concerning symptoms, especially if marked 
-                as "critical" or "struggling" in any domain. Clinical hormone testing (blood work, salivary tests) 
-                provides more accurate assessment than self-reported data.
+                {t('hormoneResults.disclaimerParagraph2')}
               </p>
               <p className="text-sm text-amber-800 dark:text-amber-200/90">
-                The recommendations provided are evidence-based general wellness suggestions and do not constitute 
-                medical advice for your specific situation.
+                {t('hormoneResults.disclaimerParagraph3')}
               </p>
             </div>
           </div>
@@ -916,10 +912,10 @@ export default function HormoneCompassResults() {
         <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5 text-primary" />
-            Your Personalized Hormone Protocol
+            {t('hormoneResults.protocolTitle')}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            3-tier action plan based on your specific domain scores
+            {t('hormoneResults.protocolSubtitle')}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -1062,7 +1058,7 @@ export default function HormoneCompassResults() {
       {/* Next Steps */}
       <Card>
         <CardHeader>
-          <CardTitle>What's Next?</CardTitle>
+          <CardTitle>{t('hormoneResults.whatsNext')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Button 
@@ -1070,7 +1066,7 @@ export default function HormoneCompassResults() {
             className="w-full justify-between"
             onClick={() => navigate('/hormone-compass/tracker')}
           >
-            <span>Start Tracking Daily Symptoms</span>
+            <span>{t('hormoneResults.startTracking')}</span>
             <Calendar className="w-4 h-4" />
           </Button>
           <Button 
@@ -1078,7 +1074,7 @@ export default function HormoneCompassResults() {
             className="w-full justify-between"
             onClick={() => navigate('/today')}
           >
-            <span>View Today's Action Plan</span>
+            <span>{t('hormoneResults.viewTodayPlan')}</span>
             <Target className="w-4 h-4" />
           </Button>
           <Button 
@@ -1087,7 +1083,7 @@ export default function HormoneCompassResults() {
             onClick={() => navigate(user ? '/today' : '/')}
           >
             <Home className="w-4 h-4" />
-            {user ? 'Return to Today' : 'Back to Home'}
+            {user ? t('hormoneResults.returnToToday') : t('hormoneResults.backToHome')}
           </Button>
         </CardContent>
       </Card>

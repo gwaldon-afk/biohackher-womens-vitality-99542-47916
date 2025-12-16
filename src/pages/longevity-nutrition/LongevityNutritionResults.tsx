@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
@@ -110,6 +111,7 @@ function ProtocolItemCard({
 }
 
 export default function LongevityNutritionResults() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -535,13 +537,13 @@ export default function LongevityNutritionResults() {
         {/* Top Return Button */}
         <div className="flex justify-start">
           <Button variant="outline" onClick={() => navigate(user ? "/today" : "/")}>
-            {user ? "← Return to Today" : "← Back to Home"}
+            {user ? t('nutritionResults.returnToToday') : t('nutritionResults.backToHome')}
           </Button>
         </div>
 
         {/* Overall Score Card */}
         <Card className="p-8 text-center border-2 border-primary/30 shadow-lg bg-gradient-to-br from-primary/10 via-secondary/5 to-background">
-          <h1 className="text-4xl font-bold mb-4">Your Longevity Nutrition Score</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('nutritionResults.pageTitle')}</h1>
           <div className="text-6xl font-bold text-primary mb-2">{scoreResult.score}</div>
           <div className="text-2xl font-semibold mb-4">{scoreResult.category}</div>
           <p className="text-muted-foreground max-w-2xl mx-auto">{scoreResult.description}</p>
@@ -561,7 +563,7 @@ export default function LongevityNutritionResults() {
 
         {/* Pillar Breakdown Visual */}
         <Card className="p-6 bg-gradient-to-br from-primary/5 via-secondary/5 to-background border-primary/20">
-          <h2 className="text-xl font-bold mb-6">Your Nutrition Pillars Breakdown</h2>
+          <h2 className="text-xl font-bold mb-6">{t('nutritionResults.pillarBreakdownTitle')}</h2>
           <div className="space-y-4">
             {Object.entries(pillarScores).map(([pillarName, data]) => {
               const Icon = pillarIcons[pillarName];
@@ -587,9 +589,9 @@ export default function LongevityNutritionResults() {
         {/* Detailed Pillar Analysis */}
         <div className="space-y-4">
           <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
-            <h2 className="text-2xl font-bold mb-2">Detailed Pillar Analysis</h2>
+            <h2 className="text-2xl font-bold mb-2">{t('nutritionResults.detailedAnalysisTitle')}</h2>
             <p className="text-muted-foreground mb-6">
-              Expand each pillar to see personalized recommendations based on your assessment.
+              {t('nutritionResults.detailedAnalysisSubtitle')}
             </p>
           </div>
           
@@ -616,13 +618,13 @@ export default function LongevityNutritionResults() {
           <Card className="p-6 border-2 border-primary/20 bg-gradient-to-br from-secondary/10 to-background">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              Your Eating Personality: {eatingPersonality.title}
+              {t('nutritionResults.eatingPersonalityTitle')} {eatingPersonality.title}
             </h2>
             <p className="text-muted-foreground mb-4">{eatingPersonality.description}</p>
             
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold mb-2 text-orange-600">Common Challenges</h3>
+                <h3 className="font-semibold mb-2 text-orange-600">{t('nutritionResults.commonChallenges')}</h3>
                 <ul className="space-y-1">
                   {eatingPersonality.challenges.map((challenge, idx) => (
                     <li key={idx} className="text-sm text-muted-foreground pl-4 border-l-2 border-orange-300">
@@ -633,7 +635,7 @@ export default function LongevityNutritionResults() {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-2 text-green-600">Personalized Recommendations</h3>
+                <h3 className="font-semibold mb-2 text-green-600">{t('nutritionResults.personalisedRecommendations')}</h3>
                 <ul className="space-y-1">
                   {eatingPersonality.recommendations.map((rec, idx) => (
                     <li key={idx} className="text-sm text-muted-foreground pl-4 border-l-2 border-green-300">
@@ -651,9 +653,9 @@ export default function LongevityNutritionResults() {
           <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <h2 className="text-2xl font-bold mb-2">Your Personalized Nutrition Protocol</h2>
+                <h2 className="text-2xl font-bold mb-2">{t('nutritionResults.protocolTitle')}</h2>
                 <p className="text-muted-foreground">
-                  Based on your assessment, these evidence-based supplements and actions will support your longevity goals.
+                  {t('nutritionResults.protocolSubtitle')}
                 </p>
               </div>
               {user && (
@@ -663,7 +665,7 @@ export default function LongevityNutritionResults() {
                   className="gap-2"
                 >
                   <Target className="w-4 h-4" />
-                  Review Full Protocol
+                  {t('nutritionResults.reviewFullProtocol')}
                 </Button>
               )}
             </div>
@@ -674,9 +676,9 @@ export default function LongevityNutritionResults() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-red-500 rounded-full" />
-                <h3 className="text-xl font-bold">Start Now (Week 1)</h3>
+                <h3 className="text-xl font-bold">{t('nutritionResults.startNow')}</h3>
               </div>
-              <p className="text-sm text-muted-foreground">Critical gaps to address immediately</p>
+              <p className="text-sm text-muted-foreground">{t('nutritionResults.criticalGaps')}</p>
               <div className="space-y-3">
                 {nutritionProtocol.immediate.map((item, idx) => (
                   <ProtocolItemCard
@@ -698,9 +700,9 @@ export default function LongevityNutritionResults() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-orange-500 rounded-full" />
-                <h3 className="text-xl font-bold">Foundation (Weeks 1-4)</h3>
+                <h3 className="text-xl font-bold">{t('nutritionResults.foundation')}</h3>
               </div>
-              <p className="text-sm text-muted-foreground">Core longevity supplements for sustained health</p>
+              <p className="text-sm text-muted-foreground">{t('nutritionResults.coreLongevity')}</p>
               <div className="space-y-3">
                 {nutritionProtocol.foundation.map((item, idx) => (
                   <ProtocolItemCard
@@ -722,9 +724,9 @@ export default function LongevityNutritionResults() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-green-500 rounded-full" />
-                <h3 className="text-xl font-bold">Optimization (Months 1-3)</h3>
+                <h3 className="text-xl font-bold">{t('nutritionResults.optimisation')}</h3>
               </div>
-              <p className="text-sm text-muted-foreground">Advanced longevity support</p>
+              <p className="text-sm text-muted-foreground">{t('nutritionResults.advancedSupport')}</p>
               <div className="space-y-3">
                 {nutritionProtocol.optimization.map((item, idx) => (
                   <ProtocolItemCard
@@ -747,31 +749,31 @@ export default function LongevityNutritionResults() {
           <Card className="p-8 border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-secondary/5 to-background shadow-lg">
             <div className="text-center space-y-4">
               <ShoppingCart className="h-12 w-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-bold">Ready to Start Your Longevity Journey?</h2>
+              <h2 className="text-2xl font-bold">{t('nutritionResults.guestCtaTitle')}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Create a free account to save your personalized protocol, purchase recommended supplements, and track your nutrition progress.
+                {t('nutritionResults.guestCtaSubtitle')}
               </p>
               <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto my-6">
                 <div className="text-center">
-                  <div className="font-semibold">✓ Save Protocol to Dashboard</div>
+                  <div className="font-semibold">{t('nutritionResults.saveProtocolToDashboard')}</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold">✓ Purchase Supplements</div>
+                  <div className="font-semibold">{t('nutritionResults.purchaseSupplements')}</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold">✓ Daily Nutrition Tracking</div>
+                  <div className="font-semibold">{t('nutritionResults.dailyNutritionTracking')}</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-semibold">✓ Monthly Reassessments</div>
+                  <div className="font-semibold">{t('nutritionResults.monthlyReassessments')}</div>
                 </div>
               </div>
               <Button size="lg" onClick={() => {
                 const sessionId = assessment?.session_id || localStorage.getItem('nutrition_guest_session');
                 navigate(sessionId ? `/auth?session=${sessionId}&source=nutrition` : "/auth");
               }} className="text-lg px-8">
-                Create Free Account & Start Now
+                {t('nutritionResults.createFreeAccount')}
               </Button>
-              <p className="text-xs text-muted-foreground">Includes FREE 3-day trial • No credit card required</p>
+              <p className="text-xs text-muted-foreground">{t('nutritionResults.freeTrial')}</p>
             </div>
           </Card>
         )}
@@ -779,7 +781,7 @@ export default function LongevityNutritionResults() {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4">
           <Button onClick={() => navigate(user ? "/today" : "/")} size="lg">
-            {user ? "Return to Today" : "Back to Home"}
+            {user ? t('nutritionResults.returnToToday').replace('← ', '') : t('nutritionResults.backToHome').replace('← ', '')}
           </Button>
         </div>
       </div>
