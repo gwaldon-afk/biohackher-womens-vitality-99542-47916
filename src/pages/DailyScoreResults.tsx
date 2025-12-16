@@ -1,4 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ const DailyScoreResults = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const score = parseFloat(searchParams.get('score') || '0');
   const dateStr = searchParams.get('date') || '';
   const version = searchParams.get('version') || 'LIS 1.0';
@@ -24,17 +26,17 @@ const DailyScoreResults = () => {
   };
 
   const getScoreCategory = (score: number) => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Good';
-    if (score >= 40) return 'Fair';
-    return 'Needs Focus';
+    if (score >= 80) return t('dailyScore.categories.excellent');
+    if (score >= 60) return t('dailyScore.categories.good');
+    if (score >= 40) return t('dailyScore.categories.fair');
+    return t('dailyScore.categories.needsFocus');
   };
 
   const getEncouragement = (score: number) => {
-    if (score >= 80) return "Outstanding! You're making choices that significantly support your longevity.";
-    if (score >= 60) return "Great work! You're on the right track with solid healthy habits.";
-    if (score >= 40) return "Good start! There's room to improve your daily habits for better health outcomes.";
-    return "Every journey starts somewhere! Small improvements each day add up to big results.";
+    if (score >= 80) return t('dailyScore.encouragement.excellent');
+    if (score >= 60) return t('dailyScore.encouragement.good');
+    if (score >= 40) return t('dailyScore.encouragement.fair');
+    return t('dailyScore.encouragement.needsFocus');
   };
 
   return (
@@ -49,7 +51,7 @@ const DailyScoreResults = () => {
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            {user ? 'Return to Today' : 'Back to Home'}
+            {user ? t('dailyScore.returnToToday') : t('dailyScore.backToHome')}
           </Button>
         </div>
         
@@ -62,10 +64,10 @@ const DailyScoreResults = () => {
               </div>
             </div>
             <h1 className="text-3xl font-bold mb-2">
-              Congratulations! 🎉
+              {t('dailyScore.congratulations')}
             </h1>
             <p className="text-lg text-muted-foreground">
-              You've completed your first daily score
+              {t('dailyScore.firstScoreComplete')}
             </p>
           </div>
         )}
@@ -81,10 +83,10 @@ const DailyScoreResults = () => {
               <div className={`text-7xl font-bold ${getScoreColor(score)} mb-2`}>
                 {score.toFixed(1)}
               </div>
-              <div className="text-sm text-muted-foreground">out of 100</div>
+              <div className="text-sm text-muted-foreground">{t('dailyScore.outOf100')}</div>
             </div>
             <CardTitle className="text-2xl">
-              {getScoreCategory(score)} Score
+              {t('dailyScore.scoreTitle', { category: getScoreCategory(score) })}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -100,24 +102,24 @@ const DailyScoreResults = () => {
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
-                What This Means
+                {t('dailyScore.whatThisMeans')}
               </h3>
               <div className="grid gap-3">
                 <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                   <Activity className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-sm">Daily Tracking</p>
+                    <p className="font-medium text-sm">{t('dailyScore.dailyTracking')}</p>
                     <p className="text-xs text-muted-foreground">
-                      Continue tracking daily to see trends and patterns in your health journey
+                      {t('dailyScore.dailyTrackingDesc')}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                   <TrendingUp className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-sm">Personalized Insights</p>
+                    <p className="font-medium text-sm">{t('dailyScore.personalisedInsights')}</p>
                     <p className="text-xs text-muted-foreground">
-                      After a few days, you'll unlock detailed analysis and recommendations
+                      {t('dailyScore.personalisedInsightsDesc')}
                     </p>
                   </div>
                 </div>
@@ -129,24 +131,24 @@ const DailyScoreResults = () => {
         {/* Next Steps */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">What's Next?</CardTitle>
+            <CardTitle className="text-lg">{t('dailyScore.whatsNext')}</CardTitle>
             <CardDescription>
-              Your health journey continues on your dashboard
+              {t('dailyScore.journeyContinues')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2 text-sm">
               <p className="flex items-center gap-2">
                 <span className="text-primary font-bold">•</span>
-                View your complete health dashboard
+                {t('dailyScore.viewDashboard')}
               </p>
               <p className="flex items-center gap-2">
                 <span className="text-primary font-bold">•</span>
-                Track your progress over time
+                {t('dailyScore.trackProgress')}
               </p>
               <p className="flex items-center gap-2">
                 <span className="text-primary font-bold">•</span>
-                Get personalized recommendations
+                {t('dailyScore.getRecommendations')}
               </p>
             </div>
             
@@ -155,7 +157,7 @@ const DailyScoreResults = () => {
               size="lg"
               onClick={() => navigate('/dashboard')}
             >
-              Go to My Dashboard
+              {t('dailyScore.goToDashboard')}
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
           </CardContent>
@@ -167,7 +169,7 @@ const DailyScoreResults = () => {
             onClick={() => navigate(user ? '/today' : '/')} 
             size="lg"
           >
-            {user ? 'Return to Today' : 'Back to Home'}
+            {user ? t('dailyScore.returnToToday') : t('dailyScore.backToHome')}
           </Button>
         </div>
       </div>
