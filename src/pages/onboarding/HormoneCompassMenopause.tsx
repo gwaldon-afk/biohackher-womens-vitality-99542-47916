@@ -26,13 +26,13 @@ const answerSchema = z.object({
 
 type Question = {
   id: keyof z.infer<typeof answerSchema>;
-  label: string;
+  labelKey: string;
   type: 'radio' | 'slider' | 'checkbox';
-  options?: string[];
+  optionKeys?: string[];
   min?: number;
   max?: number;
-  lowLabel?: string;
-  highLabel?: string;
+  lowLabelKey?: string;
+  highLabelKey?: string;
 };
 
 const MenoMapMenopause = () => {
@@ -47,81 +47,81 @@ const MenoMapMenopause = () => {
   const questions: Question[] = [
     {
       id: 'stage',
-      label: 'How would you describe your menstrual cycle?',
+      labelKey: 'onboarding.hormoneCompassMenopause.questions.stage.label',
       type: 'radio' as const,
-      options: [
-        'Regular cycles',
-        'Irregular cycles',
-        'No cycles currently',
-        'Not sure',
+      optionKeys: [
+        'onboarding.hormoneCompassMenopause.questions.stage.options.regular',
+        'onboarding.hormoneCompassMenopause.questions.stage.options.irregular',
+        'onboarding.hormoneCompassMenopause.questions.stage.options.noCycles',
+        'onboarding.hormoneCompassMenopause.questions.stage.options.notSure',
       ],
     },
     {
       id: 'hormone_medication',
-      label: 'Are you taking any hormone medication?',
+      labelKey: 'onboarding.hormoneCompassMenopause.questions.medication.label',
       type: 'checkbox' as const,
-      options: [
-        'Birth control pill',
-        'Hormonal IUD',
-        'Hormone replacement therapy (HRT)',
-        'Thyroid medication',
-        'Fertility medications',
-        'Testosterone therapy',
-        'Other hormone medication',
-        'None',
+      optionKeys: [
+        'onboarding.hormoneCompassMenopause.questions.medication.options.birthControl',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.hormonalIUD',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.hrt',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.thyroid',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.fertility',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.testosterone',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.other',
+        'onboarding.hormoneCompassMenopause.questions.medication.options.none',
       ],
     },
     { 
       id: 'symptoms', 
-      label: 'What other symptoms are you experiencing?',
+      labelKey: 'onboarding.hormoneCompassMenopause.questions.symptoms.label',
       type: 'checkbox' as const,
-      options: [
-        'Hot flashes or night sweats',
-        'Irregular or heavy periods',
-        'Brain fog or memory issues',
-        'Weight changes',
-        'Low libido',
-        'Digestive issues',
-        'Joint pain or stiffness',
-        'Headaches or migraines',
-        'None',
+      optionKeys: [
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.hotFlashes',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.irregularPeriods',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.brainFog',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.weightChanges',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.lowLibido',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.digestive',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.jointPain',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.headaches',
+        'onboarding.hormoneCompassMenopause.questions.symptoms.options.none',
       ],
     },
     { 
       id: 'sleep', 
-      label: t('menomap.assessment.questions.sleep'),
+      labelKey: 'menomap.assessment.questions.sleep',
       type: 'slider' as const, 
       min: 0, 
       max: 10,
-      lowLabel: t('menomap.assessment.labels.veryPoor'),
-      highLabel: t('menomap.assessment.labels.excellent')
+      lowLabelKey: 'menomap.assessment.labels.veryPoor',
+      highLabelKey: 'menomap.assessment.labels.excellent'
     },
     { 
       id: 'mood', 
-      label: t('menomap.assessment.questions.mood'),
+      labelKey: 'menomap.assessment.questions.mood',
       type: 'slider' as const, 
       min: 0, 
       max: 10,
-      lowLabel: t('menomap.assessment.labels.veryUnstable'),
-      highLabel: t('menomap.assessment.labels.veryStable')
+      lowLabelKey: 'menomap.assessment.labels.veryUnstable',
+      highLabelKey: 'menomap.assessment.labels.veryStable'
     },
     { 
       id: 'energy', 
-      label: t('menomap.assessment.questions.energy'),
+      labelKey: 'menomap.assessment.questions.energy',
       type: 'slider' as const, 
       min: 0, 
       max: 10,
-      lowLabel: t('menomap.assessment.labels.veryLow'),
-      highLabel: t('menomap.assessment.labels.veryHigh')
+      lowLabelKey: 'menomap.assessment.labels.veryLow',
+      highLabelKey: 'menomap.assessment.labels.veryHigh'
     },
     { 
       id: 'skin', 
-      label: t('menomap.assessment.questions.skin'),
+      labelKey: 'menomap.assessment.questions.skin',
       type: 'slider' as const, 
       min: 0, 
       max: 10,
-      lowLabel: t('menomap.assessment.labels.veryPoor'),
-      highLabel: t('menomap.assessment.labels.excellent')
+      lowLabelKey: 'menomap.assessment.labels.veryPoor',
+      highLabelKey: 'menomap.assessment.labels.excellent'
     },
   ];
 
@@ -232,7 +232,7 @@ const MenoMapMenopause = () => {
           aria-label="Go back"
         >
           <ArrowLeft className="h-6 w-6" />
-          {!isMobile && <span className="ml-2">Back</span>}
+          {!isMobile && <span className="ml-2">{t('onboarding.hormoneCompassMenopause.back')}</span>}
         </Button>
         
         <Button 
@@ -242,7 +242,7 @@ const MenoMapMenopause = () => {
           aria-label="Exit assessment"
         >
           <X className="h-6 w-6" />
-          {!isMobile && <span className="ml-2">Exit</span>}
+          {!isMobile && <span className="ml-2">{t('onboarding.hormoneCompassMenopause.exit')}</span>}
         </Button>
       </div>
 
@@ -256,11 +256,11 @@ const MenoMapMenopause = () => {
 
         <Card className="p-8 space-y-8" role="region" aria-labelledby="question-label">
           <div className="space-y-4">
-            <Label id="question-label" className="text-xl font-medium">{question.label}</Label>
+            <Label id="question-label" className="text-xl font-medium">{t(question.labelKey)}</Label>
 
             {question.type === 'slider' && (
               <fieldset className="space-y-4">
-                <legend className="sr-only">{question.label}</legend>
+                <legend className="sr-only">{t(question.labelKey)}</legend>
                 <Slider
                   value={[typeof currentValue === 'number' ? currentValue : 5]}
                   onValueChange={([value]) => handleSliderAnswer(value)}
@@ -268,31 +268,31 @@ const MenoMapMenopause = () => {
                   max={question.max}
                   step={1}
                   className="w-full"
-                  aria-label={question.label}
+                  aria-label={t(question.labelKey)}
                   aria-valuemin={question.min}
                   aria-valuemax={question.max}
                   aria-valuenow={typeof currentValue === 'number' ? currentValue : 5}
                   aria-valuetext={`${typeof currentValue === 'number' ? currentValue : 5} out of 10`}
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>{question.lowLabel || t('menomap.assessment.labels.veryPoor')}</span>
+                  <span>{t(question.lowLabelKey || 'menomap.assessment.labels.veryPoor')}</span>
                   <span className="text-lg font-semibold text-foreground" aria-live="polite">
                     {typeof currentValue === 'number' ? currentValue : 5}/10
                   </span>
-                  <span>{question.highLabel || t('menomap.assessment.labels.excellent')}</span>
+                  <span>{t(question.highLabelKey || 'menomap.assessment.labels.excellent')}</span>
                 </div>
               </fieldset>
             )}
 
-            {question.type === 'radio' && question.options && (
+            {question.type === 'radio' && question.optionKeys && (
               <RadioGroup value={currentValue as string || ""} onValueChange={handleRadioAnswer}>
                 <fieldset>
-                  <legend className="sr-only">{question.label}</legend>
-                  {question.options.map((option) => (
-                    <div key={option} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
-                      <RadioGroupItem value={option} id={option} />
-                      <Label htmlFor={option} className="cursor-pointer flex-1">
-                        {option}
+                  <legend className="sr-only">{t(question.labelKey)}</legend>
+                  {question.optionKeys.map((optionKey) => (
+                    <div key={optionKey} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
+                      <RadioGroupItem value={t(optionKey)} id={optionKey} />
+                      <Label htmlFor={optionKey} className="cursor-pointer flex-1">
+                        {t(optionKey)}
                       </Label>
                     </div>
                   ))}
@@ -300,17 +300,17 @@ const MenoMapMenopause = () => {
               </RadioGroup>
             )}
 
-            {question.type === 'checkbox' && question.options && (
+            {question.type === 'checkbox' && question.optionKeys && (
               <div className="space-y-2">
-                {question.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
+                {question.optionKeys.map((optionKey) => (
+                  <div key={optionKey} className="flex items-center space-x-2 p-3 rounded-lg hover:bg-muted/50">
                     <Checkbox
-                      id={option}
-                      checked={(currentValue as string[] || []).includes(option)}
-                      onCheckedChange={() => handleCheckboxAnswer(option)}
+                      id={optionKey}
+                      checked={(currentValue as string[] || []).includes(t(optionKey))}
+                      onCheckedChange={() => handleCheckboxAnswer(t(optionKey))}
                     />
-                    <Label htmlFor={option} className="cursor-pointer flex-1">
-                      {option}
+                    <Label htmlFor={optionKey} className="cursor-pointer flex-1">
+                      {t(optionKey)}
                     </Label>
                   </div>
                 ))}

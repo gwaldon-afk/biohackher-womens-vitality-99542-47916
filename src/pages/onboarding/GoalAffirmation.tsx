@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
 const GoalAffirmation = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -23,9 +25,9 @@ const GoalAffirmation = () => {
               </div>
             </div>
 
-            <h1 className="text-4xl font-bold mb-4">You're All Set!</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('onboarding.goalAffirmation.title')}</h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Your personalized vitality protocol is ready
+              {t('onboarding.goalAffirmation.description')}
             </p>
 
             <div className="space-y-4 text-left bg-muted/50 rounded-lg p-6">
@@ -33,25 +35,25 @@ const GoalAffirmation = () => {
                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-xs font-bold text-primary">✓</span>
                 </div>
-                <p className="text-muted-foreground">Assessment completed</p>
+                <p className="text-muted-foreground">{t('onboarding.goalAffirmation.checklist.assessment')}</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-xs font-bold text-primary">✓</span>
                 </div>
-                <p className="text-muted-foreground">Goals defined</p>
+                <p className="text-muted-foreground">{t('onboarding.goalAffirmation.checklist.goals')}</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-xs font-bold text-primary">✓</span>
                 </div>
-                <p className="text-muted-foreground">Protocol customized</p>
+                <p className="text-muted-foreground">{t('onboarding.goalAffirmation.checklist.protocol')}</p>
               </div>
             </div>
           </div>
 
           <Button onClick={() => navigate('/plan-home')} className="w-full" size="lg">
-            Start Your Journey
+            {t('onboarding.goalAffirmation.startJourney')}
           </Button>
         </Card>
       </div>

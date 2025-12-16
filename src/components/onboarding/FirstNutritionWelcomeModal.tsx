@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -14,50 +15,51 @@ const TOUR_STEPS = [
   {
     step: 1,
     icon: Utensils,
-    title: 'Welcome to Daily Nutrition Tracking',
-    description: 'Track your anti-inflammatory score every day to see how your food choices impact your longevity.',
-    features: [
-      'Simple daily scoring (0-15 scale)',
-      'Track key nutrients and hydration',
-      'See immediate impact on your LIS score',
+    titleKey: 'onboarding.nutritionWelcome.steps.step1.title',
+    descriptionKey: 'onboarding.nutritionWelcome.steps.step1.description',
+    featureKeys: [
+      'onboarding.nutritionWelcome.steps.step1.features.1',
+      'onboarding.nutritionWelcome.steps.step1.features.2',
+      'onboarding.nutritionWelcome.steps.step1.features.3',
     ],
   },
   {
     step: 2,
     icon: TrendingUp,
-    title: 'Build Your Nutrition Streak',
-    description: 'Consistency is key! Log daily to build streaks and watch your biological age improve over time.',
-    features: [
-      'Daily streak tracking with fire badges',
-      'Milestone celebrations at 3, 7, and 30 days',
-      'Visual progress with sparkline charts',
+    titleKey: 'onboarding.nutritionWelcome.steps.step2.title',
+    descriptionKey: 'onboarding.nutritionWelcome.steps.step2.description',
+    featureKeys: [
+      'onboarding.nutritionWelcome.steps.step2.features.1',
+      'onboarding.nutritionWelcome.steps.step2.features.2',
+      'onboarding.nutritionWelcome.steps.step2.features.3',
     ],
   },
   {
     step: 3,
     icon: Target,
-    title: 'Get Personalized Insights',
-    description: 'After 7 days of tracking, unlock AI-powered insights about your eating patterns and recommendations.',
-    features: [
-      'Pattern detection in your nutrition',
-      'Personalized meal suggestions',
-      'Longevity-focused food recommendations',
+    titleKey: 'onboarding.nutritionWelcome.steps.step3.title',
+    descriptionKey: 'onboarding.nutritionWelcome.steps.step3.description',
+    featureKeys: [
+      'onboarding.nutritionWelcome.steps.step3.features.1',
+      'onboarding.nutritionWelcome.steps.step3.features.2',
+      'onboarding.nutritionWelcome.steps.step3.features.3',
     ],
   },
   {
     step: 4,
     icon: Flame,
-    title: "Let's Log Your First Day!",
-    description: "We'll guide you through your first nutrition log. It takes just 2 minutes.",
-    features: [
-      'Interactive guided tour',
-      'Helpful tooltips for each category',
-      'Easy-to-use sliders for quick logging',
+    titleKey: 'onboarding.nutritionWelcome.steps.step4.title',
+    descriptionKey: 'onboarding.nutritionWelcome.steps.step4.description',
+    featureKeys: [
+      'onboarding.nutritionWelcome.steps.step4.features.1',
+      'onboarding.nutritionWelcome.steps.step4.features.2',
+      'onboarding.nutritionWelcome.steps.step4.features.3',
     ],
   },
 ];
 
 export const FirstNutritionWelcomeModal = ({ isOpen, onComplete }: FirstNutritionWelcomeModalProps) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = TOUR_STEPS.length;
   const progress = ((currentStep + 1) / totalSteps) * 100;
@@ -82,11 +84,11 @@ export const FirstNutritionWelcomeModal = ({ isOpen, onComplete }: FirstNutritio
         <DialogHeader>
           <div className="flex items-center justify-between mb-2">
             <DialogTitle className="text-2xl font-bold">
-              Step {currentStep + 1} of {totalSteps}
+              {t('onboarding.nutritionWelcome.stepOf', { current: currentStep + 1, total: totalSteps })}
             </DialogTitle>
             {currentStep < totalSteps - 1 && (
               <Button variant="ghost" size="sm" onClick={handleSkip}>
-                Skip tour
+                {t('onboarding.nutritionWelcome.skipTour')}
               </Button>
             )}
           </div>
@@ -111,22 +113,22 @@ export const FirstNutritionWelcomeModal = ({ isOpen, onComplete }: FirstNutritio
 
             {/* Title and Description */}
             <div className="text-center space-y-2">
-              <h3 className="text-xl font-bold">{currentStepData.title}</h3>
+              <h3 className="text-xl font-bold">{t(currentStepData.titleKey)}</h3>
               <DialogDescription className="text-base">
-                {currentStepData.description}
+                {t(currentStepData.descriptionKey)}
               </DialogDescription>
             </div>
 
             {/* Features List */}
             <div className="space-y-3 bg-muted/50 p-4 rounded-lg">
-              {currentStepData.features.map((feature, index) => (
+              {currentStepData.featureKeys.map((featureKey, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-0.5">
                     <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
                       <ChevronRight className="w-3 h-3 text-primary" />
                     </div>
                   </div>
-                  <p className="text-sm text-foreground">{feature}</p>
+                  <p className="text-sm text-foreground">{t(featureKey)}</p>
                 </div>
               ))}
             </div>
@@ -153,12 +155,12 @@ export const FirstNutritionWelcomeModal = ({ isOpen, onComplete }: FirstNutritio
           <Button onClick={handleNext} size="lg">
             {currentStep < totalSteps - 1 ? (
               <>
-                Next
+                {t('onboarding.nutritionWelcome.next')}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </>
             ) : (
               <>
-                Start Logging
+                {t('onboarding.nutritionWelcome.startLogging')}
                 <Flame className="ml-2 h-4 w-4" />
               </>
             )}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lightbulb, ChevronRight, CheckCircle2 } from 'lucide-react';
 
@@ -13,49 +13,50 @@ interface GuidedNutritionOnboardingProps {
 const TOOLTIP_STEPS = [
   {
     id: 'hydration',
-    title: 'Start with Hydration',
-    description: 'Water is the foundation of health. Move this slider to log how many glasses of water you drank today.',
-    target: 'hydration-slider', // ID to target in the NutritionalScorecard
+    titleKey: 'onboarding.nutritionGuided.steps.hydration.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.hydration.description',
+    target: 'hydration-slider',
     position: 'right' as const,
   },
   {
     id: 'vegetables',
-    title: 'Track Your Vegetables',
-    description: 'Vegetables and greens are powerhouses for longevity. Log how many servings you ate today.',
+    titleKey: 'onboarding.nutritionGuided.steps.vegetables.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.vegetables.description',
     target: 'vegetables-slider',
     position: 'right' as const,
   },
   {
     id: 'protein',
-    title: 'Protein Quality Matters',
-    description: 'High-quality protein supports muscle maintenance and healthy aging. Rate your protein sources today.',
+    titleKey: 'onboarding.nutritionGuided.steps.protein.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.protein.description',
     target: 'protein-slider',
     position: 'right' as const,
   },
   {
     id: 'fats',
-    title: 'Healthy Fats & Omega-3s',
-    description: 'Fish, nuts, and seeds reduce inflammation. Did you consume omega-3s today?',
+    titleKey: 'onboarding.nutritionGuided.steps.fats.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.fats.description',
     target: 'fats-slider',
     position: 'right' as const,
   },
   {
     id: 'sugar',
-    title: 'Minimize Processed Foods',
-    description: 'Sugar and processed foods accelerate aging. Use this slider to track inflammatory foods.',
+    titleKey: 'onboarding.nutritionGuided.steps.sugar.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.sugar.description',
     target: 'sugar-slider',
     position: 'right' as const,
   },
   {
     id: 'complete',
-    title: 'Great Job! You\'re All Set',
-    description: 'Your nutrition score is calculated automatically. Come back tomorrow to build your streak!',
+    titleKey: 'onboarding.nutritionGuided.steps.complete.title',
+    descriptionKey: 'onboarding.nutritionGuided.steps.complete.description',
     target: 'score-circle',
     position: 'top' as const,
   },
 ];
 
 export const GuidedNutritionOnboarding = ({ isActive, onComplete }: GuidedNutritionOnboardingProps) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [isOpen, setIsOpen] = useState(true);
 
@@ -158,18 +159,18 @@ export const GuidedNutritionOnboarding = ({ isActive, onComplete }: GuidedNutrit
                     )}
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-sm">{currentTooltip.title}</h4>
-                    <p className="text-sm text-muted-foreground mt-1">{currentTooltip.description}</p>
+                    <h4 className="font-bold text-sm">{t(currentTooltip.titleKey)}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">{t(currentTooltip.descriptionKey)}</p>
                   </div>
                 </div>
 
                 {/* Progress */}
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>
-                    Step {currentStep + 1} of {TOOLTIP_STEPS.length}
+                    {t('onboarding.nutritionGuided.stepOf', { current: currentStep + 1, total: TOOLTIP_STEPS.length })}
                   </span>
                   <Button variant="ghost" size="sm" className="h-6 px-2" onClick={handleSkip}>
-                    Skip
+                    {t('onboarding.nutritionGuided.skip')}
                   </Button>
                 </div>
 
@@ -177,12 +178,12 @@ export const GuidedNutritionOnboarding = ({ isActive, onComplete }: GuidedNutrit
                 <Button onClick={handleNext} size="sm" className="w-full">
                   {isLastStep ? (
                     <>
-                      Finish Tour
+                      {t('onboarding.nutritionGuided.finishTour')}
                       <CheckCircle2 className="ml-2 h-4 w-4" />
                     </>
                   ) : (
                     <>
-                      Next
+                      {t('onboarding.nutritionGuided.next')}
                       <ChevronRight className="ml-2 h-4 w-4" />
                     </>
                   )}

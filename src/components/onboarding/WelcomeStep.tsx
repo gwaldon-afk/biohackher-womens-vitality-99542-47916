@@ -1,4 +1,5 @@
 // Welcome step for onboarding
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Sparkles, TrendingUp } from "lucide-react";
@@ -9,14 +10,16 @@ interface WelcomeStepProps {
 }
 
 export function WelcomeStep({ onNext, userName }: WelcomeStepProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold">
-          Welcome{userName ? `, ${userName}` : ''}! 👋
+          {userName ? t('onboarding.welcome.greetingWithName', { userName }) : t('onboarding.welcome.greeting')}
         </h1>
         <p className="text-xl text-muted-foreground">
-          Let's set up your personalized health journey in just 4 simple steps
+          {t('onboarding.welcome.description')}
         </p>
       </div>
 
@@ -28,9 +31,9 @@ export function WelcomeStep({ onNext, userName }: WelcomeStepProps) {
                 <Heart className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>Science-Backed Approach</CardTitle>
+                <CardTitle>{t('onboarding.welcome.scienceBacked.title')}</CardTitle>
                 <CardDescription>
-                  Evidence-based recommendations tailored to your unique health profile
+                  {t('onboarding.welcome.scienceBacked.description')}
                 </CardDescription>
               </div>
             </div>
@@ -44,9 +47,9 @@ export function WelcomeStep({ onNext, userName }: WelcomeStepProps) {
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>AI-Powered Insights</CardTitle>
+                <CardTitle>{t('onboarding.welcome.aiPowered.title')}</CardTitle>
                 <CardDescription>
-                  Get personalized recommendations based on your assessment results
+                  {t('onboarding.welcome.aiPowered.description')}
                 </CardDescription>
               </div>
             </div>
@@ -60,9 +63,9 @@ export function WelcomeStep({ onNext, userName }: WelcomeStepProps) {
                 <TrendingUp className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle>Track Your Progress</CardTitle>
+                <CardTitle>{t('onboarding.welcome.trackProgress.title')}</CardTitle>
                 <CardDescription>
-                  Monitor improvements and optimize your healthspan over time
+                  {t('onboarding.welcome.trackProgress.description')}
                 </CardDescription>
               </div>
             </div>
@@ -72,7 +75,7 @@ export function WelcomeStep({ onNext, userName }: WelcomeStepProps) {
 
       <div className="flex justify-center pt-6">
         <Button size="lg" onClick={onNext} className="min-w-[200px]">
-          Get Started
+          {t('onboarding.welcome.getStarted')}
         </Button>
       </div>
     </div>

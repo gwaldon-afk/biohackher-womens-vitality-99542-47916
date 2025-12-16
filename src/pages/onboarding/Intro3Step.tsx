@@ -1,30 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronLeft, ChevronRight, ClipboardList, Calendar, TrendingUp } from "lucide-react";
 
-const slides = [
-  {
-    icon: ClipboardList,
-    title: "Assess",
-    description: "Complete your personalized health assessment to understand your unique needs and current state.",
-  },
-  {
-    icon: Calendar,
-    title: "Plan",
-    description: "Receive a tailored protocol designed specifically for your goals and health journey.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Track",
-    description: "Monitor your progress with daily check-ins and see your vitality scores improve over time.",
-  },
-];
-
 const Intro3Step = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    {
+      icon: ClipboardList,
+      titleKey: "onboarding.intro.slides.assess.title",
+      descriptionKey: "onboarding.intro.slides.assess.description",
+    },
+    {
+      icon: Calendar,
+      titleKey: "onboarding.intro.slides.plan.title",
+      descriptionKey: "onboarding.intro.slides.plan.description",
+    },
+    {
+      icon: TrendingUp,
+      titleKey: "onboarding.intro.slides.track.title",
+      descriptionKey: "onboarding.intro.slides.track.description",
+    },
+  ];
 
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {
@@ -54,8 +56,8 @@ const Intro3Step = () => {
           </div>
 
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold">{slide.title}</h2>
-            <p className="text-muted-foreground text-lg">{slide.description}</p>
+            <h2 className="text-3xl font-bold">{t(slide.titleKey)}</h2>
+            <p className="text-muted-foreground text-lg">{t(slide.descriptionKey)}</p>
           </div>
 
           <div className="flex justify-center gap-2">
@@ -73,17 +75,17 @@ const Intro3Step = () => {
             {currentSlide > 0 && (
               <Button variant="outline" onClick={handlePrev} className="flex-1">
                 <ChevronLeft className="mr-2 h-4 w-4" />
-                Previous
+                {t('onboarding.intro.previous')}
               </Button>
             )}
             <Button onClick={handleNext} className="flex-1">
               {currentSlide < slides.length - 1 ? (
                 <>
-                  Next
+                  {t('onboarding.intro.next')}
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </>
               ) : (
-                'Get Started'
+                t('onboarding.intro.getStarted')
               )}
             </Button>
           </div>

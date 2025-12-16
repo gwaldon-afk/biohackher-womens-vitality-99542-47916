@@ -1,5 +1,6 @@
 // Goal selection step for onboarding
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,54 +10,54 @@ import { cn } from "@/lib/utils";
 
 interface Goal {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   icon: any;
-  pillar: string;
+  pillarKey: string;
 }
 
 const AVAILABLE_GOALS: Goal[] = [
   {
     id: "energy",
-    title: "Boost Energy & Vitality",
-    description: "Combat fatigue and feel more energized throughout the day",
+    titleKey: "onboarding.goals.available.energy.title",
+    descriptionKey: "onboarding.goals.available.energy.description",
     icon: Zap,
-    pillar: "Body"
+    pillarKey: "onboarding.goals.pillars.body"
   },
   {
     id: "cognitive",
-    title: "Enhance Cognitive Performance",
-    description: "Improve focus, memory, and mental clarity",
+    titleKey: "onboarding.goals.available.cognitive.title",
+    descriptionKey: "onboarding.goals.available.cognitive.description",
     icon: Brain,
-    pillar: "Brain"
+    pillarKey: "onboarding.goals.pillars.brain"
   },
   {
     id: "body-composition",
-    title: "Optimize Body Composition",
-    description: "Build lean muscle and manage healthy weight",
+    titleKey: "onboarding.goals.available.bodyComposition.title",
+    descriptionKey: "onboarding.goals.available.bodyComposition.description",
     icon: Scale,
-    pillar: "Body"
+    pillarKey: "onboarding.goals.pillars.body"
   },
   {
     id: "hormonal-balance",
-    title: "Balance Hormones",
-    description: "Address hormonal symptoms and restore equilibrium",
+    titleKey: "onboarding.goals.available.hormonalBalance.title",
+    descriptionKey: "onboarding.goals.available.hormonalBalance.description",
     icon: Heart,
-    pillar: "Balance"
+    pillarKey: "onboarding.goals.pillars.balance"
   },
   {
     id: "sleep-quality",
-    title: "Improve Sleep Quality",
-    description: "Enhance sleep duration and wake feeling refreshed",
+    titleKey: "onboarding.goals.available.sleepQuality.title",
+    descriptionKey: "onboarding.goals.available.sleepQuality.description",
     icon: Moon,
-    pillar: "Body"
+    pillarKey: "onboarding.goals.pillars.body"
   },
   {
     id: "fitness",
-    title: "Increase Physical Performance",
-    description: "Enhance strength, endurance, and recovery",
+    titleKey: "onboarding.goals.available.fitness.title",
+    descriptionKey: "onboarding.goals.available.fitness.description",
     icon: Activity,
-    pillar: "Body"
+    pillarKey: "onboarding.goals.pillars.body"
   }
 ];
 
@@ -67,6 +68,7 @@ interface GoalSelectionStepProps {
 }
 
 export function GoalSelectionStep({ onNext, onBack, initialSelection = [] }: GoalSelectionStepProps) {
+  const { t } = useTranslation();
   const [selectedGoals, setSelectedGoals] = useState<string[]>(initialSelection);
 
   const toggleGoal = (goalId: string) => {
@@ -86,9 +88,9 @@ export function GoalSelectionStep({ onNext, onBack, initialSelection = [] }: Goa
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">What are your primary health goals?</h2>
+        <h2 className="text-3xl font-bold">{t('onboarding.goals.title')}</h2>
         <p className="text-muted-foreground">
-          Select all that apply - we'll tailor your experience to these priorities
+          {t('onboarding.goals.description')}
         </p>
       </div>
 
@@ -116,12 +118,12 @@ export function GoalSelectionStep({ onNext, onBack, initialSelection = [] }: Goa
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-lg">{goal.title}</CardTitle>
+                      <CardTitle className="text-lg">{t(goal.titleKey)}</CardTitle>
                       <CardDescription className="mt-1">
-                        {goal.description}
+                        {t(goal.descriptionKey)}
                       </CardDescription>
                       <Badge variant="outline" className="mt-2">
-                        {goal.pillar}
+                        {t(goal.pillarKey)}
                       </Badge>
                     </div>
                   </div>
@@ -135,14 +137,14 @@ export function GoalSelectionStep({ onNext, onBack, initialSelection = [] }: Goa
 
       <div className="flex justify-between pt-6">
         <Button variant="outline" onClick={onBack}>
-          Back
+          {t('onboarding.goals.back')}
         </Button>
         <Button 
           onClick={handleContinue}
           disabled={selectedGoals.length === 0}
           className="min-w-[200px]"
         >
-          Continue ({selectedGoals.length} selected)
+          {t('onboarding.goals.continue', { count: selectedGoals.length })}
         </Button>
       </div>
     </div>

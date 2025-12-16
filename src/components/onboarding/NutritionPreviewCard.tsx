@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { ProgressCircle } from '@/components/ui/progress-circle';
 import { Slider } from '@/components/ui/slider';
@@ -8,6 +9,8 @@ interface NutritionPreviewCardProps {
 }
 
 export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProps) => {
+  const { t } = useTranslation();
+
   // Demo values for preview
   const demoData = {
     hydration: 3,
@@ -36,12 +39,12 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
           >
             <div className="text-center">
               <div className="text-4xl font-bold text-foreground">{demoScore}</div>
-              <div className="text-sm text-muted-foreground">out of 15</div>
-              <div className="text-2xl font-bold text-primary mt-1">Grade {demoGrade}</div>
+              <div className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.outOf15')}</div>
+              <div className="text-2xl font-bold text-primary mt-1">{t('onboarding.nutritionPreview.grade', { grade: demoGrade })}</div>
             </div>
           </ProgressCircle>
           <p className="text-sm text-center text-muted-foreground max-w-md">
-            Your daily anti-inflammatory nutrition score
+            {t('onboarding.nutritionPreview.description')}
           </p>
         </div>
 
@@ -49,8 +52,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">💧 Hydration</label>
-              <span className="text-sm text-muted-foreground">3 glasses</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.hydration')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.glasses', { count: 3 })}</span>
             </div>
             <Slider
               value={[demoData.hydration]}
@@ -63,8 +66,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">🥬 Vegetables & Greens</label>
-              <span className="text-sm text-muted-foreground">3 servings</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.vegetables')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.servings', { count: 3 })}</span>
             </div>
             <Slider
               value={[demoData.vegetables]}
@@ -77,8 +80,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">🍗 Protein Quality</label>
-              <span className="text-sm text-muted-foreground">Good sources</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.protein')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.goodSources')}</span>
             </div>
             <Slider
               value={[demoData.protein]}
@@ -91,8 +94,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">🥑 Healthy Fats & Omega-3s</label>
-              <span className="text-sm text-muted-foreground">Excellent</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.fats')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.excellent')}</span>
             </div>
             <Slider
               value={[demoData.fatsOmegas]}
@@ -105,8 +108,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">🍬 Sugar & Processed Foods</label>
-              <span className="text-sm text-muted-foreground">None - Perfect!</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.sugar')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.nonePerfect')}</span>
             </div>
             <Slider
               value={[demoData.sugarProcessed]}
@@ -120,8 +123,8 @@ export const NutritionPreviewCard = ({ onUnlockClick }: NutritionPreviewCardProp
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">🍷 Alcohol</label>
-              <span className="text-sm text-muted-foreground">None</span>
+              <label className="text-sm font-medium">{t('onboarding.nutritionPreview.categories.alcohol')}</label>
+              <span className="text-sm text-muted-foreground">{t('onboarding.nutritionPreview.values.none')}</span>
             </div>
             <Slider
               value={[demoData.alcohol]}
