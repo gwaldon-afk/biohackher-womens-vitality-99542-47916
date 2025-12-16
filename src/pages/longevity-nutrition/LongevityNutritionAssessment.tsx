@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +31,7 @@ import { useSessionMetrics } from "@/hooks/useSessionMetrics";
 import { useNutritionCalculations } from "@/hooks/useNutritionCalculations";
 
 export default function LongevityNutritionAssessment() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { updateProgress } = useAssessmentProgress();
@@ -280,7 +282,7 @@ export default function LongevityNutritionAssessment() {
       navigate(`/longevity-nutrition/results?id=${data.id}`);
     } catch (error) {
       console.error("Error saving assessment:", error);
-      toast.error("Failed to save assessment. Please try again.");
+      toast.error(t('nutritionAssessment.failedToSave'));
     }
   };
 
