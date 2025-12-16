@@ -1,0 +1,286 @@
+{
+  "lisPillarAnalysis": {
+    "scoreLabels": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "needsWork": "Needs Work"
+    },
+    "ui": {
+      "impact": "Impact:",
+      "keyActions": "Key Actions",
+      "quickWin": "Quick Win",
+      "viewEvidence": "View Evidence",
+      "addSupplement": "Add Supplement"
+    },
+    "evidence": {
+      "title": "{{pillar}} Research",
+      "description": "Scientific evidence supporting {{pillar}} recommendations for longevity and healthspan."
+    },
+    "toast": {
+      "addedToCart": "{{productName}} added to cart",
+      "noSupplementsFound": "No supplements found for {{pillarName}}"
+    },
+    "default": {
+      "impact": "Your {{pillarName}} score indicates this area is impacting your biological aging trajectory.",
+      "recommendations": {
+        "0": "Focus on foundational health habits in this domain",
+        "1": "Consider working with specialist for personalized guidance",
+        "2": "Track metrics to monitor progress and adjust approach"
+      },
+      "quickWin": "Identify one small improvement you can make this week"
+    },
+    "pillars": {
+      "sleep": {
+        "excellent": {
+          "impact": "Your sleep quality is actively slowing biological aging by optimizing cellular repair, hormone regulation, and metabolic health.",
+          "recommendations": {
+            "0": "Maintain consistent sleep-wake schedule to preserve circadian rhythm strength",
+            "1": "Continue optimizing sleep environment (darkness, temperature, quiet)",
+            "2": "Track HRV during sleep to monitor recovery quality"
+          },
+          "quickWin": "Add 10-minute pre-bed wind-down routine with reading or meditation"
+        },
+        "good": {
+          "impact": "Your sleep provides solid foundation for health, but optimization could add 2-3 years to your healthspan.",
+          "recommendations": {
+            "0": "Establish consistent wake time (even weekends) to strengthen circadian rhythm",
+            "1": "Create 30-minute technology-free buffer before bed",
+            "2": "Experiment with room temperature between 65-68°F for deeper sleep"
+          },
+          "quickWin": "Block blue light 2 hours before bed with amber glasses or night mode"
+        },
+        "fair": {
+          "impact": "Suboptimal sleep is accelerating aging by 3-5 years through chronic inflammation, impaired detoxification, and metabolic dysfunction.",
+          "recommendations": {
+            "0": "Set strict sleep schedule: same bedtime and wake time daily",
+            "1": "Address sleep hygiene: dark room, cool temperature, minimal noise",
+            "2": "Consider magnesium glycinate (300-400mg) 1 hour before bed",
+            "3": "Evaluate for sleep apnea if experiencing daytime fatigue"
+          },
+          "quickWin": "Establish 10pm bedtime target and track sleep duration for 1 week"
+        },
+        "poor": {
+          "impact": "Critical issue: Poor sleep quality is aging you 5-10 years faster by disrupting nearly every biological system.",
+          "recommendations": {
+            "0": "PRIORITY: Schedule sleep study to rule out sleep apnea or disorders",
+            "1": "Implement strict sleep hygiene protocol immediately",
+            "2": "Consider CBT-I (Cognitive Behavioral Therapy for Insomnia)",
+            "3": "Eliminate caffeine after 12pm and alcohol within 3 hours of bed",
+            "4": "Explore targeted supplements: magnesium, L-theanine, glycine"
+          },
+          "quickWin": "Start 7-day sleep reset: same bedtime/wake time, no screens 1 hour before bed"
+        }
+      },
+      "stress": {
+        "excellent": {
+          "impact": "Your stress management is protecting against cellular aging, maintaining healthy cortisol patterns, and preserving telomere length.",
+          "recommendations": {
+            "0": "Continue daily stress-reduction practices to maintain resilience",
+            "1": "Deepen mindfulness or meditation practice for greater impact",
+            "2": "Build social support networks as protective buffer"
+          },
+          "quickWin": "Add 5-minute gratitude journaling to amplify positive mindset"
+        },
+        "good": {
+          "impact": "Your stress levels are manageable but periods of high stress may be contributing to accelerated aging.",
+          "recommendations": {
+            "0": "Establish daily 10-minute stress-reduction practice (meditation, breathing)",
+            "1": "Build stress resilience through regular exercise and nature exposure",
+            "2": "Consider adaptogenic herbs: rhodiola, ashwagandha for HPA axis support"
+          },
+          "quickWin": "Practice 4-7-8 breathing (4sec in, 7sec hold, 8sec out) twice daily"
+        },
+        "fair": {
+          "impact": "Chronic stress is accelerating biological aging by 4-7 years through cortisol dysregulation, inflammation, and telomere shortening.",
+          "recommendations": {
+            "0": "Implement daily stress management: 20 minutes meditation or yoga",
+            "1": "Address root causes: work stress, relationships, financial concerns",
+            "2": "Consider professional support: therapy, counseling, or coaching",
+            "3": "Optimize magnesium intake and consider adaptogenic supplements"
+          },
+          "quickWin": "Start 5-minute morning meditation using guided app (Headspace, Calm)"
+        },
+        "poor": {
+          "impact": "URGENT: Severe stress is adding 8-12 years to your biological age and significantly increasing disease risk.",
+          "recommendations": {
+            "0": "PRIORITY: Seek professional mental health support immediately",
+            "1": "Implement daily stress-reduction protocol: 30min+ of proven techniques",
+            "2": "Consider intensive interventions: therapy, stress-reduction programs",
+            "3": "Address lifestyle factors: reduce commitments, improve boundaries",
+            "4": "Medical evaluation for anxiety/depression treatment if needed"
+          },
+          "quickWin": "Schedule appointment with therapist or counselor this week"
+        }
+      },
+      "activity": {
+        "excellent": {
+          "impact": "Your activity level is preserving muscle mass, mitochondrial function, and metabolic health—slowing aging by 5-10 years.",
+          "recommendations": {
+            "0": "Maintain diverse movement: strength, cardio, flexibility, balance",
+            "1": "Progress training intensity gradually to continue adaptations",
+            "2": "Prioritize recovery: sleep, nutrition, rest days"
+          },
+          "quickWin": "Add 1 weekly session of zone 2 cardio (nasal breathing pace) for longevity"
+        },
+        "good": {
+          "impact": "Your activity provides good foundation, but increased consistency or intensity could add 3-5 years to healthspan.",
+          "recommendations": {
+            "0": "Increase strength training to 2-3x/week for muscle preservation",
+            "1": "Add high-intensity interval training 1-2x/week for metabolic benefit",
+            "2": "Ensure 8000+ daily steps for baseline movement throughout day"
+          },
+          "quickWin": "Add 10-minute morning mobility routine before breakfast"
+        },
+        "fair": {
+          "impact": "Insufficient activity is accelerating aging by 4-6 years through muscle loss, metabolic decline, and reduced mitochondrial capacity.",
+          "recommendations": {
+            "0": "Build to 150 minutes moderate activity weekly (start with 20min daily walks)",
+            "1": "Add resistance training 2x/week (bodyweight or weights)",
+            "2": "Increase daily movement: standing desk, walking meetings, stairs",
+            "3": "Consider accountability: trainer, class, or workout partner"
+          },
+          "quickWin": "Commit to 15-minute daily walk after lunch or dinner"
+        },
+        "poor": {
+          "impact": "CRITICAL: Sedentary lifestyle is aging you 8-15 years faster and dramatically increasing disease risk.",
+          "recommendations": {
+            "0": "PRIORITY: Start with achievable goal: 10-minute daily walk",
+            "1": "Build gradually: add 5 minutes every week until reaching 30min",
+            "2": "Address barriers: schedule time, find enjoyable activities",
+            "3": "Consider medical clearance if over 40 or health concerns",
+            "4": "Hire trainer or join beginner class for structure and support"
+          },
+          "quickWin": "Take 5-minute walk after every meal starting today"
+        }
+      },
+      "nutrition": {
+        "excellent": {
+          "impact": "Your nutrition is optimizing cellular function, reducing inflammation, and supporting longevity pathways—potentially adding 10-15 years to healthspan.",
+          "recommendations": {
+            "0": "Continue emphasizing whole foods, plants, healthy fats, quality protein",
+            "1": "Optimize meal timing: consider 12-16 hour overnight fast",
+            "2": "Fine-tune macro ratios based on biomarkers and personal response"
+          },
+          "quickWin": "Add 1 serving colorful vegetables to each meal for polyphenol diversity"
+        },
+        "good": {
+          "impact": "Your nutrition is supporting health, but refinements could reduce biological age by 3-5 years.",
+          "recommendations": {
+            "0": "Increase vegetable intake to 5-7 servings daily for fiber and phytonutrients",
+            "1": "Reduce processed foods and added sugars to minimize inflammation",
+            "2": "Optimize protein: 1.2-1.6g per kg bodyweight for muscle preservation",
+            "3": "Consider circadian-aligned eating: larger meals earlier in day"
+          },
+          "quickWin": "Replace one processed snack daily with nuts, fruit, or vegetables"
+        },
+        "fair": {
+          "impact": "Suboptimal nutrition is accelerating aging by 5-8 years through inflammation, oxidative stress, and metabolic dysfunction.",
+          "recommendations": {
+            "0": "Eliminate ultra-processed foods and focus on whole food sources",
+            "1": "Increase plant diversity: 30+ different plant foods weekly",
+            "2": "Balance macros: protein at every meal, healthy fats, complex carbs",
+            "3": "Consider elimination trial to identify inflammatory foods",
+            "4": "Work with nutritionist for personalized guidance"
+          },
+          "quickWin": "Start every day with protein-rich breakfast within 1 hour of waking"
+        },
+        "poor": {
+          "impact": "URGENT: Poor nutrition is aging you 10-15 years faster and setting foundation for chronic disease.",
+          "recommendations": {
+            "0": "PRIORITY: Eliminate processed foods, sugary drinks, refined carbs",
+            "1": "Build foundation: whole foods, vegetables, quality protein, healthy fats",
+            "2": "Meal prep on weekends to ensure healthy options available",
+            "3": "Address emotional eating or disordered patterns with support",
+            "4": "Consider working with registered dietitian for personalized plan"
+          },
+          "quickWin": "Clear kitchen of processed foods and restock with whole food staples"
+        }
+      },
+      "social": {
+        "excellent": {
+          "impact": "Your strong social connections are reducing mortality risk by 50% and protecting cognitive function as you age.",
+          "recommendations": {
+            "0": "Continue nurturing meaningful relationships and community involvement",
+            "1": "Deepen existing connections through quality time and vulnerability",
+            "2": "Mentor or volunteer to expand sense of purpose and contribution"
+          },
+          "quickWin": "Schedule weekly connection ritual with close friend or family member"
+        },
+        "good": {
+          "impact": "Your social connections provide health benefits, but deepening relationships could add 2-3 years to lifespan.",
+          "recommendations": {
+            "0": "Prioritize quality over quantity: deepen 2-3 core relationships",
+            "1": "Join community activity aligned with interests (club, class, volunteer)",
+            "2": "Schedule regular social activities to maintain consistency",
+            "3": "Practice active listening and emotional vulnerability to strengthen bonds"
+          },
+          "quickWin": "Reach out to one person you value but have not connected with recently"
+        },
+        "fair": {
+          "impact": "Limited social connection is accelerating aging by 3-5 years—equivalent health impact to smoking 15 cigarettes daily.",
+          "recommendations": {
+            "0": "Join structured social activity: class, group, club, volunteer role",
+            "1": "Reconnect with old friends or family members you have drifted from",
+            "2": "Consider therapy to address social anxiety or relationship patterns",
+            "3": "Build routine social touchpoints: coffee dates, phone calls, activities"
+          },
+          "quickWin": "Sign up for one social activity or class starting this month"
+        },
+        "poor": {
+          "impact": "CRITICAL: Social isolation is aging you 6-10 years faster and dramatically increasing mortality risk.",
+          "recommendations": {
+            "0": "PRIORITY: Address social isolation with professional support if needed",
+            "1": "Start small: one social interaction weekly (call, coffee, class)",
+            "2": "Join supportive community: support group, religious community, club",
+            "3": "Consider pet companionship as bridge to social connection",
+            "4": "Address underlying issues: anxiety, depression, past trauma with therapy"
+          },
+          "quickWin": "Call one friend or family member today for 10-minute check-in"
+        }
+      },
+      "brain": {
+        "excellent": {
+          "impact": "Your cognitive engagement is building robust cognitive reserve, reducing dementia risk by 40%, and maintaining neuroplasticity.",
+          "recommendations": {
+            "0": "Continue challenging brain with novel activities and learning",
+            "1": "Add meditation or mindfulness to enhance focus and brain structure",
+            "2": "Ensure adequate aerobic exercise for cerebral blood flow"
+          },
+          "quickWin": "Add 10 minutes daily of brain training or learning new skill"
+        },
+        "good": {
+          "impact": "Your cognitive activities provide protection, but increased challenge could further reduce dementia risk.",
+          "recommendations": {
+            "0": "Learn new complex skill: instrument, language, dance, craft",
+            "1": "Increase reading diversity: non-fiction, complex subjects, varied topics",
+            "2": "Add daily brain training: puzzles, strategy games, memory exercises",
+            "3": "Combine physical and cognitive: dancing, martial arts, coordination activities"
+          },
+          "quickWin": "Download language learning app and practice 15 minutes daily"
+        },
+        "fair": {
+          "impact": "Limited cognitive engagement is increasing dementia risk and allowing age-related cognitive decline.",
+          "recommendations": {
+            "0": "Engage in daily cognitively stimulating activities: reading, puzzles, learning",
+            "1": "Take up challenging new hobby requiring sustained focus and skill",
+            "2": "Increase social-cognitive activities: discussions, debates, teaching",
+            "3": "Address brain health foundations: sleep, exercise, nutrition, stress"
+          },
+          "quickWin": "Commit to 30 minutes daily reading of challenging material"
+        },
+        "poor": {
+          "impact": "URGENT: Low cognitive engagement significantly increases dementia risk and accelerates brain aging.",
+          "recommendations": {
+            "0": "PRIORITY: Implement daily cognitive stimulation program immediately",
+            "1": "Learn complex new skill requiring sustained effort and practice",
+            "2": "Join cognitive activities with social component: book club, classes",
+            "3": "Screen for and address cognitive decline with medical evaluation",
+            "4": "Optimize brain health: sleep, exercise, Mediterranean diet, stress management"
+          },
+          "quickWin": "Start daily crossword puzzle or sudoku with morning coffee"
+        }
+      }
+    }
+  }
+}

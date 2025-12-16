@@ -3,7 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, LucideIcon } from 'lucide-react';
-import { generateNutritionPillarAnalysis } from '@/utils/nutritionPillarAnalysisGenerator';
+import { useTranslation } from 'react-i18next';
 
 interface NutritionPillarAnalysisCardProps {
   pillarName: string;
@@ -28,14 +28,15 @@ export const NutritionPillarAnalysisCard = ({
   assessmentData,
   defaultOpen = false,
 }: NutritionPillarAnalysisCardProps) => {
+  const { t } = useTranslation();
   
   const getScoreLabel = (status: string) => {
     switch (status) {
-      case 'excellent': return 'Excellent';
-      case 'good': return 'Good';
-      case 'needs-improvement': return 'Needs Work';
-      case 'critical': return 'Critical';
-      default: return 'Fair';
+      case 'excellent': return t('nutritionPillarAnalysis.scoreLabels.excellent');
+      case 'good': return t('nutritionPillarAnalysis.scoreLabels.good');
+      case 'needs-improvement': return t('nutritionPillarAnalysis.scoreLabels.needsWork');
+      case 'critical': return t('nutritionPillarAnalysis.scoreLabels.critical');
+      default: return t('nutritionPillarAnalysis.scoreLabels.fair');
     }
   };
 
@@ -59,7 +60,56 @@ export const NutritionPillarAnalysisCard = ({
     }
   };
 
-  const analysis = generateNutritionPillarAnalysis(pillarName, assessmentData, score);
+  // Get analysis from translation keys
+  const getAnalysis = () => {
+    const scoreBand = status === 'excellent' ? 'excellent' :
+                      status === 'good' ? 'good' :
+                      status === 'needs-improvement' ? 'fair' : 'poor';
+    
+    const pillarKey = pillarName.toUpperCase();
+    const basePath = `nutritionPillarAnalysis.pillars.${pillarKey}.${scoreBand}`;
+    
+    // Get impact statement
+    const impactStatement = t(`${basePath}.impactStatement`);
+    
+    // Get recommendations array
+    const recommendations: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const rec = t(`${basePath}.recommendations.${i}`, { defaultValue: '' });
+      if (rec && rec !== `${basePath}.recommendations.${i}`) {
+        recommendations.push(rec);
+      }
+    }
+
+    // Get quick wins array
+    const quickWins: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      const win = t(`${basePath}.quickWins.${i}`, { defaultValue: '' });
+      if (win && win !== `${basePath}.quickWins.${i}`) {
+        quickWins.push(win);
+      }
+    }
+
+    // Fallback if translations not found
+    if (impactStatement === `${basePath}.impactStatement`) {
+      return {
+        impactStatement: t('nutritionPillarAnalysis.default.impactStatement'),
+        recommendations: [
+          t('nutritionPillarAnalysis.default.recommendations.0'),
+          t('nutritionPillarAnalysis.default.recommendations.1'),
+          t('nutritionPillarAnalysis.default.recommendations.2')
+        ],
+        quickWins: [
+          t('nutritionPillarAnalysis.default.quickWins.0'),
+          t('nutritionPillarAnalysis.default.quickWins.1')
+        ]
+      };
+    }
+
+    return { impactStatement, recommendations, quickWins };
+  };
+
+  const analysis = getAnalysis();
 
   return (
     <Collapsible defaultOpen={defaultOpen}>
@@ -102,7 +152,7 @@ export const NutritionPillarAnalysisCard = ({
             <div>
               <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
-                Evidence-Based Recommendations
+                {t('nutritionPillarAnalysis.ui.evidenceBasedRecommendations')}
               </h4>
               <ul className="space-y-2">
                 {analysis.recommendations.map((rec, idx) => (
@@ -115,7 +165,7 @@ export const NutritionPillarAnalysisCard = ({
 
             {/* Quick Wins */}
             <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
-              <h4 className="text-sm font-semibold mb-2 text-primary">Quick Wins - Start Today</h4>
+              <h4 className="text-sm font-semibold mb-2 text-primary">{t('nutritionPillarAnalysis.ui.quickWinsStartToday')}</h4>
               <ul className="space-y-1.5">
                 {analysis.quickWins.map((win, idx) => (
                   <li key={idx} className="text-sm text-foreground flex items-start gap-2">
