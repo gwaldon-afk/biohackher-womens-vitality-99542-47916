@@ -1,0 +1,253 @@
+{
+  "nutritionPillarAnalysis": {
+    "scoreLabels": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "needsWork": "Needs Work",
+      "critical": "Critical"
+    },
+    "ui": {
+      "evidenceBasedRecommendations": "Evidence-Based Recommendations",
+      "quickWinsStartToday": "Quick Wins - Start Today"
+    },
+    "default": {
+      "impactStatement": "Your nutrition in this area requires attention for optimal longevity.",
+      "recommendations": {
+        "0": "Focus on whole foods",
+        "1": "Stay hydrated",
+        "2": "Prioritise consistency"
+      },
+      "quickWins": {
+        "0": "Start small",
+        "1": "Track progress"
+      }
+    },
+    "pillars": {
+      "BODY": {
+        "excellent": {
+          "impactStatement": "Your protein intake is excellent and actively supporting muscle maintenance, metabolic health, and longevity. You're providing your body with the building blocks it needs to thrive.",
+          "recommendations": {
+            "0": "Maintain protein distribution across meals (25-40g per meal) for optimal muscle protein synthesis",
+            "1": "Include variety of protein sources: animal proteins for complete amino acids, plant proteins for fibre",
+            "2": "Time largest protein serving post-workout or in the morning for metabolic benefit"
+          },
+          "quickWins": {
+            "0": "Track protein intake for 3 days to ensure consistency",
+            "1": "Add collagen peptides to morning coffee for skin and joint support"
+          }
+        },
+        "good": {
+          "impactStatement": "Your protein intake provides a solid foundation, but increasing to optimal levels could enhance muscle retention, metabolism, and healthy ageing by 15-20%.",
+          "recommendations": {
+            "0": "Increase daily protein target to 1.6-2.0g per kg body weight",
+            "1": "Prioritise protein at breakfast to reduce cravings and stabilise blood sugar",
+            "2": "Add protein-rich snacks between meals: Greek yoghurt, nuts, protein smoothie"
+          },
+          "quickWins": {
+            "0": "Start day with 30g protein within 1 hour of waking",
+            "1": "Keep hard-boiled eggs or protein bars as emergency snacks"
+          }
+        },
+        "fair": {
+          "impactStatement": "Insufficient protein intake is compromising muscle mass, slowing metabolism, and accelerating ageing. Women over 40 need MORE protein, not less, to maintain vitality.",
+          "recommendations": {
+            "0": "Set minimum protein target: 100g daily for most women, 120g+ if active",
+            "1": "Plan protein sources for each meal before preparing food",
+            "2": "Consider protein powder supplement if struggling to meet targets through food",
+            "3": "Address underlying barriers: cost, convenience, taste preferences"
+          },
+          "quickWins": {
+            "0": "Add 2 eggs to breakfast starting tomorrow",
+            "1": "Keep pre-cooked rotisserie chicken in fridge for quick protein",
+            "2": "Download protein tracking app to increase awareness"
+          }
+        },
+        "poor": {
+          "impactStatement": "CRITICAL: Severe protein deficiency is causing muscle loss, metabolic decline, and accelerated ageing. This is undermining every other health effort you make.",
+          "recommendations": {
+            "0": "PRIORITY: Increase protein intake immediately to minimum 80-100g daily",
+            "1": "Spread protein across 3-4 meals to maximise absorption",
+            "2": "Add protein powder to smoothies for easy 20-30g boost",
+            "3": "Consider working with nutritionist to create sustainable protein plan",
+            "4": "Address barriers: budget, access, cooking skills, taste aversions"
+          },
+          "quickWins": {
+            "0": "Buy protein powder TODAY and have shake for breakfast",
+            "1": "Set phone reminders for protein at each meal",
+            "2": "Start with easiest sources: Greek yoghurt, cottage cheese, deli turkey"
+          }
+        }
+      },
+      "BRAIN": {
+        "excellent": {
+          "impactStatement": "Your anti-inflammatory eating pattern is protecting cognitive function, reducing dementia risk, and supporting optimal brain ageing.",
+          "recommendations": {
+            "0": "Continue emphasising omega-3 rich foods (fatty fish 2-3x/week)",
+            "1": "Maintain colourful plant diversity for polyphenols and antioxidants",
+            "2": "Keep refined sugar and processed foods minimal"
+          },
+          "quickWins": {
+            "0": "Add turmeric with black pepper to one meal daily",
+            "1": "Include berries 5+ days per week for brain-protective anthocyanins"
+          }
+        },
+        "good": {
+          "impactStatement": "Your nutrition supports brain health, but reducing inflammatory foods could significantly improve cognitive performance and long-term brain ageing.",
+          "recommendations": {
+            "0": "Reduce added sugar to <25g daily (women)",
+            "1": "Increase omega-3 intake: fatty fish, walnuts, flaxseed, or supplement",
+            "2": "Minimise processed foods with inflammatory seed oils",
+            "3": "Add brain-supportive foods: leafy greens, berries, dark chocolate 85%+"
+          },
+          "quickWins": {
+            "0": "Replace one sugary snack daily with handful of walnuts or berries",
+            "1": "Add 1 cup leafy greens to one meal daily"
+          }
+        },
+        "fair": {
+          "impactStatement": "Dietary inflammation is accelerating cognitive decline and increasing dementia risk. Your current eating pattern may be ageing your brain 5-10 years faster.",
+          "recommendations": {
+            "0": "Eliminate obvious inflammatory foods: soft drinks, lollies, pastries, fried foods",
+            "1": "Start Mediterranean-style eating: fish, olive oil, vegetables, whole grains",
+            "2": "Begin omega-3 supplementation (1000-2000mg EPA/DHA daily)",
+            "3": "Reduce or eliminate processed meats and refined carbohydrates"
+          },
+          "quickWins": {
+            "0": "Swap cooking oils to extra virgin olive oil only",
+            "1": "Start omega-3 supplement immediately",
+            "2": "Eliminate sugary beverages completely"
+          }
+        },
+        "poor": {
+          "impactStatement": "CRITICAL: Severe dietary inflammation is actively damaging brain cells, accelerating cognitive decline, and dramatically increasing dementia risk.",
+          "recommendations": {
+            "0": "PRIORITY: Implement anti-inflammatory protocol immediately",
+            "1": "Eliminate all processed foods, added sugars, and inflammatory oils",
+            "2": "Adopt Mediterranean diet framework as baseline",
+            "3": "Begin high-dose omega-3: 2000-3000mg EPA/DHA daily",
+            "4": "Consider working with functional nutritionist for personalised plan"
+          },
+          "quickWins": {
+            "0": "Clear kitchen of inflammatory foods TODAY",
+            "1": "Order omega-3 supplement and start immediately",
+            "2": "Plan 3 anti-inflammatory meals for this week"
+          }
+        }
+      },
+      "BALANCE": {
+        "excellent": {
+          "impactStatement": "Your gut health and eating patterns support optimal hormone balance, metabolic function, and emotional well-being. This is a cornerstone of longevity.",
+          "recommendations": {
+            "0": "Continue fibre-rich eating (30g+ daily) for microbiome diversity",
+            "1": "Maintain consistent meal timing to support circadian rhythm",
+            "2": "Keep stress-eating patterns minimal through other coping strategies"
+          },
+          "quickWins": {
+            "0": "Add fermented foods 3-4x/week (kimchi, sauerkraut, kefir)",
+            "1": "Track meals in food journal to identify any emerging patterns"
+          }
+        },
+        "good": {
+          "impactStatement": "Your gut health provides a foundation, but optimising fibre intake and meal timing could enhance hormone balance, mood stability, and metabolic health.",
+          "recommendations": {
+            "0": "Increase fibre gradually to 30-35g daily (add 5g per week)",
+            "1": "Establish consistent meal timing (within 1-hour window daily)",
+            "2": "Address stress-eating triggers with non-food coping strategies",
+            "3": "Include prebiotic foods: garlic, onions, asparagus, oats"
+          },
+          "quickWins": {
+            "0": "Add 1 tablespoon ground flaxseed to breakfast",
+            "1": "Set consistent breakfast and dinner times starting tomorrow"
+          }
+        },
+        "fair": {
+          "impactStatement": "Gut symptoms and erratic eating patterns are disrupting hormone balance, mood regulation, and metabolic function. This creates a cascade affecting multiple health systems.",
+          "recommendations": {
+            "0": "Start gut-healing protocol: eliminate common triggers (gluten, dairy) for 3 weeks",
+            "1": "Gradually increase fibre to reduce gut symptoms",
+            "2": "Establish strict meal schedule to stabilise blood sugar and hormones",
+            "3": "Consider digestive enzymes with meals",
+            "4": "Address stress-eating patterns through therapy or coaching"
+          },
+          "quickWins": {
+            "0": "Start probiotic supplement (50+ billion CFU)",
+            "1": "Set 3 meal times and stick to schedule for 1 week",
+            "2": "Identify #1 stress-eating trigger and create alternative response"
+          }
+        },
+        "poor": {
+          "impactStatement": "CRITICAL: Severe gut dysfunction and chaotic eating patterns are creating systemic inflammation, hormone disruption, and metabolic chaos.",
+          "recommendations": {
+            "0": "PRIORITY: Consult gastroenterologist to rule out serious conditions",
+            "1": "Implement strict elimination diet under professional guidance",
+            "2": "Begin gut-healing supplements: L-glutamine, zinc carnosine, probiotics",
+            "3": "Establish rigid meal schedule to create metabolic stability",
+            "4": "Address psychological relationship with food through therapy"
+          },
+          "quickWins": {
+            "0": "Schedule doctor appointment THIS WEEK",
+            "1": "Start food and symptom diary immediately",
+            "2": "Begin probiotic and L-glutamine supplementation"
+          }
+        }
+      },
+      "BEAUTY": {
+        "excellent": {
+          "impactStatement": "Your hydration, plant diversity, and nutrient-dense eating are supporting radiant skin, cellular health, and visible vitality from the inside out.",
+          "recommendations": {
+            "0": "Maintain 30+ plant varieties weekly for polyphenol diversity",
+            "1": "Continue adequate hydration (30-35ml per kg body weight daily)",
+            "2": "Keep skin-supportive nutrients high: vitamin C, zinc, omega-3"
+          },
+          "quickWins": {
+            "0": "Track plant variety weekly to ensure diversity",
+            "1": "Add vitamin C-rich food to every meal (capsicum, citrus, berries)"
+          }
+        },
+        "good": {
+          "impactStatement": "Your nutrition supports beauty from within, but optimising hydration and plant diversity could enhance skin health, hair quality, and cellular vitality.",
+          "recommendations": {
+            "0": "Increase water intake to minimum 2 litres daily",
+            "1": "Add 10 new plant varieties to your weekly rotation",
+            "2": "Increase skin-supportive foods: fatty fish, avocado, nuts, colourful vegetables",
+            "3": "Consider collagen supplementation for skin elasticity"
+          },
+          "quickWins": {
+            "0": "Drink 500ml water immediately upon waking",
+            "1": "Add 1 new vegetable to grocery list each week"
+          }
+        },
+        "fair": {
+          "impactStatement": "Inadequate hydration and limited plant diversity are compromising skin health, cellular function, and visible signs of ageing.",
+          "recommendations": {
+            "0": "Set hydration target: 30-35ml per kg body weight daily",
+            "1": "Add 5 new plant foods weekly to increase variety",
+            "2": "Increase foods rich in beauty nutrients: vitamin C, E, zinc, biotin",
+            "3": "Begin collagen peptides supplementation (10g daily)"
+          },
+          "quickWins": {
+            "0": "Buy reusable water bottle and carry everywhere",
+            "1": "Set hourly hydration reminders on phone",
+            "2": "Add 'rainbow challenge': eat 5 colours of plants daily"
+          }
+        },
+        "poor": {
+          "impactStatement": "CRITICAL: Severe dehydration and nutrient deficiency are accelerating visible ageing, compromising skin barrier function, and reducing cellular vitality.",
+          "recommendations": {
+            "0": "PRIORITY: Address chronic dehydration immediately",
+            "1": "Begin aggressive hydration protocol: 2-2.5 litres daily minimum",
+            "2": "Dramatically increase plant diversity from current baseline",
+            "3": "Consider IV hydration therapy if chronic dehydration persists",
+            "4": "Begin beauty supplementation: collagen, biotin, omega-3, vitamin C"
+          },
+          "quickWins": {
+            "0": "Drink 1 litre water before 10am starting tomorrow",
+            "1": "Set timer for hydration every hour",
+            "2": "Add 3 different coloured vegetables to dinner tonight"
+          }
+        }
+      }
+    }
+  }
+}
