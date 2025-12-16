@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Navigation from "@/components/Navigation";
 import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen, Clock, Home } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
@@ -44,6 +45,7 @@ const MyProtocol = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { adherence, toggleAdherence } = useAdherence();
   const { addToCart } = useCart();
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
