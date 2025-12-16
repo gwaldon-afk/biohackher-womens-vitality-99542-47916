@@ -39,6 +39,7 @@ function ProtocolItemCard({
   isAdded, 
   isGuest 
 }: ProtocolItemCardProps) {
+  const { t } = useTranslation();
   return (
     <Card className="p-4 border border-border/50 hover:border-primary/30 transition-colors">
       <div className="space-y-3">
@@ -57,7 +58,7 @@ function ProtocolItemCard({
                 className="gap-2"
               >
                 <ShoppingCart className="h-4 w-4" />
-                Add to Cart
+                {t('nutritionResults.addToCart')}
               </Button>
               {!isGuest && (
                 <Button
@@ -66,7 +67,7 @@ function ProtocolItemCard({
                   onClick={() => !isAdded && onAddToProtocol(item)}
                   disabled={isAdded}
                 >
-                  {isAdded ? "✓ In Protocol" : "Add to Protocol"}
+                  {isAdded ? t('nutritionResults.inProtocol') : t('nutritionResults.addToProtocol')}
                 </Button>
               )}
               {isGuest && (
@@ -76,7 +77,7 @@ function ProtocolItemCard({
                   onClick={() => onAddToProtocol(item)}
                   className="text-xs"
                 >
-                  Sign in to add to protocol
+                  {t('nutritionResults.signInToAdd')}
                 </Button>
               )}
             </>
@@ -89,7 +90,7 @@ function ProtocolItemCard({
                   onClick={() => !isAdded && onAddToProtocol(item)}
                   disabled={isAdded}
                 >
-                  {isAdded ? "✓ In Protocol" : "Add to Protocol"}
+                  {isAdded ? t('nutritionResults.inProtocol') : t('nutritionResults.addToProtocol')}
                 </Button>
               )}
               {isGuest && (
@@ -257,8 +258,8 @@ export default function LongevityNutritionResults() {
     });
 
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      title: t('nutritionResults.addedToCart'),
+      description: t('nutritionResults.addedToCartDescription', { name: product.name }),
     });
   };
 
@@ -266,8 +267,8 @@ export default function LongevityNutritionResults() {
   const handleAddToProtocol = async (item: ProtocolItem) => {
     if (!user) {
       toast({
-        title: "Sign in required",
-        description: "Create an account to save items to your protocol.",
+        title: t('nutritionResults.signInRequired'),
+        description: t('nutritionResults.signInRequiredDescription'),
         variant: "destructive"
       });
       return;
@@ -277,8 +278,8 @@ export default function LongevityNutritionResults() {
     const normalizedName = item.name.toLowerCase().trim();
     if (addedToProtocol.has(normalizedName)) {
       toast({
-        title: "Already in protocol",
-        description: `${item.name} is already in your protocol.`,
+        title: t('nutritionResults.alreadyInProtocol'),
+        description: t('nutritionResults.alreadyInProtocolDescription', { name: item.name }),
       });
       return;
     }
@@ -332,14 +333,14 @@ export default function LongevityNutritionResults() {
       setAddedToProtocol(prev => new Set([...prev, normalizedName]));
 
       toast({
-        title: "Added to protocol",
-        description: `${item.name} has been added to your personalized protocol.`,
+        title: t('nutritionResults.addedToProtocol'),
+        description: t('nutritionResults.addedToProtocolDescription', { name: item.name }),
       });
     } catch (error) {
       console.error('Error adding to protocol:', error);
       toast({
-        title: "Error",
-        description: "Failed to add item to protocol. Please try again.",
+        title: t('nutritionResults.error'),
+        description: t('nutritionResults.failedToAdd'),
         variant: "destructive"
       });
     }
@@ -480,8 +481,8 @@ export default function LongevityNutritionResults() {
       await refetchRecommendations();
 
       toast({
-        title: "Protocol saved!",
-        description: `${selectedItems.length} items added to your plan`,
+        title: t('nutritionResults.protocolSaved'),
+        description: t('nutritionResults.protocolSavedDescription', { count: selectedItems.length }),
       });
 
       setProtocolDialogOpen(false);

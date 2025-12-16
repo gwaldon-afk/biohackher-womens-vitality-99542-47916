@@ -294,7 +294,7 @@ export default function HormoneCompassResults() {
     matchedProduct: Product | null
   ) => {
     if (!user) {
-      toast.error('Please sign in to add items to your protocol');
+      toast.error(t('hormoneResults.pleaseSignIn', 'Please sign in to add items to your protocol'));
       navigate('/auth');
       return;
     }
@@ -302,7 +302,7 @@ export default function HormoneCompassResults() {
     // Check if already exists in database
     const normalizedName = item.name.toLowerCase().trim();
     if (existingProtocolItems.has(normalizedName)) {
-      toast.info(`${item.name} is already in your protocol`);
+      toast.info(t('hormoneResults.alreadyInProtocolToast', { name: item.name, defaultValue: `${item.name} is already in your protocol` }));
       return;
     }
 
@@ -328,10 +328,10 @@ export default function HormoneCompassResults() {
       setAddedItems(prev => new Set(prev).add(item.name));
       setExistingProtocolItems(prev => new Set(prev).add(normalizedName));
       
-      toast.success(`${item.name} added to your protocol`);
+      toast.success(t('hormoneResults.addedToProtocolToast', { name: item.name, defaultValue: `${item.name} added to your protocol` }));
     } catch (error) {
       console.error('Error adding to protocol:', error);
-      toast.error('Failed to add item to protocol');
+      toast.error(t('hormoneResults.failedToAdd', 'Failed to add item to protocol'));
     }
   };
   
@@ -384,7 +384,7 @@ export default function HormoneCompassResults() {
                     className="flex-1"
                   >
                     <ShoppingCart className="w-4 h-4 mr-1" />
-                    Add to Cart
+                    {t('hormoneResults.addToCart')}
                   </Button>
                   
                   {user && (
@@ -404,17 +404,17 @@ export default function HormoneCompassResults() {
                       {existingProtocolItems.has(item.name.toLowerCase().trim()) ? (
                         <>
                           <CheckCircle2 className="w-4 h-4 mr-1" />
-                          In Protocol
+                          {t('hormoneResults.inProtocol')}
                         </>
                       ) : addedItems.has(item.name) ? (
                         <>
                           <CheckCircle2 className="w-4 h-4 mr-1" />
-                          Added
+                          {t('hormoneResults.addedToProtocol')}
                         </>
                       ) : (
                         <>
                           <Target className="w-4 h-4 mr-1" />
-                          Add to Protocol
+                          {t('hormoneResults.addToProtocol')}
                         </>
                       )}
                     </Button>
@@ -427,7 +427,7 @@ export default function HormoneCompassResults() {
                       onClick={() => navigate('/auth')}
                       className="flex-1"
                     >
-                      Sign in to add
+                      {t('hormoneResults.signInToAdd')}
                     </Button>
                   )}
                 </div>
@@ -452,17 +452,17 @@ export default function HormoneCompassResults() {
                   {existingProtocolItems.has(item.name.toLowerCase().trim()) ? (
                     <>
                       <CheckCircle2 className="w-4 h-4 mr-1" />
-                      Already in Protocol
+                      {t('hormoneResults.alreadyInProtocol')}
                     </>
                   ) : addedItems.has(item.name) ? (
                     <>
                       <CheckCircle2 className="w-4 h-4 mr-1" />
-                      Added to Protocol
+                      {t('hormoneResults.addedToProtocol')}
                     </>
                   ) : (
                     <>
                       <Target className="w-4 h-4 mr-1" />
-                      Add to My Protocol
+                      {t('hormoneResults.addToMyProtocol')}
                     </>
                   )}
                 </Button>
@@ -475,7 +475,7 @@ export default function HormoneCompassResults() {
                 onClick={() => navigate('/auth')}
                 className="mt-2 text-xs text-primary hover:underline"
               >
-                Sign in to add to protocol →
+                {t('hormoneResults.signInToAddProtocol', 'Sign in to add to protocol →')}
               </button>
             )}
           </div>
@@ -552,7 +552,7 @@ export default function HormoneCompassResults() {
     return (
       <div className="container max-w-4xl py-8">
         <Card className="p-8">
-          <p>Loading your results...</p>
+          <p>{t('hormoneResults.loading')}</p>
         </Card>
       </div>
     );
@@ -611,34 +611,34 @@ export default function HormoneCompassResults() {
       brand: product.brand || 'Unknown',
       dosage: product.usage_instructions || 'As directed',
     });
-    toast.success(`${product.name} added to cart`);
+    toast.success(t('hormoneResults.addedToCartToast', { name: product.name, defaultValue: `${product.name} added to cart` }));
   };
 
   const handleAddToPlan = async () => {
     if (!user) {
-      toast.error('Please sign in to add to your plan');
+      toast.error(t('hormoneResults.pleaseSignInSave', 'Please sign in to add to your plan'));
       navigate('/auth');
       return;
     }
 
     try {
-      toast.success('Hormone health profile saved!');
+      toast.success(t('hormoneResults.hormoneProfileSaved', 'Hormone health profile saved!'));
       navigate('/my-protocol');
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      toast.error(t('hormoneResults.failedToUpdateProfile', 'Failed to update profile'));
     }
   };
 
   const handleAddToProtocol = async () => {
     if (!user) {
-      toast.error('Please sign in to save your protocol');
+      toast.error(t('hormoneResults.pleaseSignInSave', 'Please sign in to save your protocol'));
       navigate('/auth');
       return;
     }
 
     if (!assessmentId) {
-      toast.error('Assessment ID not found');
+      toast.error(t('hormoneResults.assessmentIdNotFound', 'Assessment ID not found'));
       return;
     }
 
@@ -658,7 +658,7 @@ export default function HormoneCompassResults() {
 
       if (error) {
         console.error('Error saving recommendation:', error);
-        toast.error('Failed to save recommendation');
+        toast.error(t('hormoneResults.failedToSaveRecommendation', 'Failed to save recommendation'));
         return;
       }
 
@@ -667,7 +667,7 @@ export default function HormoneCompassResults() {
       setProtocolDialogOpen(true);
     } catch (error) {
       console.error('Error saving protocol:', error);
-      toast.error('Failed to save protocol');
+      toast.error(t('hormoneResults.failedToSaveProtocol', 'Failed to save protocol'));
     }
   };
 
