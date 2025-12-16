@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const PermissionSetup = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo') || '';
   const { user, refreshProfile } = useAuth();
@@ -47,8 +49,8 @@ const PermissionSetup = () => {
     } catch (error) {
       console.error('Error saving permissions:', error);
       toast({
-        title: "Error",
-        description: "Failed to save permissions. Please try again.",
+        title: t('onboarding.permissions.errorTitle'),
+        description: t('onboarding.permissions.errorDescription'),
         variant: "destructive",
       });
     }
@@ -58,26 +60,26 @@ const PermissionSetup = () => {
     {
       key: 'camera' as const,
       icon: Camera,
-      title: 'Camera',
-      description: 'For progress photos and nutrition scanning',
+      titleKey: 'onboarding.permissions.items.camera.title',
+      descriptionKey: 'onboarding.permissions.items.camera.description',
     },
     {
       key: 'microphone' as const,
       icon: Mic,
-      title: 'Microphone',
-      description: 'For voice notes and mood check-ins',
+      titleKey: 'onboarding.permissions.items.microphone.title',
+      descriptionKey: 'onboarding.permissions.items.microphone.description',
     },
     {
       key: 'light_sensor' as const,
       icon: Lightbulb,
-      title: 'Light Sensor',
-      description: 'For circadian rhythm tracking',
+      titleKey: 'onboarding.permissions.items.lightSensor.title',
+      descriptionKey: 'onboarding.permissions.items.lightSensor.description',
     },
     {
       key: 'motion' as const,
       icon: Activity,
-      title: 'Motion',
-      description: 'For activity and movement tracking',
+      titleKey: 'onboarding.permissions.items.motion.title',
+      descriptionKey: 'onboarding.permissions.items.motion.description',
     },
   ];
 
@@ -85,9 +87,9 @@ const PermissionSetup = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-background to-muted/20">
       <div className="max-w-xl w-full space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Setup Permissions</h1>
+          <h1 className="text-3xl font-bold">{t('onboarding.permissions.title')}</h1>
           <p className="text-muted-foreground">
-            Enable features to get the most personalized experience
+            {t('onboarding.permissions.description')}
           </p>
         </div>
 
@@ -101,9 +103,9 @@ const PermissionSetup = () => {
                 </div>
                 <div className="flex-1 space-y-1">
                   <Label htmlFor={item.key} className="text-base font-medium cursor-pointer">
-                    {item.title}
+                    {t(item.titleKey)}
                   </Label>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <p className="text-sm text-muted-foreground">{t(item.descriptionKey)}</p>
                 </div>
                 <Switch
                   id={item.key}
@@ -116,7 +118,7 @@ const PermissionSetup = () => {
         </Card>
 
         <Button onClick={handleContinue} className="w-full" size="lg">
-          Continue
+          {t('onboarding.permissions.continue')}
         </Button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 // Protocol preview step showing generated recommendations
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,19 +18,21 @@ export function ProtocolPreviewStep({
   assessmentScore = 72,
   recommendations = []
 }: ProtocolPreviewStepProps) {
+  const { t } = useTranslation();
+
   const mockRecommendations = recommendations.length > 0 ? recommendations : [
     {
-      category: "Sleep Optimization",
+      categoryKey: "onboarding.protocol.categories.sleepOptimisation",
       items: ["Magnesium Glycinate", "Sleep tracking protocol", "Evening routine"],
       priority: "high"
     },
     {
-      category: "Cognitive Enhancement",
+      categoryKey: "onboarding.protocol.categories.cognitiveEnhancement",
       items: ["Omega-3 supplementation", "Mental clarity exercises", "Focus techniques"],
       priority: "high"
     },
     {
-      category: "Energy & Recovery",
+      categoryKey: "onboarding.protocol.categories.energyRecovery",
       items: ["CoQ10", "Active recovery days", "Hydration protocol"],
       priority: "medium"
     }
@@ -40,12 +43,11 @@ export function ProtocolPreviewStep({
       <div className="text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold">
           <Sparkles className="h-4 w-4" />
-          Assessment Complete!
+          {t('onboarding.protocol.complete')}
         </div>
-        <h2 className="text-3xl font-bold">Your Personalized Protocol Preview</h2>
+        <h2 className="text-3xl font-bold">{t('onboarding.protocol.title')}</h2>
         <p className="text-muted-foreground">
-          Based on your Longevity Impact Score of <span className="font-semibold text-foreground">{assessmentScore}</span>, 
-          here's what we recommend focusing on
+          {t('onboarding.protocol.description', { score: assessmentScore })}
         </p>
       </div>
 
@@ -53,10 +55,10 @@ export function ProtocolPreviewStep({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-primary" />
-            Your Protocol is Ready
+            {t('onboarding.protocol.ready.title')}
           </CardTitle>
           <CardDescription>
-            We've created a science-backed protocol with {mockRecommendations.length} key focus areas
+            {t('onboarding.protocol.ready.description', { count: mockRecommendations.length })}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -66,9 +68,9 @@ export function ProtocolPreviewStep({
           <Card key={index}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{rec.category}</CardTitle>
+                <CardTitle className="text-lg">{t(rec.categoryKey)}</CardTitle>
                 <Badge variant={rec.priority === 'high' ? 'default' : 'secondary'}>
-                  {rec.priority === 'high' ? 'High Priority' : 'Medium Priority'}
+                  {rec.priority === 'high' ? t('onboarding.protocol.priority.high') : t('onboarding.protocol.priority.medium')}
                 </Badge>
               </div>
             </CardHeader>
@@ -89,17 +91,17 @@ export function ProtocolPreviewStep({
       <Card className="bg-muted">
         <CardContent className="pt-6">
           <p className="text-sm text-center text-muted-foreground">
-            You'll have full access to your detailed protocol, progress tracking, and AI health assistant in your dashboard
+            {t('onboarding.protocol.dashboardAccess')}
           </p>
         </CardContent>
       </Card>
 
       <div className="flex justify-between pt-6">
         <Button variant="outline" onClick={onBack}>
-          Back
+          {t('onboarding.protocol.back')}
         </Button>
         <Button size="lg" onClick={onComplete} className="min-w-[200px]">
-          Go to Dashboard
+          {t('onboarding.protocol.goToDashboard')}
         </Button>
       </div>
     </div>
