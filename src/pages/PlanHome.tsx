@@ -5,40 +5,42 @@ import { Brain, Dumbbell, Sparkles, Heart, Plus } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import CheckinMenu from "@/components/CheckinMenu";
 import GlowMeter_Ring from "@/components/GlowMeter_Ring";
-
-const pillarCards = [
-  {
-    id: 'brain',
-    title: 'Brain',
-    icon: Brain,
-    color: 'from-purple-500/20 to-purple-500/5',
-    description: 'Optimize cognitive function',
-  },
-  {
-    id: 'body',
-    title: 'Body',
-    icon: Dumbbell,
-    color: 'from-blue-500/20 to-blue-500/5',
-    description: 'Build physical strength',
-  },
-  {
-    id: 'beauty',
-    title: 'Beauty',
-    icon: Sparkles,
-    color: 'from-pink-500/20 to-pink-500/5',
-    description: 'Enhance natural radiance',
-  },
-  {
-    id: 'balance',
-    title: 'Balance',
-    icon: Heart,
-    color: 'from-green-500/20 to-green-500/5',
-    description: 'Find inner harmony',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const PlanHome = () => {
+  const { t } = useTranslation();
   const [bioScore, setBioScore] = useState(0);
+
+  const pillarCards = [
+    {
+      id: 'brain',
+      titleKey: 'today.pillars.brain',
+      icon: Brain,
+      color: 'from-purple-500/20 to-purple-500/5',
+      descriptionKey: 'today.pillars.brainDesc',
+    },
+    {
+      id: 'body',
+      titleKey: 'today.pillars.body',
+      icon: Dumbbell,
+      color: 'from-blue-500/20 to-blue-500/5',
+      descriptionKey: 'today.pillars.bodyDesc',
+    },
+    {
+      id: 'beauty',
+      titleKey: 'today.pillars.beauty',
+      icon: Sparkles,
+      color: 'from-pink-500/20 to-pink-500/5',
+      descriptionKey: 'today.pillars.beautyDesc',
+    },
+    {
+      id: 'balance',
+      titleKey: 'today.pillars.balance',
+      icon: Heart,
+      color: 'from-green-500/20 to-green-500/5',
+      descriptionKey: 'today.pillars.balanceDesc',
+    },
+  ];
 
   useEffect(() => {
     const stored = localStorage.getItem('bio_score');
@@ -51,7 +53,7 @@ const PlanHome = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 pb-24">
       <div className="max-w-4xl mx-auto space-y-8 pt-8">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold">Your Vitality Plan</h1>
+          <h1 className="text-4xl font-bold">{t('today.plan.title')}</h1>
           
           <div className="flex justify-center">
             <GlowMeter_Ring value={bioScore} size={200} strokeWidth={16} />
@@ -71,8 +73,8 @@ const PlanHome = () => {
                     <Icon className="w-6 h-6" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold mb-1">{pillar.title}</h3>
-                    <p className="text-sm text-muted-foreground">{pillar.description}</p>
+                    <h3 className="text-xl font-semibold mb-1">{t(pillar.titleKey)}</h3>
+                    <p className="text-sm text-muted-foreground">{t(pillar.descriptionKey)}</p>
                   </div>
                 </div>
               </Card>

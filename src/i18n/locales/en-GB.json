@@ -190,6 +190,152 @@
       "indicator3": "Evidence-based protocols from 500+ peer-reviewed studies"
     }
   },
+  "today": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "Good night",
+      "messageMorning": "Start your day with intention",
+      "messageAfternoon": "Keep your energy flowing",
+      "messageEvening": "Wind down and reflect",
+      "messageNight": "Rest and restore"
+    },
+    "plan": {
+      "title": "Your Vitality Plan",
+      "loading": "Loading your daily plan...",
+      "noActiveItems": "No Active Protocol Items",
+      "noActiveItemsDesc": "Your protocol items are currently inactive. Activate them to see your daily plan.",
+      "manageProtocol": "Manage Your Protocol",
+      "fromActiveProtocol": "From Your Active Protocol",
+      "fromActiveProtocolDesc": "View and edit your supplements, meal plans, and routines",
+      "progress": "Progress: {{completed}}/{{total}} actions complete"
+    },
+    "pillars": {
+      "brain": "Brain",
+      "brainDesc": "Optimise cognitive function",
+      "body": "Body",
+      "bodyDesc": "Build physical strength",
+      "beauty": "Beauty",
+      "beautyDesc": "Enhance natural radiance",
+      "balance": "Balance",
+      "balanceDesc": "Find inner harmony"
+    },
+    "essentials": {
+      "title": "Daily Essentials",
+      "morningSunlight": "Morning Sunlight",
+      "morningSunlightDesc": "10-30 minutes within 2 hours of waking",
+      "hydration": "Hydration",
+      "hydrationDesc": "2L water throughout the day",
+      "deepBreathing": "Deep Breathing",
+      "deepBreathingDesc": "5 minutes of breathwork",
+      "sleepLog": "Log Last Night's Sleep",
+      "sleepLogDesc": "Track sleep quality",
+      "completed": "Essential completed!",
+      "updateFailed": "Failed to update"
+    },
+    "focus": {
+      "title": "Today's Focus",
+      "loading": "Loading your daily plan...",
+      "complete": "{{completed}}/{{total}} Complete",
+      "topPriorities": "Top Priorities",
+      "noActions": "No actions planned for today",
+      "viewFullPlan": "View Full Daily Plan"
+    },
+    "nutrition": {
+      "dailyLog": "Daily Nutrition Log",
+      "loggedToday": "Logged today",
+      "trackMeals": "Track today's meals",
+      "focusTitle": "Nutrition Focus for Today",
+      "focusTip1": "Aim for 25-30g protein per meal",
+      "focusTip2": "Include colourful vegetables",
+      "focusTip3": "Stay hydrated: drink 30-35ml per kg of body weight",
+      "focusTip4": "Prioritise whole foods over processed",
+      "createMealPlan": "Create Your Meal Plan",
+      "getMealsDesc": "Get personalised daily meals with a 7-day meal plan",
+      "actionUpdated": "Nutrition action updated"
+    },
+    "lis": {
+      "title": "LIS Impact Prediction",
+      "pointsOpportunity": "LIS Points Opportunity",
+      "planComplete": "Plan Complete",
+      "startMessage": "Start completing your daily plan to improve your LIS by {{points}} points, which could reduce your biological age by {{years}} years over the next 5 years! 🚀",
+      "continueMessage": "Consistently completing your daily plan can improve your LIS by {{points}} points, which could reduce your biological age by {{years}} years over the next 5 years! 🚀",
+      "impactExcellent": "Excellent impact on your longevity!",
+      "impactGood": "Good progress toward your goals!",
+      "impactBuilding": "Building positive habits!",
+      "impactMore": "Complete more actions for greater impact!"
+    },
+    "metrics": {
+      "title": "Daily Health Check-In",
+      "completed": "Completed",
+      "pending": "Pending",
+      "todayScore": "Today's LIS Score: {{score}}/100 • Track your progress over time",
+      "logMetrics": "Log your daily metrics to calculate your Longevity Impact Score",
+      "updateMetrics": "Update Today's Metrics",
+      "logHealthData": "Log Today's Health Data",
+      "timeEstimate": "Takes 2-3 minutes • Connects your daily actions to your LIS score",
+      "sleep": "Sleep",
+      "stress": "Stress",
+      "activity": "Activity",
+      "nutritionMetric": "Nutrition",
+      "social": "Social",
+      "cognitive": "Cognitive"
+    },
+    "goals": {
+      "title": "Your Active Goals",
+      "setFirst": "Set Your First Goal",
+      "setFirstDesc": "Track your progress towards specific health outcomes with personalised goals and protocol recommendations.",
+      "createGoal": "Create a Goal",
+      "viewAll": "View All",
+      "overallProgress": "Overall Progress",
+      "daysLeft": "Days Left",
+      "protocolAdherence": "Protocol Adherence",
+      "viewAllGoals": "View All {{count}} Goals"
+    },
+    "timeBlocks": {
+      "morning": "DO THIS NOW (Morning)",
+      "afternoon": "COMING UP (Afternoon)",
+      "evening": "TONIGHT (Evening)",
+      "stillToDo": "STILL TO DO (From Earlier)",
+      "now": "NOW",
+      "complete": "{{completed}}/{{total}} complete • {{minutes}} min total",
+      "morningSection": "Morning",
+      "afternoonSection": "Afternoon",
+      "eveningSection": "Evening",
+      "min": "{{minutes}} min",
+      "viewRecipe": "View Recipe",
+      "buy": "Buy"
+    },
+    "guest": {
+      "sampleBanner": "You're viewing a sample daily plan",
+      "readyTitle": "Ready to Create Your Personalised Plan?",
+      "readyDesc": "Take a 5-minute assessment to get a personalised daily plan based on your unique health profile, goals, and needs.",
+      "takeAssessment": "Take LIS Assessment (5 min)",
+      "nutritionAssessment": "Nutrition Assessment",
+      "alreadyAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "unlockTitle": "Ready to Unlock Your Personalised Plan?",
+      "unlockDesc": "Create a free account to save progress, get AI insights, and access personalised protocols",
+      "createAccount": "Create Free Account",
+      "takeAssessmentFirst": "Take Assessment First"
+    },
+    "checkin": {
+      "title": "Check-in",
+      "nutritionScan": "Nutrition Scan",
+      "nutritionScanDesc": "Snap a photo of your meal",
+      "moodCheckin": "Mood Check-in",
+      "moodCheckinDesc": "Record a quick voice note",
+      "quickLog": "Quick Log",
+      "quickLogDesc": "Track sleep & energy"
+    },
+    "toasts": {
+      "mealLogged": "Meal logged!",
+      "greatWork": "Great work!",
+      "addedToCart": "Added to cart!",
+      "failedUpdate": "Failed to update"
+    }
+  },
   "trustBar": {
     "evidenceBased": "Evidence-Based",
     "peerReviewed": "Peer-Reviewed Studies",

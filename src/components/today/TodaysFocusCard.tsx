@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle, ArrowRight, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
+import { useTranslation } from 'react-i18next';
 
 export const TodaysFocusCard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { actions, loading, completedCount, totalCount, top3 } = useDailyPlan();
 
@@ -13,10 +15,10 @@ export const TodaysFocusCard = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Today's Focus</CardTitle>
+          <CardTitle>{t('today.focus.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading your daily plan...</p>
+          <p className="text-sm text-muted-foreground">{t('today.focus.loading')}</p>
         </CardContent>
       </Card>
     );
@@ -28,9 +30,9 @@ export const TodaysFocusCard = () => {
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Today's Focus</CardTitle>
+          <CardTitle>{t('today.focus.title')}</CardTitle>
           <Badge variant="secondary">
-            {completedCount}/{totalCount} Complete
+            {t('today.focus.complete', { completed: completedCount, total: totalCount })}
           </Badge>
         </div>
       </CardHeader>
@@ -67,7 +69,7 @@ export const TodaysFocusCard = () => {
 
         {/* Top 3 Priority Actions */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Top Priorities</p>
+          <p className="text-sm font-medium text-muted-foreground">{t('today.focus.topPriorities')}</p>
           {top3.length > 0 ? (
             top3.map((action, index) => (
               <div key={index} className="flex items-start gap-3 p-2 rounded-lg bg-muted/50">
@@ -85,7 +87,7 @@ export const TodaysFocusCard = () => {
                     {action.estimatedMinutes && (
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {action.estimatedMinutes} min
+                        {t('today.timeBlocks.min', { minutes: action.estimatedMinutes })}
                       </span>
                     )}
                   </div>
@@ -93,7 +95,7 @@ export const TodaysFocusCard = () => {
               </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No actions planned for today</p>
+            <p className="text-sm text-muted-foreground">{t('today.focus.noActions')}</p>
           )}
         </div>
 
@@ -103,7 +105,7 @@ export const TodaysFocusCard = () => {
           className="w-full"
           variant="default"
         >
-          View Full Daily Plan
+          {t('today.focus.viewFullPlan')}
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardContent>

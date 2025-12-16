@@ -4,10 +4,10 @@ export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 
 export interface TimeContext {
   period: TimeOfDay;
-  greeting: string;
+  greetingKey: string;
   emoji: string;
   color: string;
-  message: string;
+  messageKey: string;
 }
 
 export const getTimeOfDay = (): TimeOfDay => {
@@ -25,31 +25,31 @@ export const getTimeContext = (): TimeContext => {
   const contexts: Record<TimeOfDay, TimeContext> = {
     morning: {
       period: 'morning',
-      greeting: 'Good morning',
+      greetingKey: 'today.greeting.morning',
       emoji: '☀️',
       color: 'from-orange-400 to-yellow-400',
-      message: 'Start your day with intention'
+      messageKey: 'today.greeting.messageMorning'
     },
     afternoon: {
       period: 'afternoon',
-      greeting: 'Good afternoon',
+      greetingKey: 'today.greeting.afternoon',
       emoji: '🌤️',
       color: 'from-blue-400 to-cyan-400',
-      message: 'Keep your energy flowing'
+      messageKey: 'today.greeting.messageAfternoon'
     },
     evening: {
       period: 'evening',
-      greeting: 'Good evening',
+      greetingKey: 'today.greeting.evening',
       emoji: '🌅',
       color: 'from-purple-400 to-pink-400',
-      message: 'Wind down and reflect'
+      messageKey: 'today.greeting.messageEvening'
     },
     night: {
       period: 'night',
-      greeting: 'Good night',
+      greetingKey: 'today.greeting.night',
       emoji: '🌙',
       color: 'from-indigo-500 to-purple-600',
-      message: 'Rest and restore'
+      messageKey: 'today.greeting.messageNight'
     }
   };
   

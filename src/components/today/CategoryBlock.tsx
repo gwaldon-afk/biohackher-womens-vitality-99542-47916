@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronDown, Clock, ShoppingCart, Utensils, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
+import { useTranslation } from 'react-i18next';
 import {
   Collapsible,
   CollapsibleContent,
@@ -50,6 +51,7 @@ export const CategoryBlock = ({
   timeContext,
   isPastDue = false,
 }: CategoryBlockProps) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   if (totalCount === 0) return null;
@@ -73,13 +75,13 @@ export const CategoryBlock = ({
 
   const colors = colorMap[color] || colorMap.blue;
 
-  const renderTimeSection = (sectionTitle: string, sectionItems: any[]) => {
+  const renderTimeSection = (sectionTitleKey: string, sectionItems: any[]) => {
     if (sectionItems.length === 0) return null;
 
     return (
       <div className="space-y-2">
         <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider pl-2">
-          {sectionTitle}
+          {t(sectionTitleKey)}
         </h4>
         {sectionItems.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
@@ -122,7 +124,7 @@ export const CategoryBlock = ({
                 <div className="flex items-center gap-4 mt-2">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Clock className="w-3 h-3" />
-                    {action.estimatedMinutes} min
+                    {t('today.timeBlocks.min', { minutes: action.estimatedMinutes })}
                   </div>
                   {isMeal && action.mealData && onViewMeal && (
                     <Button
@@ -132,7 +134,7 @@ export const CategoryBlock = ({
                       className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
                     >
                       <Utensils className="w-3 h-3" />
-                      View Recipe
+                      {t('today.timeBlocks.viewRecipe')}
                     </Button>
                   )}
                   {isSupplementCategory && onBuySupplements && (
@@ -143,7 +145,7 @@ export const CategoryBlock = ({
                       className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
                     >
                       <ShoppingCart className="w-3 h-3" />
-                      Buy
+                      {t('today.timeBlocks.buy')}
                     </Button>
                   )}
                 </div>
@@ -173,12 +175,12 @@ export const CategoryBlock = ({
                   <h3 className="font-semibold text-lg text-foreground">{title}</h3>
                   {timeContext === 'now' && (
                     <Badge variant="destructive" className="animate-pulse">
-                      NOW
+                      {t('today.timeBlocks.now')}
                     </Badge>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {completedCount}/{totalCount} complete • {totalMinutes} min total
+                  {t('today.timeBlocks.complete', { completed: completedCount, total: totalCount, minutes: totalMinutes })}
                 </p>
               </div>
             </div>
@@ -203,9 +205,9 @@ export const CategoryBlock = ({
         {/* Content */}
         <CollapsibleContent>
           <div className="px-4 pb-4 space-y-4">
-            {renderTimeSection("Morning", morningItems)}
-            {renderTimeSection("Afternoon", afternoonItems)}
-            {renderTimeSection("Evening", eveningItems)}
+            {renderTimeSection("today.timeBlocks.morningSection", morningItems)}
+            {renderTimeSection("today.timeBlocks.afternoonSection", afternoonItems)}
+            {renderTimeSection("today.timeBlocks.eveningSection", eveningItems)}
           </div>
         </CollapsibleContent>
       </div>

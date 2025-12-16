@@ -6,8 +6,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import NutritionalScorecard from "@/components/NutritionalScorecard";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from 'react-i18next';
 
 export const NutritionScorecardWidget = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(() => {
     const visits = parseInt(localStorage.getItem("nutritionVisits") || "0");
@@ -60,14 +62,14 @@ export const NutritionScorecardWidget = () => {
             <div className="flex items-center gap-3">
               <Apple className="h-5 w-5 text-primary" />
               <div className="text-left">
-                <h3 className="font-semibold text-foreground">Daily Nutrition Log</h3>
+                <h3 className="font-semibold text-foreground">{t('today.nutrition.dailyLog')}</h3>
                 <p className="text-sm text-muted-foreground">
                   {hasLoggedToday ? (
                     <span className="flex items-center gap-1 text-primary">
-                      <Check className="h-4 w-4" /> Logged today
+                      <Check className="h-4 w-4" /> {t('today.nutrition.loggedToday')}
                     </span>
                   ) : (
-                    "Track today's meals"
+                    t('today.nutrition.trackMeals')
                   )}
                 </p>
               </div>

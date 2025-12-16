@@ -5,46 +5,48 @@ import { Droplet, Sun, Moon, Wind } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface DailyEssential {
   id: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
-  description: string;
+  descriptionKey: string;
 }
 
-const ESSENTIALS: DailyEssential[] = [
-  {
-    id: "morning_sunlight",
-    label: "Morning Sunlight",
-    icon: <Sun className="w-4 h-4" />,
-    description: "10-30 minutes within 2 hours of waking"
-  },
-  {
-    id: "hydration",
-    label: "Hydration",
-    icon: <Droplet className="w-4 h-4" />,
-    description: "2L water throughout the day"
-  },
-  {
-    id: "deep_breathing",
-    label: "Deep Breathing",
-    icon: <Wind className="w-4 h-4" />,
-    description: "5 minutes of breathwork"
-  },
-  {
-    id: "sleep_log",
-    label: "Log Last Night's Sleep",
-    icon: <Moon className="w-4 h-4" />,
-    description: "Track sleep quality"
-  }
-];
-
 export const DailyEssentialsCard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [completions, setCompletions] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const today = new Date().toISOString().split('T')[0];
+
+  const ESSENTIALS: DailyEssential[] = [
+    {
+      id: "morning_sunlight",
+      labelKey: "today.essentials.morningSunlight",
+      icon: <Sun className="w-4 h-4" />,
+      descriptionKey: "today.essentials.morningSunlightDesc"
+    },
+    {
+      id: "hydration",
+      labelKey: "today.essentials.hydration",
+      icon: <Droplet className="w-4 h-4" />,
+      descriptionKey: "today.essentials.hydrationDesc"
+    },
+    {
+      id: "deep_breathing",
+      labelKey: "today.essentials.deepBreathing",
+      icon: <Wind className="w-4 h-4" />,
+      descriptionKey: "today.essentials.deepBreathingDesc"
+    },
+    {
+      id: "sleep_log",
+      labelKey: "today.essentials.sleepLog",
+      icon: <Moon className="w-4 h-4" />,
+      descriptionKey: "today.essentials.sleepLogDesc"
+    }
+  ];
 
   useEffect(() => {
     if (user) {
@@ -101,11 +103,11 @@ export const DailyEssentialsCard = () => {
           });
         
         setCompletions(prev => new Set(prev).add(essentialId));
-        toast.success("Essential completed!");
+        toast.success(t('today.essentials.completed'));
       }
     } catch (error) {
       console.error('Error toggling completion:', error);
-      toast.error("Failed to update");
+      toast.error(t('today.essentials.updateFailed'));
     }
   };
 
@@ -113,10 +115,10 @@ export const DailyEssentialsCard = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Daily Essentials</CardTitle>
+          <CardTitle className="text-lg">{t('today.essentials.title')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">Loading...</p>
+          <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
         </CardContent>
       </Card>
     );
@@ -125,7 +127,7 @@ export const DailyEssentialsCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Daily Essentials</CardTitle>
+        <CardTitle className="text-lg">{t('today.essentials.title')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {ESSENTIALS.map(essential => (
@@ -138,10 +140,10 @@ export const DailyEssentialsCard = () => {
               <div className="flex items-center gap-2">
                 {essential.icon}
                 <span className={completions.has(essential.id) ? "line-through text-muted-foreground" : ""}>
-                  {essential.label}
+                  {t(essential.labelKey)}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">{essential.description}</p>
+              <p className="text-xs text-muted-foreground">{t(essential.descriptionKey)}</p>
             </div>
           </div>
         ))}

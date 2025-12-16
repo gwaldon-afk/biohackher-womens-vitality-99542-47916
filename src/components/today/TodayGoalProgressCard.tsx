@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { calculateGoalProgress } from "@/services/goalProgressService";
 import { differenceInDays } from "date-fns";
+import { useTranslation } from 'react-i18next';
 
 interface GoalProgressData {
   id: string;
@@ -20,6 +21,7 @@ interface GoalProgressData {
 }
 
 export const TodayGoalProgressCard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { goals, loading } = useGoals();
   const navigate = useNavigate();
@@ -88,12 +90,12 @@ export const TodayGoalProgressCard = () => {
             <Target className="h-6 w-6 text-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-lg mb-2">Set Your First Goal</h3>
+            <h3 className="font-semibold text-lg mb-2">{t('today.goals.setFirst')}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Track your progress towards specific health outcomes with personalized goals and protocol recommendations.
+              {t('today.goals.setFirstDesc')}
             </p>
             <Button onClick={() => navigate('/my-goals')} size="sm">
-              Create a Goal
+              {t('today.goals.createGoal')}
             </Button>
           </div>
         </div>
@@ -117,10 +119,10 @@ export const TodayGoalProgressCard = () => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Target className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">Your Active Goals</h3>
+          <h3 className="font-semibold text-lg">{t('today.goals.title')}</h3>
         </div>
         <Button variant="ghost" size="sm" onClick={() => navigate('/my-goals')}>
-          View All
+          {t('today.goals.viewAll')}
         </Button>
       </div>
 
@@ -143,7 +145,7 @@ export const TodayGoalProgressCard = () => {
             {/* Progress Bar */}
             <div className="mb-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-muted-foreground">Overall Progress</span>
+                <span className="text-xs text-muted-foreground">{t('today.goals.overallProgress')}</span>
                 <span className="text-sm font-semibold text-primary">{goal.progress}%</span>
               </div>
               <Progress value={goal.progress} className="h-2" />
@@ -154,14 +156,14 @@ export const TodayGoalProgressCard = () => {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <div className="text-xs text-muted-foreground">Days Left</div>
+                  <div className="text-xs text-muted-foreground">{t('today.goals.daysLeft')}</div>
                   <div className="font-semibold">{goal.daysRemaining}</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <div className="text-xs text-muted-foreground">Protocol Adherence</div>
+                  <div className="text-xs text-muted-foreground">{t('today.goals.protocolAdherence')}</div>
                   <div className="font-semibold">{Math.round(goal.protocolAdherence)}%</div>
                 </div>
               </div>
@@ -174,7 +176,7 @@ export const TodayGoalProgressCard = () => {
         <div className="mt-4 text-center">
           <Button variant="outline" size="sm" onClick={() => navigate('/my-goals')}>
             <TrendingUp className="h-4 w-4 mr-2" />
-            View All {activeGoals.length} Goals
+            {t('today.goals.viewAllGoals', { count: activeGoals.length })}
           </Button>
         </div>
       )}
