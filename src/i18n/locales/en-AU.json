@@ -798,11 +798,19 @@
     "dataSecurity": "Data Security Guaranteed"
   },
   "dashboard": {
+    "title": "My Health Journey",
     "welcome": "Welcome to Your Journey",
     "overview": "Overview",
     "assessments": "Assessments",
     "progress": "Progress",
-    "insights": "Insights"
+    "insights": "Insights",
+    "comprehensiveAnalysis": "Your Comprehensive Health Analysis",
+    "overallScore": "Overall Score",
+    "viewFullAnalysis": "View Full Analysis",
+    "getStarted": "Get Started with Your First Assessment",
+    "personalizedInsights": "Personalised Insights",
+    "detailedAnalysis": "See detailed aggregated analysis and comprehensive recommendations",
+    "optimizeHealthspan": "Optimising your healthspan and lifespan"
   },
   "assessmentResults": {
     "backToPillars": "Back to Pillars",
@@ -1030,17 +1038,6 @@
     "week": "Week",
     "day": "Day"
   },
-  "dashboard": {
-    "title": "My Health Journey",
-    "welcome": "Welcome to Your Journey",
-    "comprehensiveAnalysis": "Your Comprehensive Health Analysis",
-    "overallScore": "Overall Score",
-    "viewFullAnalysis": "View Full Analysis",
-    "getStarted": "Get Started with Your First Assessment",
-    "personalizedInsights": "Personalised Insights",
-    "detailedAnalysis": "See detailed aggregated analysis and comprehensive recommendations",
-    "optimizeHealthspan": "Optimising your healthspan and lifespan"
-  },
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your profile, notifications, and privacy preferences",
@@ -1053,17 +1050,6 @@
     "personalInfo": "Personal Information",
     "saveChanges": "Save Changes",
     "savingChanges": "Saving changes..."
-  },
-  "brainAssessment": {
-    "title": "Brain Health Assessment",
-    "cognitiveProfile": "Your Cognitive Profile Analysis",
-    "personalizedActionPlan": "Your Personalised Action Plan",
-    "sleepOptimization": "Sleep Optimisation",
-    "memoryOptimization": "Memory Optimisation",
-    "focusOptimization": "Focus Optimisation",
-    "goodFunction": "Good cognitive function",
-    "excellentPerformance": "Excellent performance across all categories! Focus on maintenance and continued optimisation.",
-    "targetedOptimization": "targeted optimisation could elevate your cognitive performance"
   },
   "menomap": {
     "assessment": {
@@ -1904,6 +1890,15 @@
     }
   },
   "brainAssessment": {
+    "title": "Brain Health Assessment",
+    "cognitiveProfile": "Your Cognitive Profile Analysis",
+    "personalizedActionPlan": "Your Personalised Action Plan",
+    "sleepOptimization": "Sleep Optimisation",
+    "memoryOptimization": "Memory Optimisation",
+    "focusOptimization": "Focus Optimisation",
+    "goodFunction": "Good cognitive function",
+    "excellentPerformance": "Excellent performance across all categories! Focus on maintenance and continued optimisation.",
+    "targetedOptimization": "targeted optimisation could elevate your cognitive performance",
     "pageTitle": "Brain Health Assessment",
     "pageTitleMenopause": "Menopause Brain Health",
     "pageSubtitle": "Evaluate your cognitive performance",
@@ -2142,6 +2137,42 @@
           "minimally": "Minimally - Little to no impact"
         }
       }
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Science-backed supplements and wellness products",
+    "search": {
+      "placeholder": "Search products..."
+    },
+    "pillars": {
+      "all": "All Products",
+      "beauty": "Beauty",
+      "brain": "Brain",
+      "body": "Body",
+      "balance": "Balance"
+    },
+    "evidence": {
+      "gold": "Gold",
+      "silver": "Silver",
+      "bronze": "Bronze",
+      "emerging": "Emerging"
+    },
+    "product": {
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "addToCart": "Add to Cart"
+    },
+    "banner": {
+      "assessmentRecommendations": "Product recommendations based on your assessment results"
+    },
+    "disclaimer": {
+      "title": "Health & Safety Information",
+      "content": "The information provided about these products is for educational purposes only and is not intended to diagnose, treat, cure, or prevent any disease. Always consult with a qualified healthcare professional before starting any supplement regimen."
+    },
+    "toasts": {
+      "addedToCart": "Added to cart",
+      "addedToCartDesc": "{{name}} has been added to your cart."
     }
   }
 }
