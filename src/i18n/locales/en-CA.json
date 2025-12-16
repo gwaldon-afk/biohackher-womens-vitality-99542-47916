@@ -1238,5 +1238,123 @@
       "greatStart": "Great Start! 🎉",
       "firstScoreRecorded": "Your first daily score has been recorded. You can now view your dashboard!"
     }
+  },
+  "lisAssessment": {
+    "exitDialog": {
+      "title": "Exit Assessment?",
+      "description": "Your progress will be lost. Are you sure you want to exit?",
+      "continueBtn": "Continue Assessment",
+      "exitBtn": "Exit to Home"
+    },
+    "header": {
+      "home": "Home",
+      "title": "LIS 2.0 Assessment",
+      "exit": "Exit"
+    },
+    "subtitle": "Discover your science-backed Longevity Impact Score",
+    "progress": {
+      "questionOf": "Question {{current}} of {{total}}",
+      "complete": "{{percent}}% complete",
+      "riskModifier": "Risk Modifier"
+    },
+    "baseline": {
+      "title": "Before We Begin",
+      "subtitle": "We need a few baseline metrics to calculate your personalized Longevity Impact Score based on peer-reviewed research",
+      "dateOfBirth": "Date of Birth",
+      "ageYears": "Age: {{age}} years",
+      "heightCm": "Height (cm)",
+      "heightPlaceholder": "e.g., 165",
+      "aboutFeet": "About {{feet}}'{{inches}}\" in feet",
+      "weightKg": "Weight (kg)",
+      "weightPlaceholder": "e.g., 65",
+      "aboutLbs": "About {{lbs}} lbs",
+      "yourBmi": "Your BMI",
+      "underweight": "Underweight",
+      "normalWeight": "Normal weight",
+      "overweight": "Overweight",
+      "obese": "Obese",
+      "privacyTitle": "Your data is private and secure",
+      "privacyDesc": "We use these metrics solely to personalize your assessment results"
+    },
+    "question": {
+      "healthBadge": "{{pillar}} Health",
+      "selectOption": "Select the option that best describes you",
+      "healthImpact": "Health Impact"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "startAssessment": "Start Assessment",
+      "back": "Back",
+      "calculating": "Calculating...",
+      "getMyScore": "Get My Score",
+      "continue": "Continue"
+    },
+    "footer": {
+      "assessmentTime": "This assessment takes approximately 2 minutes to complete",
+      "questionsRemaining": "{{count}} questions remaining • ~{{minutes}} min"
+    },
+    "toasts": {
+      "fillBaseline": "Please fill in all baseline information",
+      "invalidDob": "Please enter a valid date of birth (age 18-120 years)",
+      "invalidHeight": "Please enter a valid height (100-250 cm)",
+      "invalidWeight": "Please enter a valid weight (30-300 kg)",
+      "selectAnswer": "Please select an answer to continue",
+      "generatingProtocol": "Generating your personalized protocol...",
+      "protocolCreated": "Protocol created with {{count}} personalized recommendations!",
+      "protocolBackground": "Protocol generation will complete in the background",
+      "failedSave": "Failed to save assessment. Please try again.",
+      "failedSaveProfile": "Failed to save health profile. Please try again.",
+      "error": "An error occurred. Please try again."
+    },
+    "pillars": {
+      "sleep": "Sleep",
+      "stress": "Stress",
+      "activity": "Activity",
+      "nutrition": "Nutrition",
+      "social": "Social",
+      "cognitive": "Cognitive"
+    }
+  },
+  "hormoneAssessment": {
+    "toasts": {
+      "answerQuestion": "Please answer the question",
+      "answerQuestionDesc": "Select a value on the scale to continue",
+      "dobRequired": "Date of birth required",
+      "dobRequiredDesc": "Please enter your date of birth to calculate your Hormone Age",
+      "invalidDate": "Invalid date",
+      "invalidDateDesc": "Please enter a valid date of birth",
+      "invalidAge": "Invalid age",
+      "invalidAgeDesc": "Please enter a valid date of birth (age 18-100)",
+      "authRequired": "Authentication Required",
+      "authRequiredDesc": "Please log in to save your assessment results.",
+      "error": "Error",
+      "failedSave": "Failed to save assessment: {{message}}"
+    },
+    "ageCollection": {
+      "backToQuestions": "Back to Questions",
+      "oneMoreStep": "One More Step",
+      "toCalculateHormoneAge": "To calculate your Hormone Age, we need your date of birth",
+      "discoverHormoneAge": "Discover Your Hormone Age",
+      "hormoneAgeDesc": "Your Hormone Age compares your symptom patterns to women in your age group, revealing whether your hormones are functioning younger or older than your actual age.",
+      "dateOfBirth": "Date of Birth",
+      "privacyNote": "Your age is used only to compare your symptoms to population norms. We don't store this information for guest users.",
+      "getMyHormoneAge": "Get My Hormone Age",
+      "calculating": "Calculating..."
+    },
+    "main": {
+      "backToHome": "Back to Home",
+      "title": "HormoneCompass™ Assessment",
+      "answerHonestly": "Answer honestly to get the most accurate evaluation"
+    },
+    "progress": {
+      "questionOf": "Question {{current}} of {{total}}",
+      "complete": "{{percent}}% Complete"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "next": "Next",
+      "complete": "Complete",
+      "calculating": "Calculating..."
+    }
   }
 }
