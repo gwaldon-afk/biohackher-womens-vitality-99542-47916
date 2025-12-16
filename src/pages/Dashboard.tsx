@@ -62,6 +62,7 @@ import { extractSymptomsFromAssessments } from "@/utils/assessmentProtocolMatchi
 import { getSuggestedAdditionalAssessments } from "@/utils/assessmentSuggestionEngine";
 import { assessmentConfigs } from "@/data/assessmentQuestions";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DashboardData {
   currentScore: number;
@@ -88,6 +89,7 @@ interface UserSymptom {
 }
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
@@ -214,9 +216,9 @@ const Dashboard = () => {
 
   const getPersonalizedAssessmentStatements = () => {
     if (recentAssessments.length === 0) return {
-      primaryStatement: "Your health journey is just beginning. Complete your first symptom assessment to unlock personalised insights and recommendations tailored specifically to your wellness goals.",
+      primaryStatement: t('dashboard.statements.journeyBeginning'),
       secondaryStatements: [],
-      actionStatement: "Take your first assessment to discover your unique health profile and receive targeted guidance for optimal wellbeing."
+      actionStatement: t('dashboard.statements.takeFirstAssessment')
     };
 
     const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
@@ -301,18 +303,19 @@ const Dashboard = () => {
 
   const getOverallHealthStatus = () => {
     if (recentAssessments.length === 0) return { 
-      status: 'No Data', 
+      status: t('dashboard.healthStatus.noData'), 
       color: 'text-gray-600',
       score: 0,
-      assessment: 'Complete your first symptom assessment to get your health profile.'
+      assessment: t('dashboard.healthStatus.completeFirst')
     };
     
     const avgScore = recentAssessments.reduce((sum, a) => sum + a.overall_score, 0) / recentAssessments.length;
     
-    if (avgScore >= 80) return { status: 'Excellent', color: 'text-green-600', score: Math.round(avgScore), assessment: '' };
-    if (avgScore >= 65) return { status: 'Good', color: 'text-blue-600', score: Math.round(avgScore), assessment: '' };
-    if (avgScore >= 50) return { status: 'Fair', color: 'text-amber-600', score: Math.round(avgScore), assessment: '' };
-    return { status: 'Needs Attention', color: 'text-red-600', score: Math.round(avgScore), assessment: '' };
+    if (avgScore >= 80) return { status: t('dashboard.healthStatus.excellent'), color: 'text-green-600', score: Math.round(avgScore), assessment: '' };
+    if (avgScore >= 65) return { status: t('dashboard.healthStatus.good'), color: 'text-blue-600', score: Math.round(avgScore), assessment: '' };
+    if (avgScore >= 50) return { status: t('dashboard.healthStatus.fair'), color: 'text-amber-600', score: Math.round(avgScore), assessment: '' };
+    return { status: t('dashboard.healthStatus.needsAttention'), color: 'text-red-600', score: Math.round(avgScore), assessment: '' };
+  };
   };
 
   const getPriorityRecommendations = () => {
@@ -320,8 +323,8 @@ const Dashboard = () => {
     
     if (activeSymptoms.length === 0) {
       recommendations.push({
-        title: "Start Your Health Assessment",
-        description: "Take your first symptom assessment to get personalised recommendations",
+        title: t('dashboard.recommendations.startAssessment'),
+        description: t('dashboard.recommendations.startAssessmentDesc'),
         action: () => navigate('/pillars'),
         priority: 'high'
       });
@@ -331,8 +334,8 @@ const Dashboard = () => {
     const poorAssessments = recentAssessments.filter(a => a.score_category === 'poor' || a.score_category === 'fair');
     poorAssessments.forEach(assessment => {
       recommendations.push({
-        title: `Address ${getSymptomName(assessment.symptom_type)}`,
-        description: "Your recent assessment shows this area needs attention",
+        title: t('dashboard.recommendations.address', { symptom: getSymptomName(assessment.symptom_type) }),
+        description: t('dashboard.recommendations.addressDesc'),
         action: () => navigate(`/assessment/${assessment.symptom_type}/results`),
         priority: 'high'
       });
@@ -340,8 +343,8 @@ const Dashboard = () => {
 
     if (recentAssessments.length > 0) {
       recommendations.push({
-        title: "View Complete Health Profile",
-        description: "See detailed aggregated analysis and comprehensive recommendations",
+        title: t('dashboard.recommendations.viewProfile'),
+        description: t('dashboard.recommendations.viewProfileDesc'),
         action: () => navigate('/reports'),
         priority: 'medium'
       });
@@ -351,32 +354,32 @@ const Dashboard = () => {
   };
   const primaryActions = [
     {
-      title: "View My Data",
-      subtitle: "Assessment History & Reports", 
+      title: t('dashboard.actions.viewMyData'),
+      subtitle: t('dashboard.actions.assessmentHistory'), 
       icon: History,
       variant: "default" as const,
       onClick: () => navigate('/pillars?from=dashboard'),
       className: "bg-primary text-primary-foreground hover:bg-primary/90"
     },
     {
-      title: "Take Symptom Assessment",
-      subtitle: "Complete your wellness check",
+      title: t('dashboard.actions.takeAssessment'),
+      subtitle: t('dashboard.actions.completeWellnessCheck'),
       icon: FileText,
       variant: "outline" as const,
       onClick: () => navigate('/pillars'),
       className: "border-primary/20 text-primary hover:bg-primary/5"
     },
     {
-      title: "Sync Wearables",
-      subtitle: "Update health data",
+      title: t('dashboard.actions.syncWearables'),
+      subtitle: t('dashboard.actions.updateHealthData'),
       icon: Activity,
       variant: "outline" as const,
       onClick: () => handleSyncWearables(),
       className: "border-muted-foreground/20 hover:bg-muted/50"
     },
     {
-      title: "Settings",
-      subtitle: "Account & preferences",
+      title: t('dashboard.actions.settings'),
+      subtitle: t('dashboard.actions.accountPreferences'),
       icon: Settings,
       variant: "ghost" as const,
       onClick: () => navigate('/settings'),
@@ -390,8 +393,8 @@ const Dashboard = () => {
     setTimeout(() => {
       setLoading(false);
       toast({
-        title: "Sync Complete",
-        description: "Health data updated successfully",
+        title: t('dashboard.toasts.syncComplete'),
+        description: t('dashboard.toasts.syncCompleteDesc'),
       });
     }, 2000);
   };
@@ -418,8 +421,8 @@ const Dashboard = () => {
               completed_date: today
             });
           toast({
-            title: "Great work!",
-            description: "Action completed successfully",
+            title: t('dashboard.toasts.greatWork'),
+            description: t('dashboard.toasts.actionCompleted'),
           });
         }
         refetchDailyPlan();
@@ -427,8 +430,8 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error toggling action:', error);
       toast({
-        title: "Error",
-        description: "Failed to update action",
+        title: t('dashboard.toasts.error'),
+        description: t('dashboard.toasts.failedToUpdate'),
         variant: "destructive"
       });
     }
@@ -457,10 +460,10 @@ const Dashboard = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">
-              My <span className="text-primary">Plan</span>
+              {t('dashboard.title')} <span className="text-primary">{t('dashboard.title')}</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Monitor your health journey with personalized protocols, actionable goals, and data-driven insights
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
@@ -475,8 +478,8 @@ const Dashboard = () => {
             <div className="flex items-center gap-3">
               <span className="text-lg">👋</span>
               <div>
-                <p className="font-medium">Welcome back{user?.user_metadata?.preferred_name ? `, ${user.user_metadata.preferred_name}` : ''}!</p>
-                <p className="text-sm text-muted-foreground">Your health journey continues</p>
+                <p className="font-medium">{user?.user_metadata?.preferred_name ? t('dashboard.welcome.greetingWithName', { name: user.user_metadata.preferred_name }) : t('dashboard.welcome.greeting')}</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.welcome.journeyContinues')}</p>
               </div>
             </div>
           </div>
@@ -490,11 +493,11 @@ const Dashboard = () => {
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="roadmap" className="data-[state=active]:bg-background">
               <TrendingUp className="h-4 w-4 mr-2" />
-              90-Day Roadmap
+              {t('dashboard.tabs.roadmap')}
             </TabsTrigger>
             <TabsTrigger value="health-insights" className="data-[state=active]:bg-background">
               <Sparkles className="h-4 w-4 mr-2" />
-              Health Insights
+              {t('dashboard.tabs.healthInsights')}
             </TabsTrigger>
           </TabsList>
 
@@ -535,7 +538,7 @@ const Dashboard = () => {
                     size="lg"
                   >
                     <CheckCircle2 className="mr-2 h-5 w-5" />
-                    Go to Today's Plan
+                    {t('dashboard.cards.goToTodaysPlan')}
                   </Button>
                 </CardContent>
               </Card>
@@ -544,7 +547,7 @@ const Dashboard = () => {
               {recentAssessments.length >= 1 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Assessment History</CardTitle>
+                    <CardTitle>{t('dashboard.cards.assessmentHistory')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -572,10 +575,10 @@ const Dashboard = () => {
                       <div>
                         <CardTitle className="flex items-center gap-2">
                           <Sparkles className="h-5 w-5 text-primary" />
-                          Comprehensive Health Analysis
+                          {t('dashboard.cards.comprehensiveAnalysis')}
                         </CardTitle>
                         <CardDescription>
-                          AI-powered insights from your {recentAssessments.length} assessments
+                          {t('dashboard.cards.aiInsights', { count: recentAssessments.length })}
                         </CardDescription>
                       </div>
                       <Button 
@@ -583,7 +586,7 @@ const Dashboard = () => {
                         size="sm"
                         onClick={() => navigate('/pillars?view=history&tab=overview')}
                       >
-                        View Full Analysis
+                        {t('dashboard.cards.viewFullAnalysis')}
                         <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>
                     </div>
