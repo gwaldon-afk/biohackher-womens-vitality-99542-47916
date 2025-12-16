@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp, Target, Calendar } from 'lucide-react';
+import { TrendingUp, Target } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { calculate5YearBioAgeImpact, estimateLISFromCompletion } from '@/utils/biologicalAgeCalculation';
+import { useTranslation } from 'react-i18next';
 
 interface LISImpactPreviewProps {
   completedCount: number;
@@ -16,6 +17,8 @@ export const LISImpactPreview = ({
   sustainedLIS,
   currentAge = 42 
 }: LISImpactPreviewProps) => {
+  const { t } = useTranslation();
+  
   // Calculate completion rate and estimated LIS
   const completionRate = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
@@ -35,28 +38,29 @@ export const LISImpactPreview = ({
   const opportunityGap = Math.abs(optimalBioAgeImpact - currentBioAgeImpact);
 
   const getImpactMessage = () => {
-    if (completionRate >= 75) return "Excellent impact on your longevity!";
-    if (completionRate >= 50) return "Good progress toward your goals!";
-    if (completionRate >= 25) return "Building positive habits!";
-    return "Complete more actions for greater impact!";
+    if (completionRate >= 75) return t('today.lis.impactExcellent');
+    if (completionRate >= 50) return t('today.lis.impactGood');
+    if (completionRate >= 25) return t('today.lis.impactBuilding');
+    return t('today.lis.impactMore');
   };
+
   return (
     <Card className="bg-gradient-to-br from-purple-500/5 to-blue-500/5">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Target className="w-5 h-5 text-purple-600" />
-          LIS Impact Prediction
+          {t('today.lis.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-3xl font-bold text-purple-600">+{lisPointsOpportunity}</p>
-            <p className="text-sm text-muted-foreground">LIS Points Opportunity</p>
+            <p className="text-sm text-muted-foreground">{t('today.lis.pointsOpportunity')}</p>
           </div>
           <div className="text-right">
             <p className="text-lg font-semibold">{Math.round(completionRate)}%</p>
-            <p className="text-xs text-muted-foreground">Plan Complete</p>
+            <p className="text-xs text-muted-foreground">{t('today.lis.planComplete')}</p>
           </div>
         </div>
 
@@ -69,8 +73,8 @@ export const LISImpactPreview = ({
               <TrendingUp className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
               <p className="text-sm font-semibold text-foreground leading-relaxed">
                 {completionRate === 0 
-                  ? `Start completing your daily plan to improve your LIS by ${lisPointsOpportunity} points, which could reduce your biological age by ${opportunityGap.toFixed(1)} years over the next 5 years! 🚀`
-                  : `Consistently completing your daily plan can improve your LIS by ${lisPointsOpportunity} points, which could reduce your biological age by ${opportunityGap.toFixed(1)} years over the next 5 years! 🚀`
+                  ? t('today.lis.startMessage', { points: lisPointsOpportunity, years: opportunityGap.toFixed(1) })
+                  : t('today.lis.continueMessage', { points: lisPointsOpportunity, years: opportunityGap.toFixed(1) })
                 }
               </p>
             </div>
