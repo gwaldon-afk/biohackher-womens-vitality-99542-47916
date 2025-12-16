@@ -28,8 +28,10 @@ import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCar
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
+import { useTranslation } from 'react-i18next';
 
 export const UnifiedDailyChecklist = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -57,7 +59,7 @@ export const UnifiedDailyChecklist = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nutrition-actions'] });
-      toast.success("Nutrition action updated");
+      toast.success(t('today.nutrition.actionUpdated'));
     },
   });
   
@@ -114,7 +116,7 @@ export const UnifiedDailyChecklist = () => {
               calories: action.mealData.calories,
               protein: action.mealData.protein,
             });
-          toast.success("Meal logged!");
+          toast.success(t('today.toasts.mealLogged'));
         }
         
         refetch();
@@ -138,14 +140,14 @@ export const UnifiedDailyChecklist = () => {
               protocol_item_id: action.protocolItemId,
               completed_date: today
             });
-          toast.success("Great work!");
+          toast.success(t('today.toasts.greatWork'));
         }
         
         refetch();
       }
     } catch (error) {
       console.error('Error toggling action:', error);
-      toast.error("Failed to update");
+      toast.error(t('today.toasts.failedUpdate'));
     }
   };
 
@@ -161,7 +163,7 @@ export const UnifiedDailyChecklist = () => {
       dosage: 'Daily',
       quantity: 1
     });
-    toast.success("Added to cart!");
+    toast.success(t('today.toasts.addedToCart'));
   };
 
   // Helper to check if current time period matches
@@ -263,7 +265,7 @@ export const UnifiedDailyChecklist = () => {
       <div className="py-8">
         <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-          <p>Loading your daily plan...</p>
+          <p>{t('today.plan.loading')}</p>
         </div>
       </div>
     );
@@ -275,16 +277,16 @@ export const UnifiedDailyChecklist = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center py-12 space-y-4">
           <div className="text-6xl mb-4">📋</div>
-          <h2 className="text-2xl font-bold text-foreground">No Active Protocol Items</h2>
+          <h2 className="text-2xl font-bold text-foreground">{t('today.plan.noActiveItems')}</h2>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Your protocol items are currently inactive. Activate them to see your daily plan.
+            {t('today.plan.noActiveItemsDesc')}
           </p>
           <Button
             size="lg"
             onClick={() => navigate('/my-protocol')}
             className="mt-4"
           >
-            Manage Your Protocol
+            {t('today.plan.manageProtocol')}
           </Button>
         </div>
       </div>
@@ -325,13 +327,13 @@ export const UnifiedDailyChecklist = () => {
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/20 backdrop-blur-sm">
               <span className="text-2xl">👋</span>
-              <span className="text-sm font-semibold text-foreground">You're viewing a sample daily plan</span>
+              <span className="text-sm font-semibold text-foreground">{t('today.guest.sampleBanner')}</span>
             </div>
             <h3 className="text-2xl font-bold text-foreground">
-              Ready to Create Your Personalized Plan?
+              {t('today.guest.readyTitle')}
             </h3>
             <p className="text-foreground/90 max-w-2xl mx-auto">
-              Take a 5-minute assessment to get a personalized daily plan based on your unique health profile, goals, and needs.
+              {t('today.guest.readyDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Button 
@@ -340,7 +342,7 @@ export const UnifiedDailyChecklist = () => {
                 onClick={() => navigate('/guest-lis-assessment')}
                 className="font-semibold"
               >
-                Take LIS Assessment (5 min)
+                {t('today.guest.takeAssessment')}
               </Button>
               <Button 
                 size="lg" 
@@ -348,11 +350,11 @@ export const UnifiedDailyChecklist = () => {
                 onClick={() => navigate('/longevity-nutrition')}
                 className="bg-background/10 backdrop-blur-sm border-background/30 hover:bg-background/20"
               >
-                Nutrition Assessment
+                {t('today.guest.nutritionAssessment')}
               </Button>
             </div>
             <p className="text-xs text-foreground/70">
-              Already have an account? <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">Sign in</button>
+              {t('today.guest.alreadyAccount')} <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">{t('today.guest.signIn')}</button>
             </p>
           </div>
         </div>
@@ -397,23 +399,23 @@ export const UnifiedDailyChecklist = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Utensils className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Nutrition Focus for Today</h3>
+              <h3 className="text-lg font-semibold text-foreground">{t('today.nutrition.focusTitle')}</h3>
             </div>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p>• Aim for 25-30g protein per meal</p>
-              <p>• Include colorful vegetables</p>
-              <p>• Stay hydrated: drink half your body weight in ounces</p>
-              <p>• Prioritize whole foods over processed</p>
+              <p>• {t('today.nutrition.focusTip1')}</p>
+              <p>• {t('today.nutrition.focusTip2')}</p>
+              <p>• {t('today.nutrition.focusTip3')}</p>
+              <p>• {t('today.nutrition.focusTip4')}</p>
             </div>
             <Button 
               variant="outline"
               onClick={() => navigate('/nutrition/meal-plan')}
               className="w-full mt-4"
             >
-              Create Your Meal Plan
+              {t('today.nutrition.createMealPlan')}
             </Button>
             <p className="text-xs text-center text-muted-foreground">
-              Get personalized daily meals with a 7-day meal plan
+              {t('today.nutrition.getMealsDesc')}
             </p>
           </div>
         </Card>
@@ -423,7 +425,7 @@ export const UnifiedDailyChecklist = () => {
       <div className="space-y-2 pb-6 border-b-2 border-primary/20">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold text-foreground">
-            Progress: {completedCount}/{totalCount} actions complete
+            {t('today.plan.progress', { completed: completedCount, total: totalCount })}
           </span>
         </div>
         <Progress value={progressPercent} className="h-2 bg-muted" />
@@ -433,15 +435,15 @@ export const UnifiedDailyChecklist = () => {
       {user && actions.length > 0 && (
         <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
           <div className="flex flex-col">
-            <p className="font-semibold text-foreground">From Your Active Protocol</p>
-            <p className="text-sm text-muted-foreground">View and edit your supplements, meal plans, and routines</p>
+            <p className="font-semibold text-foreground">{t('today.plan.fromActiveProtocol')}</p>
+            <p className="text-sm text-muted-foreground">{t('today.plan.fromActiveProtocolDesc')}</p>
           </div>
           <Button 
             variant="outline" 
             onClick={() => navigate('/my-protocol')}
             className="shrink-0"
           >
-            Manage Protocol
+            {t('today.plan.manageProtocol')}
           </Button>
         </div>
       )}
@@ -451,7 +453,7 @@ export const UnifiedDailyChecklist = () => {
         {/* Morning Block */}
         <CategoryBlock
           icon="☀️"
-          title="DO THIS NOW (Morning)"
+          title={t('today.timeBlocks.morning')}
           items={timeBlocks.morning}
           completedCount={getCategoryStats(timeBlocks.morning).completed}
           totalCount={getCategoryStats(timeBlocks.morning).total}
@@ -471,7 +473,7 @@ export const UnifiedDailyChecklist = () => {
         {/* Afternoon Block */}
         <CategoryBlock
           icon="🌤️"
-          title="COMING UP (Afternoon)"
+          title={t('today.timeBlocks.afternoon')}
           items={timeBlocks.afternoon}
           completedCount={getCategoryStats(timeBlocks.afternoon).completed}
           totalCount={getCategoryStats(timeBlocks.afternoon).total}
@@ -491,7 +493,7 @@ export const UnifiedDailyChecklist = () => {
         {/* Evening Block */}
         <CategoryBlock
           icon="🌅"
-          title="TONIGHT (Evening)"
+          title={t('today.timeBlocks.evening')}
           items={timeBlocks.evening}
           completedCount={getCategoryStats(timeBlocks.evening).completed}
           totalCount={getCategoryStats(timeBlocks.evening).total}
@@ -512,7 +514,7 @@ export const UnifiedDailyChecklist = () => {
         {timeBlocks.stillToDo.length > 0 && (
           <CategoryBlock
             icon="⏰"
-            title="STILL TO DO (From Earlier)"
+            title={t('today.timeBlocks.stillToDo')}
             items={timeBlocks.stillToDo}
             completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
             totalCount={getCategoryStats(timeBlocks.stillToDo).total}
@@ -534,16 +536,16 @@ export const UnifiedDailyChecklist = () => {
       {/* Guest CTA */}
       {!user && (
         <div className="mt-8 p-6 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 text-center space-y-3">
-          <h3 className="text-xl font-bold text-foreground">Ready to Unlock Your Personalized Plan?</h3>
+          <h3 className="text-xl font-bold text-foreground">{t('today.guest.unlockTitle')}</h3>
           <p className="text-muted-foreground">
-            Create a free account to save progress, get AI insights, and access personalized protocols
+            {t('today.guest.unlockDesc')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <Button size="lg" onClick={() => navigate('/auth')}>
-              Create Free Account
+              {t('today.guest.createAccount')}
             </Button>
             <Button size="lg" variant="outline" onClick={() => navigate('/guest-lis-assessment')}>
-              Take Assessment First
+              {t('today.guest.takeAssessmentFirst')}
             </Button>
           </div>
         </div>
