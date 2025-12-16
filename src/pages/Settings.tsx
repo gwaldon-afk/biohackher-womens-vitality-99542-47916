@@ -111,13 +111,13 @@ const Settings = () => {
       if (error) throw error;
       
       toast({
-        title: "Preferences Updated",
-        description: "Your notification preferences have been saved.",
+        title: t('settings.toasts.preferencesUpdated'),
+        description: t('settings.toasts.preferencesUpdatedDesc'),
       });
     } catch (error: any) {
       console.error('Error updating preferences:', error);
       toast({
-        title: "Update Failed",
+        title: t('settings.toasts.updateFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -219,13 +219,13 @@ const Settings = () => {
                 <CardHeader>
                   <CardTitle>{t('settings.personalInfo')}</CardTitle>
                   <CardDescription>
-                    Update your profile details and preferences
+                    {t('settings.personalInfoDesc')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="name">Full Name</Label>
+                      <Label htmlFor="name">{t('settings.fullName')}</Label>
                       <Input
                         id="name"
                         value={profile.name}
@@ -233,7 +233,7 @@ const Settings = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email">{t('settings.email')}</Label>
                       <Input
                         id="email"
                         type="email"
@@ -245,7 +245,7 @@ const Settings = () => {
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="age">Age</Label>
+                      <Label htmlFor="age">{t('settings.age')}</Label>
                       <Input
                         id="age"
                         value={profile.age}
@@ -253,76 +253,76 @@ const Settings = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="stage">Current Stage</Label>
+                      <Label htmlFor="stage">{t('settings.currentStage')}</Label>
                       <select 
                         id="stage"
                         value={profile.stage}
                         onChange={(e) => setProfile({...profile, stage: e.target.value})}
                         className="w-full p-2 border rounded-md"
                       >
-                        <option value="regular-cycles">Regular Cycles</option>
-                        <option value="perimenopause">Perimenopause</option>
-                        <option value="menopause">Menopause</option>
-                        <option value="postmenopause">Postmenopause</option>
+                        <option value="regular-cycles">{t('settings.stages.regularCycles')}</option>
+                        <option value="perimenopause">{t('settings.stages.perimenopause')}</option>
+                        <option value="menopause">{t('settings.stages.menopause')}</option>
+                        <option value="postmenopause">{t('settings.stages.postmenopause')}</option>
                       </select>
                     </div>
                   </div>
                   
                   <div>
-                    <Label htmlFor="timezone">Timezone</Label>
+                    <Label htmlFor="timezone">{t('settings.timezone')}</Label>
                     <select 
                       id="timezone"
                       value={profile.timezone}
                       onChange={(e) => setProfile({...profile, timezone: e.target.value})}
                       className="w-full p-2 border rounded-md"
                     >
-                      <option value="America/New_York">Eastern Time</option>
-                      <option value="America/Chicago">Central Time</option>
-                      <option value="America/Denver">Mountain Time</option>
-                      <option value="America/Los_Angeles">Pacific Time</option>
+                      <option value="America/New_York">{t('settings.timezones.eastern')}</option>
+                      <option value="America/Chicago">{t('settings.timezones.central')}</option>
+                      <option value="America/Denver">{t('settings.timezones.mountain')}</option>
+                      <option value="America/Los_Angeles">{t('settings.timezones.pacific')}</option>
                     </select>
                   </div>
                   
-                  <Button className="w-full">Save Changes</Button>
+                  <Button className="w-full">{t('settings.saveChanges')}</Button>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Account</CardTitle>
+                  <CardTitle>{t('settings.account.title')}</CardTitle>
                   <CardDescription>
-                    Manage your account settings and subscription
+                    {t('settings.account.subtitle')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Subscription Status</h3>
-                      <p className="text-sm text-muted-foreground">Premium Plan</p>
+                      <h3 className="font-medium">{t('settings.account.subscriptionStatus')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('settings.account.premiumPlan')}</p>
                     </div>
                     <Badge variant="outline" className="text-primary">
-                      Active
+                      {t('settings.account.active')}
                     </Badge>
                   </div>
                   
                   <div className="space-y-2">
                     <Button variant="outline" className="w-full">
-                      Change Password
+                      {t('settings.account.changePassword')}
                     </Button>
                     <Button variant="outline" className="w-full">
-                      Manage Subscription
+                      {t('settings.account.manageSubscription')}
                     </Button>
                     <Button variant="outline" className="w-full">
-                      Export Data
+                      {t('settings.account.exportData')}
                     </Button>
                   </div>
                   
                   <div className="pt-4 border-t border-destructive/20">
                     <Button variant="destructive" className="w-full">
-                      Delete Account
+                      {t('settings.account.deleteAccount')}
                     </Button>
                     <p className="text-xs text-muted-foreground mt-2 text-center">
-                      This action cannot be undone
+                      {t('settings.account.deleteWarning')}
                     </p>
                   </div>
                 </CardContent>
@@ -334,9 +334,9 @@ const Settings = () => {
           <TabsContent value="integrations" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Connected Devices</CardTitle>
+                <CardTitle>{t('settings.integrations.title')}</CardTitle>
                 <CardDescription>
-                  Connect your wearable devices for automatic daily LIS tracking
+                  {t('settings.integrations.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -345,12 +345,12 @@ const Settings = () => {
                   <div className="flex items-center gap-3">
                     <Smartphone className="h-8 w-8 text-gray-600" />
                     <div>
-                      <h4 className="font-medium">Apple Health</h4>
-                      <p className="text-sm text-muted-foreground">Not connected</p>
+                      <h4 className="font-medium">{t('settings.integrations.appleHealth')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('settings.integrations.notConnected')}</p>
                     </div>
                   </div>
                   <Button variant="default" disabled>
-                    Coming Soon
+                    {t('settings.integrations.comingSoon')}
                   </Button>
                 </div>
 
@@ -359,12 +359,12 @@ const Settings = () => {
                   <div className="flex items-center gap-3">
                     <Watch className="h-8 w-8 text-purple-600" />
                     <div>
-                      <h4 className="font-medium">Oura Ring</h4>
-                      <p className="text-sm text-muted-foreground">Not connected</p>
+                      <h4 className="font-medium">{t('settings.integrations.ouraRing')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('settings.integrations.notConnected')}</p>
                     </div>
                   </div>
                   <Button variant="default" disabled>
-                    Coming Soon
+                    {t('settings.integrations.comingSoon')}
                   </Button>
                 </div>
 
@@ -373,12 +373,12 @@ const Settings = () => {
                   <div className="flex items-center gap-3">
                     <Activity className="h-8 w-8 text-blue-600" />
                     <div>
-                      <h4 className="font-medium">Fitbit</h4>
-                      <p className="text-sm text-muted-foreground">Not connected</p>
+                      <h4 className="font-medium">{t('settings.integrations.fitbit')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('settings.integrations.notConnected')}</p>
                     </div>
                   </div>
                   <Button variant="default" disabled>
-                    Coming Soon
+                    {t('settings.integrations.comingSoon')}
                   </Button>
                 </div>
 
@@ -387,18 +387,18 @@ const Settings = () => {
                   <div className="flex items-center gap-3">
                     <Watch className="h-8 w-8 text-cyan-600" />
                     <div>
-                      <h4 className="font-medium">Garmin</h4>
-                      <p className="text-sm text-muted-foreground">Not connected</p>
+                      <h4 className="font-medium">{t('settings.integrations.garmin')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('settings.integrations.notConnected')}</p>
                     </div>
                   </div>
                   <Button variant="default" disabled>
-                    Coming Soon
+                    {t('settings.integrations.comingSoon')}
                   </Button>
                 </div>
 
                 <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
                   <p className="text-sm text-amber-800 dark:text-amber-200">
-                    🚧 Wearable integrations coming soon! We're working on bringing automatic syncing to BiohackHer.
+                    {t('settings.integrations.comingSoonMessage')}
                   </p>
                 </div>
               </CardContent>
@@ -409,9 +409,9 @@ const Settings = () => {
           <TabsContent value="health-profile" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Health Profile</CardTitle>
+                <CardTitle>{t('settings.healthProfile.title')}</CardTitle>
                 <CardDescription>
-                  Your lifestyle baseline assessment and re-assessment history
+                  {t('settings.healthProfile.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -420,15 +420,15 @@ const Settings = () => {
                     {/* Current Baseline Info */}
                     <div className="p-4 bg-primary/5 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium">Current Baseline Score</p>
+                        <p className="text-sm font-medium">{t('settings.healthProfile.currentBaseline')}</p>
                         <Badge variant="secondary" className="text-lg px-3 py-1">{baselineScore}</Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Established: {baselineDate && format(baselineDate, 'MMMM d, yyyy')}
+                        {t('settings.healthProfile.established', { date: baselineDate && format(baselineDate, 'MMMM d, yyyy') })}
                       </p>
                       {nextReviewDate && (
                         <p className="text-xs text-primary mt-2">
-                          Next review recommended: {format(nextReviewDate, 'MMMM d, yyyy')}
+                          {t('settings.healthProfile.nextReview', { date: format(nextReviewDate, 'MMMM d, yyyy') })}
                         </p>
                       )}
                     </div>
@@ -439,13 +439,13 @@ const Settings = () => {
                       variant="outline"
                       className="w-full"
                     >
-                      Update My Baseline Assessment
+                      {t('settings.healthProfile.updateBaseline')}
                     </Button>
 
                     {/* History */}
                     {reassessmentHistory.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="text-sm font-medium">Assessment History</h4>
+                        <h4 className="text-sm font-medium">{t('settings.healthProfile.reassessmentHistory')}</h4>
                         {reassessmentHistory.map((assessment) => (
                           <div key={assessment.id} className="flex items-center justify-between p-3 border rounded-lg">
                             <div>
@@ -462,12 +462,12 @@ const Settings = () => {
                   </>
                 ) : (
                   <div className="text-center p-6">
-                    <p className="text-muted-foreground mb-4">No baseline assessment found</p>
+                    <p className="text-muted-foreground mb-4">{t('settings.healthProfile.noBaseline')}</p>
                     <Button 
                       onClick={() => navigate('/lis-assessment?mode=onboarding')}
                       variant="default"
                     >
-                      Take Your Baseline Assessment
+                      {t('settings.healthProfile.takeBaseline')}
                     </Button>
                   </div>
                 )}
@@ -478,9 +478,9 @@ const Settings = () => {
           <TabsContent value="notifications" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Notification Preferences</CardTitle>
+                <CardTitle>{t('settings.notifications.title')}</CardTitle>
                 <CardDescription>
-                  Choose what notifications you'd like to receive
+                  {t('settings.notifications.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -488,9 +488,9 @@ const Settings = () => {
                   {/* Assessment Reminders */}
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Assessment Reminders</h3>
+                      <h3 className="font-medium">{t('settings.notifications.assessmentReminders')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Email reminders when it's time to retake your LIS or Hormone Compass assessment
+                        {t('settings.notifications.assessmentRemindersDesc')}
                       </p>
                     </div>
                     <Switch
@@ -505,9 +505,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Daily Nudges</h3>
+                      <h3 className="font-medium">{t('settings.notifications.dailyNudges')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Receive personalised daily health recommendations
+                        {t('settings.notifications.dailyNudgesDesc')}
                       </p>
                     </div>
                     <Switch
@@ -522,9 +522,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Weekly Reports</h3>
+                      <h3 className="font-medium">{t('settings.notifications.weeklyReports')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Get summaries of your progress and achievements
+                        {t('settings.notifications.weeklyReportsDesc')}
                       </p>
                     </div>
                     <Switch
@@ -539,9 +539,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Symptom Reminders</h3>
+                      <h3 className="font-medium">{t('settings.notifications.symptomReminders')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Gentle reminders to log symptoms and track patterns
+                        {t('settings.notifications.symptomRemindersDesc')}
                       </p>
                     </div>
                     <Switch
@@ -556,9 +556,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Protocol Updates</h3>
+                      <h3 className="font-medium">{t('settings.notifications.protocolUpdates')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Notifications about new research and protocol updates
+                        {t('settings.notifications.protocolUpdatesDesc')}
                       </p>
                     </div>
                     <Switch
@@ -573,9 +573,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Marketing Emails</h3>
+                      <h3 className="font-medium">{t('settings.notifications.marketingEmails')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Occasional emails about new features and offers
+                        {t('settings.notifications.marketingEmailsDesc')}
                       </p>
                     </div>
                     <Switch
@@ -596,17 +596,17 @@ const Settings = () => {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Data Privacy</CardTitle>
+                  <CardTitle>{t('settings.privacy.title')}</CardTitle>
                   <CardDescription>
-                    Control how your data is used and shared
+                    {t('settings.privacy.subtitle')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Data Sharing</h3>
+                      <h3 className="font-medium">{t('settings.privacy.dataSharing')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Allow aggregated data to improve recommendations
+                        {t('settings.privacy.dataSharingDesc')}
                       </p>
                     </div>
                     <Switch
@@ -619,9 +619,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Anonymous Analytics</h3>
+                      <h3 className="font-medium">{t('settings.privacy.anonymousAnalytics')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Help us improve the app with anonymous usage data
+                        {t('settings.privacy.anonymousAnalyticsDesc')}
                       </p>
                     </div>
                     <Switch
@@ -634,9 +634,9 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
-                      <h3 className="font-medium">Research Participation</h3>
+                      <h3 className="font-medium">{t('settings.privacy.researchParticipation')}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Opt-in to participate in women's health research studies
+                        {t('settings.privacy.researchParticipationDesc')}
                       </p>
                     </div>
                     <Switch
@@ -654,10 +654,9 @@ const Settings = () => {
                   <div className="flex items-start gap-3">
                     <Shield className="h-5 w-5 text-orange-600 mt-1" />
                     <div>
-                      <h3 className="font-medium text-orange-800 mb-2">Your Privacy Matters</h3>
+                      <h3 className="font-medium text-orange-800 mb-2">{t('settings.privacy.privacyMatters')}</h3>
                       <p className="text-sm text-orange-700">
-                        We use end-to-end encryption for all health data and never sell personal information. 
-                        Your data is stored securely and used only to provide personalised recommendations.
+                        {t('settings.privacy.privacyMattersDesc')}
                       </p>
                     </div>
                   </div>
@@ -672,33 +671,29 @@ const Settings = () => {
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-yellow-600" />
-                    <CardTitle className="text-yellow-800">Health Disclaimers</CardTitle>
+                    <CardTitle className="text-yellow-800">{t('settings.legal.healthDisclaimers')}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4 text-sm text-yellow-800">
                     <div>
-                      <h3 className="font-medium mb-2">TGA Compliance (Australia)</h3>
+                      <h3 className="font-medium mb-2">{t('settings.legal.tgaCompliance')}</h3>
                       <p>
-                        The information provided by Biohackher is for educational purposes only and is not intended 
-                        to diagnose, treat, cure, or prevent any disease. Always consult with a qualified healthcare 
-                        professional before making changes to your health regimen.
+                        {t('settings.legal.tgaComplianceDesc')}
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="font-medium mb-2">Medical Disclaimer</h3>
+                      <h3 className="font-medium mb-2">{t('settings.legal.medicalDisclaimer')}</h3>
                       <p>
-                        Biohackher does not provide medical advice, diagnosis, or treatment. The recommendations 
-                        are based on published research and should not replace professional medical care.
+                        {t('settings.legal.medicalDisclaimerDesc')}
                       </p>
                     </div>
                     
                     <div>
-                      <h3 className="font-medium mb-2">Individual Results</h3>
+                      <h3 className="font-medium mb-2">{t('settings.legal.individualResults')}</h3>
                       <p>
-                        Results may vary between individuals. The biohackher age calculation is an estimate 
-                        based on lifestyle factors and should not be considered a medical assessment.
+                        {t('settings.legal.individualResultsDesc')}
                       </p>
                     </div>
                   </div>
@@ -707,26 +702,26 @@ const Settings = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Legal Documents</CardTitle>
+                  <CardTitle>{t('settings.legal.title')}</CardTitle>
                   <CardDescription>
-                    Review our terms, privacy policy, and other legal information
+                    {t('settings.legal.subtitle')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Button variant="outline" className="w-full justify-between">
-                    Terms of Service
+                    {t('settings.legal.termsOfService')}
                     <FileText className="h-4 w-4" />
                   </Button>
                   <Button variant="outline" className="w-full justify-between">
-                    Privacy Policy
+                    {t('settings.legal.privacyPolicy')}
                     <FileText className="h-4 w-4" />
                   </Button>
                   <Button variant="outline" className="w-full justify-between">
-                    Cookie Policy
+                    {t('settings.legal.cookiePolicy')}
                     <FileText className="h-4 w-4" />
                   </Button>
                   <Button variant="outline" className="w-full justify-between">
-                    Research Ethics
+                    {t('settings.legal.researchEthics')}
                     <FileText className="h-4 w-4" />
                   </Button>
                 </CardContent>

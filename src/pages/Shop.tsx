@@ -21,6 +21,7 @@ import { getProducts } from "@/services/productService";
 import type { Product as DbProduct } from "@/services/productService";
 import { shopAnalytics } from "@/utils/shopAnalytics";
 import { FEATURE_FLAGS } from "@/config/featureFlags";
+import { useTranslation } from "react-i18next";
 
 interface Product {
   id: string;
@@ -39,6 +40,7 @@ interface Product {
 }
 
 const Shop = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user } = useAuth();
   const { addToCart } = useCart();
@@ -148,27 +150,27 @@ const Shop = () => {
     shopAnalytics.addToCart(product.id, product.name, price, fromAssessment ? 'assessment' : 'shop');
     
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      title: t('shop.toasts.addedToCart'),
+      description: t('shop.toasts.addedToCartDesc', { name: product.name }),
     });
   };
 
   const pillarConfig = [
-    { value: "all", label: "All Products", icon: Sparkles },
-    { value: "beauty", label: "Beauty", icon: Sparkles },
-    { value: "brain", label: "Brain", icon: Brain },
-    { value: "body", label: "Body", icon: Activity },
-    { value: "balance", label: "Balance", icon: Heart },
+    { value: "all", label: t('shop.pillars.all'), icon: Sparkles },
+    { value: "beauty", label: t('shop.pillars.beauty'), icon: Sparkles },
+    { value: "brain", label: t('shop.pillars.brain'), icon: Brain },
+    { value: "body", label: t('shop.pillars.body'), icon: Activity },
+    { value: "balance", label: t('shop.pillars.balance'), icon: Heart },
   ];
 
   const getEvidenceBadge = (evidenceLevel: string | null) => {
     if (!evidenceLevel) return null;
     
     const config = {
-      gold: { color: "bg-yellow-500 text-black", label: "Gold" },
-      silver: { color: "bg-gray-400 text-black", label: "Silver" },
-      bronze: { color: "bg-orange-600 text-white", label: "Bronze" },
-      emerging: { color: "bg-blue-500 text-white", label: "Emerging" }
+      gold: { color: "bg-yellow-500 text-black", label: t('shop.evidence.gold') },
+      silver: { color: "bg-gray-400 text-black", label: t('shop.evidence.silver') },
+      bronze: { color: "bg-orange-600 text-white", label: t('shop.evidence.bronze') },
+      emerging: { color: "bg-blue-500 text-white", label: t('shop.evidence.emerging') }
     };
 
     const badge = config[evidenceLevel as keyof typeof config];
@@ -189,9 +191,9 @@ const Shop = () => {
       <div className="container py-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Shop</h1>
+          <h1 className="text-4xl font-bold mb-2">{t('shop.title')}</h1>
           <p className="text-muted-foreground">
-            Science-backed supplements and wellness products
+            {t('shop.subtitle')}
           </p>
         </div>
 
@@ -200,7 +202,7 @@ const Shop = () => {
           <Alert className="mb-6 border-primary bg-primary/5">
             <Sparkles className="h-4 w-4" />
             <AlertDescription>
-              Product recommendations based on your assessment results
+              {t('shop.banner.assessmentRecommendations')}
             </AlertDescription>
           </Alert>
         )}
@@ -217,7 +219,7 @@ const Shop = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search products..."
+              placeholder={t('shop.search.placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -299,7 +301,7 @@ const Shop = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
                     <Badge variant="outline" className="text-xs">
-                      {product.inStock ? "In Stock" : "Out of Stock"}
+                      {product.inStock ? t('shop.product.inStock') : t('shop.product.outOfStock')}
                     </Badge>
                   </div>
                   <Button 
@@ -308,7 +310,7 @@ const Shop = () => {
                     disabled={!product.inStock}
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
+                    {t('shop.product.addToCart')}
                   </Button>
                 </div>
               </CardContent>
@@ -325,9 +327,9 @@ const Shop = () => {
 
         {/* Health Disclaimer */}
         <div className="mt-12 p-6 bg-muted/50 rounded-lg">
-          <h3 className="font-semibold mb-2">Health & Safety Information</h3>
+          <h3 className="font-semibold mb-2">{t('shop.disclaimer.title')}</h3>
           <p className="text-sm text-muted-foreground">
-            The information provided about these products is for educational purposes only and is not intended to diagnose, treat, cure, or prevent any disease. Always consult with a healthcare professional before starting any new supplement regimen, especially if you are pregnant, nursing, have a medical condition, or are taking medications.
+            {t('shop.disclaimer.content')}
           </p>
         </div>
       </div>
