@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -21,61 +22,9 @@ import {
 } from "@/utils/menoMapInsights";
 import { Badge } from "@/components/ui/badge";
 
-const STAGE_INFO = {
-  'pre': {
-    title: 'Pre-Menopause',
-    description: 'Your cycles are still regular, and you\'re not experiencing significant hormonal changes yet.',
-    recommendations: [
-      'Focus on establishing healthy habits now',
-      'Track your cycles to establish a baseline',
-      'Consider preventive nutrition and exercise',
-      'Monitor energy and mood patterns'
-    ]
-  },
-  'early-peri': {
-    title: 'Early Perimenopause',
-    description: 'You\'re beginning to experience subtle hormonal shifts. Cycles may become slightly irregular.',
-    recommendations: [
-      'Start tracking symptoms consistently',
-      'Consider adaptogenic herbs for hormone support',
-      'Optimize sleep hygiene',
-      'Add strength training to preserve muscle mass'
-    ]
-  },
-  'mid-peri': {
-    title: 'Mid Perimenopause',
-    description: 'Hormonal fluctuations are more pronounced. You may notice significant cycle changes and symptoms.',
-    recommendations: [
-      'Focus on stress management and cortisol regulation',
-      'Consider magnesium for sleep and mood',
-      'Increase phytoestrogen-rich foods',
-      'Track hot flashes and night sweats patterns'
-    ]
-  },
-  'late-peri': {
-    title: 'Late Perimenopause',
-    description: 'You\'re approaching menopause. Periods may be very irregular or absent for months.',
-    recommendations: [
-      'Support bone health with vitamin D and K2',
-      'Focus on cardiovascular exercise',
-      'Consider hormone testing with your doctor',
-      'Optimize gut health for hormone metabolism'
-    ]
-  },
-  'post': {
-    title: 'Post-Menopause',
-    description: 'It\'s been 12+ months since your last period. Focus shifts to long-term health optimization.',
-    recommendations: [
-      'Prioritize bone density and cardiovascular health',
-      'Continue strength training',
-      'Focus on longevity nutrition',
-      'Monitor metabolic health markers'
-    ]
-  }
-};
-
 const HormoneCompassResults = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo');
   const { user } = useAuth();
@@ -86,6 +35,63 @@ const HormoneCompassResults = () => {
     avgScore: number;
     domainScores: Array<{ domain: string; score: number; icon: string }>;
   } | null>(null);
+
+  // Stage info with translation keys
+  const getStageInfo = (stage: string) => {
+    const stageMap: Record<string, { titleKey: string; descriptionKey: string; recommendationKeys: string[] }> = {
+      'pre': {
+        titleKey: 'onboarding.hormoneCompassResults.stages.pre.title',
+        descriptionKey: 'onboarding.hormoneCompassResults.stages.pre.description',
+        recommendationKeys: [
+          'onboarding.hormoneCompassResults.stages.pre.recommendations.1',
+          'onboarding.hormoneCompassResults.stages.pre.recommendations.2',
+          'onboarding.hormoneCompassResults.stages.pre.recommendations.3',
+          'onboarding.hormoneCompassResults.stages.pre.recommendations.4',
+        ]
+      },
+      'early-peri': {
+        titleKey: 'onboarding.hormoneCompassResults.stages.earlyPeri.title',
+        descriptionKey: 'onboarding.hormoneCompassResults.stages.earlyPeri.description',
+        recommendationKeys: [
+          'onboarding.hormoneCompassResults.stages.earlyPeri.recommendations.1',
+          'onboarding.hormoneCompassResults.stages.earlyPeri.recommendations.2',
+          'onboarding.hormoneCompassResults.stages.earlyPeri.recommendations.3',
+          'onboarding.hormoneCompassResults.stages.earlyPeri.recommendations.4',
+        ]
+      },
+      'mid-peri': {
+        titleKey: 'onboarding.hormoneCompassResults.stages.midPeri.title',
+        descriptionKey: 'onboarding.hormoneCompassResults.stages.midPeri.description',
+        recommendationKeys: [
+          'onboarding.hormoneCompassResults.stages.midPeri.recommendations.1',
+          'onboarding.hormoneCompassResults.stages.midPeri.recommendations.2',
+          'onboarding.hormoneCompassResults.stages.midPeri.recommendations.3',
+          'onboarding.hormoneCompassResults.stages.midPeri.recommendations.4',
+        ]
+      },
+      'late-peri': {
+        titleKey: 'onboarding.hormoneCompassResults.stages.latePeri.title',
+        descriptionKey: 'onboarding.hormoneCompassResults.stages.latePeri.description',
+        recommendationKeys: [
+          'onboarding.hormoneCompassResults.stages.latePeri.recommendations.1',
+          'onboarding.hormoneCompassResults.stages.latePeri.recommendations.2',
+          'onboarding.hormoneCompassResults.stages.latePeri.recommendations.3',
+          'onboarding.hormoneCompassResults.stages.latePeri.recommendations.4',
+        ]
+      },
+      'post': {
+        titleKey: 'onboarding.hormoneCompassResults.stages.post.title',
+        descriptionKey: 'onboarding.hormoneCompassResults.stages.post.description',
+        recommendationKeys: [
+          'onboarding.hormoneCompassResults.stages.post.recommendations.1',
+          'onboarding.hormoneCompassResults.stages.post.recommendations.2',
+          'onboarding.hormoneCompassResults.stages.post.recommendations.3',
+          'onboarding.hormoneCompassResults.stages.post.recommendations.4',
+        ]
+      }
+    };
+    return stageMap[stage] || stageMap['pre'];
+  };
 
   useEffect(() => {
     // Add timeout safety - redirect if no data after 2 seconds
@@ -144,11 +150,11 @@ const HormoneCompassResults = () => {
       
       // For quick assessment, create simplified domain scores
       const domainScores = [
-        { domain: 'Vasomotor', score: answers.hot_flush || 5, icon: '🔥' },
-        { domain: 'Sleep', score: answers.sleep || 5, icon: '😴' },
-        { domain: 'Mood', score: answers.mood || 5, icon: '😊' },
-        { domain: 'Energy', score: answers.energy || 5, icon: '⚡' },
-        { domain: 'Skin & Body', score: answers.skin || 5, icon: '✨' }
+        { domain: t('onboarding.hormoneCompassResults.domains.vasomotor'), score: answers.hot_flush || 5, icon: '🔥' },
+        { domain: t('onboarding.hormoneCompassResults.domains.sleep'), score: answers.sleep || 5, icon: '😴' },
+        { domain: t('onboarding.hormoneCompassResults.domains.mood'), score: answers.mood || 5, icon: '😊' },
+        { domain: t('onboarding.hormoneCompassResults.domains.energy'), score: answers.energy || 5, icon: '⚡' },
+        { domain: t('onboarding.hormoneCompassResults.domains.skinBody'), score: answers.skin || 5, icon: '✨' }
       ];
 
       setAnalysisData({
@@ -158,7 +164,7 @@ const HormoneCompassResults = () => {
     }
 
     return () => clearTimeout(timeoutId);
-  }, [navigate]);
+  }, [navigate, t]);
 
   const handleContinue = async () => {
     // Update profile to mark onboarding as completed
@@ -171,8 +177,8 @@ const HormoneCompassResults = () => {
       if (error) {
         console.error('Error updating profile:', error);
         toast({
-          title: "Error",
-          description: "Failed to update profile. Please try again.",
+          title: t('onboarding.hormoneCompassResults.toasts.errorTitle'),
+          description: t('onboarding.hormoneCompassResults.toasts.errorDescription'),
           variant: "destructive"
         });
         return;
@@ -181,8 +187,8 @@ const HormoneCompassResults = () => {
       // Redirect to returnTo destination or default next step
       if (returnTo) {
         toast({
-          title: "Profile Complete!",
-          description: `Taking you to ${decodeURIComponent(returnTo).split('/').pop()?.replace(/-/g, ' ')}...`
+          title: t('onboarding.hormoneCompassResults.toasts.profileComplete'),
+          description: t('onboarding.hormoneCompassResults.toasts.takingYouTo', { destination: decodeURIComponent(returnTo).split('/').pop()?.replace(/-/g, ' ') })
         });
         navigate(decodeURIComponent(returnTo));
       } else {
@@ -200,12 +206,12 @@ const HormoneCompassResults = () => {
   if (!analysisData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading your results...</div>
+        <div className="animate-pulse text-muted-foreground">{t('onboarding.hormoneCompassResults.loading')}</div>
       </div>
     );
   }
 
-  const stageInfo = STAGE_INFO[analysisData.stage as keyof typeof STAGE_INFO];
+  const stageInfo = getStageInfo(analysisData.stage);
   const overallScore = Math.round(analysisData.avgScore * 20); // Convert to 0-100 scale
   
   // Get insights from utility functions
@@ -216,6 +222,21 @@ const HormoneCompassResults = () => {
   const protocolPreview = generatePersonalizedProtocolPreview(storedAnswers);
   const healthInsights = calculateHealthInsights(storedAnswers);
   const comparativeContext = generateComparativeContext(storedAnswers, analysisData.stage);
+
+  // Severity labels
+  const getSeverityLabel = (percent: number) => {
+    if (percent >= 80) return { label: t('onboarding.hormoneCompassResults.severity.excellent'), color: 'text-green-600 dark:text-green-400' };
+    if (percent >= 60) return { label: t('onboarding.hormoneCompassResults.severity.good'), color: 'text-blue-600 dark:text-blue-400' };
+    if (percent >= 40) return { label: t('onboarding.hormoneCompassResults.severity.moderate'), color: 'text-yellow-600 dark:text-yellow-400' };
+    return { label: t('onboarding.hormoneCompassResults.severity.needsAttention'), color: 'text-orange-600 dark:text-orange-400' };
+  };
+
+  // Urgency labels
+  const getUrgencyLabel = (urgency: string) => {
+    if (urgency === 'priority') return t('onboarding.hormoneCompassResults.urgency.priority');
+    if (urgency === 'soon') return t('onboarding.hormoneCompassResults.urgency.addressSoon');
+    return t('onboarding.hormoneCompassResults.urgency.routine');
+  };
 
   return (
     <div className="min-h-screen p-4 bg-gradient-to-b from-background to-muted/20">
@@ -229,7 +250,7 @@ const HormoneCompassResults = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t('onboarding.hormoneCompassResults.navigation.back')}
           </Button>
           <Button
             variant="ghost"
@@ -238,15 +259,15 @@ const HormoneCompassResults = () => {
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            Home
+            {t('onboarding.hormoneCompassResults.navigation.home')}
           </Button>
         </div>
 
         {/* Header */}
         <div className="text-center space-y-2 animate-fade-in">
-          <h1 className="text-4xl font-bold">Your HormoneCompass™ Analysis</h1>
+          <h1 className="text-4xl font-bold">{t('onboarding.hormoneCompassResults.title')}</h1>
           <p className="text-lg text-muted-foreground">
-            Here's what your responses reveal about your hormonal health journey
+            {t('onboarding.hormoneCompassResults.description')}
           </p>
         </div>
 
@@ -266,17 +287,17 @@ const HormoneCompassResults = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="w-5 h-5 text-primary" />
-              What's Actually Happening in Your Body
+              {t('onboarding.hormoneCompassResults.sections.whatsHappening')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-lg p-4 space-y-3">
               <div>
-                <h4 className="font-semibold mb-2">Biological Mechanism:</h4>
+                <h4 className="font-semibold mb-2">{t('onboarding.hormoneCompassResults.sections.biologicalMechanism')}</h4>
                 <p className="text-sm">{biologicalInsight.mechanism}</p>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Timeline Context:</h4>
+                <h4 className="font-semibold mb-2">{t('onboarding.hormoneCompassResults.sections.timelineContext')}</h4>
                 <p className="text-sm">{biologicalInsight.timeline}</p>
               </div>
               <div className="bg-background/50 rounded p-3">
@@ -286,7 +307,7 @@ const HormoneCompassResults = () => {
 
             {comparativeContext.statistics.length > 0 && (
               <div className="border-t pt-4 space-y-2">
-                <h4 className="font-semibold text-sm">What Women Like You Experience:</h4>
+                <h4 className="font-semibold text-sm">{t('onboarding.hormoneCompassResults.sections.womenLikeYou')}</h4>
                 {comparativeContext.statistics.map((stat, idx) => (
                   <p key={idx} className="text-sm text-muted-foreground pl-4 border-l-2 border-primary/30">
                     {stat}
@@ -303,10 +324,10 @@ const HormoneCompassResults = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="w-5 h-5 text-primary" />
-                Your Symptom Pattern Analysis
+                {t('onboarding.hormoneCompassResults.sections.symptomPatternAnalysis')}
               </CardTitle>
               <CardDescription>
-                How your symptoms interconnect and create feedback loops
+                {t('onboarding.hormoneCompassResults.sections.symptomPatternDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -318,8 +339,8 @@ const HormoneCompassResults = () => {
                         {connection.primary} → {connection.secondary}
                       </h4>
                       <div className="space-y-1">
-                        <p className="text-sm"><span className="font-medium">Mechanism:</span> {connection.mechanism}</p>
-                        <p className="text-sm text-primary"><span className="font-medium">Impact:</span> {connection.impact}</p>
+                        <p className="text-sm"><span className="font-medium">{t('onboarding.hormoneCompassResults.sections.mechanism')}</span> {connection.mechanism}</p>
+                        <p className="text-sm text-primary"><span className="font-medium">{t('onboarding.hormoneCompassResults.sections.impact')}</span> {connection.impact}</p>
                       </div>
                     </div>
                   </div>
@@ -334,10 +355,10 @@ const HormoneCompassResults = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-primary" />
-              Symptom Severity Breakdown
+              {t('onboarding.hormoneCompassResults.sections.severityBreakdown')}
             </CardTitle>
             <CardDescription>
-              How your responses map across key health domains
+              {t('onboarding.hormoneCompassResults.sections.severityDescription')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -346,14 +367,10 @@ const HormoneCompassResults = () => {
                 const domainPercent = Math.round(domain.score * 10); // Convert 0-10 to 0-100
                 
                 // Hot flashes are INVERSE - high score = worse
-                const isInverseDomain = domain.domain === 'Vasomotor';
+                const isInverseDomain = domain.domain === t('onboarding.hormoneCompassResults.domains.vasomotor');
                 const displayPercent = isInverseDomain ? 100 - domainPercent : domainPercent;
                 
-                const severity = 
-                  displayPercent >= 80 ? { label: 'Excellent', color: 'text-green-600 dark:text-green-400' } :
-                  displayPercent >= 60 ? { label: 'Good', color: 'text-blue-600 dark:text-blue-400' } :
-                  displayPercent >= 40 ? { label: 'Moderate', color: 'text-yellow-600 dark:text-yellow-400' } :
-                  { label: 'Needs Attention', color: 'text-orange-600 dark:text-orange-400' };
+                const severity = getSeverityLabel(displayPercent);
 
                 return (
                   <div key={idx} className="space-y-2">
@@ -362,7 +379,7 @@ const HormoneCompassResults = () => {
                         <span className="text-lg">{domain.icon}</span>
                         <span className="font-medium">{domain.domain}</span>
                         {isInverseDomain && (
-                          <span className="text-xs text-muted-foreground">(lower is better)</span>
+                          <span className="text-xs text-muted-foreground">{t('onboarding.hormoneCompassResults.domains.lowerIsBetter')}</span>
                         )}
                       </div>
                       <span className={`text-sm font-semibold ${severity.color}`}>
@@ -382,7 +399,7 @@ const HormoneCompassResults = () => {
           <Card className="p-6">
             <h2 className="text-2xl font-semibold mb-6 flex items-center gap-2">
               <Brain className="w-6 h-6 text-primary" />
-              Health Insights: What's Happening in Your Body
+              {t('onboarding.hormoneCompassResults.sections.healthInsights')}
             </h2>
             
             <div className="space-y-6">
@@ -400,8 +417,7 @@ const HormoneCompassResults = () => {
                       insight.urgency === 'priority' ? 'destructive' :
                       insight.urgency === 'soon' ? 'default' : 'secondary'
                     }>
-                      {insight.urgency === 'priority' ? 'Priority' :
-                       insight.urgency === 'soon' ? 'Address Soon' : 'Routine'}
+                      {getUrgencyLabel(insight.urgency)}
                     </Badge>
                   </div>
 
@@ -410,13 +426,13 @@ const HormoneCompassResults = () => {
                   <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg mb-3">
                     <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
                       <Activity className="w-4 h-4" />
-                      What's Happening Physiologically
+                      {t('onboarding.hormoneCompassResults.sections.physiologically')}
                     </h4>
                     <p className="text-sm text-foreground">{insight.physiologyExplanation}</p>
                   </div>
 
                   <div className="mb-3">
-                    <h4 className="text-sm font-semibold mb-2">System-Wide Impact:</h4>
+                    <h4 className="text-sm font-semibold mb-2">{t('onboarding.hormoneCompassResults.sections.systemWideImpact')}</h4>
                     <ul className="space-y-1">
                       {insight.systemImpact.map((impact, i) => (
                         <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">

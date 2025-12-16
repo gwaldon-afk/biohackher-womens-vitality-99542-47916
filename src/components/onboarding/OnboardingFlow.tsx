@@ -1,6 +1,7 @@
 // LEGACY onboarding flow component - New users should use /onboarding/welcome-stream-select
 // This flow is kept for backwards compatibility
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { OnboardingProgress } from "./OnboardingProgress";
 import { WelcomeStep } from "./WelcomeStep";
 import { GoalSelectionStep } from "./GoalSelectionStep";
@@ -11,15 +12,21 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const STEP_LABELS = ["Welcome", "Goals", "Assessment", "Protocol"];
-
 export function OnboardingFlow() {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [assessmentCompleted, setAssessmentCompleted] = useState(false);
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const STEP_LABELS = [
+    t('onboarding.flow.steps.welcome'),
+    t('onboarding.flow.steps.goals'),
+    t('onboarding.flow.steps.assessment'),
+    t('onboarding.flow.steps.protocol')
+  ];
 
   const handleGoalSelection = (goals: string[]) => {
     setSelectedGoals(goals);
@@ -47,8 +54,8 @@ export function OnboardingFlow() {
         if (error) throw error;
 
         toast({
-          title: "Welcome aboard!",
-          description: "Your health journey begins now.",
+          title: t('onboarding.flow.toasts.welcomeTitle'),
+          description: t('onboarding.flow.toasts.welcomeDescription'),
         });
 
         navigate('/plan-home');
@@ -56,8 +63,8 @@ export function OnboardingFlow() {
         console.error('Error completing onboarding:', error);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Failed to complete onboarding. Please try again.",
+          title: t('onboarding.flow.toasts.errorTitle'),
+          description: t('onboarding.flow.toasts.errorDescription'),
         });
       }
     }
