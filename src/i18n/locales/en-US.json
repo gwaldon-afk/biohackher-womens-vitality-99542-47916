@@ -459,7 +459,55 @@
     "progressTracking": "Progress Tracking",
     "biohackingTools": "Biohacking Tools",
     "wearables": "Wearables",
-    "myGoals": "My Goals"
+    "myGoals": "My Goals",
+    "liveWellLonger": "LIVE WELL LONGER",
+    "myPlans": "My Plans",
+    "myNutrition": "My Nutrition",
+    "myProfile": "My Profile",
+    "findExperts": "Find Experts",
+    "wellnessTools": "Wellness Tools",
+    "plans": {
+      "today": "Today",
+      "ninetyDayPlan": "90-Day Plan",
+      "sevenDayMealPlan": "7-Day Meal Plan"
+    },
+    "tools": {
+      "protocolLibrary": "Protocol Library",
+      "symptomTracking": "Symptom Tracking",
+      "healthAssistant": "Health Assistant",
+      "myLISResults": "My LIS Results"
+    },
+    "userMenu": {
+      "settings": "Settings",
+      "quickAccess": "Quick Access",
+      "achievements": "Achievements",
+      "toolkit": "Toolkit",
+      "aboutScience": "About & Science",
+      "expertPartners": "Expert Partners",
+      "becomeExpert": "Become an Expert",
+      "adminPanel": "Admin Panel",
+      "signOut": "Sign Out",
+      "signIn": "Sign In",
+      "upgradePremium": "Upgrade to Premium"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "description": "View your health summary, assessment history, goals, and preferences",
+    "returnToToday": "Return to Today",
+    "backToHome": "Back to Home",
+    "tabs": {
+      "assessments": "Assessments",
+      "assessmentsShort": "Assess",
+      "protocols": "Protocols",
+      "protocolsShort": "Protocol",
+      "healthProfile": "Health Profile",
+      "healthShort": "Health",
+      "goals": "Goals",
+      "preferences": "Preferences",
+      "preferencesShort": "Prefs",
+      "account": "Account"
+    }
   },
   "health": {
     "gp": "Doctor",
