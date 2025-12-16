@@ -58,8 +58,8 @@ export default function HormoneCompassAssessment() {
   const handleNext = () => {
     if (!answers[currentQuestion.id]) {
       toast({
-        title: "Please answer the question",
-        description: "Select a value on the scale to continue",
+        title: t('hormoneAssessment.toasts.answerRequired'),
+        description: t('hormoneAssessment.toasts.selectValue'),
         variant: "destructive"
       });
       return;
@@ -98,8 +98,8 @@ export default function HormoneCompassAssessment() {
   const handleDateOfBirthSubmit = () => {
     if (!guestDateOfBirth) {
       toast({
-        title: "Date of birth required",
-        description: "Please enter your date of birth to calculate your Hormone Age",
+        title: t('hormoneAssessment.toasts.dobRequired'),
+        description: t('hormoneAssessment.toasts.dobRequiredDesc'),
         variant: "destructive"
       });
       return;
@@ -108,8 +108,8 @@ export default function HormoneCompassAssessment() {
     const dob = parse(guestDateOfBirth, 'yyyy-MM-dd', new Date());
     if (!isValid(dob)) {
       toast({
-        title: "Invalid date",
-        description: "Please enter a valid date of birth",
+        title: t('hormoneAssessment.toasts.invalidDate'),
+        description: t('hormoneAssessment.toasts.invalidDateDesc'),
         variant: "destructive"
       });
       return;
@@ -118,8 +118,8 @@ export default function HormoneCompassAssessment() {
     const age = differenceInYears(new Date(), dob);
     if (age < 18 || age > 100) {
       toast({
-        title: "Invalid age",
-        description: "Please enter a valid date of birth (age 18-100)",
+        title: t('hormoneAssessment.toasts.invalidAge'),
+        description: t('hormoneAssessment.toasts.invalidAgeDesc'),
         variant: "destructive"
       });
       return;
@@ -169,7 +169,7 @@ export default function HormoneCompassAssessment() {
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast({ title: "Authentication Required", description: "Please log in to save your assessment results.", variant: "destructive" });
+        toast({ title: t('hormoneAssessment.toasts.authRequired'), description: t('hormoneAssessment.toasts.authRequiredDesc'), variant: "destructive" });
         navigate('/auth');
         return;
       }
@@ -220,7 +220,7 @@ export default function HormoneCompassAssessment() {
       navigate(`/hormone-compass/results?assessmentId=${stageData.id}`);
     } catch (error: any) {
       console.error('Error completing assessment:', error);
-      toast({ title: "Error", description: `Failed to save assessment: ${error.message || 'Please try again.'}`, variant: "destructive" });
+      toast({ title: t('common.error'), description: t('hormoneAssessment.toasts.saveFailed', { error: error.message || t('common.tryAgain') }), variant: "destructive" });
     } finally {
       setIsCalculating(false);
     }
@@ -236,16 +236,16 @@ export default function HormoneCompassAssessment() {
           <div className="space-y-4">
             <Button variant="ghost" onClick={handleBack} className="gap-2">
               <ArrowLeft className="w-4 h-4" />
-              Back to Questions
+              {t('hormoneAssessment.backToQuestions')}
             </Button>
             
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                 <Calendar className="w-8 h-8 text-primary" />
-                One More Step
+                {t('hormoneAssessment.oneMoreStep')}
               </h1>
               <p className="text-muted-foreground">
-                To calculate your Hormone Age, we need your date of birth
+                {t('hormoneAssessment.dobNeeded')}
               </p>
             </div>
           </div>
@@ -256,16 +256,15 @@ export default function HormoneCompassAssessment() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
                   <Moon className="w-8 h-8 text-primary" />
                 </div>
-                <h2 className="text-2xl font-semibold">Discover Your Hormone Age</h2>
+                <h2 className="text-2xl font-semibold">{t('hormoneAssessment.discoverHormoneAge')}</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Your Hormone Age compares your symptom patterns to women in your age group, 
-                  revealing whether your hormones are functioning younger or older than your actual age.
+                  {t('hormoneAssessment.hormoneAgeExplanation')}
                 </p>
               </div>
 
               <div className="space-y-4 max-w-sm mx-auto">
                 <Label htmlFor="dob" className="text-base font-medium">
-                  Date of Birth
+                  {t('hormoneAssessment.dateOfBirth')}
                 </Label>
                 <Input
                   id="dob"
@@ -276,8 +275,7 @@ export default function HormoneCompassAssessment() {
                   className="text-center text-lg h-12"
                 />
                 <p className="text-xs text-muted-foreground text-center">
-                  Your age is used only to compare your symptoms to population norms. 
-                  We don't store this information for guest users.
+                  {t('hormoneAssessment.agePrivacyNote')}
                 </p>
               </div>
 
@@ -287,7 +285,7 @@ export default function HormoneCompassAssessment() {
                 className="w-full gap-2"
                 size="lg"
               >
-                {isCalculating ? "Calculating..." : "Get My Hormone Age"}
+                {isCalculating ? t('hormoneAssessment.calculating') : t('hormoneAssessment.getMyHormoneAge')}
                 <CheckCircle className="w-5 h-5" />
               </Button>
             </CardContent>
@@ -303,21 +301,21 @@ export default function HormoneCompassAssessment() {
         <div className="space-y-4">
           <Button variant="ghost" onClick={() => navigate('/')} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            {t('common.backToHome')}
           </Button>
           
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
               <Moon className="w-8 h-8 text-primary" />
-              HormoneCompass™ Assessment
+              {t('hormoneAssessment.title')}
             </h1>
-            <p className="text-muted-foreground">Answer honestly to get the most accurate evaluation</p>
+            <p className="text-muted-foreground">{t('hormoneAssessment.subtitle')}</p>
           </div>
 
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Question {answeredQuestions + 1} of {totalQuestions}</span>
-              <span className="font-medium">{Math.round(progress)}% Complete</span>
+              <span className="text-muted-foreground">{t('hormoneAssessment.questionOf', { current: answeredQuestions + 1, total: totalQuestions })}</span>
+              <span className="font-medium">{t('hormoneAssessment.percentComplete', { percent: Math.round(progress) })}</span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
@@ -360,7 +358,7 @@ export default function HormoneCompassAssessment() {
                 className="flex-1 gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Previous
+                {t('common.previous')}
               </Button>
               <Button 
                 onClick={handleNext} 
@@ -369,12 +367,12 @@ export default function HormoneCompassAssessment() {
               >
                 {isLastQuestion ? (
                   <>
-                    {isCalculating ? "Calculating..." : "Complete"}
+                    {isCalculating ? t('hormoneAssessment.calculating') : t('common.complete')}
                     <CheckCircle className="w-4 h-4" />
                   </>
                 ) : (
                   <>
-                    Next
+                    {t('common.next')}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
