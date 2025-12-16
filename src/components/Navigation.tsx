@@ -36,25 +36,25 @@ const Navigation = () => {
 
   // Core navigation - streamlined with Nutrition promoted
   const coreNavItems = [
-    { href: "/nutrition", label: "My Nutrition" },
-    { href: "/profile", label: "My Profile" },
-    { href: "/experts", label: "Find Experts" },
+    { href: "/nutrition", label: t('navigation.myNutrition') },
+    { href: "/profile", label: t('navigation.myProfile') },
+    { href: "/experts", label: t('navigation.findExperts') },
     { href: "/shop", label: t('navigation.shop') },
   ];
 
   // My Plans dropdown items
   const myPlansItems = [
-    { href: "/today", label: "Today", icon: Activity },
-    { href: "/plans/90-day", label: "90-Day Plan", icon: TrendingUp },
-    { href: "/nutrition/meal-plan", label: "7-Day Meal Plan", icon: Utensils },
+    { href: "/today", label: t('navigation.plans.today'), icon: Activity },
+    { href: "/plans/90-day", label: t('navigation.plans.ninetyDayPlan'), icon: TrendingUp },
+    { href: "/nutrition/meal-plan", label: t('navigation.plans.sevenDayMealPlan'), icon: Utensils },
   ];
 
   // Wellness Tools dropdown items
   const wellnessToolsItems = [
-    { href: "/protocol-library", label: "Protocol Library", icon: Target },
-    { href: "/pillars", label: "Symptom Tracking", icon: BarChart3 },
-    { href: "/health-assistant", label: "Health Assistant", icon: Sparkles },
-    { href: "/lis-results", label: "My LIS Results", icon: Activity },
+    { href: "/protocol-library", label: t('navigation.tools.protocolLibrary'), icon: Target },
+    { href: "/pillars", label: t('navigation.tools.symptomTracking'), icon: BarChart3 },
+    { href: "/health-assistant", label: t('navigation.tools.healthAssistant'), icon: Sparkles },
+    { href: "/lis-results", label: t('navigation.tools.myLISResults'), icon: Activity },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -73,7 +73,7 @@ const Navigation = () => {
                 <span className="text-primary italic">her</span>
                 <sup className="text-xs font-normal ml-1">®</sup>
               </span>
-              <span className="text-xs text-muted-foreground -mt-1 font-light tracking-wider">LIVE WELL LONGER</span>
+              <span className="text-xs text-muted-foreground -mt-1 font-light tracking-wider">{t('navigation.liveWellLonger')}</span>
             </div>
           </Link>
 
@@ -87,7 +87,7 @@ const Navigation = () => {
                   size="sm"
                   className="text-sm font-medium text-muted-foreground hover:text-primary"
                 >
-                  My Plans <ChevronDown className="ml-1 h-3 w-3" />
+                  {t('navigation.myPlans')} <ChevronDown className="ml-1 h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56 bg-popover border border-border shadow-lg z-50">
@@ -136,7 +136,7 @@ const Navigation = () => {
                   size="sm"
                   className="text-sm font-medium text-muted-foreground hover:text-primary"
                 >
-                  Wellness Tools <ChevronDown className="ml-1 h-3 w-3" />
+                  {t('navigation.wellnessTools')} <ChevronDown className="ml-1 h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg z-50">
@@ -184,53 +184,53 @@ const Navigation = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="flex items-center cursor-pointer">
                         <User className="h-4 w-4 mr-2" />
-                        My Profile
+                        {t('navigation.myProfile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/settings" className="flex items-center cursor-pointer">
                         <Settings className="h-4 w-4 mr-2" />
-                        Settings
+                        {t('navigation.userMenu.settings')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <div className="px-2 py-1.5 text-xs text-muted-foreground">Quick Access</div>
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">{t('navigation.userMenu.quickAccess')}</div>
                     <DropdownMenuItem asChild>
                       <Link to="/achievements" className="flex items-center cursor-pointer text-xs">
                         <Award className="h-3 w-3 mr-2" />
-                        Achievements
+                        {t('navigation.userMenu.achievements')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/biohacking-toolkit" className="flex items-center cursor-pointer text-xs">
                         <Sparkles className="h-3 w-3 mr-2" />
-                        Toolkit
+                        {t('navigation.userMenu.toolkit')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/about" className="flex items-center cursor-pointer text-xs">
                         <Heart className="h-3 w-3 mr-2" />
-                        About & Science
+                        {t('navigation.userMenu.aboutScience')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <div className="px-2 py-1.5 text-xs text-muted-foreground">Expert Partners</div>
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">{t('navigation.userMenu.expertPartners')}</div>
                     <DropdownMenuItem asChild>
                       <Link to="/experts" className="flex items-center cursor-pointer text-xs">
                         <User className="h-3 w-3 mr-2" />
-                        Find Experts
+                        {t('navigation.findExperts')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/expert/register" className="flex items-center cursor-pointer text-xs">
                         <Crown className="h-3 w-3 mr-2" />
-                        Become an Expert
+                        {t('navigation.userMenu.becomeExpert')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/admin" className="flex items-center cursor-pointer text-xs">
                         <Settings className="h-3 w-3 mr-2 text-destructive" />
-                        <span className="text-destructive font-semibold">Admin Panel</span>
+                        <span className="text-destructive font-semibold">{t('navigation.userMenu.adminPanel')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -239,7 +239,7 @@ const Navigation = () => {
                       className="flex items-center cursor-pointer text-destructive focus:text-destructive"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
+                      {t('navigation.userMenu.signOut')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -247,7 +247,7 @@ const Navigation = () => {
             ) : (
               <Link to="/auth">
                 <Button size="sm">
-                  Sign In
+                  {t('navigation.userMenu.signIn')}
                 </Button>
               </Link>
             )}
@@ -273,7 +273,7 @@ const Navigation = () => {
               {/* My Plans - Mobile */}
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-md">
-                  My Plans <ChevronDown className="h-4 w-4" />
+                  {t('navigation.myPlans')} <ChevronDown className="h-4 w-4" />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4">
                   {myPlansItems.map((item) => {
@@ -317,7 +317,7 @@ const Navigation = () => {
               {/* Wellness Tools - Mobile */}
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-md">
-                  Wellness Tools <ChevronDown className="h-4 w-4" />
+                  {t('navigation.wellnessTools')} <ChevronDown className="h-4 w-4" />
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-4">
                   {wellnessToolsItems.map((item) => {
@@ -351,19 +351,19 @@ const Navigation = () => {
                     <Link to="/upgrade" onClick={() => setIsOpen(false)}>
                       <Button variant="outline" className="w-full border-primary/30">
                         <Crown className="h-4 w-4 mr-2 text-primary" />
-                        Upgrade to Premium
+                        {t('navigation.userMenu.upgradePremium')}
                       </Button>
                     </Link>
                     <Link to="/profile" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <User className="h-4 w-4 mr-2" />
-                        My Profile
+                        {t('navigation.myProfile')}
                       </Button>
                     </Link>
                     <Link to="/settings" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <Settings className="h-4 w-4 mr-2" />
-                        Settings
+                        {t('navigation.userMenu.settings')}
                       </Button>
                     </Link>
                     <Button 
@@ -375,13 +375,13 @@ const Navigation = () => {
                       }}
                     >
                       <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
+                      {t('navigation.userMenu.signOut')}
                     </Button>
                   </>
                 ) : (
                   <Link to="/auth" onClick={() => setIsOpen(false)}>
                     <Button className="w-full">
-                      Sign In
+                      {t('navigation.userMenu.signIn')}
                     </Button>
                   </Link>
                 )}
