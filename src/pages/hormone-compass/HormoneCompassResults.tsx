@@ -705,7 +705,7 @@ export default function HormoneCompassResults() {
             <div className="flex items-center justify-center gap-3 mb-2">
               <Sparkles className="w-8 h-8 text-primary" />
               <h2 className={`text-3xl font-bold ${levelInfo.color}`}>
-                It sounds like you are "{levelInfo.title}"
+                {t('hormoneResults.yourHealthLevel', { level: levelInfo.title })}
               </h2>
             </div>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto mt-3 bg-muted/30 rounded-lg p-3">
@@ -718,7 +718,7 @@ export default function HormoneCompassResults() {
               <div className="flex items-start gap-3">
                 <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <p className="text-sm">
-                  <span className="font-semibold">For Your Life Stage ({userAge} years old): </span>
+                  <span className="font-semibold">{t('hormoneResults.lifeStageTitle', { age: userAge })} </span>
                   {lifeStageContext}
                 </p>
               </div>
@@ -1023,7 +1023,7 @@ export default function HormoneCompassResults() {
         onSave={handleProtocolSelection}
         onCancel={() => {
           setProtocolDialogOpen(false);
-          toast.info('You can review and add your protocol from My Protocol page anytime');
+          toast.info(t('hormoneResults.reviewProtocolAnytime'));
         }}
       />
       

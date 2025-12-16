@@ -350,8 +350,8 @@ export default function LongevityNutritionResults() {
   const handleReviewFullProtocol = async () => {
     if (!user) {
       toast({
-        title: "Sign in required",
-        description: "Create an account to review and save your protocol.",
+        title: t('nutritionResults.signInRequired'),
+        description: t('nutritionResults.signInRequiredReview'),
         variant: "destructive"
       });
       navigate('/auth');
@@ -360,8 +360,8 @@ export default function LongevityNutritionResults() {
 
     if (!assessment?.id) {
       toast({
-        title: "Error",
-        description: "Assessment ID not found",
+        title: t('nutritionResults.error'),
+        description: t('nutritionResults.assessmentIdNotFound'),
         variant: "destructive"
       });
       return;
@@ -384,8 +384,8 @@ export default function LongevityNutritionResults() {
       if (error) {
         console.error('Error saving recommendation:', error);
         toast({
-          title: "Error",
-          description: "Failed to save recommendation",
+          title: t('nutritionResults.error'),
+          description: t('nutritionResults.failedToSaveRecommendation'),
           variant: "destructive"
         });
         return;
@@ -397,8 +397,8 @@ export default function LongevityNutritionResults() {
     } catch (error) {
       console.error('Error saving protocol:', error);
       toast({
-        title: "Error",
-        description: "Failed to save protocol",
+        title: t('nutritionResults.error'),
+        description: t('nutritionResults.failedToSave'),
         variant: "destructive"
       });
     }
@@ -490,8 +490,8 @@ export default function LongevityNutritionResults() {
     } catch (error) {
       console.error('Error saving protocol selection:', error);
       toast({
-        title: "Error",
-        description: "Failed to save protocol selection",
+        title: t('nutritionResults.error'),
+        description: t('nutritionResults.failedToSaveSelection'),
         variant: "destructive"
       });
     }

@@ -215,6 +215,7 @@
     "backToHome": "Back to Home",
     "loading": "Loading your results...",
     "healthLevelPrefix": "It sounds like you are",
+    "yourHealthLevel": "It sounds like you are \"{{level}}\"",
     "lifeStageTitle": "For Your Life Stage ({{age}} years old):",
     "symptomAnalysisTitle": "What Your Symptoms Reveal",
     "domainAnalysisTitle": "Detailed Domain Analysis",
@@ -399,6 +400,9 @@
     "protocolSaved": "Protocol saved!",
     "protocolSavedDescription": "{{count}} items added to your plan",
     "assessmentIdNotFound": "Assessment ID not found"
+  },
+  "nutritionAssessment": {
+    "failedToSave": "Failed to save assessment. Please try again."
   },
   "common": {
     "loading": "Loading...",
