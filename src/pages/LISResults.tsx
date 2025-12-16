@@ -161,13 +161,13 @@ const LISResults = () => {
       setProtocolDialogOpen(true);
       
       toast({
-        title: "Protocol Generated!",
-        description: "Review your personalized recommendations and select what works for you.",
+        title: t('lisResults.toast.protocolGenerated'),
+        description: t('lisResults.toast.protocolGeneratedDesc'),
       });
     } catch (error: any) {
       console.error('Error generating protocol:', error);
       toast({
-        title: "Generation Failed",
+        title: t('lisResults.toast.generationFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -242,8 +242,8 @@ const LISResults = () => {
       await refetchRecommendations();
 
       toast({
-        title: "Protocol Added!",
-        description: `${selectedItems.length} items added to your plan`,
+        title: t('lisResults.toast.protocolAdded'),
+        description: t('lisResults.toast.protocolAddedDesc', { count: selectedItems.length }),
       });
 
       setProtocolDialogOpen(false);
@@ -251,7 +251,7 @@ const LISResults = () => {
     } catch (error: any) {
       console.error('Error saving protocol:', error);
       toast({
-        title: "Save Failed",
+        title: t('lisResults.toast.saveFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -296,8 +296,8 @@ const LISResults = () => {
             );
           } else {
             toast({
-              title: "No Assessment Found",
-              description: "Please complete your baseline assessment first.",
+              title: t('lisResults.toast.noAssessment'),
+              description: t('lisResults.toast.noAssessmentDesc'),
             });
             navigate('/guest-lis-assessment');
           }
@@ -308,8 +308,8 @@ const LISResults = () => {
             navigate(`/guest-lis-results/${sessionId}`);
           } else {
             toast({
-              title: "Assessment Not Found",
-              description: "Please complete the assessment to view results.",
+              title: t('lisResults.toast.assessmentNotFound'),
+              description: t('lisResults.toast.assessmentNotFoundDesc'),
             });
             navigate('/guest-lis-assessment');
           }
@@ -417,8 +417,8 @@ const LISResults = () => {
     
     navigator.clipboard.writeText(shareUrl);
     toast({
-      title: "Link Copied!",
-      description: "Share this link to help others optimize their longevity",
+      title: t('lisResults.toast.linkCopied'),
+      description: t('lisResults.toast.linkCopiedDesc'),
     });
   };
 
@@ -434,15 +434,15 @@ const LISResults = () => {
       {isSharedLink && (
         <Alert className="mb-6 bg-gradient-to-r from-primary/10 to-secondary/5 border-primary/20">
           <Sparkles className="h-5 w-5 text-primary" />
-          <AlertTitle>Someone Shared Their Results With You!</AlertTitle>
+          <AlertTitle>{t('lisResults.sharedBanner.title')}</AlertTitle>
           <AlertDescription>
-            <p className="mb-3">Take your own free assessment to get personalized longevity insights.</p>
+            <p className="mb-3">{t('lisResults.sharedBanner.description')}</p>
             <Button 
               variant="outline" 
               className="border-primary/30 hover:bg-primary/10" 
               onClick={() => navigate('/guest-lis-assessment')}
             >
-              Take Your Free Assessment
+              {t('lisResults.sharedBanner.cta')}
             </Button>
           </AlertDescription>
         </Alert>
@@ -510,20 +510,20 @@ const LISResults = () => {
         <CardContent className="pt-6 space-y-4">
           <h3 className="text-lg font-bold flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            Your Longevity Summary
+            {t('lisResults.summary.title')}
           </h3>
           
           {/* Primary Statement */}
           <p className="text-foreground leading-relaxed">
             {(() => {
               if (displayScore >= 80) {
-                return `Your Longevity Impact Score of ${displayScore} demonstrates exceptional health fundamentals. You're in the top tier of longevity optimization, with lifestyle choices that are actively supporting healthy cellular aging.`;
+                return t('lisResults.summary.excellent', { score: displayScore });
               } else if (displayScore >= 65) {
-                return `Your Longevity Impact Score of ${displayScore} shows a strong foundation for healthy aging. Your current lifestyle strategies are working well, and with some targeted improvements, you could see significant gains in your longevity trajectory.`;
+                return t('lisResults.summary.good', { score: displayScore });
               } else if (displayScore >= 50) {
-                return `Your Longevity Impact Score of ${displayScore} reveals both areas of strength and meaningful opportunities for improvement. While some of your lifestyle habits are supporting your health, there's significant potential to optimize your longevity trajectory.`;
+                return t('lisResults.summary.fair', { score: displayScore });
               } else {
-                return `Your Longevity Impact Score of ${displayScore} indicates that your current lifestyle patterns are significantly impacting your biological aging. The good news? This presents a valuable opportunity for transformative improvement—small, consistent changes can make a big difference.`;
+                return t('lisResults.summary.needsWork', { score: displayScore });
               }
             })()}
           </p>
@@ -536,10 +536,10 @@ const LISResults = () => {
               const topStrengths = getTopStrengths().slice(0, 2);
               if (topStrengths.length >= 2) {
                 const [first, second] = topStrengths;
-                return `Your ${first[0]} score of ${first[1]} and ${second[0]} score of ${second[1]} are your most powerful longevity drivers. These pillars are actively supporting healthy cellular aging and contributing positively to your overall healthspan.`;
+                return t('lisResults.summary.strengthsTwo', { first: first[0], firstScore: first[1], second: second[0], secondScore: second[1] });
               } else if (topStrengths.length === 1) {
                 const [first] = topStrengths;
-                return `Your ${first[0]} score of ${first[1]} is your strongest longevity driver, actively supporting healthy cellular aging.`;
+                return t('lisResults.summary.strengthsOne', { first: first[0], firstScore: first[1] });
               }
               return '';
             })()}
@@ -554,10 +554,10 @@ const LISResults = () => {
               if (improvements.length >= 2) {
                 const [first, second] = improvements;
                 const potentialYears = Math.round((100 - displayScore) * 0.08);
-                return `However, your ${first[0]} score of ${first[1]} and ${second[0]} score of ${second[1]} are holding back your overall potential. Addressing these areas could help reduce your biological age by an estimated ${potentialYears} years over time.`;
+                return t('lisResults.summary.priorityTwo', { first: first[0], firstScore: first[1], second: second[0], secondScore: second[1], years: potentialYears });
               } else if (improvements.length === 1) {
                 const [first] = improvements;
-                return `Your ${first[0]} score of ${first[1]} represents your biggest opportunity for improvement. Focusing here could meaningfully impact your biological age.`;
+                return t('lisResults.summary.priorityOne', { first: first[0], firstScore: first[1] });
               }
               return '';
             })()}
@@ -577,13 +577,13 @@ const LISResults = () => {
                   const improvementAreas = getTopImprovements().filter((item) => (item[1] as number) < 50);
                   
                   if (improvementAreas.length >= 2) {
-                    return `The interconnection between ${improvementAreas[0][0]} and ${improvementAreas[1][0]} suggests that improving one may naturally enhance the other—consider starting with ${lowestName} for the biggest cascade effect on your overall score.`;
+                    return t('lisResults.summary.insightInterconnected', { first: improvementAreas[0][0], second: improvementAreas[1][0], lowest: lowestName });
                   } else if (lowestScore < 40) {
-                    return `Your ${lowestName} score is significantly below your other pillars, making it your highest-leverage area for improvement. Even modest changes here could have an outsized impact on your overall longevity trajectory.`;
+                    return t('lisResults.summary.insightLowest', { pillar: lowestName });
                   } else if (lowestScore >= 60) {
-                    return `Your pillars are relatively balanced, which is excellent! A holistic approach that fine-tunes all areas will yield the best results for maximizing your longevity potential.`;
+                    return t('lisResults.summary.insightBalanced');
                   } else {
-                    return `Focus your energy on improving your ${lowestName} score first—this is where you'll see the quickest wins and build momentum for your longevity journey.`;
+                    return t('lisResults.summary.insightFocus', { pillar: lowestName });
                   }
                 })()}
               </span>
@@ -596,91 +596,91 @@ const LISResults = () => {
       {chronologicalAge > 0 && bioAgeData && (
         <Card className="p-8 mb-6 border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-secondary/5 to-background shadow-lg">
           <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Your Biological Age Estimate</h3>
+            <h3 className="text-2xl font-bold mb-4">{t('lisResults.bioAge.title')}</h3>
             
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto mb-6">
-              <strong>Biological age</strong> is an indicator of how well your body may be functioning at a cellular level. This assessment uses lifestyle factors to provide an indicative biological age estimate. <strong>Chronological age</strong> is simply the number of years you've been alive. Your lifestyle choices, stress levels, sleep quality, and nutrition can make your body function younger or older than your calendar age.
+              {t('lisResults.bioAge.explanation')}
             </p>
             
             <div className="grid md:grid-cols-3 gap-6 mb-6">
               <div className="p-4 bg-background rounded-lg">
-                <div className="text-sm text-muted-foreground mb-1">Chronological Age</div>
+                <div className="text-sm text-muted-foreground mb-1">{t('lisResults.bioAge.chronological')}</div>
                 <div className="text-4xl font-bold">{chronologicalAge}</div>
-                <div className="text-xs text-muted-foreground mt-1">years</div>
+                <div className="text-xs text-muted-foreground mt-1">{t('lisResults.bioAge.years')}</div>
               </div>
 
               <div className="p-4 bg-background rounded-lg border-2 border-primary">
-                <div className="text-sm text-muted-foreground mb-1">Biological Age</div>
+                <div className="text-sm text-muted-foreground mb-1">{t('lisResults.bioAge.biological')}</div>
                 <div className="text-4xl font-bold text-primary">{bioAgeData?.bioAge || 'N/A'}</div>
-                <div className="text-xs text-muted-foreground mt-1">years</div>
+                <div className="text-xs text-muted-foreground mt-1">{t('lisResults.bioAge.years')}</div>
               </div>
 
               <div className="p-4 bg-background rounded-lg">
-                <div className="text-sm text-muted-foreground mb-1">Age Delta</div>
+                <div className="text-sm text-muted-foreground mb-1">{t('lisResults.bioAge.ageDelta')}</div>
                 <div className={`text-4xl font-bold ${bioAgeData?.delta && bioAgeData.delta > 0 ? 'text-destructive' : 'text-green-600'}`}>
                   {bioAgeData?.delta ? (bioAgeData.delta > 0 ? '+' : '') + bioAgeData.delta : 'N/A'}
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">years</div>
+                <div className="text-xs text-muted-foreground mt-1">{t('lisResults.bioAge.years')}</div>
               </div>
             </div>
 
             <div className="p-4 bg-background rounded-lg mb-6">
               <p className="text-sm text-muted-foreground mb-2">
-                Based on your LIS score of {displayScore.toFixed(1)}, your lifestyle indicates you could be aging approximately{' '}
-                <span className="font-bold text-foreground">
-                  {bioAgeData.annualDeceleration.toFixed(2)}x
-                </span>{' '}
-                the normal rate ({bioAgeData.annualDeceleration < 1 ? 'slower than' : bioAgeData.annualDeceleration > 1 ? 'faster than' : 'same as'} average).
+                {t('lisResults.bioAge.agingRate', { 
+                  score: displayScore.toFixed(1), 
+                  rate: bioAgeData.annualDeceleration.toFixed(2),
+                  comparison: bioAgeData.annualDeceleration < 1 ? t('lisResults.bioAge.slowerThan') : bioAgeData.annualDeceleration > 1 ? t('lisResults.bioAge.fasterThan') : t('lisResults.bioAge.sameAs')
+                })}
               </p>
               <p className="text-xs text-muted-foreground mt-2">
                 {bioAgeData.delta < 0 
-                  ? `🎉 Your biological age is ${Math.abs(bioAgeData.delta)} years younger than your chronological age!` 
+                  ? t('lisResults.bioAge.younger', { years: Math.abs(bioAgeData.delta) })
                   : bioAgeData.delta === 0 
-                  ? 'Your biological age matches your chronological age.' 
-                  : `⚠️ Your biological age is ${bioAgeData.delta} years older than your chronological age.`}
+                  ? t('lisResults.bioAge.same')
+                  : t('lisResults.bioAge.older', { years: bioAgeData.delta })}
               </p>
             </div>
 
             {/* Future Projections */}
             <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-left">Your Aging Trajectory</h4>
+              <h4 className="text-lg font-semibold text-left">{t('lisResults.trajectory.title')}</h4>
               
               {/* 5 Year Projection */}
               <div className="p-5 bg-background rounded-lg border-2">
                 <div className="mb-3">
                   <span className="font-semibold text-base">
-                    In 5 years you'll be {chronologicalAge + 5} years old
+                    {t('lisResults.trajectory.inYears', { years: 5, age: chronologicalAge + 5 })}
                   </span>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-left">
-                    <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('lisResults.trajectory.currentTrajectory')}</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-bold text-orange-600">
                         {bioAgeData.projections.current5yr}
                       </span>
-                      <span className="text-sm text-muted-foreground">years bio age</span>
+                      <span className="text-sm text-muted-foreground">{t('lisResults.trajectory.yearsBioAge')}</span>
                     </div>
                   </div>
                   
                   <div className="text-left border-l-2 border-primary/20 pl-4">
-                    <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('lisResults.trajectory.withBiohacking')}</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-bold text-green-600">
                         {bioAgeData.projections.optimized5yr}
                       </span>
-                      <span className="text-sm text-muted-foreground">years bio age</span>
+                      <span className="text-sm text-muted-foreground">{t('lisResults.trajectory.yearsBioAge')}</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded border border-green-500/20">
                   <p className="text-sm font-medium text-green-700 mb-1">
-                    💡 <span className="font-bold">Improvement Potential: {bioAgeData.projections.improvementGap5yr} years younger biological age</span>
+                    {t('lisResults.trajectory.improvement5yr', { years: bioAgeData.projections.improvementGap5yr })}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    That's a {((bioAgeData.projections.current5yr - bioAgeData.projections.optimized5yr) / bioAgeData.projections.current5yr * 100).toFixed(0)}% reduction in biological aging over 5 years!
+                    {t('lisResults.trajectory.reduction', { percent: ((bioAgeData.projections.current5yr - bioAgeData.projections.optimized5yr) / bioAgeData.projections.current5yr * 100).toFixed(0), years: 5 })}
                   </p>
                 </div>
               </div>
@@ -689,52 +689,52 @@ const LISResults = () => {
               <div className="p-5 bg-background rounded-lg border-2 border-primary">
                 <div className="mb-3">
                   <span className="font-semibold text-base">
-                    In 20 years you'll be {chronologicalAge + 20} years old
+                    {t('lisResults.trajectory.inYears', { years: 20, age: chronologicalAge + 20 })}
                   </span>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-left">
-                    <p className="text-xs text-muted-foreground mb-2">Current Trajectory</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('lisResults.trajectory.currentTrajectory')}</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-bold text-destructive">
                         {bioAgeData.projections.current20yr}
                       </span>
-                      <span className="text-sm text-muted-foreground">years bio age</span>
+                      <span className="text-sm text-muted-foreground">{t('lisResults.trajectory.yearsBioAge')}</span>
                     </div>
                   </div>
                   
                   <div className="text-left border-l-2 border-primary/20 pl-4">
-                    <p className="text-xs text-muted-foreground mb-2">With Biohacking</p>
+                    <p className="text-xs text-muted-foreground mb-2">{t('lisResults.trajectory.withBiohacking')}</p>
                     <div className="flex items-baseline gap-2">
                       <span className="text-3xl font-bold text-green-600">
                         {bioAgeData.projections.optimized20yr}
                       </span>
-                      <span className="text-sm text-muted-foreground">years bio age</span>
+                      <span className="text-sm text-muted-foreground">{t('lisResults.trajectory.yearsBioAge')}</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-primary/10 rounded border-2 border-green-500/30">
                   <p className="text-sm font-bold text-green-700 mb-1">
-                    🚀 Transform Your Future: <span className="text-lg">{bioAgeData.projections.improvementGap20yr} years younger!</span>
+                    {t('lisResults.trajectory.transform20yr', { years: bioAgeData.projections.improvementGap20yr })}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    That's like turning back the clock by gaining {bioAgeData.projections.improvementGap20yr} extra years of vitality
+                    {t('lisResults.trajectory.extraYears', { years: bioAgeData.projections.improvementGap20yr })}
                   </p>
                 </div>
               </div>
 
               <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
                 <p className="text-xs text-muted-foreground mb-2">
-                  <strong>Calculation basis:</strong> Optimized scenario assumes achieving an LIS score of 85 through evidence-based biohacking interventions. Your current aging rate: {bioAgeData.annualDeceleration.toFixed(2)}x per year.
+                  {t('lisResults.trajectory.calculationBasis', { rate: bioAgeData.annualDeceleration.toFixed(2) })}
                 </p>
               </div>
 
               {/* Medium Disclaimer */}
               <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Important:</strong> Your Longevity Impact Score is an estimation based on self-reported lifestyle factors and health behaviors. While this assessment provides valuable insights into your longevity trajectory, it is not a substitute for clinical testing. For a more accurate cellular-level biological age measurement, we recommend taking a clinical test including comprehensive blood work, inflammation markers, metabolic panels, and hormonal assessments.
+                  {t('lisResults.trajectory.disclaimer')}
                 </p>
               </div>
             </div>
@@ -754,29 +754,28 @@ const LISResults = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
                 <Lock className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold">Daily Nutrition Tracking</h3>
+              <h3 className="text-2xl font-bold">{t('lisResults.nutritionPreview.title')}</h3>
               <p className="text-muted-foreground max-w-md">
-                Track your anti-inflammatory score every day, see how nutrition impacts your LIS, 
-                and get personalized meal recommendations
+                {t('lisResults.nutritionPreview.description')}
               </p>
               
               {/* Benefits list */}
               <div className="grid grid-cols-1 gap-2 max-w-sm mx-auto text-left">
                 <div className="flex items-center gap-2 text-sm">
                   <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Daily nutrition scoring (0-15 scale)</span>
+                  <span>{t('lisResults.nutritionPreview.benefit1')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Track hydration, protein, vegetables, and more</span>
+                  <span>{t('lisResults.nutritionPreview.benefit2')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>See how daily choices affect your biological age</span>
+                  <span>{t('lisResults.nutritionPreview.benefit3')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Build streaks and earn achievements</span>
+                  <span>{t('lisResults.nutritionPreview.benefit4')}</span>
                 </div>
               </div>
               
@@ -785,11 +784,11 @@ const LISResults = () => {
                 onClick={() => navigate('/auth?source=nutrition')}
                 className="text-lg px-8 py-6 h-auto"
               >
-                Sign Up to Start Tracking
+                {t('lisResults.nutritionPreview.cta')}
               </Button>
               
               <p className="text-xs text-muted-foreground">
-                Includes FREE 3-day trial
+                {t('lisResults.nutritionPreview.trial')}
               </p>
             </div>
           </div>
@@ -838,10 +837,10 @@ const LISResults = () => {
       <div className="mb-6 p-6 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/10">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Activity className="h-6 w-6 text-primary" />
-          Detailed Pillar Analysis
+          {t('lisResults.pillarAnalysis.title')}
         </h2>
         <p className="text-muted-foreground mb-6">
-          Deep dive into each longevity pillar with personalized insights and actionable recommendations. Click any pillar to expand.
+          {t('lisResults.pillarAnalysis.description')}
         </p>
         
         <Accordion 
@@ -878,9 +877,9 @@ const LISResults = () => {
                         } 
                         className="mt-1"
                       >
-                        {pillar.score >= 80 ? 'Excellent' : 
-                         pillar.score >= 60 ? 'Good' : 
-                         pillar.score >= 40 ? 'Fair' : 'Needs Work'}
+                        {pillar.score >= 80 ? t('lisResults.pillarAnalysis.excellent') : 
+                         pillar.score >= 60 ? t('lisResults.pillarAnalysis.good') : 
+                         pillar.score >= 40 ? t('lisResults.pillarAnalysis.fair') : t('lisResults.pillarAnalysis.needsWork')}
                       </Badge>
                     </div>
                   </div>
@@ -935,26 +934,26 @@ const LISResults = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
                   <Sparkles className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold">Save Your Results & Get Your Protocol</h3>
+                <h3 className="text-2xl font-bold">{t('lisResults.guestCta.title')}</h3>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Create a free account to unlock your personalized 7-day longevity protocol, track progress over time, and access daily nutrition scoring.
+                  {t('lisResults.guestCta.description')}
                 </p>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left max-w-2xl mx-auto mb-4">
                   <li className="flex items-start gap-2 text-sm">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Personalized supplement & lifestyle protocol</span>
+                    <span>{t('lisResults.guestCta.benefit1')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Daily nutrition tracking with biological age impact</span>
+                    <span>{t('lisResults.guestCta.benefit2')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>Track improvements over time with monthly reassessments</span>
+                    <span>{t('lisResults.guestCta.benefit3')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm">
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>AI Health Assistant (5 free questions/day)</span>
+                    <span>{t('lisResults.guestCta.benefit4')}</span>
                   </li>
                 </ul>
                 <Button 
@@ -969,10 +968,10 @@ const LISResults = () => {
                   className="text-lg px-8 py-6 h-auto"
                   disabled={user && generatingProtocol}
                 >
-                  {user ? 'Unlock Your Protocol' : 'Create Free Account & Unlock Protocol'}
+                  {user ? t('lisResults.guestCta.unlockProtocol') : t('lisResults.guestCta.createAccount')}
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Includes FREE 3-day trial • No credit card required
+                  {t('lisResults.guestCta.trial')}
                 </p>
                 
                 {/* Email and Share Buttons for Guests */}
@@ -983,7 +982,7 @@ const LISResults = () => {
                     onClick={() => setEmailDialogOpen(true)}
                   >
                     <Mail className="w-4 h-4" />
-                    Email My Results
+                    {t('lisResults.guestCta.emailResults')}
                   </Button>
                   <Button 
                     variant="outline"
@@ -991,7 +990,7 @@ const LISResults = () => {
                     onClick={() => copyShareLink()}
                   >
                     <Share2 className="w-4 h-4" />
-                    Copy Share Link
+                    {t('lisResults.guestCta.copyShareLink')}
                   </Button>
                 </div>
               </CardContent>
@@ -1011,7 +1010,7 @@ const LISResults = () => {
                     disabled={generatingProtocol}
                   >
                     <Sparkles className="w-5 h-5" />
-                    {generatingProtocol ? 'Generating Your Protocol...' : 'Review & Add Protocol to My Plan'}
+                    {generatingProtocol ? t('lisResults.authenticated.generateProtocol') : t('lisResults.authenticated.reviewProtocol')}
                   </Button>
                   
                   {/* Create Goal from Assessment */}
@@ -1022,7 +1021,7 @@ const LISResults = () => {
                     className="gap-2 w-full md:w-auto"
                   >
                     <Target className="w-5 h-5" />
-                    Create 90-Day Goal from Results
+                    {t('lisResults.authenticated.createGoal')}
                   </Button>
                   
                   {/* AI Deep Dive - Compact Button */}
@@ -1047,7 +1046,7 @@ const LISResults = () => {
                         disabled={loading}
                       >
                         <Sparkles className="w-4 h-4" />
-                        {loading ? 'Generating AI Analysis...' : 'Get AI-Powered Deep Dive (Optional)'}
+                        {loading ? t('lisResults.authenticated.generatingAI') : t('lisResults.authenticated.aiDeepDive')}
                       </Button>
                     )}
                   />
@@ -1061,7 +1060,7 @@ const LISResults = () => {
                       onClick={() => setEmailDialogOpen(true)}
                     >
                       <Mail className="w-4 h-4" />
-                      Email Report
+                      {t('lisResults.authenticated.emailReport')}
                     </Button>
                     <Button 
                       variant="outline"
@@ -1070,7 +1069,7 @@ const LISResults = () => {
                       onClick={() => copyShareLink()}
                     >
                       <Share2 className="w-4 h-4" />
-                      Share Link
+                      {t('lisResults.authenticated.shareLink')}
                     </Button>
                   </div>
                 </div>
@@ -1080,27 +1079,27 @@ const LISResults = () => {
               {lisData.dailyScores.length === 0 && (
                 <Alert className="bg-success/5 border-success/20 mb-6">
                   <Activity className="h-5 w-5 text-success" />
-                  <AlertTitle className="text-success">Continue with Daily Check-Ins</AlertTitle>
+                  <AlertTitle className="text-success">{t('lisResults.authenticated.continueTitle')}</AlertTitle>
                   <AlertDescription className="mt-2">
                     <p className="text-sm mb-3">
-                      You've completed your baseline assessment! Now start daily check-ins to track how your lifestyle changes impact your longevity score over time.
+                      {t('lisResults.authenticated.continueDescription')}
                     </p>
                     <ul className="space-y-2 text-sm mb-4">
                       <li className="flex gap-2">
                         <span className="text-success">✓</span>
-                        <span>Quick 2-minute daily check-ins</span>
+                        <span>{t('lisResults.authenticated.continueItem1')}</span>
                       </li>
                       <li className="flex gap-2">
                         <span className="text-success">✓</span>
-                        <span>See real-time changes in your biological age</span>
+                        <span>{t('lisResults.authenticated.continueItem2')}</span>
                       </li>
                       <li className="flex gap-2">
                         <span className="text-success">✓</span>
-                        <span>Discover which habits move the needle</span>
+                        <span>{t('lisResults.authenticated.continueItem3')}</span>
                       </li>
                       <li className="flex gap-2">
                         <span className="text-success">✓</span>
-                        <span>Get AI insights based on your patterns</span>
+                        <span>{t('lisResults.authenticated.continueItem4')}</span>
                       </li>
                     </ul>
                   </AlertDescription>
