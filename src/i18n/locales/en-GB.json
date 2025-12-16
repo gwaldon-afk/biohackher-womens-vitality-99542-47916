@@ -179,6 +179,51 @@
       "age45to55Normal": "You're in the typical perimenopause window. Proactive support can help you navigate this transition smoothly.",
       "age56PlusChallenges": "If you're experiencing ongoing symptoms in postmenopause, hormone replacement therapy or targeted interventions may provide relief. Consult with your provider.",
       "age56PlusNormal": "You're in the postmenopause phase. Focus on longevity optimisation—bone health, cardiovascular support, and cognitive function."
+    },
+    "domainInsights": {
+      "cyclePeriodPatterns": {
+        "critical": "Urgent: Severe symptoms may require immediate medical evaluation",
+        "struggling": "Significant irregularity may affect fertility and long-term health",
+        "challenges": "May indicate hormone imbalance affecting your cycle regularity",
+        "good": "Minor fluctuations—small optimisations can enhance balance",
+        "thriving": "Healthy regular cycles suggest balanced hormone production"
+      },
+      "sleepThermoregulation": {
+        "critical": "Urgent: Severe sleep issues may critically impact your health",
+        "struggling": "Temperature dysregulation may significantly disrupt sleep quality",
+        "challenges": "Sleep disruption could affect hormone production and repair",
+        "good": "Occasional disruptions—optimisation can further support hormones",
+        "thriving": "Excellent sleep quality may support optimal hormone production"
+      },
+      "moodFocus": {
+        "critical": "Urgent: Severe symptoms may require immediate professional support",
+        "struggling": "Significant disruption could interfere with daily quality of life",
+        "challenges": "Mood instability may indicate hormone or neurotransmitter dysfunction",
+        "good": "Generally stable with occasional challenges—targeted support helps",
+        "thriving": "Balanced mood and clarity suggest healthy neurotransmitter levels"
+      },
+      "energyWeight": {
+        "critical": "Urgent: Extreme fatigue may require immediate medical attention",
+        "struggling": "Severe fatigue could indicate metabolic or endocrine disruption",
+        "challenges": "Could suggest metabolic disruption affecting energy and weight",
+        "good": "Generally stable—optimisation can enhance vitality",
+        "thriving": "Stable energy and weight suggest healthy metabolism"
+      },
+      "libidoSexualHealth": {
+        "critical": "Urgent: Severe symptoms may require immediate medical evaluation",
+        "struggling": "Significant loss of libido may impact intimacy and wellbeing",
+        "challenges": "Reduced libido and discomfort may indicate hormone changes",
+        "good": "Minor concerns—small adjustments can enhance comfort",
+        "thriving": "Strong sexual health suggests healthy sex hormone levels"
+      },
+      "skinHairNails": {
+        "critical": "Urgent: Severe changes may indicate serious nutrient deficiency",
+        "struggling": "Significant changes may indicate hormone or nutrient imbalance",
+        "challenges": "Changes suggest collagen loss or nutrient depletion",
+        "good": "Minor changes—optimisation can enhance appearance",
+        "thriving": "Healthy appearance suggests good hormone balance and nutrients"
+      },
+      "default": "Expand to see detailed insights and recommendations"
     }
   },
   "nutritionResults": {
