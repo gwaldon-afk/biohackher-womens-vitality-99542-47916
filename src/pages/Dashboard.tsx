@@ -316,7 +316,6 @@ const Dashboard = () => {
     if (avgScore >= 50) return { status: t('dashboard.healthStatus.fair'), color: 'text-amber-600', score: Math.round(avgScore), assessment: '' };
     return { status: t('dashboard.healthStatus.needsAttention'), color: 'text-red-600', score: Math.round(avgScore), assessment: '' };
   };
-  };
 
   const getPriorityRecommendations = () => {
     const recommendations = [];
