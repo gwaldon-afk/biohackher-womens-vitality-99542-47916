@@ -396,10 +396,10 @@ const MyProtocol = () => {
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2">
-                Protocol <span className="text-primary">Manager</span>
+                {t('myProtocol.pageTitle')} <span className="text-primary">{t('myProtocol.pageTitleHighlight')}</span>
               </h1>
               <p className="text-lg text-muted-foreground">
-                Your complete wellness protocol: supplements, nutrition, exercise, therapies & daily habits
+                {t('myProtocol.pageSubtitle')}
               </p>
             </div>
             <Button 
@@ -408,25 +408,25 @@ const MyProtocol = () => {
               className="hidden md:flex items-center gap-2"
             >
               <BookOpen className="h-4 w-4" />
-              Browse Templates
+              {t('myProtocol.browseTemplates')}
             </Button>
           </div>
         </div>
 
         <Tabs defaultValue={new URLSearchParams(window.location.search).get('tab') || "active"} className="space-y-6">
           <TabsList className="grid w-full max-w-4xl grid-cols-5">
-            <TabsTrigger value="active">Active Protocol</TabsTrigger>
+            <TabsTrigger value="active">{t('myProtocol.tabs.active')}</TabsTrigger>
             <TabsTrigger value="recommended" className="relative">
-              Recommended
+              {t('myProtocol.tabs.recommended')}
               {pendingCount > 0 && (
                 <Badge variant="destructive" className="ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
                   {pendingCount}
                 </Badge>
               )}
             </TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-            <TabsTrigger value="calendar">Calendar</TabsTrigger>
-            <TabsTrigger value="library">Library</TabsTrigger>
+            <TabsTrigger value="history">{t('myProtocol.tabs.history')}</TabsTrigger>
+            <TabsTrigger value="calendar">{t('myProtocol.tabs.calendar')}</TabsTrigger>
+            <TabsTrigger value="library">{t('myProtocol.tabs.library')}</TabsTrigger>
           </TabsList>
 
           {/* Active Protocol Tab - Merged Today + By Type */}
@@ -445,12 +445,12 @@ const MyProtocol = () => {
               <Card>
                 <CardContent className="pt-12 pb-12 text-center">
                   <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h2 className="text-2xl font-bold mb-2">No Active Protocol</h2>
+                  <h2 className="text-2xl font-bold mb-2">{t('myProtocol.emptyState.title')}</h2>
                   <p className="text-muted-foreground mb-6">
-                    Build your complete wellness protocol including supplements, nutrition, exercise, therapies, and daily habits.
+                    {t('myProtocol.emptyState.description')}
                   </p>
                   <Button onClick={() => navigate('/pillars')}>
-                    Start with an Assessment
+                    {t('myProtocol.emptyState.cta')}
                   </Button>
                 </CardContent>
               </Card>
@@ -458,19 +458,19 @@ const MyProtocol = () => {
               <>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Your Active Protocol</CardTitle>
+                    <CardTitle>{t('myProtocol.activeProtocol.title')}</CardTitle>
                     <CardDescription>
-                      Complete your daily protocol to optimize health outcomes
+                      {t('myProtocol.activeProtocol.description')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {loadingItems ? (
-                      <p className="text-muted-foreground">Loading protocol items...</p>
+                      <p className="text-muted-foreground">{t('myProtocol.activeProtocol.loading')}</p>
                     ) : allProtocolItems.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-muted-foreground mb-4">No items in your protocol yet.</p>
+                        <p className="text-muted-foreground mb-4">{t('myProtocol.activeProtocol.noItems')}</p>
                         <p className="text-sm text-muted-foreground">
-                          Use the Builder tab to add supplements, nutrition plans, exercises, and wellness practices.
+                          {t('myProtocol.activeProtocol.noItemsHint')}
                         </p>
                       </div>
                     ) : (
@@ -562,9 +562,9 @@ const MyProtocol = () => {
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <CardTitle>Recommended Protocols</CardTitle>
+                    <CardTitle>{t('myProtocol.recommended.title')}</CardTitle>
                     <CardDescription>
-                      Review and add assessment-generated protocols to your plan
+                      {t('myProtocol.recommended.description')}
                     </CardDescription>
                   </div>
                   
@@ -573,25 +573,25 @@ const MyProtocol = () => {
                     <div className="flex flex-wrap gap-2">
                       <Select value={recommendedSourceFilter} onValueChange={setRecommendedSourceFilter}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Filter by source" />
+                          <SelectValue placeholder={t('myProtocol.filters.filterBySource')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Sources</SelectItem>
-                          <SelectItem value="lis">LIS Assessment</SelectItem>
-                          <SelectItem value="hormone_compass">Hormone Compass</SelectItem>
-                          <SelectItem value="symptom">Symptom Assessment</SelectItem>
-                          <SelectItem value="goal">Goal Setting</SelectItem>
+                          <SelectItem value="all">{t('myProtocol.sources.all')}</SelectItem>
+                          <SelectItem value="lis">{t('myProtocol.sources.lis')}</SelectItem>
+                          <SelectItem value="hormone_compass">{t('myProtocol.sources.hormoneCompass')}</SelectItem>
+                          <SelectItem value="symptom">{t('myProtocol.sources.symptom')}</SelectItem>
+                          <SelectItem value="goal">{t('myProtocol.sources.goal')}</SelectItem>
                         </SelectContent>
                       </Select>
                       
                       <Select value={recommendedSortBy} onValueChange={setRecommendedSortBy}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Sort by" />
+                          <SelectValue placeholder={t('myProtocol.filters.sortBy')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="date-desc">Newest First</SelectItem>
-                          <SelectItem value="date-asc">Oldest First</SelectItem>
-                          <SelectItem value="priority">By Priority</SelectItem>
+                          <SelectItem value="date-desc">{t('myProtocol.sorting.newestFirst')}</SelectItem>
+                          <SelectItem value="date-asc">{t('myProtocol.sorting.oldestFirst')}</SelectItem>
+                          <SelectItem value="priority">{t('myProtocol.sorting.byPriority')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -600,24 +600,24 @@ const MyProtocol = () => {
               </CardHeader>
               <CardContent>
                 {loadingRecommendations ? (
-                  <p className="text-muted-foreground">Loading recommendations...</p>
+                  <p className="text-muted-foreground">{t('myProtocol.recommended.loading')}</p>
                 ) : recommendations.length === 0 ? (
                   <div className="text-center py-12">
                     <CheckCircle2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No New Recommendations</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t('myProtocol.recommended.noNew')}</h3>
                     <p className="text-muted-foreground mb-6">
-                      Complete an assessment to get personalized protocol suggestions
+                      {t('myProtocol.recommended.noNewDescription')}
                     </p>
                     <Button onClick={() => navigate('/pillars')}>
-                      Take an Assessment
+                      {t('myProtocol.recommended.takeAssessment')}
                     </Button>
                   </div>
                 ) : filteredRecommendations.length === 0 ? (
                   <div className="text-center py-12">
                     <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No Matching Recommendations</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t('myProtocol.recommended.noMatching')}</h3>
                     <p className="text-muted-foreground">
-                      Try adjusting your filters to see more results
+                      {t('myProtocol.recommended.noMatchingDescription')}
                     </p>
                   </div>
                 ) : (
@@ -716,7 +716,7 @@ const MyProtocol = () => {
                                 }}
                                 className="flex-1"
                               >
-                                Review & Add to Plan
+                                {t('myProtocol.recommended.reviewAndAdd')}
                               </Button>
                               <Button
                                 variant="outline"
@@ -727,7 +727,7 @@ const MyProtocol = () => {
                                   });
                                 }}
                               >
-                                Dismiss
+                                {t('myProtocol.recommended.dismiss')}
                               </Button>
                             </div>
                           </CardContent>
@@ -746,9 +746,9 @@ const MyProtocol = () => {
               <CardHeader>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <CardTitle>Recommendations History</CardTitle>
+                    <CardTitle>{t('myProtocol.history.title')}</CardTitle>
                     <CardDescription>
-                      Review previously dismissed or partially accepted recommendations
+                      {t('myProtocol.history.description')}
                     </CardDescription>
                   </div>
                   
@@ -757,36 +757,36 @@ const MyProtocol = () => {
                     <div className="flex flex-wrap gap-2">
                       <Select value={historySourceFilter} onValueChange={setHistorySourceFilter}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Filter by source" />
+                          <SelectValue placeholder={t('myProtocol.filters.filterBySource')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Sources</SelectItem>
-                          <SelectItem value="lis">LIS Assessment</SelectItem>
-                          <SelectItem value="hormone_compass">Hormone Compass</SelectItem>
-                          <SelectItem value="symptom">Symptom Assessment</SelectItem>
-                          <SelectItem value="goal">Goal Setting</SelectItem>
+                          <SelectItem value="all">{t('myProtocol.sources.all')}</SelectItem>
+                          <SelectItem value="lis">{t('myProtocol.sources.lis')}</SelectItem>
+                          <SelectItem value="hormone_compass">{t('myProtocol.sources.hormoneCompass')}</SelectItem>
+                          <SelectItem value="symptom">{t('myProtocol.sources.symptom')}</SelectItem>
+                          <SelectItem value="goal">{t('myProtocol.sources.goal')}</SelectItem>
                         </SelectContent>
                       </Select>
                       
                       <Select value={historyStatusFilter} onValueChange={setHistoryStatusFilter}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Filter by status" />
+                          <SelectValue placeholder={t('myProtocol.filters.filterByStatus')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Statuses</SelectItem>
-                          <SelectItem value="dismissed">Dismissed</SelectItem>
-                          <SelectItem value="partially_accepted">Partially Accepted</SelectItem>
+                          <SelectItem value="all">{t('myProtocol.filters.allStatuses')}</SelectItem>
+                          <SelectItem value="dismissed">{t('myProtocol.filters.dismissed')}</SelectItem>
+                          <SelectItem value="partially_accepted">{t('myProtocol.filters.partiallyAccepted')}</SelectItem>
                         </SelectContent>
                       </Select>
                       
                       <Select value={historySortBy} onValueChange={setHistorySortBy}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder="Sort by" />
+                          <SelectValue placeholder={t('myProtocol.filters.sortBy')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="date-desc">Newest First</SelectItem>
-                          <SelectItem value="date-asc">Oldest First</SelectItem>
-                          <SelectItem value="status">By Status</SelectItem>
+                          <SelectItem value="date-desc">{t('myProtocol.sorting.newestFirst')}</SelectItem>
+                          <SelectItem value="date-asc">{t('myProtocol.sorting.oldestFirst')}</SelectItem>
+                          <SelectItem value="status">{t('myProtocol.sorting.byStatus')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -795,21 +795,21 @@ const MyProtocol = () => {
               </CardHeader>
               <CardContent>
                 {loadingHistorical ? (
-                  <p className="text-muted-foreground">Loading history...</p>
+                  <p className="text-muted-foreground">{t('myProtocol.history.loading')}</p>
                 ) : !historicalRecommendations || historicalRecommendations.length === 0 ? (
                   <div className="text-center py-12">
                     <Clock className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No Historical Recommendations</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t('myProtocol.history.empty')}</h3>
                     <p className="text-muted-foreground">
-                      Dismissed or partially accepted recommendations will appear here
+                      {t('myProtocol.history.emptyDescription')}
                     </p>
                   </div>
                 ) : filteredHistoricalRecommendations.length === 0 ? (
                   <div className="text-center py-12">
                     <AlertCircle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">No Matching Recommendations</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t('myProtocol.recommended.noMatching')}</h3>
                     <p className="text-muted-foreground">
-                      Try adjusting your filters to see more results
+                      {t('myProtocol.recommended.noMatchingDescription')}
                     </p>
                   </div>
                 ) : (

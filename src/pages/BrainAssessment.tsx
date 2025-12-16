@@ -379,17 +379,17 @@ const BrainAssessment = () => {
                   <Brain className="h-10 w-10 text-primary" />
                 </div>
                 <CardTitle className="text-3xl mb-2">
-                  {journeyContext === 'menopause' ? 'Brain Health Results' : 'Cognitive Performance Results'}
+                  {journeyContext === 'menopause' ? t('brainAssessment.results.titleMenopause') : t('brainAssessment.results.titlePerformance')}
                 </CardTitle>
                 <CardDescription>
-                  Your brain assessment is complete
+                  {t('brainAssessment.results.complete')}
                 </CardDescription>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg">
                 <div className="text-6xl font-bold text-primary mb-2">{scores.overall}</div>
-                <div className="text-lg text-muted-foreground">Overall Brain Score</div>
+                <div className="text-lg text-muted-foreground">{t('brainAssessment.results.overallScore')}</div>
               </div>
 
               {/* Detailed Analysis Section */}
@@ -431,10 +431,10 @@ const BrainAssessment = () => {
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.memory}</div>
-                      <div className="text-sm text-muted-foreground mb-2">Memory & Recall</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('brainAssessment.categories.memory')}</div>
                       <Progress value={scores.memory} className="h-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        {scores.memory >= 75 ? "Strong memory function" : scores.memory >= 50 ? "Room for improvement" : "Needs focused support"}
+                        {scores.memory >= 75 ? t('brainAssessment.categories.memoryStrong') : scores.memory >= 50 ? t('brainAssessment.categories.memoryImprove') : t('brainAssessment.categories.memorySupport')}
                       </p>
                     </div>
                   </CardContent>
@@ -443,10 +443,10 @@ const BrainAssessment = () => {
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.focus}</div>
-                      <div className="text-sm text-muted-foreground mb-2">Focus & Concentration</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('brainAssessment.categories.focus')}</div>
                       <Progress value={scores.focus} className="h-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        {scores.focus >= 75 ? "Excellent concentration" : scores.focus >= 50 ? "Moderate focus issues" : "Significant attention challenges"}
+                        {scores.focus >= 75 ? t('brainAssessment.categories.focusExcellent') : scores.focus >= 50 ? t('brainAssessment.categories.focusModerate') : t('brainAssessment.categories.focusSignificant')}
                       </p>
                     </div>
                   </CardContent>
@@ -455,10 +455,10 @@ const BrainAssessment = () => {
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.processing}</div>
-                      <div className="text-sm text-muted-foreground mb-2">Processing Speed</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('brainAssessment.categories.processing')}</div>
                       <Progress value={scores.processing} className="h-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        {scores.processing >= 75 ? "Fast mental processing" : scores.processing >= 50 ? "Average processing speed" : "Slower cognitive processing"}
+                        {scores.processing >= 75 ? t('brainAssessment.categories.processingFast') : scores.processing >= 50 ? t('brainAssessment.categories.processingAverage') : t('brainAssessment.categories.processingSlow')}
                       </p>
                     </div>
                   </CardContent>
@@ -467,10 +467,10 @@ const BrainAssessment = () => {
                   <CardContent className="pt-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-primary mb-1">{scores.clarity}</div>
-                      <div className="text-sm text-muted-foreground mb-2">Mental Clarity</div>
+                      <div className="text-sm text-muted-foreground mb-2">{t('brainAssessment.categories.clarity')}</div>
                       <Progress value={scores.clarity} className="h-2" />
                       <p className="text-xs text-muted-foreground mt-2">
-                        {scores.clarity >= 75 ? "Sharp and clear thinking" : scores.clarity >= 50 ? "Some mental fog" : "Frequent brain fog"}
+                        {scores.clarity >= 75 ? t('brainAssessment.categories.claritySharp') : scores.clarity >= 50 ? t('brainAssessment.categories.clarityFog') : t('brainAssessment.categories.clarityFrequent')}
                       </p>
                     </div>
                   </CardContent>
@@ -663,10 +663,10 @@ const BrainAssessment = () => {
 
               <div className="text-center space-y-4">
                 <Button onClick={() => navigate('/dashboard')} size="lg" className="w-full md:w-auto">
-                  View Your Dashboard
+                  {t('brainAssessment.viewDashboard')}
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Your results have been saved and will be tracked over time to monitor your progress
+                  {t('brainAssessment.resultsSaved')}
                 </p>
               </div>
             </CardContent>
@@ -730,14 +730,14 @@ const BrainAssessment = () => {
                 className="flex-1"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                {t('common.back')}
               </Button>
               <Button
                 onClick={handleNext}
                 disabled={!answers[currentQuestion]}
                 className="flex-1"
               >
-                {currentQuestion === questions.length - 1 ? "View Results" : "Next"}
+                {currentQuestion === questions.length - 1 ? t('brainAssessment.viewResults') : t('common.next')}
                 {currentQuestion !== questions.length - 1 && <ArrowRight className="h-4 w-4 ml-2" />}
               </Button>
             </div>
