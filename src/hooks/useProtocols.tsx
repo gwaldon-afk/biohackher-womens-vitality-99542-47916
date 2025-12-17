@@ -147,8 +147,52 @@ export const useProtocols = () => {
     }
   };
 
-  const addProtocolItem = async (item: Omit<ProtocolItem, 'id' | 'created_at'>) => {
+  // Check if a protocol item already exists across all user's protocols
+  const checkDuplicateProtocolItem = async (name: string, itemType: string): Promise<{ isDuplicate: boolean; existingItem?: any }> => {
+    if (!user) return { isDuplicate: false };
+    
     try {
+      // Get all user's protocol IDs
+      const protocolIds = protocols.map(p => p.id);
+      if (protocolIds.length === 0) return { isDuplicate: false };
+      
+      // Check for existing item with same name AND item_type
+      const { data: existing, error } = await supabase
+        .from('protocol_items')
+        .select('id, name, item_type, protocol_id')
+        .in('protocol_id', protocolIds)
+        .ilike('name', name.trim())
+        .eq('item_type', itemType as 'supplement' | 'therapy' | 'habit' | 'exercise' | 'diet')
+        .eq('is_active', true)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error checking duplicate:', error);
+        return { isDuplicate: false };
+      }
+      
+      return { isDuplicate: !!existing, existingItem: existing };
+    } catch (error) {
+      console.error('Error in duplicate check:', error);
+      return { isDuplicate: false };
+    }
+  };
+
+  const addProtocolItem = async (item: Omit<ProtocolItem, 'id' | 'created_at'>, skipDuplicateCheck = false) => {
+    try {
+      // Check for duplicates unless explicitly skipped
+      if (!skipDuplicateCheck) {
+        const { isDuplicate, existingItem } = await checkDuplicateProtocolItem(item.name, item.item_type);
+        if (isDuplicate) {
+          console.log('[useProtocols] Duplicate item detected, skipping:', {
+            name: item.name,
+            item_type: item.item_type,
+            existingId: existingItem?.id
+          });
+          return existingItem; // Return existing item instead of creating duplicate
+        }
+      }
+
       // Ensure priority_tier, impact_weight, and lis_pillar_contribution are included
       const itemWithDefaults = {
         ...item,
@@ -289,6 +333,7 @@ export const useProtocols = () => {
     addProtocolItem,
     updateProtocolItem,
     deleteProtocolItem,
-    addProtocolFromLibrary
+    addProtocolFromLibrary,
+    checkDuplicateProtocolItem
   };
 };
