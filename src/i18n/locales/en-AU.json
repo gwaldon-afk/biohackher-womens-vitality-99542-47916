@@ -420,7 +420,27 @@
     "viewAll": "View All",
     "learnMore": "Learn More",
     "returnToToday": "Return to Today",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "signIn": "Sign In"
+  },
+  "mealPlan": {
+    "title": "Your 7-Day Meal Plan",
+    "description": "Personalised weekly meal plans optimised for longevity, with macros tailored to your goals and dietary preferences.",
+    "howItWorks": "How It Works",
+    "step1Title": "Complete Your Nutrition Assessment",
+    "step1Desc": "Discover your metabolic age and nutrition priorities (8 minutes)",
+    "step2Title": "Set Your Preferences",
+    "step2Desc": "Choose your diet style, allergies, and goals",
+    "step3Title": "Get Your Personalised Plan",
+    "step3Desc": "Receive a 7-day meal plan tailored to you",
+    "startNutritionAssessment": "Start Nutrition Assessment",
+    "alreadyHaveAccount": "Already have an account?",
+    "completeNutritionFirst": "Complete Your Nutrition Assessment First",
+    "nutritionRequiredDesc": "To create your personalised 7-day meal plan, we need to understand your nutrition profile, goals, and preferences.",
+    "benefit1": "Discover your Metabolic Age",
+    "benefit2": "Get personalised macros",
+    "benefit3": "Set your diet preferences",
+    "duration": "Takes about 8 minutes"
   },
   "auth": {
     "signIn": "Sign In",
