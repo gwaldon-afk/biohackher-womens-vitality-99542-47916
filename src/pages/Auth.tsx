@@ -177,6 +177,9 @@ const Auth = () => {
     const fromNutrition = searchParams.get('source') === 'nutrition';
     
     if (!error && guestSessionId) {
+      // Set first time user flag for tour modal
+      localStorage.setItem('first_time_user', 'true');
+      
       // User is registering from guest results - claim their assessment
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
@@ -335,6 +338,9 @@ const Auth = () => {
         }
       }
     } else if (!error) {
+      // Set first time user flag for tour modal
+      localStorage.setItem('first_time_user', 'true');
+      
       // New user without guest session
       if (fromNutrition) {
         // Redirect to dashboard with firstLogin flag for nutrition onboarding
