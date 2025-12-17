@@ -16,6 +16,8 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import { differenceInYears, parse, isValid } from "date-fns";
+import { useGuestAssessmentGate } from "@/hooks/useGuestAssessmentGate";
+import { GuestAssessmentGate } from "@/components/onboarding/GuestAssessmentGate";
 
 export default function HormoneCompassAssessment() {
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ export default function HormoneCompassAssessment() {
   const { profile } = useHealthProfile();
   const { trackSymptom: _trackSymptom } = useHormoneCompass();
   const { updateProgress } = useAssessmentProgress();
+  const { showGate, checkGuestGate, closeGate, recordGuestAssessment } = useGuestAssessmentGate();
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -33,6 +36,13 @@ export default function HormoneCompassAssessment() {
   const [showAgeCollection, setShowAgeCollection] = useState(false);
   const [guestDateOfBirth, setGuestDateOfBirth] = useState("");
   const [guestAge, setGuestAge] = useState<number | null>(null);
+
+  // Check guest gate on mount
+  useEffect(() => {
+    if (!user && checkGuestGate('hormone')) {
+      // Gate will show modal - user already did another assessment
+    }
+  }, [user, checkGuestGate]);
 
   // Get user age from profile (for authenticated users)
   const userAge = profile?.date_of_birth 
@@ -152,6 +162,9 @@ export default function HormoneCompassAssessment() {
       }
 
       if (!user) {
+        // Record guest assessment completion for gate tracking
+        recordGuestAssessment('hormone');
+        
         // Guest flow - navigate with state
         navigate('/hormone-compass/results', {
           state: { 
@@ -396,6 +409,11 @@ export default function HormoneCompassAssessment() {
           ))}
         </div>
       </div>
+      <GuestAssessmentGate 
+        isOpen={showGate} 
+        onClose={closeGate} 
+        assessmentName={t('hormoneAssessment.title')} 
+      />
     </div>
   );
 }

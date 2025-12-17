@@ -29,6 +29,8 @@ import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { useSessionMetrics } from "@/hooks/useSessionMetrics";
 import { useNutritionCalculations } from "@/hooks/useNutritionCalculations";
+import { useGuestAssessmentGate } from "@/hooks/useGuestAssessmentGate";
+import { GuestAssessmentGate } from "@/components/onboarding/GuestAssessmentGate";
 
 export default function LongevityNutritionAssessment() {
   const { t } = useTranslation();
@@ -37,9 +39,17 @@ export default function LongevityNutritionAssessment() {
   const { updateProgress } = useAssessmentProgress();
   const { profile, loading: profileLoading, createOrUpdateProfile } = useHealthProfile();
   const { metrics: sessionMetrics } = useSessionMetrics();
+  const { showGate, checkGuestGate, closeGate, recordGuestAssessment } = useGuestAssessmentGate();
   const [currentStep, setCurrentStep] = useState(1);
   const [assessmentData, setAssessmentData] = useState<any>({});
   const [isPrePopulated, setIsPrePopulated] = useState(false);
+
+  // Check guest gate on mount
+  useEffect(() => {
+    if (!user && checkGuestGate('nutrition')) {
+      // Gate will show modal - user already did another assessment
+    }
+  }, [user, checkGuestGate]);
 
   // Pre-populate from existing profile data (authenticated) or session storage (guest)
   useEffect(() => {
@@ -279,6 +289,11 @@ export default function LongevityNutritionAssessment() {
         }
       }
 
+      // Record guest assessment completion for gate tracking
+      if (!user) {
+        recordGuestAssessment('nutrition');
+      }
+
       navigate(`/longevity-nutrition/results?id=${data.id}`);
     } catch (error) {
       console.error("Error saving assessment:", error);
@@ -331,6 +346,11 @@ export default function LongevityNutritionAssessment() {
           </div>
         )}
       </div>
+      <GuestAssessmentGate 
+        isOpen={showGate} 
+        onClose={closeGate} 
+        assessmentName={t('nutritionAssessment.title')} 
+      />
     </div>
   );
 }

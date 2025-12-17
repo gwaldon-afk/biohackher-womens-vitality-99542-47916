@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
@@ -30,6 +30,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
+import { useGuestAssessmentGate } from '@/hooks/useGuestAssessmentGate';
+import { GuestAssessmentGate } from '@/components/onboarding/GuestAssessmentGate';
 
 interface QuestionOption {
   text: string;
@@ -702,6 +704,7 @@ export default function GuestLISAssessment() {
   const { t } = useTranslation();
   const returnTo = searchParams.get('returnTo');
   const { user } = useAuth();
+  const { showGate, checkGuestGate, closeGate, recordGuestAssessment } = useGuestAssessmentGate();
   const [showBaseline, setShowBaseline] = useState(true);
   const [baselineData, setBaselineData] = useState<BaselineData>({
     dateOfBirth: '',
@@ -713,6 +716,13 @@ export default function GuestLISAssessment() {
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+
+  // Check guest gate on mount
+  useEffect(() => {
+    if (!user && checkGuestGate('lis')) {
+      // Gate will show modal - user already did another assessment
+    }
+  }, [user, checkGuestGate]);
 
   // Group questions by pillar
   const questionsByPillar = PILLAR_GROUPS.map(pillarGroup => ({
@@ -1117,6 +1127,9 @@ export default function GuestLISAssessment() {
           toast.error(t('lisAssessment.toasts.failedSave'));
           return;
         }
+
+        // Record guest assessment completion for gate tracking
+        recordGuestAssessment('lis');
 
         // Navigate to results page for guests with age parameter
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
@@ -1655,6 +1668,11 @@ export default function GuestLISAssessment() {
           }
         </p>
       </div>
+      <GuestAssessmentGate 
+        isOpen={showGate} 
+        onClose={closeGate} 
+        assessmentName={t('lisAssessment.title')} 
+      />
     </div>
   );
 }
