@@ -78,13 +78,15 @@
     "guestCta": {
       "title": "Save Your Results & Get Your Protocol",
       "description": "Create a free account to unlock your personalised 7-day longevity protocol, track progress over time, and access daily nutrition scoring.",
-      "benefit1": "Personalised supplement & lifestyle protocol",
-      "benefit2": "Daily nutrition tracking with biological age impact",
-      "benefit3": "Track improvements over time with monthly reassessments",
-      "benefit4": "AI Health Assistant (5 free questions/day)",
+      "benefit1": "Save & email your results to yourself",
+      "benefit2": "Personalised supplement & lifestyle protocol",
+      "benefit3": "Access 7-day, 90-day, and daily plans",
+      "benefit4": "Explore My Profile, Goals & Expert Directory",
+      "benefit5": "Daily nutrition tracking with biological age impact",
+      "benefit6": "AI Health Assistant (5 free questions/day)",
       "unlockProtocol": "Unlock Your Protocol",
       "createAccount": "Create Free Account & Unlock Protocol",
-      "trial": "Includes FREE 3-day trial • No credit card required",
+      "trial": "Includes FREE 7-day trial • No credit card required",
       "emailResults": "Email My Results",
       "copyShareLink": "Copy Share Link"
     },
@@ -1526,6 +1528,67 @@
           "features": ["Interactive guided tour", "Helpful tooltips for each category", "Easy-to-use sliders for quick logging"]
         }
       }
+    },
+    "userTour": {
+      "stepOf": "Step {{current}} of {{total}}",
+      "skipTour": "Skip tour",
+      "next": "Next",
+      "startJourney": "Start My Journey",
+      "goToSection": "Go to this section now →",
+      "steps": {
+        "today": {
+          "title": "Your Daily Actions",
+          "description": "This is your home base. See your daily protocols, track completions, and watch your LIS score improve.",
+          "features": {
+            "1": "View your personalised daily checklist",
+            "2": "Track protocol completions and build streaks",
+            "3": "See real-time updates to your Longevity Impact Score"
+          }
+        },
+        "profile": {
+          "title": "Your Health Hub",
+          "description": "Access all your assessments, protocols, and consolidated health insights in one place.",
+          "features": {
+            "1": "View all completed assessments and results",
+            "2": "Manage your master protocol list",
+            "3": "See AI-powered cross-assessment insights"
+          }
+        },
+        "plans": {
+          "title": "Your 90-Day Journey",
+          "description": "See your complete health roadmap with weekly and monthly milestones.",
+          "features": {
+            "1": "Track progress towards your health goals",
+            "2": "View projected LIS score improvements",
+            "3": "Adjust protocols and priorities as you progress"
+          }
+        },
+        "shop": {
+          "title": "Your Protocol Supplements",
+          "description": "Browse evidence-based supplements matched to your assessment results.",
+          "features": {
+            "1": "Products recommended for your specific needs",
+            "2": "Evidence ratings for each supplement",
+            "3": "Easy add-to-cart from your protocol"
+          }
+        }
+      }
+    },
+    "guestGate": {
+      "title": "Continue Your Health Journey",
+      "description": "Create a free account to take {{assessment}} and unlock your full personalised experience.",
+      "anotherAssessment": "another assessment",
+      "benefits": {
+        "saveResults": "Save all your assessment results permanently",
+        "emailResults": "Get your results emailed to you",
+        "plans": "Access 7-day, 90-day, and daily action plans",
+        "protocols": "Build your personalised protocol library",
+        "shop": "Shop supplements matched to your needs",
+        "aiAssistant": "AI Health Assistant (5 free questions/day)"
+      },
+      "createAccount": "Create Free Account",
+      "trial": "Includes FREE 7-day trial • No credit card required",
+      "maybeLater": "Maybe Later"
     },
     "nutritionGuided": {
       "stepOf": "Step {{current}} of {{total}}",

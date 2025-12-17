@@ -955,6 +955,14 @@ const LISResults = () => {
                     <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                     <span>{t('lisResults.guestCta.benefit4')}</span>
                   </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{t('lisResults.guestCta.benefit5')}</span>
+                  </li>
+                  <li className="flex items-start gap-2 text-sm">
+                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span>{t('lisResults.guestCta.benefit6')}</span>
+                  </li>
                 </ul>
                 <Button 
                   onClick={() => {
