@@ -2387,5 +2387,20 @@
         "description": "Do push-ups against a desk or wall for 60 seconds."
       }
     }
+  },
+  "emailCapture": {
+    "title": "Get Your Results Emailed",
+    "description": "Enter your email to receive your personalized results and longevity tips.",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "marketingConsent": "I'd like to receive longevity tips and updates (you can unsubscribe anytime)",
+    "benefitsTitle": "What you'll get:",
+    "benefit1": "Your assessment results delivered to your inbox",
+    "benefit2": "Personalized longevity tips based on your profile",
+    "benefit3": "Early access to new features and research",
+    "submitWithEmail": "Continue & Send Results",
+    "continueToAssessment": "Continue to Assessment",
+    "skip": "Skip for now",
+    "invalidEmail": "Please enter a valid email address"
   }
 }
