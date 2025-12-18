@@ -2257,5 +2257,135 @@
       "addedToCart": "Added to cart",
       "addedToCartDesc": "{{name}} has been added to your cart."
     }
+  },
+  "completeProfile": {
+    "title": "Complete Your Health Profile",
+    "titleConfirm": "Confirm Your Health Profile",
+    "description": "We need a few details to personalize your experience and provide accurate recommendations.",
+    "descriptionConfirm": "We've pre-filled some details from your assessment. Please confirm or update them.",
+    "prePopulatedBadge": "{{count}} fields pre-filled",
+    "fromAssessment": "From assessment",
+    "fields": {
+      "dateOfBirth": "Date of Birth",
+      "weight": "Weight (kg)",
+      "height": "Height (cm)",
+      "activityLevel": "Current Activity Level"
+    },
+    "placeholders": {
+      "weight": "e.g., 65",
+      "height": "e.g., 165",
+      "activityLevel": "Select your activity level"
+    },
+    "activityLevels": {
+      "sedentary": "Sedentary",
+      "sedentaryDesc": "Little to no exercise",
+      "lightlyActive": "Lightly Active",
+      "lightlyActiveDesc": "Light exercise 1-3 days/week",
+      "moderatelyActive": "Moderately Active",
+      "moderatelyActiveDesc": "Moderate exercise 3-5 days/week",
+      "veryActive": "Very Active",
+      "veryActiveDesc": "Hard exercise 6-7 days/week",
+      "extremelyActive": "Extremely Active",
+      "extremelyActiveDesc": "Very hard exercise & physical job"
+    },
+    "continue": "Continue",
+    "confirmContinue": "Confirm & Continue",
+    "saving": "Saving...",
+    "success": "Profile completed successfully!",
+    "errors": {
+      "fillAllFields": "Please fill in all fields",
+      "invalidWeight": "Please enter a valid weight between 30-300 kg",
+      "invalidHeight": "Please enter a valid height between 100-250 cm",
+      "saveFailed": "Failed to save profile. Please try again."
+    }
+  },
+  "onboardingGoals": {
+    "title": "Set Your Health Goals",
+    "description": "Choose goals to focus on based on your assessment results. We'll help you track progress and optimize your protocols.",
+    "recommended": "Recommended",
+    "selectAtLeastOne": "Please select at least one goal",
+    "goalsCreated": "{{count}} goals created successfully!",
+    "createError": "Could not create goals. Please try again.",
+    "creating": "Creating goals...",
+    "createSelected": "Create {{count}} Selected Goals",
+    "skipForNow": "Skip for now",
+    "canAddLater": "You can always set goals later from My Profile",
+    "goals": {
+      "improveSleep": {
+        "title": "Improve Sleep Quality",
+        "description": "Enhance deep sleep, reduce night waking, and wake feeling refreshed"
+      },
+      "reduceStress": {
+        "title": "Reduce Stress & Anxiety",
+        "description": "Build resilience, calm your nervous system, and improve HRV"
+      },
+      "increaseEnergy": {
+        "title": "Increase Daily Energy",
+        "description": "Combat fatigue, optimize metabolism, and sustain energy throughout the day"
+      },
+      "sharpenFocus": {
+        "title": "Sharpen Mental Focus",
+        "description": "Improve concentration, memory, and cognitive clarity"
+      }
+    }
+  },
+  "today": {
+    "profileCard": {
+      "title": "My Profile",
+      "subtitle": "View assessments, goals & protocols",
+      "activeGoals": "{{count}} active goals",
+      "activeProtocols": "{{count}} active protocols"
+    },
+    "exerciseSnacks": {
+      "title": "Exercise Snacks",
+      "subtitle": "60-second activity bursts that reduce mortality by up to 40%",
+      "research": "Based on Stamatakis et al. (2022) VILPA study",
+      "viewResearch": "View Research",
+      "completed": "{{count}}/3 completed today",
+      "startNow": "Start Now",
+      "markComplete": "Mark Complete"
+    }
+  },
+  "exerciseSnacks": {
+    "protocol": {
+      "name": "Exercise Snacks Protocol",
+      "description": "Brief 60-second bursts of vigorous activity, done 3 times daily, can reduce all-cause mortality by 38-40%.",
+      "category": "Quick Wins",
+      "researchSummary": "Research shows that just 3-4 minutes of vigorous intermittent lifestyle physical activity (VILPA) daily significantly reduces mortality risk—no gym required."
+    },
+    "items": {
+      "stairClimbBurst": {
+        "name": "Stair Climb Burst",
+        "description": "Climb stairs vigorously for 60 seconds. Take two steps at a time if possible."
+      },
+      "jumpingJacksBurst": {
+        "name": "Jumping Jacks Burst",
+        "description": "Do jumping jacks at maximum effort for 60 seconds."
+      },
+      "highKneesBurst": {
+        "name": "High Knees Burst",
+        "description": "Run in place bringing knees high for 60 seconds."
+      },
+      "squatPulses": {
+        "name": "Squat Pulses",
+        "description": "Hold a squat position and pulse up and down for 60 seconds."
+      },
+      "burpeeBurst": {
+        "name": "Burpee Burst",
+        "description": "Perform burpees at your pace for 60 seconds."
+      },
+      "wallSitHold": {
+        "name": "Wall Sit Hold",
+        "description": "Hold a wall sit position for 60 seconds."
+      },
+      "mountainClimbers": {
+        "name": "Mountain Climbers",
+        "description": "Perform mountain climbers at high intensity for 60 seconds."
+      },
+      "deskPushups": {
+        "name": "Desk Push-ups",
+        "description": "Do push-ups against a desk or wall for 60 seconds."
+      }
+    }
   }
 }
