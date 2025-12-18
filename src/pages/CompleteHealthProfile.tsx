@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,15 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, User, ArrowRight } from 'lucide-react';
+import { Loader2, User, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { Badge } from '@/components/ui/badge';
 
 export default function CompleteHealthProfile() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo') || '/today';
   
-  const { createOrUpdateProfile, loading } = useHealthProfile();
+  const { profile, createOrUpdateProfile, loading } = useHealthProfile();
   
   const [formData, setFormData] = useState({
     date_of_birth: '',
@@ -24,13 +27,46 @@ export default function CompleteHealthProfile() {
   });
   
   const [submitting, setSubmitting] = useState(false);
+  const [prePopulated, setPrePopulated] = useState<string[]>([]);
+
+  // Pre-populate form with existing profile data
+  useEffect(() => {
+    if (profile && !loading) {
+      const populated: string[] = [];
+      
+      setFormData(prev => {
+        const newData = { ...prev };
+        
+        if (profile.date_of_birth) {
+          newData.date_of_birth = profile.date_of_birth;
+          populated.push('date_of_birth');
+        }
+        if (profile.weight_kg) {
+          newData.weight_kg = String(profile.weight_kg);
+          populated.push('weight_kg');
+        }
+        if (profile.height_cm) {
+          newData.height_cm = String(profile.height_cm);
+          populated.push('height_cm');
+        }
+        if (profile.activity_level) {
+          newData.activity_level = profile.activity_level;
+          populated.push('activity_level');
+        }
+        
+        return newData;
+      });
+      
+      setPrePopulated(populated);
+    }
+  }, [profile, loading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate all fields
     if (!formData.date_of_birth || !formData.weight_kg || !formData.height_cm || !formData.activity_level) {
-      toast.error('Please fill in all fields');
+      toast.error(t('completeProfile.errors.fillAllFields'));
       return;
     }
 
@@ -38,12 +74,12 @@ export default function CompleteHealthProfile() {
     const height = parseFloat(formData.height_cm);
 
     if (isNaN(weight) || weight < 30 || weight > 300) {
-      toast.error('Please enter a valid weight between 30-300 kg');
+      toast.error(t('completeProfile.errors.invalidWeight'));
       return;
     }
 
     if (isNaN(height) || height < 100 || height > 250) {
-      toast.error('Please enter a valid height between 100-250 cm');
+      toast.error(t('completeProfile.errors.invalidHeight'));
       return;
     }
 
@@ -57,23 +93,37 @@ export default function CompleteHealthProfile() {
         activity_level: formData.activity_level
       });
       
-      toast.success('Profile completed successfully!');
+      toast.success(t('completeProfile.success'));
       navigate(decodeURIComponent(returnTo), { replace: true });
     } catch (error) {
       console.error('Error saving profile:', error);
-      toast.error('Failed to save profile. Please try again.');
+      toast.error(t('completeProfile.errors.saveFailed'));
     } finally {
       setSubmitting(false);
     }
   };
 
   const activityLevels = [
-    { value: 'sedentary', label: 'Sedentary', description: 'Little to no exercise' },
-    { value: 'lightly_active', label: 'Lightly Active', description: 'Light exercise 1-3 days/week' },
-    { value: 'moderately_active', label: 'Moderately Active', description: 'Moderate exercise 3-5 days/week' },
-    { value: 'very_active', label: 'Very Active', description: 'Hard exercise 6-7 days/week' },
-    { value: 'extremely_active', label: 'Extremely Active', description: 'Very hard exercise & physical job' }
+    { value: 'sedentary', labelKey: 'completeProfile.activityLevels.sedentary', descKey: 'completeProfile.activityLevels.sedentaryDesc' },
+    { value: 'lightly_active', labelKey: 'completeProfile.activityLevels.lightlyActive', descKey: 'completeProfile.activityLevels.lightlyActiveDesc' },
+    { value: 'moderately_active', labelKey: 'completeProfile.activityLevels.moderatelyActive', descKey: 'completeProfile.activityLevels.moderatelyActiveDesc' },
+    { value: 'very_active', labelKey: 'completeProfile.activityLevels.veryActive', descKey: 'completeProfile.activityLevels.veryActiveDesc' },
+    { value: 'extremely_active', labelKey: 'completeProfile.activityLevels.extremelyActive', descKey: 'completeProfile.activityLevels.extremelyActiveDesc' }
   ];
+
+  const isPrePopulated = (field: string) => prePopulated.includes(field);
+  const hasAnyPrePopulated = prePopulated.length > 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-secondary/30 via-background to-background flex items-center justify-center p-4">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>{t('common.loading')}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/30 via-background to-background flex items-center justify-center p-4">
@@ -82,76 +132,124 @@ export default function CompleteHealthProfile() {
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
             <User className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Complete Your Health Profile</CardTitle>
+          <CardTitle className="text-2xl">
+            {hasAnyPrePopulated ? t('completeProfile.titleConfirm') : t('completeProfile.title')}
+          </CardTitle>
           <CardDescription className="text-base">
-            We need a few details to personalize your experience and provide accurate recommendations.
+            {hasAnyPrePopulated 
+              ? t('completeProfile.descriptionConfirm')
+              : t('completeProfile.description')
+            }
           </CardDescription>
+          {hasAnyPrePopulated && (
+            <Badge variant="secondary" className="mx-auto">
+              <CheckCircle2 className="h-3 w-3 mr-1" />
+              {t('completeProfile.prePopulatedBadge', { count: prePopulated.length })}
+            </Badge>
+          )}
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Date of Birth */}
             <div className="space-y-2">
-              <Label htmlFor="dob">Date of Birth</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="dob">{t('completeProfile.fields.dateOfBirth')}</Label>
+                {isPrePopulated('date_of_birth') && (
+                  <Badge variant="outline" className="text-xs">
+                    <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />
+                    {t('completeProfile.fromAssessment')}
+                  </Badge>
+                )}
+              </div>
               <Input
                 id="dob"
                 type="date"
                 value={formData.date_of_birth}
                 onChange={(e) => setFormData(prev => ({ ...prev, date_of_birth: e.target.value }))}
                 max={new Date().toISOString().split('T')[0]}
-                className="w-full"
+                className={`w-full ${isPrePopulated('date_of_birth') ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : ''}`}
                 required
               />
             </div>
 
             {/* Weight */}
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="weight">{t('completeProfile.fields.weight')}</Label>
+                {isPrePopulated('weight_kg') && (
+                  <Badge variant="outline" className="text-xs">
+                    <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />
+                    {t('completeProfile.fromAssessment')}
+                  </Badge>
+                )}
+              </div>
               <Input
                 id="weight"
                 type="number"
                 step="0.1"
                 min="30"
                 max="300"
-                placeholder="e.g., 65"
+                placeholder={t('completeProfile.placeholders.weight')}
                 value={formData.weight_kg}
                 onChange={(e) => setFormData(prev => ({ ...prev, weight_kg: e.target.value }))}
+                className={isPrePopulated('weight_kg') ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : ''}
                 required
               />
             </div>
 
             {/* Height */}
             <div className="space-y-2">
-              <Label htmlFor="height">Height (cm)</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="height">{t('completeProfile.fields.height')}</Label>
+                {isPrePopulated('height_cm') && (
+                  <Badge variant="outline" className="text-xs">
+                    <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />
+                    {t('completeProfile.fromAssessment')}
+                  </Badge>
+                )}
+              </div>
               <Input
                 id="height"
                 type="number"
                 step="1"
                 min="100"
                 max="250"
-                placeholder="e.g., 165"
+                placeholder={t('completeProfile.placeholders.height')}
                 value={formData.height_cm}
                 onChange={(e) => setFormData(prev => ({ ...prev, height_cm: e.target.value }))}
+                className={isPrePopulated('height_cm') ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : ''}
                 required
               />
             </div>
 
             {/* Activity Level */}
             <div className="space-y-2">
-              <Label htmlFor="activity">Current Activity Level</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="activity">{t('completeProfile.fields.activityLevel')}</Label>
+                {isPrePopulated('activity_level') && (
+                  <Badge variant="outline" className="text-xs">
+                    <CheckCircle2 className="h-3 w-3 mr-1 text-green-500" />
+                    {t('completeProfile.fromAssessment')}
+                  </Badge>
+                )}
+              </div>
               <Select
                 value={formData.activity_level}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, activity_level: value }))}
               >
-                <SelectTrigger id="activity">
-                  <SelectValue placeholder="Select your activity level" />
+                <SelectTrigger 
+                  id="activity"
+                  className={isPrePopulated('activity_level') ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : ''}
+                >
+                  <SelectValue placeholder={t('completeProfile.placeholders.activityLevel')} />
                 </SelectTrigger>
                 <SelectContent>
                   {activityLevels.map((level) => (
                     <SelectItem key={level.value} value={level.value}>
                       <div className="flex flex-col">
-                        <span className="font-medium">{level.label}</span>
-                        <span className="text-xs text-muted-foreground">{level.description}</span>
+                        <span className="font-medium">{t(level.labelKey)}</span>
+                        <span className="text-xs text-muted-foreground">{t(level.descKey)}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -168,11 +266,11 @@ export default function CompleteHealthProfile() {
               {submitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t('completeProfile.saving')}
                 </>
               ) : (
                 <>
-                  Continue
+                  {hasAnyPrePopulated ? t('completeProfile.confirmContinue') : t('completeProfile.continue')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}

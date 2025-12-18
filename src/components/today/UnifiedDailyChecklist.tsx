@@ -26,6 +26,8 @@ import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
+import { ProfileQuickAccessCard } from "@/components/today/ProfileQuickAccessCard";
+import { ExerciseSnacksCard } from "@/components/today/ExerciseSnacksCard";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 import { useTranslation } from 'react-i18next';
@@ -365,9 +367,21 @@ export const UnifiedDailyChecklist = () => {
         <TodayGoalProgressCard />
       </div>
 
+      {/* My Profile Quick Access */}
+      {user && (
+        <div className="pb-6">
+          <ProfileQuickAccessCard />
+        </div>
+      )}
+
       {/* Daily Essentials */}
       <div className="pb-6">
         <DailyEssentialsCard />
+      </div>
+
+      {/* Exercise Snacks - Quick Wins */}
+      <div className="pb-6">
+        <ExerciseSnacksCard userId={user?.id} />
       </div>
 
       {/* Daily Health Metrics Check-In */}
