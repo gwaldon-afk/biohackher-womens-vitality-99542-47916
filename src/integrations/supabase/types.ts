@@ -2247,6 +2247,63 @@ export type Database = {
         }
         Relationships: []
       }
+      marketing_leads: {
+        Row: {
+          assessment_score: number | null
+          assessment_type: string | null
+          consent_date: string | null
+          converted_at: string | null
+          converted_user_id: string | null
+          created_at: string
+          email: string
+          email_count: number | null
+          id: string
+          last_email_sent_at: string | null
+          marketing_consent: boolean
+          metadata: Json | null
+          session_id: string | null
+          source: string
+          unsubscribed_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          assessment_score?: number | null
+          assessment_type?: string | null
+          consent_date?: string | null
+          converted_at?: string | null
+          converted_user_id?: string | null
+          created_at?: string
+          email: string
+          email_count?: number | null
+          id?: string
+          last_email_sent_at?: string | null
+          marketing_consent?: boolean
+          metadata?: Json | null
+          session_id?: string | null
+          source?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assessment_score?: number | null
+          assessment_type?: string | null
+          consent_date?: string | null
+          converted_at?: string | null
+          converted_user_id?: string | null
+          created_at?: string
+          email?: string
+          email_count?: number | null
+          id?: string
+          last_email_sent_at?: string | null
+          marketing_consent?: boolean
+          metadata?: Json | null
+          session_id?: string | null
+          source?: string
+          unsubscribed_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meal_completions: {
         Row: {
           calories: number | null
