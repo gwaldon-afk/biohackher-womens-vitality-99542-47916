@@ -521,7 +521,7 @@
     "tabs": {
       "assessments": "Assessments",
       "assessmentsShort": "Assess",
-      "protocols": "Protocols",
+      "protocols": "My Protocol",
       "protocolsShort": "Protocol",
       "healthProfile": "Health Profile",
       "healthShort": "Health",
@@ -2402,5 +2402,29 @@
     "continueToAssessment": "Continue to Assessment",
     "skip": "Skip for now",
     "invalidEmail": "Please enter a valid email address"
+  },
+  "consolidatedInsights": {
+    "title": "Your Consolidated Health Analysis",
+    "signInRequired": "Sign in to view your personalized health insights",
+    "noInsightsTitle": "No Consolidated Insights Yet",
+    "generatePrompt": "You have completed assessments! Generate your personalized health analysis.",
+    "completeAssessmentFirst": "Complete your first assessment to receive personalized health insights",
+    "generating": "Generating...",
+    "generateAnalysis": "Generate My Analysis",
+    "refreshing": "Refreshing...",
+    "refreshAnalysis": "Refresh Analysis",
+    "assessmentsAnalysed": "{{count}} assessment(s) analyzed",
+    "updated": "Updated {{date}}",
+    "staleDataWarning": "Your analysis may be outdated. Refresh to see the latest insights from all your assessments.",
+    "updateNow": "Update Now",
+    "loginRequired": "Please log in to refresh analysis",
+    "refreshSuccess": "Analysis refreshed successfully",
+    "refreshError": "Failed to refresh analysis",
+    "keyInsights": "Key Insights",
+    "priorityActions": "Priority Actions",
+    "pillarBreakdown": "Pillar Breakdown",
+    "priority": "Priority",
+    "findings": "Findings",
+    "recommendedActions": "Recommended Actions"
   }
 }

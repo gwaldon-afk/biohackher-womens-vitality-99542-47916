@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
   Sparkles, 
   RefreshCw, 
@@ -18,7 +20,8 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle2,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -49,7 +52,26 @@ const pillarColors: Record<string, string> = {
 
 export const ConsolidatedInsightsCard = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Fetch actual assessment progress to validate
+  const { data: assessmentProgress } = useQuery({
+    queryKey: ['assessment-progress', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      
+      const { data, error } = await supabase
+        .from('assessment_progress')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const { data: insights, isLoading, refetch } = useQuery({
     queryKey: ['consolidated-insights', user?.id],
@@ -76,7 +98,7 @@ export const ConsolidatedInsightsCard = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Please log in to refresh analysis");
+        toast.error(t('consolidatedInsights.loginRequired'));
         return;
       }
 
@@ -88,15 +110,23 @@ export const ConsolidatedInsightsCard = () => {
         throw response.error;
       }
 
-      toast.success("Analysis refreshed successfully");
+      toast.success(t('consolidatedInsights.refreshSuccess'));
       refetch();
     } catch (error: any) {
       console.error("Error refreshing analysis:", error);
-      toast.error("Failed to refresh analysis");
+      toast.error(t('consolidatedInsights.refreshError'));
     } finally {
       setIsRefreshing(false);
     }
   };
+
+  // Calculate actual completed count from assessment_progress
+  const actualCompletedCount = assessmentProgress ? 
+    (assessmentProgress.lis_completed ? 1 : 0) + 
+    (assessmentProgress.nutrition_completed ? 1 : 0) + 
+    (assessmentProgress.hormone_completed ? 1 : 0) : 0;
+
+  const hasCompletedAssessments = actualCompletedCount > 0;
 
   if (!user) {
     return (
@@ -104,10 +134,10 @@ export const ConsolidatedInsightsCard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            Consolidated Health Analysis
+            {t('consolidatedInsights.title')}
           </CardTitle>
           <CardDescription>
-            Sign in to view your personalized health insights
+            {t('consolidatedInsights.signInRequired')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -132,31 +162,42 @@ export const ConsolidatedInsightsCard = () => {
   const consolidatedInsight = insights?.find(i => i.category === 'consolidated');
   const pillarInsights = insights?.filter(i => ['BEAUTY', 'BRAIN', 'BODY', 'BALANCE'].includes(i.category)) || [];
   const recommendations = consolidatedInsight?.recommendations || {};
-  const completedCount = recommendations.completed_count || 0;
+  const storedCompletedCount = recommendations.completed_count || 0;
+  
+  // Detect stale data: we have insights but stored count doesn't match actual
+  const isDataStale = insights && insights.length > 0 && storedCompletedCount !== actualCompletedCount && hasCompletedAssessments;
+  
+  // No insights yet but user has completed assessments
+  const needsGeneration = (!insights || insights.length === 0) && hasCompletedAssessments;
 
-  // No insights yet
+  // No insights and no assessments completed
   if (!insights || insights.length === 0) {
     return (
       <Card className="border-dashed border-2 border-muted-foreground/20">
         <CardContent className="p-8 text-center">
           <Sparkles className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No Consolidated Insights Yet</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('consolidatedInsights.noInsightsTitle')}</h3>
           <p className="text-muted-foreground mb-4">
-            Complete your first assessment to receive personalized health insights
+            {hasCompletedAssessments 
+              ? t('consolidatedInsights.generatePrompt')
+              : t('consolidatedInsights.completeAssessmentFirst')
+            }
           </p>
-          <Button variant="outline" onClick={handleRefreshAnalysis} disabled={isRefreshing}>
-            {isRefreshing ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Generate Analysis
-              </>
-            )}
-          </Button>
+          {hasCompletedAssessments && (
+            <Button onClick={handleRefreshAnalysis} disabled={isRefreshing} size="lg">
+              {isRefreshing ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  {t('consolidatedInsights.generating')}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  {t('consolidatedInsights.generateAnalysis')}
+                </>
+              )}
+            </Button>
+          )}
         </CardContent>
       </Card>
     );
@@ -168,33 +209,67 @@ export const ConsolidatedInsightsCard = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            <CardTitle>Your Consolidated Health Analysis</CardTitle>
+            <CardTitle>{t('consolidatedInsights.title')}</CardTitle>
           </div>
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm" 
             onClick={handleRefreshAnalysis}
             disabled={isRefreshing}
+            className="gap-2"
           >
             {isRefreshing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t('consolidatedInsights.refreshing')}
+              </>
             ) : (
-              <RefreshCw className="h-4 w-4" />
+              <>
+                <RefreshCw className="h-4 w-4" />
+                {t('consolidatedInsights.refreshAnalysis')}
+              </>
             )}
           </Button>
         </div>
-        <CardDescription className="flex items-center gap-2">
+        <CardDescription className="flex items-center gap-2 flex-wrap">
           <Badge variant="secondary" className="gap-1">
             <CheckCircle2 className="h-3 w-3" />
-            {completedCount} assessment{completedCount !== 1 ? 's' : ''} analyzed
+            {t('consolidatedInsights.assessmentsAnalysed', { count: actualCompletedCount })}
           </Badge>
           {recommendations.generated_at && (
             <span className="text-xs text-muted-foreground">
-              Updated {new Date(recommendations.generated_at).toLocaleDateString()}
+              {t('consolidatedInsights.updated', { 
+                date: new Date(recommendations.generated_at).toLocaleDateString() 
+              })}
             </span>
           )}
         </CardDescription>
       </CardHeader>
+
+      {/* Stale data warning */}
+      {isDataStale && (
+        <div className="px-6 pb-4">
+          <Alert variant="default" className="border-amber-500/50 bg-amber-500/10">
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
+            <AlertDescription className="flex items-center justify-between gap-4">
+              <span className="text-sm">{t('consolidatedInsights.staleDataWarning')}</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleRefreshAnalysis}
+                disabled={isRefreshing}
+                className="shrink-0"
+              >
+                {isRefreshing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  t('consolidatedInsights.updateNow')
+                )}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
       
       <CardContent className="space-y-6">
         {/* Synergies / Overview */}
@@ -209,7 +284,7 @@ export const ConsolidatedInsightsCard = () => {
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              Key Insights
+              {t('consolidatedInsights.keyInsights')}
             </h4>
             <ul className="space-y-2">
               {recommendations.insights.slice(0, 5).map((insight: string, idx: number) => (
@@ -227,7 +302,7 @@ export const ConsolidatedInsightsCard = () => {
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2">
               <Target className="h-4 w-4 text-primary" />
-              Priority Actions
+              {t('consolidatedInsights.priorityActions')}
             </h4>
             <ul className="space-y-2">
               {recommendations.priorities.slice(0, 3).map((priority: string, idx: number) => (
@@ -245,7 +320,7 @@ export const ConsolidatedInsightsCard = () => {
           <div className="space-y-3">
             <h4 className="font-semibold flex items-center gap-2">
               <Heart className="h-4 w-4 text-primary" />
-              Pillar Breakdown
+              {t('consolidatedInsights.pillarBreakdown')}
             </h4>
             <Accordion type="multiple" className="space-y-2">
               {pillarInsights.map((pillarInsight) => {
@@ -264,7 +339,7 @@ export const ConsolidatedInsightsCard = () => {
                         <PillarIcon className={`h-5 w-5 ${colorClass}`} />
                         <span className="font-medium">{pillarInsight.category}</span>
                         {pillarInsight.priority === 'high' && (
-                          <Badge variant="destructive" className="text-xs">Priority</Badge>
+                          <Badge variant="destructive" className="text-xs">{t('consolidatedInsights.priority')}</Badge>
                         )}
                       </div>
                     </AccordionTrigger>
@@ -274,7 +349,7 @@ export const ConsolidatedInsightsCard = () => {
                         
                         {pillarRecs.findings && pillarRecs.findings.length > 0 && (
                           <div>
-                            <p className="font-medium mb-1">Findings:</p>
+                            <p className="font-medium mb-1">{t('consolidatedInsights.findings')}:</p>
                             <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                               {pillarRecs.findings.map((finding: string, idx: number) => (
                                 <li key={idx}>{finding}</li>
@@ -285,7 +360,7 @@ export const ConsolidatedInsightsCard = () => {
                         
                         {pillarRecs.actions && pillarRecs.actions.length > 0 && (
                           <div>
-                            <p className="font-medium mb-1">Recommended Actions:</p>
+                            <p className="font-medium mb-1">{t('consolidatedInsights.recommendedActions')}:</p>
                             <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                               {pillarRecs.actions.map((action: string, idx: number) => (
                                 <li key={idx}>{action}</li>
