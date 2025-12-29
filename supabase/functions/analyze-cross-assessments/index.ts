@@ -42,8 +42,8 @@ serve(async (req) => {
 
     console.log('Fetching assessment data for user:', user.id, 'Trigger:', triggerAssessment);
 
-    // Fetch all assessment data including targeted assessments
-    const [lisResult, nutritionResult, hormoneResult, symptomResult, pillarResult] = await Promise.all([
+    // Fetch all assessment data including targeted assessments AND assessment_progress for accurate count
+    const [lisResult, nutritionResult, hormoneResult, symptomResult, pillarResult, progressResult] = await Promise.all([
       supabase
         .from('daily_scores')
         .select('longevity_impact_score, biological_age_impact, date, questionnaire_data')
@@ -77,6 +77,12 @@ serve(async (req) => {
         .eq('user_id', user.id)
         .order('completed_at', { ascending: false })
         .limit(10),
+      // Also fetch assessment_progress for accurate completed count (handles guest assessments that were claimed)
+      supabase
+        .from('assessment_progress')
+        .select('lis_completed, nutrition_completed, hormone_completed')
+        .eq('user_id', user.id)
+        .single(),
     ]);
 
     const lisData = lisResult.data;
@@ -84,17 +90,19 @@ serve(async (req) => {
     const hormoneData = hormoneResult.data;
     const symptomData = symptomResult.data || [];
     const pillarData = pillarResult.data || [];
+    const progressData = progressResult.data;
 
-    // Count completed assessments
+    // Count completed assessments - use assessment_progress as source of truth (handles guest claims)
+    // Fall back to checking actual data if progress record doesn't exist
     const completedAssessments = {
-      lis: !!lisData,
-      nutrition: !!nutritionData,
-      hormone: !!hormoneData,
+      lis: progressData?.lis_completed || !!lisData,
+      nutrition: progressData?.nutrition_completed || !!nutritionData,
+      hormone: progressData?.hormone_completed || !!hormoneData,
       symptoms: symptomData.length,
       pillars: pillarData.length
     };
 
-    console.log('Assessment data:', completedAssessments);
+    console.log('Assessment data:', completedAssessments, 'Progress record:', progressData);
 
     // Build pillar assessment summary
     const pillarSummary = pillarData.length > 0

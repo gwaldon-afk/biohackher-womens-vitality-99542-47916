@@ -362,17 +362,17 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* Goal Progress Tracking */}
-      <div className="pb-6">
-        <TodayGoalProgressCard />
-      </div>
-
-      {/* My Profile Quick Access */}
+      {/* My Profile Quick Access - Moved higher for visibility */}
       {user && (
         <div className="pb-6">
           <ProfileQuickAccessCard />
         </div>
       )}
+
+      {/* Goal Progress Tracking */}
+      <div className="pb-6">
+        <TodayGoalProgressCard />
+      </div>
 
       {/* Daily Essentials */}
       <div className="pb-6">
