@@ -2547,6 +2547,9 @@
     "quickScan": "Quick Scan",
     "noMealsYet": "No meals logged yet",
     "tapToScan": "Tap the camera button to scan your first meal",
-    "todaysMeals": "Today's Meals"
+    "todaysMeals": "Today's Meals",
+    "snapMeal": "Snap Meal",
+    "new": "NEW",
+    "logFood": "Log Food"
   }
 }
