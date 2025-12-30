@@ -12,20 +12,27 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const SHOW_ON_ROUTES = ['/today', '/dashboard', '/nutrition', '/', '/master-dashboard'];
+// Protected routes where user is guaranteed to be logged in
+const PROTECTED_ROUTES = ['/today', '/dashboard', '/nutrition', '/master-dashboard'];
+const PUBLIC_ROUTES_WITH_FAB = ['/'];
 
 export const FloatingMealSnapButton = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { dailyTotals } = useFoodLogging();
   const [isHovered, setIsHovered] = useState(false);
 
-  // Only show on specific routes and when user is logged in
-  const shouldShow = user && SHOW_ON_ROUTES.some(route => 
-    route === '/' ? location.pathname === '/' : location.pathname.startsWith(route)
+  const isProtectedRoute = PROTECTED_ROUTES.some(route => 
+    location.pathname.startsWith(route)
   );
+  const isPublicRouteWithFab = PUBLIC_ROUTES_WITH_FAB.includes(location.pathname);
+
+  // Show on protected routes (after auth loads) or on public routes if logged in
+  const shouldShow = 
+    (isProtectedRoute && !loading) || 
+    (isPublicRouteWithFab && !!user);
 
   // Don't show on the scan page itself
   if (location.pathname === '/nutrition-scan' || !shouldShow) {
