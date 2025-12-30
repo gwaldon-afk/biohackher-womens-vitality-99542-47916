@@ -22,29 +22,42 @@ let persistTimeout: NodeJS.Timeout | null = null;
 export const persistAdherenceScore = async (
   userId: string, 
   _adherencePercent: number
-): Promise<void> => {
+): Promise<{ success: boolean; score?: number; error?: string }> => {
   // Debounce to avoid calling edge function on every toggle
   if (persistTimeout) {
     clearTimeout(persistTimeout);
   }
   
-  persistTimeout = setTimeout(async () => {
-    try {
-      console.log('[adherenceScoreService] Calling edge function to persist adherence');
-      
-      const { data, error } = await supabase.functions.invoke('calculate-daily-adherence', {
-        body: {}
-      });
-      
-      if (error) {
-        console.error('[adherenceScoreService] Edge function error:', error);
-      } else {
-        console.log('[adherenceScoreService] Adherence persisted via edge function:', data);
+  return new Promise((resolve) => {
+    persistTimeout = setTimeout(async () => {
+      try {
+        console.log('[adherenceScoreService] Calling edge function to persist adherence');
+        
+        const { data, error } = await supabase.functions.invoke('calculate-daily-adherence', {
+          body: {}
+        });
+        
+        if (error) {
+          console.error('[adherenceScoreService] Edge function error:', error);
+          // Don't fail silently - return error info
+          resolve({ success: false, error: error.message || 'Edge function failed' });
+          return;
+        }
+        
+        if (data?.success) {
+          console.log('[adherenceScoreService] Adherence persisted:', data.adherencePercent + '%');
+          resolve({ success: true, score: data.adherencePercent });
+        } else {
+          console.warn('[adherenceScoreService] Edge function returned unexpected response:', data);
+          resolve({ success: false, error: data?.error || 'Unexpected response' });
+        }
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Network or unexpected error';
+        console.error('[adherenceScoreService] Unexpected error:', errorMessage);
+        resolve({ success: false, error: errorMessage });
       }
-    } catch (err) {
-      console.error('[adherenceScoreService] Unexpected error:', err);
-    }
-  }, 2000); // 2 second debounce
+    }, 2000); // 2 second debounce
+  });
 };
 
 /**
