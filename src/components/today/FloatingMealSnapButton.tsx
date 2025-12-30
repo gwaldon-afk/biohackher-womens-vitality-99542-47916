@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useFoodLogging } from "@/hooks/useFoodLogging";
 import { motion, AnimatePresence } from "framer-motion";
+import healthyMealBg from "@/assets/healthy-meal-bg.jpg";
 
 // Protected routes where user is guaranteed to be logged in
 const PROTECTED_ROUTES = ['/today', '/dashboard', '/nutrition', '/master-dashboard'];
@@ -104,39 +105,58 @@ export const FloatingMealSnapButton = () => {
             onClick={handleClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 relative group px-4 gap-2.5"
+            className="h-14 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 relative group px-4 gap-2.5 overflow-hidden border-2 border-white/20"
           >
+            {/* Food background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${healthyMealBg})` }}
+              aria-label={t('mealSnap.backgroundAlt', 'Healthy meal background')}
+            />
+            
+            {/* Gradient overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/75 to-primary/85" />
+            
+            {/* Subtle shimmer effect on hover */}
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+              initial={{ x: '-100%' }}
+              animate={{ x: isHovered ? '100%' : '-100%' }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            />
+            
+            {/* Content */}
             <motion.div
-              animate={{ scale: isHovered ? 1.1 : 1 }}
+              className="relative z-10 flex items-center gap-2.5"
+              animate={{ scale: isHovered ? 1.02 : 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Camera className="h-5 w-5 flex-shrink-0" />
+              <Camera className="h-5 w-5 flex-shrink-0 text-white drop-shadow-sm" />
+              
+              <AnimatePresence mode="wait">
+                {isExpanded && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="font-semibold whitespace-nowrap overflow-hidden text-white drop-shadow-sm"
+                  >
+                    {t('mealSnap.snapMeal', 'Snap Meal')}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </motion.div>
-            
-            {/* Expandable text */}
-            <AnimatePresence mode="wait">
-              {isExpanded && (
-                <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="font-semibold whitespace-nowrap overflow-hidden"
-                >
-                  {t('mealSnap.snapMeal', 'Snap Meal')}
-                </motion.span>
-              )}
-            </AnimatePresence>
             
             {/* Meal count badge */}
             {mealCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-green-500 text-white text-xs font-medium flex items-center justify-center shadow-sm">
+              <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-green-500 text-white text-xs font-medium flex items-center justify-center shadow-sm z-20">
                 {mealCount}
               </span>
             )}
             
             {/* Subtle pulse animation on first render */}
-            <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping opacity-20 pointer-events-none" 
+            <span className="absolute inset-0 rounded-full bg-white/20 animate-ping opacity-20 pointer-events-none" 
                   style={{ animationIterationCount: 3, animationDuration: '1.5s' }} />
           </Button>
         </motion.div>
