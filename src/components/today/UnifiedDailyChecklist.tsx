@@ -414,25 +414,33 @@ export const UnifiedDailyChecklist = () => {
       <div className="space-y-4">
         {/* Still To Do - FIRST when items exist (always expanded) */}
         {timeBlocks.stillToDo.length > 0 && (
-          <CategoryBlock
-            icon="⏰"
-            title={t('today.timeBlocks.stillToDo')}
-            items={timeBlocks.stillToDo}
-            completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
-            totalCount={getCategoryStats(timeBlocks.stillToDo).total}
-            totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
-            color="red"
-            defaultExpanded={true}
-            isPastDue={true}
-            onToggle={handleToggle}
-            getItemCompleted={getItemCompleted}
-            onBuySupplements={handleBuySupplements}
-            onViewMeal={handleViewMeal}
-            onRowClick={handleRowClick}
-            isUsingSampleData={isUsingSampleData}
-            user={user}
-            onNavigate={() => navigate('/auth')}
-          />
+          <>
+            {/* Focus prompt */}
+            <div className="flex items-center gap-2 text-sm text-destructive font-medium px-1">
+              <span>🎯</span>
+              <span>{t('today.stillToDo.focusPrompt')}</span>
+            </div>
+            <CategoryBlock
+              icon="⏰"
+              title={t('today.timeBlocks.stillToDo')}
+              items={timeBlocks.stillToDo}
+              completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
+              totalCount={getCategoryStats(timeBlocks.stillToDo).total}
+              totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
+              color="red"
+              defaultExpanded={true}
+              isPastDue={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+              maxVisibleItems={3}
+            />
+          </>
         )}
 
         {/* Morning Block */}

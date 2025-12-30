@@ -791,6 +791,10 @@
     "rowActions": {
       "tapToView": "Tap to view details"
     },
+    "stillToDo": {
+      "focusPrompt": "Focus on these first",
+      "showMore": "Show {{count}} more"
+    },
     "guest": {
       "sampleBanner": "You're viewing a sample daily plan",
       "readyTitle": "Ready to Create Your Personalised Plan?",
