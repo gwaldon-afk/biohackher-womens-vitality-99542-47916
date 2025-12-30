@@ -865,6 +865,13 @@
     },
     "hints": {
       "tapForDetails": "Tap any item to see details"
+    },
+    "groupedItems": {
+      "takeSupplements": "Take {{time}} supplements",
+      "supplementCount": "{{count}} supplements",
+      "todaysExercise": "Today's exercise",
+      "todaysTherapy": "Today's therapy",
+      "exerciseRotation": "Rotating through your exercise protocol"
     }
   },
   "trustBar": {

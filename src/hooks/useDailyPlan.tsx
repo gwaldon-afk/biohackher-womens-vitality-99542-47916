@@ -8,9 +8,26 @@ import { useStreaks } from './useStreaks';
 import { useProtocolCompletions } from '@/queries/protocolQueries';
 import { useNutritionPreferences } from './useNutritionPreferences';
 import { supabase } from '@/integrations/supabase/client';
-import { matchesTimeOfDay } from '@/utils/timeContext';
-import { ProtocolItem } from '@/types/protocols';
+
+
 import { templateMealPlans } from '@/data/mealTemplates';
+
+// Local interface matching what useProtocols returns
+interface ProtocolItemLocal {
+  id: string;
+  protocol_id: string;
+  item_type: 'supplement' | 'therapy' | 'habit' | 'exercise' | 'diet';
+  name: string;
+  description: string | null;
+  dosage: string | null;
+  frequency: 'daily' | 'twice_daily' | 'three_times_daily' | 'weekly' | 'as_needed';
+  time_of_day: string[] | null;
+  notes: string | null;
+  product_link: string | null;
+  product_id: string | null;
+  is_active: boolean;
+  included_in_plan?: boolean;
+}
 
 export interface DailyAction {
   id: string;
@@ -109,6 +126,9 @@ export const useDailyPlan = () => {
         console.warn(`[useDailyPlan] Found ${activeProtocols.length} active protocols! User should only have 1 active protocol.`);
       }
       
+      // Collect all protocol items first for grouping
+      const allProtocolItems: ProtocolItemLocal[] = [];
+      
       // Fetch and merge items from all active protocols
       for (const protocol of activeProtocols) {
         const items = await fetchProtocolItems(protocol.id);
@@ -117,46 +137,157 @@ export const useDailyPlan = () => {
         // Filter by included_in_plan (not just is_active) to respect user's plan selection
         const relevantItems = items.filter(item => item.is_active && item.included_in_plan !== false);
         console.log(`[useDailyPlan] Items included in plan from protocol ${protocol.id}:`, relevantItems);
-
-        relevantItems.forEach((item: ProtocolItem) => {
-          const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
-          
-          dailyActions.push({
-            id: `protocol-${item.id}`,
-            type: 'protocol',
-            title: item.name,
-            description: item.description || undefined,
-            category: categorizeActionByType(item.item_type),
-            estimatedMinutes: estimateTime(item.item_type),
-            priority: 0, // Will be calculated
-            icon: getItemIcon(item.item_type),
-            completed: isCompleted,
-            protocolItemId: item.id,
-            timeOfDay: item.time_of_day,
-            itemType: item.item_type // Preserve original item_type for categorization
-          });
-        });
+        allProtocolItems.push(...relevantItems);
       }
 
-      // 2. Get active goal actions
-      const activeGoals = goals.filter(g => g.status === 'active');
-      activeGoals.forEach(goal => {
-        // Extract daily actions from goal (simplified)
+      // Separate items by type for smart grouping
+      const supplements = allProtocolItems.filter(item => item.item_type === 'supplement');
+      const exercises = allProtocolItems.filter(item => item.item_type === 'exercise');
+      const therapies = allProtocolItems.filter(item => item.item_type === 'therapy');
+      const habits = allProtocolItems.filter(item => item.item_type === 'habit');
+      const dietItems = allProtocolItems.filter(item => item.item_type === 'diet');
+
+      // Group supplements by time of day (reduces 10+ items to 2-3 grouped actions)
+      const supplementsByTime: Record<string, ProtocolItemLocal[]> = {};
+      supplements.forEach(supp => {
+        const time = supp.time_of_day?.[0] || 'morning';
+        if (!supplementsByTime[time]) supplementsByTime[time] = [];
+        supplementsByTime[time].push(supp);
+      });
+
+      // Check if ALL supplements in a group are completed
+      Object.entries(supplementsByTime).forEach(([time, items]) => {
+        const allCompleted = items.every(item => 
+          completions?.some(c => c.protocol_item_id === item.id)
+        );
+        const suppNames = items.map(s => s.name).slice(0, 3).join(', ');
+        const moreCount = items.length > 3 ? ` +${items.length - 3} more` : '';
+        
         dailyActions.push({
-          id: `goal-${goal.id}`,
-          type: 'goal',
-          title: `Work on: ${goal.title}`,
-          description: 'Complete today\'s goal activity',
+          id: `supplements-${time}`,
+          type: 'protocol',
+          title: `Take ${time} supplements`,
+          description: `${items.length} supplements: ${suppNames}${moreCount}`,
+          category: 'quick_win',
+          estimatedMinutes: 2, // 2 min total, not per supplement
+          priority: 0,
+          icon: '💊',
+          completed: allCompleted,
+          timeOfDay: [time],
+          itemType: 'supplement'
+        });
+      });
+
+      // Exercise rotation: show 1-2 exercises per day based on schedule
+      const dayOfWeek = new Date().getDay();
+      const exerciseSchedule: Record<number, string[]> = {
+        0: [], // Sunday - rest
+        1: ['strength', 'upper', 'resistance'], // Monday
+        2: ['cardio', 'walking', 'lower'], // Tuesday
+        3: ['hiit', 'interval', 'flexibility'], // Wednesday
+        4: ['strength', 'upper', 'resistance'], // Thursday
+        5: ['cardio', 'walking', 'lower'], // Friday
+        6: ['yoga', 'stretching', 'recovery'], // Saturday
+      };
+      
+      const todayKeywords = exerciseSchedule[dayOfWeek] || [];
+      let todaysExercises = exercises.filter(ex => 
+        todayKeywords.some(kw => ex.name.toLowerCase().includes(kw))
+      );
+      
+      // If no matches, pick based on index rotation (max 2 per day)
+      if (todaysExercises.length === 0 && exercises.length > 0) {
+        const startIndex = dayOfWeek % exercises.length;
+        todaysExercises = exercises.slice(startIndex, startIndex + 2);
+        // Handle wrap-around
+        if (todaysExercises.length < 2 && exercises.length > 1) {
+          todaysExercises.push(...exercises.slice(0, 2 - todaysExercises.length));
+        }
+      }
+      // Limit to max 2 exercises per day
+      todaysExercises = todaysExercises.slice(0, 2);
+
+      todaysExercises.forEach((item: ProtocolItemLocal) => {
+        const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
+        dailyActions.push({
+          id: `protocol-${item.id}`,
+          type: 'protocol',
+          title: item.name,
+          description: item.description || undefined,
           category: 'deep_practice',
           estimatedMinutes: 30,
           priority: 0,
-          goalAlignment: goal.pillar_category,
-          whyItMatters: `Supports your ${goal.pillar_category} goal`,
-          icon: getPillarIcon(goal.pillar_category),
-          completed: false,
-          goalId: goal.id
+          icon: '💪',
+          completed: isCompleted,
+          protocolItemId: item.id,
+          timeOfDay: item.time_of_day,
+          itemType: 'exercise'
         });
       });
+
+      // Therapies: show 1 per day on rotation
+      if (therapies.length > 0) {
+        const therapyIndex = dayOfWeek % therapies.length;
+        const todaysTherapy = therapies[therapyIndex];
+        const isCompleted = completions?.some(c => c.protocol_item_id === todaysTherapy.id) || false;
+        
+        dailyActions.push({
+          id: `protocol-${todaysTherapy.id}`,
+          type: 'protocol',
+          title: todaysTherapy.name,
+          description: todaysTherapy.description || undefined,
+          category: 'deep_practice',
+          estimatedMinutes: 20,
+          priority: 0,
+          icon: '🧘',
+          completed: isCompleted,
+          protocolItemId: todaysTherapy.id,
+          timeOfDay: todaysTherapy.time_of_day,
+          itemType: 'therapy'
+        });
+      }
+
+      // Habits: add all (usually quick actions)
+      habits.forEach((item: ProtocolItemLocal) => {
+        const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
+        dailyActions.push({
+          id: `protocol-${item.id}`,
+          type: 'protocol',
+          title: item.name,
+          description: item.description || undefined,
+          category: 'energy_booster',
+          estimatedMinutes: 5, // Reduced from 10
+          priority: 0,
+          icon: '✨',
+          completed: isCompleted,
+          protocolItemId: item.id,
+          timeOfDay: item.time_of_day,
+          itemType: 'habit'
+        });
+      });
+
+      // Diet items: these are guidelines, not time-consuming tasks (0 minutes)
+      dietItems.forEach((item: ProtocolItemLocal) => {
+        const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
+        dailyActions.push({
+          id: `protocol-${item.id}`,
+          type: 'protocol',
+          title: item.name,
+          description: item.description || undefined,
+          category: 'quick_win',
+          estimatedMinutes: 0, // Diet items are guidelines, not tasks
+          priority: 0,
+          icon: '🥗',
+          completed: isCompleted,
+          protocolItemId: item.id,
+          timeOfDay: item.time_of_day,
+          itemType: 'diet'
+        });
+      });
+
+      // 2. Goals are now tracked separately - removed from daily action time
+      // (Goal progress is shown in the dedicated Goals section, not as time-consuming tasks)
+      const activeGoals = goals.filter(g => g.status === 'active');
 
       // 3. Get energy actions (if energy loop is active)
       energyActions.forEach(action => {
