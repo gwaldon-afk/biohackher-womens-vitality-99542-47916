@@ -332,6 +332,13 @@ export const UnifiedDailyChecklist = () => {
     };
   };
 
+  const getItemCompleted = (actionId: string) => {
+    if (isUsingSampleData) {
+      return sampleCompletedIds.has(actionId);
+    }
+    return actions.find(a => a.id === actionId)?.completed || false;
+  };
+
   // Categorize actions by status
   const categorizeByStatus = () => {
     const filteredActions = !hasMealPlan 
@@ -354,13 +361,6 @@ export const UnifiedDailyChecklist = () => {
   const timeBlocks = categorizeByTime();
   const typeBlocks = categorizeByType();
   const statusBlocks = categorizeByStatus();
-
-  const getItemCompleted = (actionId: string) => {
-    if (isUsingSampleData) {
-      return sampleCompletedIds.has(actionId);
-    }
-    return actions.find(a => a.id === actionId)?.completed || false;
-  };
 
   const getCategoryStats = (items: any[]) => {
     const completed = items.filter(a => getItemCompleted(a.id)).length;
