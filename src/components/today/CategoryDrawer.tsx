@@ -48,6 +48,7 @@ const colorMap: Record<string, { bg: string; text: string; progress: string }> =
   pink: { bg: 'bg-pink-100 dark:bg-pink-900/40', text: 'text-pink-700 dark:text-pink-300', progress: '[&>div]:bg-pink-500' },
   yellow: { bg: 'bg-yellow-100 dark:bg-yellow-900/40', text: 'text-yellow-700 dark:text-yellow-300', progress: '[&>div]:bg-yellow-500' },
   blue: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', progress: '[&>div]:bg-blue-500' },
+  purple: { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-700 dark:text-purple-300', progress: '[&>div]:bg-purple-500' },
 };
 
 export const CategoryDrawer = ({

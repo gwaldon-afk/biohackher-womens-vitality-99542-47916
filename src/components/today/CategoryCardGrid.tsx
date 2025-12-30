@@ -12,6 +12,7 @@ export interface CategoryCardData {
   totalCount: number;
   totalMinutes: number;
   color: string;
+  isCurrentPeriod?: boolean;
 }
 
 interface CategoryCardGridProps {
@@ -49,6 +50,12 @@ const colorMap: Record<string, { bg: string; border: string; text: string; progr
     border: 'border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600', 
     text: 'text-blue-700 dark:text-blue-300',
     progress: '[&>div]:bg-blue-500'
+  },
+  purple: { 
+    bg: 'bg-purple-50 dark:bg-purple-950/30', 
+    border: 'border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600', 
+    text: 'text-purple-700 dark:text-purple-300',
+    progress: '[&>div]:bg-purple-500'
   },
 };
 
@@ -89,9 +96,14 @@ export const CategoryCardGrid = ({ categories, onCardClick }: CategoryCardGridPr
               isComplete && "ring-2 ring-primary/30"
             )}
           >
-            {/* Icon & Title */}
+            {/* Icon & Title with Now badge */}
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">{category.icon}</span>
+              {category.isCurrentPeriod && !isComplete && (
+                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-primary text-primary-foreground rounded animate-pulse">
+                  {t('today.categoryGrid.now')}
+                </span>
+              )}
               {isComplete && (
                 <CheckCircle className="w-4 h-4 text-primary ml-auto" />
               )}
