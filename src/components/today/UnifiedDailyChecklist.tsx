@@ -513,70 +513,47 @@ export const UnifiedDailyChecklist = () => {
       {/* TIME BLOCKS - The Core Actionable Content */}
       <div className="space-y-4">
         {viewBy === 'time' && (
-          <>
-            {/* Morning Block */}
-            <CategoryBlock
-              icon="☀️"
-              title={t('today.timeBlocks.morning')}
-              items={applyStatusFilter(timeBlocks.morning)}
-              completedCount={getCategoryStats(timeBlocks.morning).completed}
-              totalCount={getCategoryStats(timeBlocks.morning).total}
-              totalMinutes={getCategoryStats(timeBlocks.morning).minutes}
-              color="yellow"
-              defaultExpanded={isCurrentPeriod('morning')}
-              timeContext={isCurrentPeriod('morning') ? 'now' : 'later'}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Afternoon Block */}
-            <CategoryBlock
-              icon="🌤️"
-              title={t('today.timeBlocks.afternoon')}
-              items={applyStatusFilter(timeBlocks.afternoon)}
-              completedCount={getCategoryStats(timeBlocks.afternoon).completed}
-              totalCount={getCategoryStats(timeBlocks.afternoon).total}
-              totalMinutes={getCategoryStats(timeBlocks.afternoon).minutes}
-              color="blue"
-              defaultExpanded={isCurrentPeriod('afternoon')}
-              timeContext={isCurrentPeriod('afternoon') ? 'now' : isCurrentPeriod('morning') ? 'upcoming' : 'later'}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Evening Block */}
-            <CategoryBlock
-              icon="🌅"
-              title={t('today.timeBlocks.evening')}
-              items={applyStatusFilter(timeBlocks.evening)}
-              completedCount={getCategoryStats(timeBlocks.evening).completed}
-              totalCount={getCategoryStats(timeBlocks.evening).total}
-              totalMinutes={getCategoryStats(timeBlocks.evening).minutes}
-              color="purple"
-              defaultExpanded={isCurrentPeriod('evening')}
-              timeContext={isCurrentPeriod('evening') ? 'now' : 'later'}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-          </>
+          <CategoryCardGrid
+            categories={[
+              { 
+                key: 'morning', 
+                icon: '☀️', 
+                title: t('today.timeBlocks.morning'), 
+                items: applyStatusFilter(timeBlocks.morning),
+                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.morning)).minutes,
+                color: 'yellow',
+                isCurrentPeriod: isCurrentPeriod('morning')
+              },
+              { 
+                key: 'afternoon', 
+                icon: '🌤️', 
+                title: t('today.timeBlocks.afternoon'), 
+                items: applyStatusFilter(timeBlocks.afternoon),
+                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).minutes,
+                color: 'blue',
+                isCurrentPeriod: isCurrentPeriod('afternoon')
+              },
+              { 
+                key: 'evening', 
+                icon: '🌅', 
+                title: t('today.timeBlocks.evening'), 
+                items: applyStatusFilter(timeBlocks.evening),
+                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.evening)).minutes,
+                color: 'purple',
+                isCurrentPeriod: isCurrentPeriod('evening')
+              },
+            ]}
+            onCardClick={(key) => {
+              setSelectedCategory(key);
+              setIsCategoryDrawerOpen(true);
+            }}
+          />
         )}
 
         {viewBy === 'type' && (
@@ -641,47 +618,34 @@ export const UnifiedDailyChecklist = () => {
         )}
 
         {viewBy === 'status' && (
-          <>
-            {/* To Do Block */}
-            <CategoryBlock
-              icon="📋"
-              title={t('today.filters.toDo')}
-              items={statusBlocks.toDo}
-              completedCount={0}
-              totalCount={statusBlocks.toDo.length}
-              totalMinutes={getCategoryStats(statusBlocks.toDo).minutes}
-              color="orange"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Completed Block */}
-            <CategoryBlock
-              icon="✅"
-              title={t('today.filters.done')}
-              items={statusBlocks.completed}
-              completedCount={statusBlocks.completed.length}
-              totalCount={statusBlocks.completed.length}
-              totalMinutes={getCategoryStats(statusBlocks.completed).minutes}
-              color="green"
-              defaultExpanded={false}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-          </>
+          <CategoryCardGrid
+            categories={[
+              { 
+                key: 'toDo', 
+                icon: '📋', 
+                title: t('today.filters.toDo'), 
+                items: statusBlocks.toDo,
+                completedCount: 0,
+                totalCount: statusBlocks.toDo.length,
+                totalMinutes: getCategoryStats(statusBlocks.toDo).minutes,
+                color: 'orange'
+              },
+              { 
+                key: 'completed', 
+                icon: '✅', 
+                title: t('today.filters.done'), 
+                items: statusBlocks.completed,
+                completedCount: statusBlocks.completed.length,
+                totalCount: statusBlocks.completed.length,
+                totalMinutes: getCategoryStats(statusBlocks.completed).minutes,
+                color: 'green'
+              },
+            ]}
+            onCardClick={(key) => {
+              setSelectedCategory(key);
+              setIsCategoryDrawerOpen(true);
+            }}
+          />
         )}
       </div>
 
@@ -777,25 +741,40 @@ export const UnifiedDailyChecklist = () => {
         />
       )}
 
-      {/* Category Drawer for Type View */}
+      {/* Category Drawer for All Views */}
       <CategoryDrawer
         isOpen={isCategoryDrawerOpen}
         onClose={() => setIsCategoryDrawerOpen(false)}
-        category={selectedCategory ? {
-          key: selectedCategory,
-          icon: selectedCategory === 'supplements' ? '💊' : 
-                selectedCategory === 'exercise' ? '🏃' : 
-                selectedCategory === 'habits' ? '✨' : 
-                selectedCategory === 'meals' ? '🍽️' : '🎯',
-          title: t(`today.filters.${selectedCategory}`),
-          color: selectedCategory === 'supplements' ? 'orange' :
-                 selectedCategory === 'exercise' ? 'green' :
-                 selectedCategory === 'habits' ? 'pink' :
-                 selectedCategory === 'meals' ? 'yellow' : 'blue',
-          items: applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || []),
-          completedCount: getCategoryStats(applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || [])).completed,
-          totalCount: getCategoryStats(applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || [])).total,
-        } : null}
+        category={selectedCategory ? (() => {
+          // Category mapping for all views
+          const categoryConfig: Record<string, { icon: string; title: string; color: string; items: any[] }> = {
+            // Type view
+            supplements: { icon: '💊', title: t('today.filters.supplements'), color: 'orange', items: applyStatusFilter(typeBlocks.supplements) },
+            exercise: { icon: '🏃', title: t('today.filters.exercise'), color: 'green', items: applyStatusFilter(typeBlocks.exercise) },
+            habits: { icon: '✨', title: t('today.filters.habits'), color: 'pink', items: applyStatusFilter(typeBlocks.habits) },
+            meals: { icon: '🍽️', title: t('today.filters.meals'), color: 'yellow', items: applyStatusFilter(typeBlocks.meals) },
+            goals: { icon: '🎯', title: t('today.filters.goals'), color: 'blue', items: applyStatusFilter(typeBlocks.goals) },
+            // Time view
+            morning: { icon: '☀️', title: t('today.timeBlocks.morning'), color: 'yellow', items: applyStatusFilter(timeBlocks.morning) },
+            afternoon: { icon: '🌤️', title: t('today.timeBlocks.afternoon'), color: 'blue', items: applyStatusFilter(timeBlocks.afternoon) },
+            evening: { icon: '🌅', title: t('today.timeBlocks.evening'), color: 'purple', items: applyStatusFilter(timeBlocks.evening) },
+            // Status view
+            toDo: { icon: '📋', title: t('today.filters.toDo'), color: 'orange', items: statusBlocks.toDo },
+            completed: { icon: '✅', title: t('today.filters.done'), color: 'green', items: statusBlocks.completed },
+          };
+          const config = categoryConfig[selectedCategory];
+          if (!config) return null;
+          const stats = getCategoryStats(config.items);
+          return {
+            key: selectedCategory,
+            icon: config.icon,
+            title: config.title,
+            color: config.color,
+            items: config.items,
+            completedCount: stats.completed,
+            totalCount: stats.total,
+          };
+        })() : null}
         getItemCompleted={getItemCompleted}
         onToggle={handleToggle}
         onBuySupplements={handleBuySupplements}

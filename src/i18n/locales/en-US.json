@@ -807,7 +807,8 @@
       "minutes": "~{{count}} min",
       "completed": "complete",
       "noCategories": "No categories to display",
-      "noItems": "No items in this category"
+      "noItems": "No items in this category",
+      "now": "NOW"
     },
     "adherence": {
       "label": "Adherence: {{percent}}%"
