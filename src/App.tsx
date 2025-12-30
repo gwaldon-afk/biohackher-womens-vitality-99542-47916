@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { FloatingAIAssistant } from "@/components/FloatingAIAssistant";
+import { FloatingMealSnapButton } from "@/components/today/FloatingMealSnapButton";
 import { DevModeToggle } from "@/components/DevModeToggle";
 import { DevTestingPanel } from "@/components/dev/DevTestingPanel";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -266,6 +267,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <FloatingMealSnapButton />
           <FloatingAIAssistant />
           <DevModeToggle />
           <DevTestingPanel />
