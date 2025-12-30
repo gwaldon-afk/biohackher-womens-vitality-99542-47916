@@ -28,6 +28,7 @@ import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCar
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
 import { ProfileQuickAccessCard } from "@/components/today/ProfileQuickAccessCard";
 import { ExerciseSnacksCard } from "@/components/today/ExerciseSnacksCard";
+import { FoodPhotoScannerCard } from "@/components/today/FoodPhotoScannerCard";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 import { useTranslation } from 'react-i18next';
@@ -400,6 +401,13 @@ export const UnifiedDailyChecklist = () => {
           currentAge={42}
         />
       </div>
+
+      {/* Food Photo Scanner */}
+      {user && (
+        <div className="pb-6">
+          <FoodPhotoScannerCard />
+        </div>
+      )}
 
       {/* Nutrition Scorecard Widget or Generic Guidance */}
       {user && hasMealPlan && (

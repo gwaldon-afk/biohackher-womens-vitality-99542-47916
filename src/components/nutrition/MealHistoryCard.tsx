@@ -29,10 +29,10 @@ export const MealHistoryCard = ({ showHeader = true, maxItems }: MealHistoryCard
   const [expanded, setExpanded] = useState(false);
 
   const mealTypeLabels: Record<string, string> = {
-    breakfast: t('foodScanner.mealTypes.breakfast', 'Breakfast'),
-    lunch: t('foodScanner.mealTypes.lunch', 'Lunch'),
-    dinner: t('foodScanner.mealTypes.dinner', 'Dinner'),
-    snack: t('foodScanner.mealTypes.snack', 'Snack'),
+    breakfast: t('foodScanner.mealType.breakfast'),
+    lunch: t('foodScanner.mealType.lunch'),
+    dinner: t('foodScanner.mealType.dinner'),
+    snack: t('foodScanner.mealType.snack'),
   };
 
   const mealTypeColors: Record<string, string> = {
