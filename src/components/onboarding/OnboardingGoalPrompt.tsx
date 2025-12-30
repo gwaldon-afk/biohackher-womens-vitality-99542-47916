@@ -103,10 +103,14 @@ export const OnboardingGoalPrompt = ({ isOpen, onClose, lowestPillars = [] }: On
         }
       }
       
-      toast.success(t('onboardingGoals.goalsCreated', { count: selectedGoals.length }));
+      toast.success(t('onboardingGoals.goalsCreated', { count: selectedGoals.length }), {
+        action: {
+          label: t('onboardingGoals.viewGoals'),
+          onClick: () => navigate('/my-goals'),
+        },
+      });
       localStorage.setItem('onboarding_goal_completed', 'true');
       onClose();
-      navigate('/my-goals');
     } catch (error) {
       console.error('Error creating goals:', error);
       toast.error(t('onboardingGoals.createError'));
