@@ -2326,6 +2326,7 @@
     "createSelected": "Create {{count}} Selected Goals",
     "skipForNow": "Skip for now",
     "canAddLater": "You can always set goals later from My Profile",
+    "viewGoals": "View Goals",
     "goals": {
       "improveSleep": {
         "title": "Improve Sleep Quality",
