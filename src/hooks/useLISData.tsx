@@ -15,6 +15,7 @@ interface LISData {
   baselineScore: number | null;
   baselineDate: Date | null;
   currentScore: number | null;
+  rawScore: number | null;
   dailyScores: any[];
   improvement: number;
   opportunityGap: number;
@@ -24,6 +25,7 @@ interface LISData {
   manualEntryCount: number;
   lastSyncTime: string | null;
   pillarScores: PillarScores;
+  latestAdherence: number | null;
   refetch: () => Promise<void>;
 }
 
@@ -146,10 +148,21 @@ export const useLISData = (): LISData => {
   const improvement = currentScore && baselineScore ? currentScore - baselineScore : 0;
   const opportunityGap = baselineScore && currentScore ? baselineScore - currentScore : 0;
 
+  // Calculate adherence-weighted LIS if adherence data exists
+  const latestAdherence = dailyScores.length > 0 
+    ? dailyScores[dailyScores.length - 1]?.protocol_adherence_score 
+    : null;
+
+  // Factor adherence into the current score (10% weight)
+  const adherenceAdjustedScore = currentScore && latestAdherence !== null
+    ? Math.round(currentScore * 0.9 + (latestAdherence / 100) * 10)
+    : currentScore;
+
   return {
     baselineScore,
     baselineDate,
-    currentScore,
+    currentScore: adherenceAdjustedScore,
+    rawScore: currentScore, // Original score without adherence adjustment
     dailyScores,
     improvement,
     opportunityGap,
@@ -159,6 +172,7 @@ export const useLISData = (): LISData => {
     manualEntryCount,
     lastSyncTime,
     pillarScores,
+    latestAdherence,
     refetch: fetchLISData
   };
 };

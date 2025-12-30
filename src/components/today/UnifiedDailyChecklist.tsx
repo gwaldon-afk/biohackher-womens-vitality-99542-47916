@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useGoals } from "@/hooks/useGoals";
 import { toast } from "sonner";
 import { SAMPLE_DAILY_ACTIONS, SAMPLE_GOALS } from "@/data/sampleDailyPlan";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getTodaysQuote } from "@/data/femaleLongevityQuotes";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useCart } from "@/hooks/useCart";
@@ -23,15 +23,12 @@ import { NutritionScorecardWidget } from "@/components/today/NutritionScorecardW
 import { MealDetailModal } from "@/components/today/MealDetailModal";
 import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummary";
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
-import { DailyEssentialsCard } from "@/components/today/DailyEssentialsCard";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
-import { ProfileQuickAccessCard } from "@/components/today/ProfileQuickAccessCard";
-import { ExerciseSnacksCard } from "@/components/today/ExerciseSnacksCard";
-import { FoodPhotoScannerCard } from "@/components/today/FoodPhotoScannerCard";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 import { useTranslation } from 'react-i18next';
+import { calculateAdherenceScore, persistAdherenceScore } from '@/services/adherenceScoreService';
 
 export const UnifiedDailyChecklist = () => {
   const { t } = useTranslation();
@@ -41,9 +38,12 @@ export const UnifiedDailyChecklist = () => {
   const { goals } = useGoals();
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
-  const { currentScore: sustainedLIS } = useLISData();
+  const { currentScore: sustainedLIS, refetch: refetchLIS } = useLISData();
   const { preferences: nutritionPrefs, isLoading: nutritionLoading } = useNutritionPreferences();
   const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
+  
+  // Adherence state
+  const [adherencePercent, setAdherencePercent] = useState<number | null>(null);
   
   // Fetch nutrition actions
   const { data: nutritionActions = [] } = useQuery({
@@ -78,6 +78,17 @@ export const UnifiedDailyChecklist = () => {
   const todaysQuote = getTodaysQuote();
   const today = new Date();
   const dateString = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  // Calculate and persist adherence when actions change
+  useEffect(() => {
+    if (user && !isUsingSampleData && userActions.length > 0) {
+      const adherence = calculateAdherenceScore(userActions);
+      setAdherencePercent(adherence);
+      
+      // Persist to database (debounced via service)
+      persistAdherenceScore(user.id, adherence).catch(console.error);
+    }
+  }, [user, isUsingSampleData, userActions, userCompletedCount]);
 
   const handleToggle = async (actionId: string) => {
     if (isUsingSampleData) {
@@ -123,6 +134,7 @@ export const UnifiedDailyChecklist = () => {
         }
         
         refetch();
+        refetchLIS();
       }
       // Handle protocol item completion
       else if (action.type === 'protocol' && 'protocolItemId' in action && action.protocolItemId) {
@@ -147,6 +159,7 @@ export const UnifiedDailyChecklist = () => {
         }
         
         refetch();
+        refetchLIS();
       }
     } catch (error) {
       console.error('Error toggling action:', error);
@@ -167,6 +180,18 @@ export const UnifiedDailyChecklist = () => {
       quantity: 1
     });
     toast.success(t('today.toasts.addedToCart'));
+  };
+
+  // Handle row click for navigation to details
+  const handleRowClick = (action: any) => {
+    if (action.type === 'meal' && action.mealData) {
+      handleViewMeal(action);
+    } else if (action.type === 'protocol' && action.protocolItemId) {
+      // Navigate to protocol detail or show detail panel
+      navigate('/my-protocol');
+    } else if (action.type === 'goal' && action.goalId) {
+      navigate('/my-goals');
+    }
   };
 
   // Helper to check if current time period matches
@@ -304,7 +329,7 @@ export const UnifiedDailyChecklist = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Date & Quote Header */}
-      <div className="space-y-4 pb-6 border-b-2 border-primary/20">
+      <div className="space-y-4 pb-4 border-b-2 border-primary/20">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
           TODAY - {dateString}
         </h1>
@@ -323,13 +348,24 @@ export const UnifiedDailyChecklist = () => {
           </div>
         </div>
         
-        {/* Progress Summary - Moved to top */}
+        {/* Progress Summary + Adherence Indicator */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="font-semibold text-foreground">
               {t('today.plan.progress', { completed: completedCount, total: totalCount })}
             </span>
-            <span className="text-muted-foreground">{progressPercent}%</span>
+            <div className="flex items-center gap-3">
+              {adherencePercent !== null && user && (
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  adherencePercent >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                  adherencePercent >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                }`}>
+                  {t('today.adherence.label', { percent: adherencePercent })}
+                </span>
+              )}
+              <span className="text-muted-foreground">{progressPercent}%</span>
+            </div>
           </div>
           <Progress value={progressPercent} className="h-2 bg-muted" />
         </div>
@@ -337,7 +373,7 @@ export const UnifiedDailyChecklist = () => {
 
       {/* Guest Top Banner CTA */}
       {!user && (
-        <div className="mb-6 p-6 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-secondary border-2 border-primary/30 shadow-lg">
+        <div className="mb-4 p-6 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-secondary border-2 border-primary/30 shadow-lg">
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/20 backdrop-blur-sm">
               <span className="text-2xl">👋</span>
@@ -374,107 +410,7 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* My Profile Quick Access - Moved higher for visibility */}
-      {user && (
-        <div className="pb-6">
-          <ProfileQuickAccessCard />
-        </div>
-      )}
-
-      {/* Goal Progress Tracking */}
-      <div className="pb-6">
-        <TodayGoalProgressCard />
-      </div>
-
-      {/* Daily Essentials */}
-      <div className="pb-6">
-        <DailyEssentialsCard />
-      </div>
-
-      {/* Exercise Snacks - Quick Wins */}
-      <div className="pb-6">
-        <ExerciseSnacksCard userId={user?.id} />
-      </div>
-
-      {/* Daily Health Metrics Check-In */}
-      {user && (
-        <div className="pb-6">
-          <DailyHealthMetricsCard />
-        </div>
-      )}
-
-      {/* LIS Impact & Biological Age Prediction */}
-      <div className="pb-6">
-        <LISImpactPreview 
-          completedCount={completedCount}
-          totalCount={totalCount}
-          sustainedLIS={sustainedLIS}
-          currentAge={42}
-        />
-      </div>
-
-      {/* Food Photo Scanner */}
-      {user && (
-        <div className="pb-6">
-          <FoodPhotoScannerCard />
-        </div>
-      )}
-
-      {/* Nutrition Scorecard Widget or Generic Guidance */}
-      {user && hasMealPlan && (
-        <div className="pb-6">
-          <NutritionScorecardWidget />
-        </div>
-      )}
-      
-      {user && !hasMealPlan && (
-        <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Utensils className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">{t('today.nutrition.focusTitle')}</h3>
-            </div>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>• {t('today.nutrition.focusTip1')}</p>
-              <p>• {t('today.nutrition.focusTip2')}</p>
-              <p>• {t('today.nutrition.focusTip3')}</p>
-              <p>• {t('today.nutrition.focusTip4')}</p>
-            </div>
-            <Button 
-              variant="outline"
-              onClick={() => navigate('/nutrition/meal-plan')}
-              className="w-full mt-4"
-            >
-              {t('today.nutrition.createMealPlan')}
-            </Button>
-            <p className="text-xs text-center text-muted-foreground">
-              {t('today.nutrition.getMealsDesc')}
-            </p>
-          </div>
-        </Card>
-      )}
-
-      {/* Separator before Time-Based Sections */}
-      <div className="pb-2 border-b-2 border-primary/20" />
-
-      {/* Protocol Management Link */}
-      {user && actions.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
-          <div className="flex flex-col">
-            <p className="font-semibold text-foreground">{t('today.plan.fromActiveProtocol')}</p>
-            <p className="text-sm text-muted-foreground">{t('today.plan.fromActiveProtocolDesc')}</p>
-          </div>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/my-protocol')}
-            className="shrink-0"
-          >
-            {t('today.plan.manageProtocol')}
-          </Button>
-        </div>
-      )}
-
-      {/* Time-Based Sections */}
+      {/* TIME BLOCKS FIRST - The Core Actionable Content */}
       <div className="space-y-4">
         {/* Still To Do - FIRST when items exist (always expanded) */}
         {timeBlocks.stillToDo.length > 0 && (
@@ -492,6 +428,7 @@ export const UnifiedDailyChecklist = () => {
             getItemCompleted={getItemCompleted}
             onBuySupplements={handleBuySupplements}
             onViewMeal={handleViewMeal}
+            onRowClick={handleRowClick}
             isUsingSampleData={isUsingSampleData}
             user={user}
             onNavigate={() => navigate('/auth')}
@@ -513,6 +450,7 @@ export const UnifiedDailyChecklist = () => {
           getItemCompleted={getItemCompleted}
           onBuySupplements={handleBuySupplements}
           onViewMeal={handleViewMeal}
+          onRowClick={handleRowClick}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
@@ -533,6 +471,7 @@ export const UnifiedDailyChecklist = () => {
           getItemCompleted={getItemCompleted}
           onBuySupplements={handleBuySupplements}
           onViewMeal={handleViewMeal}
+          onRowClick={handleRowClick}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
@@ -553,10 +492,75 @@ export const UnifiedDailyChecklist = () => {
           getItemCompleted={getItemCompleted}
           onBuySupplements={handleBuySupplements}
           onViewMeal={handleViewMeal}
+          onRowClick={handleRowClick}
           isUsingSampleData={isUsingSampleData}
           user={user}
           onNavigate={() => navigate('/auth')}
         />
+      </div>
+
+      {/* SECONDARY CONTENT - Below Time Blocks */}
+      <div className="space-y-4 pt-4 border-t border-border/50">
+        {/* Protocol Management Link */}
+        {user && actions.length > 0 && (
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
+            <div className="flex flex-col">
+              <p className="font-semibold text-foreground">{t('today.plan.fromActiveProtocol')}</p>
+              <p className="text-sm text-muted-foreground">{t('today.plan.fromActiveProtocolDesc')}</p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/my-protocol')}
+              className="shrink-0"
+            >
+              {t('today.plan.manageProtocol')}
+            </Button>
+          </div>
+        )}
+
+        {/* Goal Progress - Compact */}
+        <TodayGoalProgressCard />
+
+        {/* Daily Health Metrics Check-In */}
+        {user && <DailyHealthMetricsCard />}
+
+        {/* LIS Impact & Biological Age Prediction */}
+        <LISImpactPreview 
+          completedCount={completedCount}
+          totalCount={totalCount}
+          sustainedLIS={sustainedLIS}
+          currentAge={42}
+        />
+
+        {/* Nutrition Scorecard Widget or Generic Guidance */}
+        {user && hasMealPlan && <NutritionScorecardWidget />}
+        
+        {user && !hasMealPlan && (
+          <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Utensils className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground">{t('today.nutrition.focusTitle')}</h3>
+              </div>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>• {t('today.nutrition.focusTip1')}</p>
+                <p>• {t('today.nutrition.focusTip2')}</p>
+                <p>• {t('today.nutrition.focusTip3')}</p>
+                <p>• {t('today.nutrition.focusTip4')}</p>
+              </div>
+              <Button 
+                variant="outline"
+                onClick={() => navigate('/nutrition/meal-plan')}
+                className="w-full mt-4"
+              >
+                {t('today.nutrition.createMealPlan')}
+              </Button>
+              <p className="text-xs text-center text-muted-foreground">
+                {t('today.nutrition.getMealsDesc')}
+              </p>
+            </div>
+          </Card>
+        )}
       </div>
 
       {/* Guest CTA */}

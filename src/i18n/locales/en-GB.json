@@ -785,6 +785,12 @@
       "buy": "Buy",
       "overdue": "Overdue"
     },
+    "adherence": {
+      "label": "Adherence: {{percent}}%"
+    },
+    "rowActions": {
+      "tapToView": "Tap to view details"
+    },
     "guest": {
       "sampleBanner": "You're viewing a sample daily plan",
       "readyTitle": "Ready to Create Your Personalised Plan?",

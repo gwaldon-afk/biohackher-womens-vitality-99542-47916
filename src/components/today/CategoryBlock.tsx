@@ -25,6 +25,7 @@ interface CategoryBlockProps {
   getItemCompleted: (actionId: string) => boolean;
   onBuySupplements?: (action: any) => void;
   onViewMeal?: (action: any) => void;
+  onRowClick?: (action: any) => void;
   isUsingSampleData?: boolean;
   user?: any;
   onNavigate?: () => void;
@@ -45,6 +46,7 @@ export const CategoryBlock = ({
   getItemCompleted,
   onBuySupplements,
   onViewMeal,
+  onRowClick,
   isUsingSampleData,
   user,
   onNavigate,
@@ -58,9 +60,6 @@ export const CategoryBlock = ({
 
   const isFullyCompleted = completedCount === totalCount;
 
-  // Items are rendered directly - no nested time grouping needed
-  // The parent component already categorizes by time block
-
   const colorMap: Record<string, { bg: string; border: string; text: string }> = {
     orange: { bg: 'bg-orange-50 dark:bg-orange-950/30', border: 'border-orange-200 dark:border-orange-800', text: 'text-orange-700 dark:text-orange-300' },
     blue: { bg: 'bg-blue-50 dark:bg-blue-950/30', border: 'border-blue-200 dark:border-blue-800', text: 'text-blue-700 dark:text-blue-300' },
@@ -73,26 +72,49 @@ export const CategoryBlock = ({
 
   const colors = colorMap[color] || colorMap.blue;
 
+  // Handle row click - stop propagation for interactive elements
+  const handleRowClick = (e: React.MouseEvent, action: any) => {
+    // Don't trigger row click if clicking on checkbox or buttons
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') || 
+      target.closest('[role="checkbox"]') ||
+      target.closest('input')
+    ) {
+      return;
+    }
+    
+    if (onRowClick) {
+      onRowClick(action);
+    }
+  };
+
   // Render items directly with visual priority styling
   const renderItems = () => {
     return (
       <div className="space-y-2">
         {items.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
-          const isSupplementCategory = action.category === 'supplement';
+          const isSupplementCategory = action.category === 'supplement' || action.itemType === 'supplement';
           const isMeal = action.type === 'meal';
+          const isClickable = !!onRowClick && (isMeal || action.protocolItemId || action.goalId);
 
           return (
             <div
               key={action.id}
+              onClick={(e) => handleRowClick(e, action)}
               className={cn(
                 "group relative flex items-start gap-3 p-3 rounded-lg border transition-all",
                 isCompleted 
                   ? "border-border bg-card/30 opacity-60" 
                   : isPastDue 
                     ? "border-destructive/50 bg-destructive/5 ring-1 ring-destructive/20" 
-                    : "border-border bg-card/50 hover:bg-card hover:border-primary/30"
+                    : "border-border bg-card/50 hover:bg-card hover:border-primary/30",
+                isClickable && !isCompleted && "cursor-pointer hover:shadow-md"
               )}
+              role={isClickable ? "button" : undefined}
+              tabIndex={isClickable ? 0 : undefined}
+              aria-label={isClickable ? t('today.rowActions.tapToView') : undefined}
             >
               <Checkbox
                 checked={isCompleted}
@@ -143,7 +165,10 @@ export const CategoryBlock = ({
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => onViewMeal(action)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onViewMeal(action);
+                      }}
                       className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
                     >
                       <Utensils className="w-3 h-3" />
@@ -154,7 +179,10 @@ export const CategoryBlock = ({
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => onBuySupplements(action)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onBuySupplements(action);
+                      }}
                       className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
                     >
                       <ShoppingCart className="w-3 h-3" />
