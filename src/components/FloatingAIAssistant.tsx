@@ -15,12 +15,12 @@ export const FloatingAIAssistant = () => {
 
   return (
     <>
-      {/* Floating Button - Bottom Right */}
+      {/* Floating Button - Bottom Right (below MealSnap FAB) */}
       <div className="fixed bottom-6 right-6 z-40">
         <Button
           size="lg"
           onClick={() => setIsOpen(!isOpen)}
-          className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90"
+          className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-secondary hover:bg-secondary/90 text-secondary-foreground"
         >
           {isOpen ? (
             <X className="h-6 w-6" />

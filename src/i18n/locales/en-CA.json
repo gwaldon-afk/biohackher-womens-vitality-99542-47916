@@ -2539,5 +2539,14 @@
       "viewAll": "View All",
       "showLess": "Show Less"
     }
+  },
+  "mealSnap": {
+    "title": "MealSnap",
+    "subtitle": "AI Meal Scanner",
+    "fabTooltip": "Snap a meal",
+    "quickScan": "Quick Scan",
+    "noMealsYet": "No meals logged yet",
+    "tapToScan": "Tap the camera button to scan your first meal",
+    "todaysMeals": "Today's Meals"
   }
 }

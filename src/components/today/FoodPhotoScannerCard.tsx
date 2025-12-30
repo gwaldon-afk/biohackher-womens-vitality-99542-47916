@@ -21,80 +21,62 @@ export const FoodPhotoScannerCard = () => {
     snack: t('foodScanner.mealType.snack'),
   };
 
+  // If no meals logged, show compact prompt - FAB handles main CTA
+  if (dailyTotals.mealCount === 0) {
+    return (
+      <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/20 rounded-lg">
+              <Camera className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-medium text-sm">
+                {t('mealSnap.noMealsYet', 'No meals logged yet')}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {t('mealSnap.tapToScan', 'Tap the camera button to scan your first meal')}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Show summary-only when meals are logged
   return (
     <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20 overflow-hidden">
-      <CardContent className="p-5">
+      <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-primary/20 rounded-lg">
-                <Camera className="h-5 w-5 text-primary" />
+          <div className="flex-1">
+            {/* Today's Summary Header */}
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-1.5 bg-primary/20 rounded-lg">
+                <Utensils className="h-4 w-4 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg">
-                {t('foodScanner.title', 'Log Your Meal')}
+              <h3 className="font-semibold text-sm">
+                {t('mealSnap.todaysMeals', "Today's Meals")}
               </h3>
             </div>
-
-            <p className="text-sm text-muted-foreground">
-              {t('foodScanner.description', 'Snap a photo and AI will analyse your meal\'s nutrition')}
-            </p>
-
-            <Button 
-              onClick={() => navigate('/nutrition-scan')}
-              className="w-full sm:w-auto"
-              size="lg"
-            >
-              <Camera className="mr-2 h-4 w-4" />
-              {t('foodScanner.scanMeal', 'Scan Meal')}
-            </Button>
-          </div>
-
-          {/* Today's Summary */}
-          {dailyTotals.mealCount > 0 && (
-            <div className="hidden sm:block bg-background/50 rounded-lg p-3 min-w-[140px]">
-              <div className="flex items-center gap-1.5 mb-2">
-                <Utensils className="h-4 w-4 text-muted-foreground" />
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t('foodScanner.todaySoFar', 'Today')}
-                </span>
+            
+            {/* Quick Stats Row */}
+            <div className="flex gap-4 text-sm">
+              <div>
+                <span className="text-muted-foreground">{t('foodScanner.meals', 'Meals')}: </span>
+                <span className="font-medium">{dailyTotals.mealCount}</span>
               </div>
-              
-              <div className="space-y-1.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('foodScanner.meals', 'Meals')}</span>
-                  <span className="font-medium">{dailyTotals.mealCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('foodScanner.protein', 'Protein')}</span>
-                  <span className="font-medium">{Math.round(dailyTotals.protein)}g</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('foodScanner.calories', 'Calories')}</span>
-                  <span className="font-medium">{dailyTotals.calories}</span>
-                </div>
+              <div>
+                <span className="text-muted-foreground">{t('foodScanner.protein', 'Protein')}: </span>
+                <span className="font-medium">{Math.round(dailyTotals.protein)}g</span>
+              </div>
+              <div>
+                <span className="text-muted-foreground">{t('foodScanner.calories', 'Calories')}: </span>
+                <span className="font-medium">{dailyTotals.calories}</span>
               </div>
             </div>
-          )}
+          </div>
         </div>
-
-        {/* Mobile: Show logged meals summary */}
-        {dailyTotals.mealCount > 0 && (
-          <div className="sm:hidden mt-4 pt-4 border-t border-border/50">
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="text-muted-foreground">
-                  {t('foodScanner.mealsLogged', '{{count}} meals logged', { count: dailyTotals.mealCount })}
-                </span>
-              </div>
-              <div className="flex gap-3 text-xs">
-                <span><strong>{Math.round(dailyTotals.protein)}g</strong> {t('foodScanner.proteinShort', 'protein')}</span>
-                <span><strong>{dailyTotals.calories}</strong> {t('foodScanner.caloriesShort', 'cal')}</span>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Recent meals chips */}
         {confirmedMealsToday.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
