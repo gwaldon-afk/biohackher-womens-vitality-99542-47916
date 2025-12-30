@@ -65,6 +65,41 @@ export const useDailyPlan = () => {
     try {
       const dailyActions: DailyAction[] = [];
 
+      // 0. Add Daily Essentials (merged into time blocks)
+      const DAILY_ESSENTIALS = [
+        { id: 'morning_sunlight', title: 'Morning Sunlight', description: '10+ min natural light exposure', timeOfDay: ['morning'], estimatedMinutes: 10 },
+        { id: 'hydration', title: 'Hydration Check', description: '8 glasses of water goal', timeOfDay: ['morning', 'afternoon'], estimatedMinutes: 2 },
+        { id: 'deep_breathing', title: 'Deep Breathing', description: '5 min breathing exercise', timeOfDay: ['afternoon'], estimatedMinutes: 5 },
+        { id: 'sleep_log', title: 'Sleep Log', description: 'Record last night\'s sleep', timeOfDay: ['evening'], estimatedMinutes: 2 }
+      ];
+
+      // Check essentials completions from database
+      let essentialsCompletions: string[] = [];
+      if (user) {
+        const { data: essentialsData } = await supabase
+          .from('daily_essentials_completions')
+          .select('essential_id')
+          .eq('user_id', user.id)
+          .eq('date', today);
+        essentialsCompletions = essentialsData?.map(d => d.essential_id) || [];
+      }
+
+      DAILY_ESSENTIALS.forEach(essential => {
+        dailyActions.push({
+          id: `essential-${essential.id}`,
+          type: 'habit',
+          title: essential.title,
+          description: essential.description,
+          category: 'quick_win',
+          estimatedMinutes: essential.estimatedMinutes,
+          priority: 0,
+          icon: '✨',
+          completed: essentialsCompletions.includes(essential.id),
+          timeOfDay: essential.timeOfDay,
+          itemType: 'habit'
+        });
+      });
+
       // 1. Get active protocol items from ALL active protocols
       const activeProtocols = protocols.filter(p => p.is_active);
       console.log('[useDailyPlan] Active protocols:', activeProtocols);

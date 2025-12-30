@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +29,8 @@ import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutrition
 import { useTranslation } from 'react-i18next';
 import { calculateAdherenceScore, persistAdherenceScore } from '@/services/adherenceScoreService';
 
+const TAP_HINT_KEY = 'today_row_tap_hint_shown';
+
 export const UnifiedDailyChecklist = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -44,6 +45,9 @@ export const UnifiedDailyChecklist = () => {
   
   // Adherence state
   const [adherencePercent, setAdherencePercent] = useState<number | null>(null);
+  
+  // First-visit tap hint state
+  const [showTapHint, setShowTapHint] = useState(false);
   
   // Fetch nutrition actions
   const { data: nutritionActions = [] } = useQuery({
@@ -89,6 +93,27 @@ export const UnifiedDailyChecklist = () => {
       persistAdherenceScore(user.id, adherence).catch(console.error);
     }
   }, [user, isUsingSampleData, userActions, userCompletedCount]);
+
+  // Show first-visit tap hint
+  useEffect(() => {
+    const hasSeenHint = localStorage.getItem(TAP_HINT_KEY);
+    if (!hasSeenHint && actions.length > 0) {
+      setShowTapHint(true);
+      // Show toast with hint
+      toast.info(t('today.hints.tapForDetails'), {
+        duration: 5000,
+        onDismiss: () => {
+          localStorage.setItem(TAP_HINT_KEY, 'true');
+          setShowTapHint(false);
+        },
+        onAutoClose: () => {
+          localStorage.setItem(TAP_HINT_KEY, 'true');
+          setShowTapHint(false);
+        }
+      });
+      localStorage.setItem(TAP_HINT_KEY, 'true');
+    }
+  }, [actions.length, t]);
 
   const handleToggle = async (actionId: string) => {
     if (isUsingSampleData) {
@@ -160,6 +185,31 @@ export const UnifiedDailyChecklist = () => {
         
         refetch();
         refetchLIS();
+      }
+      // Handle essential (habit) completion
+      else if (action.type === 'habit' && action.id.startsWith('essential-')) {
+        const essentialId = action.id.replace('essential-', '');
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (action.completed) {
+          await supabase
+            .from('daily_essentials_completions')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('essential_id', essentialId)
+            .eq('date', today);
+        } else {
+          await supabase
+            .from('daily_essentials_completions')
+            .insert({
+              user_id: user.id,
+              essential_id: essentialId,
+              date: today
+            });
+          toast.success(t('today.essentials.completed'));
+        }
+        
+        refetch();
       }
     } catch (error) {
       console.error('Error toggling action:', error);
