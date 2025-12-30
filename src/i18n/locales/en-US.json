@@ -811,6 +811,21 @@
       "greatWork": "Great work!",
       "addedToCart": "Added to cart!",
       "failedUpdate": "Failed to update"
+    },
+    "profileCard": {
+      "title": "My Profile",
+      "subtitle": "View assessments, goals & protocols",
+      "activeGoals": "{{count}} active goals",
+      "activeProtocols": "{{count}} active protocols"
+    },
+    "exerciseSnacks": {
+      "title": "Exercise Snacks",
+      "subtitle": "60-second activity bursts that reduce mortality by up to 40%",
+      "research": "Based on Stamatakis et al. (2022) VILPA study",
+      "viewResearch": "View Research",
+      "completed": "{{count}}/3 completed today",
+      "startNow": "Start Now",
+      "markComplete": "Mark Complete"
     }
   },
   "trustBar": {
@@ -2327,23 +2342,6 @@
         "title": "Sharpen Mental Focus",
         "description": "Improve concentration, memory, and cognitive clarity"
       }
-    }
-  },
-  "today": {
-    "profileCard": {
-      "title": "My Profile",
-      "subtitle": "View assessments, goals & protocols",
-      "activeGoals": "{{count}} active goals",
-      "activeProtocols": "{{count}} active protocols"
-    },
-    "exerciseSnacks": {
-      "title": "Exercise Snacks",
-      "subtitle": "60-second activity bursts that reduce mortality by up to 40%",
-      "research": "Based on Stamatakis et al. (2022) VILPA study",
-      "viewResearch": "View Research",
-      "completed": "{{count}}/3 completed today",
-      "startNow": "Start Now",
-      "markComplete": "Mark Complete"
     }
   },
   "exerciseSnacks": {
