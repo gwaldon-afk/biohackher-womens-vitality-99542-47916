@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Lock, Utensils } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
 import { NutritionActionCard } from "@/components/today/NutritionActionCard";
+import { DailyPlanFilters, ViewByFilter, StatusFilter } from "@/components/today/DailyPlanFilters";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +31,8 @@ import { useTranslation } from 'react-i18next';
 import { calculateAdherenceScore, persistAdherenceScore } from '@/services/adherenceScoreService';
 
 const TAP_HINT_KEY = 'today_row_tap_hint_shown';
+const FILTER_VIEW_KEY = 'today_filter_view';
+const FILTER_STATUS_KEY = 'today_filter_status';
 
 export const UnifiedDailyChecklist = () => {
   const { t } = useTranslation();
@@ -48,6 +51,25 @@ export const UnifiedDailyChecklist = () => {
   
   // First-visit tap hint state
   const [showTapHint, setShowTapHint] = useState(false);
+  
+  // Filter state with localStorage persistence
+  const [viewBy, setViewBy] = useState<ViewByFilter>(() => {
+    const saved = localStorage.getItem(FILTER_VIEW_KEY);
+    return (saved as ViewByFilter) || 'time';
+  });
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(() => {
+    const saved = localStorage.getItem(FILTER_STATUS_KEY);
+    return (saved as StatusFilter) || 'all';
+  });
+  
+  // Persist filter preferences
+  useEffect(() => {
+    localStorage.setItem(FILTER_VIEW_KEY, viewBy);
+  }, [viewBy]);
+  
+  useEffect(() => {
+    localStorage.setItem(FILTER_STATUS_KEY, statusFilter);
+  }, [statusFilter]);
   
   // Fetch nutrition actions
   const { data: nutritionActions = [] } = useQuery({
@@ -253,71 +275,85 @@ export const UnifiedDailyChecklist = () => {
     return false;
   };
 
-  // Categorize actions by time of day
-  const categorizeByTime = () => {
+  // Helper to check if an action is overdue (past its time window and incomplete)
+  const isActionOverdue = (action: any, period: 'morning' | 'afternoon' | 'evening'): boolean => {
+    if (action.completed) return false;
     const currentHour = new Date().getHours();
     
+    if (period === 'morning' && currentHour >= 12) return true;
+    if (period === 'afternoon' && currentHour >= 17) return true;
+    // Evening actions can't be overdue same day
+    return false;
+  };
+
+  // Categorize actions by time of day - NO reshuffling, items stay in their blocks
+  const categorizeByTime = () => {
     // Filter out meal actions if user has no meal plan
     const filteredActions = !hasMealPlan 
       ? actions.filter((a: any) => a.type !== 'meal')
       : actions;
     
     const morning = filteredActions.filter((a: any) => {
-      // Morning: 6am-12pm
       if (a.timeOfDay?.includes('morning')) return true;
       if (a.mealType === 'breakfast') return true;
-      if (a.itemType === 'supplement' && !a.timeOfDay) return true; // Default supplements to morning
+      if (a.itemType === 'supplement' && !a.timeOfDay) return true;
       return false;
-    });
+    }).map((a: any) => ({ ...a, isOverdue: isActionOverdue(a, 'morning') }));
 
     const afternoon = filteredActions.filter((a: any) => {
-      // Afternoon: 12pm-5pm
       if (a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday')) return true;
       if (a.mealType === 'lunch') return true;
-      if (a.itemType === 'exercise' && !a.timeOfDay) return true; // Default exercise to afternoon
+      if (a.itemType === 'exercise' && !a.timeOfDay) return true;
       return false;
-    });
+    }).map((a: any) => ({ ...a, isOverdue: isActionOverdue(a, 'afternoon') }));
 
     const evening = filteredActions.filter((a: any) => {
-      // Evening: 5pm-10pm
       if (a.timeOfDay?.includes('evening')) return true;
       if (a.mealType === 'dinner') return true;
-      if (a.itemType === 'therapy' && !a.timeOfDay) return true; // Default therapy to evening
+      if (a.itemType === 'therapy' && !a.timeOfDay) return true;
       return false;
-    });
+    }).map((a: any) => ({ ...a, isOverdue: false })); // Evening can't be overdue same day
 
-    // "Still To Do" = incomplete actions from past time blocks
-    const stillToDo = filteredActions.filter((a: any) => {
-      if (a.completed) return false; // Only incomplete actions
-      
-      // Determine if action is "past due"
-      const isMorningAction = morning.some(m => m.id === a.id);
-      const isAfternoonAction = afternoon.some(m => m.id === a.id);
-      
-      // If it's currently evening, show incomplete morning/afternoon actions
-      if (currentHour >= 17) {
-        return isMorningAction || isAfternoonAction;
-      }
-      // If it's currently afternoon, show incomplete morning actions
-      if (currentHour >= 12) {
-        return isMorningAction;
-      }
-      
-      return false;
-    });
+    return { morning, afternoon, evening };
+  };
 
-    // Remove "Still To Do" items from their original time blocks
-    const stillToDoIds = new Set(stillToDo.map(a => a.id));
+  // Categorize actions by type
+  const categorizeByType = () => {
+    const filteredActions = !hasMealPlan 
+      ? actions.filter((a: any) => a.type !== 'meal')
+      : actions;
     
     return {
-      morning: morning.filter(a => !stillToDoIds.has(a.id)),
-      afternoon: afternoon.filter(a => !stillToDoIds.has(a.id)),
-      evening: evening.filter(a => !stillToDoIds.has(a.id)),
-      stillToDo
+      supplements: filteredActions.filter((a: any) => a.category === 'supplement' || a.itemType === 'supplement'),
+      exercise: filteredActions.filter((a: any) => a.itemType === 'exercise' || a.category === 'exercise'),
+      habits: filteredActions.filter((a: any) => a.type === 'habit'),
+      meals: filteredActions.filter((a: any) => a.type === 'meal'),
+      goals: filteredActions.filter((a: any) => a.type === 'goal'),
     };
   };
 
+  // Categorize actions by status
+  const categorizeByStatus = () => {
+    const filteredActions = !hasMealPlan 
+      ? actions.filter((a: any) => a.type !== 'meal')
+      : actions;
+    
+    return {
+      toDo: filteredActions.filter((a: any) => !getItemCompleted(a.id)),
+      completed: filteredActions.filter((a: any) => getItemCompleted(a.id)),
+    };
+  };
+
+  // Apply status filter to any list
+  const applyStatusFilter = (items: any[]) => {
+    if (statusFilter === 'all') return items;
+    if (statusFilter === 'todo') return items.filter(a => !getItemCompleted(a.id));
+    return items.filter(a => getItemCompleted(a.id));
+  };
+
   const timeBlocks = categorizeByTime();
+  const typeBlocks = categorizeByType();
+  const statusBlocks = categorizeByStatus();
 
   const getItemCompleted = (actionId: string) => {
     if (isUsingSampleData) {
@@ -460,26 +496,29 @@ export const UnifiedDailyChecklist = () => {
         </div>
       )}
 
-      {/* TIME BLOCKS FIRST - The Core Actionable Content */}
+      {/* FILTER BAR */}
+      <DailyPlanFilters
+        viewBy={viewBy}
+        statusFilter={statusFilter}
+        onViewByChange={setViewBy}
+        onStatusFilterChange={setStatusFilter}
+      />
+
+      {/* TIME BLOCKS - The Core Actionable Content */}
       <div className="space-y-4">
-        {/* Still To Do - FIRST when items exist (always expanded) */}
-        {timeBlocks.stillToDo.length > 0 && (
+        {viewBy === 'time' && (
           <>
-            {/* Focus prompt */}
-            <div className="flex items-center gap-2 text-sm text-destructive font-medium px-1">
-              <span>🎯</span>
-              <span>{t('today.stillToDo.focusPrompt')}</span>
-            </div>
+            {/* Morning Block */}
             <CategoryBlock
-              icon="⏰"
-              title={t('today.timeBlocks.stillToDo')}
-              items={timeBlocks.stillToDo}
-              completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
-              totalCount={getCategoryStats(timeBlocks.stillToDo).total}
-              totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
-              color="red"
-              defaultExpanded={true}
-              isPastDue={true}
+              icon="☀️"
+              title={t('today.timeBlocks.morning')}
+              items={applyStatusFilter(timeBlocks.morning)}
+              completedCount={getCategoryStats(timeBlocks.morning).completed}
+              totalCount={getCategoryStats(timeBlocks.morning).total}
+              totalMinutes={getCategoryStats(timeBlocks.morning).minutes}
+              color="yellow"
+              defaultExpanded={isCurrentPeriod('morning')}
+              timeContext={isCurrentPeriod('morning') ? 'now' : 'later'}
               onToggle={handleToggle}
               getItemCompleted={getItemCompleted}
               onBuySupplements={handleBuySupplements}
@@ -488,73 +527,199 @@ export const UnifiedDailyChecklist = () => {
               isUsingSampleData={isUsingSampleData}
               user={user}
               onNavigate={() => navigate('/auth')}
-              maxVisibleItems={3}
+            />
+
+            {/* Afternoon Block */}
+            <CategoryBlock
+              icon="🌤️"
+              title={t('today.timeBlocks.afternoon')}
+              items={applyStatusFilter(timeBlocks.afternoon)}
+              completedCount={getCategoryStats(timeBlocks.afternoon).completed}
+              totalCount={getCategoryStats(timeBlocks.afternoon).total}
+              totalMinutes={getCategoryStats(timeBlocks.afternoon).minutes}
+              color="blue"
+              defaultExpanded={isCurrentPeriod('afternoon')}
+              timeContext={isCurrentPeriod('afternoon') ? 'now' : isCurrentPeriod('morning') ? 'upcoming' : 'later'}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+
+            {/* Evening Block */}
+            <CategoryBlock
+              icon="🌅"
+              title={t('today.timeBlocks.evening')}
+              items={applyStatusFilter(timeBlocks.evening)}
+              completedCount={getCategoryStats(timeBlocks.evening).completed}
+              totalCount={getCategoryStats(timeBlocks.evening).total}
+              totalMinutes={getCategoryStats(timeBlocks.evening).minutes}
+              color="purple"
+              defaultExpanded={isCurrentPeriod('evening')}
+              timeContext={isCurrentPeriod('evening') ? 'now' : 'later'}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
             />
           </>
         )}
 
-        {/* Morning Block */}
-        <CategoryBlock
-          icon="☀️"
-          title={t('today.timeBlocks.morning')}
-          items={timeBlocks.morning}
-          completedCount={getCategoryStats(timeBlocks.morning).completed}
-          totalCount={getCategoryStats(timeBlocks.morning).total}
-          totalMinutes={getCategoryStats(timeBlocks.morning).minutes}
-          color="yellow"
-          defaultExpanded={isCurrentPeriod('morning')}
-          timeContext={isCurrentPeriod('morning') ? 'now' : 'later'}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          onBuySupplements={handleBuySupplements}
-          onViewMeal={handleViewMeal}
-          onRowClick={handleRowClick}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
+        {viewBy === 'type' && (
+          <>
+            {/* Supplements Block */}
+            <CategoryBlock
+              icon="💊"
+              title={t('today.filters.supplements')}
+              items={applyStatusFilter(typeBlocks.supplements)}
+              completedCount={getCategoryStats(typeBlocks.supplements).completed}
+              totalCount={getCategoryStats(typeBlocks.supplements).total}
+              totalMinutes={getCategoryStats(typeBlocks.supplements).minutes}
+              color="orange"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
 
-        {/* Afternoon Block */}
-        <CategoryBlock
-          icon="🌤️"
-          title={t('today.timeBlocks.afternoon')}
-          items={timeBlocks.afternoon}
-          completedCount={getCategoryStats(timeBlocks.afternoon).completed}
-          totalCount={getCategoryStats(timeBlocks.afternoon).total}
-          totalMinutes={getCategoryStats(timeBlocks.afternoon).minutes}
-          color="blue"
-          defaultExpanded={isCurrentPeriod('afternoon')}
-          timeContext={isCurrentPeriod('afternoon') ? 'now' : isCurrentPeriod('morning') ? 'upcoming' : 'later'}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          onBuySupplements={handleBuySupplements}
-          onViewMeal={handleViewMeal}
-          onRowClick={handleRowClick}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
+            {/* Exercise Block */}
+            <CategoryBlock
+              icon="🏃"
+              title={t('today.filters.exercise')}
+              items={applyStatusFilter(typeBlocks.exercise)}
+              completedCount={getCategoryStats(typeBlocks.exercise).completed}
+              totalCount={getCategoryStats(typeBlocks.exercise).total}
+              totalMinutes={getCategoryStats(typeBlocks.exercise).minutes}
+              color="green"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
 
-        {/* Evening Block */}
-        <CategoryBlock
-          icon="🌅"
-          title={t('today.timeBlocks.evening')}
-          items={timeBlocks.evening}
-          completedCount={getCategoryStats(timeBlocks.evening).completed}
-          totalCount={getCategoryStats(timeBlocks.evening).total}
-          totalMinutes={getCategoryStats(timeBlocks.evening).minutes}
-          color="purple"
-          defaultExpanded={isCurrentPeriod('evening')}
-          timeContext={isCurrentPeriod('evening') ? 'now' : 'later'}
-          onToggle={handleToggle}
-          getItemCompleted={getItemCompleted}
-          onBuySupplements={handleBuySupplements}
-          onViewMeal={handleViewMeal}
-          onRowClick={handleRowClick}
-          isUsingSampleData={isUsingSampleData}
-          user={user}
-          onNavigate={() => navigate('/auth')}
-        />
+            {/* Habits Block */}
+            <CategoryBlock
+              icon="✨"
+              title={t('today.filters.habits')}
+              items={applyStatusFilter(typeBlocks.habits)}
+              completedCount={getCategoryStats(typeBlocks.habits).completed}
+              totalCount={getCategoryStats(typeBlocks.habits).total}
+              totalMinutes={getCategoryStats(typeBlocks.habits).minutes}
+              color="pink"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+
+            {/* Meals Block */}
+            <CategoryBlock
+              icon="🍽️"
+              title={t('today.filters.meals')}
+              items={applyStatusFilter(typeBlocks.meals)}
+              completedCount={getCategoryStats(typeBlocks.meals).completed}
+              totalCount={getCategoryStats(typeBlocks.meals).total}
+              totalMinutes={getCategoryStats(typeBlocks.meals).minutes}
+              color="yellow"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+
+            {/* Goals Block */}
+            <CategoryBlock
+              icon="🎯"
+              title={t('today.filters.goals')}
+              items={applyStatusFilter(typeBlocks.goals)}
+              completedCount={getCategoryStats(typeBlocks.goals).completed}
+              totalCount={getCategoryStats(typeBlocks.goals).total}
+              totalMinutes={getCategoryStats(typeBlocks.goals).minutes}
+              color="blue"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+          </>
+        )}
+
+        {viewBy === 'status' && (
+          <>
+            {/* To Do Block */}
+            <CategoryBlock
+              icon="📋"
+              title={t('today.filters.toDo')}
+              items={statusBlocks.toDo}
+              completedCount={0}
+              totalCount={statusBlocks.toDo.length}
+              totalMinutes={getCategoryStats(statusBlocks.toDo).minutes}
+              color="orange"
+              defaultExpanded={true}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+
+            {/* Completed Block */}
+            <CategoryBlock
+              icon="✅"
+              title={t('today.filters.done')}
+              items={statusBlocks.completed}
+              completedCount={statusBlocks.completed.length}
+              totalCount={statusBlocks.completed.length}
+              totalMinutes={getCategoryStats(statusBlocks.completed).minutes}
+              color="green"
+              defaultExpanded={false}
+              onToggle={handleToggle}
+              getItemCompleted={getItemCompleted}
+              onBuySupplements={handleBuySupplements}
+              onViewMeal={handleViewMeal}
+              onRowClick={handleRowClick}
+              isUsingSampleData={isUsingSampleData}
+              user={user}
+              onNavigate={() => navigate('/auth')}
+            />
+          </>
+        )}
       </div>
 
       {/* SECONDARY CONTENT - Below Time Blocks */}
