@@ -14,45 +14,32 @@ export const calculateAdherenceScore = (actions: DailyAction[]): number => {
 };
 
 /**
- * Persist adherence score to daily_scores table
- * Uses debouncing to avoid excessive writes
+ * Persist adherence score via edge function
+ * This calls the backend to calculate and persist the score accurately
  */
 let persistTimeout: NodeJS.Timeout | null = null;
 
 export const persistAdherenceScore = async (
   userId: string, 
-  adherencePercent: number
+  _adherencePercent: number
 ): Promise<void> => {
-  // Debounce to avoid writing on every toggle
+  // Debounce to avoid calling edge function on every toggle
   if (persistTimeout) {
     clearTimeout(persistTimeout);
   }
   
   persistTimeout = setTimeout(async () => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      console.log('[adherenceScoreService] Calling edge function to persist adherence');
       
-      // Upsert to daily_scores
-      const { error } = await supabase
-        .from('daily_scores')
-        .upsert({
-          user_id: userId,
-          date: today,
-          protocol_adherence_score: adherencePercent,
-          // Minimal required fields - others will be calculated by score-calculate function
-          longevity_impact_score: 0, // Will be overwritten by calculation
-          biological_age_impact: 0,
-          color_code: 'yellow',
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,date',
-          ignoreDuplicates: false
-        });
+      const { data, error } = await supabase.functions.invoke('calculate-daily-adherence', {
+        body: {}
+      });
       
       if (error) {
-        console.error('[adherenceScoreService] Error persisting adherence:', error);
+        console.error('[adherenceScoreService] Edge function error:', error);
       } else {
-        console.log('[adherenceScoreService] Adherence persisted:', adherencePercent);
+        console.log('[adherenceScoreService] Adherence persisted via edge function:', data);
       }
     } catch (err) {
       console.error('[adherenceScoreService] Unexpected error:', err);

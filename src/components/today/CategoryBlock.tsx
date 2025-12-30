@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, Clock, ShoppingCart, Utensils, CheckCircle } from "lucide-react";
+import { ChevronDown, ChevronRight, Clock, ShoppingCart, Utensils, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useTranslation } from 'react-i18next';
@@ -31,6 +31,7 @@ interface CategoryBlockProps {
   onNavigate?: () => void;
   timeContext?: 'now' | 'upcoming' | 'later';
   isPastDue?: boolean;
+  maxVisibleItems?: number;
 }
 
 export const CategoryBlock = ({
@@ -52,13 +53,20 @@ export const CategoryBlock = ({
   onNavigate,
   timeContext,
   isPastDue = false,
+  maxVisibleItems,
 }: CategoryBlockProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(defaultExpanded);
+  const [showAllItems, setShowAllItems] = useState(false);
 
   if (totalCount === 0) return null;
 
   const isFullyCompleted = completedCount === totalCount;
+
+  // Apply max visible items limit if specified
+  const hasMoreItems = maxVisibleItems && items.length > maxVisibleItems && !showAllItems;
+  const visibleItems = hasMoreItems ? items.slice(0, maxVisibleItems) : items;
+  const hiddenCount = hasMoreItems ? items.length - maxVisibleItems : 0;
 
   const colorMap: Record<string, { bg: string; border: string; text: string }> = {
     orange: { bg: 'bg-orange-50 dark:bg-orange-950/30', border: 'border-orange-200 dark:border-orange-800', text: 'text-orange-700 dark:text-orange-300' },
@@ -93,7 +101,7 @@ export const CategoryBlock = ({
   const renderItems = () => {
     return (
       <div className="space-y-2">
-        {items.map((action: any) => {
+        {visibleItems.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
           const isSupplementCategory = action.category === 'supplement' || action.itemType === 'supplement';
           const isMeal = action.type === 'meal';
@@ -147,11 +155,17 @@ export const CategoryBlock = ({
                       </Badge>
                     )}
                   </div>
-                  {action.pillar && (
-                    <Badge variant="outline" className="text-xs capitalize shrink-0 bg-primary/5 text-primary border-primary/20">
-                      {action.pillar}
-                    </Badge>
-                  )}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {action.pillar && (
+                      <Badge variant="outline" className="text-xs capitalize bg-primary/5 text-primary border-primary/20">
+                        {action.pillar}
+                      </Badge>
+                    )}
+                    {/* Chevron indicator for clickable rows */}
+                    {isClickable && !isCompleted && (
+                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    )}
+                  </div>
                 </div>
                 {action.description && (
                   <p className="text-sm text-muted-foreground mt-1">{action.description}</p>
@@ -194,6 +208,19 @@ export const CategoryBlock = ({
             </div>
           );
         })}
+        
+        {/* Show more button when items are hidden */}
+        {hasMoreItems && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAllItems(true)}
+            className="w-full text-muted-foreground hover:text-foreground"
+          >
+            <ChevronDown className="w-4 h-4 mr-1" />
+            {t('today.stillToDo.showMore', { count: hiddenCount })}
+          </Button>
+        )}
       </div>
     );
   };
