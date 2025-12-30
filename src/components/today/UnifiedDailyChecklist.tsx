@@ -322,6 +322,17 @@ export const UnifiedDailyChecklist = () => {
             </div>
           </div>
         </div>
+        
+        {/* Progress Summary - Moved to top */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-semibold text-foreground">
+              {t('today.plan.progress', { completed: completedCount, total: totalCount })}
+            </span>
+            <span className="text-muted-foreground">{progressPercent}%</span>
+          </div>
+          <Progress value={progressPercent} className="h-2 bg-muted" />
+        </div>
       </div>
 
       {/* Guest Top Banner CTA */}
@@ -443,15 +454,8 @@ export const UnifiedDailyChecklist = () => {
         </Card>
       )}
 
-      {/* Progress Summary */}
-      <div className="space-y-2 pb-6 border-b-2 border-primary/20">
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-semibold text-foreground">
-            {t('today.plan.progress', { completed: completedCount, total: totalCount })}
-          </span>
-        </div>
-        <Progress value={progressPercent} className="h-2 bg-muted" />
-      </div>
+      {/* Separator before Time-Based Sections */}
+      <div className="pb-2 border-b-2 border-primary/20" />
 
       {/* Protocol Management Link */}
       {user && actions.length > 0 && (
@@ -472,6 +476,28 @@ export const UnifiedDailyChecklist = () => {
 
       {/* Time-Based Sections */}
       <div className="space-y-4">
+        {/* Still To Do - FIRST when items exist (always expanded) */}
+        {timeBlocks.stillToDo.length > 0 && (
+          <CategoryBlock
+            icon="⏰"
+            title={t('today.timeBlocks.stillToDo')}
+            items={timeBlocks.stillToDo}
+            completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
+            totalCount={getCategoryStats(timeBlocks.stillToDo).total}
+            totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
+            color="red"
+            defaultExpanded={true}
+            isPastDue={true}
+            onToggle={handleToggle}
+            getItemCompleted={getItemCompleted}
+            onBuySupplements={handleBuySupplements}
+            onViewMeal={handleViewMeal}
+            isUsingSampleData={isUsingSampleData}
+            user={user}
+            onNavigate={() => navigate('/auth')}
+          />
+        )}
+
         {/* Morning Block */}
         <CategoryBlock
           icon="☀️"
@@ -531,28 +557,6 @@ export const UnifiedDailyChecklist = () => {
           user={user}
           onNavigate={() => navigate('/auth')}
         />
-
-        {/* Still To Do - Only if incomplete past items exist */}
-        {timeBlocks.stillToDo.length > 0 && (
-          <CategoryBlock
-            icon="⏰"
-            title={t('today.timeBlocks.stillToDo')}
-            items={timeBlocks.stillToDo}
-            completedCount={getCategoryStats(timeBlocks.stillToDo).completed}
-            totalCount={getCategoryStats(timeBlocks.stillToDo).total}
-            totalMinutes={getCategoryStats(timeBlocks.stillToDo).minutes}
-            color="red"
-            defaultExpanded={false}
-            isPastDue={true}
-            onToggle={handleToggle}
-            getItemCompleted={getItemCompleted}
-            onBuySupplements={handleBuySupplements}
-            onViewMeal={handleViewMeal}
-            isUsingSampleData={isUsingSampleData}
-            user={user}
-            onNavigate={() => navigate('/auth')}
-          />
-        )}
       </div>
 
       {/* Guest CTA */}

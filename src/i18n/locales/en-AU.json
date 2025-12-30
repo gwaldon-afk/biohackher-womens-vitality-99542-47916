@@ -782,7 +782,8 @@
       "eveningSection": "Evening",
       "min": "{{minutes}} min",
       "viewRecipe": "View Recipe",
-      "buy": "Buy"
+      "buy": "Buy",
+      "overdue": "Overdue"
     },
     "guest": {
       "sampleBanner": "You're viewing a sample daily plan",

@@ -58,10 +58,8 @@ export const CategoryBlock = ({
 
   const isFullyCompleted = completedCount === totalCount;
 
-  // Group items by time of day
-  const morningItems = items.filter((a: any) => a.timeOfDay?.includes('morning'));
-  const afternoonItems = items.filter((a: any) => a.timeOfDay?.includes('afternoon') || a.timeOfDay?.includes('midday'));
-  const eveningItems = items.filter((a: any) => a.timeOfDay?.includes('evening') || a.timeOfDay?.includes('night'));
+  // Items are rendered directly - no nested time grouping needed
+  // The parent component already categorizes by time block
 
   const colorMap: Record<string, { bg: string; border: string; text: string }> = {
     orange: { bg: 'bg-orange-50 dark:bg-orange-950/30', border: 'border-orange-200 dark:border-orange-800', text: 'text-orange-700 dark:text-orange-300' },
@@ -75,15 +73,11 @@ export const CategoryBlock = ({
 
   const colors = colorMap[color] || colorMap.blue;
 
-  const renderTimeSection = (sectionTitleKey: string, sectionItems: any[]) => {
-    if (sectionItems.length === 0) return null;
-
+  // Render items directly with visual priority styling
+  const renderItems = () => {
     return (
       <div className="space-y-2">
-        <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider pl-2">
-          {t(sectionTitleKey)}
-        </h4>
-        {sectionItems.map((action: any) => {
+        {items.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
           const isSupplementCategory = action.category === 'supplement';
           const isMeal = action.type === 'meal';
@@ -91,20 +85,39 @@ export const CategoryBlock = ({
           return (
             <div
               key={action.id}
-              className="group relative flex items-start gap-3 p-3 rounded-lg border border-border bg-card/50 hover:bg-card hover:border-primary/30 transition-all"
+              className={cn(
+                "group relative flex items-start gap-3 p-3 rounded-lg border transition-all",
+                isCompleted 
+                  ? "border-border bg-card/30 opacity-60" 
+                  : isPastDue 
+                    ? "border-destructive/50 bg-destructive/5 ring-1 ring-destructive/20" 
+                    : "border-border bg-card/50 hover:bg-card hover:border-primary/30"
+              )}
             >
               <Checkbox
                 checked={isCompleted}
                 onCheckedChange={() => onToggle(action.id)}
-                className="mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                className={cn(
+                  "mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary",
+                  isPastDue && !isCompleted && "border-destructive"
+                )}
                 disabled={isUsingSampleData && !user}
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className={`font-medium ${isCompleted ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
+                    <p className={cn(
+                      "font-medium",
+                      isCompleted ? "line-through text-muted-foreground" : "text-foreground",
+                      isPastDue && !isCompleted && "text-destructive font-semibold"
+                    )}>
                       {action.title}
                     </p>
+                    {isPastDue && !isCompleted && (
+                      <Badge variant="destructive" className="text-xs">
+                        {t('today.timeBlocks.overdue')}
+                      </Badge>
+                    )}
                     <ScienceBackedIcon className="w-3.5 h-3.5" showTooltip={true} />
                     {isMeal && action.mealData?.protein && (
                       <Badge variant="outline" className="bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
@@ -204,10 +217,8 @@ export const CategoryBlock = ({
 
         {/* Content */}
         <CollapsibleContent>
-          <div className="px-4 pb-4 space-y-4">
-            {renderTimeSection("today.timeBlocks.morningSection", morningItems)}
-            {renderTimeSection("today.timeBlocks.afternoonSection", afternoonItems)}
-            {renderTimeSection("today.timeBlocks.eveningSection", eveningItems)}
+          <div className="px-4 pb-4">
+            {renderItems()}
           </div>
         </CollapsibleContent>
       </div>
