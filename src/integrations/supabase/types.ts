@@ -2337,6 +2337,63 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_photos: {
+        Row: {
+          analysis_result: Json | null
+          calories_estimated: number | null
+          carbs_g: number | null
+          confirmed: boolean | null
+          created_at: string | null
+          fats_g: number | null
+          fibre_g: number | null
+          food_items: string[] | null
+          id: string
+          meal_date: string
+          meal_type: string | null
+          photo_url: string | null
+          protein_g: number | null
+          updated_at: string | null
+          user_adjusted: boolean | null
+          user_id: string
+        }
+        Insert: {
+          analysis_result?: Json | null
+          calories_estimated?: number | null
+          carbs_g?: number | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          fats_g?: number | null
+          fibre_g?: number | null
+          food_items?: string[] | null
+          id?: string
+          meal_date?: string
+          meal_type?: string | null
+          photo_url?: string | null
+          protein_g?: number | null
+          updated_at?: string | null
+          user_adjusted?: boolean | null
+          user_id: string
+        }
+        Update: {
+          analysis_result?: Json | null
+          calories_estimated?: number | null
+          carbs_g?: number | null
+          confirmed?: boolean | null
+          created_at?: string | null
+          fats_g?: number | null
+          fibre_g?: number | null
+          food_items?: string[] | null
+          id?: string
+          meal_date?: string
+          meal_type?: string | null
+          photo_url?: string | null
+          protein_g?: number | null
+          updated_at?: string | null
+          user_adjusted?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       menomap_assessments: {
         Row: {
           answers: Json

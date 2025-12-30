@@ -1,5 +1,8 @@
 project_id = "ictdgxsynjnmsevcegvu"
 
+[functions.analyze-food-photo]
+verify_jwt = true
+
 [functions.extract-protocol-keywords]
 verify_jwt = false
 
