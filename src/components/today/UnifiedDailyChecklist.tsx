@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Lock, Utensils } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
+import { CategoryCardGrid, CategoryCardData } from "@/components/today/CategoryCardGrid";
+import { CategoryDrawer } from "@/components/today/CategoryDrawer";
 import { NutritionActionCard } from "@/components/today/NutritionActionCard";
 import { DailyPlanFilters, ViewByFilter, StatusFilter } from "@/components/today/DailyPlanFilters";
 import { useDailyPlan } from "@/hooks/useDailyPlan";
@@ -97,6 +99,10 @@ export const UnifiedDailyChecklist = () => {
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Set<string>>(new Set());
   const [selectedMeal, setSelectedMeal] = useState<any>(null);
   const [mealModalOpen, setMealModalOpen] = useState(false);
+  
+  // State for category card grid drawer
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
   
   const totalCount = isUsingSampleData ? SAMPLE_DAILY_ACTIONS.length : userTotalCount;
   const completedCount = isUsingSampleData ? sampleCompletedIds.size : userCompletedCount;
@@ -574,107 +580,64 @@ export const UnifiedDailyChecklist = () => {
         )}
 
         {viewBy === 'type' && (
-          <>
-            {/* Supplements Block */}
-            <CategoryBlock
-              icon="💊"
-              title={t('today.filters.supplements')}
-              items={applyStatusFilter(typeBlocks.supplements)}
-              completedCount={getCategoryStats(typeBlocks.supplements).completed}
-              totalCount={getCategoryStats(typeBlocks.supplements).total}
-              totalMinutes={getCategoryStats(typeBlocks.supplements).minutes}
-              color="orange"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Exercise Block */}
-            <CategoryBlock
-              icon="🏃"
-              title={t('today.filters.exercise')}
-              items={applyStatusFilter(typeBlocks.exercise)}
-              completedCount={getCategoryStats(typeBlocks.exercise).completed}
-              totalCount={getCategoryStats(typeBlocks.exercise).total}
-              totalMinutes={getCategoryStats(typeBlocks.exercise).minutes}
-              color="green"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Habits Block */}
-            <CategoryBlock
-              icon="✨"
-              title={t('today.filters.habits')}
-              items={applyStatusFilter(typeBlocks.habits)}
-              completedCount={getCategoryStats(typeBlocks.habits).completed}
-              totalCount={getCategoryStats(typeBlocks.habits).total}
-              totalMinutes={getCategoryStats(typeBlocks.habits).minutes}
-              color="pink"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Meals Block */}
-            <CategoryBlock
-              icon="🍽️"
-              title={t('today.filters.meals')}
-              items={applyStatusFilter(typeBlocks.meals)}
-              completedCount={getCategoryStats(typeBlocks.meals).completed}
-              totalCount={getCategoryStats(typeBlocks.meals).total}
-              totalMinutes={getCategoryStats(typeBlocks.meals).minutes}
-              color="yellow"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-
-            {/* Goals Block */}
-            <CategoryBlock
-              icon="🎯"
-              title={t('today.filters.goals')}
-              items={applyStatusFilter(typeBlocks.goals)}
-              completedCount={getCategoryStats(typeBlocks.goals).completed}
-              totalCount={getCategoryStats(typeBlocks.goals).total}
-              totalMinutes={getCategoryStats(typeBlocks.goals).minutes}
-              color="blue"
-              defaultExpanded={true}
-              onToggle={handleToggle}
-              getItemCompleted={getItemCompleted}
-              onBuySupplements={handleBuySupplements}
-              onViewMeal={handleViewMeal}
-              onRowClick={handleRowClick}
-              isUsingSampleData={isUsingSampleData}
-              user={user}
-              onNavigate={() => navigate('/auth')}
-            />
-          </>
+          <CategoryCardGrid
+            categories={[
+              { 
+                key: 'supplements', 
+                icon: '💊', 
+                title: t('today.filters.supplements'), 
+                items: applyStatusFilter(typeBlocks.supplements),
+                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).minutes,
+                color: 'orange' 
+              },
+              { 
+                key: 'exercise', 
+                icon: '🏃', 
+                title: t('today.filters.exercise'), 
+                items: applyStatusFilter(typeBlocks.exercise),
+                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).minutes,
+                color: 'green' 
+              },
+              { 
+                key: 'habits', 
+                icon: '✨', 
+                title: t('today.filters.habits'), 
+                items: applyStatusFilter(typeBlocks.habits),
+                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.habits)).minutes,
+                color: 'pink' 
+              },
+              { 
+                key: 'meals', 
+                icon: '🍽️', 
+                title: t('today.filters.meals'), 
+                items: applyStatusFilter(typeBlocks.meals),
+                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.meals)).minutes,
+                color: 'yellow' 
+              },
+              { 
+                key: 'goals', 
+                icon: '🎯', 
+                title: t('today.filters.goals'), 
+                items: applyStatusFilter(typeBlocks.goals),
+                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).completed,
+                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).total,
+                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.goals)).minutes,
+                color: 'blue' 
+              },
+            ]}
+            onCardClick={(key) => {
+              setSelectedCategory(key);
+              setIsCategoryDrawerOpen(true);
+            }}
+          />
         )}
 
         {viewBy === 'status' && (
@@ -813,6 +776,34 @@ export const UnifiedDailyChecklist = () => {
           mealType={selectedMeal.mealType || 'meal'}
         />
       )}
+
+      {/* Category Drawer for Type View */}
+      <CategoryDrawer
+        isOpen={isCategoryDrawerOpen}
+        onClose={() => setIsCategoryDrawerOpen(false)}
+        category={selectedCategory ? {
+          key: selectedCategory,
+          icon: selectedCategory === 'supplements' ? '💊' : 
+                selectedCategory === 'exercise' ? '🏃' : 
+                selectedCategory === 'habits' ? '✨' : 
+                selectedCategory === 'meals' ? '🍽️' : '🎯',
+          title: t(`today.filters.${selectedCategory}`),
+          color: selectedCategory === 'supplements' ? 'orange' :
+                 selectedCategory === 'exercise' ? 'green' :
+                 selectedCategory === 'habits' ? 'pink' :
+                 selectedCategory === 'meals' ? 'yellow' : 'blue',
+          items: applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || []),
+          completedCount: getCategoryStats(applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || [])).completed,
+          totalCount: getCategoryStats(applyStatusFilter(typeBlocks[selectedCategory as keyof typeof typeBlocks] || [])).total,
+        } : null}
+        getItemCompleted={getItemCompleted}
+        onToggle={handleToggle}
+        onBuySupplements={handleBuySupplements}
+        onViewMeal={handleViewMeal}
+        onRowClick={handleRowClick}
+        isUsingSampleData={isUsingSampleData}
+        user={user}
+      />
     </div>
   );
 };

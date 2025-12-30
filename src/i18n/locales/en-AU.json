@@ -800,6 +800,15 @@
       "meals": "Meals",
       "goals": "Goals"
     },
+    "categoryGrid": {
+      "tapToView": "Tap to view",
+      "itemsRemaining": "{{count}} remaining",
+      "allComplete": "All done!",
+      "minutes": "~{{count}} min",
+      "completed": "complete",
+      "noCategories": "No categories to display",
+      "noItems": "No items in this category"
+    },
     "adherence": {
       "label": "Adherence: {{percent}}%"
     },
