@@ -178,34 +178,80 @@ export const useDailyPlan = () => {
         });
       });
 
-      // Exercise rotation: show 1-2 exercises per day based on schedule
+      // Personalised exercise matching based on user health profile
       const dayOfWeek = new Date().getDay();
-      const exerciseSchedule: Record<number, string[]> = {
-        0: [], // Sunday - rest
-        1: ['strength', 'upper', 'resistance'], // Monday
-        2: ['cardio', 'walking', 'lower'], // Tuesday
-        3: ['hiit', 'interval', 'flexibility'], // Wednesday
-        4: ['strength', 'upper', 'resistance'], // Thursday
-        5: ['cardio', 'walking', 'lower'], // Friday
-        6: ['yoga', 'stretching', 'recovery'], // Saturday
+      
+      // Fetch user health profile for personalisation
+      let userHealthData: { activity_level?: string; fitness_goal?: string; training_experience?: string } | null = null;
+      if (user) {
+        const { data } = await supabase
+          .from('user_health_profile')
+          .select('activity_level, fitness_goal, training_experience')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        userHealthData = data;
+      }
+      
+      const activityLevel = userHealthData?.activity_level || 'lightly_active';
+      const fitnessGoal = userHealthData?.fitness_goal || 'maintain';
+      const experience = userHealthData?.training_experience || 'beginner';
+      
+      // Filter exercises by experience level (beginners get gentler options)
+      let eligibleExercises = exercises;
+      if (experience === 'beginner') {
+        eligibleExercises = exercises.filter(ex => 
+          !ex.name.toLowerCase().includes('hiit') &&
+          !ex.name.toLowerCase().includes('advanced') &&
+          !ex.name.toLowerCase().includes('intense')
+        );
+        // If all exercises were filtered out, keep original list
+        if (eligibleExercises.length === 0) eligibleExercises = exercises;
+      }
+      
+      // Goal-based priority keywords
+      const goalPriority: Record<string, string[]> = {
+        'weight_loss': ['cardio', 'hiit', 'walking', 'interval', 'running', 'cycling'],
+        'muscle_gain': ['resistance', 'compound', 'strength', 'weight', 'lifts', 'training'],
+        'maintain': ['walking', 'yoga', 'stretching', 'flexibility', 'balance'],
+        'improve_energy': ['walking', 'yoga', 'light', 'morning', 'gentle', 'stretching'],
       };
       
-      const todayKeywords = exerciseSchedule[dayOfWeek] || [];
-      let todaysExercises = exercises.filter(ex => 
-        todayKeywords.some(kw => ex.name.toLowerCase().includes(kw))
-      );
+      const priorityKeywords = goalPriority[fitnessGoal] || goalPriority['maintain'];
       
-      // If no matches, pick based on index rotation (max 2 per day)
-      if (todaysExercises.length === 0 && exercises.length > 0) {
-        const startIndex = dayOfWeek % exercises.length;
-        todaysExercises = exercises.slice(startIndex, startIndex + 2);
-        // Handle wrap-around
-        if (todaysExercises.length < 2 && exercises.length > 1) {
-          todaysExercises.push(...exercises.slice(0, 2 - todaysExercises.length));
+      // Score exercises based on goal alignment
+      const scoredExercises = eligibleExercises.map(ex => ({
+        exercise: ex,
+        score: priorityKeywords.filter(kw => 
+          ex.name.toLowerCase().includes(kw) || 
+          (ex.description?.toLowerCase().includes(kw) ?? false)
+        ).length
+      }));
+      
+      // Sort by score (highest first), then apply day rotation
+      scoredExercises.sort((a, b) => b.score - a.score);
+      
+      // Adjust volume by activity level
+      const maxExercises: Record<string, number> = {
+        'sedentary': 1,
+        'lightly_active': 2,
+        'active': 2,
+        'very_active': 3,
+      };
+      
+      const exerciseLimit = maxExercises[activityLevel] || 2;
+      
+      // Sunday rest day
+      let todaysExercises: ProtocolItemLocal[] = [];
+      if (dayOfWeek !== 0 && scoredExercises.length > 0) {
+        // Apply day-based rotation within top-scored exercises
+        const topPool = scoredExercises.slice(0, Math.max(exerciseLimit * 2, 4));
+        const startIndex = dayOfWeek % topPool.length;
+        
+        for (let i = 0; i < exerciseLimit && i < topPool.length; i++) {
+          const idx = (startIndex + i) % topPool.length;
+          todaysExercises.push(topPool[idx].exercise);
         }
       }
-      // Limit to max 2 exercises per day
-      todaysExercises = todaysExercises.slice(0, 2);
 
       todaysExercises.forEach((item: ProtocolItemLocal) => {
         const isCompleted = completions?.some(c => c.protocol_item_id === item.id) || false;
