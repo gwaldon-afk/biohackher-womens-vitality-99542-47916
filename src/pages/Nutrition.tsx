@@ -15,6 +15,7 @@ import { LeucineGuideDrawer } from "@/components/nutrition/LeucineGuideDrawer";
 import { FODMAPGuideDrawer } from "@/components/nutrition/FODMAPGuideDrawer";
 import MealPlansTab from "@/components/nutrition/MealPlansTab";
 import { GuidedNutritionOnboarding } from "@/components/onboarding/GuidedNutritionOnboarding";
+import { MealHistoryCard } from "@/components/nutrition/MealHistoryCard";
 
 const Nutrition = () => {
   const { t } = useTranslation();
@@ -89,6 +90,14 @@ const Nutrition = () => {
         
         {/* Life Stage Shop Recommendations - For authenticated users */}
         {user && <LifeStageShopRecommendations />}
+
+        {/* Meal History - Today's Logged Meals */}
+        {user && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-foreground">{t('nutrition.mealHistory.title')}</h2>
+            <MealHistoryCard showHeader={true} />
+          </div>
+        )}
         
         {/* Meal Plans Section */}
         <MealPlansTab
