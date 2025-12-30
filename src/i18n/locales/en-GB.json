@@ -837,6 +837,9 @@
       "completed": "{{count}}/3 completed today",
       "startNow": "Start Now",
       "markComplete": "Mark Complete"
+    },
+    "hints": {
+      "tapForDetails": "Tap any item to see details"
     }
   },
   "trustBar": {
