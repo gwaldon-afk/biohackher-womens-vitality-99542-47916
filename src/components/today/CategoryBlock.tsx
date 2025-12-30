@@ -106,6 +106,8 @@ export const CategoryBlock = ({
           const isSupplementCategory = action.category === 'supplement' || action.itemType === 'supplement';
           const isMeal = action.type === 'meal';
           const isClickable = !!onRowClick && (isMeal || action.protocolItemId || action.goalId);
+          // Per-item overdue: use action.isOverdue if available, fallback to category isPastDue
+          const itemIsOverdue = (action.isOverdue ?? isPastDue) && !isCompleted;
 
           return (
             <div
@@ -115,7 +117,7 @@ export const CategoryBlock = ({
                 "group relative flex items-start gap-3 p-3 rounded-lg border transition-all",
                 isCompleted 
                   ? "border-border bg-card/30 opacity-60" 
-                  : isPastDue 
+                  : itemIsOverdue 
                     ? "border-destructive/50 bg-destructive/5 ring-1 ring-destructive/20" 
                     : "border-border bg-card/50 hover:bg-card hover:border-primary/30",
                 isClickable && !isCompleted && "cursor-pointer hover:shadow-md"
@@ -129,7 +131,7 @@ export const CategoryBlock = ({
                 onCheckedChange={() => onToggle(action.id)}
                 className={cn(
                   "mt-1 data-[state=checked]:bg-primary data-[state=checked]:border-primary",
-                  isPastDue && !isCompleted && "border-destructive"
+                  itemIsOverdue && "border-destructive"
                 )}
                 disabled={isUsingSampleData && !user}
               />
@@ -139,11 +141,11 @@ export const CategoryBlock = ({
                     <p className={cn(
                       "font-medium",
                       isCompleted ? "line-through text-muted-foreground" : "text-foreground",
-                      isPastDue && !isCompleted && "text-destructive font-semibold"
+                      itemIsOverdue && "text-destructive font-semibold"
                     )}>
                       {action.title}
                     </p>
-                    {isPastDue && !isCompleted && (
+                    {itemIsOverdue && (
                       <Badge variant="destructive" className="text-xs">
                         {t('today.timeBlocks.overdue')}
                       </Badge>

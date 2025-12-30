@@ -785,6 +785,21 @@
       "buy": "Buy",
       "overdue": "Overdue"
     },
+    "filters": {
+      "viewBy": "View by",
+      "show": "Show",
+      "time": "Time",
+      "type": "Type",
+      "status": "Status",
+      "all": "All",
+      "toDo": "To Do",
+      "done": "Done",
+      "supplements": "Supplements",
+      "exercise": "Exercise",
+      "habits": "Habits",
+      "meals": "Meals",
+      "goals": "Goals"
+    },
     "adherence": {
       "label": "Adherence: {{percent}}%"
     },
