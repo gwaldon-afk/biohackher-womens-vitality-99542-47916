@@ -23,6 +23,7 @@ import { LISImpactPreview } from "@/components/today/LISImpactPreview";
 import { useLISData } from "@/hooks/useLISData";
 import { NutritionScorecardWidget } from "@/components/today/NutritionScorecardWidget";
 import { MealDetailModal } from "@/components/today/MealDetailModal";
+import { ExerciseDetailModal } from "@/components/today/ExerciseDetailModal";
 import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummary";
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
@@ -99,6 +100,8 @@ export const UnifiedDailyChecklist = () => {
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Set<string>>(new Set());
   const [selectedMeal, setSelectedMeal] = useState<any>(null);
   const [mealModalOpen, setMealModalOpen] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState<any>(null);
+  const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
   
   // State for category card grid drawer
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -264,12 +267,12 @@ export const UnifiedDailyChecklist = () => {
   const handleRowClick = (action: any) => {
     if (action.type === 'meal' && action.mealData) {
       handleViewMeal(action);
-    } else if (action.type === 'protocol' && action.protocolItemId) {
-      // Navigate to protocol detail or show detail panel
-      navigate('/my-protocol');
+    } else if (action.itemType === 'exercise' || action.category === 'exercise') {
+      handleViewExercise(action);
     } else if (action.type === 'goal' && action.goalId) {
       navigate('/my-goals');
     }
+    // Removed auto-navigation to /my-protocol on protocol item click
   };
 
   // Helper to check if current time period matches
@@ -416,6 +419,17 @@ export const UnifiedDailyChecklist = () => {
   const handleViewMeal = (action: any) => {
     setSelectedMeal({ ...action.mealData, mealType: action.mealType });
     setMealModalOpen(true);
+  };
+
+  const handleViewExercise = (action: any) => {
+    setSelectedExercise({
+      id: action.id,
+      title: action.title,
+      description: action.description,
+      estimatedMinutes: action.estimatedMinutes,
+      pillar: action.pillar,
+    });
+    setExerciseModalOpen(true);
   };
 
   return (
@@ -741,7 +755,13 @@ export const UnifiedDailyChecklist = () => {
         />
       )}
 
-      {/* Category Drawer for All Views */}
+      {/* Exercise Detail Modal */}
+      <ExerciseDetailModal
+        open={exerciseModalOpen}
+        onOpenChange={setExerciseModalOpen}
+        exercise={selectedExercise}
+        onViewInProtocol={() => navigate('/my-protocol')}
+      />
       <CategoryDrawer
         isOpen={isCategoryDrawerOpen}
         onClose={() => setIsCategoryDrawerOpen(false)}
@@ -779,6 +799,7 @@ export const UnifiedDailyChecklist = () => {
         onToggle={handleToggle}
         onBuySupplements={handleBuySupplements}
         onViewMeal={handleViewMeal}
+        onViewExercise={handleViewExercise}
         onRowClick={handleRowClick}
         isUsingSampleData={isUsingSampleData}
         user={user}

@@ -668,6 +668,19 @@
     }
   },
   "today": {
+    "exerciseDetail": {
+      "howTo": "How To",
+      "exercises": "Exercises to include",
+      "tips": "Tips",
+      "source": "Source",
+      "estimatedTime": "Estimated time",
+      "sets": "sets",
+      "reps": "reps",
+      "beginnerTip": "Beginner tip",
+      "viewInProtocol": "View in My Protocol",
+      "noInstructions": "Detailed instructions coming soon.",
+      "checkProtocol": "Check My Protocol for more details."
+    },
     "greeting": {
       "morning": "Good morning",
       "afternoon": "Good afternoon",
