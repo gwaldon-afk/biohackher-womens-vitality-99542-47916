@@ -16,7 +16,8 @@ import {
   ShoppingCart, 
   Utensils, 
   ChevronRight,
-  CheckCircle 
+  CheckCircle,
+  Dumbbell
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ScienceBackedIcon from '@/components/ScienceBackedIcon';
@@ -37,6 +38,7 @@ interface CategoryDrawerProps {
   onToggle: (actionId: string) => void;
   onBuySupplements?: (action: any) => void;
   onViewMeal?: (action: any) => void;
+  onViewExercise?: (action: any) => void;
   onRowClick?: (action: any) => void;
   isUsingSampleData?: boolean;
   user?: any;
@@ -59,6 +61,7 @@ export const CategoryDrawer = ({
   onToggle,
   onBuySupplements,
   onViewMeal,
+  onViewExercise,
   onRowClick,
   isUsingSampleData,
   user,
@@ -133,6 +136,7 @@ export const CategoryDrawer = ({
               category.items.map((action: any) => {
                 const isCompleted = getItemCompleted(action.id);
                 const isSupplementCategory = action.category === 'supplement' || action.itemType === 'supplement';
+                const isExercise = action.itemType === 'exercise' || action.category === 'exercise';
                 const isMeal = action.type === 'meal';
                 const isClickable = !!onRowClick && (isMeal || action.protocolItemId || action.goalId);
 
@@ -203,6 +207,20 @@ export const CategoryDrawer = ({
                           >
                             <Utensils className="w-3 h-3" />
                             {t('today.timeBlocks.viewRecipe')}
+                          </Button>
+                        )}
+                        {isExercise && onViewExercise && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onViewExercise(action);
+                            }}
+                            className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                          >
+                            <Dumbbell className="w-3 h-3" />
+                            {t('today.exerciseDetail.howTo')}
                           </Button>
                         )}
                         {isSupplementCategory && onBuySupplements && (

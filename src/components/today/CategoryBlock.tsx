@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronRight, Clock, ShoppingCart, Utensils, CheckCircle } from "lucide-react";
+import { ChevronDown, ChevronRight, Clock, ShoppingCart, Utensils, CheckCircle, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,7 @@ interface CategoryBlockProps {
   getItemCompleted: (actionId: string) => boolean;
   onBuySupplements?: (action: any) => void;
   onViewMeal?: (action: any) => void;
+  onViewExercise?: (action: any) => void;
   onRowClick?: (action: any) => void;
   isUsingSampleData?: boolean;
   user?: any;
@@ -47,6 +48,7 @@ export const CategoryBlock = ({
   getItemCompleted,
   onBuySupplements,
   onViewMeal,
+  onViewExercise,
   onRowClick,
   isUsingSampleData,
   user,
@@ -104,6 +106,7 @@ export const CategoryBlock = ({
         {visibleItems.map((action: any) => {
           const isCompleted = getItemCompleted(action.id);
           const isSupplementCategory = action.category === 'supplement' || action.itemType === 'supplement';
+          const isExercise = action.itemType === 'exercise' || action.category === 'exercise';
           const isMeal = action.type === 'meal';
           const isClickable = !!onRowClick && (isMeal || action.protocolItemId || action.goalId);
           // Per-item overdue: use action.isOverdue if available, fallback to category isPastDue
@@ -189,6 +192,20 @@ export const CategoryBlock = ({
                     >
                       <Utensils className="w-3 h-3" />
                       {t('today.timeBlocks.viewRecipe')}
+                    </Button>
+                  )}
+                  {isExercise && onViewExercise && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onViewExercise(action);
+                      }}
+                      className="h-7 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10"
+                    >
+                      <Dumbbell className="w-3 h-3" />
+                      {t('today.exerciseDetail.howTo')}
                     </Button>
                   )}
                   {isSupplementCategory && onBuySupplements && (
