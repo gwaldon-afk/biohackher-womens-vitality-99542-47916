@@ -48,6 +48,9 @@ export interface DailyAction {
   mealData?: any;
   mealType?: string;
   itemType?: string; // Original item_type from database for proper categorization
+  // For grouped items (e.g., supplements by time)
+  childItems?: Array<{ id: string; name: string; dosage?: string | null; completed: boolean }>;
+  actualItemCount?: number;
 }
 
 export const useDailyPlan = () => {
@@ -174,7 +177,15 @@ export const useDailyPlan = () => {
           icon: '💊',
           completed: allCompleted,
           timeOfDay: [time],
-          itemType: 'supplement'
+          itemType: 'supplement',
+          // Store child items for expansion and accurate counting
+          childItems: items.map(item => ({
+            id: item.id,
+            name: item.name,
+            dosage: item.dosage,
+            completed: completions?.some(c => c.protocol_item_id === item.id) || false
+          })),
+          actualItemCount: items.length
         });
       });
 

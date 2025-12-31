@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   Drawer,
   DrawerContent,
@@ -17,7 +18,9 @@ import {
   Utensils, 
   ChevronRight,
   CheckCircle,
-  Dumbbell
+  Dumbbell,
+  ArrowLeft,
+  Pill
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ScienceBackedIcon from '@/components/ScienceBackedIcon';
@@ -67,8 +70,15 @@ export const CategoryDrawer = ({
   user,
 }: CategoryDrawerProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   if (!category) return null;
+  
+  // Check if this is the supplements category and calculate actual count
+  const isSupplementsCategory = category.key === 'supplements';
+  const actualSupplementCount = isSupplementsCategory
+    ? category.items.reduce((sum, item) => sum + (item.actualItemCount || 1), 0)
+    : category.totalCount;
 
   const colors = colorMap[category.color] || colorMap.blue;
   const progressPercent = category.totalCount > 0
@@ -93,6 +103,18 @@ export const CategoryDrawer = ({
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="max-h-[85vh]">
         <DrawerHeader className={cn("relative pb-4", colors.bg)}>
+          {/* Back button on left */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="absolute left-4 top-4 h-8 gap-1 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t('today.categoryDrawer.back')}
+          </Button>
+          
+          {/* Close button on right */}
           <DrawerClose asChild>
             <Button
               variant="ghost"
@@ -103,7 +125,7 @@ export const CategoryDrawer = ({
             </Button>
           </DrawerClose>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mt-8">
             <span className="text-3xl">{category.icon}</span>
             <div className="flex-1">
               <DrawerTitle className="text-xl font-bold text-foreground">
@@ -111,7 +133,10 @@ export const CategoryDrawer = ({
               </DrawerTitle>
               <div className="flex items-center gap-2 mt-1">
                 <span className={cn("text-sm font-medium", colors.text)}>
-                  {category.completedCount}/{category.totalCount} {t('today.categoryGrid.completed')}
+                  {isSupplementsCategory 
+                    ? t('today.categoryDrawer.supplementCount', { count: actualSupplementCount })
+                    : `${category.completedCount}/${category.totalCount} ${t('today.categoryGrid.completed')}`
+                  }
                 </span>
                 {category.completedCount === category.totalCount && (
                   <CheckCircle className="w-4 h-4 text-primary" />
@@ -238,12 +263,46 @@ export const CategoryDrawer = ({
                           </Button>
                         )}
                       </div>
+                      
+                      {/* Expand grouped supplements to show individual items */}
+                      {action.childItems && action.childItems.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-border/50 space-y-2">
+                          {action.childItems.map((child: any) => (
+                            <div key={child.id} className="flex items-center gap-2 text-sm pl-1">
+                              <Pill className="w-3 h-3 text-muted-foreground shrink-0" />
+                              <span className={cn(
+                                child.completed && "line-through text-muted-foreground"
+                              )}>
+                                {child.name}
+                              </span>
+                              {child.dosage && (
+                                <span className="text-muted-foreground text-xs">
+                                  ({child.dosage})
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
               })
             )}
           </div>
+          
+          {/* Shop All Supplements button for supplement category */}
+          {isSupplementsCategory && (
+            <div className="mt-4 pt-4 border-t">
+              <Button 
+                onClick={() => navigate('/shop?category=supplements')}
+                className="w-full gap-2"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                {t('today.categoryDrawer.shopAllSupplements')}
+              </Button>
+            </div>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

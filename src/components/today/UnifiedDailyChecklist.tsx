@@ -249,18 +249,8 @@ export const UnifiedDailyChecklist = () => {
   };
 
   const handleBuySupplements = (action: any) => {
-    // Mock supplement product for cart
-    addToCart({
-      id: `supplement-${action.id}`,
-      name: action.title,
-      price: 45.00,
-      originalPrice: 65.00,
-      image: '/placeholder.svg',
-      brand: 'Longevity Labs',
-      dosage: 'Daily',
-      quantity: 1
-    });
-    toast.success(t('today.toasts.addedToCart'));
+    // Navigate to shop with supplement name as search query
+    navigate(`/shop?search=${encodeURIComponent(action.title)}`);
   };
 
   // Handle row click for navigation to details
