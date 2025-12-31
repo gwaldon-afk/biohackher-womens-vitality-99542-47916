@@ -668,6 +668,11 @@
     }
   },
   "today": {
+    "categoryDrawer": {
+      "back": "Back",
+      "shopAllSupplements": "Shop All Supplements",
+      "supplementCount": "{{count}} supplements"
+    },
     "exerciseDetail": {
       "howTo": "How To",
       "exercises": "Exercises to include",
