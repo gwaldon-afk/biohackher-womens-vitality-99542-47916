@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { 
   ExternalLink, 
   RotateCcw, 
@@ -17,26 +17,25 @@ import {
   Shield,
   Workflow,
   Sparkles,
-  CheckCircle2,
-  Circle,
-  FlaskConical
+  FlaskConical,
+  Database,
+  Zap,
+  Download,
+  RefreshCw,
+  ExternalLinkIcon
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
+import { useChecklistState } from '@/hooks/useChecklistState';
+import { useDatabaseStats } from '@/hooks/useDatabaseStats';
+import { ChecklistItemRow } from '@/components/dev/ChecklistItemRow';
+import { FilterBar, FilterType } from '@/components/dev/FilterBar';
+import { BugSummaryPanel } from '@/components/dev/BugSummaryPanel';
+import { DatabaseTablesList } from '@/components/dev/DatabaseTablesList';
+import { EdgeFunctionsList } from '@/components/dev/EdgeFunctionsList';
+import { ChecklistCategory, ItemStatus } from '@/types/checklist';
+import { toast } from 'sonner';
 
-interface ChecklistItem {
-  id: string;
-  label: string;
-  path: string;
-  description?: string;
-}
-
-interface ChecklistCategory {
-  id: string;
-  title: string;
-  icon: React.ReactNode;
-  items: ChecklistItem[];
-}
-
+// Route definitions
 const CHECKLIST_DATA: ChecklistCategory[] = [
   {
     id: 'public',
@@ -178,81 +177,120 @@ const FEATURE_CHECKLIST = [
   { id: 'goal-tracking', label: 'Goal Progress Tracking' },
 ];
 
-const STORAGE_KEY = 'biohackher-dev-checklist';
+// Database tables list
+const DATABASE_TABLES = [
+  'profiles', 'protocols', 'protocol_items', 'products', 'orders', 'order_items', 'cart_items',
+  'assessments', 'assessment_questions', 'assessment_question_options', 'assessment_progress', 
+  'assessment_ai_insights', 'symptom_assessments', 'guest_symptom_assessments', 'guest_lis_assessments',
+  'menomap_assessments', 'longevity_nutrition_assessments', 'hormone_compass_stages',
+  'user_health_goals', 'goal_templates', 'goal_check_ins', 'goal_insights', 'goal_metric_tracking',
+  'daily_scores', 'daily_nutrition_scores', 'daily_nutrition_actions', 'daily_essentials_completions',
+  'habit_tracking', 'streak_tracking', 'energy_loop_scores', 'energy_check_ins', 'energy_insights',
+  'energy_actions', 'energy_milestones', 'meal_photos', 'meal_completions', 'custom_meal_plans',
+  'expert_profiles', 'expert_services', 'expert_availability', 'expert_reviews', 'expert_referrals',
+  'expert_credentials', 'expert_complaints', 'expert_verification_log',
+  'user_roles', 'admin_audit_log', 'discount_rules', 'marketing_leads', 'email_shares', 'health_questions'
+];
 
-interface ChecklistState {
-  routes: Record<string, boolean>;
-  flows: Record<string, boolean>;
-  features: Record<string, boolean>;
-}
+const EDGE_FUNCTIONS = [
+  'analyze-food-photo', 'extract-protocol-keywords', 'send-assessment-reminder', 'send-lis-report',
+  'analyze-assessment-results', 'analyze-cross-assessments', 'analyze-energy-loop', 'analyze-health-patterns',
+  'compile-research', 'create-payment', 'data-sync-wearable', 'generate-energy-insights',
+  'generate-goal-insights', 'generate-goal-optimization', 'generate-goal-suggestions', 'generate-insights',
+  'generate-meal-plan', 'generate-monthly-report', 'generate-protocol-from-assessments', 'health-assistant',
+  'score-calculate', 'score-history', 'populate-research', 'sync-research-delta', 'personalize-research',
+  'calculate-daily-adherence', 'generate-qa-fix-prompt'
+];
 
 const DevChecklist = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [state, setState] = useState<ChecklistState>({
-    routes: {},
-    flows: {},
-    features: {}
-  });
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  
+  const {
+    state,
+    getItemState,
+    setItemStatus,
+    setItemNotes,
+    resetAll,
+    getAllCounts,
+    getBugs,
+    exportAsJson,
+  } = useChecklistState();
 
+  const { stats: tableStats, isLoading: isLoadingStats, fetchStats } = useDatabaseStats();
+
+  // Fetch database stats on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setState(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse checklist state:', e);
-      }
-    }
+    fetchStats(DATABASE_TABLES);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+  // Get all route IDs
+  const allRouteIds = useMemo(() => 
+    CHECKLIST_DATA.flatMap(cat => cat.items.map(item => item.id)),
+    []
+  );
 
-  const toggleRoute = (id: string) => {
-    setState(prev => ({
-      ...prev,
-      routes: { ...prev.routes, [id]: !prev.routes[id] }
-    }));
+  // Get all items for bug collection
+  const allItems = useMemo(() => ({
+    routes: CHECKLIST_DATA.flatMap(cat => cat.items.map(item => ({
+      id: item.id,
+      label: item.label,
+      path: item.path,
+    }))),
+    tables: DATABASE_TABLES.map(t => ({ id: t, label: t })),
+    functions: EDGE_FUNCTIONS.map(f => ({ id: f, label: f })),
+    flows: USER_FLOWS.map(f => ({ id: f.id, label: f.label })),
+    features: FEATURE_CHECKLIST.map(f => ({ id: f.id, label: f.label })),
+  }), []);
+
+  // Calculate counts
+  const allCounts = useMemo(() => getAllCounts({
+    routes: allRouteIds,
+    tables: DATABASE_TABLES,
+    functions: EDGE_FUNCTIONS,
+    flows: USER_FLOWS.map(f => f.id),
+    features: FEATURE_CHECKLIST.map(f => f.id),
+  }), [state, allRouteIds]);
+
+  // Get bugs for summary panel
+  const bugs = useMemo(() => getBugs(allItems), [state, allItems]);
+
+  const totalItems = allRouteIds.length + DATABASE_TABLES.length + EDGE_FUNCTIONS.length + 
+                     USER_FLOWS.length + FEATURE_CHECKLIST.length;
+  const passedItems = allCounts.pass;
+  const progressPercent = Math.round((passedItems / totalItems) * 100);
+
+  const handleOpenAllPublic = () => {
+    const publicRoutes = CHECKLIST_DATA.find(c => c.id === 'public')?.items || [];
+    publicRoutes.forEach((route, i) => {
+      setTimeout(() => window.open(route.path, '_blank'), i * 200);
+    });
+    toast.success(t('devChecklist.openingRoutes', { count: publicRoutes.length }));
   };
 
-  const toggleFlow = (id: string) => {
-    setState(prev => ({
-      ...prev,
-      flows: { ...prev.flows, [id]: !prev.flows[id] }
-    }));
+  const handleRefreshDbCounts = () => {
+    fetchStats(DATABASE_TABLES);
+    toast.success(t('devChecklist.refreshingDb'));
   };
 
-  const toggleFeature = (id: string) => {
-    setState(prev => ({
-      ...prev,
-      features: { ...prev.features, [id]: !prev.features[id] }
-    }));
+  const handleReset = () => {
+    if (window.confirm(t('devChecklist.confirmReset'))) {
+      resetAll();
+      toast.success(t('devChecklist.resetComplete'));
+    }
   };
 
-  const resetAll = () => {
-    setState({ routes: {}, flows: {}, features: {} });
-    localStorage.removeItem(STORAGE_KEY);
-  };
-
-  const totalRoutes = CHECKLIST_DATA.reduce((acc, cat) => acc + cat.items.length, 0);
-  const completedRoutes = Object.values(state.routes).filter(Boolean).length;
-  const completedFlows = Object.values(state.flows).filter(Boolean).length;
-  const completedFeatures = Object.values(state.features).filter(Boolean).length;
-  const totalItems = totalRoutes + USER_FLOWS.length + FEATURE_CHECKLIST.length;
-  const completedItems = completedRoutes + completedFlows + completedFeatures;
-  const progressPercent = Math.round((completedItems / totalItems) * 100);
-
-  const openRoute = (path: string) => {
-    window.open(path, '_blank');
+  const filterItem = (id: string, category: 'routes' | 'flows' | 'features'): boolean => {
+    if (activeFilter === 'all') return true;
+    return getItemState(category, id).status === activeFilter;
   };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <FlaskConical className="h-8 w-8 text-primary" />
             <div>
@@ -260,10 +298,10 @@ const DevChecklist = () => {
               <p className="text-muted-foreground text-sm">{t('devChecklist.subtitle')}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {TEST_MODE_ENABLED && (
               <Badge variant="secondary" className="gap-1">
-                <CheckCircle2 className="h-3 w-3" />
+                <FlaskConical className="h-3 w-3" />
                 {t('devChecklist.testModeActive')}
               </Badge>
             )}
@@ -271,11 +309,27 @@ const DevChecklist = () => {
               <Home className="h-4 w-4 mr-1" />
               {t('common.home')}
             </Button>
-            <Button variant="destructive" size="sm" onClick={resetAll}>
-              <RotateCcw className="h-4 w-4 mr-1" />
-              {t('devChecklist.reset')}
-            </Button>
           </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Button variant="outline" size="sm" onClick={handleOpenAllPublic}>
+            <ExternalLinkIcon className="h-4 w-4 mr-1" />
+            {t('devChecklist.openAllPublic')}
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleRefreshDbCounts}>
+            <RefreshCw className="h-4 w-4 mr-1" />
+            {t('devChecklist.refreshDbCounts')}
+          </Button>
+          <Button variant="outline" size="sm" onClick={exportAsJson}>
+            <Download className="h-4 w-4 mr-1" />
+            {t('devChecklist.exportJson')}
+          </Button>
+          <Button variant="destructive" size="sm" onClick={handleReset}>
+            <RotateCcw className="h-4 w-4 mr-1" />
+            {t('devChecklist.reset')}
+          </Button>
         </div>
 
         {/* Progress Card */}
@@ -283,89 +337,139 @@ const DevChecklist = () => {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">
-                {t('devChecklist.progress', { completed: completedItems, total: totalItems })}
+                {t('devChecklist.progress', { completed: passedItems, total: totalItems })}
               </span>
               <span className="text-sm text-muted-foreground">{progressPercent}%</span>
             </div>
             <Progress value={progressPercent} className="h-2" />
-            <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
-              <span>{t('devChecklist.routes')}: {completedRoutes}/{totalRoutes}</span>
-              <span>{t('devChecklist.flows')}: {completedFlows}/{USER_FLOWS.length}</span>
-              <span>{t('devChecklist.features')}: {completedFeatures}/{FEATURE_CHECKLIST.length}</span>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4">
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-3 h-3 rounded-full bg-green-500" />
+                <span>{t('devChecklist.filterPassed')}: {allCounts.pass}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-3 h-3 rounded-full bg-muted-foreground" />
+                <span>{t('devChecklist.filterUntested')}: {allCounts.untested}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <span>{t('devChecklist.filterReview')}: {allCounts.review}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <span>{t('devChecklist.filterFailed')}: {allCounts.fail}</span>
+              </div>
             </div>
           </CardContent>
         </Card>
 
+        {/* Bug Summary Panel */}
+        {bugs.length > 0 && (
+          <div className="mb-6">
+            <BugSummaryPanel bugs={bugs} />
+          </div>
+        )}
+
+        {/* Filter Bar */}
+        <div className="mb-4">
+          <FilterBar 
+            activeFilter={activeFilter} 
+            onFilterChange={setActiveFilter}
+            counts={allCounts}
+          />
+        </div>
+
         {/* Tabs */}
         <Tabs defaultValue="routes" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="routes" className="gap-2">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="routes" className="gap-1 text-xs sm:text-sm">
               <Globe className="h-4 w-4" />
-              {t('devChecklist.allRoutes')}
+              <span className="hidden sm:inline">{t('devChecklist.routes')}</span>
             </TabsTrigger>
-            <TabsTrigger value="flows" className="gap-2">
+            <TabsTrigger value="tables" className="gap-1 text-xs sm:text-sm">
+              <Database className="h-4 w-4" />
+              <span className="hidden sm:inline">{t('devChecklist.databaseTables')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="functions" className="gap-1 text-xs sm:text-sm">
+              <Zap className="h-4 w-4" />
+              <span className="hidden sm:inline">{t('devChecklist.edgeFunctions')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="flows" className="gap-1 text-xs sm:text-sm">
               <Workflow className="h-4 w-4" />
-              {t('devChecklist.userFlows')}
+              <span className="hidden sm:inline">{t('devChecklist.flows')}</span>
             </TabsTrigger>
-            <TabsTrigger value="features" className="gap-2">
+            <TabsTrigger value="features" className="gap-1 text-xs sm:text-sm">
               <Sparkles className="h-4 w-4" />
-              {t('devChecklist.featureChecklist')}
+              <span className="hidden sm:inline">{t('devChecklist.features')}</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Routes Tab */}
           <TabsContent value="routes">
-            <ScrollArea className="h-[calc(100vh-400px)]">
+            <ScrollArea className="h-[calc(100vh-550px)]">
               <div className="space-y-4">
-                {CHECKLIST_DATA.map(category => (
-                  <Card key={category.id}>
-                    <CardHeader className="py-3">
-                      <CardTitle className="text-base flex items-center gap-2">
-                        {category.icon}
-                        {category.title}
-                        <Badge variant="outline" className="ml-auto">
-                          {category.items.filter(item => state.routes[item.id]).length}/{category.items.length}
-                        </Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-2">
-                        {category.items.map(item => (
-                          <div
-                            key={item.id}
-                            className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors"
-                          >
-                            <div className="flex items-center gap-3">
-                              <Checkbox
-                                id={item.id}
-                                checked={state.routes[item.id] || false}
-                                onCheckedChange={() => toggleRoute(item.id)}
-                              />
-                              <label
-                                htmlFor={item.id}
-                                className={`text-sm cursor-pointer ${state.routes[item.id] ? 'line-through text-muted-foreground' : ''}`}
-                              >
-                                <span className="font-medium">{item.label}</span>
-                                <span className="text-muted-foreground ml-2 text-xs">({item.path})</span>
-                              </label>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openRoute(item.path)}
-                              className="gap-1 text-xs"
-                            >
-                              {t('devChecklist.open')}
-                              <ExternalLink className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                {CHECKLIST_DATA.map(category => {
+                  const filteredItems = category.items.filter(item => filterItem(item.id, 'routes'));
+                  if (filteredItems.length === 0) return null;
+
+                  const completedCount = category.items.filter(
+                    item => getItemState('routes', item.id).status === 'pass'
+                  ).length;
+
+                  return (
+                    <Card key={category.id}>
+                      <CardHeader className="py-3">
+                        <CardTitle className="text-base flex items-center gap-2">
+                          {category.icon}
+                          {category.title}
+                          <Badge variant="outline" className="ml-auto">
+                            {completedCount}/{category.items.length}
+                          </Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-1">
+                          {filteredItems.map(item => (
+                            <ChecklistItemRow
+                              key={item.id}
+                              id={item.id}
+                              label={item.label}
+                              path={item.path}
+                              description={item.description}
+                              state={getItemState('routes', item.id)}
+                              onStatusChange={(status) => setItemStatus('routes', item.id, status)}
+                              onNotesChange={(notes) => setItemNotes('routes', item.id, notes)}
+                            />
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </ScrollArea>
+          </TabsContent>
+
+          {/* Database Tables Tab */}
+          <TabsContent value="tables">
+            <DatabaseTablesList
+              tableStates={state.tables}
+              tableStats={tableStats}
+              isLoading={isLoadingStats}
+              activeFilter={activeFilter}
+              onStatusChange={(id, status) => setItemStatus('tables', id, status)}
+              onNotesChange={(id, notes) => setItemNotes('tables', id, notes)}
+            />
+          </TabsContent>
+
+          {/* Edge Functions Tab */}
+          <TabsContent value="functions">
+            <EdgeFunctionsList
+              functionStates={state.functions}
+              activeFilter={activeFilter}
+              onStatusChange={(id, status) => setItemStatus('functions', id, status)}
+              onNotesChange={(id, notes) => setItemNotes('functions', id, notes)}
+            />
           </TabsContent>
 
           {/* User Flows Tab */}
@@ -375,33 +479,18 @@ const DevChecklist = () => {
                 <CardTitle className="text-base">{t('devChecklist.criticalFlows')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {USER_FLOWS.map(flow => (
-                    <div
-                      key={flow.id}
-                      className="flex items-center justify-between py-3 px-4 rounded-lg border"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          id={flow.id}
-                          checked={state.flows[flow.id] || false}
-                          onCheckedChange={() => toggleFlow(flow.id)}
-                        />
-                        <div>
-                          <label
-                            htmlFor={flow.id}
-                            className={`text-sm font-medium cursor-pointer ${state.flows[flow.id] ? 'line-through text-muted-foreground' : ''}`}
-                          >
-                            {flow.label}
-                          </label>
-                          <p className="text-xs text-muted-foreground mt-0.5">{flow.steps}</p>
-                        </div>
-                      </div>
-                      {state.flows[flow.id] ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      ) : (
-                        <Circle className="h-5 w-5 text-muted-foreground" />
-                      )}
+                <div className="space-y-1">
+                  {USER_FLOWS.filter(flow => filterItem(flow.id, 'flows')).map(flow => (
+                    <div key={flow.id}>
+                      <ChecklistItemRow
+                        id={flow.id}
+                        label={flow.label}
+                        description={flow.steps}
+                        state={getItemState('flows', flow.id)}
+                        onStatusChange={(status) => setItemStatus('flows', flow.id, status)}
+                        onNotesChange={(notes) => setItemNotes('flows', flow.id, notes)}
+                      />
+                      <p className="text-xs text-muted-foreground pl-11 pb-2">{flow.steps}</p>
                     </div>
                   ))}
                 </div>
@@ -416,31 +505,16 @@ const DevChecklist = () => {
                 <CardTitle className="text-base">{t('devChecklist.keyFeatures')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {FEATURE_CHECKLIST.map(feature => (
-                    <div
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                  {FEATURE_CHECKLIST.filter(f => filterItem(f.id, 'features')).map(feature => (
+                    <ChecklistItemRow
                       key={feature.id}
-                      className="flex items-center justify-between py-3 px-4 rounded-lg border"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Checkbox
-                          id={feature.id}
-                          checked={state.features[feature.id] || false}
-                          onCheckedChange={() => toggleFeature(feature.id)}
-                        />
-                        <label
-                          htmlFor={feature.id}
-                          className={`text-sm font-medium cursor-pointer ${state.features[feature.id] ? 'line-through text-muted-foreground' : ''}`}
-                        >
-                          {feature.label}
-                        </label>
-                      </div>
-                      {state.features[feature.id] ? (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      ) : (
-                        <Circle className="h-5 w-5 text-muted-foreground" />
-                      )}
-                    </div>
+                      id={feature.id}
+                      label={feature.label}
+                      state={getItemState('features', feature.id)}
+                      onStatusChange={(status) => setItemStatus('features', feature.id, status)}
+                      onNotesChange={(notes) => setItemNotes('features', feature.id, notes)}
+                    />
                   ))}
                 </div>
               </CardContent>

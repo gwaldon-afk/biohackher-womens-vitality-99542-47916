@@ -23,7 +23,8 @@ import {
   Users,
   Brain,
   Salad,
-  Heart
+  Heart,
+  ClipboardList
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useTestPersonas } from '@/hooks/useTestPersonas';
@@ -275,6 +276,19 @@ export const DevTestingPanel = () => {
               </ScrollArea>
             </div>
           )}
+
+          {/* Quick Links */}
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-1"
+              onClick={() => window.open('/dev-checklist', '_blank')}
+            >
+              <ClipboardList className="h-3 w-3" />
+              Checklist
+            </Button>
+          </div>
 
           {/* Keyboard shortcut hint */}
           <div className="text-center">
