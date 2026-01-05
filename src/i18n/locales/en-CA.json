@@ -2577,5 +2577,21 @@
     "new": "NEW",
     "logFood": "Log Food",
     "backgroundAlt": "Healthy meal background"
+  },
+  "devChecklist": {
+    "title": "Pre-Launch Checklist",
+    "subtitle": "Biohackher QA Testing Dashboard",
+    "testModeActive": "Test Mode Active",
+    "progress": "{{completed}}/{{total}} items tested",
+    "routes": "Routes",
+    "flows": "Flows",
+    "features": "Features",
+    "allRoutes": "All Routes",
+    "userFlows": "User Flows",
+    "featureChecklist": "Features",
+    "criticalFlows": "Critical User Flows",
+    "keyFeatures": "Key Features to Test",
+    "open": "Open",
+    "reset": "Reset All"
   }
 }
