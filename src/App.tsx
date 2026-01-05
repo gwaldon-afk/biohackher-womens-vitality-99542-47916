@@ -114,6 +114,7 @@ import LISDailyCheckIn from "./pages/LISDailyCheckIn";
 import Profile from "./pages/Profile";
 import NinetyDayPlan from "./pages/plans/NinetyDayPlan";
 import MealPlanWeek from "./pages/nutrition/MealPlanWeek";
+import DevChecklist from "./pages/DevChecklist";
 
 // Configure React Query with sensible defaults
 const queryClient = new QueryClient({
@@ -263,6 +264,7 @@ const App = () => (
           <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
           <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/dev-checklist" element={<DevChecklist />} />
           
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
