@@ -166,6 +166,7 @@ export const useChecklistState = () => {
 
   return {
     state,
+    setState,
     getItemState,
     setItemStatus,
     setItemNotes,

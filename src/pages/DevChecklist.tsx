@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -26,16 +26,20 @@ import {
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useChecklistState } from '@/hooks/useChecklistState';
+import { useChecklistSync } from '@/hooks/useChecklistSync';
 import { useDatabaseStats } from '@/hooks/useDatabaseStats';
 import { ChecklistItemRow } from '@/components/dev/ChecklistItemRow';
 import { FilterBar, FilterType } from '@/components/dev/FilterBar';
 import { BugSummaryPanel } from '@/components/dev/BugSummaryPanel';
 import { DatabaseTablesList } from '@/components/dev/DatabaseTablesList';
 import { EdgeFunctionsList } from '@/components/dev/EdgeFunctionsList';
+import { ChecklistHeader } from '@/components/dev/ChecklistHeader';
+import { FixPromptHistory } from '@/components/dev/FixPromptHistory';
+import { CompareChecklistsDialog } from '@/components/dev/CompareChecklistsDialog';
 import { ChecklistCategory, ItemStatus } from '@/types/checklist';
 import { toast } from 'sonner';
 
-// Route definitions
+// Route definitions - auth-required routes marked with requiresAuth
 const CHECKLIST_DATA: ChecklistCategory[] = [
   {
     id: 'public',
@@ -151,6 +155,9 @@ const CHECKLIST_DATA: ChecklistCategory[] = [
   },
 ];
 
+// Categories that require authentication
+const AUTH_REQUIRED_CATEGORIES = ['protected', 'hormone', 'energy', 'expert', 'onboarding', 'admin'];
+
 const USER_FLOWS = [
   { id: 'new-user', label: 'New User Signup', steps: 'Landing → Auth → Onboarding → Today' },
   { id: 'guest-assessment', label: 'Guest Assessment', steps: 'Landing → Guest LIS → Results → Auth' },
@@ -189,7 +196,8 @@ const DATABASE_TABLES = [
   'energy_actions', 'energy_milestones', 'meal_photos', 'meal_completions', 'custom_meal_plans',
   'expert_profiles', 'expert_services', 'expert_availability', 'expert_reviews', 'expert_referrals',
   'expert_credentials', 'expert_complaints', 'expert_verification_log',
-  'user_roles', 'admin_audit_log', 'discount_rules', 'marketing_leads', 'email_shares', 'health_questions'
+  'user_roles', 'admin_audit_log', 'discount_rules', 'marketing_leads', 'email_shares', 'health_questions',
+  'qa_checklists', 'qa_fix_prompts', 'qa_resolution_history'
 ];
 
 const EDGE_FUNCTIONS = [
@@ -206,9 +214,11 @@ const DevChecklist = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [showCompareDialog, setShowCompareDialog] = useState(false);
   
   const {
     state,
+    setState,
     getItemState,
     setItemStatus,
     setItemNotes,
@@ -217,6 +227,26 @@ const DevChecklist = () => {
     getBugs,
     exportAsJson,
   } = useChecklistState();
+
+  const {
+    userId,
+    activeChecklistId,
+    checklistName,
+    setChecklistName,
+    savedChecklists,
+    fixPrompts,
+    syncing,
+    lastSyncedAt,
+    hasUnsavedChanges,
+    saveToCloud,
+    loadFromCloud,
+    deleteChecklist,
+    startNewChecklist,
+    saveFixPrompt,
+    updatePromptResolution,
+    loadResolutionHistory,
+    updateIssueResolution,
+  } = useChecklistSync(state);
 
   const { stats: tableStats, isLoading: isLoadingStats, fetchStats } = useDatabaseStats();
 
@@ -281,9 +311,29 @@ const DevChecklist = () => {
     }
   };
 
+  const handleSaveToCloud = useCallback(() => {
+    saveToCloud(state, allCounts);
+  }, [saveToCloud, state, allCounts]);
+
+  const handleLoadFromCloud = useCallback(async (id: string) => {
+    const loadedState = await loadFromCloud(id);
+    if (loadedState) {
+      setState(loadedState);
+    }
+  }, [loadFromCloud, setState]);
+
+  const handleNewChecklist = useCallback(() => {
+    const newState = startNewChecklist();
+    setState(newState);
+  }, [startNewChecklist, setState]);
+
   const filterItem = (id: string, category: 'routes' | 'flows' | 'features'): boolean => {
     if (activeFilter === 'all') return true;
     return getItemState(category, id).status === activeFilter;
+  };
+
+  const isAuthRequired = (categoryId: string): boolean => {
+    return AUTH_REQUIRED_CATEGORIES.includes(categoryId);
   };
 
   return (
@@ -311,6 +361,23 @@ const DevChecklist = () => {
             </Button>
           </div>
         </div>
+
+        {/* Checklist Header - Cloud sync controls */}
+        <ChecklistHeader
+          checklistName={checklistName}
+          onNameChange={setChecklistName}
+          hasUnsavedChanges={hasUnsavedChanges}
+          syncing={syncing}
+          lastSyncedAt={lastSyncedAt}
+          userId={userId}
+          savedChecklists={savedChecklists}
+          onSave={handleSaveToCloud}
+          onLoad={handleLoadFromCloud}
+          onDelete={deleteChecklist}
+          onNew={handleNewChecklist}
+          onCompare={() => setShowCompareDialog(true)}
+          activeChecklistId={activeChecklistId}
+        />
 
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -366,7 +433,23 @@ const DevChecklist = () => {
         {/* Bug Summary Panel */}
         {bugs.length > 0 && (
           <div className="mb-6">
-            <BugSummaryPanel bugs={bugs} />
+            <BugSummaryPanel 
+              bugs={bugs} 
+              checklistId={activeChecklistId}
+              onSavePrompt={saveFixPrompt}
+            />
+          </div>
+        )}
+
+        {/* Fix Prompt History */}
+        {fixPrompts.length > 0 && (
+          <div className="mb-6">
+            <FixPromptHistory
+              prompts={fixPrompts}
+              onUpdateResolution={updatePromptResolution}
+              onUpdateIssueResolution={updateIssueResolution}
+              onLoadResolutionHistory={loadResolutionHistory}
+            />
           </div>
         )}
 
@@ -406,7 +489,7 @@ const DevChecklist = () => {
 
           {/* Routes Tab */}
           <TabsContent value="routes">
-            <ScrollArea className="h-[calc(100vh-550px)]">
+            <ScrollArea className="h-[calc(100vh-650px)]">
               <div className="space-y-4">
                 {CHECKLIST_DATA.map(category => {
                   const filteredItems = category.items.filter(item => filterItem(item.id, 'routes'));
@@ -416,12 +499,20 @@ const DevChecklist = () => {
                     item => getItemState('routes', item.id).status === 'pass'
                   ).length;
 
+                  const requiresAuth = isAuthRequired(category.id);
+
                   return (
                     <Card key={category.id}>
                       <CardHeader className="py-3">
                         <CardTitle className="text-base flex items-center gap-2">
                           {category.icon}
                           {category.title}
+                          {requiresAuth && (
+                            <Badge variant="outline" className="gap-1 text-xs">
+                              <Lock className="h-3 w-3" />
+                              {t('devChecklist.authRequired')}
+                            </Badge>
+                          )}
                           <Badge variant="outline" className="ml-auto">
                             {completedCount}/{category.items.length}
                           </Badge>
@@ -521,7 +612,23 @@ const DevChecklist = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Developer Only Footer */}
+        <div className="mt-8 pt-4 border-t">
+          <p className="text-xs text-muted-foreground text-center">
+            {t('devChecklist.developerNote')}
+          </p>
+        </div>
       </div>
+
+      {/* Compare Dialog */}
+      {showCompareDialog && savedChecklists.length >= 2 && (
+        <CompareChecklistsDialog
+          open={showCompareDialog}
+          onClose={() => setShowCompareDialog(false)}
+          checklists={savedChecklists}
+        />
+      )}
     </div>
   );
 };
