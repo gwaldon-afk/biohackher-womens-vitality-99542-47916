@@ -29,11 +29,11 @@ const Profile = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate(user ? '/today' : '/')}
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate(user ? '/today' : '/')}
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            {user ? t('profile.returnToToday') : t('profile.backToHome')}
+            {t('common.return')}
           </Button>
         </div>
         
@@ -124,10 +124,10 @@ const Profile = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate(user ? '/today' : '/')} 
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate(user ? '/today' : '/')} 
             size="lg"
           >
-            {user ? t('profile.returnToToday') : t('profile.backToHome')}
+            {t('common.return')}
           </Button>
         </div>
       </div>

@@ -81,9 +81,24 @@ export const useLISData = (): LISData => {
         .order('date', { ascending: true });
 
       if (scores && scores.length > 0) {
-        // Calculate current average
-        const avg = scores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / scores.length;
-        setCurrentScore(Math.round(avg));
+        // Filter out empty/zero daily tracking records (where score is 0 AND no pillar data)
+        const validScores = scores.filter(s => 
+          s.longevity_impact_score > 0 || 
+          s.sleep_score !== null ||
+          s.nutrition_score !== null ||
+          s.stress_score !== null ||
+          s.physical_activity_score !== null
+        );
+
+        if (validScores.length > 0) {
+          // Calculate average from valid scores only
+          const avg = validScores.reduce((sum, s) => sum + s.longevity_impact_score, 0) / validScores.length;
+          setCurrentScore(Math.round(avg));
+        } else if (baseline) {
+          // All non-baseline scores are empty, use baseline
+          setCurrentScore(baseline.longevity_impact_score);
+        }
+        
         setDailyScores(scores);
 
         // Calculate pillar score averages

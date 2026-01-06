@@ -57,11 +57,11 @@ const MasterDashboard = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/today')}
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/today')}
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            {t('masterDashboard.returnToToday')}
+            {t('common.return')}
           </Button>
         </div>
         
@@ -213,10 +213,10 @@ const MasterDashboard = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate('/today')} 
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/today')} 
             size="lg"
           >
-            {t('masterDashboard.returnToToday')}
+            {t('common.return')}
           </Button>
         </div>
       </div>
