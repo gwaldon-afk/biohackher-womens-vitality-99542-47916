@@ -43,14 +43,16 @@ serve(async (req) => {
     console.log('Fetching assessment data for user:', user.id, 'Trigger:', triggerAssessment);
 
     // Fetch all assessment data including targeted assessments AND assessment_progress for accurate count
+    // IMPORTANT: Fetch baseline LIS record (is_baseline = true) instead of most recent daily entry
     const [lisResult, nutritionResult, hormoneResult, symptomResult, pillarResult, progressResult] = await Promise.all([
       supabase
         .from('daily_scores')
-        .select('longevity_impact_score, biological_age_impact, date, questionnaire_data')
+        .select('longevity_impact_score, biological_age_impact, date, questionnaire_data, is_baseline')
         .eq('user_id', user.id)
+        .eq('is_baseline', true)
         .order('date', { ascending: false })
         .limit(1)
-        .single(),
+        .maybeSingle(),
       supabase
         .from('longevity_nutrition_assessments')
         .select('*')
