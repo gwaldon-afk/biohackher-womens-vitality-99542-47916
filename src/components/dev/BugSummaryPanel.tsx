@@ -19,9 +19,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface BugSummaryPanelProps {
   bugs: BugItem[];
+  checklistId?: string | null;
+  onSavePrompt?: (prompt: string, issues: BugItem[], checklistId?: string) => Promise<string | null>;
 }
 
-export const BugSummaryPanel = ({ bugs }: BugSummaryPanelProps) => {
+export const BugSummaryPanel = ({ bugs, checklistId, onSavePrompt }: BugSummaryPanelProps) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -94,6 +96,12 @@ export const BugSummaryPanel = ({ bugs }: BugSummaryPanelProps) => {
       if (error) throw error;
 
       await navigator.clipboard.writeText(data.prompt);
+      
+      // Save to database if we have a checklist ID
+      if (checklistId && onSavePrompt) {
+        await onSavePrompt(data.prompt, bugs, checklistId);
+      }
+      
       toast.success(t('devChecklist.fixPromptCopied'));
     } catch (err) {
       console.error('Failed to generate fix prompt:', err);

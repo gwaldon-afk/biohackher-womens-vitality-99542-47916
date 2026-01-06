@@ -3612,6 +3612,127 @@ export type Database = {
           },
         ]
       }
+      qa_checklists: {
+        Row: {
+          app_id: string | null
+          checklist_data: Json
+          created_at: string | null
+          id: string
+          name: string
+          stats: Json | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          app_id?: string | null
+          checklist_data?: Json
+          created_at?: string | null
+          id?: string
+          name?: string
+          stats?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          app_id?: string | null
+          checklist_data?: Json
+          created_at?: string | null
+          id?: string
+          name?: string
+          stats?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      qa_fix_prompts: {
+        Row: {
+          checklist_id: string
+          generated_at: string | null
+          id: string
+          issues_included: Json
+          prompt_text: string
+          resolution_notes: string | null
+          resolution_status: string | null
+          resolved_at: string | null
+        }
+        Insert: {
+          checklist_id: string
+          generated_at?: string | null
+          id?: string
+          issues_included: Json
+          prompt_text: string
+          resolution_notes?: string | null
+          resolution_status?: string | null
+          resolved_at?: string | null
+        }
+        Update: {
+          checklist_id?: string
+          generated_at?: string | null
+          id?: string
+          issues_included?: Json
+          prompt_text?: string
+          resolution_notes?: string | null
+          resolution_status?: string | null
+          resolved_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_fix_prompts_checklist_id_fkey"
+            columns: ["checklist_id"]
+            isOneToOne: false
+            referencedRelation: "qa_checklists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qa_resolution_history: {
+        Row: {
+          fix_prompt_id: string
+          id: string
+          issue_category: string
+          issue_key: string
+          new_status: string
+          original_notes: string | null
+          original_status: string
+          resolution_notes: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          fix_prompt_id: string
+          id?: string
+          issue_category: string
+          issue_key: string
+          new_status: string
+          original_notes?: string | null
+          original_status: string
+          resolution_notes?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          fix_prompt_id?: string
+          id?: string
+          issue_category?: string
+          issue_key?: string
+          new_status?: string
+          original_notes?: string | null
+          original_status?: string
+          resolution_notes?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_resolution_history_fix_prompt_id_fkey"
+            columns: ["fix_prompt_id"]
+            isOneToOne: false
+            referencedRelation: "qa_fix_prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       research_studies: {
         Row: {
           abstract: string | null
