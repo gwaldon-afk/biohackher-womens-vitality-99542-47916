@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +25,7 @@ import { generateProtocolFromSymptom, updateUserProfileAfterAssessment } from "@
 import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard";
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
+import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -397,6 +398,12 @@ const AssessmentResults = () => {
     return { immediate, foundation, optimization };
   };
 
+  // Memoize symptom protocol for inline preview
+  const symptomProtocol = useMemo(() => {
+    if (!symptomId) return { immediate: [], foundation: [], optimization: [] };
+    return generateSymptomProtocolStructure(symptomId, scoreCategory);
+  }, [symptomId, scoreCategory]);
+
   const handleAddToPlan = async () => {
     if (!user || !symptomId) return;
 
@@ -747,6 +754,18 @@ const AssessmentResults = () => {
               <CardTitle>{t('assessmentResults.personalisedActionPlan')}</CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Inline Protocol Preview - For Logged In Users */}
+              {user && symptomProtocol && (symptomProtocol.immediate.length > 0 || symptomProtocol.foundation.length > 0) && (
+                <div className="mb-6">
+                  <InlineProtocolPreview
+                    protocolData={symptomProtocol}
+                    sourceType="symptom"
+                    sourceAssessmentId={symptomId || ''}
+                    onProtocolSaved={() => refetchRecommendations()}
+                  />
+                </div>
+              )}
+              
               <div className="space-y-4">
                 {recommendations.map((rec, index) => (
                   <div 
