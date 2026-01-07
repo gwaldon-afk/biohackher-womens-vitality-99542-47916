@@ -2,7 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Lock, Utensils } from "lucide-react";
+import { Lock, Utensils, Calendar, ChevronRight } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
 import { CategoryCardGrid, CategoryCardData } from "@/components/today/CategoryCardGrid";
 import { CategoryDrawer } from "@/components/today/CategoryDrawer";
@@ -426,9 +426,31 @@ export const UnifiedDailyChecklist = () => {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Date & Quote Header */}
       <div className="space-y-4 pb-4 border-b-2 border-primary/20">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-          TODAY - {dateString}
-        </h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+            TODAY - {dateString}
+          </h1>
+          {user && (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/plans/weekly')}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                {t('weeklyPlan.viewWeek')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/plans/90-day')}
+              >
+                {t('weeklyPlan.view90Day')}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          )}
+        </div>
         {/* Motivational Quote - Compact */}
         <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/70 p-4 shadow-md">
           <div className="relative flex items-center gap-3 text-center justify-center">

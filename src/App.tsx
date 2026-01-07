@@ -113,6 +113,7 @@ import HormonalHealthTriage from "./pages/HormonalHealthTriage";
 import LISDailyCheckIn from "./pages/LISDailyCheckIn";
 import Profile from "./pages/Profile";
 import NinetyDayPlan from "./pages/plans/NinetyDayPlan";
+import WeeklyPlan from "./pages/plans/WeeklyPlan";
 import MealPlanWeek from "./pages/nutrition/MealPlanWeek";
 import DevChecklist from "./pages/DevChecklist";
 
@@ -144,6 +145,7 @@ const App = () => (
                 <Route path="/complete-profile" element={<ProtectedRoute><CompleteHealthProfile /></ProtectedRoute>} />
                 <Route path="/today" element={<ProtectedRoute><RequireHealthProfile><MyDailyPlan /></RequireHealthProfile></ProtectedRoute>} />
                 <Route path="/plans/90-day" element={<ProtectedRoute><RequireHealthProfile><NinetyDayPlan /></RequireHealthProfile></ProtectedRoute>} />
+                <Route path="/plans/weekly" element={<ProtectedRoute><RequireHealthProfile><WeeklyPlan /></RequireHealthProfile></ProtectedRoute>} />
                 <Route path="/nutrition/meal-plan" element={<ProtectedRoute><RequireHealthProfile><MealPlanWeek /></RequireHealthProfile></ProtectedRoute>} />
                 <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
                 <Route path="/auth" element={<Auth />} />
