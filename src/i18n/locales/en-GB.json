@@ -2672,5 +2672,29 @@
     "authRequired": "Auth Required",
     "developerNote": "This page is for internal development use only and is not accessible to end users.",
     "cloudSyncRequiresAuth": "Cloud sync requires authentication"
+  },
+  "healthSummary": {
+    "title": "Health Summary",
+    "lisScore": "Longevity Impact Score",
+    "nutritionScore": "Nutrition Score",
+    "hormoneHealth": "Hormone Health",
+    "lifestyleAge": "Lifestyle Age",
+    "metabolicAge": "Metabolic Age",
+    "hormoneAge": "Hormone Age",
+    "overallBiologicalAge": "Overall Biological Age",
+    "years": "years",
+    "yearsYounger": "{{years}} years younger",
+    "yearsOlder": "{{years}} years older",
+    "sameAsChronological": "Same as chronological",
+    "notAssessed": "Not assessed yet",
+    "noScore": "No score yet",
+    "baseline": "Baseline",
+    "assessed": "Assessed",
+    "confidence": "{{percent}}% confidence",
+    "basedOn": "Based on {{assessments}}",
+    "completeForAccuracy": "Complete {{assessments}} for better accuracy",
+    "completeAssessment": "Complete an assessment",
+    "toCalculateBioAge": "to calculate your biological age",
+    "requiresDOB": "Date of birth required"
   }
 }
