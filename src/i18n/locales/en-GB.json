@@ -2844,6 +2844,16 @@
     "noProtocolDescription": "Create a protocol to see your weekly plan with supplements, exercises, and meals.",
     "createProtocol": "Create Protocol"
   },
+  "protocol": {
+    "added": "Protocol Updated",
+    "addedDesc": "{{count}} items added to your plan",
+    "addedWithDuplicates": "Added {{added}} items. {{skipped}} duplicates skipped.",
+    "allDuplicates": "All Items Already in Plan",
+    "allDuplicatesDesc": "The selected items are already in your protocol.",
+    "saveFailed": "Save Failed",
+    "duplicateSkipped": "Already in Your Plan",
+    "duplicateSkippedDesc": "{{name}} is already in your protocol."
+  },
   "common": {
     "home": "Home",
     "viewResults": "View Results",

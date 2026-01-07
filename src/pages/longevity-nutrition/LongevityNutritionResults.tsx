@@ -21,6 +21,7 @@ import { MetabolicAgeDisplay } from "@/components/nutrition/MetabolicAgeDisplay"
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
+import { filterDuplicateItems } from "@/utils/protocolDuplicateCheck";
 
 // Protocol Item Card Component
 interface ProtocolItemCardProps {
@@ -442,8 +443,26 @@ export default function LongevityNutritionResults() {
         protocolId = protocols[0].id;
       }
 
-      // Map selected items to protocol_items format
-      const protocolItems = selectedItems.map(item => ({
+      // Prepare items with item_type for duplicate checking
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: 'supplement' as const
+      }));
+
+      // Filter out duplicates
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      if (uniqueItems.length === 0) {
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setProtocolDialogOpen(false);
+        return;
+      }
+
+      // Map unique items to protocol_items format
+      const protocolItems = uniqueItems.map(item => ({
         protocol_id: protocolId,
         name: item.name,
         description: item.description || '',
@@ -481,9 +500,13 @@ export default function LongevityNutritionResults() {
 
       await refetchRecommendations();
 
+      const toastDesc = duplicateItems.length > 0 
+        ? t('protocol.addedWithDuplicates', { added: uniqueItems.length, skipped: duplicateItems.length })
+        : t('protocol.addedDesc', { count: uniqueItems.length });
+
       toast({
-        title: t('nutritionResults.protocolSaved'),
-        description: t('nutritionResults.protocolSavedDescription', { count: selectedItems.length }),
+        title: t('protocol.added'),
+        description: toastDesc,
       });
 
       setProtocolDialogOpen(false);

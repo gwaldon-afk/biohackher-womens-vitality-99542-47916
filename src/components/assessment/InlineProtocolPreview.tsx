@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { fetchExistingItemsSet, normalizeItemName } from '@/utils/protocolDuplicateCheck';
 
 export interface ProtocolItem {
   name: string;
@@ -44,7 +45,14 @@ export const InlineProtocolPreview = ({
   const [selectedItems, setSelectedItems] = useState<ProtocolItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [existingItems, setExistingItems] = useState<string[]>([]);
+  const [existingItems, setExistingItems] = useState<Set<string>>(new Set());
+
+  // Map category to item_type for duplicate checking
+  const itemTypeMap: Record<string, string> = {
+    'immediate': 'habit',
+    'foundation': 'supplement',
+    'optimization': 'supplement'
+  };
 
   // Get all items as a flat array
   const allItems = [
@@ -57,30 +65,24 @@ export const InlineProtocolPreview = ({
   useEffect(() => {
     if (!user) return;
     
-    // Pre-select immediate items by default
+    // Pre-select immediate items by default (excluding duplicates - will be filtered after existingItems loads)
     setSelectedItems(protocolData.immediate);
 
-    // Check for existing protocol items to avoid duplicates
-    const checkExisting = async () => {
-      const { data } = await supabase
-        .from('protocol_items')
-        .select('name')
-        .eq('protocol_id', (
-          await supabase
-            .from('protocols')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('is_active', true)
-            .limit(1)
-            .single()
-        ).data?.id || '');
-
-      if (data) {
-        setExistingItems(data.map(item => item.name.toLowerCase()));
-      }
+    // Fetch existing items using centralized utility (checks name + type)
+    const loadExistingItems = async () => {
+      const existingSet = await fetchExistingItemsSet(user.id);
+      setExistingItems(existingSet);
+      
+      // Re-filter selected items to exclude duplicates
+      const nonDuplicateImmediate = protocolData.immediate.filter(item => {
+        const itemType = itemTypeMap[item.category] || 'supplement';
+        const key = `${normalizeItemName(item.name)}|${itemType}`;
+        return !existingSet.has(key);
+      });
+      setSelectedItems(nonDuplicateImmediate);
     };
     
-    checkExisting();
+    loadExistingItems();
   }, [user, protocolData.immediate]);
 
   const toggleItem = (item: ProtocolItem) => {
@@ -94,9 +96,7 @@ export const InlineProtocolPreview = ({
   };
 
   const selectAll = () => {
-    const nonDuplicates = allItems.filter(
-      item => !existingItems.includes(item.name.toLowerCase())
-    );
+    const nonDuplicates = allItems.filter(item => !isItemDuplicate(item));
     setSelectedItems(nonDuplicates);
   };
 
@@ -109,7 +109,9 @@ export const InlineProtocolPreview = ({
   };
 
   const isItemDuplicate = (item: ProtocolItem) => {
-    return existingItems.includes(item.name.toLowerCase());
+    const itemType = itemTypeMap[item.category] || 'supplement';
+    const key = `${normalizeItemName(item.name)}|${itemType}`;
+    return existingItems.has(key);
   };
 
   const handleSaveToProtocol = async () => {
@@ -146,21 +148,19 @@ export const InlineProtocolPreview = ({
       }
 
       // Map category to item_type
-      const itemTypeMap: Record<string, 'habit' | 'supplement' | 'exercise' | 'diet' | 'therapy'> = {
+      const itemTypeMapForInsert: Record<string, 'habit' | 'supplement' | 'exercise' | 'diet' | 'therapy'> = {
         'immediate': 'habit',
         'foundation': 'supplement',
         'optimization': 'supplement'
       };
 
-      // Filter out duplicates and insert items
-      const newItems = selectedItems.filter(
-        item => !existingItems.includes(item.name.toLowerCase())
-      );
+      // Filter out duplicates using the already-loaded existingItems set
+      const newItems = selectedItems.filter(item => !isItemDuplicate(item));
 
       if (newItems.length === 0) {
         toast({
-          title: t('inlineProtocol.toast.allDuplicates'),
-          description: t('inlineProtocol.toast.allDuplicatesDesc'),
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
         });
         setSaving(false);
         return;
@@ -173,7 +173,7 @@ export const InlineProtocolPreview = ({
         dosage: item.dosage || null,
         frequency: 'daily' as const,
         time_of_day: ['morning'],
-        item_type: itemTypeMap[item.category] || 'supplement',
+        item_type: itemTypeMapForInsert[item.category] || 'supplement',
         category: item.category,
         display_order: 0
       }));
@@ -196,17 +196,22 @@ export const InlineProtocolPreview = ({
           accepted_at: new Date().toISOString()
         });
 
+      const skippedCount = selectedItems.length - newItems.length;
+      const toastDesc = skippedCount > 0 
+        ? t('protocol.addedWithDuplicates', { added: newItems.length, skipped: skippedCount })
+        : t('protocol.addedDesc', { count: newItems.length });
+
       setSaved(true);
       toast({
-        title: t('inlineProtocol.toast.added'),
-        description: t('inlineProtocol.toast.addedDesc', { count: newItems.length }),
+        title: t('protocol.added'),
+        description: toastDesc,
       });
 
       onProtocolSaved?.();
     } catch (error: any) {
       console.error('Error saving protocol:', error);
       toast({
-        title: t('inlineProtocol.toast.failed'),
+        title: t('protocol.saveFailed'),
         description: error.message,
         variant: "destructive",
       });
@@ -281,9 +286,7 @@ export const InlineProtocolPreview = ({
 
   if (!user) return null;
 
-  const nonDuplicateCount = selectedItems.filter(
-    item => !existingItems.includes(item.name.toLowerCase())
-  ).length;
+  const nonDuplicateCount = selectedItems.filter(item => !isItemDuplicate(item)).length;
 
   const allAreDuplicates = allItems.every(item => isItemDuplicate(item));
 

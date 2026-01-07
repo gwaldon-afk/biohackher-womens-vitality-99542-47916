@@ -26,6 +26,7 @@ import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard"
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
+import { filterDuplicateItems } from "@/utils/protocolDuplicateCheck";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -473,15 +474,33 @@ const AssessmentResults = () => {
         'optimization': 'supplement'
       };
 
-      // Insert selected protocol items
-      const protocolItems = selectedItems.map(item => ({
+      // Prepare items with item_type for duplicate checking
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: itemTypeMap[item.category] || 'supplement'
+      }));
+
+      // Filter out duplicates
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      if (uniqueItems.length === 0) {
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setProtocolDialogOpen(false);
+        return;
+      }
+
+      // Insert only unique protocol items
+      const protocolItems = uniqueItems.map(item => ({
         protocol_id: protocol.id,
         name: item.name,
         description: item.description,
         dosage: item.dosage || null,
         frequency: 'daily' as const,
         time_of_day: ['morning'],
-        item_type: itemTypeMap[item.category] || 'supplement',
+        item_type: item.item_type,
         category: item.category,
         display_order: 0
       }));
@@ -512,9 +531,13 @@ const AssessmentResults = () => {
       await refetchRecommendations();
       await updateUserProfileAfterAssessment(user.id, 'symptom', { symptomType: symptomId, score });
 
+      const toastDesc = duplicateItems.length > 0 
+        ? t('protocol.addedWithDuplicates', { added: uniqueItems.length, skipped: duplicateItems.length })
+        : t('protocol.addedDesc', { count: uniqueItems.length });
+
       toast({
-        title: "Protocol Added!",
-        description: `${selectedItems.length} items added to your plan`,
+        title: t('protocol.added'),
+        description: toastDesc,
       });
 
       setProtocolDialogOpen(false);
@@ -522,7 +545,7 @@ const AssessmentResults = () => {
     } catch (error: any) {
       console.error('Error saving protocol:', error);
       toast({
-        title: "Save Failed",
+        title: t('protocol.saveFailed'),
         description: error.message,
         variant: "destructive",
       });
