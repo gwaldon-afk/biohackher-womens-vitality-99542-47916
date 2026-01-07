@@ -8,6 +8,8 @@ import { HealthGoal } from "@/hooks/useGoals";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Link2, Plus, CheckCircle, ExternalLink } from "lucide-react";
+import { checkDuplicateItem } from "@/utils/protocolDuplicateCheck";
+import { useAuth } from "@/hooks/useAuth";
 
 interface GoalProtocolSyncProps {
   goal: HealthGoal;
@@ -16,6 +18,7 @@ interface GoalProtocolSyncProps {
 
 export const GoalProtocolSync = ({ goal, onSync }: GoalProtocolSyncProps) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { protocols, loading, createProtocol } = useProtocols();
   const [syncing, setSyncing] = useState(false);
 
@@ -72,26 +75,52 @@ export const GoalProtocolSync = ({ goal, onSync }: GoalProtocolSyncProps) => {
           .eq('id', goal.id);
       }
 
-      // Parse aging blueprint and add items
+      // Parse aging blueprint and add items (with duplicate check)
       const blueprint = goal.aging_blueprint as any;
       const interventions = blueprint.interventions || [];
+      let addedCount = 0;
+      let skippedCount = 0;
 
       for (const intervention of interventions) {
+        const itemType = intervention.type || 'supplement';
+        const itemName = intervention.name || intervention.title || 'Intervention';
+
+        // Check for duplicate before inserting
+        if (user) {
+          const { isDuplicate } = await checkDuplicateItem(user.id, {
+            name: itemName,
+            item_type: itemType,
+          });
+
+          if (isDuplicate) {
+            console.log('Skipping duplicate intervention:', itemName);
+            skippedCount++;
+            continue;
+          }
+        }
+
         await supabase
           .from('protocol_items')
           .insert({
             protocol_id: protocolId,
             goal_id: goal.id,
-            name: intervention.name || intervention.title || 'Intervention',
+            name: itemName,
             description: intervention.description || '',
-            item_type: intervention.type || 'supplement',
+            item_type: itemType,
             frequency: intervention.frequency || 'daily',
             dosage: intervention.dosage || '',
             notes: intervention.notes || '',
           });
+        addedCount++;
       }
 
-      toast.success('Protocol synced successfully!');
+      if (addedCount === 0 && skippedCount > 0) {
+        toast.info('All interventions already in your protocol');
+      } else if (skippedCount > 0) {
+        toast.success(`Protocol synced! Added ${addedCount}, skipped ${skippedCount} duplicates`);
+      } else {
+        toast.success('Protocol synced successfully!');
+      }
       onSync?.();
     } catch (error) {
       console.error('Error syncing protocol:', error);

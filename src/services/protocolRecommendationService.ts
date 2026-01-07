@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { filterDuplicateItems } from '@/utils/protocolDuplicateCheck';
 
 export interface ProtocolRecommendation {
   immediate: any[];
@@ -75,7 +76,7 @@ export const acceptProtocolRecommendation = async (
   selectedItems: any[],
   protocolName: string,
   sourceType: SourceType
-): Promise<{ protocolId: string } | null> => {
+): Promise<{ protocolId: string; skippedDuplicates?: number } | null> => {
   try {
     // Get or create active protocol
     let { data: existingProtocol } = await supabase
@@ -109,15 +110,30 @@ export const acceptProtocolRecommendation = async (
       protocolId = existingProtocol.id;
     }
 
-    // Map selected items to protocol_items format
-    const protocolItems = selectedItems.map(item => ({
+    // Map selected items with item_type for duplicate checking
+    const itemsWithType = selectedItems.map(item => ({
+      ...item,
+      name: item.name,
+      item_type: item.item_type || inferItemType(item),
+    }));
+
+    // Filter out duplicates
+    const { uniqueItems, duplicateItems } = await filterDuplicateItems(userId, itemsWithType);
+
+    if (uniqueItems.length === 0) {
+      console.log('All items are duplicates, skipping insert');
+      return { protocolId, skippedDuplicates: duplicateItems.length };
+    }
+
+    // Map unique items to protocol_items format
+    const protocolItems = uniqueItems.map(item => ({
       protocol_id: protocolId,
       name: item.name,
       description: item.description || '',
       dosage: item.dosage || null,
       frequency: item.frequency || 'daily',
       time_of_day: item.time_of_day || ['morning'],
-      item_type: item.item_type || inferItemType(item),
+      item_type: item.item_type,
       is_active: true,
       priority_tier: item.priority_tier || 'foundation',
       evidence_level: item.evidence_level || 'moderate',
@@ -134,7 +150,6 @@ export const acceptProtocolRecommendation = async (
     if (itemsError) throw itemsError;
 
     // Update recommendation status
-    const totalItems = selectedItems.length;
     const { error: updateError } = await supabase
       .from('protocol_recommendations')
       .update({
@@ -145,7 +160,7 @@ export const acceptProtocolRecommendation = async (
 
     if (updateError) throw updateError;
 
-    return { protocolId };
+    return { protocolId, skippedDuplicates: duplicateItems.length };
   } catch (error) {
     console.error('Error accepting protocol recommendation:', error);
     return null;
