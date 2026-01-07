@@ -1,8 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, TrendingUp, Heart, Check, ArrowRight } from "lucide-react";
+import { Sparkles, TrendingUp, Heart, Check, ArrowRight, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAssessmentProgress } from "@/hooks/useAssessmentProgress";
+import { useTranslation } from "react-i18next";
 
 interface AssessmentGatewayScreenProps {
   pageName: string;
@@ -11,6 +13,8 @@ interface AssessmentGatewayScreenProps {
 export default function AssessmentGatewayScreen({ pageName }: AssessmentGatewayScreenProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { progress } = useAssessmentProgress();
+  const { t } = useTranslation();
 
   const getPageContent = () => {
     switch (pageName) {
@@ -97,31 +101,49 @@ export default function AssessmentGatewayScreen({ pageName }: AssessmentGatewayS
             <h3 className="font-semibold">Start With One of Our Assessments</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Button 
-                variant="outline"
+                variant={progress?.lis_completed ? "secondary" : "outline"}
                 className="flex-col h-auto py-4 hover:border-primary hover:bg-primary/5"
-                onClick={() => navigate('/assessment')}
+                onClick={() => navigate(progress?.lis_completed ? '/lis-results' : '/assessment')}
               >
-                <Sparkles className="h-5 w-5 mb-2 text-primary" />
-                <div className="font-semibold">LIS Assessment</div>
-                <div className="text-xs text-muted-foreground">5 min</div>
+                {progress?.lis_completed ? (
+                  <CheckCircle className="h-5 w-5 mb-2 text-green-600" />
+                ) : (
+                  <Sparkles className="h-5 w-5 mb-2 text-primary" />
+                )}
+                <div className="font-semibold">{t('assessments.lis.name')}</div>
+                <div className="text-xs text-muted-foreground">
+                  {progress?.lis_completed ? t('common.viewResults') : t('assessments.lis.duration')}
+                </div>
               </Button>
               <Button 
-                variant="outline"
+                variant={progress?.nutrition_completed ? "secondary" : "outline"}
                 className="flex-col h-auto py-4 hover:border-primary hover:bg-primary/5"
-                onClick={() => navigate('/longevity-nutrition')}
+                onClick={() => navigate(progress?.nutrition_completed ? '/longevity-nutrition/results' : '/longevity-nutrition')}
               >
-                <Heart className="h-5 w-5 mb-2 text-primary" />
-                <div className="font-semibold">Nutrition</div>
-                <div className="text-xs text-muted-foreground">8 min</div>
+                {progress?.nutrition_completed ? (
+                  <CheckCircle className="h-5 w-5 mb-2 text-green-600" />
+                ) : (
+                  <Heart className="h-5 w-5 mb-2 text-primary" />
+                )}
+                <div className="font-semibold">{t('assessments.nutrition.name')}</div>
+                <div className="text-xs text-muted-foreground">
+                  {progress?.nutrition_completed ? t('common.viewResults') : t('assessments.nutrition.duration')}
+                </div>
               </Button>
               <Button 
-                variant="outline"
+                variant={progress?.hormone_completed ? "secondary" : "outline"}
                 className="flex-col h-auto py-4 hover:border-primary hover:bg-primary/5"
-                onClick={() => navigate('/hormone-compass/assessment')}
+                onClick={() => navigate(progress?.hormone_completed ? '/hormone-compass/results' : '/hormone-compass/assessment')}
               >
-                <TrendingUp className="h-5 w-5 mb-2 text-primary" />
-                <div className="font-semibold">Hormone Compass</div>
-                <div className="text-xs text-muted-foreground">6 min</div>
+                {progress?.hormone_completed ? (
+                  <CheckCircle className="h-5 w-5 mb-2 text-green-600" />
+                ) : (
+                  <TrendingUp className="h-5 w-5 mb-2 text-primary" />
+                )}
+                <div className="font-semibold">{t('assessments.hormone.name')}</div>
+                <div className="text-xs text-muted-foreground">
+                  {progress?.hormone_completed ? t('common.viewResults') : t('assessments.hormone.duration')}
+                </div>
               </Button>
             </div>
           </div>

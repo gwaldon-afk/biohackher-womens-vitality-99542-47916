@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format, addMonths, isAfter, isBefore, addDays } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface AssessmentCardData {
   id: string;
@@ -26,6 +27,7 @@ export const AssessmentOverviewCards = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { progress, completedCount, allComplete } = useAssessmentProgress();
+  const { t } = useTranslation();
 
   // Fetch latest LIS assessment
   const { data: latestLIS } = useQuery({
@@ -123,12 +125,12 @@ export const AssessmentOverviewCards = () => {
   const assessments: AssessmentCardData[] = [
     {
       id: "lis",
-      name: "LIS Assessment",
+      name: t('assessments.lis.name'),
       icon: Activity,
       benefits: [
-        "Measure your biological age vs. chronological age",
-        "Get pillar-by-pillar health breakdown across 6 key areas",
-        "Receive personalized protocol recommendations"
+        t('assessments.lis.benefits.bioAge'),
+        t('assessments.lis.benefits.pillars'),
+        t('assessments.lis.benefits.protocol')
       ],
       route: "/guest-lis-assessment",
       resultsRoute: "/lis-results",
@@ -139,12 +141,12 @@ export const AssessmentOverviewCards = () => {
     },
     {
       id: "nutrition",
-      name: "Longevity Nutrition",
+      name: t('assessments.nutrition.name'),
       icon: Apple,
       benefits: [
-        "Assess your nutrition habits across key longevity markers",
-        "Get daily nutrition score (0-100) with biological age impact",
-        "Receive meal plans and protein tracking guidance"
+        t('assessments.nutrition.benefits.habits'),
+        t('assessments.nutrition.benefits.score'),
+        t('assessments.nutrition.benefits.mealPlans')
       ],
       route: "/longevity-nutrition",
       resultsRoute: "/longevity-nutrition/results",
@@ -155,12 +157,12 @@ export const AssessmentOverviewCards = () => {
     },
     {
       id: "hormone",
-      name: "Hormone Compass",
+      name: t('assessments.hormone.name'),
       icon: Heart,
       benefits: [
-        "Understand your hormone health across 6 domains",
-        "Get life-stage contextual insights (ages 25-80)",
-        "Receive targeted supplement and lifestyle recommendations"
+        t('assessments.hormone.benefits.domains'),
+        t('assessments.hormone.benefits.lifeStage'),
+        t('assessments.hormone.benefits.recommendations')
       ],
       route: "/menomap/assessment",
       resultsRoute: "/hormone-compass/results",

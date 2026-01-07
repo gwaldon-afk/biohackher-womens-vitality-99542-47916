@@ -2761,5 +2761,43 @@
       "maintain": { "title": "Maintain Your Strengths", "description": "Continue supporting your strong areas: {{strengths}}" },
       "general": { "title": "General Wellbeing", "description": "Focus on overall health optimization" }
     }
+  },
+  "assessments": {
+    "lis": {
+      "name": "Longevity Impact Score",
+      "shortName": "LIS",
+      "duration": "5 min",
+      "benefits": {
+        "bioAge": "Measure your biological age vs. chronological age",
+        "pillars": "Get pillar-by-pillar health breakdown across 6 key areas",
+        "protocol": "Receive personalized protocol recommendations"
+      }
+    },
+    "nutrition": {
+      "name": "Longevity Nutrition",
+      "shortName": "Nutrition",
+      "duration": "8 min",
+      "benefits": {
+        "habits": "Assess your nutrition habits across key longevity markers",
+        "score": "Get daily nutrition score (0-100) with biological age impact",
+        "mealPlans": "Receive meal plans and protein tracking guidance"
+      }
+    },
+    "hormone": {
+      "name": "Hormone Compass",
+      "shortName": "Hormone",
+      "duration": "6 min",
+      "benefits": {
+        "domains": "Understand your hormone health across 6 domains",
+        "lifeStage": "Get life-stage contextual insights (ages 25-80)",
+        "recommendations": "Receive targeted supplement and lifestyle recommendations"
+      }
+    }
+  },
+  "common": {
+    "viewResults": "View Results",
+    "startAssessment": "Start Assessment",
+    "retakeAssessment": "Retake Assessment",
+    "completed": "Completed"
   }
 }
