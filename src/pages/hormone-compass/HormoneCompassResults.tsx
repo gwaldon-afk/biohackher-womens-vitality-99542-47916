@@ -29,7 +29,9 @@ import {
   generateSymptomPatternAnalysis,
   ProtocolItem
 } from '@/utils/hormoneCompassProtocolGenerator';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPreview';
+import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 
 // Health level key mapping for translations
 const HEALTH_LEVEL_KEYS: Record<string, {
@@ -834,7 +836,29 @@ export default function HormoneCompassResults() {
         </CardContent>
       </Card>
 
-      {/* Personalized Protocol Preview */}
+      {/* Inline Protocol Preview - For Logged In Users */}
+      {user && protocol && (
+        <InlineProtocolPreview
+          protocolData={{
+            immediate: protocol.immediate.map(item => ({
+              ...item,
+              category: 'immediate' as const
+            })),
+            foundation: protocol.foundation.map(item => ({
+              ...item,
+              category: 'foundation' as const
+            })),
+            optimization: protocol.optimization.map(item => ({
+              ...item,
+              category: 'optimization' as const
+            }))
+          }}
+          sourceType="hormone_compass"
+          sourceAssessmentId={assessmentId || 'hormone-compass'}
+        />
+      )}
+
+      {/* Personalized Protocol Preview - Detailed View */}
       <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
         <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
           <CardTitle className="flex items-center gap-2">

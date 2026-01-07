@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import Navigation from '@/components/Navigation';
 import { LISRadarChart, getScoreColor, getScoreCategory } from '@/components/LISRadarChart';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { useProtocolGeneration } from '@/hooks/useProtocolGeneration';
 import { useProtocols } from '@/hooks/useProtocols';
@@ -27,6 +27,7 @@ import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
 import ShopYourProtocolButton from '@/components/ShopYourProtocolButton';
 import { MethodologyDisclaimer } from '@/components/assessment/MethodologyDisclaimer';
+import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPreview';
 
 const LISResults = () => {
   const navigate = useNavigate();
@@ -410,6 +411,12 @@ const LISResults = () => {
   // Generate pillar analyses
   const pillarScores = urlPillarScores || lisData.pillarScores;
   const pillarAnalyses = generatePillarAnalysis(pillarScores);
+
+  // Memoize LIS protocol generation for inline preview
+  const lisProtocol = useMemo(() => {
+    if (!pillarScores) return { immediate: [], foundation: [], optimization: [] };
+    return generateLISProtocol(pillarScores);
+  }, [pillarScores]);
 
   // Share link functionality
   const copyShareLink = () => {
@@ -922,8 +929,15 @@ const LISResults = () => {
         </Accordion>
       </div>
 
-
-
+      {/* Inline Protocol Preview - For Logged In Users */}
+      {user && (
+        <InlineProtocolPreview
+          protocolData={lisProtocol}
+          sourceType="lis"
+          sourceAssessmentId="lis-baseline"
+          onProtocolSaved={() => refetchRecommendations()}
+        />
+      )}
 
       <Card className="mb-6">
         <CardContent className="pt-6">

@@ -20,6 +20,7 @@ import { MethodologyDisclaimer } from "@/components/assessment/MethodologyDiscla
 import { MetabolicAgeDisplay } from "@/components/nutrition/MetabolicAgeDisplay";
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
+import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
 
 // Protocol Item Card Component
 interface ProtocolItemCardProps {
@@ -649,7 +650,30 @@ export default function LongevityNutritionResults() {
           </Card>
         )}
 
-        {/* Protocol Recommendations Section */}
+        {/* Inline Protocol Preview - For Logged In Users */}
+        {user && nutritionProtocol && (
+          <InlineProtocolPreview
+            protocolData={{
+              immediate: nutritionProtocol.immediate.map(item => ({
+                ...item,
+                category: 'immediate' as const
+              })),
+              foundation: nutritionProtocol.foundation.map(item => ({
+                ...item,
+                category: 'foundation' as const
+              })),
+              optimization: nutritionProtocol.optimization.map(item => ({
+                ...item,
+                category: 'optimization' as const
+              }))
+            }}
+            sourceType="nutrition"
+            sourceAssessmentId={searchParams.get("id") || ''}
+            onProtocolSaved={() => refetchRecommendations()}
+          />
+        )}
+
+        {/* Protocol Recommendations Section - For Guests and detailed view */}
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
             <div className="flex items-center justify-between flex-wrap gap-4">
