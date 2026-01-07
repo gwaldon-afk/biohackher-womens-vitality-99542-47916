@@ -805,8 +805,8 @@ export default function LongevityNutritionResults() {
 
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4">
-          <Button onClick={() => navigate(user ? "/today" : "/")} size="lg">
-            {user ? t('nutritionResults.returnToToday').replace('← ', '') : t('nutritionResults.backToHome').replace('← ', '')}
+          <Button onClick={() => window.history.length > 1 ? navigate(-1) : navigate(user ? "/today" : "/")} size="lg">
+            {t('common.goBack')}
           </Button>
         </div>
       </div>

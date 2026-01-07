@@ -6,7 +6,7 @@ import Navigation from "@/components/Navigation";
 import { useMeasurements } from "@/hooks/useMeasurements";
 import { MeasurementForm } from "@/components/MeasurementForm";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { TrendingUp, TrendingDown, Plus, Home } from "lucide-react";
+import { TrendingUp, TrendingDown, Plus, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -65,11 +65,11 @@ const ProgressTracking = () => {
         <div className="flex justify-start mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate(user ? '/today' : '/')}
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate(user ? '/today' : '/')}
             className="gap-2"
           >
-            <Home className="w-4 h-4" />
-            {user ? 'Return to Today' : 'Back to Home'}
+            <ArrowLeft className="w-4 h-4" />
+            Go Back
           </Button>
         </div>
         <div className="mb-8 flex items-center justify-between">
@@ -298,10 +298,10 @@ const ProgressTracking = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate('/today')} 
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/today')} 
             size="lg"
           >
-            Return to Today
+            Go Back
           </Button>
         </div>
       </main>

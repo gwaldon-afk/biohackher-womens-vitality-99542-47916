@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Target, Plus, TrendingUp, Archive, CheckCircle2, Clock, Home } from "lucide-react";
+import { Target, Plus, TrendingUp, Archive, CheckCircle2, Clock, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const MyGoals = () => {
@@ -47,11 +47,11 @@ const MyGoals = () => {
     <div className="container mx-auto px-4 py-8 space-y-6">
       <Button 
         variant="ghost" 
-        onClick={() => navigate("/")}
+        onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
         className="mb-2"
       >
-        <Home className="h-4 w-4 mr-2" />
-        Go Home
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Go Back
       </Button>
 
       {/* Header */}
