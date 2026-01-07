@@ -2828,7 +2828,24 @@
       }
     }
   },
+  "weeklyPlan": {
+    "title": "Your Weekly Plan",
+    "subtitle": "View your protocol, meals, and habits for the week",
+    "myPlans": "My Plans",
+    "today": "Today",
+    "viewToday": "View Today",
+    "viewWeek": "View Week",
+    "view90Day": "View 90-Day",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "noItems": "No items scheduled for this day",
+    "noProtocol": "No Protocol Set Up",
+    "noProtocolDescription": "Create a protocol to see your weekly plan with supplements, exercises, and meals.",
+    "createProtocol": "Create Protocol"
+  },
   "common": {
+    "home": "Home",
     "viewResults": "View Results",
     "startAssessment": "Start Assessment",
     "retakeAssessment": "Retake Assessment",
