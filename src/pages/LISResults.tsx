@@ -451,9 +451,9 @@ const LISResults = () => {
       {/* Heading Card */}
       <Card className="mb-6 text-center bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/20">
         <CardHeader className="pb-4">
-          <CardTitle className="text-2xl">Longevity Impact Results</CardTitle>
+          <CardTitle className="text-2xl">{t('lisResults.pageTitle')}</CardTitle>
           <CardDescription>
-            Your personalized health assessment and longevity profile
+            {t('lisResults.pageSubtitle')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -463,7 +463,7 @@ const LISResults = () => {
         <Card className="flex flex-col justify-center bg-gradient-to-br from-primary/5 to-background border-primary/20">
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="text-sm text-muted-foreground mb-2 font-medium">
-              Your Longevity Impact Score
+              {t('lisResults.yourLISScore')}
             </div>
             <div 
               className="text-7xl font-bold mb-3"
@@ -482,7 +482,7 @@ const LISResults = () => {
               {getScoreCategory(displayScore)}
             </div>
             <p className="text-sm text-muted-foreground mt-4 text-center max-w-xs">
-              A comprehensive measure of your current healthspan and longevity potential
+              {t('lisResults.scoreDescription')}
             </p>
           </CardContent>
         </Card>
@@ -490,9 +490,9 @@ const LISResults = () => {
         {/* Radar Chart Card - NOW SECOND (RIGHT) */}
         <Card className="bg-gradient-to-br from-secondary/5 to-background border-primary/20">
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-lg">Your Health Pillars</CardTitle>
+            <CardTitle className="text-lg">{t('lisResults.yourHealthPillars')}</CardTitle>
             <CardDescription className="text-xs">
-              Six key dimensions of longevity
+              {t('lisResults.sixDimensions')}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center pt-2 pb-4">

@@ -397,7 +397,7 @@ const BrainAssessment = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Brain className="h-5 w-5" />
-                    Your Cognitive Profile Analysis
+                    {t('brainAssessment.results.cognitiveProfile')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -405,19 +405,19 @@ const BrainAssessment = () => {
                     <p className="text-foreground leading-relaxed">
                       {scores.overall >= 80 ? (
                         <>
-                          <strong className="text-primary">Excellent cognitive performance!</strong> Your overall score of {scores.overall}/100 indicates optimal brain function across multiple domains. You're operating at a high level cognitively, with particularly strong performance in areas scoring above 75.
+                          <strong className="text-primary">{t('brainAssessment.results.excellentTitle')}</strong> {t('brainAssessment.results.excellentDesc', { score: scores.overall })}
                         </>
                       ) : scores.overall >= 60 ? (
                         <>
-                          <strong className="text-primary">Good cognitive function</strong> with your score of {scores.overall}/100. While you're performing well overall, there are specific areas where targeted optimization could elevate your cognitive performance to the next level.
+                          <strong className="text-primary">{t('brainAssessment.results.goodTitle')}</strong> {t('brainAssessment.results.goodDesc', { score: scores.overall })}
                         </>
                       ) : scores.overall >= 40 ? (
                         <>
-                          <strong className="text-amber-600">Fair cognitive performance.</strong> Your score of {scores.overall}/100 suggests you're experiencing notable cognitive challenges that are likely impacting your daily function. The good news is that with targeted, evidence-based interventions, significant improvements are achievable.
+                          <strong className="text-amber-600">{t('brainAssessment.results.fairTitle')}</strong> {t('brainAssessment.results.fairDesc', { score: scores.overall })}
                         </>
                       ) : (
                         <>
-                          <strong className="text-destructive">Your cognitive function requires immediate attention.</strong> A score of {scores.overall}/100 indicates substantial challenges across multiple cognitive domains that are significantly affecting your quality of life. A comprehensive, multi-faceted approach is strongly recommended.
+                          <strong className="text-destructive">{t('brainAssessment.results.poorTitle')}</strong> {t('brainAssessment.results.poorDesc', { score: scores.overall })}
                         </>
                       )}
                     </p>
@@ -483,7 +483,7 @@ const BrainAssessment = () => {
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <TrendingUp className="h-5 w-5 text-green-600" />
-                      Your Strengths
+                      {t('brainAssessment.results.yourStrengths')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -491,30 +491,30 @@ const BrainAssessment = () => {
                       {scores.memory >= 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 mt-0.5">✓</span>
-                          <span>Strong memory and recall capabilities - maintain this with continued cognitive engagement</span>
+                          <span>{t('brainAssessment.results.strengthMemory')}</span>
                         </li>
                       )}
                       {scores.focus >= 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 mt-0.5">✓</span>
-                          <span>Excellent concentration and sustained attention abilities</span>
+                          <span>{t('brainAssessment.results.strengthFocus')}</span>
                         </li>
                       )}
                       {scores.processing >= 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 mt-0.5">✓</span>
-                          <span>Fast processing speed and quick decision-making capacity</span>
+                          <span>{t('brainAssessment.results.strengthProcessing')}</span>
                         </li>
                       )}
                       {scores.clarity >= 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-green-600 mt-0.5">✓</span>
-                          <span>Clear, sharp thinking with minimal brain fog</span>
+                          <span>{t('brainAssessment.results.strengthClarity')}</span>
                         </li>
                       )}
                       {scores.memory < 75 && scores.focus < 75 && scores.processing < 75 && scores.clarity < 75 && (
                         <li className="text-muted-foreground italic">
-                          Your cognitive profile shows areas that would benefit from targeted support. The recommendations below will help you build new strengths.
+                          {t('brainAssessment.results.noStrengths')}
                         </li>
                       )}
                     </ul>
@@ -525,7 +525,7 @@ const BrainAssessment = () => {
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
                       <Target className="h-5 w-5 text-amber-600" />
-                      Priority Focus Areas
+                      {t('brainAssessment.results.priorityFocus')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -533,30 +533,30 @@ const BrainAssessment = () => {
                       {scores.memory < 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-amber-600 mt-0.5">→</span>
-                          <span><strong>Memory enhancement:</strong> {scores.memory < 50 ? "Significant improvement needed" : "Can be optimized with specific strategies"}</span>
+                          <span><strong>{t('brainAssessment.results.focusMemory')}:</strong> {scores.memory < 50 ? t('brainAssessment.results.focusMemorySevere') : t('brainAssessment.results.focusMemoryMild')}</span>
                         </li>
                       )}
                       {scores.focus < 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-amber-600 mt-0.5">→</span>
-                          <span><strong>Focus training:</strong> {scores.focus < 50 ? "Attention deficits require structured support" : "Concentration can be sharpened"}</span>
+                          <span><strong>{t('brainAssessment.results.focusFocus')}:</strong> {scores.focus < 50 ? t('brainAssessment.results.focusFocusSevere') : t('brainAssessment.results.focusFocusMild')}</span>
                         </li>
                       )}
                       {scores.processing < 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-amber-600 mt-0.5">→</span>
-                          <span><strong>Processing speed:</strong> {scores.processing < 50 ? "Cognitive processing needs support" : "Can be enhanced with targeted exercises"}</span>
+                          <span><strong>{t('brainAssessment.results.focusProcessing')}:</strong> {scores.processing < 50 ? t('brainAssessment.results.focusProcessingSevere') : t('brainAssessment.results.focusProcessingMild')}</span>
                         </li>
                       )}
                       {scores.clarity < 75 && (
                         <li className="flex items-start gap-2">
                           <span className="text-amber-600 mt-0.5">→</span>
-                          <span><strong>Mental clarity:</strong> {scores.clarity < 50 ? "Brain fog significantly affecting function" : "Clarity improvements achievable"}</span>
+                          <span><strong>{t('brainAssessment.results.focusClarity')}:</strong> {scores.clarity < 50 ? t('brainAssessment.results.focusClaritySevere') : t('brainAssessment.results.focusClarityMild')}</span>
                         </li>
                       )}
                       {scores.memory >= 75 && scores.focus >= 75 && scores.processing >= 75 && scores.clarity >= 75 && (
                         <li className="text-muted-foreground italic">
-                          Excellent performance across all categories! Focus on maintenance and continued optimization.
+                          {t('brainAssessment.results.allExcellent')}
                         </li>
                       )}
                     </ul>
@@ -569,10 +569,10 @@ const BrainAssessment = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Zap className="h-5 w-5" />
-                    Your Personalized Action Plan
+                    {t('brainAssessment.results.actionPlan')}
                   </CardTitle>
                   <CardDescription>
-                    Evidence-based interventions tailored to your cognitive profile
+                    {t('brainAssessment.results.actionPlanDesc')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
