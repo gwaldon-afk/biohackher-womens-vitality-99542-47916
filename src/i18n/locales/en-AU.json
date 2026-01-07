@@ -2696,5 +2696,40 @@
     "completeAssessment": "Complete an assessment",
     "toCalculateBioAge": "to calculate your biological age",
     "requiresDOB": "Date of birth required"
+  },
+  "whatToDoNext": {
+    "title": "What To Do Next",
+    "subtitle": "Your prioritised actions based on completed assessments",
+    "previewAction": "Preview",
+    "addToPlan": "Add to My 90-Day Plan",
+    "dismiss": "Dismiss",
+    "dismissed": "Action Dismissed",
+    "dismissedDesc": "This recommendation has been removed from your list",
+    "fromAssessment": "From {{assessment}}",
+    "noActionsYet": "No actions generated yet",
+    "generateActionsHint": "Complete the Consolidated Health Analysis above to generate personalised actions",
+    "completeAssessmentFirst": "Complete an assessment to see personalised recommendations",
+    "actionAdded": "Added to Your Plan",
+    "actionAddedDesc": "{{name}} has been added to your 90-Day Plan",
+    "expectedImpact": "Expected Impact",
+    "frequency": "Frequency",
+    "timing": "Best Time",
+    "dosage": "Dosage",
+    "pillars": "Contributes To",
+    "evidence": "Evidence Level",
+    "priority": {
+      "immediate": "Immediate",
+      "foundation": "Foundation",
+      "optimisation": "Optimisation"
+    },
+    "evidenceLevel": {
+      "low": "Low Evidence",
+      "moderate": "Moderate Evidence",
+      "high": "High Evidence",
+      "very_high": "Very High Evidence"
+    }
+  },
+  "common": {
+    "adding": "Adding..."
   }
 }

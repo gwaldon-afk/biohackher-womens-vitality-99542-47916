@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HealthSummaryCard } from "@/components/profile/HealthSummaryCard";
+import { WhatToDoNextCard } from "@/components/profile/WhatToDoNextCard";
 import { AssessmentHistoryTab } from "@/components/profile/AssessmentHistoryTab";
 import { HealthGoalsTab } from "@/components/profile/HealthGoalsTab";
 import { PreferencesTab } from "@/components/profile/PreferencesTab";
@@ -53,6 +54,9 @@ const Profile = () => {
 
         {/* Health Summary Card - Always visible at top */}
         <HealthSummaryCard />
+
+        {/* What To Do Next - Actionable Recommendations */}
+        <WhatToDoNextCard />
 
         {/* Consolidated AI Insights Card */}
         <div className="mt-6">
