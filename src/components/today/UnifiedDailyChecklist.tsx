@@ -120,10 +120,10 @@ export const UnifiedDailyChecklist = () => {
       const adherence = calculateAdherenceScore(userActions);
       setAdherencePercent(adherence);
       
-      // Persist to database (debounced via service)
-      persistAdherenceScore(user.id, adherence).catch(console.error);
+      // Persist to database (debounced via service) - pass refetchLIS for UI refresh after LIS recalc
+      persistAdherenceScore(user.id, adherence, refetchLIS).catch(console.error);
     }
-  }, [user, isUsingSampleData, userActions, userCompletedCount]);
+  }, [user, isUsingSampleData, userActions, userCompletedCount, refetchLIS]);
 
   // Show first-visit tap hint
   useEffect(() => {

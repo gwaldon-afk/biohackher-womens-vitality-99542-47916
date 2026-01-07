@@ -21,8 +21,9 @@ let persistTimeout: NodeJS.Timeout | null = null;
 
 export const persistAdherenceScore = async (
   userId: string, 
-  _adherencePercent: number
-): Promise<{ success: boolean; score?: number; error?: string }> => {
+  _adherencePercent: number,
+  onLISUpdated?: () => void
+): Promise<{ success: boolean; score?: number; lisRecalculated?: boolean; error?: string }> => {
   // Debounce to avoid calling edge function on every toggle
   if (persistTimeout) {
     clearTimeout(persistTimeout);
@@ -39,14 +40,24 @@ export const persistAdherenceScore = async (
         
         if (error) {
           console.error('[adherenceScoreService] Edge function error:', error);
-          // Don't fail silently - return error info
           resolve({ success: false, error: error.message || 'Edge function failed' });
           return;
         }
         
         if (data?.success) {
           console.log('[adherenceScoreService] Adherence persisted:', data.adherencePercent + '%');
-          resolve({ success: true, score: data.adherencePercent });
+          
+          // If LIS was recalculated, trigger UI refresh
+          if (data.lisRecalculated && onLISUpdated) {
+            console.log('[adherenceScoreService] LIS recalculated - triggering UI refresh');
+            onLISUpdated();
+          }
+          
+          resolve({ 
+            success: true, 
+            score: data.adherencePercent,
+            lisRecalculated: data.lisRecalculated 
+          });
         } else {
           console.warn('[adherenceScoreService] Edge function returned unexpected response:', data);
           resolve({ success: false, error: data?.error || 'Unexpected response' });

@@ -123,17 +123,25 @@ Deno.serve(async (req) => {
     console.log(`[calculate-daily-adherence] Stats: ${totalCompleted}/${totalExpected} = ${adherencePercent}%`)
     console.log(`[calculate-daily-adherence] Breakdown: protocol=${protocolCompletedCount}/${protocolItemCount}, meals=${mealCompletedCount}/${expectedMeals}, goals=${goalCheckInCount}/${activeGoalCount}`)
 
-    // 6. Upsert to daily_scores
+    // 6. Get existing daily_scores for today (if any)
+    const { data: existingScores } = await supabase
+      .from('daily_scores')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('date', today)
+      .maybeSingle()
+
+    // 7. Upsert adherence to daily_scores
     const { error: upsertError } = await supabase
       .from('daily_scores')
       .upsert({
         user_id: userId,
         date: today,
         protocol_adherence_score: adherencePercent,
-        // Minimal required fields
-        longevity_impact_score: 0, // Will be calculated by score-calculate
-        biological_age_impact: 0,
-        color_code: adherencePercent >= 80 ? 'green' : adherencePercent >= 50 ? 'yellow' : 'red',
+        // Preserve existing scores or use defaults
+        longevity_impact_score: existingScores?.longevity_impact_score ?? 0,
+        biological_age_impact: existingScores?.biological_age_impact ?? 0,
+        color_code: existingScores?.color_code ?? (adherencePercent >= 80 ? 'green' : adherencePercent >= 50 ? 'yellow' : 'red'),
         updated_at: new Date().toISOString()
       }, {
         onConflict: 'user_id,date',
@@ -150,10 +158,73 @@ Deno.serve(async (req) => {
 
     console.log(`[calculate-daily-adherence] Successfully saved adherence: ${adherencePercent}%`)
 
+    // 8. Trigger LIS recalculation if we have existing metrics
+    let lisRecalculated = false
+    if (existingScores && existingScores.total_sleep_hours !== null) {
+      console.log('[calculate-daily-adherence] Triggering LIS recalculation with existing metrics')
+      
+      try {
+        const scoreResponse = await fetch(`${supabaseUrl}/functions/v1/score-calculate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseServiceKey}`
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            date: today,
+            sleep: {
+              total_hours: existingScores.total_sleep_hours,
+              rem_hours: existingScores.rem_hours,
+              deep_sleep_hours: existingScores.deep_sleep_hours
+            },
+            stress: {
+              hrv: existingScores.hrv,
+              self_reported: existingScores.self_reported_stress,
+              self_perceived_age: existingScores.self_perceived_age,
+              subjective_calmness_rating: existingScores.subjective_calmness_rating
+            },
+            activity: {
+              steps: existingScores.steps,
+              active_minutes: existingScores.active_minutes,
+              activity_intensity: existingScores.activity_intensity
+            },
+            nutrition: {
+              meal_quality_score: existingScores.meal_quality,
+              nutritional_detailed_score: existingScores.nutritional_detailed_score
+            },
+            social: {
+              social_time_minutes: existingScores.social_time_minutes,
+              interaction_quality: existingScores.social_interaction_quality
+            },
+            cognitive: {
+              meditation_minutes: existingScores.meditation_minutes,
+              learning_minutes: existingScores.learning_minutes
+            },
+            source_type: 'adherence_update',
+            input_mode: existingScores.input_mode || 'manual'
+          })
+        })
+
+        if (scoreResponse.ok) {
+          lisRecalculated = true
+          console.log('[calculate-daily-adherence] LIS recalculated successfully')
+        } else {
+          const errorText = await scoreResponse.text()
+          console.warn('[calculate-daily-adherence] LIS recalc returned non-OK:', errorText)
+        }
+      } catch (lisError) {
+        console.warn('[calculate-daily-adherence] LIS recalc failed (non-blocking):', lisError)
+      }
+    } else {
+      console.log('[calculate-daily-adherence] No existing metrics - skipping LIS recalc')
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
-        adherence_percent: adherencePercent,
+        adherencePercent,
+        lisRecalculated,
         breakdown: {
           protocol: { completed: protocolCompletedCount, total: protocolItemCount },
           meals: { completed: mealCompletedCount, total: expectedMeals },
