@@ -28,6 +28,11 @@ i18n
     resources,
     fallbackLng: 'en-AU',
     lng: 'en-AU', // Set AU English as default
+    supportedLngs: ['en-AU', 'en-GB', 'en-US', 'en-CA'],
+    load: 'currentOnly',
+    react: {
+      useSuspense: false, // Prevent race conditions with translation loading
+    },
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],

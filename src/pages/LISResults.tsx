@@ -31,7 +31,7 @@ import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPre
 
 const LISResults = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
   const { user, loading } = useAuth();
   const [searchParams] = useSearchParams();
   const isGuest = !user;
@@ -431,6 +431,18 @@ const LISResults = () => {
 
   // Check if this is a shared link
   const isSharedLink = searchParams.get('shared') === 'true';
+
+  // Wait for translations to be ready
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="container max-w-6xl mx-auto py-8 px-4 flex items-center justify-center">
+          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
