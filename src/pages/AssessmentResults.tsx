@@ -424,13 +424,13 @@ const AssessmentResults = () => {
       setProtocolDialogOpen(true);
 
       toast({
-        title: "Protocol Generated!",
-        description: "Review your personalized recommendations and select what works for you.",
+        title: t('assessmentResults.toast.protocolGenerated'),
+        description: t('assessmentResults.toast.protocolGeneratedDesc'),
       });
     } catch (error: any) {
       console.error('Error generating protocol:', error);
       toast({
-        title: "Generation Failed",
+        title: t('assessmentResults.toast.generationFailed'),
         description: error.message,
         variant: "destructive",
       });

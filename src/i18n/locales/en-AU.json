@@ -2730,6 +2730,150 @@
     }
   },
   "common": {
-    "adding": "Adding..."
+    "adding": "Adding...",
+    "saving": "Saving..."
+  },
+  "inlineProtocol": {
+    "title": "Your Personalised Protocol",
+    "description": "Based on your assessment results, here are recommended actions. Select the ones you want to add to your plan.",
+    "immediateActions": "Immediate Actions",
+    "immediateDesc": "High-priority items to address your lowest-scoring areas",
+    "foundationActions": "Foundation Building",
+    "foundationDesc": "Core protocols to establish long-term health foundations",
+    "optimisationActions": "Optimisation",
+    "optimisationDesc": "Advanced interventions for those ready to go further",
+    "addSelected": "Add {{count}} Selected to My Plan",
+    "selectAll": "Select All",
+    "clearSelection": "Clear Selection",
+    "noItemsSelected": "Select items to add to your plan",
+    "alreadyInPlan": "Already in your plan",
+    "allInPlan": "All recommendations are already in your plan - great work!",
+    "doToday": "DO TODAY",
+    "thisWeek": "THIS WEEK",
+    "next30Days": "NEXT 30 DAYS",
+    "defaultProtocolName": "My Health Protocol",
+    "defaultProtocolDesc": "Personalised protocol based on your assessments",
+    "savedTitle": "Protocol Added Successfully!",
+    "savedDesc": "Your selected items have been added to your plan. View them in My Protocol.",
+    "viewProtocol": "View My Protocol",
+    "toast": {
+      "added": "Protocol Added!",
+      "addedDesc": "{{count}} items added to your plan",
+      "failed": "Failed to Save",
+      "allDuplicates": "No New Items",
+      "allDuplicatesDesc": "All selected items are already in your protocol"
+    }
+  },
+  "brainAssessment": {
+    "results": {
+      "titlePerformance": "Your Cognitive Performance Results",
+      "titleMenopause": "Your Brain Health Results",
+      "complete": "Assessment complete - here's your personalised analysis",
+      "overallScore": "Overall Cognitive Score",
+      "cognitiveProfile": "Your Cognitive Profile Analysis",
+      "excellentTitle": "Excellent cognitive performance!",
+      "excellentDesc": "Your overall score of {{score}}/100 indicates optimal brain function across multiple domains. You're operating at a high level cognitively, with particularly strong performance in areas scoring above 75.",
+      "goodTitle": "Good cognitive function",
+      "goodDesc": "with your score of {{score}}/100. While you're performing well overall, there are specific areas where targeted optimisation could elevate your cognitive performance to the next level.",
+      "fairTitle": "Fair cognitive performance.",
+      "fairDesc": "Your score of {{score}}/100 suggests you're experiencing notable cognitive challenges that are likely impacting your daily function. The good news is that with targeted, evidence-based interventions, significant improvements are achievable.",
+      "poorTitle": "Your cognitive function requires immediate attention.",
+      "poorDesc": "A score of {{score}}/100 indicates substantial challenges across multiple cognitive domains that are significantly affecting your quality of life. A comprehensive, multi-faceted approach is strongly recommended.",
+      "yourStrengths": "Your Strengths",
+      "priorityFocus": "Priority Focus Areas",
+      "strengthMemory": "Strong memory and recall capabilities - maintain this with continued cognitive engagement",
+      "strengthFocus": "Excellent concentration and sustained attention abilities",
+      "strengthProcessing": "Fast processing speed and quick decision-making capacity",
+      "strengthClarity": "Clear, sharp thinking with minimal brain fog",
+      "noStrengths": "Your cognitive profile shows areas that would benefit from targeted support. The recommendations below will help you build new strengths.",
+      "focusMemory": "Memory enhancement",
+      "focusMemorySevere": "Significant improvement needed",
+      "focusMemoryMild": "Can be optimised with specific strategies",
+      "focusFocus": "Focus training",
+      "focusFocusSevere": "Attention deficits require structured support",
+      "focusFocusMild": "Concentration can be sharpened",
+      "focusProcessing": "Processing speed",
+      "focusProcessingSevere": "Cognitive processing needs support",
+      "focusProcessingMild": "Can be enhanced with targeted exercises",
+      "focusClarity": "Mental clarity",
+      "focusClaritySevere": "Brain fog significantly affecting function",
+      "focusClarityMild": "Clarity improvements achievable",
+      "allExcellent": "Excellent performance across all categories! Focus on maintenance and continued optimisation.",
+      "actionPlan": "Your Personalised Action Plan",
+      "actionPlanDesc": "Evidence-based interventions tailored to your cognitive profile"
+    },
+    "categories": {
+      "memory": "Memory & Recall",
+      "memoryStrong": "Strong memory and recall capabilities",
+      "memoryImprove": "Room for improvement in memory",
+      "memorySupport": "Memory needs additional support",
+      "focus": "Focus & Concentration",
+      "focusExcellent": "Excellent concentration abilities",
+      "focusModerate": "Moderate focus capabilities",
+      "focusSignificant": "Significant focus challenges",
+      "processing": "Processing Speed",
+      "processingFast": "Fast cognitive processing",
+      "processingAverage": "Average processing speed",
+      "processingSlow": "Slower processing, may benefit from support",
+      "clarity": "Mental Clarity",
+      "claritySharp": "Clear, sharp thinking",
+      "clarityFog": "Some brain fog present",
+      "clarityFrequent": "Frequent brain fog"
+    }
+  },
+  "assessmentResults": {
+    "toast": {
+      "protocolGenerated": "Protocol Generated!",
+      "protocolGeneratedDesc": "Review your personalised recommendations and select what works for you.",
+      "generationFailed": "Generation Failed",
+      "protocolAdded": "Protocol Added!",
+      "protocolAddedDesc": "{{count}} items added to your plan"
+    },
+    "recommendations": {
+      "memory": {
+        "title": "Memory Support",
+        "description": "Consider memory-enhancing supplements and cognitive exercises"
+      },
+      "focus": {
+        "title": "Focus Enhancement",
+        "description": "Implement focus strategies and consider attention-supporting supplements"
+      },
+      "anxiety": {
+        "title": "Stress & Anxiety Support",
+        "description": "Incorporate stress-reduction techniques and calming practices"
+      },
+      "mood": {
+        "title": "Mood Balance",
+        "description": "Support emotional wellbeing with lifestyle adjustments"
+      },
+      "sleep": {
+        "title": "Sleep Optimisation",
+        "description": "Improve sleep hygiene and consider sleep-supporting supplements"
+      },
+      "energy": {
+        "title": "Energy Support",
+        "description": "Address energy levels with nutrition and lifestyle changes"
+      },
+      "pain": {
+        "title": "Pain & Discomfort Relief",
+        "description": "Consider anti-inflammatory approaches and mobility support"
+      },
+      "cognitive": {
+        "title": "Cognitive Clarity",
+        "description": "Support mental clarity with targeted interventions"
+      },
+      "professional": {
+        "title": "Professional Support",
+        "description": "Consider consulting with a healthcare professional for comprehensive assessment"
+      },
+      "maintain": {
+        "title": "Maintain Your Strengths",
+        "description": "Continue supporting your strong areas: {{strengths}}"
+      },
+      "general": {
+        "title": "General Wellbeing",
+        "description": "Focus on overall health optimisation with balanced lifestyle choices"
+      }
+    }
   }
 }
