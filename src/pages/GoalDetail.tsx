@@ -423,10 +423,10 @@ const GoalDetail = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8">
           <Button 
-            onClick={() => navigate('/my-goals')} 
+            onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/my-goals')} 
             size="lg"
           >
-            Return to My Goals
+            Go Back
           </Button>
         </div>
       </main>

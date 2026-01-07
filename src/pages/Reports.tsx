@@ -1267,10 +1267,10 @@ const Reports = () => {
           {/* Bottom Return Button */}
           <div className="flex justify-center gap-4 mt-8">
             <Button 
-              onClick={() => navigate('/today')} 
+              onClick={() => window.history.length > 1 ? navigate(-1) : navigate('/today')} 
               size="lg"
             >
-              Return to Today
+              Go Back
             </Button>
           </div>
         </div>

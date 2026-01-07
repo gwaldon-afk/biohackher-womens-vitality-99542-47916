@@ -1250,10 +1250,10 @@ const LISResults = () => {
       {/* Bottom Return Button */}
       <div className="flex justify-center gap-4 mt-8 pb-8">
         <Button 
-          onClick={() => navigate(user ? '/today' : '/')} 
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate(user ? '/today' : '/')} 
           size="lg"
         >
-          {user ? t('common.returnToToday') : t('common.backToHome')}
+          {t('common.goBack')}
         </Button>
       </div>
     </div>
