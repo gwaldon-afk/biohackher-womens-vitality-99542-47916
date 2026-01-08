@@ -27,6 +27,22 @@ interface TestUserConfig {
   activityLevel: string;
 }
 
+// Normalize activity level to valid database enum values
+function normalizeActivityLevel(level: string): string {
+  const mapping: Record<string, string> = {
+    'sedentary': 'sedentary',
+    'light': 'lightly_active',
+    'lightly_active': 'lightly_active',
+    'moderate': 'moderately_active',
+    'moderately_active': 'moderately_active',
+    'active': 'very_active',
+    'very_active': 'very_active',
+    'athlete': 'extremely_active',
+    'extremely_active': 'extremely_active',
+  };
+  return mapping[level.toLowerCase()] || 'moderately_active';
+}
+
 const TEST_USERS: TestUserConfig[] = [
   {
     email: 'mia.test@biohackher.dev',
@@ -48,7 +64,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 35,
     weightKg: 65,
     heightCm: 168,
-    activityLevel: 'light',
+    activityLevel: 'lightly_active',
   },
   {
     email: 'karen.test@biohackher.dev',
@@ -59,7 +75,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 45,
     weightKg: 72,
     heightCm: 162,
-    activityLevel: 'moderate',
+    activityLevel: 'moderately_active',
   },
   {
     email: 'priya.test@biohackher.dev',
@@ -70,7 +86,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 45,
     weightKg: 68,
     heightCm: 170,
-    activityLevel: 'active',
+    activityLevel: 'very_active',
   },
   {
     email: 'margaret.test@biohackher.dev',
@@ -81,7 +97,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 62,
     weightKg: 78,
     heightCm: 160,
-    activityLevel: 'light',
+    activityLevel: 'lightly_active',
   },
   {
     email: 'christine.test@biohackher.dev',
@@ -92,7 +108,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 52,
     weightKg: 65,
     heightCm: 165,
-    activityLevel: 'active',
+    activityLevel: 'very_active',
   },
   {
     email: 'sarah.test@biohackher.dev',
@@ -103,7 +119,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 38,
     weightKg: 70,
     heightCm: 172,
-    activityLevel: 'moderate',
+    activityLevel: 'moderately_active',
   },
   {
     email: 'elizabeth.test@biohackher.dev',
@@ -114,7 +130,7 @@ const TEST_USERS: TestUserConfig[] = [
     age: 55,
     weightKg: 60,
     heightCm: 165,
-    activityLevel: 'active',
+    activityLevel: 'very_active',
   },
   {
     email: 'holly.test@biohackher.dev',
@@ -232,7 +248,7 @@ Deno.serve(async (req) => {
             date_of_birth: dateOfBirth.toISOString().split('T')[0],
             weight_kg: testUser.weightKg,
             height_cm: testUser.heightCm,
-            activity_level: testUser.activityLevel,
+            activity_level: normalizeActivityLevel(testUser.activityLevel),
           }, { onConflict: 'user_id' });
 
         if (healthError) {
