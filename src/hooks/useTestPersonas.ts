@@ -368,6 +368,26 @@ export const useTestPersonas = () => {
             results.push(`${persona.name} Wearable: ✗ ${error instanceof Error ? error.message : 'Failed'}`);
           }
         }
+
+        // Populate health profile with persona demographics
+        try {
+          const dateOfBirth = new Date();
+          dateOfBirth.setFullYear(dateOfBirth.getFullYear() - persona.demographics.age);
+          
+          await supabase
+            .from('user_health_profile')
+            .upsert({
+              user_id: userId,
+              date_of_birth: dateOfBirth.toISOString().split('T')[0],
+              weight_kg: persona.demographics.weight,
+              height_cm: persona.demographics.height,
+              activity_level: mapActivityLevelToDb(persona.demographics.activityLevel),
+            }, { onConflict: 'user_id' });
+            
+          results.push(`${persona.name} Health Profile: ✓ Updated`);
+        } catch (error) {
+          results.push(`${persona.name} Health Profile: ✗ ${error instanceof Error ? error.message : 'Failed'}`);
+        }
       }
 
       toast.success(`Applied ${personaIds[personaIds.length - 1]} persona data to your account`);
@@ -400,6 +420,7 @@ export const useTestPersonas = () => {
         supabase.from('hormone_compass_stages').delete().eq('user_id', userId),
         supabase.from('assessment_progress').delete().eq('user_id', userId),
         supabase.from('wearable_connections').delete().eq('user_id', userId),
+        supabase.from('user_health_profile').delete().eq('user_id', userId),
       ]);
 
       // Clear localStorage test tier
