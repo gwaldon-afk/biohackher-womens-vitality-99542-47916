@@ -1847,6 +1847,7 @@ export type Database = {
           claimed_at: string | null
           claimed_by_user_id: string | null
           created_at: string | null
+          expires_at: string | null
           id: string
           session_id: string
         }
@@ -1856,6 +1857,7 @@ export type Database = {
           claimed_at?: string | null
           claimed_by_user_id?: string | null
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           session_id: string
         }
@@ -1865,6 +1867,7 @@ export type Database = {
           claimed_at?: string | null
           claimed_by_user_id?: string | null
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           session_id?: string
         }
@@ -1878,6 +1881,7 @@ export type Database = {
           claimed_by_user_id: string | null
           completed_at: string | null
           created_at: string | null
+          expires_at: string | null
           id: string
           score: number
           score_category: string
@@ -1891,6 +1895,7 @@ export type Database = {
           claimed_by_user_id?: string | null
           completed_at?: string | null
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           score: number
           score_category: string
@@ -1904,6 +1909,7 @@ export type Database = {
           claimed_by_user_id?: string | null
           completed_at?: string | null
           created_at?: string | null
+          expires_at?: string | null
           id?: string
           score?: number
           score_category?: string
@@ -2126,6 +2132,7 @@ export type Database = {
           craving_pattern: number | null
           created_at: string | null
           eats_after_8pm: boolean | null
+          expires_at: string | null
           fiber_score: number | null
           first_meal_hour: number | null
           food_preference_type: string | null
@@ -2171,6 +2178,7 @@ export type Database = {
           craving_pattern?: number | null
           created_at?: string | null
           eats_after_8pm?: boolean | null
+          expires_at?: string | null
           fiber_score?: number | null
           first_meal_hour?: number | null
           food_preference_type?: string | null
@@ -2216,6 +2224,7 @@ export type Database = {
           craving_pattern?: number | null
           created_at?: string | null
           eats_after_8pm?: boolean | null
+          expires_at?: string | null
           fiber_score?: number | null
           first_meal_hour?: number | null
           food_preference_type?: string | null
