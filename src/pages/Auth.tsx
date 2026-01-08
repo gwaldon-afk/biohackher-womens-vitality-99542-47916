@@ -14,7 +14,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
-import { TEST_MODE_ENABLED } from '@/config/testMode';
+import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -60,24 +60,6 @@ const Auth = () => {
       preferredName: '',
     },
   });
-
-  // Redirect immediately if in test mode
-  useEffect(() => {
-    if (TEST_MODE_ENABLED) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
-
-  // Skip rendering auth form if in test mode
-  if (TEST_MODE_ENABLED) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground">Redirecting to dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   // Redirect if already authenticated and check for health profile AND onboarding
   // BUT: Don't redirect if coming from guest session or assessment session - let them complete signup

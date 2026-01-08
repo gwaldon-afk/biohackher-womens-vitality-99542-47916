@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Loader2 } from 'lucide-react';
-import { TEST_MODE_ENABLED } from '@/config/testMode';
+import { useTranslation } from 'react-i18next';
 
 interface RequireHealthProfileProps {
   children: React.ReactNode;
@@ -14,14 +14,11 @@ export function RequireHealthProfile({
   children, 
   requiredFields = ['weight_kg', 'height_cm', 'activity_level', 'date_of_birth'] 
 }: RequireHealthProfileProps) {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useHealthProfile();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Check for authenticated test mode - bypass profile check
-  const testTier = TEST_MODE_ENABLED ? localStorage.getItem('testModeTier') : null;
-  const isAuthenticatedTestMode = TEST_MODE_ENABLED && testTier && testTier !== 'guest';
 
   const isProfileComplete = () => {
     if (!profile) return false;
@@ -52,7 +49,7 @@ export function RequireHealthProfile({
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Checking your profile...</p>
+          <p className="text-muted-foreground">{t('common.checkingProfile', 'Checking your profile...')}</p>
         </div>
       </div>
     );
@@ -60,11 +57,6 @@ export function RequireHealthProfile({
 
   // If not authenticated, let children render (ProtectedRoute handles auth)
   if (!user) {
-    return <>{children}</>;
-  }
-
-  // Bypass profile check in authenticated test mode
-  if (isAuthenticatedTestMode) {
     return <>{children}</>;
   }
 
@@ -78,7 +70,7 @@ export function RequireHealthProfile({
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-muted-foreground">Redirecting to complete your profile...</p>
+        <p className="text-muted-foreground">{t('common.redirectingToProfile', 'Redirecting to complete your profile...')}</p>
       </div>
     </div>
   );
