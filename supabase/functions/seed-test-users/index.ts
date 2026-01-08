@@ -226,6 +226,7 @@ Deno.serve(async (req) => {
           }, { onConflict: 'user_id' });
 
       } catch (userError) {
+        console.error(`Error creating user ${testUser.email}:`, userError);
         results.push({
           email: testUser.email,
           status: 'error',
@@ -234,10 +235,13 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Check if any users failed
+    const hasErrors = results.some(r => r.status === 'error');
+
     return new Response(
       JSON.stringify({
-        success: true,
-        message: 'Test users seeding complete',
+        success: !hasErrors,
+        message: hasErrors ? 'Some test users failed to seed' : 'Test users seeding complete',
         results,
       }),
       {

@@ -190,16 +190,21 @@ export const DevTestingPanel = () => {
       
       if (error) throw error;
 
-      const resultMessages = data.results?.map((r: any) => 
+      const resultMessages = data.results?.map((r: { email: string; status: string; error?: string }) => 
         `${r.email}: ${r.status}${r.error ? ` (${r.error})` : ''}`
       ) || [];
       
       setResults(['✓ Test users seeded:', ...resultMessages]);
-      toast.success('Test users created successfully');
       
-      // Mark users as seeded
-      localStorage.setItem('testUsersSeeded', 'true');
-      setUsersSeeded(true);
+      // Only mark as seeded if truly successful
+      const hasErrors = data.results?.some((r: { status: string }) => r.status === 'error');
+      if (data.success && !hasErrors) {
+        localStorage.setItem('testUsersSeeded', 'true');
+        setUsersSeeded(true);
+        toast.success('Test users created successfully');
+      } else {
+        toast.error('Some test users failed to seed. Check results below.');
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to seed users';
       setResults([`✗ Seed failed: ${message}`]);
