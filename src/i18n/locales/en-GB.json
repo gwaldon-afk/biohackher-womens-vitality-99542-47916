@@ -2988,5 +2988,18 @@
       "dataFetchFailed": "Unable to fetch wearable data",
       "authExpired": "Your device authorisation has expired. Please reconnect."
     }
+  },
+  "testMode": {
+    "label": "Test Mode",
+    "tiers": {
+      "guest": "Guest",
+      "guestDescription": "Unauthenticated user",
+      "registered": "Registered",
+      "registeredDescription": "Manual data entry only",
+      "subscribed": "Subscribed",
+      "subscribedDescription": "Full features",
+      "premium": "Premium",
+      "premiumDescription": "Wearables & all features"
+    }
   }
 }
