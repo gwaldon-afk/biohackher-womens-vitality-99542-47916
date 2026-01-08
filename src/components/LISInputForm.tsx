@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,6 +65,7 @@ interface LISInputFormProps {
 }
 
 const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("manual");
@@ -843,19 +845,19 @@ const LISInputForm = ({ children, onScoreCalculated }: LISInputFormProps) => {
             <TabsContent value="wearable" className="space-y-6">
               <div className="text-center py-12 space-y-4">
                 <Smartphone className="h-12 w-12 mx-auto text-muted-foreground" />
-                <h3 className="text-lg font-semibold">Sync Your Wearables</h3>
+                <h3 className="text-lg font-semibold">{t('wearables.syncTab.title')}</h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Connect your fitness trackers and health devices to automatically import your daily metrics.
+                  {t('wearables.syncTab.description')}
                 </p>
                 <div className="space-y-2">
                   <Button onClick={handleWearableSync} disabled={loading} className="w-full max-w-xs">
-                    {loading ? "Syncing..." : "Sync Apple Health"}
+                    {loading ? t('wearables.status.syncing') : t('wearables.syncTab.syncAppleHealth')}
                   </Button>
                   <Button onClick={handleWearableSync} disabled={loading} variant="outline" className="w-full max-w-xs">
-                    {loading ? "Syncing..." : "Sync Google Fit"}
+                    {loading ? t('wearables.status.syncing') : t('wearables.syncTab.syncGoogleFit')}
                   </Button>
                   <Button onClick={handleWearableSync} disabled={loading} variant="outline" className="w-full max-w-xs">
-                    {loading ? "Syncing..." : "Sync Fitbit"}
+                    {loading ? t('wearables.status.syncing') : t('wearables.syncTab.syncFitbit')}
                   </Button>
                 </div>
               </div>

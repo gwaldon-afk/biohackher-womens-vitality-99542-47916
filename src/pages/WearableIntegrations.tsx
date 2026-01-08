@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,42 +23,43 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 const SUPPORTED_DEVICES = [
   { 
     id: 'fitbit', 
-    name: 'Fitbit', 
+    nameKey: 'wearables.devices.fitbit.name',
+    descriptionKey: 'wearables.devices.fitbit.description',
     icon: Activity,
-    description: 'Sync activity, sleep, and heart rate data',
     color: 'bg-blue-500'
   },
   { 
     id: 'oura', 
-    name: 'Oura Ring', 
+    nameKey: 'wearables.devices.oura.name',
+    descriptionKey: 'wearables.devices.oura.description',
     icon: Moon,
-    description: 'Advanced sleep and readiness tracking',
     color: 'bg-purple-500'
   },
   { 
     id: 'whoop', 
-    name: 'WHOOP', 
+    nameKey: 'wearables.devices.whoop.name',
+    descriptionKey: 'wearables.devices.whoop.description',
     icon: Heart,
-    description: 'Recovery, strain, and sleep analysis',
     color: 'bg-red-500'
   },
   { 
     id: 'apple_health', 
-    name: 'Apple Health', 
+    nameKey: 'wearables.devices.appleHealth.name',
+    descriptionKey: 'wearables.devices.appleHealth.description',
     icon: Heart,
-    description: 'Comprehensive health data from Apple devices',
     color: 'bg-gray-500'
   },
   { 
     id: 'garmin', 
-    name: 'Garmin', 
+    nameKey: 'wearables.devices.garmin.name',
+    descriptionKey: 'wearables.devices.garmin.description',
     icon: Watch,
-    description: 'Fitness and activity tracking',
     color: 'bg-cyan-500'
   }
 ];
 
 const WearableIntegrations = () => {
+  const { t, i18n } = useTranslation();
   const { connections, wearableData, loading, disconnectWearable, triggerSync } = useWearables();
   const { toast } = useToast();
   const [syncingId, setSyncingId] = useState<string | null>(null);
@@ -71,9 +73,11 @@ const WearableIntegrations = () => {
   };
 
   const handleConnect = (deviceId: string) => {
+    const device = SUPPORTED_DEVICES.find(d => d.id === deviceId);
+    const deviceName = device ? t(device.nameKey) : deviceId;
     toast({
-      title: "Connection Coming Soon",
-      description: `${SUPPORTED_DEVICES.find(d => d.id === deviceId)?.name} integration is being finalized. Check back soon!`
+      title: t('wearables.toast.comingSoon.title'),
+      description: t('wearables.toast.comingSoon.description', { deviceName })
     });
   };
 
@@ -84,14 +88,14 @@ const WearableIntegrations = () => {
     try {
       await disconnectWearable(connection.id);
       toast({
-        title: "Device Disconnected",
-        description: "Your wearable has been disconnected successfully."
+        title: t('wearables.toast.disconnected.title'),
+        description: t('wearables.toast.disconnected.description')
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to disconnect device. Please try again."
+        title: t('wearables.toast.disconnectError.title'),
+        description: t('wearables.toast.disconnectError.description')
       });
     }
   };
@@ -104,27 +108,27 @@ const WearableIntegrations = () => {
     try {
       await triggerSync(connection.id);
       toast({
-        title: "Sync Complete",
-        description: "Your data has been synced successfully."
+        title: t('wearables.toast.syncComplete.title'),
+        description: t('wearables.toast.syncComplete.description')
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Sync Failed",
-        description: "Unable to sync data. Please try again."
+        title: t('wearables.toast.syncFailed.title'),
+        description: t('wearables.toast.syncFailed.description')
       });
     } finally {
       setSyncingId(null);
     }
   };
 
-  // Prepare chart data from wearable data
+  // Prepare chart data from wearable data with locale-aware date formatting
   const sleepChartData = wearableData
     .filter(d => d.total_sleep_hours !== null)
     .slice(0, 14)
     .reverse()
     .map(d => ({
-      date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      date: new Date(d.date).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' }),
       hours: d.total_sleep_hours
     }));
 
@@ -133,7 +137,7 @@ const WearableIntegrations = () => {
     .slice(0, 14)
     .reverse()
     .map(d => ({
-      date: new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      date: new Date(d.date).toLocaleDateString(i18n.language, { month: 'short', day: 'numeric' }),
       steps: d.steps
     }));
 
@@ -144,10 +148,10 @@ const WearableIntegrations = () => {
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">
-            <span className="text-primary">Wearable</span> Integrations
+            <span className="text-primary">{t('wearables.pageTitle')}</span>
           </h1>
           <p className="text-lg text-muted-foreground">
-            Automatically sync data from your fitness trackers and health devices
+            {t('wearables.pageSubtitle')}
           </p>
         </div>
 
@@ -155,29 +159,29 @@ const WearableIntegrations = () => {
         {connections.filter(c => c.is_active).length > 0 && (
           <Card className="mb-8 bg-gradient-to-r from-primary/5 to-secondary/5">
             <CardHeader>
-              <CardTitle>Connected Devices</CardTitle>
-              <CardDescription>Your active wearable connections</CardDescription>
+              <CardTitle>{t('wearables.overview.title')}</CardTitle>
+              <CardDescription>{t('wearables.overview.description')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-background rounded-lg">
-                  <div className="text-sm text-muted-foreground mb-1">Active Connections</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('wearables.overview.activeConnections')}</div>
                   <div className="text-2xl font-bold text-primary">
                     {connections.filter(c => c.is_active).length}
                   </div>
                 </div>
                 <div className="p-4 bg-background rounded-lg">
-                  <div className="text-sm text-muted-foreground mb-1">Days of Data</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('wearables.overview.daysOfData')}</div>
                   <div className="text-2xl font-bold">
                     {wearableData.length}
                   </div>
                 </div>
                 <div className="p-4 bg-background rounded-lg">
-                  <div className="text-sm text-muted-foreground mb-1">Last Sync</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('wearables.overview.lastSync')}</div>
                   <div className="text-sm font-medium">
                     {connections[0]?.last_sync_at 
-                      ? new Date(connections[0].last_sync_at).toLocaleDateString()
-                      : 'Never'}
+                      ? new Date(connections[0].last_sync_at).toLocaleDateString(i18n.language)
+                      : t('wearables.overview.never')}
                   </div>
                 </div>
               </div>
@@ -193,9 +197,9 @@ const WearableIntegrations = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Moon className="h-5 w-5" />
-                    Sleep Trends
+                    {t('wearables.charts.sleepTrends')}
                   </CardTitle>
-                  <CardDescription>Last 14 days</CardDescription>
+                  <CardDescription>{t('wearables.charts.last14Days')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={200}>
@@ -222,9 +226,9 @@ const WearableIntegrations = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="h-5 w-5" />
-                    Activity Trends
+                    {t('wearables.charts.activityTrends')}
                   </CardTitle>
-                  <CardDescription>Last 14 days</CardDescription>
+                  <CardDescription>{t('wearables.charts.last14Days')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={200}>
@@ -250,7 +254,7 @@ const WearableIntegrations = () => {
 
         {/* Available Devices */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Available Devices</h2>
+          <h2 className="text-2xl font-bold">{t('wearables.availableDevices')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {SUPPORTED_DEVICES.map((device) => {
               const connected = isConnected(device.id);
@@ -265,11 +269,11 @@ const WearableIntegrations = () => {
                           <Icon className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{device.name}</CardTitle>
+                          <CardTitle className="text-lg">{t(device.nameKey)}</CardTitle>
                           {connected && (
                             <Badge variant="default" className="mt-1">
                               <CheckCircle2 className="h-3 w-3 mr-1" />
-                              Connected
+                              {t('wearables.status.connected')}
                             </Badge>
                           )}
                         </div>
@@ -278,7 +282,7 @@ const WearableIntegrations = () => {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="mb-4">
-                      {device.description}
+                      {t(device.descriptionKey)}
                     </CardDescription>
                     
                     {connected ? (
@@ -293,12 +297,12 @@ const WearableIntegrations = () => {
                           {syncingId === getConnection(device.id)?.id ? (
                             <>
                               <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                              Syncing...
+                              {t('wearables.status.syncing')}
                             </>
                           ) : (
                             <>
                               <RefreshCw className="h-4 w-4 mr-2" />
-                              Sync Now
+                              {t('wearables.status.syncNow')}
                             </>
                           )}
                         </Button>
@@ -316,7 +320,7 @@ const WearableIntegrations = () => {
                         onClick={() => handleConnect(device.id)}
                       >
                         <LinkIcon className="h-4 w-4 mr-2" />
-                        Connect
+                        {t('wearables.status.connect')}
                       </Button>
                     )}
                   </CardContent>
@@ -331,21 +335,21 @@ const WearableIntegrations = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5" />
-              How It Works
+              {t('wearables.howItWorks.title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              • <strong>Automatic Sync:</strong> Data syncs automatically every 24 hours
+              • <strong>{t('wearables.howItWorks.automaticSync')}</strong> {t('wearables.howItWorks.automaticSyncDesc')}
             </p>
             <p className="text-sm text-muted-foreground">
-              • <strong>Reduced Manual Entry:</strong> Sleep, activity, and HRV data populate automatically
+              • <strong>{t('wearables.howItWorks.reducedEntry')}</strong> {t('wearables.howItWorks.reducedEntryDesc')}
             </p>
             <p className="text-sm text-muted-foreground">
-              • <strong>Privacy First:</strong> Your data is encrypted and only accessible by you
+              • <strong>{t('wearables.howItWorks.privacyFirst')}</strong> {t('wearables.howItWorks.privacyFirstDesc')}
             </p>
             <p className="text-sm text-muted-foreground">
-              • <strong>Smart LIS Calculations:</strong> Wearable data contributes to your daily LIS score
+              • <strong>{t('wearables.howItWorks.smartLis')}</strong> {t('wearables.howItWorks.smartLisDesc')}
             </p>
           </CardContent>
         </Card>

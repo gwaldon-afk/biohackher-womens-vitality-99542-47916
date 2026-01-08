@@ -2828,5 +2828,111 @@
     "startAssessment": "Start Assessment",
     "retakeAssessment": "Retake Assessment",
     "completed": "Completed"
+  },
+  "wearables": {
+    "pageTitle": "Wearable Integrations",
+    "pageSubtitle": "Automatically sync data from your fitness trackers and health devices",
+    "availableDevices": "Available Devices",
+    "devices": {
+      "fitbit": {
+        "name": "Fitbit",
+        "description": "Sync activity, sleep, and heart rate data"
+      },
+      "oura": {
+        "name": "Oura Ring",
+        "description": "Advanced sleep and readiness tracking"
+      },
+      "whoop": {
+        "name": "WHOOP",
+        "description": "Recovery, strain, and sleep analysis"
+      },
+      "appleHealth": {
+        "name": "Apple Health",
+        "description": "Comprehensive health data from Apple devices"
+      },
+      "garmin": {
+        "name": "Garmin",
+        "description": "Fitness and activity tracking"
+      }
+    },
+    "status": {
+      "connected": "Connected",
+      "connecting": "Connecting...",
+      "disconnected": "Disconnected",
+      "syncing": "Syncing...",
+      "syncNow": "Sync Now",
+      "connect": "Connect",
+      "disconnect": "Disconnect"
+    },
+    "overview": {
+      "title": "Connected Devices",
+      "description": "Your active wearable connections",
+      "activeConnections": "Active Connections",
+      "daysOfData": "Days of Data",
+      "lastSync": "Last Sync",
+      "never": "Never"
+    },
+    "charts": {
+      "sleepTrends": "Sleep Trends",
+      "activityTrends": "Activity Trends",
+      "last14Days": "Last 14 days"
+    },
+    "toast": {
+      "comingSoon": {
+        "title": "Connection Coming Soon",
+        "description": "{{deviceName}} integration is being finalized. Check back soon!"
+      },
+      "disconnected": {
+        "title": "Device Disconnected",
+        "description": "Your wearable has been disconnected successfully."
+      },
+      "disconnectError": {
+        "title": "Error",
+        "description": "Failed to disconnect device. Please try again."
+      },
+      "syncComplete": {
+        "title": "Sync Complete",
+        "description": "Your data has been synced successfully."
+      },
+      "syncFailed": {
+        "title": "Sync Failed",
+        "description": "Unable to sync data. Please try again."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "automaticSync": "Automatic Sync:",
+      "automaticSyncDesc": "Data syncs automatically every 24 hours",
+      "reducedEntry": "Reduced Manual Entry:",
+      "reducedEntryDesc": "Sleep, activity, and HRV data populate automatically",
+      "privacyFirst": "Privacy First:",
+      "privacyFirstDesc": "Your data is encrypted and only accessible by you",
+      "smartLis": "Smart LIS Calculations:",
+      "smartLisDesc": "Wearable data contributes to your daily LIS score"
+    },
+    "syncTab": {
+      "title": "Sync Your Wearables",
+      "description": "Connect your fitness trackers and health devices to automatically import your daily metrics.",
+      "syncAppleHealth": "Sync Apple Health",
+      "syncGoogleFit": "Sync Google Fit",
+      "syncFitbit": "Sync Fitbit"
+    },
+    "dataSource": {
+      "wearable": "From Wearable",
+      "manual": "Manual Entry",
+      "mixed": "Mixed Sources"
+    },
+    "oauth": {
+      "connecting": "Connecting to {{deviceName}}...",
+      "authorizing": "Authorizing access...",
+      "success": "Successfully connected to {{deviceName}}",
+      "cancelled": "Connection canceled",
+      "failed": "Connection failed. Please try again."
+    },
+    "errors": {
+      "connectionFailed": "Failed to connect to {{deviceName}}",
+      "dataFetchFailed": "Unable to fetch wearable data",
+      "authExpired": "Your device authorization has expired. Please reconnect."
+    }
   }
 }
