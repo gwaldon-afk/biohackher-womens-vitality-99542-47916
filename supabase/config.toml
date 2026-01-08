@@ -90,5 +90,8 @@ verify_jwt = false
 [functions.fitbit-sync]
 verify_jwt = true
 
+[functions.cleanup-guest-data]
+verify_jwt = false
+
 [functions.seed-test-users]
 verify_jwt = false
