@@ -54,9 +54,12 @@ export const useHealthProfile = () => {
   const [profile, setProfile] = useState<HealthProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fetchedForUserId, setFetchedForUserId] = useState<string | null>(null);
 
   const fetchProfile = useCallback(async () => {
     if (!user) {
+      setProfile(null);
+      setFetchedForUserId(null);
       setLoading(false);
       return;
     }
@@ -74,9 +77,11 @@ export const useHealthProfile = () => {
       if (fetchError) throw fetchError;
       
       setProfile(data as HealthProfile);
+      setFetchedForUserId(user.id);
     } catch (err: any) {
       console.error('Error fetching health profile:', err);
       setError(err.message);
+      setFetchedForUserId(user.id); // Mark as fetched even on error
     } finally {
       setLoading(false);
     }
@@ -111,6 +116,7 @@ export const useHealthProfile = () => {
       if (upsertError) throw upsertError;
 
       setProfile(data as HealthProfile);
+      setFetchedForUserId(user.id);
       return data;
     } catch (err: any) {
       console.error('Error saving health profile:', err);
@@ -163,9 +169,13 @@ export const useHealthProfile = () => {
       : undefined
   };
 
+  // Compute effective loading state:
+  // Loading is true if internal loading OR if we have a user but haven't fetched for that user yet
+  const effectiveLoading = loading || (!!user && fetchedForUserId !== user.id);
+
   return {
     profile,
-    loading,
+    loading: effectiveLoading,
     error,
     refetch: fetchProfile,
     createOrUpdateProfile,
