@@ -14,7 +14,6 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
-import { useAssessmentFlowStore } from '@/stores/assessmentFlowStore';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
