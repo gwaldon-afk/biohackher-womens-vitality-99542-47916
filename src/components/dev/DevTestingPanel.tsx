@@ -1,7 +1,7 @@
 /**
  * Developer Testing Panel
  * 
- * Floating panel for running test assessments with preset personas.
+ * Unified panel for test mode tier selection and persona testing.
  * Only visible when TEST_MODE_ENABLED is true.
  * Toggle with Ctrl+Shift+T or click the floating button.
  */
@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { 
   FlaskConical, 
   X, 
@@ -28,7 +29,10 @@ import {
   Watch,
   Pencil,
   Crown,
-  User
+  User,
+  UserX,
+  UserCheck,
+  Star
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useTestPersonas } from '@/hooks/useTestPersonas';
@@ -36,6 +40,14 @@ import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 type AssessmentType = 'lis' | 'nutrition' | 'hormone';
+type TestTier = 'guest' | 'registered' | 'subscribed' | 'premium';
+
+const tierConfig: Record<TestTier, { icon: React.ReactNode; label: string; color: string }> = {
+  guest: { icon: <UserX className="h-3 w-3" />, label: 'Guest', color: 'text-muted-foreground' },
+  registered: { icon: <User className="h-3 w-3" />, label: 'Registered', color: 'text-blue-500' },
+  subscribed: { icon: <UserCheck className="h-3 w-3" />, label: 'Subscribed', color: 'text-green-500' },
+  premium: { icon: <Crown className="h-3 w-3" />, label: 'Premium', color: 'text-amber-500' },
+};
 
 export const DevTestingPanel = () => {
   const { t } = useTranslation();
@@ -44,6 +56,9 @@ export const DevTestingPanel = () => {
   const [selectedPersonas, setSelectedPersonas] = useState<string[]>([]);
   const [selectedAssessments, setSelectedAssessments] = useState<AssessmentType[]>(['lis', 'nutrition', 'hormone']);
   const [results, setResults] = useState<string[]>([]);
+  const [selectedTier, setSelectedTier] = useState<TestTier>(() => {
+    return (localStorage.getItem('testModeTier') as TestTier) || 'premium';
+  });
 
   const { 
     personas, 
@@ -54,6 +69,15 @@ export const DevTestingPanel = () => {
     hasOverrides,
     currentUserId
   } = useTestPersonas();
+
+  // Handle tier change
+  const handleTierChange = useCallback((tier: string) => {
+    if (!tier) return;
+    const newTier = tier as TestTier;
+    setSelectedTier(newTier);
+    localStorage.setItem('testModeTier', newTier);
+    window.location.reload();
+  }, []);
 
   // Only allow single persona selection for sequential testing
   const togglePersona = useCallback((id: string) => {
@@ -73,8 +97,6 @@ export const DevTestingPanel = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Removed - now defined above with single-selection logic
-
   const toggleAssessment = useCallback((type: AssessmentType) => {
     setSelectedAssessments(prev =>
       prev.includes(type)
@@ -82,8 +104,6 @@ export const DevTestingPanel = () => {
         : [...prev, type]
     );
   }, []);
-
-  // Remove select all - single selection mode only
 
   const handleRun = useCallback(async () => {
     if (selectedPersonas.length === 0) return;
@@ -151,16 +171,48 @@ export const DevTestingPanel = () => {
 
       {!isMinimized && (
         <CardContent className="p-4 pt-0 space-y-4">
+          {/* Tier Selection */}
+          <div className="space-y-2">
+            <span className="text-xs font-medium">Test Tier</span>
+            <ToggleGroup 
+              type="single" 
+              value={selectedTier} 
+              onValueChange={handleTierChange}
+              className="justify-start flex-wrap gap-1"
+            >
+              {(Object.keys(tierConfig) as TestTier[]).map((tier) => (
+                <ToggleGroupItem
+                  key={tier}
+                  value={tier}
+                  size="sm"
+                  className={cn(
+                    "text-xs gap-1 h-7 px-2",
+                    selectedTier === tier && tierConfig[tier].color
+                  )}
+                >
+                  {tierConfig[tier].icon}
+                  {tierConfig[tier].label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+
+          <Separator />
+
           {/* User Info Banner */}
-          {currentUserId ? (
+          {selectedTier === 'guest' ? (
+            <div className="text-xs bg-muted/50 rounded p-2 text-muted-foreground">
+              <span className="font-medium">Guest Mode:</span> Not authenticated. Viewing public pages only.
+            </div>
+          ) : currentUserId ? (
             <div className="text-xs bg-muted/50 rounded p-2 text-muted-foreground">
               Testing as: <span className="font-mono">{currentUserId.slice(0, 8)}...</span>
               <br />
               <span className="text-[10px]">Data writes to your account (one persona at a time)</span>
             </div>
           ) : (
-            <div className="text-xs bg-destructive/10 text-destructive rounded p-2">
-              Please log in to run tests
+            <div className="text-xs bg-purple-500/10 text-purple-700 dark:text-purple-300 rounded p-2">
+              <span className="font-medium">{tierConfig[selectedTier].label} Mode:</span> Using mock authentication.
             </div>
           )}
 
@@ -171,7 +223,7 @@ export const DevTestingPanel = () => {
                 <Users className="h-3 w-3" /> Select Persona
               </span>
             </div>
-            <ScrollArea className="h-32">
+            <ScrollArea className="h-40">
               <div className="space-y-1">
                 {personas.map(persona => (
                   <label
@@ -190,7 +242,9 @@ export const DevTestingPanel = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-medium">{persona.backstory?.nickname || persona.name}</span>
+                        <span className="text-xs font-medium">
+                          {persona.backstory?.nickname || persona.name} ({persona.demographics.age})
+                        </span>
                         {/* Tier badge */}
                         {persona.subscriptionTier === 'premium' ? (
                           <Crown className="h-3 w-3 text-amber-500" />
@@ -205,7 +259,7 @@ export const DevTestingPanel = () => {
                         )}
                       </div>
                       <span className="text-[10px] text-muted-foreground truncate block">
-                        {persona.backstory?.occupation?.split(' at ')[0] || `${persona.demographics.age}yo`}
+                        {persona.backstory?.occupation?.split(' at ')[0]}, {persona.backstory?.location?.split(',')[0]}
                       </span>
                     </div>
                   </label>
@@ -253,7 +307,7 @@ export const DevTestingPanel = () => {
           <div className="flex gap-2">
             <Button
               onClick={handleRun}
-              disabled={isRunning || selectedPersonas.length === 0 || selectedAssessments.length === 0 || !currentUserId}
+              disabled={isRunning || selectedPersonas.length === 0 || selectedAssessments.length === 0 || selectedTier === 'guest'}
               size="sm"
               className="flex-1 bg-purple-600 hover:bg-purple-700"
             >
@@ -262,7 +316,7 @@ export const DevTestingPanel = () => {
             </Button>
             <Button
               onClick={handleClear}
-              disabled={isRunning || !currentUserId}
+              disabled={isRunning || selectedTier === 'guest'}
               variant="outline"
               size="sm"
               title="Clear all your test data"

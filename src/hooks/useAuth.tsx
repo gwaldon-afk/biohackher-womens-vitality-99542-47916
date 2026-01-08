@@ -56,23 +56,24 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // Check dev mode preference for TEST_MODE
-  const getInitialDevMode = () => {
-    if (!TEST_MODE_ENABLED) return 'auth';
-    return (localStorage.getItem('devMode') as 'guest' | 'auth') || 'auth';
+  // Check test mode tier preference
+  const getTestModeTier = () => {
+    if (!TEST_MODE_ENABLED) return null;
+    return localStorage.getItem('testModeTier') as 'guest' | 'registered' | 'subscribed' | 'premium' | null;
   };
   
-  const devMode = getInitialDevMode();
-  const isGuestMode = TEST_MODE_ENABLED && devMode === 'guest';
+  const testTier = getTestModeTier();
+  const isGuestMode = testTier === 'guest';
+  const isAuthenticatedTestMode = TEST_MODE_ENABLED && testTier && testTier !== 'guest';
   
   const [user, setUser] = useState<User | null>(
-    TEST_MODE_ENABLED && !isGuestMode ? (MOCK_USER as User) : null
+    isAuthenticatedTestMode ? (MOCK_USER as User) : null
   );
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(
-    TEST_MODE_ENABLED && !isGuestMode ? MOCK_PROFILE : null
+    isAuthenticatedTestMode ? MOCK_PROFILE : null
   );
-  const [loading, setLoading] = useState(!TEST_MODE_ENABLED || isGuestMode);
+  const [loading, setLoading] = useState(!isAuthenticatedTestMode);
   const { toast } = useToast();
   const { i18n } = useTranslation();
 
@@ -135,8 +136,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    // Skip auth setup if in test mode
-    if (TEST_MODE_ENABLED) {
+    // Skip auth setup if in authenticated test mode
+    if (isAuthenticatedTestMode) {
       return;
     }
 
