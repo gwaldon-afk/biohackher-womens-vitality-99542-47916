@@ -29,6 +29,20 @@ export default function CompleteHealthProfile() {
   const [submitting, setSubmitting] = useState(false);
   const [prePopulated, setPrePopulated] = useState<string[]>([]);
 
+  // Check if profile is already complete - if so, redirect away (self-healing)
+  const isProfileComplete = profile && 
+    profile.date_of_birth && 
+    profile.weight_kg && 
+    profile.height_cm && 
+    profile.activity_level;
+
+  useEffect(() => {
+    if (!loading && isProfileComplete) {
+      // Profile is already complete, no need to be on this page
+      navigate(decodeURIComponent(returnTo), { replace: true });
+    }
+  }, [loading, isProfileComplete, navigate, returnTo]);
+
   // Pre-populate form with existing profile data
   useEffect(() => {
     if (profile && !loading) {
