@@ -2960,6 +2960,7 @@ export type Database = {
           id: string
           language: string | null
           measurement_system: string | null
+          menomap_enabled: boolean | null
           menomap_onboarding_completed: boolean | null
           onboarding_completed: boolean | null
           preferred_name: string
@@ -2981,6 +2982,7 @@ export type Database = {
           id?: string
           language?: string | null
           measurement_system?: string | null
+          menomap_enabled?: boolean | null
           menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name: string
@@ -3002,6 +3004,7 @@ export type Database = {
           id?: string
           language?: string | null
           measurement_system?: string | null
+          menomap_enabled?: boolean | null
           menomap_onboarding_completed?: boolean | null
           onboarding_completed?: boolean | null
           preferred_name?: string
