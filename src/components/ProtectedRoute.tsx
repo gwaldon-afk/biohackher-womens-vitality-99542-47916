@@ -12,18 +12,37 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // TEST MODE: Bypass authentication checks
-  if (TEST_MODE_ENABLED) {
-    return <>{children}</>;
-  }
+  // TEST MODE: Check if guest tier is selected
+  const isGuestMode = TEST_MODE_ENABLED && localStorage.getItem('testModeTier') === 'guest';
 
   useEffect(() => {
+    // In test mode with guest tier, redirect to home
+    if (isGuestMode) {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    // TEST MODE: Bypass authentication checks for non-guest tiers
+    if (TEST_MODE_ENABLED) {
+      return;
+    }
+
     if (!loading && !user) {
       // Save current path to return after authentication
       const returnTo = encodeURIComponent(location.pathname + location.search);
       navigate(`/auth?returnTo=${returnTo}`);
     }
-  }, [user, loading, navigate, location]);
+  }, [user, loading, navigate, location, isGuestMode]);
+
+  // In guest test mode, show nothing while redirecting
+  if (isGuestMode) {
+    return null;
+  }
+
+  // TEST MODE: Bypass authentication checks for non-guest tiers
+  if (TEST_MODE_ENABLED) {
+    return <>{children}</>;
+  }
 
   if (loading) {
     return (
