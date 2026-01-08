@@ -9,7 +9,7 @@ import beautyPillar from "@/assets/beauty-pillar.png";
 import brainPillar from "@/assets/brain-pillar.png";
 import bodyPillar from "@/assets/body-pillar.png";
 import balancePillar from "@/assets/balance-pillar.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
@@ -33,6 +33,8 @@ import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { navigateBack } from "@/utils/navigationUtils";
 
 interface AssessmentData {
   id: string;
@@ -43,6 +45,7 @@ interface AssessmentData {
 
 const MyProtocol = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -50,6 +53,9 @@ const MyProtocol = () => {
   const { addToCart } = useCart();
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  
+  // URL-based source filtering
+  const sourceFilter = searchParams.get('source');
   
   // Recommended tab filters and sorting
   const [recommendedSourceFilter, setRecommendedSourceFilter] = useState<string>('all');
@@ -144,7 +150,11 @@ const MyProtocol = () => {
     return filtered;
   }, [historicalRecommendations, historySourceFilter, historyStatusFilter, historySortBy]);
   
-  const activeProtocols = protocols.filter(p => p.is_active);
+  // Filter active protocols by source if URL param is present
+  const allActiveProtocols = protocols.filter(p => p.is_active);
+  const activeProtocols = sourceFilter 
+    ? allActiveProtocols.filter(p => p.source_type === sourceFilter)
+    : allActiveProtocols;
   const activeProtocol = activeProtocols[0]; // Get first active protocol
   
   // Get protocol items for ALL active protocols
@@ -431,6 +441,22 @@ const MyProtocol = () => {
 
           {/* Active Protocol Tab - Merged Today + By Type */}
           <TabsContent value="active" className="space-y-6">
+            {/* Source Filter Indicator */}
+            {sourceFilter && (
+              <Alert className="border-primary/30 bg-primary/5">
+                <AlertDescription className="flex items-center justify-between">
+                  <span>{t('myProtocol.filteredBy', { source: sourceFilter })}</span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => navigate('/my-protocol?tab=active')}
+                  >
+                    {t('myProtocol.showAll')}
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Protocol Bundle Card */}
             {activeProtocols.length > 0 && allProtocolItems.length > 0 && (
               <ProtocolBundleCard
@@ -1044,10 +1070,10 @@ const MyProtocol = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8 pb-8">
           <Button 
-            onClick={() => navigate('/today')} 
+            onClick={() => navigateBack(navigate, '/nutrition')} 
             size="lg"
           >
-            Return to Today
+            {t('common.return')}
           </Button>
         </div>
       </div>
