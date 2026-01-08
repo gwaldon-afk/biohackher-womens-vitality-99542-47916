@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
 
@@ -13,11 +14,15 @@ import { Sparkles } from 'lucide-react';
 export const ProtocolRecommendationsNotifier = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const { recommendations, pendingCount } = useProtocolRecommendations({ status: 'pending' });
   const previousCountRef = useRef<number>(0);
   const hasInitializedRef = useRef(false);
 
   useEffect(() => {
+    // Skip if no user authenticated
+    if (!user) return;
+
     // Skip on initial mount - only notify on actual new recommendations
     if (!hasInitializedRef.current) {
       previousCountRef.current = pendingCount;
@@ -62,7 +67,7 @@ export const ProtocolRecommendationsNotifier = () => {
 
     // Update previous count
     previousCountRef.current = pendingCount;
-  }, [pendingCount, recommendations, navigate, toast]);
+  }, [user, pendingCount, recommendations, navigate, toast]);
 
   // This component doesn't render anything
   return null;

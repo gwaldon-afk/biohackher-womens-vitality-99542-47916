@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Loader2 } from 'lucide-react';
+import { TEST_MODE_ENABLED } from '@/config/testMode';
 
 interface RequireHealthProfileProps {
   children: React.ReactNode;
@@ -17,6 +18,10 @@ export function RequireHealthProfile({
   const { profile, loading: profileLoading } = useHealthProfile();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Check for authenticated test mode - bypass profile check
+  const testTier = TEST_MODE_ENABLED ? localStorage.getItem('testModeTier') : null;
+  const isAuthenticatedTestMode = TEST_MODE_ENABLED && testTier && testTier !== 'guest';
 
   const isProfileComplete = () => {
     if (!profile) return false;
@@ -55,6 +60,11 @@ export function RequireHealthProfile({
 
   // If not authenticated, let children render (ProtectedRoute handles auth)
   if (!user) {
+    return <>{children}</>;
+  }
+
+  // Bypass profile check in authenticated test mode
+  if (isAuthenticatedTestMode) {
     return <>{children}</>;
   }
 
