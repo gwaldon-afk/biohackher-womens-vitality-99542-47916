@@ -4793,6 +4793,7 @@ export type Database = {
         Row: {
           access_token: string | null
           created_at: string | null
+          fitbit_user_id: string | null
           id: string
           is_active: boolean
           last_sync_at: string | null
@@ -4801,12 +4802,14 @@ export type Database = {
           refresh_token: string | null
           sync_settings: Json | null
           token_expires_at: string | null
+          token_type: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           access_token?: string | null
           created_at?: string | null
+          fitbit_user_id?: string | null
           id?: string
           is_active?: boolean
           last_sync_at?: string | null
@@ -4815,12 +4818,14 @@ export type Database = {
           refresh_token?: string | null
           sync_settings?: Json | null
           token_expires_at?: string | null
+          token_type?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           access_token?: string | null
           created_at?: string | null
+          fitbit_user_id?: string | null
           id?: string
           is_active?: boolean
           last_sync_at?: string | null
@@ -4829,6 +4834,7 @@ export type Database = {
           refresh_token?: string | null
           sync_settings?: Json | null
           token_expires_at?: string | null
+          token_type?: string | null
           updated_at?: string | null
           user_id?: string
         }
