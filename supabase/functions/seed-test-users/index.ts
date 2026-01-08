@@ -25,7 +25,59 @@ interface TestUserConfig {
   weightKg: number;
   heightCm: number;
   activityLevel: string;
+  protocolFocus: string[]; // Areas to focus protocol items on
 }
+
+interface ProtocolItemConfig {
+  name: string;
+  description: string;
+  item_type: 'supplement' | 'therapy' | 'habit' | 'exercise' | 'diet';
+  frequency: 'daily' | 'twice_daily' | 'three_times_daily' | 'weekly' | 'as_needed';
+  time_of_day: string[];
+  dosage?: string;
+  notes?: string;
+}
+
+// Protocol items library by focus area
+const PROTOCOL_ITEMS_LIBRARY: Record<string, ProtocolItemConfig[]> = {
+  sleep: [
+    { name: 'Magnesium Glycinate', description: 'Supports relaxation and sleep quality', item_type: 'supplement', frequency: 'daily', time_of_day: ['evening'], dosage: '300-400mg' },
+    { name: 'Sleep Hygiene Routine', description: 'Wind down 1 hour before bed, no screens', item_type: 'habit', frequency: 'daily', time_of_day: ['evening'] },
+  ],
+  stress: [
+    { name: 'Ashwagandha', description: 'Adaptogenic support for stress resilience', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '300mg' },
+    { name: 'Morning Meditation', description: '10-minute guided meditation or breathwork', item_type: 'habit', frequency: 'daily', time_of_day: ['morning'] },
+  ],
+  cognitive: [
+    { name: 'Omega-3 Fish Oil', description: 'EPA/DHA for brain health and cognition', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '1000mg EPA+DHA' },
+    { name: 'Brain Training', description: '15-minute cognitive exercises or learning', item_type: 'habit', frequency: 'daily', time_of_day: ['morning'] },
+  ],
+  activity: [
+    { name: 'Daily Movement', description: '30 minutes of moderate activity', item_type: 'exercise', frequency: 'daily', time_of_day: ['morning', 'afternoon'] },
+    { name: 'Strength Training', description: 'Resistance exercises for muscle and bone health', item_type: 'exercise', frequency: 'weekly', time_of_day: ['morning'], notes: '2-3 sessions per week' },
+  ],
+  nutrition: [
+    { name: 'Whole Foods Focus', description: 'Prioritise unprocessed, nutrient-dense foods', item_type: 'diet', frequency: 'daily', time_of_day: ['morning', 'afternoon', 'evening'] },
+    { name: 'Vitamin D3 + K2', description: 'Supports bone health and immune function', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '2000 IU D3 + 100mcg K2' },
+  ],
+  energy: [
+    { name: 'CoQ10', description: 'Cellular energy production support', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '100-200mg' },
+    { name: 'B-Complex', description: 'Essential B vitamins for energy metabolism', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'] },
+  ],
+  recovery: [
+    { name: 'Curcumin', description: 'Anti-inflammatory support for joint health', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '500mg with piperine' },
+    { name: 'Collagen Peptides', description: 'Supports connective tissue and skin health', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '10g' },
+    { name: 'Gentle Movement', description: 'Low-impact stretching or yoga', item_type: 'exercise', frequency: 'daily', time_of_day: ['morning'] },
+  ],
+  metabolic: [
+    { name: 'Berberine', description: 'Supports healthy blood sugar metabolism', item_type: 'supplement', frequency: 'twice_daily', time_of_day: ['morning', 'evening'], dosage: '500mg' },
+    { name: 'Post-Meal Walk', description: '10-15 minute walk after main meals', item_type: 'habit', frequency: 'daily', time_of_day: ['afternoon', 'evening'] },
+  ],
+  advanced: [
+    { name: 'Creatine Monohydrate', description: 'Supports muscle and cognitive function', item_type: 'supplement', frequency: 'daily', time_of_day: ['morning'], dosage: '5g' },
+    { name: 'Cold Exposure', description: 'Brief cold shower for stress resilience', item_type: 'therapy', frequency: 'daily', time_of_day: ['morning'], notes: '30-60 seconds cold at end of shower' },
+  ],
+};
 
 // Normalize activity level to valid database enum values
 function normalizeActivityLevel(level: string): string {
@@ -54,6 +106,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 85,
     heightCm: 165,
     activityLevel: 'sedentary',
+    protocolFocus: ['activity', 'energy', 'nutrition'],
   },
   {
     email: 'jessica.test@biohackher.dev',
@@ -65,6 +118,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 65,
     heightCm: 168,
     activityLevel: 'lightly_active',
+    protocolFocus: ['stress', 'nutrition', 'sleep'],
   },
   {
     email: 'karen.test@biohackher.dev',
@@ -76,6 +130,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 72,
     heightCm: 162,
     activityLevel: 'moderately_active',
+    protocolFocus: ['sleep', 'stress', 'cognitive'],
   },
   {
     email: 'priya.test@biohackher.dev',
@@ -87,6 +142,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 68,
     heightCm: 170,
     activityLevel: 'very_active',
+    protocolFocus: ['advanced', 'cognitive', 'recovery'],
   },
   {
     email: 'margaret.test@biohackher.dev',
@@ -98,6 +154,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 78,
     heightCm: 160,
     activityLevel: 'lightly_active',
+    protocolFocus: ['recovery', 'activity', 'nutrition'],
   },
   {
     email: 'christine.test@biohackher.dev',
@@ -109,6 +166,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 65,
     heightCm: 165,
     activityLevel: 'very_active',
+    protocolFocus: ['advanced', 'stress', 'sleep'],
   },
   {
     email: 'sarah.test@biohackher.dev',
@@ -120,6 +178,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 70,
     heightCm: 172,
     activityLevel: 'moderately_active',
+    protocolFocus: ['stress', 'cognitive', 'activity'],
   },
   {
     email: 'elizabeth.test@biohackher.dev',
@@ -131,6 +190,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 60,
     heightCm: 165,
     activityLevel: 'very_active',
+    protocolFocus: ['advanced', 'recovery', 'nutrition'],
   },
   {
     email: 'holly.test@biohackher.dev',
@@ -142,6 +202,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 95,
     heightCm: 158,
     activityLevel: 'sedentary',
+    protocolFocus: ['metabolic', 'energy', 'activity'],
   },
 ];
 
@@ -254,6 +315,77 @@ Deno.serve(async (req) => {
         if (healthError) {
           console.error(`Health profile upsert failed for ${testUser.email}:`, healthError);
           throw healthError;
+        }
+
+        // === PROTOCOL SEEDING ===
+        // Check if protocol already exists
+        const { data: existingProtocol } = await supabaseAdmin
+          .from('protocols')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('name', 'My Longevity Protocol')
+          .eq('is_active', true)
+          .maybeSingle();
+
+        let protocolId: string;
+
+        if (existingProtocol) {
+          protocolId = existingProtocol.id;
+          // Delete existing items to replace with fresh ones
+          await supabaseAdmin
+            .from('protocol_items')
+            .delete()
+            .eq('protocol_id', protocolId);
+        } else {
+          // Create new protocol
+          const { data: newProtocol, error: protocolError } = await supabaseAdmin
+            .from('protocols')
+            .insert({
+              user_id: userId,
+              name: 'My Longevity Protocol',
+              description: `Personalised protocol for ${testUser.preferredName}`,
+              is_active: true,
+              start_date: new Date().toISOString().split('T')[0],
+            })
+            .select('id')
+            .single();
+
+          if (protocolError) {
+            console.error(`Protocol creation failed for ${testUser.email}:`, protocolError);
+            throw protocolError;
+          }
+          protocolId = newProtocol.id;
+        }
+
+        // Gather protocol items based on focus areas
+        const itemsToInsert: any[] = [];
+        for (const focus of testUser.protocolFocus) {
+          const focusItems = PROTOCOL_ITEMS_LIBRARY[focus] || [];
+          for (const item of focusItems) {
+            itemsToInsert.push({
+              protocol_id: protocolId,
+              name: item.name,
+              description: item.description,
+              item_type: item.item_type,
+              frequency: item.frequency,
+              time_of_day: item.time_of_day,
+              dosage: item.dosage || null,
+              notes: item.notes || null,
+              is_active: true,
+            });
+          }
+        }
+
+        // Insert protocol items
+        if (itemsToInsert.length > 0) {
+          const { error: itemsError } = await supabaseAdmin
+            .from('protocol_items')
+            .insert(itemsToInsert);
+
+          if (itemsError) {
+            console.error(`Protocol items failed for ${testUser.email}:`, itemsError);
+            // Don't throw - continue with other users
+          }
         }
 
         // Small delay to prevent race conditions

@@ -413,7 +413,24 @@ export const useTestPersonas = () => {
 
       const userId = user.id;
 
-      // Clear current user's test data
+      // Get user's protocol IDs first (needed for deleting items)
+      const { data: protocols } = await supabase
+        .from('protocols')
+        .select('id')
+        .eq('user_id', userId);
+      
+      const protocolIds = protocols?.map(p => p.id) || [];
+
+      // Clear protocol data first (respecting foreign key constraints)
+      if (protocolIds.length > 0) {
+        await supabase.from('protocol_item_completions').delete().in('protocol_item_id', 
+          (await supabase.from('protocol_items').select('id').in('protocol_id', protocolIds)).data?.map(i => i.id) || []
+        );
+        await supabase.from('protocol_items').delete().in('protocol_id', protocolIds);
+      }
+      await supabase.from('protocols').delete().eq('user_id', userId);
+
+      // Clear other test data
       await Promise.all([
         supabase.from('daily_scores').delete().eq('user_id', userId),
         supabase.from('longevity_nutrition_assessments').delete().eq('user_id', userId),
@@ -423,9 +440,7 @@ export const useTestPersonas = () => {
         supabase.from('user_health_profile').delete().eq('user_id', userId),
       ]);
 
-      // Note: Don't remove testModeTier - it's no longer used with real auth
-
-      toast.success('Cleared your test data');
+      toast.success('Cleared your test data (including protocols)');
     } catch (error) {
       toast.error('Failed to clear test data');
       console.error('Clear test data error:', error);
