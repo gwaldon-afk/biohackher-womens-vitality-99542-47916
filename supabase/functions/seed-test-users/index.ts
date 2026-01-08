@@ -142,7 +142,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 68,
     heightCm: 170,
     activityLevel: 'very_active',
-    protocolFocus: ['advanced', 'cognitive', 'recovery'],
+    protocolFocus: ['advanced', 'cognitive', 'recovery', 'activity'],
   },
   {
     email: 'margaret.test@biohackher.dev',
@@ -166,7 +166,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 65,
     heightCm: 165,
     activityLevel: 'very_active',
-    protocolFocus: ['advanced', 'stress', 'sleep'],
+    protocolFocus: ['advanced', 'stress', 'sleep', 'activity'],
   },
   {
     email: 'sarah.test@biohackher.dev',
@@ -190,7 +190,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 60,
     heightCm: 165,
     activityLevel: 'very_active',
-    protocolFocus: ['advanced', 'recovery', 'nutrition'],
+    protocolFocus: ['advanced', 'recovery', 'nutrition', 'activity'],
   },
   {
     email: 'holly.test@biohackher.dev',
