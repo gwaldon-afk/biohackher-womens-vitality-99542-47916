@@ -425,7 +425,14 @@
     "goToToday": "Go to Today",
     "returnToToday": "Return to Today",
     "backToHome": "Back to Home",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "adding": "Adding...",
+    "saving": "Saving...",
+    "home": "Home",
+    "viewResults": "View Results",
+    "startAssessment": "Start Assessment",
+    "retakeAssessment": "Retake Assessment",
+    "completed": "Completed"
   },
   "mealPlan": {
     "title": "Your 7-Day Meal Plan",
@@ -2651,10 +2658,6 @@
       "very_high": "Very High Evidence"
     }
   },
-  "common": {
-    "adding": "Adding...",
-    "saving": "Saving..."
-  },
   "inlineProtocol": {
     "title": "Your Personalized Protocol",
     "description": "Based on your assessment results, here are recommended actions. Select the ones you want to add to your plan.",
@@ -2821,13 +2824,6 @@
     "saveFailed": "Save Failed",
     "duplicateSkipped": "Already in Your Plan",
     "duplicateSkippedDesc": "{{name}} is already in your protocol."
-  },
-  "common": {
-    "home": "Home",
-    "viewResults": "View Results",
-    "startAssessment": "Start Assessment",
-    "retakeAssessment": "Retake Assessment",
-    "completed": "Completed"
   },
   "wearables": {
     "pageTitle": "Wearable Integrations",
