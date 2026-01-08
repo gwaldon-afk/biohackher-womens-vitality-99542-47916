@@ -130,7 +130,7 @@ const TEST_USERS: TestUserConfig[] = [
     weightKg: 72,
     heightCm: 162,
     activityLevel: 'moderately_active',
-    protocolFocus: ['sleep', 'stress', 'cognitive'],
+    protocolFocus: ['sleep', 'stress', 'cognitive', 'activity'],
   },
   {
     email: 'priya.test@biohackher.dev',
