@@ -1952,6 +1952,8 @@
       "description": "Browse and add from our curated protocol templates",
       "browseAll": "Browse All Templates"
     },
+    "filteredBy": "Showing {{source}} protocols only",
+    "showAll": "Show All Protocols",
     "toast": {
       "protocolDeleted": "Protocol Deleted",
       "protocolDeletedDesc": "Your protocol has been removed.",

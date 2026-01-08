@@ -297,10 +297,10 @@ export function LongevityNutritionScoreCard({ onRetakeAssessment }: Props) {
               )}
             </Accordion>
 
-            {/* Link to Full Protocol Page */}
+            {/* Link to Nutrition-filtered Protocol Page */}
             <Button variant="outline" asChild className="mt-6 w-full">
-              <Link to="/my-protocol" className="flex items-center justify-center gap-2">
-                View Full Protocol Details & Track Completion
+              <Link to="/my-protocol?source=nutrition&tab=active" className="flex items-center justify-center gap-2">
+                View Your Nutrition Protocol
                 <ChevronRight className="h-4 w-4" />
               </Link>
             </Button>
