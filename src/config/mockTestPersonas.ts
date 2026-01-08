@@ -87,11 +87,17 @@ export interface TestPersonaProtocol {
   timeOfDay: string;
 }
 
+export interface TestPersonaCredentials {
+  email: string;
+  password: string;
+}
+
 export interface TestPersona {
   id: string;
   name: string;
   description: string;
   testUserId: string;
+  credentials: TestPersonaCredentials;
   subscriptionTier: 'registered' | 'premium';
   dataInputMethod: 'manual' | 'wearable';
   wearableProvider?: 'fitbit' | 'garmin' | 'apple_health' | 'demo';
@@ -118,6 +124,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Mia Chen',
     description: 'Marketing manager, mum of 2, emotional eater',
     testUserId: '00000000-0000-0000-0000-000000000001',
+    credentials: {
+      email: 'mia.test@biohackher.dev',
+      password: 'TestMia2024!',
+    },
     subscriptionTier: 'registered',
     dataInputMethod: 'manual',
     backstory: {
@@ -220,6 +230,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Jessica Nguyen',
     description: 'Primary school teacher, afternoon energy crashes',
     testUserId: '00000000-0000-0000-0000-000000000002',
+    credentials: {
+      email: 'jessica.test@biohackher.dev',
+      password: 'TestJess2024!',
+    },
     subscriptionTier: 'registered',
     dataInputMethod: 'manual',
     backstory: {
@@ -322,6 +336,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Karen Mitchell',
     description: 'Single mum, practice manager, perimenopause pioneer',
     testUserId: '00000000-0000-0000-0000-000000000003',
+    credentials: {
+      email: 'karen.test@biohackher.dev',
+      password: 'TestKaren2024!',
+    },
     subscriptionTier: 'premium',
     dataInputMethod: 'wearable',
     wearableProvider: 'garmin',
@@ -425,6 +443,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Priya Sharma',
     description: 'Anaesthetist, high achiever, fears cognitive decline',
     testUserId: '00000000-0000-0000-0000-000000000004',
+    credentials: {
+      email: 'priya.test@biohackher.dev',
+      password: 'TestPriya2024!',
+    },
     subscriptionTier: 'premium',
     dataInputMethod: 'wearable',
     wearableProvider: 'apple_health',
@@ -528,6 +550,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Margaret Thompson',
     description: 'Recently widowed, struggling with sleep and loneliness',
     testUserId: '00000000-0000-0000-0000-000000000005',
+    credentials: {
+      email: 'margaret.test@biohackher.dev',
+      password: 'TestMargaret2024!',
+    },
     subscriptionTier: 'registered',
     dataInputMethod: 'manual',
     backstory: {
@@ -630,6 +656,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Christine Walsh',
     description: 'Retired GP, wellness coach, longevity exemplar',
     testUserId: '00000000-0000-0000-0000-000000000006',
+    credentials: {
+      email: 'christine.test@biohackher.dev',
+      password: 'TestChristine2024!',
+    },
     subscriptionTier: 'premium',
     dataInputMethod: 'wearable',
     wearableProvider: 'demo',
@@ -733,6 +763,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Sarah O\'Brien',
     description: 'PT and gym owner, strength advocate, planning pregnancy',
     testUserId: '00000000-0000-0000-0000-000000000007',
+    credentials: {
+      email: 'sarah.test@biohackher.dev',
+      password: 'TestSarah2024!',
+    },
     subscriptionTier: 'premium',
     dataInputMethod: 'wearable',
     wearableProvider: 'garmin',
@@ -836,6 +870,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Elizabeth Harrison',
     description: 'CFO, empty-nester, fighting the corporate cliff',
     testUserId: '00000000-0000-0000-0000-000000000008',
+    credentials: {
+      email: 'elizabeth.test@biohackher.dev',
+      password: 'TestElizabeth2024!',
+    },
     subscriptionTier: 'premium',
     dataInputMethod: 'wearable',
     wearableProvider: 'apple_health',
@@ -939,6 +977,10 @@ export const TEST_PERSONAS: TestPersona[] = [
     name: 'Holly Brennan',
     description: 'Nurse, mum of 3, perimenopause is ruining her life',
     testUserId: '00000000-0000-0000-0000-000000000009',
+    credentials: {
+      email: 'holly.test@biohackher.dev',
+      password: 'TestHolly2024!',
+    },
     subscriptionTier: 'registered',
     dataInputMethod: 'manual',
     backstory: {

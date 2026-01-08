@@ -3,9 +3,8 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useTranslation } from 'react-i18next';
-import { detectUserLocale, updateUserLocale, getUserLocale } from '@/services/localeService';
+import { detectUserLocale, updateUserLocale } from '@/services/localeService';
 import { getAuthRedirectUrl } from '@/utils/capacitor';
-import { TEST_MODE_ENABLED, MOCK_USER, MOCK_PROFILE } from '@/config/testMode';
 
 interface Profile {
   id: string;
@@ -56,24 +55,10 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  // Check test mode tier preference
-  const getTestModeTier = () => {
-    if (!TEST_MODE_ENABLED) return null;
-    return localStorage.getItem('testModeTier') as 'guest' | 'registered' | 'subscribed' | 'premium' | null;
-  };
-  
-  const testTier = getTestModeTier();
-  const isGuestMode = testTier === 'guest';
-  const isAuthenticatedTestMode = TEST_MODE_ENABLED && testTier && testTier !== 'guest';
-  
-  const [user, setUser] = useState<User | null>(
-    isAuthenticatedTestMode ? (MOCK_USER as User) : null
-  );
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(
-    isAuthenticatedTestMode ? MOCK_PROFILE : null
-  );
-  const [loading, setLoading] = useState(!isAuthenticatedTestMode);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { i18n } = useTranslation();
 
@@ -136,11 +121,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    // Skip auth setup if in authenticated test mode
-    if (isAuthenticatedTestMode) {
-      return;
-    }
-
     // Check for existing session FIRST
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -234,10 +214,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signUp = async (email: string, password: string, preferredName: string) => {
-    if (TEST_MODE_ENABLED) {
-      return { error: null };
-    }
-    
     try {
       const redirectUrl = `${getAuthRedirectUrl()}/`;
       
@@ -289,10 +265,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    if (TEST_MODE_ENABLED) {
-      return { error: null };
-    }
-    
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -319,10 +291,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    if (TEST_MODE_ENABLED) {
-      return;
-    }
-    
     try {
       const { error } = await supabase.auth.signOut();
       

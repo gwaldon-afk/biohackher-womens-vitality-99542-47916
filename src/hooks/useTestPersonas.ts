@@ -423,8 +423,7 @@ export const useTestPersonas = () => {
         supabase.from('user_health_profile').delete().eq('user_id', userId),
       ]);
 
-      // Clear localStorage test tier
-      localStorage.removeItem('testModeTier');
+      // Note: Don't remove testModeTier - it's no longer used with real auth
 
       toast.success('Cleared your test data');
     } catch (error) {

@@ -1,18 +1,16 @@
 /**
  * Developer Testing Panel
  * 
- * Unified panel for test mode tier selection and persona testing.
+ * Real authentication login/logout switcher for test personas.
  * Only visible when TEST_MODE_ENABLED is true.
  * Toggle with Ctrl+Shift+T or click the floating button.
  */
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { 
   FlaskConical, 
   X, 
@@ -30,36 +28,33 @@ import {
   Pencil,
   Crown,
   User,
-  UserX,
-  UserCheck,
-  Star
+  LogIn,
+  LogOut,
+  Loader2,
+  CheckCircle2,
+  RefreshCw
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useTestPersonas } from '@/hooks/useTestPersonas';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type AssessmentType = 'lis' | 'nutrition' | 'hormone';
-type TestTier = 'guest' | 'registered' | 'subscribed' | 'premium';
-
-const tierConfig: Record<TestTier, { icon: React.ReactNode; label: string; color: string }> = {
-  guest: { icon: <UserX className="h-3 w-3" />, label: 'Guest', color: 'text-muted-foreground' },
-  registered: { icon: <User className="h-3 w-3" />, label: 'Registered', color: 'text-blue-500' },
-  subscribed: { icon: <UserCheck className="h-3 w-3" />, label: 'Subscribed', color: 'text-green-500' },
-  premium: { icon: <Crown className="h-3 w-3" />, label: 'Premium', color: 'text-amber-500' },
-};
 
 export const DevTestingPanel = () => {
-  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [selectedPersonas, setSelectedPersonas] = useState<string[]>([]);
+  const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null);
   const [selectedAssessments, setSelectedAssessments] = useState<AssessmentType[]>(['lis', 'nutrition', 'hormone']);
   const [results, setResults] = useState<string[]>([]);
-  const [selectedTier, setSelectedTier] = useState<TestTier>(() => {
-    return (localStorage.getItem('testModeTier') as TestTier) || 'premium';
-  });
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isSeedingUsers, setIsSeedingUsers] = useState(false);
 
+  const { user } = useAuth();
+  
   const { 
     personas, 
     runAssessments, 
@@ -67,22 +62,12 @@ export const DevTestingPanel = () => {
     resetAllOverrides,
     isRunning,
     hasOverrides,
-    currentUserId
   } = useTestPersonas();
 
-  // Handle tier change
-  const handleTierChange = useCallback((tier: string) => {
-    if (!tier) return;
-    const newTier = tier as TestTier;
-    setSelectedTier(newTier);
-    localStorage.setItem('testModeTier', newTier);
-    window.location.reload();
-  }, []);
-
-  // Only allow single persona selection for sequential testing
-  const togglePersona = useCallback((id: string) => {
-    setSelectedPersonas([id]); // Single selection only
-  }, []);
+  // Find current logged-in persona based on email
+  const currentPersona = user?.email 
+    ? personas.find(p => p.credentials.email === user.email)
+    : null;
 
   // Keyboard shortcut: Ctrl+Shift+T
   useEffect(() => {
@@ -105,18 +90,102 @@ export const DevTestingPanel = () => {
     );
   }, []);
 
-  const handleRun = useCallback(async () => {
-    if (selectedPersonas.length === 0) return;
-    if (selectedAssessments.length === 0) return;
+  // Login as a test persona
+  const handleLogin = useCallback(async (personaId: string) => {
+    const persona = personas.find(p => p.id === personaId);
+    if (!persona) return;
 
-    const result = await runAssessments(selectedPersonas, selectedAssessments);
+    setIsLoggingIn(true);
+    setResults([]);
+
+    try {
+      // Sign out first if already logged in
+      if (user) {
+        await supabase.auth.signOut();
+      }
+
+      // Sign in with persona credentials
+      const { error } = await supabase.auth.signInWithPassword({
+        email: persona.credentials.email,
+        password: persona.credentials.password,
+      });
+
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setResults([
+            `Login failed: User "${persona.name}" doesn't exist yet.`,
+            'Click "Seed Test Users" to create all test accounts first.',
+          ]);
+          toast.error(`User ${persona.name} not found. Run "Seed Test Users" first.`);
+        } else {
+          throw error;
+        }
+      } else {
+        setResults([`✓ Logged in as ${persona.name}`]);
+        toast.success(`Logged in as ${persona.name}`);
+        setSelectedPersonaId(null);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Login failed';
+      setResults([`✗ Login failed: ${message}`]);
+      toast.error(message);
+    } finally {
+      setIsLoggingIn(false);
+    }
+  }, [personas, user]);
+
+  // Logout
+  const handleLogout = useCallback(async () => {
+    setIsLoggingOut(true);
+    try {
+      await supabase.auth.signOut();
+      setResults(['✓ Logged out']);
+      toast.success('Logged out');
+    } catch (error) {
+      toast.error('Failed to log out');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }, []);
+
+  // Apply persona data to current logged-in user
+  const handleApplyData = useCallback(async () => {
+    if (!currentPersona || selectedAssessments.length === 0) return;
+
+    const result = await runAssessments([currentPersona.id], selectedAssessments);
     setResults(result.results);
-  }, [selectedPersonas, selectedAssessments, runAssessments]);
+  }, [currentPersona, selectedAssessments, runAssessments]);
 
+  // Clear data for current user
   const handleClear = useCallback(async () => {
     await clearTestData();
     setResults(['All test data cleared']);
   }, [clearTestData]);
+
+  // Seed test users via edge function
+  const handleSeedUsers = useCallback(async () => {
+    setIsSeedingUsers(true);
+    setResults(['Seeding test users...']);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-test-users');
+      
+      if (error) throw error;
+
+      const resultMessages = data.results?.map((r: any) => 
+        `${r.email}: ${r.status}${r.error ? ` (${r.error})` : ''}`
+      ) || [];
+      
+      setResults(['✓ Test users seeded:', ...resultMessages]);
+      toast.success('Test users created successfully');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to seed users';
+      setResults([`✗ Seed failed: ${message}`]);
+      toast.error(message);
+    } finally {
+      setIsSeedingUsers(false);
+    }
+  }, []);
 
   // Don't render if test mode is disabled
   if (!TEST_MODE_ENABLED) {
@@ -171,170 +240,214 @@ export const DevTestingPanel = () => {
 
       {!isMinimized && (
         <CardContent className="p-4 pt-0 space-y-4">
-          {/* Tier Selection */}
-          <div className="space-y-2">
-            <span className="text-xs font-medium">Test Tier</span>
-            <ToggleGroup 
-              type="single" 
-              value={selectedTier} 
-              onValueChange={handleTierChange}
-              className="justify-start flex-wrap gap-1"
-            >
-              {(Object.keys(tierConfig) as TestTier[]).map((tier) => (
-                <ToggleGroupItem
-                  key={tier}
-                  value={tier}
-                  size="sm"
-                  className={cn(
-                    "text-xs gap-1 h-7 px-2",
-                    selectedTier === tier && tierConfig[tier].color
-                  )}
-                >
-                  {tierConfig[tier].icon}
-                  {tierConfig[tier].label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
-
-          <Separator />
-
-          {/* User Info Banner */}
-          {selectedTier === 'guest' ? (
-            <div className="text-xs bg-muted/50 rounded p-2 text-muted-foreground">
-              <span className="font-medium">Guest Mode:</span> Not authenticated. Viewing public pages only.
-            </div>
-          ) : currentUserId ? (
-            <div className="text-xs bg-muted/50 rounded p-2 text-muted-foreground">
-              Testing as: <span className="font-mono">{currentUserId.slice(0, 8)}...</span>
-              <br />
-              <span className="text-[10px]">Data writes to your account (one persona at a time)</span>
+          {/* Current Auth Status */}
+          {user ? (
+            <div className="bg-green-500/10 border border-green-500/30 rounded p-3 space-y-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                  Logged in
+                </span>
+              </div>
+              {currentPersona ? (
+                <div className="text-xs space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-medium">{currentPersona.backstory?.nickname || currentPersona.name}</span>
+                    {currentPersona.subscriptionTier === 'premium' ? (
+                      <Crown className="h-3 w-3 text-amber-500" />
+                    ) : (
+                      <User className="h-3 w-3 text-blue-500" />
+                    )}
+                    {currentPersona.dataInputMethod === 'wearable' && (
+                      <Watch className="h-3 w-3 text-green-500" />
+                    )}
+                  </div>
+                  <div className="text-muted-foreground">
+                    {currentPersona.backstory?.occupation?.split(' at ')[0]} • Age {currentPersona.demographics.age}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">
+                  <span className="font-mono">{user.email}</span>
+                  <br />
+                  <span className="text-[10px]">(Not a test persona)</span>
+                </div>
+              )}
+              <Button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                variant="outline"
+                size="sm"
+                className="w-full mt-2"
+              >
+                {isLoggingOut ? (
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                ) : (
+                  <LogOut className="h-3 w-3 mr-1" />
+                )}
+                Logout
+              </Button>
             </div>
           ) : (
-            <div className="text-xs bg-purple-500/10 text-purple-700 dark:text-purple-300 rounded p-2">
-              <span className="font-medium">{tierConfig[selectedTier].label} Mode:</span> Using mock authentication.
+            <div className="bg-muted/50 rounded p-2 text-xs text-muted-foreground text-center">
+              Not logged in. Select a persona below to login.
             </div>
           )}
 
-          {/* Persona Selection - Single Select */}
+          <Separator />
+
+          {/* Persona Selection - for login or showing options */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium flex items-center gap-1">
-                <Users className="h-3 w-3" /> Select Persona
+                <Users className="h-3 w-3" /> 
+                {user ? 'Switch Persona' : 'Login as Persona'}
               </span>
             </div>
-            <ScrollArea className="h-40">
+            <ScrollArea className="h-36">
               <div className="space-y-1">
                 {personas.map(persona => (
-                  <label
+                  <div
                     key={persona.id}
                     className={cn(
                       "flex items-center gap-2 p-1.5 rounded cursor-pointer",
-                      selectedPersonas.includes(persona.id) 
+                      selectedPersonaId === persona.id 
                         ? "bg-purple-500/20 border border-purple-500/50" 
-                        : "hover:bg-muted/50"
+                        : currentPersona?.id === persona.id
+                          ? "bg-green-500/10 border border-green-500/30"
+                          : "hover:bg-muted/50"
+                    )}
+                    onClick={() => setSelectedPersonaId(
+                      selectedPersonaId === persona.id ? null : persona.id
                     )}
                     title={persona.backstory?.whyTheyreHere || persona.description}
                   >
-                    <Checkbox
-                      checked={selectedPersonas.includes(persona.id)}
-                      onCheckedChange={() => togglePersona(persona.id)}
-                    />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-medium">
                           {persona.backstory?.nickname || persona.name} ({persona.demographics.age})
                         </span>
-                        {/* Tier badge */}
                         {persona.subscriptionTier === 'premium' ? (
                           <Crown className="h-3 w-3 text-amber-500" />
                         ) : (
                           <User className="h-3 w-3 text-blue-500" />
                         )}
-                        {/* Data method badge */}
                         {persona.dataInputMethod === 'wearable' ? (
                           <Watch className="h-3 w-3 text-green-500" />
                         ) : (
                           <Pencil className="h-3 w-3 text-muted-foreground" />
+                        )}
+                        {currentPersona?.id === persona.id && (
+                          <CheckCircle2 className="h-3 w-3 text-green-500 ml-auto" />
                         )}
                       </div>
                       <span className="text-[10px] text-muted-foreground truncate block">
                         {persona.backstory?.occupation?.split(' at ')[0]}, {persona.backstory?.location?.split(',')[0]}
                       </span>
                     </div>
-                  </label>
+                  </div>
                 ))}
               </div>
             </ScrollArea>
-          </div>
-
-          <Separator />
-
-          {/* Assessment Selection */}
-          <div className="space-y-2">
-            <span className="text-xs font-medium">Assessments</span>
-            <div className="flex gap-2">
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox
-                  checked={selectedAssessments.includes('lis')}
-                  onCheckedChange={() => toggleAssessment('lis')}
-                />
-                <Brain className="h-3 w-3 text-blue-500" />
-                <span className="text-xs">LIS</span>
-              </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox
-                  checked={selectedAssessments.includes('nutrition')}
-                  onCheckedChange={() => toggleAssessment('nutrition')}
-                />
-                <Salad className="h-3 w-3 text-green-500" />
-                <span className="text-xs">Nutrition</span>
-              </label>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <Checkbox
-                  checked={selectedAssessments.includes('hormone')}
-                  onCheckedChange={() => toggleAssessment('hormone')}
-                />
-                <Heart className="h-3 w-3 text-pink-500" />
-                <span className="text-xs">Hormone</span>
-              </label>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Action Buttons */}
-          <div className="flex gap-2">
-            <Button
-              onClick={handleRun}
-              disabled={isRunning || selectedPersonas.length === 0 || selectedAssessments.length === 0 || selectedTier === 'guest'}
-              size="sm"
-              className="flex-1 bg-purple-600 hover:bg-purple-700"
-            >
-              <Play className="h-3 w-3 mr-1" />
-              Apply Persona
-            </Button>
-            <Button
-              onClick={handleClear}
-              disabled={isRunning || selectedTier === 'guest'}
-              variant="outline"
-              size="sm"
-              title="Clear all your test data"
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
-            {hasOverrides && (
+            
+            {/* Login button for selected persona */}
+            {selectedPersonaId && (
               <Button
-                onClick={resetAllOverrides}
-                disabled={isRunning}
-                variant="outline"
+                onClick={() => handleLogin(selectedPersonaId)}
+                disabled={isLoggingIn}
                 size="sm"
-                title="Reset all persona modifications"
+                className="w-full bg-purple-600 hover:bg-purple-700"
               >
-                <RotateCcw className="h-3 w-3" />
+                {isLoggingIn ? (
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                ) : (
+                  <LogIn className="h-3 w-3 mr-1" />
+                )}
+                Login as {personas.find(p => p.id === selectedPersonaId)?.backstory?.nickname}
               </Button>
             )}
           </div>
+
+          {/* Data seeding section - only when logged in as a persona */}
+          {currentPersona && (
+            <>
+              <Separator />
+              
+              {/* Assessment Selection */}
+              <div className="space-y-2">
+                <span className="text-xs font-medium">Apply Assessment Data</span>
+                <div className="flex gap-2">
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedAssessments.includes('lis')}
+                      onChange={() => toggleAssessment('lis')}
+                      className="h-3 w-3"
+                    />
+                    <Brain className="h-3 w-3 text-blue-500" />
+                    <span className="text-xs">LIS</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedAssessments.includes('nutrition')}
+                      onChange={() => toggleAssessment('nutrition')}
+                      className="h-3 w-3"
+                    />
+                    <Salad className="h-3 w-3 text-green-500" />
+                    <span className="text-xs">Nutrition</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedAssessments.includes('hormone')}
+                      onChange={() => toggleAssessment('hormone')}
+                      className="h-3 w-3"
+                    />
+                    <Heart className="h-3 w-3 text-pink-500" />
+                    <span className="text-xs">Hormone</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleApplyData}
+                  disabled={isRunning || selectedAssessments.length === 0}
+                  size="sm"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                >
+                  {isRunning ? (
+                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                  ) : (
+                    <Play className="h-3 w-3 mr-1" />
+                  )}
+                  Apply Data
+                </Button>
+                <Button
+                  onClick={handleClear}
+                  disabled={isRunning}
+                  variant="outline"
+                  size="sm"
+                  title="Clear all your test data"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+                {hasOverrides && (
+                  <Button
+                    onClick={resetAllOverrides}
+                    disabled={isRunning}
+                    variant="outline"
+                    size="sm"
+                    title="Reset all persona modifications"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
 
           {/* Results */}
           {results.length > 0 && (
@@ -352,8 +465,25 @@ export const DevTestingPanel = () => {
             </div>
           )}
 
-          {/* Quick Links */}
+          <Separator />
+
+          {/* Admin Actions */}
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 gap-1"
+              onClick={handleSeedUsers}
+              disabled={isSeedingUsers}
+              title="Create test user accounts in Supabase Auth"
+            >
+              {isSeedingUsers ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3 w-3" />
+              )}
+              Seed Test Users
+            </Button>
             <Button
               variant="outline"
               size="sm"
