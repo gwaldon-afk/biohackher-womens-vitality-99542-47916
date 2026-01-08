@@ -11,6 +11,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { 
   FlaskConical, 
   X, 
@@ -32,7 +42,8 @@ import {
   LogOut,
   Loader2,
   CheckCircle2,
-  RefreshCw
+  RefreshCw,
+  UserPlus
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useTestPersonas } from '@/hooks/useTestPersonas';
@@ -52,6 +63,10 @@ export const DevTestingPanel = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isSeedingUsers, setIsSeedingUsers] = useState(false);
+  const [usersSeeded, setUsersSeeded] = useState(() => 
+    localStorage.getItem('testUsersSeeded') === 'true'
+  );
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { user } = useAuth();
   
@@ -112,6 +127,9 @@ export const DevTestingPanel = () => {
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
+          // Users might not exist - clear seeded flag
+          localStorage.removeItem('testUsersSeeded');
+          setUsersSeeded(false);
           setResults([
             `Login failed: User "${persona.name}" doesn't exist yet.`,
             'Click "Seed Test Users" to create all test accounts first.',
@@ -178,6 +196,10 @@ export const DevTestingPanel = () => {
       
       setResults(['✓ Test users seeded:', ...resultMessages]);
       toast.success('Test users created successfully');
+      
+      // Mark users as seeded
+      localStorage.setItem('testUsersSeeded', 'true');
+      setUsersSeeded(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to seed users';
       setResults([`✗ Seed failed: ${message}`]);
@@ -186,6 +208,13 @@ export const DevTestingPanel = () => {
       setIsSeedingUsers(false);
     }
   }, []);
+
+  // Reset test users - clears data and re-seeds
+  const handleResetUsers = useCallback(async () => {
+    setShowResetConfirm(false);
+    await clearTestData();
+    await handleSeedUsers();
+  }, [clearTestData, handleSeedUsers]);
 
   // Don't render if test mode is disabled
   if (!TEST_MODE_ENABLED) {
@@ -469,21 +498,39 @@ export const DevTestingPanel = () => {
 
           {/* Admin Actions */}
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 gap-1"
-              onClick={handleSeedUsers}
-              disabled={isSeedingUsers}
-              title="Create test user accounts in Supabase Auth"
-            >
-              {isSeedingUsers ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3 w-3" />
-              )}
-              Seed Test Users
-            </Button>
+            {usersSeeded ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1 border-orange-500/50 text-orange-600 hover:bg-orange-500/10"
+                onClick={() => setShowResetConfirm(true)}
+                disabled={isSeedingUsers}
+                title="Clear test data and re-seed all test user accounts"
+              >
+                {isSeedingUsers ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-3 w-3" />
+                )}
+                Reset Test Users
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 gap-1 border-purple-500/50 text-purple-600 hover:bg-purple-500/10"
+                onClick={handleSeedUsers}
+                disabled={isSeedingUsers}
+                title="Create test user accounts in the database"
+              >
+                {isSeedingUsers ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <UserPlus className="h-3 w-3" />
+                )}
+                Seed Test Users
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -494,6 +541,35 @@ export const DevTestingPanel = () => {
               Checklist
             </Button>
           </div>
+
+          {/* Reset Confirmation Dialog */}
+          <AlertDialog open={showResetConfirm} onOpenChange={setShowResetConfirm}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset All Test Users?</AlertDialogTitle>
+                <AlertDialogDescription className="space-y-2">
+                  <p>This will:</p>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    <li>Clear all assessment data for your current account</li>
+                    <li>Re-create/update all test user accounts</li>
+                    <li>Apply fresh profile data from mockTestPersonas.ts</li>
+                  </ul>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Use this after editing test data in mockTestPersonas.ts or the seed edge function.
+                  </p>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleResetUsers}
+                  className="bg-orange-600 hover:bg-orange-700"
+                >
+                  Reset Users
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {/* Keyboard shortcut hint */}
           <div className="text-center">
