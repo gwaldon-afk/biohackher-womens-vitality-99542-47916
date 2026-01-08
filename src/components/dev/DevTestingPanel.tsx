@@ -182,6 +182,7 @@ export const DevTestingPanel = () => {
                         ? "bg-purple-500/20 border border-purple-500/50" 
                         : "hover:bg-muted/50"
                     )}
+                    title={persona.backstory?.whyTheyreHere || persona.description}
                   >
                     <Checkbox
                       checked={selectedPersonas.includes(persona.id)}
@@ -189,7 +190,7 @@ export const DevTestingPanel = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-medium">{persona.name}</span>
+                        <span className="text-xs font-medium">{persona.backstory?.nickname || persona.name}</span>
                         {/* Tier badge */}
                         {persona.subscriptionTier === 'premium' ? (
                           <Crown className="h-3 w-3 text-amber-500" />
@@ -203,8 +204,8 @@ export const DevTestingPanel = () => {
                           <Pencil className="h-3 w-3 text-muted-foreground" />
                         )}
                       </div>
-                      <span className="text-[10px] text-muted-foreground">
-                        {persona.demographics.age}yo, {persona.demographics.primaryGoal}
+                      <span className="text-[10px] text-muted-foreground truncate block">
+                        {persona.backstory?.occupation?.split(' at ')[0] || `${persona.demographics.age}yo`}
                       </span>
                     </div>
                   </label>
