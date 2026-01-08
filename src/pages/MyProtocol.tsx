@@ -1070,9 +1070,10 @@ const MyProtocol = () => {
         {/* Bottom Return Button */}
         <div className="flex justify-center gap-4 mt-8 pb-8">
           <Button 
-            onClick={() => navigateBack(navigate, '/nutrition')} 
+            onClick={() => navigate('/master-dashboard')} 
             size="lg"
           >
+            <Home className="w-4 h-4 mr-2" />
             {t('common.return')}
           </Button>
         </div>
