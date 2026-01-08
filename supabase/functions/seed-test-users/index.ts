@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
         }
 
         // Ensure profile exists and update it
-        await supabaseAdmin
+        const { error: profileError } = await supabaseAdmin
           .from('profiles')
           .upsert({
             user_id: userId,
@@ -196,11 +196,16 @@ Deno.serve(async (req) => {
             timezone: 'Australia/Sydney',
           }, { onConflict: 'user_id' });
 
+        if (profileError) {
+          console.error(`Profile upsert failed for ${testUser.email}:`, profileError);
+          throw profileError;
+        }
+
         // Set up subscription
         const futureDate = new Date();
         futureDate.setFullYear(futureDate.getFullYear() + 1);
         
-        await supabaseAdmin
+        const { error: subError } = await supabaseAdmin
           .from('user_subscriptions')
           .upsert({
             user_id: userId,
@@ -211,11 +216,16 @@ Deno.serve(async (req) => {
             daily_submissions_count: 0,
           }, { onConflict: 'user_id' });
 
+        if (subError) {
+          console.error(`Subscription upsert failed for ${testUser.email}:`, subError);
+          throw subError;
+        }
+
         // Set up health profile
         const dateOfBirth = new Date();
         dateOfBirth.setFullYear(dateOfBirth.getFullYear() - testUser.age);
 
-        await supabaseAdmin
+        const { error: healthError } = await supabaseAdmin
           .from('user_health_profile')
           .upsert({
             user_id: userId,
@@ -224,6 +234,14 @@ Deno.serve(async (req) => {
             height_cm: testUser.heightCm,
             activity_level: testUser.activityLevel,
           }, { onConflict: 'user_id' });
+
+        if (healthError) {
+          console.error(`Health profile upsert failed for ${testUser.email}:`, healthError);
+          throw healthError;
+        }
+
+        // Small delay to prevent race conditions
+        await new Promise(resolve => setTimeout(resolve, 100));
 
       } catch (userError) {
         console.error(`Error creating user ${testUser.email}:`, userError);
