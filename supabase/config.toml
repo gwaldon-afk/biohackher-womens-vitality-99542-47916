@@ -80,3 +80,12 @@ verify_jwt = true
 
 [functions.generate-qa-fix-prompt]
 verify_jwt = false
+
+[functions.fitbit-auth]
+verify_jwt = true
+
+[functions.fitbit-callback]
+verify_jwt = false
+
+[functions.fitbit-sync]
+verify_jwt = true

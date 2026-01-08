@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,11 +17,19 @@ import {
   Link as LinkIcon,
   Unlink,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const SUPPORTED_DEVICES = [
+  {
+    id: 'demo',
+    nameKey: 'wearables.devices.demo.name',
+    descriptionKey: 'wearables.devices.demo.description',
+    icon: Sparkles,
+    color: 'bg-gradient-to-r from-purple-500 to-pink-500'
+  },
   { 
     id: 'fitbit', 
     nameKey: 'wearables.devices.fitbit.name',
@@ -60,9 +69,44 @@ const SUPPORTED_DEVICES = [
 
 const WearableIntegrations = () => {
   const { t, i18n } = useTranslation();
-  const { connections, wearableData, loading, disconnectWearable, triggerSync } = useWearables();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { 
+    connections, 
+    wearableData, 
+    loading, 
+    disconnectWearable, 
+    triggerSync,
+    connectDemo,
+    initiateFitbitAuth,
+    syncFitbit 
+  } = useWearables();
   const { toast } = useToast();
   const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [connectingId, setConnectingId] = useState<string | null>(null);
+
+  // Handle OAuth callback status
+  useEffect(() => {
+    const status = searchParams.get('status');
+    const provider = searchParams.get('provider');
+    
+    if (status === 'success') {
+      toast({
+        title: t('wearables.toast.connected.title'),
+        description: t('wearables.toast.connected.description', { provider: provider || 'device' })
+      });
+    } else if (status === 'failed' || status === 'cancelled') {
+      toast({
+        variant: 'destructive',
+        title: t('wearables.toast.connectionFailed.title'),
+        description: t('wearables.toast.connectionFailed.description')
+      });
+    }
+    
+    // Clean URL params
+    if (status) {
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams, toast, t]);
 
   const isConnected = (providerId: string) => {
     return connections.some(c => c.provider === providerId && c.is_active);
@@ -72,13 +116,39 @@ const WearableIntegrations = () => {
     return connections.find(c => c.provider === providerId && c.is_active);
   };
 
-  const handleConnect = (deviceId: string) => {
+  const handleConnect = async (deviceId: string) => {
     const device = SUPPORTED_DEVICES.find(d => d.id === deviceId);
     const deviceName = device ? t(device.nameKey) : deviceId;
-    toast({
-      title: t('wearables.toast.comingSoon.title'),
-      description: t('wearables.toast.comingSoon.description', { deviceName })
-    });
+    
+    setConnectingId(deviceId);
+    
+    try {
+      if (deviceId === 'demo') {
+        await connectDemo();
+        toast({
+          title: t('wearables.toast.demoConnected.title'),
+          description: t('wearables.toast.demoConnected.description')
+        });
+      } else if (deviceId === 'fitbit') {
+        await initiateFitbitAuth();
+        // Will redirect to Fitbit OAuth
+      } else {
+        // Other devices coming soon
+        toast({
+          title: t('wearables.toast.comingSoon.title'),
+          description: t('wearables.toast.comingSoon.description', { deviceName })
+        });
+      }
+    } catch (error) {
+      console.error('Connection error:', error);
+      toast({
+        variant: 'destructive',
+        title: t('wearables.toast.connectionFailed.title'),
+        description: t('wearables.toast.connectionFailed.description')
+      });
+    } finally {
+      setConnectingId(null);
+    }
   };
 
   const handleDisconnect = async (providerId: string) => {
@@ -271,10 +341,17 @@ const WearableIntegrations = () => {
                         <div>
                           <CardTitle className="text-lg">{t(device.nameKey)}</CardTitle>
                           {connected && (
-                            <Badge variant="default" className="mt-1">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              {t('wearables.status.connected')}
-                            </Badge>
+                            <div className="flex gap-1 mt-1">
+                              <Badge variant="default">
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                {t('wearables.status.connected')}
+                              </Badge>
+                              {device.id === 'demo' && (
+                                <Badge variant="secondary">
+                                  {t('wearables.demo.badge')}
+                                </Badge>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -283,6 +360,11 @@ const WearableIntegrations = () => {
                   <CardContent>
                     <CardDescription className="mb-4">
                       {t(device.descriptionKey)}
+                      {connected && device.id === 'demo' && (
+                        <span className="block mt-2 text-xs text-muted-foreground italic">
+                          {t('wearables.demo.disclaimer')}
+                        </span>
+                      )}
                     </CardDescription>
                     
                     {connected ? (
@@ -318,9 +400,19 @@ const WearableIntegrations = () => {
                       <Button
                         className="w-full"
                         onClick={() => handleConnect(device.id)}
+                        disabled={connectingId === device.id}
                       >
-                        <LinkIcon className="h-4 w-4 mr-2" />
-                        {t('wearables.status.connect')}
+                        {connectingId === device.id ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            {t('wearables.status.connecting')}
+                          </>
+                        ) : (
+                          <>
+                            <LinkIcon className="h-4 w-4 mr-2" />
+                            {t('wearables.status.connect')}
+                          </>
+                        )}
                       </Button>
                     )}
                   </CardContent>

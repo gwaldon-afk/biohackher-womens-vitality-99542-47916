@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
+import { generateDemoHistoricalData, generateDemoTodayData } from "@/utils/demoWearableData";
 
 interface WearableConnection {
   id: string;
@@ -102,6 +103,88 @@ export const useWearables = () => {
     }
   };
 
+  const connectDemo = async () => {
+    if (!user) throw new Error('User not authenticated');
+
+    try {
+      // Create demo connection
+      const { data: connection, error: connError } = await supabase
+        .from('wearable_connections')
+        .upsert({
+          user_id: user.id,
+          provider: 'demo',
+          provider_user_id: 'demo-user',
+          is_active: true,
+          last_sync_at: new Date().toISOString()
+        }, { onConflict: 'user_id,provider' })
+        .select()
+        .single();
+
+      if (connError) throw connError;
+
+      // Generate and insert demo historical data
+      const demoData = generateDemoHistoricalData(14);
+      
+      const dataToInsert = demoData.map(d => ({
+        user_id: user.id,
+        ...d,
+        raw_data: {}
+      }));
+
+      const { error: dataError } = await supabase
+        .from('wearable_data')
+        .upsert(dataToInsert, { onConflict: 'user_id,date,device_type' });
+
+      if (dataError) throw dataError;
+
+      await Promise.all([
+        fetchConnections(),
+        fetchWearableData()
+      ]);
+
+      return connection;
+    } catch (error) {
+      console.error('Error connecting demo:', error);
+      throw error;
+    }
+  };
+
+  const initiateFitbitAuth = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('fitbit-auth');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        // Redirect to Fitbit OAuth
+        window.location.href = data.url;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error initiating Fitbit auth:', error);
+      throw error;
+    }
+  };
+
+  const syncFitbit = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('fitbit-sync');
+      
+      if (error) throw error;
+      
+      await Promise.all([
+        fetchConnections(),
+        fetchWearableData()
+      ]);
+      
+      return data;
+    } catch (error) {
+      console.error('Error syncing Fitbit:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchConnections();
@@ -116,6 +199,9 @@ export const useWearables = () => {
     fetchConnections,
     fetchWearableData,
     disconnectWearable,
-    triggerSync
+    triggerSync,
+    connectDemo,
+    initiateFitbitAuth,
+    syncFitbit
   };
 };

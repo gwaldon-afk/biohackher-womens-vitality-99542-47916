@@ -2834,6 +2834,10 @@
     "pageSubtitle": "Automatically sync data from your fitness trackers and health devices",
     "availableDevices": "Available Devices",
     "devices": {
+      "demo": {
+        "name": "Demo Device",
+        "description": "Try the wearable experience with sample data"
+      },
       "fitbit": {
         "name": "Fitbit",
         "description": "Sync activity, sleep, and heart rate data"
@@ -2854,6 +2858,10 @@
         "name": "Garmin",
         "description": "Fitness and activity tracking"
       }
+    },
+    "demo": {
+      "badge": "Demo",
+      "disclaimer": "Using simulated data for demonstration"
     },
     "status": {
       "connected": "Connected",
@@ -2881,6 +2889,18 @@
       "comingSoon": {
         "title": "Connection Coming Soon",
         "description": "{{deviceName}} integration is being finalized. Check back soon!"
+      },
+      "connected": {
+        "title": "Device Connected",
+        "description": "Successfully connected to {{provider}}"
+      },
+      "demoConnected": {
+        "title": "Demo Mode Active",
+        "description": "Sample data loaded. Explore the wearable experience!"
+      },
+      "connectionFailed": {
+        "title": "Connection Failed",
+        "description": "Unable to connect device. Please try again."
       },
       "disconnected": {
         "title": "Device Disconnected",
@@ -2926,7 +2946,7 @@
       "connecting": "Connecting to {{deviceName}}...",
       "authorizing": "Authorizing access...",
       "success": "Successfully connected to {{deviceName}}",
-      "cancelled": "Connection canceled",
+      "canceled": "Connection canceled",
       "failed": "Connection failed. Please try again."
     },
     "errors": {
