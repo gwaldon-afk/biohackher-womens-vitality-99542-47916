@@ -24,15 +24,21 @@ import {
   Brain,
   Salad,
   Heart,
-  ClipboardList
+  ClipboardList,
+  Watch,
+  Pencil,
+  Crown,
+  User
 } from 'lucide-react';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
 import { useTestPersonas } from '@/hooks/useTestPersonas';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 type AssessmentType = 'lis' | 'nutrition' | 'hormone';
 
 export const DevTestingPanel = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [selectedPersonas, setSelectedPersonas] = useState<string[]>([]);
@@ -182,9 +188,23 @@ export const DevTestingPanel = () => {
                       onCheckedChange={() => togglePersona(persona.id)}
                     />
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs font-medium">{persona.name}</span>
-                      <span className="text-xs text-muted-foreground ml-1">
-                        ({persona.demographics.age}yo, {persona.demographics.primaryGoal})
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-medium">{persona.name}</span>
+                        {/* Tier badge */}
+                        {persona.subscriptionTier === 'premium' ? (
+                          <Crown className="h-3 w-3 text-amber-500" />
+                        ) : (
+                          <User className="h-3 w-3 text-blue-500" />
+                        )}
+                        {/* Data method badge */}
+                        {persona.dataInputMethod === 'wearable' ? (
+                          <Watch className="h-3 w-3 text-green-500" />
+                        ) : (
+                          <Pencil className="h-3 w-3 text-muted-foreground" />
+                        )}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">
+                        {persona.demographics.age}yo, {persona.demographics.primaryGoal}
                       </span>
                     </div>
                   </label>

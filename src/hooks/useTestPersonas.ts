@@ -298,6 +298,76 @@ export const useTestPersonas = () => {
         } catch (error) {
           console.error('Failed to update assessment progress:', error);
         }
+
+        // Set subscription tier based on persona
+        if (persona.subscriptionTier) {
+          try {
+            const futureDate = new Date();
+            futureDate.setFullYear(futureDate.getFullYear() + 1);
+            
+            await supabase
+              .from('user_subscriptions')
+              .upsert({
+                user_id: userId,
+                subscription_tier: persona.subscriptionTier,
+                subscription_status: 'active',
+                subscription_start_date: new Date().toISOString(),
+                subscription_end_date: futureDate.toISOString(),
+                daily_submissions_count: 0,
+              }, { onConflict: 'user_id' });
+            
+            // Store tier in localStorage for test mode hooks to read
+            localStorage.setItem('testModeTier', persona.subscriptionTier);
+            results.push(`${persona.name} Subscription: ✓ ${persona.subscriptionTier}`);
+          } catch (error) {
+            results.push(`${persona.name} Subscription: ✗ ${error instanceof Error ? error.message : 'Failed'}`);
+          }
+        }
+
+        // Set up wearable connection if applicable
+        if (persona.dataInputMethod === 'wearable' && persona.wearableProvider) {
+          try {
+            const futureDate = new Date();
+            futureDate.setDate(futureDate.getDate() + 30);
+            
+            // First check if connection exists
+            const { data: existing } = await supabase
+              .from('wearable_connections')
+              .select('id')
+              .eq('user_id', userId)
+              .eq('provider', persona.wearableProvider)
+              .maybeSingle();
+
+            if (existing) {
+              // Update existing
+              await supabase
+                .from('wearable_connections')
+                .update({
+                  is_active: true,
+                  access_token: 'demo_access_token',
+                  refresh_token: 'demo_refresh_token',
+                  token_expires_at: futureDate.toISOString(),
+                })
+                .eq('id', existing.id);
+            } else {
+              // Insert new
+              await supabase
+                .from('wearable_connections')
+                .insert({
+                  user_id: userId,
+                  provider: persona.wearableProvider,
+                  is_active: true,
+                  access_token: 'demo_access_token',
+                  refresh_token: 'demo_refresh_token',
+                  token_expires_at: futureDate.toISOString(),
+                });
+            }
+            
+            results.push(`${persona.name} Wearable: ✓ ${persona.wearableProvider} connected`);
+          } catch (error) {
+            results.push(`${persona.name} Wearable: ✗ ${error instanceof Error ? error.message : 'Failed'}`);
+          }
+        }
       }
 
       toast.success(`Applied ${personaIds[personaIds.length - 1]} persona data to your account`);
@@ -329,7 +399,11 @@ export const useTestPersonas = () => {
         supabase.from('longevity_nutrition_assessments').delete().eq('user_id', userId),
         supabase.from('hormone_compass_stages').delete().eq('user_id', userId),
         supabase.from('assessment_progress').delete().eq('user_id', userId),
+        supabase.from('wearable_connections').delete().eq('user_id', userId),
       ]);
+
+      // Clear localStorage test tier
+      localStorage.removeItem('testModeTier');
 
       toast.success('Cleared your test data');
     } catch (error) {

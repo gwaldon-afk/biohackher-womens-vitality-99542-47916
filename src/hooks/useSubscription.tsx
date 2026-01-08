@@ -15,26 +15,34 @@ export interface SubscriptionData {
   last_submission_date?: string;
 }
 
-// Mock subscription for test mode
-const MOCK_SUBSCRIPTION: SubscriptionData = {
-  id: '00000000-0000-0000-0000-000000000003',
-  subscription_tier: 'premium',
-  subscription_status: 'active',
-  daily_submissions_count: 0,
-  subscription_start_date: new Date().toISOString(),
+// Mock subscription for test mode - reads from localStorage tier selection
+const getMockSubscription = (): SubscriptionData | null => {
+  const selectedTier = localStorage.getItem('testModeTier') || 'premium';
+  
+  if (selectedTier === 'guest') {
+    return null;
+  }
+  
+  return {
+    id: '00000000-0000-0000-0000-000000000003',
+    subscription_tier: selectedTier as SubscriptionData['subscription_tier'],
+    subscription_status: 'active',
+    daily_submissions_count: 0,
+    subscription_start_date: new Date().toISOString(),
+  };
 };
 
 export const useSubscription = () => {
   const { user } = useAuth();
   const [subscription, setSubscription] = useState<SubscriptionData | null>(
-    TEST_MODE_ENABLED ? MOCK_SUBSCRIPTION : null
+    TEST_MODE_ENABLED ? getMockSubscription() : null
   );
   const [loading, setLoading] = useState(!TEST_MODE_ENABLED);
 
   const fetchSubscription = async () => {
-    // Skip fetching in test mode
+    // Skip fetching in test mode - use mock subscription based on selected tier
     if (TEST_MODE_ENABLED) {
-      setSubscription(MOCK_SUBSCRIPTION);
+      setSubscription(getMockSubscription());
       setLoading(false);
       return;
     }

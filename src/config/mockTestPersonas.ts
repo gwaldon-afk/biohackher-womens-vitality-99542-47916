@@ -80,6 +80,9 @@ export interface TestPersona {
   name: string;
   description: string;
   testUserId: string;
+  subscriptionTier: 'registered' | 'premium';
+  dataInputMethod: 'manual' | 'wearable';
+  wearableProvider?: 'fitbit' | 'garmin' | 'apple_health' | 'demo';
   demographics: TestPersonaDemographics;
   lisData: TestPersonaLISData;
   nutritionData: TestPersonaNutritionData;
@@ -96,12 +99,14 @@ const getDateOfBirth = (age: number): string => {
 };
 
 export const TEST_PERSONAS: TestPersona[] = [
-  // Test1: 35, Weight Loss, Struggling
+  // Test1: 35, Weight Loss, Struggling - Registered, Manual Entry
   {
     id: 'test1',
     name: 'Test1',
     description: '35yo, Weight Loss focus, Struggling health state',
     testUserId: '00000000-0000-0000-0000-000000000001',
+    subscriptionTier: 'registered',
+    dataInputMethod: 'manual',
     demographics: {
       age: 35,
       dateOfBirth: getDateOfBirth(35),
@@ -185,12 +190,14 @@ export const TEST_PERSONAS: TestPersona[] = [
     ],
   },
 
-  // Test2: 35, Energy & Fatigue, Fair
+  // Test2: 35, Energy & Fatigue, Fair - Registered, Manual Entry
   {
     id: 'test2',
     name: 'Test2',
     description: '35yo, Energy focus, Fair health state',
     testUserId: '00000000-0000-0000-0000-000000000002',
+    subscriptionTier: 'registered',
+    dataInputMethod: 'manual',
     demographics: {
       age: 35,
       dateOfBirth: getDateOfBirth(35),
@@ -274,12 +281,15 @@ export const TEST_PERSONAS: TestPersona[] = [
     ],
   },
 
-  // Test3: 45, Hormone Balance, Fair
+  // Test3: 45, Hormone Balance, Fair - Premium, Wearable (Demo)
   {
     id: 'test3',
     name: 'Test3',
     description: '45yo, Hormone Balance focus, Fair health state',
     testUserId: '00000000-0000-0000-0000-000000000003',
+    subscriptionTier: 'premium',
+    dataInputMethod: 'wearable',
+    wearableProvider: 'demo',
     demographics: {
       age: 45,
       dateOfBirth: getDateOfBirth(45),
@@ -363,12 +373,15 @@ export const TEST_PERSONAS: TestPersona[] = [
     ],
   },
 
-  // Test4: 45, Cognitive/Brain Health, Good
+  // Test4: 45, Cognitive/Brain Health, Good - Premium, Wearable (Demo)
   {
     id: 'test4',
     name: 'Test4',
     description: '45yo, Brain Health focus, Good health state',
     testUserId: '00000000-0000-0000-0000-000000000004',
+    subscriptionTier: 'premium',
+    dataInputMethod: 'wearable',
+    wearableProvider: 'demo',
     demographics: {
       age: 45,
       dateOfBirth: getDateOfBirth(45),
@@ -452,12 +465,14 @@ export const TEST_PERSONAS: TestPersona[] = [
     ],
   },
 
-  // Test5: 60, Sleep Optimization, Fair
+  // Test5: 60, Sleep Optimization, Fair - Registered, Manual Entry
   {
     id: 'test5',
     name: 'Test5',
     description: '60yo, Sleep focus, Fair health state',
     testUserId: '00000000-0000-0000-0000-000000000005',
+    subscriptionTier: 'registered',
+    dataInputMethod: 'manual',
     demographics: {
       age: 60,
       dateOfBirth: getDateOfBirth(60),
@@ -541,12 +556,15 @@ export const TEST_PERSONAS: TestPersona[] = [
     ],
   },
 
-  // Test6: 60, Longevity/Anti-aging, Optimal
+  // Test6: 60, Longevity/Anti-aging, Optimal - Premium, Wearable (Demo)
   {
     id: 'test6',
     name: 'Test6',
     description: '60yo, Longevity focus, Optimal health state',
     testUserId: '00000000-0000-0000-0000-000000000006',
+    subscriptionTier: 'premium',
+    dataInputMethod: 'wearable',
+    wearableProvider: 'demo',
     demographics: {
       age: 60,
       dateOfBirth: getDateOfBirth(60),
@@ -627,6 +645,280 @@ export const TEST_PERSONAS: TestPersona[] = [
     protocols: [
       { id: 'prot-11', name: 'Zone 2 cardio 45min', category: 'movement', tier: 'foundation', frequency: 'daily', timeOfDay: 'morning' },
       { id: 'prot-12', name: 'NMN supplement', category: 'supplement', tier: 'optimization', frequency: 'daily', timeOfDay: 'morning' },
+    ],
+  },
+  // Test7: 35, Strength Focus - Premium, Wearable
+  {
+    id: 'test7',
+    name: 'StrengthSara',
+    description: '35yo, Strength & Muscle focus, Premium wearable user',
+    testUserId: '00000000-0000-0000-0000-000000000007',
+    subscriptionTier: 'premium',
+    dataInputMethod: 'wearable',
+    wearableProvider: 'demo',
+    demographics: {
+      age: 35,
+      dateOfBirth: getDateOfBirth(35),
+      weight: 68,
+      height: 170,
+      primaryGoal: 'strength',
+      secondaryGoals: ['muscle', 'energy'],
+      menopauseStage: 'cycling',
+      activityLevel: 'very_active',
+    },
+    lisData: {
+      sleepScore: 78,
+      stressScore: 72,
+      activityScore: 92,
+      nutritionScore: 85,
+      socialScore: 70,
+      cognitiveScore: 75,
+      overallScore: 79,
+      biologicalAgeOffset: -4,
+      answers: {
+        sleep_quality: 4, sleep_duration: 4, sleep_consistency: 3,
+        stress_level: 2, stress_management: 4, recovery: 4,
+        exercise_frequency: 5, exercise_intensity: 5, daily_movement: 5,
+        diet_quality: 4, hydration: 5, meal_timing: 4,
+        social_connections: 3, community: 4, relationships: 3,
+        mental_stimulation: 4, learning: 3, focus: 4,
+      },
+    },
+    nutritionData: {
+      proteinScore: 5,
+      fiberScore: 4,
+      plantDiversityScore: 4,
+      gutSymptomScore: 1,
+      inflammationScore: 1,
+      cravingPattern: 2,
+      hydrationScore: 5,
+      overallScore: 85,
+      grade: 'A-',
+      eatingPersonality: 'high_protein_performer',
+      answers: {
+        protein_sources: 'always',
+        fiber_intake: 'high',
+        plant_variety: 'diverse',
+        gut_symptoms: 'rare',
+        inflammation_signs: 'minimal',
+        cravings: 'occasional',
+        water_intake: 'optimal',
+      },
+    },
+    hormoneData: {
+      energyVitalityScore: 5,
+      sleepRecoveryScore: 4,
+      moodCognitionScore: 4,
+      physicalSymptomsScore: 4,
+      metabolicHealthScore: 5,
+      intimateWellnessScore: 4,
+      overallScore: 78,
+      healthLevel: 'doing_well',
+      answers: {
+        energy_morning: 5, energy_afternoon: 5, energy_evening: 4,
+        sleep_quality: 4, sleep_onset: 4, night_waking: 2,
+        mood_stability: 4, brain_fog: 1, memory: 4,
+        hot_flashes: 1, joint_pain: 1, headaches: 1,
+        weight_changes: 1, appetite: 5, blood_sugar: 5,
+        libido: 4, vaginal_health: 4, cycle_regularity: 4,
+      },
+    },
+    goals: [
+      {
+        id: 'goal-7',
+        title: 'Build lean muscle mass',
+        description: 'Gain 3kg lean muscle while maintaining body fat',
+        targetDate: '2025-06-08',
+        status: 'active',
+        progress: 45,
+      },
+    ],
+    protocols: [
+      { id: 'prot-13', name: 'Strength training 4x/week', category: 'movement', tier: 'foundation', frequency: '4x_weekly', timeOfDay: 'morning' },
+      { id: 'prot-14', name: 'Creatine supplement', category: 'supplement', tier: 'optimization', frequency: 'daily', timeOfDay: 'morning' },
+    ],
+  },
+
+  // Test8: 50, Biological Age Optimisation - Premium, Wearable
+  {
+    id: 'test8',
+    name: 'BioAgeBeth',
+    description: '50yo, Biological Age optimisation, Premium wearable user',
+    testUserId: '00000000-0000-0000-0000-000000000008',
+    subscriptionTier: 'premium',
+    dataInputMethod: 'wearable',
+    wearableProvider: 'demo',
+    demographics: {
+      age: 50,
+      dateOfBirth: getDateOfBirth(50),
+      weight: 65,
+      height: 165,
+      primaryGoal: 'longevity',
+      secondaryGoals: ['biological_age', 'vitality'],
+      menopauseStage: 'perimenopause',
+      activityLevel: 'active',
+    },
+    lisData: {
+      sleepScore: 82,
+      stressScore: 78,
+      activityScore: 85,
+      nutritionScore: 90,
+      socialScore: 80,
+      cognitiveScore: 85,
+      overallScore: 83,
+      biologicalAgeOffset: -6,
+      answers: {
+        sleep_quality: 4, sleep_duration: 4, sleep_consistency: 4,
+        stress_level: 2, stress_management: 4, recovery: 4,
+        exercise_frequency: 4, exercise_intensity: 4, daily_movement: 5,
+        diet_quality: 5, hydration: 5, meal_timing: 4,
+        social_connections: 4, community: 4, relationships: 4,
+        mental_stimulation: 4, learning: 4, focus: 4,
+      },
+    },
+    nutritionData: {
+      proteinScore: 5,
+      fiberScore: 5,
+      plantDiversityScore: 5,
+      gutSymptomScore: 1,
+      inflammationScore: 1,
+      cravingPattern: 1,
+      hydrationScore: 5,
+      overallScore: 90,
+      grade: 'A',
+      eatingPersonality: 'longevity_optimized',
+      answers: {
+        protein_sources: 'always',
+        fiber_intake: 'very_high',
+        plant_variety: 'extensive',
+        gut_symptoms: 'none',
+        inflammation_signs: 'none',
+        cravings: 'rarely',
+        water_intake: 'optimal',
+      },
+    },
+    hormoneData: {
+      energyVitalityScore: 4,
+      sleepRecoveryScore: 4,
+      moodCognitionScore: 4,
+      physicalSymptomsScore: 3,
+      metabolicHealthScore: 4,
+      intimateWellnessScore: 3,
+      overallScore: 72,
+      healthLevel: 'doing_well',
+      answers: {
+        energy_morning: 4, energy_afternoon: 4, energy_evening: 4,
+        sleep_quality: 4, sleep_onset: 4, night_waking: 2,
+        mood_stability: 4, brain_fog: 1, memory: 4,
+        hot_flashes: 2, joint_pain: 1, headaches: 1,
+        weight_changes: 1, appetite: 4, blood_sugar: 4,
+        libido: 3, vaginal_health: 3, cycle_regularity: 3,
+      },
+    },
+    goals: [
+      {
+        id: 'goal-8',
+        title: 'Reduce biological age by 8 years',
+        description: 'Comprehensive longevity protocol for optimal ageing',
+        targetDate: '2025-12-08',
+        status: 'active',
+        progress: 60,
+      },
+    ],
+    protocols: [
+      { id: 'prot-15', name: 'Zone 2 cardio 5x/week', category: 'movement', tier: 'foundation', frequency: '5x_weekly', timeOfDay: 'morning' },
+      { id: 'prot-16', name: 'Resveratrol + NMN stack', category: 'supplement', tier: 'optimization', frequency: 'daily', timeOfDay: 'morning' },
+    ],
+  },
+
+  // Test9: 48, Perimenopause Heavy Symptoms - Registered, Manual Entry
+  {
+    id: 'test9',
+    name: 'HormoneHolly',
+    description: '48yo, Deep perimenopause symptoms, Registered manual entry',
+    testUserId: '00000000-0000-0000-0000-000000000009',
+    subscriptionTier: 'registered',
+    dataInputMethod: 'manual',
+    demographics: {
+      age: 48,
+      dateOfBirth: getDateOfBirth(48),
+      weight: 74,
+      height: 163,
+      primaryGoal: 'hormone_balance',
+      secondaryGoals: ['sleep', 'mood'],
+      menopauseStage: 'perimenopause',
+      activityLevel: 'light',
+    },
+    lisData: {
+      sleepScore: 40,
+      stressScore: 35,
+      activityScore: 45,
+      nutritionScore: 55,
+      socialScore: 60,
+      cognitiveScore: 45,
+      overallScore: 47,
+      biologicalAgeOffset: 6,
+      answers: {
+        sleep_quality: 2, sleep_duration: 2, sleep_consistency: 2,
+        stress_level: 4, stress_management: 2, recovery: 2,
+        exercise_frequency: 2, exercise_intensity: 2, daily_movement: 2,
+        diet_quality: 3, hydration: 3, meal_timing: 2,
+        social_connections: 3, community: 3, relationships: 3,
+        mental_stimulation: 2, learning: 2, focus: 2,
+      },
+    },
+    nutritionData: {
+      proteinScore: 3,
+      fiberScore: 3,
+      plantDiversityScore: 2,
+      gutSymptomScore: 4,
+      inflammationScore: 4,
+      cravingPattern: 5,
+      hydrationScore: 2,
+      overallScore: 48,
+      grade: 'D+',
+      eatingPersonality: 'emotional_eater',
+      answers: {
+        protein_sources: 'sometimes',
+        fiber_intake: 'moderate',
+        plant_variety: 'limited',
+        gut_symptoms: 'frequent',
+        inflammation_signs: 'noticeable',
+        cravings: 'strong_daily',
+        water_intake: 'minimal',
+      },
+    },
+    hormoneData: {
+      energyVitalityScore: 2,
+      sleepRecoveryScore: 1,
+      moodCognitionScore: 2,
+      physicalSymptomsScore: 2,
+      metabolicHealthScore: 2,
+      intimateWellnessScore: 2,
+      overallScore: 35,
+      healthLevel: 'really_struggling',
+      answers: {
+        energy_morning: 2, energy_afternoon: 2, energy_evening: 1,
+        sleep_quality: 1, sleep_onset: 2, night_waking: 5,
+        mood_stability: 2, brain_fog: 4, memory: 2,
+        hot_flashes: 5, joint_pain: 3, headaches: 4,
+        weight_changes: 4, appetite: 3, blood_sugar: 3,
+        libido: 1, vaginal_health: 2, cycle_regularity: 1,
+      },
+    },
+    goals: [
+      {
+        id: 'goal-9',
+        title: 'Manage perimenopause symptoms',
+        description: 'Reduce hot flashes, improve sleep, stabilise mood',
+        targetDate: '2025-06-08',
+        status: 'active',
+        progress: 10,
+      },
+    ],
+    protocols: [
+      { id: 'prot-17', name: 'Evening primrose oil', category: 'supplement', tier: 'immediate', frequency: 'daily', timeOfDay: 'evening' },
+      { id: 'prot-18', name: 'Cooling sleep environment', category: 'sleep', tier: 'immediate', frequency: 'daily', timeOfDay: 'evening' },
     ],
   },
 ];
