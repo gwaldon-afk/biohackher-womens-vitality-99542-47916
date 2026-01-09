@@ -1055,6 +1055,102 @@ export type Database = {
         }
         Relationships: []
       }
+      exercise_programs_meta: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty_level: string
+          display_order: number | null
+          duration_weeks: number
+          equipment_required: string[] | null
+          focus_areas: string[] | null
+          id: string
+          is_active: boolean | null
+          name: string
+          program_key: string
+          sessions_per_week: number
+          suitable_for: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string
+          display_order?: number | null
+          duration_weeks?: number
+          equipment_required?: string[] | null
+          focus_areas?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          program_key: string
+          sessions_per_week?: number
+          suitable_for?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string
+          display_order?: number | null
+          duration_weeks?: number
+          equipment_required?: string[] | null
+          focus_areas?: string[] | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          program_key?: string
+          sessions_per_week?: number
+          suitable_for?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exercise_workout_completions: {
+        Row: {
+          completed_at: string
+          created_at: string
+          day_number: number
+          duration_minutes: number | null
+          exercises_completed: Json | null
+          id: string
+          notes: string | null
+          perceived_effort: number | null
+          program_key: string
+          user_id: string
+          week_number: number
+          workout_date: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          day_number: number
+          duration_minutes?: number | null
+          exercises_completed?: Json | null
+          id?: string
+          notes?: string | null
+          perceived_effort?: number | null
+          program_key: string
+          user_id: string
+          week_number: number
+          workout_date?: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          day_number?: number
+          duration_minutes?: number | null
+          exercises_completed?: Json | null
+          id?: string
+          notes?: string | null
+          perceived_effort?: number | null
+          program_key?: string
+          user_id?: string
+          week_number?: number
+          workout_date?: string
+        }
+        Relationships: []
+      }
       expert_availability: {
         Row: {
           available: boolean | null
@@ -4214,6 +4310,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_exercise_swaps: {
+        Row: {
+          created_at: string
+          id: string
+          original_exercise_key: string
+          program_key: string | null
+          reason: string | null
+          replacement_exercise_key: string
+          swap_date: string | null
+          swap_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          original_exercise_key: string
+          program_key?: string | null
+          reason?: string | null
+          replacement_exercise_key: string
+          swap_date?: string | null
+          swap_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          original_exercise_key?: string
+          program_key?: string | null
+          reason?: string | null
+          replacement_exercise_key?: string
+          swap_date?: string | null
+          swap_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_feedback: {
         Row: {
           admin_notes: string | null
@@ -4374,9 +4506,13 @@ export type Database = {
           current_supplements: Json | null
           date_of_birth: string
           date_quit_smoking: string | null
+          desired_intensity: string | null
           energy_assessment_date: string | null
+          equipment_access: string[] | null
+          exercise_considerations: string[] | null
           exercise_preferences: Json | null
           exercise_routine_frequency: number | null
+          exercise_setup_completed: boolean | null
           fitness_goal: string | null
           height_cm: number | null
           id: string
@@ -4389,15 +4525,23 @@ export type Database = {
           latest_energy_score: number | null
           medication_list: Json | null
           nutrition_calculation_date: string | null
+          preferred_session_duration: string | null
+          preferred_workout_days: number | null
           previous_injuries: string | null
+          program_duration_preference: string | null
           protein_per_meal: number | null
           recommended_daily_calories: number | null
           recommended_protein_max: number | null
           recommended_protein_min: number | null
+          recovery_needs: string | null
+          selected_program_id: string | null
           social_engagement_baseline: number | null
+          training_aspiration: string | null
           training_experience: string | null
+          training_interests: string[] | null
           updated_at: string | null
           user_id: string
+          wearable_auto_adjust: boolean | null
           weight_kg: number | null
         }
         Insert: {
@@ -4412,9 +4556,13 @@ export type Database = {
           current_supplements?: Json | null
           date_of_birth: string
           date_quit_smoking?: string | null
+          desired_intensity?: string | null
           energy_assessment_date?: string | null
+          equipment_access?: string[] | null
+          exercise_considerations?: string[] | null
           exercise_preferences?: Json | null
           exercise_routine_frequency?: number | null
+          exercise_setup_completed?: boolean | null
           fitness_goal?: string | null
           height_cm?: number | null
           id?: string
@@ -4427,15 +4575,23 @@ export type Database = {
           latest_energy_score?: number | null
           medication_list?: Json | null
           nutrition_calculation_date?: string | null
+          preferred_session_duration?: string | null
+          preferred_workout_days?: number | null
           previous_injuries?: string | null
+          program_duration_preference?: string | null
           protein_per_meal?: number | null
           recommended_daily_calories?: number | null
           recommended_protein_max?: number | null
           recommended_protein_min?: number | null
+          recovery_needs?: string | null
+          selected_program_id?: string | null
           social_engagement_baseline?: number | null
+          training_aspiration?: string | null
           training_experience?: string | null
+          training_interests?: string[] | null
           updated_at?: string | null
           user_id: string
+          wearable_auto_adjust?: boolean | null
           weight_kg?: number | null
         }
         Update: {
@@ -4450,9 +4606,13 @@ export type Database = {
           current_supplements?: Json | null
           date_of_birth?: string
           date_quit_smoking?: string | null
+          desired_intensity?: string | null
           energy_assessment_date?: string | null
+          equipment_access?: string[] | null
+          exercise_considerations?: string[] | null
           exercise_preferences?: Json | null
           exercise_routine_frequency?: number | null
+          exercise_setup_completed?: boolean | null
           fitness_goal?: string | null
           height_cm?: number | null
           id?: string
@@ -4465,18 +4625,34 @@ export type Database = {
           latest_energy_score?: number | null
           medication_list?: Json | null
           nutrition_calculation_date?: string | null
+          preferred_session_duration?: string | null
+          preferred_workout_days?: number | null
           previous_injuries?: string | null
+          program_duration_preference?: string | null
           protein_per_meal?: number | null
           recommended_daily_calories?: number | null
           recommended_protein_max?: number | null
           recommended_protein_min?: number | null
+          recovery_needs?: string | null
+          selected_program_id?: string | null
           social_engagement_baseline?: number | null
+          training_aspiration?: string | null
           training_experience?: string | null
+          training_interests?: string[] | null
           updated_at?: string | null
           user_id?: string
+          wearable_auto_adjust?: boolean | null
           weight_kg?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_health_profile_selected_program_id_fkey"
+            columns: ["selected_program_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_programs_meta"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_insights: {
         Row: {
@@ -4597,6 +4773,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_program_access: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_day: number | null
+          current_week: number | null
+          id: string
+          is_active: boolean | null
+          paused_at: string | null
+          program_id: string | null
+          program_key: string
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number | null
+          current_week?: number | null
+          id?: string
+          is_active?: boolean | null
+          paused_at?: string | null
+          program_id?: string | null
+          program_key: string
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_day?: number | null
+          current_week?: number | null
+          id?: string
+          is_active?: boolean | null
+          paused_at?: string | null
+          program_id?: string | null
+          program_key?: string
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_program_access_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_programs_meta"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_progress: {
         Row: {
@@ -4800,6 +5029,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_workout_schedule_mods: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          new_date: string | null
+          original_date: string
+          program_key: string
+          reason: string | null
+          swap_with_date: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          new_date?: string | null
+          original_date: string
+          program_key: string
+          reason?: string | null
+          swap_with_date?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          new_date?: string | null
+          original_date?: string
+          program_key?: string
+          reason?: string | null
+          swap_with_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       wearable_connections: {
         Row: {
