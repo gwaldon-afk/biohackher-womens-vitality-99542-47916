@@ -242,6 +242,37 @@ export const UnifiedDailyChecklist = () => {
         
         refetch();
       }
+      // Handle workout (exercise program) completion
+      else if (action.type === 'workout' && action.workoutData) {
+        const today = new Date().toISOString().split('T')[0];
+        const { programKey, weekNumber, dayNumber } = action.workoutData;
+        
+        if (action.completed) {
+          // Delete the completion record
+          await (supabase
+            .from('exercise_workout_completions' as any)
+            .delete()
+            .eq('user_id', user.id)
+            .eq('program_key', programKey)
+            .eq('workout_date', today) as any);
+        } else {
+          // Insert completion record
+          await (supabase
+            .from('exercise_workout_completions' as any)
+            .insert({
+              user_id: user.id,
+              program_key: programKey,
+              week_number: weekNumber,
+              day_number: dayNumber,
+              workout_date: today,
+              completed_at: new Date().toISOString()
+            }) as any);
+          toast.success(t('today.toasts.workoutCompleted'));
+        }
+        
+        refetch();
+        refetchLIS();
+      }
     } catch (error) {
       console.error('Error toggling action:', error);
       toast.error(t('today.toasts.failedUpdate'));

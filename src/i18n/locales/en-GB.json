@@ -873,7 +873,8 @@
       "mealLogged": "Meal logged!",
       "greatWork": "Great work!",
       "addedToCart": "Added to cart!",
-      "failedUpdate": "Failed to update"
+      "failedUpdate": "Failed to update",
+      "workoutCompleted": "Workout completed! 💪"
     },
     "profileCard": {
       "title": "My Profile",
