@@ -9,8 +9,8 @@ import { useProtocolCompletions } from '@/queries/protocolQueries';
 import { useNutritionPreferences } from './useNutritionPreferences';
 import { supabase } from '@/integrations/supabase/client';
 
-
 import { templateMealPlans } from '@/data/mealTemplates';
+import { exercisePrograms } from '@/data/exercisePrograms';
 
 // Local interface matching what useProtocols returns
 interface ProtocolItemLocal {
@@ -31,7 +31,7 @@ interface ProtocolItemLocal {
 
 export interface DailyAction {
   id: string;
-  type: 'protocol' | 'goal' | 'energy' | 'habit' | 'meal';
+  type: 'protocol' | 'goal' | 'energy' | 'habit' | 'meal' | 'workout';
   title: string;
   description?: string;
   category: 'quick_win' | 'energy_booster' | 'deep_practice' | 'optional' | 'nutrition';
@@ -51,7 +51,37 @@ export interface DailyAction {
   // For grouped items (e.g., supplements by time)
   childItems?: Array<{ id: string; name: string; dosage?: string | null; completed: boolean }>;
   actualItemCount?: number;
+  // For exercise program workouts
+  workoutData?: {
+    programKey: string;
+    weekNumber: number;
+    dayNumber: number;
+    workout: any;
+  };
 }
+
+// Helper to determine which days of the week should have workouts based on sessions per week
+const getWorkoutDays = (sessionsPerWeek: number): number[] => {
+  // Returns day of week numbers (0 = Sunday, 1 = Monday, etc.)
+  switch (sessionsPerWeek) {
+    case 1:
+      return [3]; // Wednesday
+    case 2:
+      return [1, 4]; // Monday, Thursday
+    case 3:
+      return [1, 3, 5]; // Monday, Wednesday, Friday
+    case 4:
+      return [1, 2, 4, 5]; // Monday, Tuesday, Thursday, Friday
+    case 5:
+      return [1, 2, 3, 4, 5]; // Monday through Friday
+    case 6:
+      return [1, 2, 3, 4, 5, 6]; // Monday through Saturday
+    case 7:
+      return [0, 1, 2, 3, 4, 5, 6]; // Every day
+    default:
+      return [1, 3, 5]; // Default to 3 days
+  }
+};
 
 export const useDailyPlan = () => {
   const { user } = useAuth();
@@ -397,6 +427,88 @@ export const useDailyPlan = () => {
               mealType
             });
           });
+        }
+      }
+
+      // 5. Add Exercise Program Workout (if user has active program)
+      if (user) {
+        try {
+          // Fetch user's active exercise program
+          const { data: activeProgram } = await (supabase
+            .from('user_exercise_programs' as any)
+            .select('*')
+            .eq('user_id', user.id)
+            .eq('is_active', true)
+            .maybeSingle() as any);
+
+          if (activeProgram) {
+            const program = exercisePrograms.find(p => p.key === activeProgram.program_key);
+            
+            if (program) {
+              const currentWeek = activeProgram.current_week || 1;
+              const weekStructure = program.weeklyStructure.find(w => w.weekNumber === currentWeek);
+              
+              if (weekStructure) {
+                // Calculate which workout day it is based on days since start
+                const startDate = new Date(activeProgram.start_date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                startDate.setHours(0, 0, 0, 0);
+                
+                const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+                const daysPerWeek = 7;
+                const dayOfCurrentWeek = daysSinceStart % daysPerWeek;
+                
+                // Determine workout days based on sessions per week
+                // e.g., 3 sessions = Mon, Wed, Fri (days 0, 2, 4 of week starting Monday)
+                const sessionsPerWeek = program.sessionsPerWeek;
+                const workoutDays = getWorkoutDays(sessionsPerWeek);
+                
+                // Check if today is a workout day
+                const todayDayOfWeek = new Date().getDay(); // 0 = Sunday
+                const workoutDayIndex = workoutDays.indexOf(todayDayOfWeek);
+                
+                if (workoutDayIndex !== -1 && weekStructure.days[workoutDayIndex]) {
+                  const todaysWorkout = weekStructure.days[workoutDayIndex];
+                  
+                  // Check if workout is completed today
+                  const todayStr = new Date().toISOString().split('T')[0];
+                  const { data: workoutCompletion } = await (supabase
+                    .from('exercise_workout_completions' as any)
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .eq('program_key', activeProgram.program_key)
+                    .eq('workout_date', todayStr)
+                    .maybeSingle() as any);
+                  
+                  const isCompleted = !!workoutCompletion;
+                  
+                  dailyActions.push({
+                    id: `workout-${activeProgram.program_key}-w${currentWeek}-d${todaysWorkout.dayNumber}`,
+                    type: 'workout',
+                    title: todaysWorkout.name,
+                    description: `${todaysWorkout.focus} • ${todaysWorkout.estimatedDuration} min`,
+                    category: 'deep_practice',
+                    estimatedMinutes: todaysWorkout.estimatedDuration,
+                    priority: 0,
+                    timeOfDay: ['morning', 'afternoon'], // Flexible timing
+                    whyItMatters: `Week ${currentWeek} of your ${program.name} program`,
+                    icon: '🏋️',
+                    completed: isCompleted,
+                    itemType: 'exercise_program',
+                    workoutData: {
+                      programKey: activeProgram.program_key,
+                      weekNumber: currentWeek,
+                      dayNumber: todaysWorkout.dayNumber,
+                      workout: todaysWorkout
+                    }
+                  });
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('[useDailyPlan] Error loading exercise program:', error);
         }
       }
 
