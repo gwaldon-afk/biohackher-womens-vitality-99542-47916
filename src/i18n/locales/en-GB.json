@@ -2997,5 +2997,33 @@
       "premium": "Premium",
       "premiumDescription": "Wearables & all features"
     }
-  }
+  },
+  "exerciseWizard": {
+    "title": "Exercise Programme Setup",
+    "subtitle": "Let's find the perfect workout plan for you",
+    "step": "Step {{current}} of {{total}}",
+    "pathSelection": { "title": "Choose Your Path", "description": "How would you like to find your exercise programme?" },
+    "paths": {
+      "smartMatch": { "title": "Smart Match", "description": "Answer a few questions and we'll recommend the best programme based on your profile and goals.", "badge": "Recommended", "feature1": "Personalised to your fitness level", "feature2": "Considers health considerations", "feature3": "Quick 2-minute setup" },
+      "buildYourOwn": { "title": "Build Your Own", "description": "Customise your programme by selecting equipment, schedule, and goals.", "feature1": "Full control over preferences", "feature2": "Choose your equipment", "feature3": "Set your own schedule" }
+    },
+    "smartMatch": {
+      "fitnessLevel": { "title": "What's your current fitness level?", "description": "Be honest – we'll match you with the right programme", "levels": { "beginner": { "title": "Beginner", "description": "New to exercise or returning after a long break" }, "intermediate": { "title": "Intermediate", "description": "Exercise regularly, comfortable with most movements" }, "advanced": { "title": "Advanced", "description": "Very active, seeking challenging workouts" } } },
+      "considerations": { "title": "Any health considerations?", "description": "Select all that apply so we can recommend safe exercises", "options": { "joint-concerns": "Joint concerns", "pelvic-floor": "Pelvic floor", "bone-health": "Bone health focus", "menopause": "Menopause", "postnatal": "Postnatal", "back-pain": "Back pain", "none": "None of these" } },
+      "analyzing": { "title": "Finding Your Perfect Programme", "description": "Analysing your profile and preferences..." },
+      "findPrograms": "Find My Programme"
+    },
+    "buildYourOwn": {
+      "equipment": { "title": "What equipment do you have?", "description": "Select all available equipment", "options": { "dumbbells": "Dumbbells", "resistance-band": "Resistance bands", "kettlebell": "Kettlebell", "barbell": "Barbell", "bench": "Bench", "pull-up-bar": "Pull-up bar", "bodyweight-only": "Bodyweight only" } },
+      "schedule": { "title": "Set Your Schedule", "description": "How much time can you commit?", "daysPerWeek": "Days per week", "days": "days", "sessionDuration": "Session duration", "mins": "mins", "intensity": "Preferred intensity", "intensityLevels": { "low": "Low", "moderate": "Moderate", "high": "High" } },
+      "goals": { "title": "What are your goals?", "description": "Select up to 3 priorities", "selectUpTo": "Select up to {{count}} goals", "options": { "build-strength": "Build strength", "lose-weight": "Lose weight", "improve-mobility": "Improve mobility", "bone-health": "Bone health", "energy-boost": "Boost energy", "maintain-independence": "Stay independent" } },
+      "analyzing": { "title": "Building Your Programme", "description": "Matching programmes to your preferences..." },
+      "findPrograms": "Find Programmes"
+    },
+    "programSelection": { "title": "Your Matched Programmes", "description": "We found {{count}} programmes that match your preferences", "bestMatch": "Best Match", "weeks": "weeks", "week": "week", "mins": "mins", "difficulty": { "beginner": "Beginner", "intermediate": "Intermediate", "advanced": "Advanced" }, "changePreferences": "Change Preferences" },
+    "confirmation": { "weeks": "Weeks", "perWeek": "Per Week", "minsSession": "Mins/Session", "whatYoullGain": "What You'll Gain", "week1Preview": "Week 1 Preview", "mins": "mins", "equipment": "Equipment", "optional": "optional", "startProgram": "Start This Programme", "chooseAnother": "Choose Another" },
+    "focusAreas": { "full-body-strength": "Full Body Strength", "movement-quality": "Movement Quality", "muscle-building": "Muscle Building", "bone-density": "Bone Density", "balance": "Balance", "flexibility": "Flexibility", "mobility": "Mobility" },
+    "equipment": { "dumbbells": "Dumbbells", "resistance-band": "Resistance Band", "kettlebell": "Kettlebell", "barbell": "Barbell", "bench": "Bench", "bodyweight": "Bodyweight" }
+  },
+  "common": { "back": "Back", "continue": "Continue", "loading": "Loading..." }
 }
