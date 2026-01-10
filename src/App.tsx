@@ -115,6 +115,7 @@ import Profile from "./pages/Profile";
 import NinetyDayPlan from "./pages/plans/NinetyDayPlan";
 import WeeklyPlan from "./pages/plans/WeeklyPlan";
 import MealPlanWeek from "./pages/nutrition/MealPlanWeek";
+import ExerciseSetup from "./pages/ExerciseSetup";
 import DevChecklist from "./pages/DevChecklist";
 
 // Configure React Query with sensible defaults
@@ -220,6 +221,9 @@ const App = () => (
           <Route path="/energy-loop/check-in" element={<ProtectedRoute><EnergyCheckIn /></ProtectedRoute>} />
           <Route path="/energy-loop/progress" element={<ProtectedRoute><EnergyProgress /></ProtectedRoute>} />
           <Route path="/energy-loop/actions" element={<ProtectedRoute><EnergyActions /></ProtectedRoute>} />
+          
+          {/* Exercise Module Routes */}
+          <Route path="/exercise/setup" element={<ProtectedRoute><RequireHealthProfile><ExerciseSetup /></RequireHealthProfile></ProtectedRoute>} />
           
           {/* Expert Partner Routes */}
           <Route path="/experts" element={<ExpertDirectory />} />
