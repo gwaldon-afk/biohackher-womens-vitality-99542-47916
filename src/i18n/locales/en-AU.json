@@ -3150,11 +3150,17 @@
       "barbell": "Barbell",
       "bench": "Bench",
       "bodyweight": "Bodyweight"
-    }
+    },
+    "loginRequired": "Please log in to save your programme",
+    "programSaved": "Programme Saved!",
+    "programSavedDescription": "Your exercise programme has been set up and is ready to start.",
+    "saveFailed": "Failed to save programme. Please try again."
   },
   "common": {
     "back": "Back",
     "continue": "Continue",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "error": "Error",
+    "saving": "Saving..."
   }
 }

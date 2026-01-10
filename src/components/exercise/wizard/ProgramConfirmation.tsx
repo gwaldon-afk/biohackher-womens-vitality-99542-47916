@@ -26,9 +26,10 @@ interface ProgramConfirmationProps {
   onConfirm: () => void;
   onBack: () => void;
   onChangeProgram: () => void;
+  saving?: boolean;
 }
 
-export const ProgramConfirmation = ({ program, onConfirm, onBack, onChangeProgram }: ProgramConfirmationProps) => {
+export const ProgramConfirmation = ({ program, onConfirm, onBack, onChangeProgram, saving = false }: ProgramConfirmationProps) => {
   const { t } = useTranslation();
   
   const week1 = program.weeklyStructure[0];
@@ -138,9 +139,9 @@ export const ProgramConfirmation = ({ program, onConfirm, onBack, onChangeProgra
 
       {/* Actions */}
       <div className="space-y-3 pt-4">
-        <Button onClick={onConfirm} className="w-full" size="lg">
+        <Button onClick={onConfirm} className="w-full" size="lg" disabled={saving}>
           <Check className="mr-2 h-4 w-4" />
-          {t('exerciseWizard.confirmation.startProgram')}
+          {saving ? t('common.saving') : t('exerciseWizard.confirmation.startProgram')}
         </Button>
         <div className="flex gap-3">
           <Button variant="outline" onClick={onChangeProgram} className="flex-1">

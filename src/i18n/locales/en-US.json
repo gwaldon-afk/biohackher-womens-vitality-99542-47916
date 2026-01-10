@@ -2989,7 +2989,11 @@
     "programSelection": { "title": "Your Matched Programs", "description": "We found {{count}} programs that match your preferences", "bestMatch": "Best Match", "weeks": "weeks", "week": "week", "mins": "mins", "difficulty": { "beginner": "Beginner", "intermediate": "Intermediate", "advanced": "Advanced" }, "changePreferences": "Change Preferences" },
     "confirmation": { "weeks": "Weeks", "perWeek": "Per Week", "minsSession": "Mins/Session", "whatYoullGain": "What You'll Gain", "week1Preview": "Week 1 Preview", "mins": "mins", "equipment": "Equipment", "optional": "optional", "startProgram": "Start This Program", "chooseAnother": "Choose Another" },
     "focusAreas": { "full-body-strength": "Full Body Strength", "movement-quality": "Movement Quality", "muscle-building": "Muscle Building", "bone-density": "Bone Density", "balance": "Balance", "flexibility": "Flexibility", "mobility": "Mobility" },
-    "equipment": { "dumbbells": "Dumbbells", "resistance-band": "Resistance Band", "kettlebell": "Kettlebell", "barbell": "Barbell", "bench": "Bench", "bodyweight": "Bodyweight" }
+    "equipment": { "dumbbells": "Dumbbells", "resistance-band": "Resistance Band", "kettlebell": "Kettlebell", "barbell": "Barbell", "bench": "Bench", "bodyweight": "Bodyweight" },
+    "loginRequired": "Please log in to save your program",
+    "programSaved": "Program Saved!",
+    "programSavedDescription": "Your exercise program has been set up and is ready to start.",
+    "saveFailed": "Failed to save program. Please try again."
   },
-  "common": { "back": "Back", "continue": "Continue", "loading": "Loading..." }
+  "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }
 }
