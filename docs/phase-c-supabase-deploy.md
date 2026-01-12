@@ -12,14 +12,14 @@ That combination implies a **PII leakage risk** for guest/session data until mig
 ### Deploy the migrations to Supabase
 This repo is already configured with your project ref in `supabase/config.toml`:
 
-- `project_id = "ictdgxsynjnmsevcegvu"`
+- `project_id = "tcjqdtlqhbmyjckbfokz"`
 
 From the repo root:
 
 1) **Link the project** (requires your **database password** from the Supabase dashboard):
 
 ```bash
-npx supabase link --project-ref ictdgxsynjnmsevcegvu --password "<YOUR_DB_PASSWORD>"
+npx supabase link --project-ref tcjqdtlqhbmyjckbfokz --password "<YOUR_DB_PASSWORD>"
 ```
 
 2) **Push migrations**:

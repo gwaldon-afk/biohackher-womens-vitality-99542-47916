@@ -1,4 +1,4 @@
-project_id = "ictdgxsynjnmsevcegvu"
+project_id = "tcjqdtlqhbmyjckbfokz"
 
 [functions.analyze-food-photo]
 verify_jwt = true
