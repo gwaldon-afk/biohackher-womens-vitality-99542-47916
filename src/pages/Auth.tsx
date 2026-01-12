@@ -35,10 +35,21 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  // Get session ID from URL if user is registering from guest results
-  const guestSessionId = searchParams.get('session');
+  const source = searchParams.get('source') || '';
+
+  // Get session ID from URL if user is registering from guest results.
+  // Fall back to known localStorage keys so deep-links still work.
+  const guestSessionId =
+    searchParams.get('session') ||
+    (source === 'lis-results'
+      ? localStorage.getItem('lis_guest_session_id')
+      : source === 'nutrition'
+        ? localStorage.getItem('nutrition_guest_session')
+        : null);
+
   const assessmentSession = searchParams.get('assessmentSession');
-  const returnTo = searchParams.get('returnTo') || '';
+  const returnToParam = searchParams.get('returnTo') || '';
+  const returnTo = returnToParam ? decodeURIComponent(returnToParam) : '';
 
   // Always call useAuth - it provides mock data in test mode
   const { signIn, signUp, user } = useAuth();
@@ -74,7 +85,7 @@ const Auth = () => {
         
         // If onboarding not completed, redirect to unified assessment
         if (profile && !profile.onboarding_completed) {
-          const onboardingPath = returnTo 
+          const onboardingPath = returnTo
             ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
             : '/guest-lis-assessment';
           navigate(onboardingPath);
@@ -83,7 +94,7 @@ const Auth = () => {
 
         // If returnTo exists, redirect there directly
         if (returnTo) {
-          navigate(decodeURIComponent(returnTo));
+          navigate(returnTo);
           return;
         }
 
@@ -128,7 +139,7 @@ const Auth = () => {
       if (currentUser) {
         // If returnTo exists, redirect there directly
         if (returnTo) {
-          navigate(decodeURIComponent(returnTo));
+          navigate(returnTo);
           return;
         }
 
@@ -330,7 +341,7 @@ const Auth = () => {
       } else {
         // Standard flow - redirect to unified assessment
         toast.success("Welcome! Let's set up your health profile.");
-        const onboardingPath = returnTo 
+        const onboardingPath = returnTo
           ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
           : '/guest-lis-assessment';
         navigate(onboardingPath);
