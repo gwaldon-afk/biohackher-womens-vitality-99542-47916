@@ -92,7 +92,7 @@ export const useGoals = () => {
         subscription_tier: 'registered',
         subscription_status: 'trialing',
         trial_start_date: new Date().toISOString(),
-        trial_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        trial_end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       })
       .select()
       .single();

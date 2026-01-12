@@ -7,6 +7,7 @@ import { OnboardingGoalPrompt } from "@/components/onboarding/OnboardingGoalProm
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { supabase } from "@/integrations/supabase/client";
+import { TrialCountdownBanner } from "@/components/subscription/TrialCountdownBanner";
 
 export default function MyDailyPlan() {
   const { user } = useAuth();
@@ -87,6 +88,7 @@ export default function MyDailyPlan() {
     <div className="min-h-screen bg-background">
       <Navigation />
       <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
+        <TrialCountdownBanner />
         <UnifiedDailyChecklist />
       </main>
       <MobileBottomNav />
