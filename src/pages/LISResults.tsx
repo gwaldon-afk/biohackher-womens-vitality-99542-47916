@@ -851,7 +851,11 @@ const LISResults = () => {
               
               <Button 
                 size="lg" 
-                onClick={() => navigate('/auth?source=nutrition')}
+                onClick={() => {
+                  const sessionId = localStorage.getItem('nutrition_guest_session');
+                  const sessionParam = sessionId ? `&session=${encodeURIComponent(sessionId)}` : '';
+                  navigate(`/auth?source=nutrition${sessionParam}`);
+                }}
                 className="text-lg px-8 py-6 h-auto"
               >
                 {t('lisResults.nutritionPreview.cta')}

@@ -42,3 +42,22 @@ if (!("IntersectionObserver" in window)) {
   (window as any).IntersectionObserver = IntersectionObserver;
 }
 
+// Some Radix components rely on Pointer Capture APIs.
+if (!("hasPointerCapture" in HTMLElement.prototype)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (HTMLElement.prototype as any).hasPointerCapture = () => false;
+}
+if (!("setPointerCapture" in HTMLElement.prototype)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (HTMLElement.prototype as any).setPointerCapture = () => {};
+}
+if (!("releasePointerCapture" in HTMLElement.prototype)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (HTMLElement.prototype as any).releasePointerCapture = () => {};
+}
+
+if (!("scrollIntoView" in Element.prototype)) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (Element.prototype as any).scrollIntoView = () => {};
+}
+
