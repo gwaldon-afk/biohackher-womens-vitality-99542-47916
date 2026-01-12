@@ -152,6 +152,105 @@ const Auth = () => {
     }
   };
 
+  const migrateGuestNutrition = async (currentUserId: string, sessionId: string) => {
+    try {
+      const { data: assessment, error: fetchError } = await supabase
+        .from('longevity_nutrition_assessments')
+        .select('*')
+        .eq('session_id', sessionId)
+        .maybeSingle();
+
+      if (fetchError || !assessment) {
+        return { migrated: false as const, reason: 'not_found' as const };
+      }
+
+      // If already claimed/owned by someone else, don't allow claiming.
+      if (assessment.user_id && assessment.user_id !== currentUserId) {
+        return { migrated: false as const, reason: 'claimed_by_other' as const };
+      }
+      if (assessment.claimed_by_user_id && assessment.claimed_by_user_id !== currentUserId) {
+        return { migrated: false as const, reason: 'claimed_by_other' as const };
+      }
+
+      // If it's already attached to this user, treat as migrated and just clean up local storage.
+      if (assessment.user_id === currentUserId || assessment.claimed_by_user_id === currentUserId) {
+        localStorage.removeItem('nutrition_guest_session');
+        return { migrated: true as const, already: true as const };
+      }
+
+      const cravingAverage = assessment.craving_details
+        ? (Object.values(assessment.craving_details).reduce((sum: number, val: any) => sum + val, 0) as number) / 4
+        : 3;
+
+      // Migrate to nutrition_preferences (idempotent)
+      await supabase.from('nutrition_preferences').upsert(
+        {
+          user_id: currentUserId,
+          age: assessment.age,
+          height_cm: assessment.height_cm,
+          weight_kg: assessment.weight_kg,
+          weight: assessment.weight_kg,
+          goal_primary: assessment.goal_primary,
+          activity_level: assessment.activity_level,
+          nutrition_identity_type: assessment.nutrition_identity_type,
+          protein_score: assessment.protein_score,
+          protein_sources: assessment.protein_sources,
+          plant_diversity_score: assessment.plant_diversity_score,
+          fiber_score: assessment.fiber_score,
+          gut_symptom_score: assessment.gut_symptom_score,
+          gut_symptoms: assessment.gut_symptoms,
+          inflammation_score: assessment.inflammation_score,
+          inflammation_symptoms: assessment.inflammation_symptoms,
+          first_meal_hour: assessment.first_meal_hour,
+          last_meal_hour: assessment.last_meal_hour,
+          eats_after_8pm: assessment.eats_after_8pm,
+          chrononutrition_type: assessment.chrononutrition_type,
+          meal_timing_window: assessment.meal_timing_window,
+          menopause_stage: assessment.menopause_stage,
+          craving_pattern: cravingAverage,
+          craving_details: assessment.craving_details,
+          hydration_score: assessment.hydration_score,
+          caffeine_score: assessment.caffeine_score,
+          alcohol_intake: assessment.alcohol_intake,
+          allergies: assessment.allergies,
+          values_dietary: assessment.values_dietary,
+          confidence_in_cooking: assessment.confidence_in_cooking,
+          food_preference_type: assessment.food_preference_type,
+          metabolic_symptom_flags: assessment.metabolic_symptom_flags,
+          longevity_nutrition_score: assessment.longevity_nutrition_score,
+          assessment_completed_at: assessment.completed_at,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id' },
+      );
+
+      // Mark assessment as claimed + attach to user so it can't be claimed again.
+      await supabase
+        .from('longevity_nutrition_assessments')
+        .update({
+          user_id: currentUserId,
+          claimed_at: new Date().toISOString(),
+          claimed_by_user_id: currentUserId,
+        })
+        .eq('id', assessment.id);
+
+      // Generate nutrition actions for the user (best-effort)
+      try {
+        const { generateAndSaveNutritionActions } = await import('@/services/nutritionActionService');
+        await generateAndSaveNutritionActions(currentUserId, assessment, cravingAverage);
+      } catch (e) {
+        console.error('Nutrition actions generation failed:', e);
+      }
+
+      localStorage.removeItem('nutrition_guest_session');
+      return { migrated: true as const };
+    } catch (e) {
+      console.error('Error migrating guest nutrition assessment:', e);
+      return { migrated: false as const, reason: 'error' as const };
+    }
+  };
+
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -244,6 +343,15 @@ const Auth = () => {
             toast.error("These guest results have already been claimed by another account.");
           }
         }
+        // Same behavior for guest Nutrition assessments (claim on sign-in).
+        if (source === 'nutrition' && guestSessionId) {
+          const result = await migrateGuestNutrition(currentUser.id, guestSessionId);
+          if (result.migrated) {
+            toast.success("Your nutrition assessment has been added to your account.");
+          } else if (result.reason === 'claimed_by_other') {
+            toast.error("These nutrition results have already been claimed by another account.");
+          }
+        }
 
         // If returnTo exists, redirect there directly
         if (returnTo) {
@@ -293,78 +401,11 @@ const Auth = () => {
         
         // NEW: Nutrition Assessment Migration
         if (fromNutrition) {
-          const { data: guestNutritionAssessment } = await supabase
-            .from('longevity_nutrition_assessments')
-            .select('*')
-            .eq('session_id', guestSessionId)
-            .is('user_id', null)
-            .maybeSingle();
-          
-          if (guestNutritionAssessment) {
-            const cravingAverage = guestNutritionAssessment.craving_details
-              ? (Object.values(guestNutritionAssessment.craving_details).reduce(
-                  (sum: number, val: any) => sum + val, 0) as number) / 4
-              : 3;
-
-            // Migrate to nutrition_preferences
-            await supabase.from('nutrition_preferences').upsert({
-              user_id: currentUser.id,
-              age: guestNutritionAssessment.age,
-              height_cm: guestNutritionAssessment.height_cm,
-              weight_kg: guestNutritionAssessment.weight_kg,
-              weight: guestNutritionAssessment.weight_kg,
-              goal_primary: guestNutritionAssessment.goal_primary,
-              activity_level: guestNutritionAssessment.activity_level,
-              nutrition_identity_type: guestNutritionAssessment.nutrition_identity_type,
-              protein_score: guestNutritionAssessment.protein_score,
-              protein_sources: guestNutritionAssessment.protein_sources,
-              plant_diversity_score: guestNutritionAssessment.plant_diversity_score,
-              fiber_score: guestNutritionAssessment.fiber_score,
-              gut_symptom_score: guestNutritionAssessment.gut_symptom_score,
-              gut_symptoms: guestNutritionAssessment.gut_symptoms,
-              inflammation_score: guestNutritionAssessment.inflammation_score,
-              inflammation_symptoms: guestNutritionAssessment.inflammation_symptoms,
-              first_meal_hour: guestNutritionAssessment.first_meal_hour,
-              last_meal_hour: guestNutritionAssessment.last_meal_hour,
-              eats_after_8pm: guestNutritionAssessment.eats_after_8pm,
-              chrononutrition_type: guestNutritionAssessment.chrononutrition_type,
-              meal_timing_window: guestNutritionAssessment.meal_timing_window,
-              menopause_stage: guestNutritionAssessment.menopause_stage,
-              craving_pattern: cravingAverage,
-              craving_details: guestNutritionAssessment.craving_details,
-              hydration_score: guestNutritionAssessment.hydration_score,
-              caffeine_score: guestNutritionAssessment.caffeine_score,
-              alcohol_intake: guestNutritionAssessment.alcohol_intake,
-              allergies: guestNutritionAssessment.allergies,
-              values_dietary: guestNutritionAssessment.values_dietary,
-              confidence_in_cooking: guestNutritionAssessment.confidence_in_cooking,
-              food_preference_type: guestNutritionAssessment.food_preference_type,
-              metabolic_symptom_flags: guestNutritionAssessment.metabolic_symptom_flags,
-              longevity_nutrition_score: guestNutritionAssessment.longevity_nutrition_score,
-              assessment_completed_at: guestNutritionAssessment.completed_at,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            }, { onConflict: 'user_id' });
-
-            // Mark guest assessment as claimed
-            await supabase
-              .from('longevity_nutrition_assessments')
-              .update({
-                claimed_at: new Date().toISOString(),
-                claimed_by_user_id: currentUser.id
-              })
-              .eq('id', guestNutritionAssessment.id);
-
-            // Generate nutrition actions for new user
-            const { generateAndSaveNutritionActions } = await import('@/services/nutritionActionService');
-            await generateAndSaveNutritionActions(
-              currentUser.id, 
-              guestNutritionAssessment, 
-              cravingAverage
-            );
-
-            localStorage.removeItem('nutrition_guest_session');
+          const result = await migrateGuestNutrition(currentUser.id, guestSessionId);
+          if (result.migrated) {
             toast.success("Your nutrition assessment has been saved to your account!");
+          } else if (result.reason === 'claimed_by_other') {
+            toast.error("These nutrition results have already been claimed by another account.");
           }
         }
 
