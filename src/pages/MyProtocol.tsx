@@ -100,9 +100,11 @@ const MyProtocol = () => {
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case 'priority':
           // Priority: immediate items count as highest priority
-          const aPriority = a.protocol_data.immediate?.length || 0;
-          const bPriority = b.protocol_data.immediate?.length || 0;
-          return bPriority - aPriority;
+          {
+            const aPriority = a.protocol_data.immediate?.length || 0;
+            const bPriority = b.protocol_data.immediate?.length || 0;
+            return bPriority - aPriority;
+          }
         default:
           return 0;
       }

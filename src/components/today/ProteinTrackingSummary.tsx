@@ -12,13 +12,13 @@ export const ProteinTrackingSummary = ({
   completedMeals, 
   nutritionPreferences 
 }: ProteinTrackingSummaryProps) => {
-  if (!nutritionPreferences?.weight) return null;
+  const weight = nutritionPreferences?.weight ?? 0;
+  const activityLevel = nutritionPreferences?.activityLevel ?? "sedentary";
+  const goal = nutritionPreferences?.goal ?? "maintain";
 
-  const { calculateProtein } = useNutritionCalculations(
-    nutritionPreferences.weight,
-    nutritionPreferences.activityLevel,
-    nutritionPreferences.goal
-  );
+  const { calculateProtein } = useNutritionCalculations(weight, activityLevel, goal);
+
+  if (!nutritionPreferences?.weight) return null;
 
   const proteinTarget = calculateProtein();
   const proteinConsumed = completedMeals.reduce((sum, meal) => {

@@ -50,16 +50,19 @@ export const AssessmentResponsesDialog = ({
       let data: any = null;
 
       switch (assessmentType) {
-        case "lis":
+        case "lis": {
           const { data: lisData } = await supabase
             .from("daily_scores")
-            .select("questionnaire_data, longevity_impact_score, biological_age_impact, sleep_score, stress_score, nutrition_score, physical_activity_score, social_connections_score, cognitive_engagement_score")
+            .select(
+              "questionnaire_data, longevity_impact_score, biological_age_impact, sleep_score, stress_score, nutrition_score, physical_activity_score, social_connections_score, cognitive_engagement_score",
+            )
             .eq("id", assessmentId)
             .single();
           data = lisData;
           break;
+        }
 
-        case "hormone_compass":
+        case "hormone_compass": {
           const { data: hcData } = await supabase
             .from("hormone_compass_stages")
             .select("hormone_indicators, stage, confidence_score")
@@ -67,8 +70,9 @@ export const AssessmentResponsesDialog = ({
             .single();
           data = hcData;
           break;
+        }
 
-        case "nutrition":
+        case "nutrition": {
           const { data: nutritionData } = await supabase
             .from("longevity_nutrition_assessments")
             .select("*")
@@ -76,8 +80,9 @@ export const AssessmentResponsesDialog = ({
             .single();
           data = nutritionData;
           break;
+        }
 
-        case "symptom":
+        case "symptom": {
           const { data: symptomData } = await supabase
             .from("symptom_assessments")
             .select("*")
@@ -85,8 +90,9 @@ export const AssessmentResponsesDialog = ({
             .single();
           data = symptomData;
           break;
+        }
 
-        case "pillar":
+        case "pillar": {
           const { data: pillarData } = await supabase
             .from("user_assessment_completions")
             .select("*")
@@ -94,6 +100,7 @@ export const AssessmentResponsesDialog = ({
             .single();
           data = pillarData;
           break;
+        }
       }
 
       setRawData(data);

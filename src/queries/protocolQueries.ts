@@ -173,7 +173,7 @@ export function useDeleteProtocol() {
 }
 
 // Create a protocol item
-export function useCreateProtocolItem(protocolId: string) {
+export function useCreateProtocolItem(protocolId?: string) {
   const queryClient = useQueryClient();
   const addProtocolItem = useProtocolStore(state => state.addProtocolItem);
   
@@ -189,8 +189,9 @@ export function useCreateProtocolItem(protocolId: string) {
       return data as ProtocolItem;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: protocolKeys.items(protocolId) });
-      addProtocolItem(protocolId, data);
+      const resolvedProtocolId = protocolId || data.protocol_id;
+      queryClient.invalidateQueries({ queryKey: protocolKeys.items(resolvedProtocolId) });
+      addProtocolItem(resolvedProtocolId, data);
     },
   });
 }
