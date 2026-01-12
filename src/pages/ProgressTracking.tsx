@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import { useMeasurements } from "@/hooks/useMeasurements";
 import { MeasurementForm } from "@/components/MeasurementForm";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Plus, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { AIInsightsCard } from "@/components/AIInsightsCard";
 import { MonthlyReportCard } from "@/components/MonthlyReportCard";
+import { LazyOnVisible } from "@/components/performance/LazyOnVisible";
+
+const ProgressTrackingCharts = lazy(() => import("./ProgressTrackingCharts"));
 
 const ProgressTracking = () => {
   const navigate = useNavigate();
@@ -55,6 +56,11 @@ const ProgressTracking = () => {
   };
 
   const latestMeasurement = measurements[0];
+  const weightData = getChartData("weight");
+  const bodyFatData = getChartData("body_fat_percentage");
+  const muscleData = getChartData("muscle_mass");
+  const waistData = getChartData("waist_circumference");
+  const hipData = getChartData("hip_circumference");
 
   return (
     <div className="min-h-screen bg-background">
@@ -174,118 +180,30 @@ const ProgressTracking = () => {
             </div>
 
             {/* Charts */}
-            <Tabs defaultValue="weight" className="space-y-6">
-              <TabsList>
-                <TabsTrigger value="weight">Weight</TabsTrigger>
-                <TabsTrigger value="body_fat">Body Fat %</TabsTrigger>
-                <TabsTrigger value="muscle">Muscle Mass</TabsTrigger>
-                <TabsTrigger value="measurements">Measurements</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="weight">
+            <LazyOnVisible
+              minHeight={420}
+              fallback={
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Weight Trend</CardTitle>
-                    <CardDescription>
-                      Track your weight changes over time
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={getChartData('weight')}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
+                  <CardContent className="py-10 text-center text-muted-foreground">Loading charts…</CardContent>
                 </Card>
-              </TabsContent>
-
-              <TabsContent value="body_fat">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Body Fat Percentage</CardTitle>
-                    <CardDescription>
-                      Monitor your body composition
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={getChartData('body_fat_percentage')}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="muscle">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Muscle Mass</CardTitle>
-                    <CardDescription>
-                      Track your muscle development
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={getChartData('muscle_mass')}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="measurements">
-                <div className="grid md:grid-cols-2 gap-6">
+              }
+            >
+              <Suspense
+                fallback={
                   <Card>
-                    <CardHeader>
-                      <CardTitle>Waist Circumference</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <LineChart data={getChartData('waist_circumference')}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="date" />
-                          <YAxis />
-                          <Tooltip />
-                          <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </CardContent>
+                    <CardContent className="py-10 text-center text-muted-foreground">Loading charts…</CardContent>
                   </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Hip Circumference</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <LineChart data={getChartData('hip_circumference')}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="date" />
-                          <YAxis />
-                          <Tooltip />
-                          <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
+                }
+              >
+                <ProgressTrackingCharts
+                  weightData={weightData}
+                  bodyFatData={bodyFatData}
+                  muscleData={muscleData}
+                  waistData={waistData}
+                  hipData={hipData}
+                />
+              </Suspense>
+            </LazyOnVisible>
 
             {/* AI-Powered Premium Features */}
             <div className="grid md:grid-cols-2 gap-6 mt-8">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +20,9 @@ import {
   AlertCircle,
   Sparkles
 } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LazyOnVisible } from "@/components/performance/LazyOnVisible";
+
+const WearableIntegrationsCharts = lazy(() => import("./WearableIntegrationsCharts"));
 
 const SUPPORTED_DEVICES = [
   {
@@ -261,65 +263,30 @@ const WearableIntegrations = () => {
 
         {/* Data Visualizations */}
         {wearableData.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {sleepChartData.length > 0 && (
+          <LazyOnVisible
+            minHeight={260}
+            fallback={
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Moon className="h-5 w-5" />
-                    {t('wearables.charts.sleepTrends')}
-                  </CardTitle>
-                  <CardDescription>{t('wearables.charts.last14Days')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={sleepChartData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                      />
-                      <Line type="monotone" dataKey="hours" stroke="hsl(var(--primary))" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
+                <CardContent className="py-10 text-center text-muted-foreground">Loading charts…</CardContent>
               </Card>
-            )}
-
-            {stepsChartData.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    {t('wearables.charts.activityTrends')}
-                  </CardTitle>
-                  <CardDescription>{t('wearables.charts.last14Days')}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={stepsChartData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis dataKey="date" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px'
-                        }}
-                      />
-                      <Line type="monotone" dataKey="steps" stroke="hsl(var(--success))" strokeWidth={2} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+            }
+          >
+            <Suspense
+              fallback={
+                <Card>
+                  <CardContent className="py-10 text-center text-muted-foreground">Loading charts…</CardContent>
+                </Card>
+              }
+            >
+              <WearableIntegrationsCharts
+                sleepChartData={sleepChartData}
+                stepsChartData={stepsChartData}
+                sleepTitle={t("wearables.charts.sleepTrends")}
+                activityTitle={t("wearables.charts.activityTrends")}
+                last14DaysLabel={t("wearables.charts.last14Days")}
+              />
+            </Suspense>
+          </LazyOnVisible>
         )}
 
         {/* Available Devices */}

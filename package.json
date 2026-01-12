@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "supabase:rls:check": "node scripts/supabase-rls-check.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
