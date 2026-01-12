@@ -94,6 +94,9 @@
     "vite": "^5.4.19"
   },
   "overrides": {
+    "esbuild": "0.27.2",
+    "js-yaml": "4.1.1",
+    "mdast-util-to-hast": "13.2.1",
     "rimraf": {
       "glob": "11.1.0"
     },
