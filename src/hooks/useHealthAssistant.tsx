@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from './use-toast';
@@ -18,7 +18,20 @@ export const useHealthAssistant = () => {
   const { user } = useAuth();
   const [messages, setMessages] = useState<HealthMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [sessionId] = useState(() => {
+    const existing = localStorage.getItem('health_questions_session_id');
+    const sid = existing || crypto.randomUUID();
+    // Persist for guest usage so it can be claimed on sign-in later.
+    if (!existing) localStorage.setItem('health_questions_session_id', sid);
+    return sid;
+  });
+
+  // If a user is signed in, stop treating this as a guest session.
+  useEffect(() => {
+    if (user?.id) {
+      localStorage.removeItem('health_questions_session_id');
+    }
+  }, [user?.id]);
 
   const askQuestion = async (question: string) => {
     if (!question.trim()) return;

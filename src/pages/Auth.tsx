@@ -45,7 +45,9 @@ const Auth = () => {
       ? localStorage.getItem('lis_guest_session_id')
       : source === 'nutrition'
         ? localStorage.getItem('nutrition_guest_session')
-        : null);
+        : source === 'health-assistant'
+          ? localStorage.getItem('health_questions_session_id')
+          : null);
 
   const assessmentSession = searchParams.get('assessmentSession');
   const returnToParam = searchParams.get('returnTo') || '';
@@ -211,6 +213,18 @@ const Auth = () => {
     }
   };
 
+  const claimHealthAssistantSession = async (sessionId: string) => {
+    try {
+      const { error } = await supabase.rpc('claim_health_questions_session', { p_session_id: sessionId });
+      if (error) throw error;
+      localStorage.removeItem('health_questions_session_id');
+      return { claimed: true as const };
+    } catch (e) {
+      console.error('Error claiming health assistant session:', e);
+      return { claimed: false as const };
+    }
+  };
+
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -312,6 +326,12 @@ const Auth = () => {
             toast.error("These nutrition results have already been claimed by another account.");
           }
         }
+        if (source === 'health-assistant' && guestSessionId) {
+          const result = await claimHealthAssistantSession(guestSessionId);
+          if (result.claimed) {
+            toast.success("Your conversation has been saved to your account.");
+          }
+        }
 
         // If returnTo exists, redirect there directly
         if (returnTo) {
@@ -367,6 +387,9 @@ const Auth = () => {
           } else if (result.reason === 'claimed_by_other') {
             toast.error("These nutrition results have already been claimed by another account.");
           }
+        }
+        if (source === 'health-assistant' && guestSessionId) {
+          await claimHealthAssistantSession(guestSessionId);
         }
 
         // If from nutrition, redirect to dashboard with firstLogin flag
