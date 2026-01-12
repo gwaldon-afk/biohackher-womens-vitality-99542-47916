@@ -56,19 +56,13 @@ const Auth = () => {
 
   const migrateGuestLIS = async (currentUserId: string, sessionId: string) => {
     try {
-      const { data: guestAssessment, error: guestError } = await supabase
-        .from('guest_lis_assessments')
-        .select('*')
-        .eq('session_id', sessionId)
-        .maybeSingle();
+      // Claim the guest assessment via RPC (guest tables are not directly selectable/updatable).
+      const { data: guestAssessment, error: claimError } = await supabase.rpc('claim_guest_lis_assessment', {
+        p_session_id: sessionId,
+      });
 
-      if (guestError || !guestAssessment) {
+      if (claimError || !guestAssessment) {
         return { migrated: false as const, reason: 'not_found' as const };
-      }
-
-      const claimedBy = (guestAssessment as any).claimed_by_user_id as string | null | undefined;
-      if (claimedBy && claimedBy !== currentUserId) {
-        return { migrated: false as const, reason: 'claimed_by_other' as const };
       }
 
       const assessmentData = (guestAssessment as any).assessment_data as any;
@@ -133,15 +127,6 @@ const Auth = () => {
         { onConflict: 'user_id,date' },
       );
 
-      // Mark guest assessment as claimed (idempotent)
-      await supabase
-        .from('guest_lis_assessments')
-        .update({
-          claimed_by_user_id: currentUserId,
-          claimed_at: new Date().toISOString(),
-        })
-        .eq('session_id', sessionId);
-
       // Clear local storage so we don't keep re-offering migration
       localStorage.removeItem('lis_guest_session_id');
 
@@ -154,28 +139,13 @@ const Auth = () => {
 
   const migrateGuestNutrition = async (currentUserId: string, sessionId: string) => {
     try {
-      const { data: assessment, error: fetchError } = await supabase
-        .from('longevity_nutrition_assessments')
-        .select('*')
-        .eq('session_id', sessionId)
-        .maybeSingle();
+      // Claim the nutrition assessment via RPC to safely attach it to the user.
+      const { data: assessment, error: claimError } = await supabase.rpc('claim_guest_nutrition_assessment', {
+        p_session_id: sessionId,
+      });
 
-      if (fetchError || !assessment) {
+      if (claimError || !assessment) {
         return { migrated: false as const, reason: 'not_found' as const };
-      }
-
-      // If already claimed/owned by someone else, don't allow claiming.
-      if (assessment.user_id && assessment.user_id !== currentUserId) {
-        return { migrated: false as const, reason: 'claimed_by_other' as const };
-      }
-      if (assessment.claimed_by_user_id && assessment.claimed_by_user_id !== currentUserId) {
-        return { migrated: false as const, reason: 'claimed_by_other' as const };
-      }
-
-      // If it's already attached to this user, treat as migrated and just clean up local storage.
-      if (assessment.user_id === currentUserId || assessment.claimed_by_user_id === currentUserId) {
-        localStorage.removeItem('nutrition_guest_session');
-        return { migrated: true as const, already: true as const };
       }
 
       const cravingAverage = assessment.craving_details
@@ -224,16 +194,6 @@ const Auth = () => {
         },
         { onConflict: 'user_id' },
       );
-
-      // Mark assessment as claimed + attach to user so it can't be claimed again.
-      await supabase
-        .from('longevity_nutrition_assessments')
-        .update({
-          user_id: currentUserId,
-          claimed_at: new Date().toISOString(),
-          claimed_by_user_id: currentUserId,
-        })
-        .eq('id', assessment.id);
 
       // Generate nutrition actions for the user (best-effort)
       try {

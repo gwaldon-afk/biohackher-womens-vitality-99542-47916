@@ -140,11 +140,17 @@ export default function LongevityNutritionResults() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from("longevity_nutrition_assessments")
-        .select("*")
-        .eq("id", id)
-        .single();
+      // Authenticated users can load directly; guests must use session-bound RPC.
+      const { data, error } = user
+        ? await supabase
+            .from("longevity_nutrition_assessments")
+            .select("*")
+            .eq("id", id)
+            .single()
+        : await supabase.rpc("get_guest_nutrition_assessment", {
+            p_id: id,
+            p_session_id: localStorage.getItem("nutrition_guest_session"),
+          });
 
       if (error || !data) {
         navigate("/longevity-nutrition");
@@ -156,7 +162,7 @@ export default function LongevityNutritionResults() {
     };
 
     fetchAssessment();
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, user]);
 
   // Fetch products for protocol matching
   useEffect(() => {

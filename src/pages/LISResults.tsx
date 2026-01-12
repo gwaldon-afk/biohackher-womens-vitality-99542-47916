@@ -306,12 +306,10 @@ const LISResults = () => {
           // Handle guest users
           const sessionId = localStorage.getItem('lis_guest_session_id');
           if (sessionId) {
-            // Rehydrate from the guest assessment record and redirect back to /lis-results with URL params.
-            const { data: guestAssessment, error } = await supabase
-              .from('guest_lis_assessments')
-              .select('*')
-              .eq('session_id', sessionId)
-              .maybeSingle();
+            // Rehydrate via RPC (guest tables are not directly selectable for privacy).
+            const { data: guestAssessment, error } = await supabase.rpc('get_guest_lis_assessment', {
+              p_session_id: sessionId,
+            });
 
             if (error || !guestAssessment) {
               toast({

@@ -48,19 +48,6 @@ describe("Auth integration: guest migration on sign-in", () => {
     localStorage.setItem("lis_guest_session_id", "guest_lis_123");
 
     supabaseCurrent = createSupabaseMock({
-      guest_lis_assessments: {
-        maybeSingle: async () => ({
-          data: {
-            assessment_data: { baselineData: { dateOfBirth: "1990-01-01", heightCm: 170, weightKg: 65, bmi: 22.5 } },
-            brief_results: {
-              finalScore: 72,
-              pillarScores: { Sleep: 70, Stress: 60, Body: 50, Nutrition: 80, Social: 55, Brain: 65 },
-            },
-            claimed_by_user_id: null,
-          },
-          error: null,
-        }),
-      },
       user_health_profile: {
         upsert: async () => ({ data: null, error: null }),
       },
@@ -69,6 +56,21 @@ describe("Auth integration: guest migration on sign-in", () => {
       },
     });
     supabaseCurrent.auth.getUser = vi.fn(async () => ({ data: { user: { id: "u1" } } }));
+    supabaseCurrent.rpc = vi.fn(async (fn: string) => {
+      if (fn === "claim_guest_lis_assessment") {
+        return {
+          data: {
+            assessment_data: { baselineData: { dateOfBirth: "1990-01-01", heightCm: 170, weightKg: 65, bmi: 22.5 } },
+            brief_results: {
+              finalScore: 72,
+              pillarScores: { Sleep: 70, Stress: 60, Body: 50, Nutrition: 80, Social: 55, Brain: 65 },
+            },
+          },
+          error: null,
+        };
+      }
+      return { data: null, error: null };
+    });
 
     const user = userEvent.setup();
 
@@ -95,13 +97,19 @@ describe("Auth integration: guest migration on sign-in", () => {
     localStorage.setItem("nutrition_guest_session", "guest_nutrition_123");
 
     supabaseCurrent = createSupabaseMock({
-      longevity_nutrition_assessments: {
-        maybeSingle: async () => ({
+      nutrition_preferences: {
+        upsert: async () => ({ data: null, error: null }),
+      },
+    });
+    supabaseCurrent.auth.getUser = vi.fn(async () => ({ data: { user: { id: "u1" } } }));
+    supabaseCurrent.rpc = vi.fn(async (fn: string) => {
+      if (fn === "claim_guest_nutrition_assessment") {
+        return {
           data: {
             id: "n1",
             session_id: "guest_nutrition_123",
-            user_id: null,
-            claimed_by_user_id: null,
+            user_id: "u1",
+            claimed_by_user_id: "u1",
             craving_details: { sweet: 3, salty: 3, crunchy: 3, creamy: 3 },
             age: 40,
             height_cm: 170,
@@ -136,14 +144,10 @@ describe("Auth integration: guest migration on sign-in", () => {
             completed_at: new Date().toISOString(),
           },
           error: null,
-        }),
-        update: async () => ({ data: null, error: null }),
-      },
-      nutrition_preferences: {
-        upsert: async () => ({ data: null, error: null }),
-      },
+        };
+      }
+      return { data: null, error: null };
     });
-    supabaseCurrent.auth.getUser = vi.fn(async () => ({ data: { user: { id: "u1" } } }));
 
     const user = userEvent.setup();
 
