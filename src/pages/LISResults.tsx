@@ -306,7 +306,58 @@ const LISResults = () => {
           // Handle guest users
           const sessionId = localStorage.getItem('lis_guest_session_id');
           if (sessionId) {
-            navigate(`/guest-lis-results/${sessionId}`);
+            // Rehydrate from the guest assessment record and redirect back to /lis-results with URL params.
+            const { data: guestAssessment, error } = await supabase
+              .from('guest_lis_assessments')
+              .select('*')
+              .eq('session_id', sessionId)
+              .maybeSingle();
+
+            if (error || !guestAssessment) {
+              toast({
+                title: t('lisResults.toast.assessmentNotFound'),
+                description: t('lisResults.toast.assessmentNotFoundDesc'),
+              });
+              navigate('/guest-lis-assessment');
+              return;
+            }
+
+            const briefResults: any = (guestAssessment as any).brief_results;
+            const assessmentData: any = (guestAssessment as any).assessment_data;
+            const ps: any = briefResults?.pillarScores ?? {};
+
+            const normalizedPillarScores = {
+              sleep: ps.sleep ?? ps.Sleep ?? 0,
+              stress: ps.stress ?? ps.Stress ?? 0,
+              activity: ps.activity ?? ps.Body ?? ps.physical_activity ?? ps.PhysicalActivity ?? 0,
+              nutrition: ps.nutrition ?? ps.Nutrition ?? 0,
+              social: ps.social ?? ps.Social ?? 0,
+              cognitive: ps.cognitive ?? ps.Brain ?? ps.cognitive_engagement ?? ps.Cognitive ?? 0,
+            };
+
+            const dob: string | undefined = assessmentData?.baselineData?.dateOfBirth;
+            const age = dob
+              ? (() => {
+                  const birthDate = new Date(dob);
+                  const today = new Date();
+                  let years = today.getFullYear() - birthDate.getFullYear();
+                  const monthDiff = today.getMonth() - birthDate.getMonth();
+                  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    years--;
+                  }
+                  return years;
+                })()
+              : 0;
+
+            const finalScore = briefResults?.finalScore ?? briefResults?.final_score ?? 0;
+
+            navigate(
+              `/lis-results?score=${finalScore}` +
+                `&pillarScores=${encodeURIComponent(JSON.stringify(normalizedPillarScores))}` +
+                `&isNewBaseline=true&isGuest=true` +
+                (age ? `&age=${age}` : ''),
+              { replace: true },
+            );
           } else {
             toast({
               title: t('lisResults.toast.assessmentNotFound'),
