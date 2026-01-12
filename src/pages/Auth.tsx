@@ -54,6 +54,104 @@ const Auth = () => {
   // Always call useAuth - it provides mock data in test mode
   const { signIn, signUp, user } = useAuth();
 
+  const migrateGuestLIS = async (currentUserId: string, sessionId: string) => {
+    try {
+      const { data: guestAssessment, error: guestError } = await supabase
+        .from('guest_lis_assessments')
+        .select('*')
+        .eq('session_id', sessionId)
+        .maybeSingle();
+
+      if (guestError || !guestAssessment) {
+        return { migrated: false as const, reason: 'not_found' as const };
+      }
+
+      const claimedBy = (guestAssessment as any).claimed_by_user_id as string | null | undefined;
+      if (claimedBy && claimedBy !== currentUserId) {
+        return { migrated: false as const, reason: 'claimed_by_other' as const };
+      }
+
+      const assessmentData = (guestAssessment as any).assessment_data as any;
+      const baselineData = assessmentData?.baselineData;
+      const briefResults = (guestAssessment as any).brief_results as any;
+
+      // Create/Update health profile from guest baseline data (idempotent)
+      if (baselineData?.dateOfBirth) {
+        await supabase.from('user_health_profile').upsert(
+          {
+            user_id: currentUserId,
+            date_of_birth: baselineData.dateOfBirth,
+            height_cm: baselineData.heightCm,
+            weight_kg: baselineData.weightKg,
+            current_bmi: baselineData.bmi,
+          },
+          { onConflict: 'user_id' },
+        );
+      }
+
+      // Calculate user age (optional)
+      const calculateAge = (dateOfBirth: string): number => {
+        const birthDate = new Date(dateOfBirth);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      };
+
+      const userAge = baselineData?.dateOfBirth ? calculateAge(baselineData.dateOfBirth) : null;
+
+      // Save baseline daily score (idempotent per user/date)
+      const today = new Date().toISOString().split('T')[0];
+      const ps = briefResults?.pillarScores || {};
+      await supabase.from('daily_scores').upsert(
+        {
+          user_id: currentUserId,
+          date: today,
+          longevity_impact_score: briefResults?.finalScore ?? 0,
+          biological_age_impact: briefResults?.finalScore ?? 0,
+          is_baseline: true,
+          assessment_type: 'guest_migration_baseline',
+          user_chronological_age: userAge ?? undefined,
+          lis_version: 'LIS 2.0',
+          source_type: 'manual_entry',
+          sleep_score: ps.Sleep ?? ps.sleep ?? 0,
+          stress_score: ps.Stress ?? ps.stress ?? 0,
+          physical_activity_score: ps.Body ?? ps.activity ?? 0,
+          nutrition_score: ps.Nutrition ?? ps.nutrition ?? 0,
+          social_connections_score: ps.Social ?? ps.social ?? 0,
+          cognitive_engagement_score: ps.Brain ?? ps.cognitive ?? 0,
+          color_code:
+            (briefResults?.finalScore ?? 0) >= 75
+              ? 'green'
+              : (briefResults?.finalScore ?? 0) >= 50
+                ? 'yellow'
+                : 'red',
+        },
+        { onConflict: 'user_id,date' },
+      );
+
+      // Mark guest assessment as claimed (idempotent)
+      await supabase
+        .from('guest_lis_assessments')
+        .update({
+          claimed_by_user_id: currentUserId,
+          claimed_at: new Date().toISOString(),
+        })
+        .eq('session_id', sessionId);
+
+      // Clear local storage so we don't keep re-offering migration
+      localStorage.removeItem('lis_guest_session_id');
+
+      return { migrated: true as const };
+    } catch (e) {
+      console.error('Error migrating guest LIS assessment:', e);
+      return { migrated: false as const, reason: 'error' as const };
+    }
+  };
+
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -137,6 +235,16 @@ const Auth = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
+        // If the user came from guest LIS results, claim/migrate that assessment on sign-in too.
+        if (source === 'lis-results' && guestSessionId) {
+          const result = await migrateGuestLIS(currentUser.id, guestSessionId);
+          if (result.migrated) {
+            toast.success("Your guest assessment has been added to your account.");
+          } else if (result.reason === 'claimed_by_other') {
+            toast.error("These guest results have already been claimed by another account.");
+          }
+        }
+
         // If returnTo exists, redirect there directly
         if (returnTo) {
           navigate(returnTo);
@@ -176,80 +284,11 @@ const Auth = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
-        // Get the guest assessment data
-        const { data: guestAssessment } = await supabase
-          .from('guest_lis_assessments')
-          .select('*')
-          .eq('session_id', guestSessionId)
-          .maybeSingle();
-        
-        if (guestAssessment) {
-          const assessmentData = guestAssessment.assessment_data as any;
-          const baselineData = assessmentData.baselineData;
-          
-          // Create health profile from guest data
-          await supabase.from('user_health_profile').insert({
-            user_id: currentUser.id,
-            date_of_birth: baselineData.dateOfBirth,
-            height_cm: baselineData.heightCm,
-            weight_kg: baselineData.weightKg,
-            current_bmi: baselineData.bmi,
-          });
-          
-          // Create baseline daily_score from guest assessment
-          const briefResults = guestAssessment.brief_results as any;
-          
-          // Calculate user age
-          const calculateAge = (dateOfBirth: string): number => {
-            const birthDate = new Date(dateOfBirth);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-              age--;
-            }
-            return age;
-          };
-          
-          const userAge = calculateAge(baselineData.dateOfBirth);
-          
-          // Insert baseline daily score
-          await supabase.from('daily_scores').insert({
-            user_id: currentUser.id,
-            date: new Date().toISOString().split('T')[0],
-            longevity_impact_score: briefResults.finalScore,
-            biological_age_impact: briefResults.finalScore,
-            is_baseline: true,
-            assessment_type: 'guest_migration_baseline',
-            user_chronological_age: userAge,
-            lis_version: 'LIS 2.0',
-            source_type: 'manual_entry',
-            sleep_score: briefResults.pillarScores.Sleep || briefResults.pillarScores.sleep,
-            stress_score: briefResults.pillarScores.Stress || briefResults.pillarScores.stress,
-            physical_activity_score: briefResults.pillarScores.Body || briefResults.pillarScores.activity,
-            nutrition_score: briefResults.pillarScores.Nutrition || briefResults.pillarScores.nutrition,
-            social_connections_score: briefResults.pillarScores.Social || briefResults.pillarScores.social,
-            cognitive_engagement_score: briefResults.pillarScores.Brain || briefResults.pillarScores.cognitive,
-            color_code: briefResults.finalScore >= 75 ? 'green' : briefResults.finalScore >= 50 ? 'yellow' : 'red'
-          });
-          
-          // Mark guest assessment as claimed
-          await supabase
-            .from('guest_lis_assessments')
-            .update({ 
-              claimed_by_user_id: currentUser.id,
-              claimed_at: new Date().toISOString()
-            })
-            .eq('session_id', guestSessionId);
-          
+        const migrated = await migrateGuestLIS(currentUser.id, guestSessionId);
+        if (migrated.migrated) {
           toast.success("Welcome! Your assessment has been saved.");
-          
-          // If from nutrition, redirect to dashboard with firstLogin flag
-          if (fromNutrition) {
-            navigate('/dashboard?firstLogin=true&source=nutrition');
-          } else {
-            navigate('/lis-results');
-          }
+        } else if (migrated.reason === 'claimed_by_other') {
+          toast.error("These guest results have already been claimed by another account.");
         }
         
         // NEW: Nutrition Assessment Migration
@@ -327,6 +366,13 @@ const Auth = () => {
             localStorage.removeItem('nutrition_guest_session');
             toast.success("Your nutrition assessment has been saved to your account!");
           }
+        }
+
+        // If from nutrition, redirect to dashboard with firstLogin flag
+        if (fromNutrition) {
+          navigate('/dashboard?firstLogin=true&source=nutrition');
+        } else {
+          navigate('/lis-results');
         }
       }
     } else if (!error) {
