@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
-import { BiohackherLogo } from "@/components/BiohackherLogo";
+import biohackherLogo from "@/assets/logos/biohackher-logo-master.png";
 import heroImage from "@/assets/hero-biohackher.jpg";
 import Navigation from "@/components/Navigation";
 import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
@@ -34,7 +34,7 @@ const Index = () => {
           <div className="flex items-start justify-center gap-8 mb-4">
             <div className="flex flex-col gap-6 max-w-3xl">
               {/* Logo directly above headline */}
-              <BiohackherLogo className="mb-2" />
+              <img src={biohackherLogo} alt="Biohackher Logo" className="h-auto w-full object-contain mb-2" />
               
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
                 {t('home.hero.tagline')}
