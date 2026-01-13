@@ -1190,6 +1190,13 @@ export type Database = {
             referencedRelation: "expert_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "expert_availability_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       expert_complaints: {
@@ -1241,6 +1248,13 @@ export type Database = {
             columns: ["expert_id"]
             isOneToOne: false
             referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_complaints_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1297,6 +1311,13 @@ export type Database = {
             columns: ["expert_id"]
             isOneToOne: false
             referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_credentials_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1544,6 +1565,13 @@ export type Database = {
             referencedRelation: "expert_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "expert_referrals_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       expert_reviews: {
@@ -1600,6 +1628,13 @@ export type Database = {
             referencedRelation: "expert_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "expert_reviews_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       expert_services: {
@@ -1650,6 +1685,13 @@ export type Database = {
             referencedRelation: "expert_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "expert_services_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       expert_verification_log: {
@@ -1698,6 +1740,13 @@ export type Database = {
             columns: ["expert_id"]
             isOneToOne: false
             referencedRelation: "expert_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expert_verification_log_expert_id_fkey"
+            columns: ["expert_id"]
+            isOneToOne: false
+            referencedRelation: "public_expert_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5175,6 +5224,123 @@ export type Database = {
       }
     }
     Views: {
+      public_expert_profiles: {
+        Row: {
+          accepts_insurance: boolean | null
+          average_rating: number | null
+          bio: string | null
+          certifications: string[] | null
+          city: string | null
+          consultation_fee: number | null
+          country: string | null
+          cover_photo_url: string | null
+          created_at: string | null
+          education: string | null
+          expert_id: string | null
+          featured: boolean | null
+          gallery_photos: Json | null
+          id: string | null
+          intro_video_url: string | null
+          latitude: number | null
+          listing_status: Database["public"]["Enums"]["listing_status"] | null
+          location: string | null
+          longitude: number | null
+          offers_in_person: boolean | null
+          offers_virtual_messaging: boolean | null
+          offers_virtual_phone: boolean | null
+          offers_virtual_video: boolean | null
+          practice_name: string | null
+          professional_tagline: string | null
+          profile_photo_url: string | null
+          specialties: string[] | null
+          state_province: string | null
+          tier: Database["public"]["Enums"]["expert_tier"] | null
+          timezone: string | null
+          total_reviews: number | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website: string | null
+          years_of_practice: number | null
+        }
+        Insert: {
+          accepts_insurance?: boolean | null
+          average_rating?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          city?: string | null
+          consultation_fee?: number | null
+          country?: string | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          education?: string | null
+          expert_id?: string | null
+          featured?: boolean | null
+          gallery_photos?: Json | null
+          id?: string | null
+          intro_video_url?: string | null
+          latitude?: number | null
+          listing_status?: Database["public"]["Enums"]["listing_status"] | null
+          location?: string | null
+          longitude?: number | null
+          offers_in_person?: boolean | null
+          offers_virtual_messaging?: boolean | null
+          offers_virtual_phone?: boolean | null
+          offers_virtual_video?: boolean | null
+          practice_name?: string | null
+          professional_tagline?: string | null
+          profile_photo_url?: string | null
+          specialties?: string[] | null
+          state_province?: string | null
+          tier?: Database["public"]["Enums"]["expert_tier"] | null
+          timezone?: string | null
+          total_reviews?: number | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+          years_of_practice?: number | null
+        }
+        Update: {
+          accepts_insurance?: boolean | null
+          average_rating?: number | null
+          bio?: string | null
+          certifications?: string[] | null
+          city?: string | null
+          consultation_fee?: number | null
+          country?: string | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          education?: string | null
+          expert_id?: string | null
+          featured?: boolean | null
+          gallery_photos?: Json | null
+          id?: string | null
+          intro_video_url?: string | null
+          latitude?: number | null
+          listing_status?: Database["public"]["Enums"]["listing_status"] | null
+          location?: string | null
+          longitude?: number | null
+          offers_in_person?: boolean | null
+          offers_virtual_messaging?: boolean | null
+          offers_virtual_phone?: boolean | null
+          offers_virtual_video?: boolean | null
+          practice_name?: string | null
+          professional_tagline?: string | null
+          profile_photo_url?: string | null
+          specialties?: string[] | null
+          state_province?: string | null
+          tier?: Database["public"]["Enums"]["expert_tier"] | null
+          timezone?: string | null
+          total_reviews?: number | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+          years_of_practice?: number | null
+        }
+        Relationships: []
+      }
       unified_assessments: {
         Row: {
           assessment_id: string | null
