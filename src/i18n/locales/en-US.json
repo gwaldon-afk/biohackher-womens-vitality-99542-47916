@@ -499,6 +499,7 @@
     "wellnessTools": "Wellness Tools",
     "plans": {
       "today": "Today",
+      "twentyEightDayPlan": "28-Day Reinvention Cycle",
       "ninetyDayPlan": "90-Day Plan",
       "sevenDayMealPlan": "7-Day Meal Plan"
     },

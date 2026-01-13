@@ -45,6 +45,7 @@ const Navigation = () => {
   // My Plans dropdown items
   const myPlansItems = [
     { href: "/today", label: t('navigation.plans.today'), icon: Activity },
+    { href: "/plans/28-day", label: t('navigation.plans.twentyEightDayPlan'), icon: Sparkles },
     { href: "/plans/90-day", label: t('navigation.plans.ninetyDayPlan'), icon: TrendingUp },
     { href: "/nutrition/meal-plan", label: t('navigation.plans.sevenDayMealPlan'), icon: Utensils },
   ];

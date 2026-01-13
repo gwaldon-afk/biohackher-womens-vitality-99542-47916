@@ -161,6 +161,7 @@ const MATCHERS: Array<{
   { test: (p) => p === "/biohacking-toolkit", meta: () => ({ title: "Toolkit", shell: "app", tabKey: "toolkit", showBack: false }) },
 
   // Tab-adjacent pages (still AppShell, keep bottom nav)
+  { test: (p) => p === "/plans/28-day", meta: () => ({ title: "28‑day cycle", shell: "app", tabKey: "today", showBack: true, parentRoute: "/today" }) },
   { test: (p) => p === "/plans/90-day", meta: () => ({ title: "90‑day plan", shell: "app", tabKey: "today", showBack: true, parentRoute: "/today" }) },
   { test: (p) => p === "/plans/weekly", meta: () => ({ title: "Weekly plan", shell: "app", tabKey: "today", showBack: true, parentRoute: "/today" }) },
   { test: (p) => p === "/plan-home", meta: () => ({ title: "Plans", shell: "app", tabKey: "today", showBack: true, parentRoute: "/today" }) },

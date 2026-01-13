@@ -110,6 +110,7 @@ const ProfileSettings = lazy(() => import("./pages/ProfileSettings"));
 const Profile = lazy(() => import("./pages/Profile"));
 const NinetyDayPlan = lazy(() => import("./pages/plans/NinetyDayPlan"));
 const WeeklyPlan = lazy(() => import("./pages/plans/WeeklyPlan"));
+const TwentyEightDayPlan = lazy(() => import("./pages/plans/TwentyEightDayPlan"));
 const MealPlanWeek = lazy(() => import("./pages/nutrition/MealPlanWeek"));
 const DevChecklist = lazy(() => import("./pages/DevChecklist"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -149,6 +150,7 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/complete-profile" element={<ProtectedRoute><CompleteHealthProfile /></ProtectedRoute>} />
                     <Route path="/today" element={<ProtectedRoute><RequireHealthProfile><MyDailyPlan /></RequireHealthProfile></ProtectedRoute>} />
+                    <Route path="/plans/28-day" element={<ProtectedRoute><RequireHealthProfile><TwentyEightDayPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/plans/90-day" element={<ProtectedRoute><RequireHealthProfile><NinetyDayPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/plans/weekly" element={<ProtectedRoute><RequireHealthProfile><WeeklyPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/nutrition/meal-plan" element={<ProtectedRoute><RequireHealthProfile><MealPlanWeek /></RequireHealthProfile></ProtectedRoute>} />
