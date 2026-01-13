@@ -10,7 +10,7 @@
  * Change TEST_MODE_ENABLED = true to TEST_MODE_ENABLED = false
  */
 
-export const TEST_MODE_ENABLED = true;
+export const TEST_MODE_ENABLED = false;
 
 // Mock user data for testing - using valid UUID format
 export const MOCK_USER = {
