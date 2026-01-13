@@ -6,7 +6,6 @@ import { Zap, Activity, TrendingUp, CheckCircle, ArrowRight } from "lucide-react
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import Navigation from "@/components/Navigation";
 
 const EnergyOnboarding = () => {
   const navigate = useNavigate();
@@ -159,8 +158,6 @@ const EnergyOnboarding = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container max-w-3xl mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">

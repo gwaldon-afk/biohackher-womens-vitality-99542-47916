@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import Navigation from "@/components/Navigation";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -72,8 +71,6 @@ const ResearchEvidence = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
-      <Navigation />
-      
       <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="text-center mb-12">

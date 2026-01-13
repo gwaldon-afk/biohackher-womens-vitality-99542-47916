@@ -1,4 +1,3 @@
-import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, BookOpen, TrendingUp } from "lucide-react";
@@ -98,7 +97,6 @@ export default function LIS2Research() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container mx-auto py-8 px-4">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}

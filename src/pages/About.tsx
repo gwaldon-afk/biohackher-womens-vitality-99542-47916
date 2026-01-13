@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Navigation from "@/components/Navigation";
 import brandFaceLogo from "@/assets/brand-face-logo.jpg";
 import { Heart, Users, Award, Mic, Mail, MapPin, Phone, Send, BookOpen, Target, Sparkles, GraduationCap, FileText } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -17,8 +16,6 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Hero Section */}
         <div className="text-center mb-12">

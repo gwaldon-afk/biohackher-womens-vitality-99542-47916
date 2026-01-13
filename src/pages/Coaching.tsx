@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Calendar, TrendingUp, Snowflake, Dumbbell, Heart, Moon, ChevronDown } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import ResearchCitation from "@/components/ResearchCitation";
 import { getResearchByStage } from "@/data/cycleCoachingResearch";
@@ -166,8 +165,6 @@ const Coaching = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-center gap-2 mb-2">

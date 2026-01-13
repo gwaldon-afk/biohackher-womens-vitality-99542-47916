@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Brain, Zap, Target, Moon, TrendingUp, AlertCircle } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -370,7 +369,6 @@ const BrainAssessment = () => {
   if (showResults) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <Card>
             <CardHeader>
@@ -678,7 +676,6 @@ const BrainAssessment = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <Card>
           <CardHeader>

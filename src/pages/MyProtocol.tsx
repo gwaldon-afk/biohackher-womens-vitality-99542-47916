@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import Navigation from "@/components/Navigation";
 import { Package, ShoppingCart, CheckCircle2, AlertCircle, Pencil, Trash2, BookOpen, Clock, Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import beautyPillar from "@/assets/beauty-pillar.png";
@@ -100,9 +99,11 @@ const MyProtocol = () => {
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case 'priority':
           // Priority: immediate items count as highest priority
-          const aPriority = a.protocol_data.immediate?.length || 0;
-          const bPriority = b.protocol_data.immediate?.length || 0;
-          return bPriority - aPriority;
+          {
+            const aPriority = a.protocol_data.immediate?.length || 0;
+            const bPriority = b.protocol_data.immediate?.length || 0;
+            return bPriority - aPriority;
+          }
         default:
           return 0;
       }
@@ -386,7 +387,6 @@ const MyProtocol = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-12">
           <ProtocolSkeleton />
         </main>
@@ -398,8 +398,6 @@ const MyProtocol = () => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
-        <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="mb-8">

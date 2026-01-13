@@ -8,7 +8,6 @@ import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles, ArrowRight, Star
 import { useHealthAssistant } from '@/hooks/useHealthAssistant';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import Navigation from '@/components/Navigation';
 import EvidenceBadge from '@/components/EvidenceBadge';
 import { RecommendationCard } from '@/components/RecommendationCard';
 import { extractHealthTopicsFromText, getRelevantProducts } from '@/services/recommendationEngine';
@@ -59,8 +58,6 @@ const HealthAssistant = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <div className="container mx-auto px-4 pt-24 pb-8 max-w-5xl">
         {/* Header */}
         <div className="text-center mb-8">
@@ -95,7 +92,13 @@ const HealthAssistant = () => {
                   <p className="text-muted-foreground mb-4">
                     Sign up to unlock your full health journey with personalized assessments, progress tracking, and custom protocols.
                   </p>
-                  <Button onClick={() => navigate('/auth')}>
+                  <Button
+                    onClick={() => {
+                      const sessionId = localStorage.getItem('health_questions_session_id');
+                      const sessionParam = sessionId ? `?source=health-assistant&session=${encodeURIComponent(sessionId)}` : '?source=health-assistant';
+                      navigate(`/auth${sessionParam}`);
+                    }}
+                  >
                     Sign Up Free
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
@@ -311,7 +314,11 @@ const HealthAssistant = () => {
                                         navigate('/pillars');
                                       }
                                     } else {
-                                      navigate('/auth');
+                                      const sessionId = localStorage.getItem('health_questions_session_id');
+                                      const sessionParam = sessionId
+                                        ? `?source=health-assistant&session=${encodeURIComponent(sessionId)}`
+                                        : '?source=health-assistant';
+                                      navigate(`/auth${sessionParam}`);
                                     }
                                   }}
                                 >

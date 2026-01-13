@@ -1,4 +1,3 @@
-import Navigation from "@/components/Navigation";
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,6 @@ export default function MealPlanWeek() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8 max-w-3xl">
           <Card className="p-8 text-center space-y-6 border-2 border-primary/20">
             <div className="flex justify-center">
@@ -100,7 +98,6 @@ export default function MealPlanWeek() {
   if (!progressLoading && progress && !progress.nutrition_completed) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8 max-w-3xl">
           <Card className="p-8 text-center space-y-6 border-2 border-primary/20">
             <div className="flex justify-center">
@@ -152,7 +149,6 @@ export default function MealPlanWeek() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex items-center justify-center gap-2 text-muted-foreground py-12">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
@@ -167,7 +163,6 @@ export default function MealPlanWeek() {
   if (!hasMealPlan) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8 max-w-3xl">
           <Card className="p-8 text-center space-y-6">
             <div className="flex justify-center">
@@ -224,7 +219,6 @@ export default function MealPlanWeek() {
   
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex items-center justify-between mb-6">
           <div>

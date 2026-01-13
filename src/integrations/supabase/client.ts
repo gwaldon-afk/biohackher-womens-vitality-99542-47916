@@ -2,8 +2,18 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const isTest = import.meta.env.MODE === "test" || !!import.meta.env.VITEST;
+
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL || (isTest ? "http://localhost:54321" : "");
+const SUPABASE_PUBLISHABLE_KEY =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || (isTest ? "test-anon-key" : "");
+
+if (!isTest && (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY)) {
+  throw new Error(
+    "Missing Supabase env vars. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (anon key).",
+  );
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

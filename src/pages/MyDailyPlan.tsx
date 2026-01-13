@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import Navigation from "@/components/Navigation";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { UnifiedDailyChecklist } from "@/components/today/UnifiedDailyChecklist";
 import { FirstTimeUserTourModal } from "@/components/onboarding/FirstTimeUserTourModal";
 import { OnboardingGoalPrompt } from "@/components/onboarding/OnboardingGoalPrompt";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { supabase } from "@/integrations/supabase/client";
+import { TrialCountdownBanner } from "@/components/subscription/TrialCountdownBanner";
 
 export default function MyDailyPlan() {
   const { user } = useAuth();
@@ -85,11 +84,10 @@ export default function MyDailyPlan() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
+        <TrialCountdownBanner />
         <UnifiedDailyChecklist />
       </main>
-      <MobileBottomNav />
       <FirstTimeUserTourModal isOpen={showTour} onComplete={handleTourComplete} />
       <OnboardingGoalPrompt 
         isOpen={showGoalPrompt} 

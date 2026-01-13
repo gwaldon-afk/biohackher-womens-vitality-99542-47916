@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles, ExternalLink, Lock } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useQuery } from "@tanstack/react-query";
@@ -43,7 +42,8 @@ const AssessmentResults = () => {
   const [generatedProtocol, setGeneratedProtocol] = useState<any>(null);
   const { refetch: refetchRecommendations } = useProtocolRecommendations();
   
-  const state = location.state as {
+  const state = location.state as
+    | {
     score: number;
     answers: Record<string, number>;
     assessmentName: string;
@@ -57,26 +57,33 @@ const AssessmentResults = () => {
     hasMoreAssessments?: boolean;
     nextAssessmentId?: string;
     sessionId?: string;
-  };
+    }
+    | undefined;
+
+  const flowStore = useAssessmentFlowStore();
+  const hasRequiredInputs = !!state && !!symptomId;
 
   useEffect(() => {
-    if (!state || !state.score) {
+    if (!state || state.score == null) {
       navigate('/pillars');
     }
   }, [state, navigate]);
 
-  if (!state || !symptomId) {
-    return null;
-  }
-
   const assessmentConfig = symptomId ? getAssessment(symptomId) : null;
-  const { score, answers, assessmentName, scoringGuidance, scoreCategory, categoryDescription, pillar } = state;
   
-  const flowStore = useAssessmentFlowStore();
-  const isMultiFlow = state.isMultiAssessmentFlow || false;
-  const hasMore = state.hasMoreAssessments || false;
-  const nextId = state.nextAssessmentId;
-  const sessionId = state.sessionId;
+  const score = state?.score ?? 0;
+  const answers = state?.answers ?? {};
+  const assessmentName = state?.assessmentName ?? "";
+  const assessmentDescription = state?.assessmentDescription ?? "";
+  const scoringGuidance = state?.scoringGuidance ?? {};
+  const scoreCategory = state?.scoreCategory ?? "";
+  const categoryDescription = state?.categoryDescription ?? "";
+  const pillar = state?.pillar ?? "";
+
+  const isMultiFlow = state?.isMultiAssessmentFlow || false;
+  const hasMore = state?.hasMoreAssessments || false;
+  const nextId = state?.nextAssessmentId;
+  const sessionId = state?.sessionId;
   const isFirstAssessment = flowStore.completedIds.length === 1;
   
   // Fetch all assessments for progressive analysis (if user has completed 2+)
@@ -591,9 +598,12 @@ const AssessmentResults = () => {
     }
   }, [user, toolkitItems, symptomTags, savingRecommendations, toast]);
 
+  if (!hasRequiredInputs) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Button
@@ -613,7 +623,7 @@ const AssessmentResults = () => {
                 {getPillarIcon(pillar)}
               </div>
               <CardTitle className="text-2xl mb-2">{assessmentName}</CardTitle>
-              <p className="text-muted-foreground text-sm">{state.assessmentDescription}</p>
+              <p className="text-muted-foreground text-sm">{assessmentDescription}</p>
             </CardHeader>
             <CardContent className="text-center">
               <div className="flex justify-center mb-4">

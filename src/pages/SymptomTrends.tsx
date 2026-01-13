@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import Navigation from "@/components/Navigation";
 import { useSymptomTracking } from "@/hooks/useSymptomTracking";
 import { useToast } from "@/hooks/use-toast";
 import { SymptomTrendChart } from "@/components/SymptomTrendChart";
@@ -75,8 +74,6 @@ const SymptomTrends = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">

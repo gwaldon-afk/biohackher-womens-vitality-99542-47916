@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ArrowLeft, TrendingUp, TrendingDown, Minus, Calendar, Brain, Moon, Heart, Thermometer, Bone, Battery, Scale, Zap, FileText, Clock, Trash2 } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -221,7 +220,6 @@ const AssessmentHistory = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
@@ -236,8 +234,6 @@ const AssessmentHistory = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">

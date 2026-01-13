@@ -9,7 +9,6 @@ import { Brain, Heart, Sparkles, Target, TrendingUp, Users, Zap } from "lucide-r
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Navigation from "@/components/Navigation";
 
 interface Question {
   id: string;
@@ -329,7 +328,6 @@ const LongevityMindsetQuiz = () => {
 
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto space-y-6">
             <Card className="card-elevated">
@@ -607,7 +605,6 @@ const LongevityMindsetQuiz = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">

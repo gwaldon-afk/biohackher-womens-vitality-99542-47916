@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Navigation from "@/components/Navigation";
 import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,7 +19,6 @@ export default function NinetyDayPlan() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         {user && <Breadcrumbs items={breadcrumbs} />}
         

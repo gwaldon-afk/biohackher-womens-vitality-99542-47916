@@ -7,7 +7,6 @@ import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import Navigation from "@/components/Navigation";
 import { useNavigate } from "react-router-dom";
 
 const Reports = () => {
@@ -256,7 +255,6 @@ const Reports = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto space-y-8">
           <div className="text-center space-y-4">

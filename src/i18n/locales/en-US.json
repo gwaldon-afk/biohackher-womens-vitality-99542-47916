@@ -56,7 +56,7 @@
       "benefit3": "See how daily choices affect your biological age",
       "benefit4": "Build streaks and earn achievements",
       "cta": "Sign Up to Start Tracking",
-      "trial": "Includes FREE 3-day trial",
+      "trial": "Includes FREE 7-day trial",
       "outOf": "out of 15",
       "gradeA": "Grade A",
       "dailyScore": "Your daily anti-inflammatory nutrition score",
@@ -86,7 +86,7 @@
       "benefit6": "AI Health Assistant (5 free questions/day)",
       "unlockProtocol": "Unlock Your Protocol",
       "createAccount": "Create Free Account & Unlock Protocol",
-      "trial": "Includes FREE 7-day trial • No credit card required",
+      "trial": "Includes FREE 7-day trial",
       "emailResults": "Email My Results",
       "copyShareLink": "Copy Share Link"
     },
@@ -171,7 +171,7 @@
     "benefitAI": "AI Health Assistant (5 free questions/day)",
     "unlockProtocol": "Unlock Your Protocol",
     "createAccountUnlock": "Create Free Account & Unlock Protocol",
-    "freeTrial": "Includes FREE 3-day trial • No credit card required",
+    "freeTrial": "Includes FREE 7-day trial",
     "emailMyResults": "Email My Results",
     "copyShareLink": "Copy Share Link",
     "emailReport": "Email Report",
@@ -244,7 +244,7 @@
     "aiInsights": "AI-powered insights as patterns emerge",
     "createFreeAccount": "Create Free Account & Unlock Protocol",
     "createFreeAccountSave": "Create Free Account to Save Protocol",
-    "freeTrial": "Includes FREE 3-day trial • No credit card required",
+    "freeTrial": "Includes FREE 7-day trial",
     "guestDisclaimer": "Platform provides wellness guidance, not medical diagnosis. Consult healthcare providers for medical concerns.",
     "aiDeepDive": "Get AI-Powered Deep Dive (Optional)",
     "generating": "Generating...",
@@ -380,7 +380,7 @@
     "dailyNutritionTracking": "✓ Daily Nutrition Tracking",
     "monthlyReassessments": "✓ Monthly Reassessments",
     "createFreeAccount": "Create Free Account & Start Now",
-    "freeTrial": "Includes FREE 3-day trial • No credit card required",
+    "freeTrial": "Includes FREE 7-day trial",
     "addToCart": "Add to Cart",
     "addToProtocol": "Add to Protocol",
     "inProtocol": "✓ In Protocol",
@@ -499,6 +499,7 @@
     "wellnessTools": "Wellness Tools",
     "plans": {
       "today": "Today",
+      "twentyEightDayPlan": "28-Day Reinvention Cycle",
       "ninetyDayPlan": "90-Day Plan",
       "sevenDayMealPlan": "7-Day Meal Plan"
     },
@@ -1596,7 +1597,7 @@
         "aiAssistant": "AI Health Assistant (5 free questions/day)"
       },
       "createAccount": "Create Free Account",
-      "trial": "Includes FREE 7-day trial • No credit card required",
+      "trial": "Includes FREE 7-day trial",
       "maybeLater": "Maybe Later"
     },
     "nutritionGuided": {

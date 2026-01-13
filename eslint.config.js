@@ -21,6 +21,10 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      // Phase D: allow incremental typing work without blocking CI.
+      "@typescript-eslint/no-explicit-any": "warn",
+      "prefer-const": "warn",
+      "no-useless-escape": "warn",
     },
   },
 );

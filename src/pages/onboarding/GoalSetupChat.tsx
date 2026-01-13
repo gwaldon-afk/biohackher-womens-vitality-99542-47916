@@ -42,7 +42,7 @@ const GoalSetupChat = () => {
   };
 
   const createProtocol = useCreateProtocol(user?.id || '');
-  const createProtocolItem = useCreateProtocolItem('');
+  const createProtocolItem = useCreateProtocolItem();
 
   const handleContinue = async () => {
     if (!user?.id) {
@@ -157,9 +157,8 @@ const GoalSetupChat = () => {
       const uniqueItems = Array.from(new Map(protocolItems.map(item => [item.name, item])).values());
 
       // Create each protocol item
-      const itemCreator = useCreateProtocolItem(protocol.id);
       for (const item of uniqueItems) {
-        await itemCreator.mutateAsync({
+        await createProtocolItem.mutateAsync({
           protocol_id: protocol.id,
           ...item,
           description: null,

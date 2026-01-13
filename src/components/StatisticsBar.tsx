@@ -48,9 +48,9 @@ const StatisticsBar = () => {
     <div className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 py-6 px-4">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
         {stats.map((stat, index) => (
-          <>
-            {index > 0 && <div key={`divider-${index}`} className="hidden md:block h-12 w-px bg-border" />}
-            <Dialog key={stat.id} open={openDialog === stat.id} onOpenChange={(open) => setOpenDialog(open ? stat.id : null)}>
+          <div key={stat.id} className="contents">
+            {index > 0 && <div className="hidden md:block h-12 w-px bg-border" />}
+            <Dialog open={openDialog === stat.id} onOpenChange={(open) => setOpenDialog(open ? stat.id : null)}>
               <DialogTrigger asChild>
                 <button className="text-center group cursor-pointer hover:opacity-80 transition-opacity">
                   <p className="text-2xl font-bold text-foreground">{t(stat.valueKey)}</p>
@@ -81,7 +81,7 @@ const StatisticsBar = () => {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-          </>
+          </div>
         ))}
       </div>
     </div>

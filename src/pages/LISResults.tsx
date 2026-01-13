@@ -12,7 +12,6 @@ import LISInputForm from '@/components/LISInputForm';
 import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome';
 import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
-import Navigation from '@/components/Navigation';
 import { LISRadarChart, getScoreColor, getScoreCategory } from '@/components/LISRadarChart';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState, useMemo } from 'react';
@@ -306,7 +305,56 @@ const LISResults = () => {
           // Handle guest users
           const sessionId = localStorage.getItem('lis_guest_session_id');
           if (sessionId) {
-            navigate(`/guest-lis-results/${sessionId}`);
+            // Rehydrate via RPC (guest tables are not directly selectable for privacy).
+            const { data: guestAssessment, error } = await supabase.rpc('get_guest_lis_assessment', {
+              p_session_id: sessionId,
+            });
+
+            if (error || !guestAssessment) {
+              toast({
+                title: t('lisResults.toast.assessmentNotFound'),
+                description: t('lisResults.toast.assessmentNotFoundDesc'),
+              });
+              navigate('/guest-lis-assessment');
+              return;
+            }
+
+            const briefResults: any = (guestAssessment as any).brief_results;
+            const assessmentData: any = (guestAssessment as any).assessment_data;
+            const ps: any = briefResults?.pillarScores ?? {};
+
+            const normalizedPillarScores = {
+              sleep: ps.sleep ?? ps.Sleep ?? 0,
+              stress: ps.stress ?? ps.Stress ?? 0,
+              activity: ps.activity ?? ps.Body ?? ps.physical_activity ?? ps.PhysicalActivity ?? 0,
+              nutrition: ps.nutrition ?? ps.Nutrition ?? 0,
+              social: ps.social ?? ps.Social ?? 0,
+              cognitive: ps.cognitive ?? ps.Brain ?? ps.cognitive_engagement ?? ps.Cognitive ?? 0,
+            };
+
+            const dob: string | undefined = assessmentData?.baselineData?.dateOfBirth;
+            const age = dob
+              ? (() => {
+                  const birthDate = new Date(dob);
+                  const today = new Date();
+                  let years = today.getFullYear() - birthDate.getFullYear();
+                  const monthDiff = today.getMonth() - birthDate.getMonth();
+                  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    years--;
+                  }
+                  return years;
+                })()
+              : 0;
+
+            const finalScore = briefResults?.finalScore ?? briefResults?.final_score ?? 0;
+
+            navigate(
+              `/lis-results?score=${finalScore}` +
+                `&pillarScores=${encodeURIComponent(JSON.stringify(normalizedPillarScores))}` +
+                `&isNewBaseline=true&isGuest=true` +
+                (age ? `&age=${age}` : ''),
+              { replace: true },
+            );
           } else {
             toast({
               title: t('lisResults.toast.assessmentNotFound'),
@@ -436,7 +484,6 @@ const LISResults = () => {
   if (!ready) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container max-w-6xl mx-auto py-8 px-4 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">Loading...</div>
         </div>
@@ -446,7 +493,6 @@ const LISResults = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
       
       {/* Shared Link Banner */}
@@ -800,7 +846,11 @@ const LISResults = () => {
               
               <Button 
                 size="lg" 
-                onClick={() => navigate('/auth?source=nutrition')}
+                onClick={() => {
+                  const sessionId = localStorage.getItem('nutrition_guest_session');
+                  const sessionParam = sessionId ? `&session=${encodeURIComponent(sessionId)}` : '';
+                  navigate(`/auth?source=nutrition${sessionParam}`);
+                }}
                 className="text-lg px-8 py-6 h-auto"
               >
                 {t('lisResults.nutritionPreview.cta')}
@@ -995,7 +1045,10 @@ const LISResults = () => {
                     if (user) {
                       handleGenerateProtocol();
                     } else {
-                      navigate('/auth?source=lis-results&returnTo=/lis-results');
+                      const sessionId = localStorage.getItem('lis_guest_session_id');
+                      const returnTo = encodeURIComponent('/lis-results');
+                      const sessionParam = sessionId ? `&session=${encodeURIComponent(sessionId)}` : '';
+                      navigate(`/auth?source=lis-results&returnTo=${returnTo}${sessionParam}`);
                     }
                   }} 
                   size="lg"

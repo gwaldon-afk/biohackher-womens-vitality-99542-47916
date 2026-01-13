@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useTranslation } from 'react-i18next';
 import { useAuth } from "@/hooks/useAuth";
@@ -53,8 +52,6 @@ const Nutrition = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <GuidedNutritionOnboarding
         isActive={showGuidedTour}
         onComplete={() => setShowGuidedTour(false)}
