@@ -1,0 +1,427 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test1: analyze-cross-assessments payload + consolidated recommendations snapshot 1`] = `
+{
+  "body": {
+    "trigger_assessment": "manual_refresh",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test1: analyze-cross-assessments payload + consolidated recommendations snapshot 2`] = `
+{
+  "completed_count": 3,
+  "generated_at": "2026-01-13T00:00:00.000Z",
+  "next_steps": [
+    "Start a 28-day Reinvention Cycle.",
+    "Pick 1 non-negotiable habit for Week 1.",
+    "Retake a daily check-in 3x/week to quantify change.",
+  ],
+  "top_priorities": [
+    {
+      "pillar": "BODY",
+      "why": "Strengthen your foundation with consistent movement + recovery.",
+    },
+    {
+      "pillar": "BRAIN",
+      "why": "Reduce cognitive load and stabilize stress inputs.",
+    },
+    {
+      "pillar": "BALANCE",
+      "why": "Support sleep and downshift so the plan stays sustainable.",
+    },
+  ],
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test1: per-assessment AI analysis contract (LIS) 1`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 2,
+      "exercise_frequency": 1,
+      "exercise_intensity": 1,
+      "focus": 2,
+      "hydration": 2,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 3,
+      "recovery": 2,
+      "relationships": 2,
+      "sleep_consistency": 1,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 2,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test1",
+    },
+    "score": 38,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000001",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test1: per-assessment AI analysis contract (LIS) 2`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 2,
+      "exercise_frequency": 1,
+      "exercise_intensity": 1,
+      "focus": 2,
+      "hydration": 2,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 3,
+      "recovery": 2,
+      "relationships": 2,
+      "sleep_consistency": 1,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 2,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test1",
+    },
+    "score": 38,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000001",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test1: per-assessment AI analysis contract (LIS) 3`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 2,
+      "exercise_frequency": 1,
+      "exercise_intensity": 1,
+      "focus": 2,
+      "hydration": 2,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 3,
+      "recovery": 2,
+      "relationships": 2,
+      "sleep_consistency": 1,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 2,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test1",
+    },
+    "score": 38,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000001",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test5: analyze-cross-assessments payload + consolidated recommendations snapshot 1`] = `
+{
+  "body": {
+    "trigger_assessment": "manual_refresh",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test5: analyze-cross-assessments payload + consolidated recommendations snapshot 2`] = `
+{
+  "completed_count": 3,
+  "generated_at": "2026-01-13T00:00:00.000Z",
+  "next_steps": [
+    "Start a 28-day Reinvention Cycle.",
+    "Pick 1 non-negotiable habit for Week 1.",
+    "Retake a daily check-in 3x/week to quantify change.",
+  ],
+  "top_priorities": [
+    {
+      "pillar": "BALANCE",
+      "why": "Strengthen your foundation with consistent movement + recovery.",
+    },
+    {
+      "pillar": "BEAUTY",
+      "why": "Reduce cognitive load and stabilize stress inputs.",
+    },
+    {
+      "pillar": "BALANCE",
+      "why": "Support sleep and downshift so the plan stays sustainable.",
+    },
+  ],
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test5: per-assessment AI analysis contract (LIS) 1`] = `
+{
+  "body": {
+    "answers": {
+      "community": 4,
+      "daily_movement": 3,
+      "diet_quality": 3,
+      "exercise_frequency": 3,
+      "exercise_intensity": 2,
+      "focus": 3,
+      "hydration": 3,
+      "learning": 3,
+      "meal_timing": 4,
+      "mental_stimulation": 3,
+      "recovery": 3,
+      "relationships": 4,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 4,
+      "stress_level": 2,
+      "stress_management": 3,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test5",
+    },
+    "score": 60,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000005",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test5: per-assessment AI analysis contract (LIS) 2`] = `
+{
+  "body": {
+    "answers": {
+      "community": 4,
+      "daily_movement": 3,
+      "diet_quality": 3,
+      "exercise_frequency": 3,
+      "exercise_intensity": 2,
+      "focus": 3,
+      "hydration": 3,
+      "learning": 3,
+      "meal_timing": 4,
+      "mental_stimulation": 3,
+      "recovery": 3,
+      "relationships": 4,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 4,
+      "stress_level": 2,
+      "stress_management": 3,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test5",
+    },
+    "score": 60,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000005",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test5: per-assessment AI analysis contract (LIS) 3`] = `
+{
+  "body": {
+    "answers": {
+      "community": 4,
+      "daily_movement": 3,
+      "diet_quality": 3,
+      "exercise_frequency": 3,
+      "exercise_intensity": 2,
+      "focus": 3,
+      "hydration": 3,
+      "learning": 3,
+      "meal_timing": 4,
+      "mental_stimulation": 3,
+      "recovery": 3,
+      "relationships": 4,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 4,
+      "stress_level": 2,
+      "stress_management": 3,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test5",
+    },
+    "score": 60,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000005",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test9: analyze-cross-assessments payload + consolidated recommendations snapshot 1`] = `
+{
+  "body": {
+    "trigger_assessment": "manual_refresh",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test9: analyze-cross-assessments payload + consolidated recommendations snapshot 2`] = `
+{
+  "completed_count": 3,
+  "generated_at": "2026-01-13T00:00:00.000Z",
+  "next_steps": [
+    "Start a 28-day Reinvention Cycle.",
+    "Pick 1 non-negotiable habit for Week 1.",
+    "Retake a daily check-in 3x/week to quantify change.",
+  ],
+  "top_priorities": [
+    {
+      "pillar": "BALANCE",
+      "why": "Strengthen your foundation with consistent movement + recovery.",
+    },
+    {
+      "pillar": "BRAIN",
+      "why": "Reduce cognitive load and stabilize stress inputs.",
+    },
+    {
+      "pillar": "BALANCE",
+      "why": "Support sleep and downshift so the plan stays sustainable.",
+    },
+  ],
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test9: per-assessment AI analysis contract (LIS) 1`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 3,
+      "exercise_frequency": 2,
+      "exercise_intensity": 2,
+      "focus": 2,
+      "hydration": 3,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 2,
+      "recovery": 2,
+      "relationships": 3,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 3,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test9",
+    },
+    "score": 47,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000009",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test9: per-assessment AI analysis contract (LIS) 2`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 3,
+      "exercise_frequency": 2,
+      "exercise_intensity": 2,
+      "focus": 2,
+      "hydration": 3,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 2,
+      "recovery": 2,
+      "relationships": 3,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 3,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test9",
+    },
+    "score": 47,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000009",
+  },
+}
+`;
+
+exports[`Personas: 3-assessment consolidation + AI analysis (contract) > golden persona test9: per-assessment AI analysis contract (LIS) 3`] = `
+{
+  "body": {
+    "answers": {
+      "community": 3,
+      "daily_movement": 2,
+      "diet_quality": 3,
+      "exercise_frequency": 2,
+      "exercise_intensity": 2,
+      "focus": 2,
+      "hydration": 3,
+      "learning": 2,
+      "meal_timing": 2,
+      "mental_stimulation": 2,
+      "recovery": 2,
+      "relationships": 3,
+      "sleep_consistency": 2,
+      "sleep_duration": 2,
+      "sleep_quality": 2,
+      "social_connections": 3,
+      "stress_level": 4,
+      "stress_management": 2,
+    },
+    "assessmentId": "lis",
+    "assessmentType": "lis",
+    "forceRegenerate": false,
+    "metadata": {
+      "_persona": "test9",
+    },
+    "score": 47,
+    "scoreCategory": "test",
+    "userId": "00000000-0000-0000-0000-000000000009",
+  },
+}
+`;
