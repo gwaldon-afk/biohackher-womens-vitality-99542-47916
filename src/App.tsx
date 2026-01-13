@@ -270,7 +270,7 @@ const App = () => (
           <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
           <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/dev-checklist" element={<DevChecklist />} />
+          <Route path="/dev-checklist" element={<AdminRoute><DevChecklist /></AdminRoute>} />
           
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
