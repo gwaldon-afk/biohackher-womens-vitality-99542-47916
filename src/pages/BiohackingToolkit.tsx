@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Moon, UtensilsCrossed, Brain, Pill, LucideIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { getToolkitCategories } from "@/services/toolkitService";
 import { toast } from "sonner";
@@ -31,8 +30,6 @@ const BiohackingToolkit = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}

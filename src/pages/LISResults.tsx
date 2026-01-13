@@ -12,7 +12,6 @@ import LISInputForm from '@/components/LISInputForm';
 import FirstTimeDailyScoreWelcome from '@/components/FirstTimeDailyScoreWelcome';
 import { useLISData } from '@/hooks/useLISData';
 import { useToast } from '@/hooks/use-toast';
-import Navigation from '@/components/Navigation';
 import { LISRadarChart, getScoreColor, getScoreCategory } from '@/components/LISRadarChart';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect, useState, useMemo } from 'react';
@@ -485,7 +484,6 @@ const LISResults = () => {
   if (!ready) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container max-w-6xl mx-auto py-8 px-4 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">Loading...</div>
         </div>
@@ -495,7 +493,6 @@ const LISResults = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container max-w-6xl mx-auto py-8 px-4">
       
       {/* Shared Link Banner */}

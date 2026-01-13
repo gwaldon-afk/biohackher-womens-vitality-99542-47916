@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { User, Bell, Shield, FileText, AlertTriangle, Smartphone, Activity, Watch } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -175,8 +174,6 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 gradient-text">{t('settings.title')}</h1>

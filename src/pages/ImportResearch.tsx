@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { importResearchToDatabase } from "@/services/researchImportService";
 import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
-import Navigation from "@/components/Navigation";
 
 const ImportResearch = () => {
   const [loading, setLoading] = useState(false);
@@ -35,7 +34,6 @@ const ImportResearch = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-12 max-w-2xl">
         <Card>
           <CardHeader>

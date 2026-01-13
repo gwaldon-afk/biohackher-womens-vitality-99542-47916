@@ -1,7 +1,6 @@
 import { Suspense, lazy, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Navigation from "@/components/Navigation";
 import { useMeasurements } from "@/hooks/useMeasurements";
 import { MeasurementForm } from "@/components/MeasurementForm";
 import { TrendingUp, TrendingDown, Plus, ArrowLeft } from "lucide-react";
@@ -64,8 +63,6 @@ const ProgressTracking = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Top Return Button */}
         <div className="flex justify-start mb-6">

@@ -8,7 +8,6 @@ import { Loader2, Send, MessageCircle, AlertTriangle, Sparkles, ArrowRight, Star
 import { useHealthAssistant } from '@/hooks/useHealthAssistant';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import Navigation from '@/components/Navigation';
 import EvidenceBadge from '@/components/EvidenceBadge';
 import { RecommendationCard } from '@/components/RecommendationCard';
 import { extractHealthTopicsFromText, getRelevantProducts } from '@/services/recommendationEngine';
@@ -59,8 +58,6 @@ const HealthAssistant = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <div className="container mx-auto px-4 pt-24 pb-8 max-w-5xl">
         {/* Header */}
         <div className="text-center mb-8">

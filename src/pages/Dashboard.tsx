@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { History, FileText, Activity, Settings, TrendingUp, TrendingDown, Brain, Zap, Bone, Moon, Heart, AlertTriangle, CheckCircle2, Pill, Users, Sparkles, Target, ChevronRight } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import Reports from "@/pages/Reports";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -446,8 +445,6 @@ const Dashboard = () => {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
-        <Navigation />
-        
         {/* Nutrition Onboarding Modal */}
         <FirstNutritionWelcomeModal 
           isOpen={showNutritionWelcome}

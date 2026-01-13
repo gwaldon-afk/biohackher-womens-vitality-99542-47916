@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
 import biohackherLogo from "@/assets/logos/biohackher-logo-master.png";
 import heroImage from "@/assets/hero-biohackher.jpg";
-import Navigation from "@/components/Navigation";
 import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
 import StatisticsBar from "@/components/StatisticsBar";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
@@ -26,8 +25,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       {/* Hero Section - Header Only */}
       <section className="relative overflow-hidden py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4">

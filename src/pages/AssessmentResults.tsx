@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, TrendingUp, CheckCircle2, AlertTriangle, Info, Brain, Heart, Activity, Sparkles, ExternalLink, Lock } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAssessments } from "@/hooks/useAssessments";
 import { useQuery } from "@tanstack/react-query";
@@ -605,7 +604,6 @@ const AssessmentResults = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Button

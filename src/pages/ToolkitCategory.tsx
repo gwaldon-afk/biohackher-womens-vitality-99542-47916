@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, AlertTriangle, Play } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import Navigation from "@/components/Navigation";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import EvidenceBadge from "@/components/EvidenceBadge";
 import ResearchCitation from "@/components/ResearchCitation";
@@ -47,8 +46,6 @@ const ToolkitCategory = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         {isLoading ? (
           <div className="space-y-6">

@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Activity, Heart, Brain, ShoppingCart, Star, Search, Sparkles, Zap } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import SmartProductRecommendations from "@/components/SmartProductRecommendations";
 import { EmptyShopState } from "@/components/shop/EmptyShopState";
 import { useToast } from "@/hooks/use-toast";
@@ -186,8 +185,6 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <div className="container py-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

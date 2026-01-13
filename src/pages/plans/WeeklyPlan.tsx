@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import Navigation from "@/components/Navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { useAuth } from "@/hooks/useAuth";
 import { useWeeklyPlan, DayPlanData, WeeklyAction } from "@/hooks/useWeeklyPlan";
 import AssessmentGatewayScreen from "@/components/AssessmentGatewayScreen";
@@ -188,7 +186,6 @@ export default function WeeklyPlan() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-8 max-w-5xl">
           <AssessmentGatewayScreen pageName="weekly" />
         </main>
@@ -198,7 +195,6 @@ export default function WeeklyPlan() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
         <Breadcrumbs items={breadcrumbs} />
 
@@ -276,7 +272,6 @@ export default function WeeklyPlan() {
           </Card>
         )}
       </main>
-      <MobileBottomNav />
     </div>
   );
 }

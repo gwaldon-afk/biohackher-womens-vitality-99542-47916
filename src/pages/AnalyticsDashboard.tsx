@@ -1,7 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Navigation from "@/components/Navigation";
 import { TrendingUp, Activity, Target, Award, Calendar, Sparkles, TrendingDown, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -169,8 +168,6 @@ const AnalyticsDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <div>

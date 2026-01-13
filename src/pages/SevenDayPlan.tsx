@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Calendar, CheckCircle2, PlayCircle, Timer, Utensils, Activity, Brain, Heart, Sparkles, Pill, ShoppingCart } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { SupplementProductCard } from "@/components/SupplementProductCard";
 import { useQuery } from "@tanstack/react-query";
@@ -1066,7 +1065,6 @@ const SevenDayPlan = () => {
   if (!pillar || !currentPillar) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <main className="container mx-auto px-4 py-12">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">Invalid Plan</h1>
@@ -1085,8 +1083,6 @@ const SevenDayPlan = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">

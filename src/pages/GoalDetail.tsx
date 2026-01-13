@@ -21,7 +21,6 @@ import {
   Edit, Archive, CheckCircle2, AlertCircle, Plus 
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
-import Navigation from "@/components/Navigation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const GoalDetail = () => {
@@ -52,7 +51,6 @@ const GoalDetail = () => {
   if (goalsLoading || !goal) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container mx-auto px-4 py-8">
           <p className="text-center text-muted-foreground">Loading...</p>
         </div>
@@ -95,8 +93,6 @@ const GoalDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="mb-6">

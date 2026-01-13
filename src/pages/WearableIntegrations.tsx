@@ -4,7 +4,6 @@ import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Navigation from "@/components/Navigation";
 import { useWearables } from "@/hooks/useWearables";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -215,8 +214,6 @@ const WearableIntegrations = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">

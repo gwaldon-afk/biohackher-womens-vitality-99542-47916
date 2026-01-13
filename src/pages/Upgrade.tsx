@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Crown, Users, FileText, Zap, Star } from "lucide-react";
-import Navigation from "@/components/Navigation";
 
 const Upgrade = () => {
   const features = {
@@ -93,8 +92,6 @@ const Upgrade = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">

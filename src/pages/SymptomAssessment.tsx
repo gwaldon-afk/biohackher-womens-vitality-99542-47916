@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import Navigation from "@/components/Navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -58,7 +57,6 @@ const SymptomAssessment = () => {
   if (assessmentsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-        <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-3xl mx-auto space-y-6">
             <Skeleton className="h-12 w-3/4" />
@@ -73,7 +71,6 @@ const SymptomAssessment = () => {
   if (!assessmentConfig) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-        <Navigation />
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-2xl mx-auto p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Assessment Not Found</h2>
@@ -222,7 +219,6 @@ const SymptomAssessment = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10">
-      <Navigation />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8">

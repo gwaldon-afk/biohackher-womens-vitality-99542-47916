@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Sparkles, TrendingUp, Activity, ArrowRight, PartyPopper, Home } from 'lucide-react';
-import Navigation from '@/components/Navigation';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -41,7 +40,6 @@ const DailyScoreResults = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container max-w-3xl mx-auto py-8 px-4">
         {/* Top Return Button */}
         <div className="flex justify-start mb-6">

@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Target, Plus, TrendingUp, Calendar, Home, List, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import Navigation from "@/components/Navigation";
 import { CheckInScheduler } from "@/components/goals/CheckInScheduler";
 import { GoalStreakTracker } from "@/components/goals/GoalStreakTracker";
 import { MotivationalCard } from "@/components/goals/MotivationalCard";
@@ -42,7 +41,6 @@ const GoalsDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center h-64">
             <p className="text-muted-foreground">{t("common.loading")}</p>
@@ -54,8 +52,6 @@ const GoalsDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-8 space-y-6">
         {/* Header */}
         <div className="flex justify-between items-start flex-wrap gap-4">

@@ -8,7 +8,6 @@ import { useExpertDirectory } from "@/hooks/useExpertDirectory";
 import { SPECIALTIES } from "@/types/experts";
 import { Search, MapPin, Star, Award, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Navigation from "@/components/Navigation";
 
 export default function ExpertDirectory() {
   const navigate = useNavigate();
@@ -29,7 +28,6 @@ export default function ExpertDirectory() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container py-8 space-y-6">
       {/* Hero Section - User Focused */}
       <div className="text-center space-y-6 mb-12">

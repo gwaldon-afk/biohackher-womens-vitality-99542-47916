@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAchievements } from "@/hooks/useAchievements";
@@ -48,8 +47,6 @@ const Achievements = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">
