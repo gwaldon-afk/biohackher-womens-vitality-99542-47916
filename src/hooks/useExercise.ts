@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import type { CurrentLIS, ExerciseProtocolRowInput, UserMetadata } from "@/lib/exercise/engine";
+import type { CurrentLIS, ExerciseProtocolHistoryEntry, ExerciseProtocolRowInput, UserMetadata } from "@/lib/exercise/engine";
 import { generateDailyProtocol } from "@/lib/exercise/engine";
 
 export type ExerciseProtocolRow = ExerciseProtocolRowInput & {
@@ -26,6 +26,12 @@ function startOfTomorrowUtcISOString() {
   const now = new Date();
   const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0));
   return tomorrow.toISOString();
+}
+
+function startOfNDaysAgoUtcISOString(days: number) {
+  const now = new Date();
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - days, 0, 0, 0, 0));
+  return d.toISOString();
 }
 
 type UseExerciseArgs = {
@@ -113,12 +119,33 @@ export function useExercise({ currentLIS, cyclePhase, userMetadata }: UseExercis
     }
   }, [toast, user]);
 
+  const fetchRecentHistory = useCallback(async (): Promise<ExerciseProtocolHistoryEntry[]> => {
+    if (!user) return [];
+    try {
+      const start = startOfNDaysAgoUtcISOString(28);
+      const { data, error } = await (supabase as any)
+        .from("exercise_protocols")
+        .select("created_at,title,focus_area,instructions")
+        .eq("user_id", user.id)
+        .gte("created_at", start)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      return (data || []) as ExerciseProtocolHistoryEntry[];
+    } catch (e) {
+      console.error("[useExercise] history fetch error:", e);
+      return [];
+    }
+  }, [user]);
+
   const createTodaysProtocol = useCallback(async () => {
     if (!user) return null;
 
     setCreating(true);
     try {
-      const row: ExerciseProtocolRowInput = generateDailyProtocol(currentLIS, cyclePhase, userMetadata);
+      const history = await fetchRecentHistory();
+      const row: ExerciseProtocolRowInput = generateDailyProtocol(currentLIS, cyclePhase, userMetadata, { history });
 
       const insertPayload = {
         ...row,
@@ -145,7 +172,7 @@ export function useExercise({ currentLIS, cyclePhase, userMetadata }: UseExercis
     } finally {
       setCreating(false);
     }
-  }, [currentLIS, cyclePhase, toast, user, userMetadata]);
+  }, [currentLIS, cyclePhase, fetchRecentHistory, toast, user, userMetadata]);
 
   const ensureTodaysProtocol = useCallback(async () => {
     if (!user) return null;
