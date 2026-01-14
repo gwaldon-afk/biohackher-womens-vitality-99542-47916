@@ -9,7 +9,11 @@ import { useRef } from "react";
 const TestimonialCarousel = () => {
   const { t } = useTranslation();
   const plugin = useRef(
-    Autoplay({ delay: 7000, stopOnInteraction: true })
+    Autoplay({ 
+      delay: 7000, 
+      stopOnInteraction: false,
+      stopOnMouseEnter: true 
+    })
   );
 
   const testimonials = [
@@ -40,6 +44,7 @@ const TestimonialCarousel = () => {
     <div className="max-w-4xl mx-auto">
       <Carousel
         plugins={[plugin.current]}
+        opts={{ loop: true }}
         className="w-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.reset}
