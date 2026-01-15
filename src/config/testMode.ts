@@ -10,7 +10,14 @@
  * Change TEST_MODE_ENABLED = true to TEST_MODE_ENABLED = false
  */
 
-export const TEST_MODE_ENABLED = true;
+/**
+ * Test mode should never be enabled in production builds.
+ *
+ * - In Vitest, we enable it automatically to avoid real network calls.
+ * - In local dev, you can opt-in by setting `VITE_TEST_MODE_ENABLED=true`.
+ */
+const isVitest = import.meta.env.MODE === "test" || !!import.meta.env.VITEST;
+export const TEST_MODE_ENABLED = isVitest || import.meta.env.VITE_TEST_MODE_ENABLED === "true";
 
 // Mock user data for testing - using valid UUID format
 export const MOCK_USER = {

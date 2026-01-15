@@ -15,6 +15,12 @@ export interface SubscriptionData {
   last_submission_date?: string;
 }
 
+const getTrialDays = (): number => {
+  const raw = import.meta.env.VITE_TRIAL_DAYS;
+  const parsed = raw ? Number(raw) : NaN;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 7;
+};
+
 // Mock subscription for test mode - reads from localStorage tier selection
 const getMockSubscription = (): SubscriptionData | null => {
   const selectedTier = localStorage.getItem('testModeTier') || 'premium';
@@ -39,6 +45,46 @@ export const useSubscription = () => {
   );
   const [loading, setLoading] = useState(!TEST_MODE_ENABLED);
 
+  const normalize = (row: any): SubscriptionData => {
+    return {
+      ...(row as SubscriptionData),
+      daily_submissions_count: (row?.daily_submissions_count ?? 0) as number,
+    };
+  };
+
+  const ensureSubscriptionExists = async (userId: string): Promise<SubscriptionData> => {
+    const trialDays = getTrialDays();
+    const now = new Date();
+    const trialEnd = new Date(now.getTime() + trialDays * 24 * 60 * 60 * 1000);
+
+    const { data, error } = await supabase
+      .from('user_subscriptions')
+      .insert({
+        user_id: userId,
+        subscription_tier: 'registered',
+        subscription_status: 'trialing',
+        trial_start_date: now.toISOString(),
+        trial_end_date: trialEnd.toISOString(),
+        daily_submissions_count: 0,
+      })
+      .select('*')
+      .single();
+
+    if (error) {
+      // Likely a race (unique constraint) — refetch and return.
+      const { data: existing, error: refetchError } = await supabase
+        .from('user_subscriptions')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (refetchError) throw refetchError;
+      if (existing) return existing as SubscriptionData;
+      throw error;
+    }
+
+    return normalize(data);
+  };
+
   const fetchSubscription = async () => {
     // Skip fetching in test mode - use mock subscription based on selected tier
     if (TEST_MODE_ENABLED) {
@@ -61,7 +107,13 @@ export const useSubscription = () => {
         .maybeSingle();
 
       if (error) throw error;
-      setSubscription(data);
+      if (!data) {
+        const created = await ensureSubscriptionExists(user.id);
+        setSubscription(created);
+        return;
+      }
+
+      setSubscription(normalize(data));
     } catch (error) {
       console.error('Error fetching subscription:', error);
     } finally {
