@@ -2,6 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Lock, Utensils, Calendar, ChevronRight } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
 import { CategoryCardGrid, CategoryCardData } from "@/components/today/CategoryCardGrid";
@@ -15,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useGoals } from "@/hooks/useGoals";
 import { toast } from "sonner";
 import { SAMPLE_DAILY_ACTIONS, SAMPLE_GOALS } from "@/data/sampleDailyPlan";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getTodaysQuote } from "@/data/femaleLongevityQuotes";
 import ScienceBackedIcon from "@/components/ScienceBackedIcon";
 import { useCart } from "@/hooks/useCart";
@@ -32,6 +33,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 import { useTranslation } from 'react-i18next';
 import { calculateAdherenceScore, persistAdherenceScore } from '@/services/adherenceScoreService';
+import { getCheckinForDate, getCheckinSettings, getLocalDateString } from "@/lib/checkin/checkinStorage";
+import { normalizeCheckin } from "@/lib/checkin/normalizeCheckin";
+import { derivePlanModifiers } from "@/lib/checkin/derivePlanModifiers";
 
 const TAP_HINT_KEY = 'today_row_tap_hint_shown';
 const FILTER_VIEW_KEY = 'today_filter_view';
@@ -48,6 +52,7 @@ export const UnifiedDailyChecklist = () => {
   const { currentScore: sustainedLIS, refetch: refetchLIS } = useLISData();
   const { preferences: nutritionPrefs, isLoading: nutritionLoading } = useNutritionPreferences();
   const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
+  const todayKey = useMemo(() => getLocalDateString(), []);
   
   // Adherence state
   const [adherencePercent, setAdherencePercent] = useState<number | null>(null);
@@ -81,6 +86,25 @@ export const UnifiedDailyChecklist = () => {
     enabled: !!user?.id,
   });
 
+  const {
+    data: todayCheckin,
+    isLoading: checkinLoading,
+    isError: checkinError,
+  } = useQuery({
+    queryKey: ["daily-checkin", user?.id, todayKey],
+    queryFn: () => getCheckinForDate(user!.id, todayKey),
+    enabled: !!user?.id,
+  });
+  const {
+    data: checkinSettings,
+    isLoading: settingsLoading,
+    isError: settingsError,
+  } = useQuery({
+    queryKey: ["daily-checkin-settings", user?.id],
+    queryFn: () => getCheckinSettings(user!.id),
+    enabled: !!user?.id,
+  });
+
   // Mutation for completing nutrition actions
   const completeActionMutation = useMutation({
     mutationFn: ({ actionId, completed }: { actionId: string; completed: boolean }) => {
@@ -96,8 +120,10 @@ export const UnifiedDailyChecklist = () => {
   });
   
   const isUsingSampleData = !loading && userActions.length === 0;
-  const actions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
+  const baseActions = isUsingSampleData ? SAMPLE_DAILY_ACTIONS : userActions;
   const [sampleCompletedIds, setSampleCompletedIds] = useState<Set<string>>(new Set());
+  const [checkinMicroCompleted, setCheckinMicroCompleted] = useState<Set<string>>(new Set());
+  const [showAllOptional, setShowAllOptional] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<any>(null);
   const [mealModalOpen, setMealModalOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
@@ -106,9 +132,117 @@ export const UnifiedDailyChecklist = () => {
   // State for category card grid drawer
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+
+  const checkinMicroKey = user ? `checkin_micro_actions_${user.id}_${todayKey}` : null;
+  const microActionId = useMemo(() => `checkin-breathwork-${todayKey}`, [todayKey]);
+  const isTailored =
+    !!todayCheckin &&
+    todayCheckin.skipped === false &&
+    checkinSettings?.enabled !== false &&
+    !settingsLoading &&
+    !checkinError &&
+    !settingsError;
+  const normalizedCheckin = useMemo(() => {
+    if (!isTailored || !todayCheckin) return null;
+    return normalizeCheckin(
+      {
+        moodScore: todayCheckin.mood_score ?? null,
+        sleepQualityScore: todayCheckin.sleep_quality_score ?? null,
+        sleepHours: todayCheckin.sleep_hours ?? null,
+        sleepHoursTouched: todayCheckin.sleep_hours !== null,
+        stressLevel: todayCheckin.stress_level ?? null,
+        energyLevel: todayCheckin.energy_level ?? null,
+        contextTags: todayCheckin.context_tags ?? [],
+        userNote: todayCheckin.user_note ?? "",
+      },
+      todayKey,
+    );
+  }, [isTailored, todayCheckin, todayKey]);
+  const modifiers = useMemo(
+    () => (normalizedCheckin ? derivePlanModifiers(normalizedCheckin) : null),
+    [normalizedCheckin],
+  );
+
+  useEffect(() => {
+    if (!checkinMicroKey) return;
+    const stored = localStorage.getItem(checkinMicroKey);
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        setCheckinMicroCompleted(new Set(parsed));
+      }
+    } catch {
+      setCheckinMicroCompleted(new Set());
+    }
+  }, [checkinMicroKey]);
+
+  useEffect(() => {
+    if (!modifiers?.time_budget_modifier_minutes || modifiers.time_budget_modifier_minutes >= 0) {
+      setShowAllOptional(false);
+    }
+  }, [modifiers?.time_budget_modifier_minutes]);
   
-  const totalCount = isUsingSampleData ? SAMPLE_DAILY_ACTIONS.length : userTotalCount;
-  const completedCount = isUsingSampleData ? sampleCompletedIds.size : userCompletedCount;
+  const actions = useMemo(() => {
+    let list = [...baseActions];
+
+    if (modifiers?.add_micro_actions?.includes("breathwork_5min")) {
+      const microAction = {
+        id: microActionId,
+        type: "habit",
+        title: "5-min breathwork",
+        description: null,
+        category: "deep_practice",
+        estimatedMinutes: 5,
+        priority: 0,
+        icon: "🫁",
+        completed: checkinMicroCompleted.has(microActionId),
+        itemType: "habit",
+      };
+      list = [microAction, ...list];
+    }
+
+    if (modifiers?.exercise_constraint === "avoid_impact") {
+      list = list.map((action: any) => {
+        const isExercise =
+          action.itemType === "exercise" || action.category === "exercise" || action.type === "workout";
+        if (!isExercise) return action;
+        const note = "Low-impact today";
+        const nextDescription = action.description ? `${action.description} • ${note}` : note;
+        return { ...action, description: nextDescription };
+      });
+    }
+
+    if (modifiers?.focus === "recovery" || modifiers?.focus === "stress_support") {
+      const isRecoveryItem = (action: any) => {
+        const title = (action.title || "").toLowerCase();
+        return (
+          action.category === "deep_practice" ||
+          action.itemType === "therapy" ||
+          title.includes("breath") ||
+          title.includes("sleep")
+        );
+      };
+      list = [...list].sort((a, b) => Number(isRecoveryItem(b)) - Number(isRecoveryItem(a)));
+    }
+
+    if (modifiers?.time_budget_modifier_minutes && modifiers.time_budget_modifier_minutes < 0 && !showAllOptional) {
+      const limit = 6;
+      const mustDo = list.filter((action: any) => action.category !== "optional");
+      const optional = list.filter((action: any) => action.category === "optional");
+      list = mustDo.length >= limit ? mustDo : [...mustDo, ...optional.slice(0, limit - mustDo.length)];
+    }
+
+    return list;
+  }, [baseActions, modifiers, showAllOptional, microActionId, checkinMicroCompleted]);
+
+  const totalCount = actions.length;
+  const completedCount = actions.filter((action: any) => {
+    if (action.id.startsWith("checkin-")) {
+      return checkinMicroCompleted.has(action.id);
+    }
+    return action.completed;
+  }).length;
   
   const todaysQuote = getTodaysQuote();
   const today = new Date();
@@ -146,7 +280,25 @@ export const UnifiedDailyChecklist = () => {
     }
   }, [actions.length, t]);
 
+  const persistCheckinMicro = (next: Set<string>) => {
+    if (!checkinMicroKey) return;
+    localStorage.setItem(checkinMicroKey, JSON.stringify(Array.from(next)));
+  };
+
   const handleToggle = async (actionId: string) => {
+    if (actionId.startsWith("checkin-")) {
+      setCheckinMicroCompleted((prev) => {
+        const next = new Set(prev);
+        if (next.has(actionId)) {
+          next.delete(actionId);
+        } else {
+          next.add(actionId);
+        }
+        persistCheckinMicro(next);
+        return next;
+      });
+      return;
+    }
     if (isUsingSampleData) {
       setSampleCompletedIds(prev => {
         const next = new Set(prev);
@@ -363,6 +515,9 @@ export const UnifiedDailyChecklist = () => {
   };
 
   const getItemCompleted = (actionId: string) => {
+    if (actionId.startsWith("checkin-")) {
+      return checkinMicroCompleted.has(actionId);
+    }
     if (isUsingSampleData) {
       return sampleCompletedIds.has(actionId);
     }
@@ -416,7 +571,7 @@ export const UnifiedDailyChecklist = () => {
   }
 
   // Show message when user has no active protocol items
-  if (user && !loading && actions.length === 0) {
+  if (user && !loading && baseActions.length === 0) {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center py-12 space-y-4">
@@ -453,6 +608,13 @@ export const UnifiedDailyChecklist = () => {
     setExerciseModalOpen(true);
   };
 
+  const fullListCount =
+    modifiers?.add_micro_actions?.includes("breathwork_5min") ? baseActions.length + 1 : baseActions.length;
+  const hiddenCount =
+    modifiers?.time_budget_modifier_minutes && modifiers.time_budget_modifier_minutes < 0 && !showAllOptional
+      ? Math.max(0, fullListCount - actions.length)
+      : 0;
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Date & Quote Header */}
@@ -482,6 +644,24 @@ export const UnifiedDailyChecklist = () => {
             </div>
           )}
         </div>
+        {modifiers && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="secondary" className="w-fit">
+                  {t("today.tailored.badge")}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>{t("today.tailored.tooltip")}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+        {modifiers?.intensity_modifier < 0 && (
+          <p className="text-sm text-muted-foreground">{modifiers.reasoning_short}</p>
+        )}
+        {(checkinLoading || settingsLoading) && (
+          <p className="text-xs text-muted-foreground">{t("common.loading")}</p>
+        )}
         {/* Motivational Quote - Compact */}
         <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/70 p-4 shadow-md">
           <div className="relative flex items-center gap-3 text-center justify-center">
@@ -556,6 +736,14 @@ export const UnifiedDailyChecklist = () => {
               {t('today.guest.alreadyAccount')} <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">{t('today.guest.signIn')}</button>
             </p>
           </div>
+        </div>
+      )}
+
+      {hiddenCount > 0 && (
+        <div className="flex justify-end">
+          <Button variant="ghost" size="sm" onClick={() => setShowAllOptional(true)}>
+            More (optional)
+          </Button>
         </div>
       )}
 
