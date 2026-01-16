@@ -30,31 +30,3 @@ export const normalizeCheckin = (
     user_note: input.userNote?.trim() ? input.userNote.trim() : null,
   };
 };
-import type { NormalizedDailyCheckin } from "@/lib/checkin/types";
-
-export type RawDailyCheckinAnswers = {
-  moodScore: number | null;
-  sleepQualityScore: number | null;
-  sleepHours: number | null;
-  sleepHoursTouched?: boolean;
-  stressLevel: number | null;
-  energyLevel: number | null;
-  contextTags: string[];
-  userNote: string;
-};
-
-export const normalizeCheckin = (
-  answers: RawDailyCheckinAnswers,
-  date: string,
-): NormalizedDailyCheckin => {
-  return {
-    date,
-    mood_score: answers.moodScore ?? 0,
-    sleep_quality_score: answers.sleepQualityScore ?? 0,
-    sleep_hours: answers.sleepHoursTouched ? answers.sleepHours ?? null : null,
-    stress_level: answers.stressLevel ?? 0,
-    energy_level: answers.energyLevel ?? 0,
-    context_tags: answers.contextTags ?? [],
-    user_note: answers.userNote ? answers.userNote : null,
-  };
-};
