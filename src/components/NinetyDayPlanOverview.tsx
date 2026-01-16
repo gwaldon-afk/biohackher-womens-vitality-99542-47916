@@ -50,7 +50,12 @@ export const NinetyDayPlanOverview = () => {
     if (!user) return;
     
     try {
-      const protocolIds = protocols.map(p => p.id);
+      const protocolIds = protocols.filter(p => p.is_active).map(p => p.id);
+      if (protocolIds.length === 0) {
+        setProtocolItems([]);
+        setItemsLoading(false);
+        return;
+      }
       const { data: items, error } = await supabase
         .from('protocol_items')
         .select('id, name, priority_tier, impact_weight, is_active, included_in_plan, item_type')
