@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0.0",
+  "feature": "daily_checkin",
+  "description": "Subjective, conversational daily check-in used to tailor the Today Plan. No wearables or biometric inputs.",
+  "defaults": {
+    "enabled": true,
+    "allow_skip": true,
+    "allow_disable": true,
+    "max_duration_seconds": 45
+  },
+  "ui": {
+    "entry_point": "today_page_modal",
+    "style": "warm_supportive",
+    "progress": "dots",
+    "max_free_text_chars": 140
+  },
+  "questions": [
+    {
+      "id": "mood",
+      "order": 10,
+      "enabled": true,
+      "required": true,
+      "type": "single_select",
+      "prompt_key": "checkin.q1.prompt",
+      "response": {
+        "presentation": "chips",
+        "options": [
+          { "id": "great", "score": 5 },
+          { "id": "good", "score": 4 },
+          { "id": "okay", "score": 3 },
+          { "id": "flat", "score": 2 },
+          { "id": "rough", "score": 1 }
+        ]
+      },
+      "storage": {
+        "field": "mood_score",
+        "type": "int",
+        "range": [1, 5]
+      }
+    },
+    {
+      "id": "sleep_quality",
+      "order": 20,
+      "enabled": true,
+      "required": true,
+      "type": "single_select",
+      "prompt_key": "checkin.q2.prompt",
+      "response": {
+        "presentation": "chips",
+        "options": [
+          { "id": "great", "score": 3 },
+          { "id": "ok", "score": 2 },
+          { "id": "poor", "score": 1 }
+        ]
+      },
+      "storage": {
+        "field": "sleep_quality_score",
+        "type": "int",
+        "range": [1, 3]
+      },
+      "subquestion": {
+        "id": "sleep_hours",
+        "enabled": true,
+        "required": false,
+        "type": "slider",
+        "prompt_key": "checkin.q2.subprompt",
+        "response": {
+          "min": 0,
+          "max": 10,
+          "step": 0.5
+        },
+        "storage": {
+          "field": "sleep_hours",
+          "type": "float",
+          "range": [0, 10]
+        }
+      }
+    },
+    {
+      "id": "stress",
+      "order": 30,
+      "enabled": true,
+      "required": true,
+      "type": "scale",
+      "prompt_key": "checkin.q3.prompt",
+      "response": {
+        "presentation": "slider",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      "storage": {
+        "field": "stress_level",
+        "type": "int",
+        "range": [1, 5]
+      }
+    },
+    {
+      "id": "energy",
+      "order": 40,
+      "enabled": true,
+      "required": true,
+      "type": "scale",
+      "prompt_key": "checkin.q4.prompt",
+      "response": {
+        "presentation": "slider",
+        "min": 1,
+        "max": 5,
+        "step": 1
+      },
+      "storage": {
+        "field": "energy_level",
+        "type": "int",
+        "range": [1, 5]
+      }
+    },
+    {
+      "id": "notes",
+      "order": 50,
+      "enabled": true,
+      "required": false,
+      "type": "free_text",
+      "prompt_key": "checkin.q5.prompt",
+      "response": {
+        "max_chars": 140
+      },
+      "storage": {
+        "field": "user_note",
+        "type": "string",
+        "max_length": 140
+      }
+    },
+    {
+      "id": "context_tags",
+      "order": 60,
+      "enabled": true,
+      "required": false,
+      "type": "multi_select",
+      "prompt_key": "checkin.q6.prompt",
+      "response": {
+        "max_selected": 3,
+        "options": [
+          "period",
+          "headache",
+          "injury",
+          "travel",
+          "late_night",
+          "big_work_day",
+          "bloat"
+        ]
+      },
+      "storage": {
+        "field": "context_tags",
+        "type": "string_array",
+        "max_items": 3
+      }
+    }
+  ],
+  "normalization": {
+    "output_shape": {
+      "date": "YYYY-MM-DD",
+      "mood_score": "int",
+      "sleep_quality_score": "int",
+      "sleep_hours": "float|null",
+      "stress_level": "int",
+      "energy_level": "int",
+      "context_tags": "string[]",
+      "user_note": "string|null"
+    }
+  },
+  "plan_modifiers_contract": {
+    "version": "1.0.0",
+    "output_shape": {
+      "intensity_modifier": "int(-2..+2)",
+      "focus": "string|null",
+      "time_budget_modifier_minutes": "int|null",
+      "exercise_constraint": "string|null",
+      "add_micro_actions": "string[]",
+      "reasoning_short": "string"
+    }
+  },
+  "ai_contract": {
+    "enabled": false,
+    "notes": "AI modifiers will be introduced in P1. P0 uses rules-based modifiers only."
+  }
+}
