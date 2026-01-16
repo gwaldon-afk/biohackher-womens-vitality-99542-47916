@@ -18,7 +18,14 @@ import MealPlanProtocolCard from "@/components/MealPlanProtocolCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProtocolBuilderDialog } from "@/components/ProtocolBuilderDialog";
 import { AdherenceCalendar } from "@/components/AdherenceCalendar";
-import { useAssessments, useProtocols, useMultipleProtocolItems, useDeleteProtocol, useUpdateProtocol } from "@/queries";
+import {
+  useAssessments,
+  useProtocols,
+  useMultipleProtocolItems,
+  useProtocolItemSourceIds,
+  useDeleteProtocol,
+  useUpdateProtocol
+} from "@/queries";
 import { ProtocolSkeleton } from "@/components/skeletons/ProtocolSkeleton";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Protocol } from "@/types/protocols";
@@ -63,6 +70,9 @@ const MyProtocol = () => {
   
   // URL-based source filtering
   const sourceFilter = searchParams.get('source');
+  const assessmentSourceType = searchParams.get('assessment_type');
+  const assessmentSourceId = searchParams.get('assessment_id');
+  const hasAssessmentFilter = !!assessmentSourceType && !!assessmentSourceId;
   
   // Recommended tab filters and sorting
   const [recommendedSourceFilter, setRecommendedSourceFilter] = useState<string>('all');
@@ -193,6 +203,15 @@ const MyProtocol = () => {
   
   // Fetch items for all active protocols in a single query
   const { data: allProtocolItems = [], isLoading: loadingItems } = useMultipleProtocolItems(activeProtocolIds);
+  const { data: scopedItemIds = [], isLoading: loadingSourceItems } = useProtocolItemSourceIds(
+    assessmentSourceType,
+    assessmentSourceId
+  );
+
+  const filteredProtocolItems = hasAssessmentFilter
+    ? allProtocolItems.filter((item) => scopedItemIds.includes(item.id))
+    : allProtocolItems;
+  const displayProtocolItems = hasAssessmentFilter ? filteredProtocolItems : allProtocolItems;
 
   // Fetch bundle calculation for active protocol
   const { data: bundleCalculation, isLoading: bundleLoading } = useProtocolBundle(activeProtocol?.id);
@@ -205,7 +224,7 @@ const MyProtocol = () => {
     return acc;
   }, []) || [];
 
-  const isLoading = loadingProtocols || loadingAssessments || loadingItems;
+  const isLoading = loadingProtocols || loadingAssessments || loadingItems || (hasAssessmentFilter && loadingSourceItems);
 
   // Get all product recommendations across all assessments
   const allRecommendations = uniqueAssessments.flatMap(assessment => {
@@ -667,9 +686,25 @@ const MyProtocol = () => {
                 </AlertDescription>
               </Alert>
             )}
+            {hasAssessmentFilter && (
+              <Alert className="border-primary/30 bg-primary/5">
+                <AlertDescription className="flex items-center justify-between">
+                  <span>
+                    Filtered by assessment {assessmentSourceType}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/my-protocol?tab=active')}
+                  >
+                    {t('myProtocol.showAll')}
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* Protocol Bundle Card */}
-            {activeProtocols.length > 0 && allProtocolItems.length > 0 && (
+            {activeProtocols.length > 0 && displayProtocolItems.length > 0 && (
               <ProtocolBundleCard
                 protocolName={activeProtocol?.name || "My Protocol"}
                 bundleCalculation={bundleCalculation || null}
@@ -701,9 +736,9 @@ const MyProtocol = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {loadingItems ? (
+                    {loadingItems || (hasAssessmentFilter && loadingSourceItems) ? (
                       <p className="text-muted-foreground">{t('myProtocol.activeProtocol.loading')}</p>
-                    ) : allProtocolItems.length === 0 ? (
+                    ) : displayProtocolItems.length === 0 ? (
                       <div className="text-center py-8">
                         <p className="text-muted-foreground mb-4">{t('myProtocol.activeProtocol.noItems')}</p>
                         <p className="text-sm text-muted-foreground">
@@ -713,12 +748,12 @@ const MyProtocol = () => {
                     ) : (
                       <>
                         {/* Meal Plans - Display at top if present */}
-                        {allProtocolItems.some(item => item.item_type === 'diet' && item.meal_template_id) && (
+                        {displayProtocolItems.some(item => item.item_type === 'diet' && item.meal_template_id) && (
                           <div className="space-y-2">
                             <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
                               🍽️ Your Meal Plan
                             </h3>
-                            {allProtocolItems
+                            {displayProtocolItems
                               .filter(item => item.item_type === 'diet' && item.meal_template_id)
                               .map(item => (
                                 <MealPlanProtocolCard 
@@ -734,7 +769,7 @@ const MyProtocol = () => {
 
                         {/* Organize by item type with Brand Pillar logos */}
                         {['supplement', 'diet', 'exercise', 'therapy', 'habit'].map((type) => {
-                          const itemsOfType = allProtocolItems.filter(
+                          const itemsOfType = displayProtocolItems.filter(
                             item => item.is_active && item.item_type === type && !(type === 'diet' && item.meal_template_id)
                           );
                           

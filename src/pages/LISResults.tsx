@@ -306,7 +306,7 @@ const LISResults = () => {
       });
 
       setProtocolDialogOpen(false);
-      navigate('/my-protocol');
+      navigate(`/my-protocol?tab=active&assessment_type=lis&assessment_id=${encodeURIComponent('lis-baseline')}`);
     } catch (error: any) {
       console.error('Error saving protocol:', error);
       toast({

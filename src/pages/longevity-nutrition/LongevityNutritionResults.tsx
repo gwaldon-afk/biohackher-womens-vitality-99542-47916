@@ -573,7 +573,8 @@ export default function LongevityNutritionResults() {
       });
 
       setProtocolDialogOpen(false);
-      navigate('/my-protocol');
+      const sourceAssessmentId = assessment?.id || currentRecommendationId;
+      navigate(`/my-protocol?tab=active&assessment_type=nutrition&assessment_id=${encodeURIComponent(sourceAssessmentId)}`);
     } catch (error) {
       console.error('Error saving protocol selection:', error);
       toast({

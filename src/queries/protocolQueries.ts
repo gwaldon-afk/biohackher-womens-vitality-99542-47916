@@ -12,6 +12,8 @@ export const protocolKeys = {
   list: (userId: string) => [...protocolKeys.lists(), userId] as const,
   items: (protocolId: string) => [...protocolKeys.all, 'items', protocolId] as const,
   completions: (userId: string, date: string) => [...protocolKeys.all, 'completions', userId, date] as const,
+  itemSources: (sourceType: string, sourceAssessmentId: string) =>
+    [...protocolKeys.all, 'item-sources', sourceType, sourceAssessmentId] as const,
 };
 
 // Fetch all protocols for a user
@@ -84,6 +86,33 @@ export function useMultipleProtocolItems(protocolIds: string[]) {
       return (data || []) as ProtocolItem[];
     },
     enabled: protocolIds.length > 0,
+    staleTime: 30000,
+  });
+}
+
+// Fetch protocol item ids by assessment provenance
+export function useProtocolItemSourceIds(
+  sourceType: string | null,
+  sourceAssessmentId: string | null
+) {
+  return useQuery({
+    queryKey:
+      sourceType && sourceAssessmentId
+        ? protocolKeys.itemSources(sourceType, sourceAssessmentId)
+        : [...protocolKeys.all, 'item-sources', 'none'],
+    queryFn: async () => {
+      if (!sourceType || !sourceAssessmentId) return [];
+
+      const { data, error } = await supabase
+        .from('protocol_item_sources')
+        .select('protocol_item_id')
+        .eq('source_type', sourceType)
+        .eq('source_assessment_id', sourceAssessmentId);
+
+      if (error) throw error;
+      return (data || []).map((row) => row.protocol_item_id);
+    },
+    enabled: !!sourceType && !!sourceAssessmentId,
     staleTime: 30000,
   });
 }

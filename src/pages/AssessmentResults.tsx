@@ -589,7 +589,7 @@ const AssessmentResults = () => {
       });
 
       setProtocolDialogOpen(false);
-      navigate('/my-protocol');
+      navigate(`/my-protocol?tab=active&assessment_type=symptom&assessment_id=${encodeURIComponent(symptomId)}`);
     } catch (error: any) {
       console.error('Error saving protocol:', error);
       toast({

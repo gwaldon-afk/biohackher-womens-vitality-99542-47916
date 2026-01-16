@@ -357,7 +357,15 @@ export const InlineProtocolPreview = ({
           </div>
           <h3 className="font-semibold text-lg mb-2">{t('inlineProtocol.savedTitle')}</h3>
           <p className="text-muted-foreground text-sm mb-4">{t('inlineProtocol.savedDesc')}</p>
-          <Button onClick={() => navigate('/my-protocol')}>
+          <Button
+            onClick={() =>
+              navigate(
+                `/my-protocol?tab=active&assessment_type=${sourceType}&assessment_id=${encodeURIComponent(
+                  sourceAssessmentId
+                )}`
+              )
+            }
+          >
             {t('inlineProtocol.viewProtocol')}
           </Button>
         </CardContent>
