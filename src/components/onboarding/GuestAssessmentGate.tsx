@@ -50,8 +50,17 @@ export const GuestAssessmentGate = ({ isOpen, onClose, assessmentName }: GuestAs
             {t('onboarding.guestGate.title')}
           </DialogTitle>
           <DialogDescription className="text-center text-base">
-            {t('onboarding.guestGate.description', { assessment: assessmentName || t('onboarding.guestGate.anotherAssessment') })}
+            {t(
+              'onboarding.guestGate.description',
+              { assessment: assessmentName || t('onboarding.guestGate.anotherAssessment') },
+            )}
           </DialogDescription>
+          <p className="text-center text-sm text-muted-foreground">
+            {t(
+              'onboarding.guestGate.limitMessage',
+              "You've used your free assessment. Create an account to unlock more.",
+            )}
+          </p>
         </DialogHeader>
 
         <div className="space-y-4 py-4">

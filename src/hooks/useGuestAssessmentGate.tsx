@@ -1,57 +1,58 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
-const GUEST_ASSESSMENT_COUNT_KEY = 'guest_assessment_count';
-const GUEST_FIRST_ASSESSMENT_KEY = 'guest_first_assessment_type';
+const GUEST_ASSESSMENT_COMPLETED_KEY = 'guest_assessment_completed';
+const GUEST_ASSESSMENT_COMPLETED_TYPE_KEY = 'guest_assessment_completed_type';
+const GUEST_ASSESSMENT_COMPLETED_AT_KEY = 'guest_assessment_completed_at';
+const LEGACY_GUEST_ASSESSMENT_COUNT_KEY = 'guest_assessment_count';
 
 export const useGuestAssessmentGate = () => {
   const { user } = useAuth();
   const [showGate, setShowGate] = useState(false);
   const [attemptedAssessment, setAttemptedAssessment] = useState<string>('');
 
-  // Get the count of completed guest assessments
-  const getGuestAssessmentCount = useCallback((): number => {
-    const count = localStorage.getItem(GUEST_ASSESSMENT_COUNT_KEY);
-    return count ? parseInt(count, 10) : 0;
+  const getGuestCompletion = useCallback((): {
+    completed: boolean;
+    type: string | null;
+    completedAt: string | null;
+  } => {
+    const completed = localStorage.getItem(GUEST_ASSESSMENT_COMPLETED_KEY) === 'true';
+    const type = localStorage.getItem(GUEST_ASSESSMENT_COMPLETED_TYPE_KEY);
+    const completedAt = localStorage.getItem(GUEST_ASSESSMENT_COMPLETED_AT_KEY);
+
+    if (completed) {
+      return { completed, type, completedAt };
+    }
+
+    // Legacy fallback: treat any prior guest count as completed.
+    const legacyCount = localStorage.getItem(LEGACY_GUEST_ASSESSMENT_COUNT_KEY);
+    if (legacyCount && parseInt(legacyCount, 10) > 0) {
+      return { completed: true, type, completedAt };
+    }
+
+    return { completed: false, type: null, completedAt: null };
   }, []);
 
-  // Get the first assessment type completed by guest
-  const getFirstAssessmentType = useCallback((): string | null => {
-    return localStorage.getItem(GUEST_FIRST_ASSESSMENT_KEY);
-  }, []);
-
-  // Increment guest assessment count after completion
+  // Mark guest assessment completion (one total across all types)
   const recordGuestAssessment = useCallback((assessmentType: string) => {
     if (user) return; // Don't track for logged-in users
-    
-    const currentCount = getGuestAssessmentCount();
-    const newCount = currentCount + 1;
-    localStorage.setItem(GUEST_ASSESSMENT_COUNT_KEY, newCount.toString());
-    
-    // Store first assessment type
-    if (currentCount === 0) {
-      localStorage.setItem(GUEST_FIRST_ASSESSMENT_KEY, assessmentType);
-    }
-  }, [user, getGuestAssessmentCount]);
+    localStorage.setItem(GUEST_ASSESSMENT_COMPLETED_KEY, 'true');
+    localStorage.setItem(GUEST_ASSESSMENT_COMPLETED_TYPE_KEY, assessmentType);
+    localStorage.setItem(GUEST_ASSESSMENT_COMPLETED_AT_KEY, new Date().toISOString());
+  }, [user]);
 
-  // Check if guest should be gated from starting another assessment
+  // Check if guest should be gated from starting any assessment
   const checkGuestGate = useCallback((assessmentType: string): boolean => {
     if (user) return false; // No gate for logged-in users
-    
-    const count = getGuestAssessmentCount();
-    const firstType = getFirstAssessmentType();
-    
-    // Allow if no assessments completed yet
-    if (count === 0) return false;
-    
-    // Allow if trying to retake the same assessment they already did
-    if (firstType === assessmentType) return false;
-    
-    // Gate if trying a different assessment after completing one
+    const completion = getGuestCompletion();
+
+    if (!completion.completed) return false;
+
+    // Gate any new assessment once a guest has completed one.
     setAttemptedAssessment(assessmentType);
     setShowGate(true);
     return true;
-  }, [user, getGuestAssessmentCount, getFirstAssessmentType]);
+  }, [user, getGuestCompletion]);
 
   // Close the gate modal
   const closeGate = useCallback(() => {
@@ -61,8 +62,10 @@ export const useGuestAssessmentGate = () => {
 
   // Clear guest assessment tracking (e.g., after registration)
   const clearGuestTracking = useCallback(() => {
-    localStorage.removeItem(GUEST_ASSESSMENT_COUNT_KEY);
-    localStorage.removeItem(GUEST_FIRST_ASSESSMENT_KEY);
+    localStorage.removeItem(GUEST_ASSESSMENT_COMPLETED_KEY);
+    localStorage.removeItem(GUEST_ASSESSMENT_COMPLETED_TYPE_KEY);
+    localStorage.removeItem(GUEST_ASSESSMENT_COMPLETED_AT_KEY);
+    localStorage.removeItem(LEGACY_GUEST_ASSESSMENT_COUNT_KEY);
   }, []);
 
   return {
@@ -72,6 +75,6 @@ export const useGuestAssessmentGate = () => {
     recordGuestAssessment,
     closeGate,
     clearGuestTracking,
-    getGuestAssessmentCount,
+    getGuestCompletion,
   };
 };
