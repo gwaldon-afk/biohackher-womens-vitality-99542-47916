@@ -33,7 +33,18 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="h-2 w-32 bg-muted rounded-full overflow-hidden mx-auto">
+            <div className="h-full w-1/2 bg-primary animate-pulse" />
+          </div>
+          <p className="text-muted-foreground">
+            {t('common.redirectingToAuth', 'Redirecting to sign in...')}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;
