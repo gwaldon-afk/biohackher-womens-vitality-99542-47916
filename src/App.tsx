@@ -181,7 +181,16 @@ const App = () => (
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/pillars" element={<Pillars />} />
                     <Route path="/pillars-display" element={<PillarsDisplay />} />
-                    <Route path="/7-day-plan/:pillar" element={<ProtectedRoute><RequireHealthProfile><SevenDayPlan /></RequireHealthProfile></ProtectedRoute>} />
+                    <Route
+                      path="/7-day-plan/:pillar"
+                      element={
+                        <ProtectedRoute>
+                          <RequireHealthProfile>
+                            <SevenDayPlan />
+                          </RequireHealthProfile>
+                        </ProtectedRoute>
+                      }
+                    />
                     <Route path="/longevity-mindset-quiz" element={<LongevityMindsetQuiz />} />
                     <Route path="/brain-assessment" element={<BrainAssessment />} />
                     <Route path="/lis2-setup" element={<LIS2InitialAssessment />} />
