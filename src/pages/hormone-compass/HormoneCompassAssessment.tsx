@@ -164,7 +164,18 @@ export default function HormoneCompassAssessment() {
       if (!user) {
         // Record guest assessment completion for gate tracking
         recordGuestAssessment('hormone');
-        
+        const guestPayload = {
+          stage: result.stage,
+          confidence: result.confidence,
+          answers,
+          hormoneAge: hormoneAgeResult?.hormoneAge,
+          chronologicalAge: ageToUse,
+          ageOffset: hormoneAgeResult?.ageOffset,
+          severityScore: hormoneAgeResult?.severityScore,
+          completedAt: new Date().toISOString(),
+        };
+        localStorage.setItem('hormone_guest_result', JSON.stringify(guestPayload));
+
         // Guest flow - navigate with state
         navigate('/hormone-compass/results', {
           state: { 

@@ -93,6 +93,33 @@ export default function HormoneCompassResults() {
     ageOffset?: number;
     severityScore?: number;
   } || {};
+  const storedGuestResult = useMemo(() => {
+    if (user) return null;
+    try {
+      const raw = localStorage.getItem('hormone_guest_result');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }, [user]);
+  const guestResult = stateData?.stage ? stateData : storedGuestResult;
+
+  useEffect(() => {
+    if (user) return;
+    if (stateData?.stage) {
+      const payload = {
+        stage: stateData.stage,
+        confidence: stateData.confidence,
+        answers: stateData.answers,
+        hormoneAge: stateData.hormoneAge,
+        chronologicalAge: stateData.chronologicalAge,
+        ageOffset: stateData.ageOffset,
+        severityScore: stateData.severityScore,
+        completedAt: new Date().toISOString(),
+      };
+      localStorage.setItem('hormone_guest_result', JSON.stringify(payload));
+    }
+  }, [user, stateData]);
   
   // Calculate user age from health profile
   const userAge = profile?.date_of_birth 
@@ -118,13 +145,13 @@ export default function HormoneCompassResults() {
   });
 
   // Extract Hormone Age data from database or state
-  const hormoneAge = (assessmentData as any)?.hormone_age ?? stateData.hormoneAge;
-  const chronologicalAge = (assessmentData as any)?.chronological_age ?? stateData.chronologicalAge ?? userAge;
-  const ageOffset = (assessmentData as any)?.age_offset ?? stateData.ageOffset;
+  const hormoneAge = (assessmentData as any)?.hormone_age ?? guestResult?.hormoneAge;
+  const chronologicalAge = (assessmentData as any)?.chronological_age ?? guestResult?.chronologicalAge ?? userAge;
+  const ageOffset = (assessmentData as any)?.age_offset ?? guestResult?.ageOffset;
   const hasHormoneAge = hormoneAge !== null && hormoneAge !== undefined && chronologicalAge !== null;
 
-  const healthLevel = assessmentData?.stage || stateData.stage;
-  const confidence = assessmentData?.confidence_score || stateData.confidence;
+  const healthLevel = assessmentData?.stage || guestResult?.stage;
+  const confidence = assessmentData?.confidence_score || guestResult?.confidence;
 
   // Fetch products based on health level symptoms - ALWAYS call this hook
   const { data: recommendedProducts, isLoading: productsLoading } = useQuery({
@@ -138,7 +165,7 @@ export default function HormoneCompassResults() {
   });
 
   // Calculate domain scores and protocols - MUST be called before conditional returns
-  const assessmentAnswers = (stateData as any)?.answers || (assessmentData?.hormone_indicators as any)?.domainScores || {};
+  const assessmentAnswers = (guestResult as any)?.answers || (assessmentData?.hormone_indicators as any)?.domainScores || {};
   const domainScores = calculateDomainScores(assessmentAnswers);
   const protocol = generateHormoneProtocol(assessmentAnswers, domainScores);
   const symptomInsights = generateSymptomPatternAnalysis(assessmentAnswers, domainScores, userAge || undefined);
