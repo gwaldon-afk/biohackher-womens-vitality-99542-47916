@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { UnifiedDailyChecklist } from "@/components/today/UnifiedDailyChecklist";
 import { FirstTimeUserTourModal } from "@/components/onboarding/FirstTimeUserTourModal";
 import { OnboardingGoalPrompt } from "@/components/onboarding/OnboardingGoalPrompt";
+import { DailyCheckInEntry } from "@/components/checkin/DailyCheckInEntry";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
 import { supabase } from "@/integrations/supabase/client";
@@ -86,6 +87,7 @@ export default function MyDailyPlan() {
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
         <TrialCountdownBanner />
+        <DailyCheckInEntry />
         <UnifiedDailyChecklist />
       </main>
       <FirstTimeUserTourModal isOpen={showTour} onComplete={handleTourComplete} />

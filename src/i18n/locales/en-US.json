@@ -2997,5 +2997,96 @@
     "programSavedDescription": "Your exercise program has been set up and is ready to start.",
     "saveFailed": "Failed to save program. Please try again."
   },
+  "checkin": {
+    "welcome": {
+      "title": "Quick check-in",
+      "body": "Before we get started, let’s do a quick check-in so I can tailor today’s plan for you.",
+      "primary": "Tailor my plan",
+      "secondary": "Skip today",
+      "disable": "Turn off daily check-in",
+      "time_hint": "Takes about 30 seconds"
+    },
+    "q1": {
+      "prompt": "How are you feeling today?",
+      "options": {
+        "great": "😄 Feeling great",
+        "good": "🙂 Pretty good",
+        "okay": "😐 Okay",
+        "flat": "😕 A bit flat",
+        "rough": "😣 Rough day"
+      },
+      "helper": "No backstory needed — just how it feels right now."
+    },
+    "q2": {
+      "prompt": "How did you sleep?",
+      "options": {
+        "great": "Slept great",
+        "ok": "It was okay",
+        "poor": "Not great"
+      },
+      "subprompt": "Roughly how many hours?",
+      "subhelper": "Just a rough guess is fine."
+    },
+    "q3": {
+      "prompt": "How stressed do you feel right now?",
+      "options": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "helper": "This helps me pace today."
+    },
+    "q4": {
+      "prompt": "How’s your energy right now?",
+      "options": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "helper": "We’ll match the plan to what you’ve got."
+    },
+    "q5": {
+      "prompt": "Anything you want me to consider today?",
+      "placeholder": "Period day 1, sore knee, big meeting, headache…",
+      "helper": "Totally optional."
+    },
+    "q6": {
+      "prompt": "Anything relevant today?",
+      "options": {
+        "period": "Period / PMS",
+        "headache": "Headache",
+        "injury": "Sore / injured",
+        "travel": "Travel / jet lag",
+        "late_night": "Late night",
+        "big_work_day": "Big work day",
+        "bloat": "Feeling bloated"
+      }
+    },
+    "confirm": {
+      "title": "Got it 💛",
+      "body": "I’ll use this to tailor today’s plan — keeping things supportive, realistic, and in sync with how you’re feeling.",
+      "primary": "Show my plan"
+    },
+    "skip": {
+      "toast": "No worries — today’s plan is ready when you are."
+    },
+    "disable": {
+      "toast": "Daily check-in turned off. You can re-enable this anytime in settings."
+    },
+    "enable": {
+      "toast": "Daily check-in turned back on."
+    },
+    "fallback": {
+      "title": "Let’s reset",
+      "body": "We couldn’t load your check-in, but your plan is still available.",
+      "primary": "Show today’s plan"
+    }
+  },
+  "today": {
+    "tailored": {
+      "badge": "Tailored for today",
+      "tooltip": "Based on your check-in"
+    }
+  },
   "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }
 }
