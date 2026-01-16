@@ -3438,6 +3438,64 @@ export type Database = {
           },
         ]
       }
+      protocol_item_sources: {
+        Row: {
+          created_at: string | null
+          id: string
+          protocol_item_id: string
+          source_assessment_id: string
+          source_date: string | null
+          source_recommendation_id: string | null
+          source_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          protocol_item_id: string
+          source_assessment_id: string
+          source_date?: string | null
+          source_recommendation_id?: string | null
+          source_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          protocol_item_id?: string
+          source_assessment_id?: string
+          source_date?: string | null
+          source_recommendation_id?: string | null
+          source_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protocol_item_sources_protocol_item_id_fkey"
+            columns: ["protocol_item_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protocol_item_sources_source_recommendation_id_fkey"
+            columns: ["source_recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "protocol_recommendations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protocol_item_sources_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       protocol_items: {
         Row: {
           accessibility: string | null

@@ -22,6 +22,8 @@ import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
 import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 import { EmailShareDialog } from '@/components/EmailShareDialog';
 import { ProtocolSelectionDialog } from '@/components/ProtocolSelectionDialog';
+import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from '@/utils/protocolDuplicateCheck';
+import { upsertProtocolItemSourcesFromRecommendation } from '@/services/protocolItemSources';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFromAssessmentDialog';
 import ShopYourProtocolButton from '@/components/ShopYourProtocolButton';
@@ -203,24 +205,81 @@ const LISResults = () => {
         'optimization': 'supplement'
       };
 
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: itemTypeMap[item.category] || 'supplement'
+      }));
+
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      if (uniqueItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setProtocolDialogOpen(false);
+        return;
+      }
+
       // Insert selected protocol items
-      const protocolItems = selectedItems.map(item => ({
+      const protocolItems = uniqueItems.map(item => ({
         protocol_id: protocol.id,
         name: item.name,
         description: item.description,
         dosage: item.dosage || null,
         frequency: 'daily' as const,
         time_of_day: ['morning'],
-        item_type: itemTypeMap[item.category] || 'supplement',
+        item_type: item.item_type,
         category: item.category,
         display_order: 0
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedItems, error: itemsError } = await supabase
         .from('protocol_items')
-        .insert(protocolItems);
+        .insert(protocolItems)
+        .select('id');
 
       if (itemsError) throw itemsError;
+
+      const insertedIds = insertedItems?.map((item) => item.id) || [];
+      await upsertProtocolItemSourcesFromRecommendation({
+        userId: user.id,
+        recommendationId: currentRecommendationId,
+        protocolItemIds: insertedIds,
+      });
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+      }
 
       // Update recommendation status
       const allSelected = selectedItems.length === (

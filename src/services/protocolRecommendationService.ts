@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
-import { filterDuplicateItems } from '@/utils/protocolDuplicateCheck';
+import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from '@/utils/protocolDuplicateCheck';
+import { upsertProtocolItemSourcesFromRecommendation } from '@/services/protocolItemSources';
 
 export interface ProtocolRecommendation {
   immediate: any[];
@@ -118,6 +119,7 @@ export const acceptProtocolRecommendation = async (
     }));
 
     // Filter out duplicates
+    const existingItemsMap = await fetchExistingItemsMap(userId);
     const { uniqueItems, duplicateItems } = await filterDuplicateItems(userId, itemsWithType);
 
     if (uniqueItems.length === 0) {
@@ -143,11 +145,36 @@ export const acceptProtocolRecommendation = async (
     }));
 
     // Insert protocol items
-    const { error: itemsError } = await supabase
+    const { data: insertedItems, error: itemsError } = await supabase
       .from('protocol_items')
-      .insert(protocolItems);
+      .insert(protocolItems)
+      .select('id');
 
     if (itemsError) throw itemsError;
+
+    const insertedIds = insertedItems?.map((item) => item.id) || [];
+    await upsertProtocolItemSourcesFromRecommendation({
+      userId,
+      recommendationId,
+      protocolItemIds: insertedIds,
+    });
+
+    if (duplicateItems.length > 0) {
+      const duplicateIds = duplicateItems
+        .map((item) => {
+          const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+          return existingItemsMap.get(key);
+        })
+        .filter((id): id is string => !!id);
+
+      if (duplicateIds.length > 0) {
+        await upsertProtocolItemSourcesFromRecommendation({
+          userId,
+          recommendationId,
+          protocolItemIds: duplicateIds,
+        });
+      }
+    }
 
     // Update recommendation status
     const { error: updateError } = await supabase

@@ -9,7 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { fetchExistingItemsSet, normalizeItemName } from '@/utils/protocolDuplicateCheck';
+import { fetchExistingItemsMap, fetchExistingItemsSet, normalizeItemName } from '@/utils/protocolDuplicateCheck';
+import { upsertProtocolItemSources } from '@/services/protocolItemSources';
 
 export interface ProtocolItem {
   name: string;
@@ -154,10 +155,30 @@ export const InlineProtocolPreview = ({
         'optimization': 'supplement'
       };
 
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
       // Filter out duplicates using the already-loaded existingItems set
       const newItems = selectedItems.filter(item => !isItemDuplicate(item));
+      const duplicateItems = selectedItems.filter(item => isItemDuplicate(item));
 
       if (newItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${itemTypeMapForInsert[item.category] || 'supplement'}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSources({
+            userId: user.id,
+            protocolItemIds: duplicateIds,
+            source: {
+              sourceType,
+              sourceAssessmentId,
+            },
+          });
+        }
+
         toast({
           title: t('protocol.allDuplicates'),
           description: t('protocol.allDuplicatesDesc'),
@@ -165,6 +186,22 @@ export const InlineProtocolPreview = ({
         setSaving(false);
         return;
       }
+
+      // Save to protocol_recommendations for "What To Do Next"
+      const { data: recommendation, error: recommendationError } = await supabase
+        .from('protocol_recommendations')
+        .insert({
+          user_id: user.id,
+          source_assessment_id: sourceAssessmentId,
+          source_type: sourceType,
+          protocol_data: protocolData as any,
+          status: 'accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .select('id')
+        .single();
+
+      if (recommendationError) throw recommendationError;
 
       const protocolItems = newItems.map(item => ({
         protocol_id: protocolId,
@@ -178,23 +215,44 @@ export const InlineProtocolPreview = ({
         display_order: 0
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedItems, error: itemsError } = await supabase
         .from('protocol_items')
-        .insert(protocolItems);
+        .insert(protocolItems)
+        .select('id');
 
       if (itemsError) throw itemsError;
 
-      // Save to protocol_recommendations for "What To Do Next"
-      await supabase
-        .from('protocol_recommendations')
-        .insert({
-          user_id: user.id,
-          source_assessment_id: sourceAssessmentId,
-          source_type: sourceType,
-          protocol_data: protocolData as any,
-          status: 'accepted',
-          accepted_at: new Date().toISOString()
-        });
+      const insertedIds = insertedItems?.map((item) => item.id) || [];
+      await upsertProtocolItemSources({
+        userId: user.id,
+        protocolItemIds: insertedIds,
+        source: {
+          sourceType,
+          sourceAssessmentId,
+          sourceRecommendationId: recommendation.id,
+        },
+      });
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${itemTypeMapForInsert[item.category] || 'supplement'}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSources({
+            userId: user.id,
+            protocolItemIds: duplicateIds,
+            source: {
+              sourceType,
+              sourceAssessmentId,
+              sourceRecommendationId: recommendation.id,
+            },
+          });
+        }
+      }
 
       const skippedCount = selectedItems.length - newItems.length;
       const toastDesc = skippedCount > 0 

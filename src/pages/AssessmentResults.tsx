@@ -25,7 +25,8 @@ import { AssessmentAIAnalysisCard } from "@/components/AssessmentAIAnalysisCard"
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
-import { filterDuplicateItems } from "@/utils/protocolDuplicateCheck";
+import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from "@/utils/protocolDuplicateCheck";
+import { upsertProtocolItemSourcesFromRecommendation } from "@/services/protocolItemSources";
 
 const AssessmentResults = () => {
   const { symptomId } = useParams<{ symptomId: string }>();
@@ -487,10 +488,25 @@ const AssessmentResults = () => {
         item_type: itemTypeMap[item.category] || 'supplement'
       }));
 
-      // Filter out duplicates
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
       const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
 
       if (uniqueItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+
         toast({
           title: t('protocol.allDuplicates'),
           description: t('protocol.allDuplicatesDesc'),
@@ -512,11 +528,36 @@ const AssessmentResults = () => {
         display_order: 0
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedItems, error: itemsError } = await supabase
         .from('protocol_items')
-        .insert(protocolItems);
+        .insert(protocolItems)
+        .select('id');
 
       if (itemsError) throw itemsError;
+
+      const insertedIds = insertedItems?.map((item) => item.id) || [];
+      await upsertProtocolItemSourcesFromRecommendation({
+        userId: user.id,
+        recommendationId: currentRecommendationId,
+        protocolItemIds: insertedIds,
+      });
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+      }
 
       // Update recommendation status
       const allSelected = selectedItems.length === (

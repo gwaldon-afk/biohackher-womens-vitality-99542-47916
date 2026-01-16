@@ -30,6 +30,8 @@ import { createProtocolBundle } from "@/services/protocolBundleService";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useState, useMemo } from "react";
+import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from "@/utils/protocolDuplicateCheck";
+import { upsertProtocolItemSourcesFromRecommendation } from "@/services/protocolItemSources";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -345,22 +347,80 @@ const MyProtocol = () => {
         return mapping[category] || 'habit';
       };
 
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: mapCategoryToItemType(item.category),
+      }));
+
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      if (uniqueItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: selectedRecommendation.id,
+            protocolItemIds: duplicateIds,
+          });
+        }
+
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setProtocolDialogOpen(false);
+        setSelectedRecommendation(null);
+        return;
+      }
+
       // 3. Create protocol_items for selected items
-      const itemsToInsert = selectedItems.map(item => ({
+      const itemsToInsert = uniqueItems.map(item => ({
         protocol_id: newProtocol.id,
         name: item.name,
         description: item.description,
-        item_type: mapCategoryToItemType(item.category),
+        item_type: item.item_type,
         frequency: 'daily' as const,
         is_active: true,
         product_id: null
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedItems, error: itemsError } = await supabase
         .from('protocol_items')
-        .insert(itemsToInsert);
+        .insert(itemsToInsert)
+        .select('id');
 
       if (itemsError) throw itemsError;
+
+      const insertedIds = insertedItems?.map((item) => item.id) || [];
+      await upsertProtocolItemSourcesFromRecommendation({
+        userId: user.id,
+        recommendationId: selectedRecommendation.id,
+        protocolItemIds: insertedIds,
+      });
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: selectedRecommendation.id,
+            protocolItemIds: duplicateIds,
+          });
+        }
+      }
 
       // 4. Update recommendation status
       const allItemsSelected = selectedItems.length === (

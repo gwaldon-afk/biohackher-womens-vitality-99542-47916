@@ -32,6 +32,8 @@ import {
 import { useState, useEffect, useMemo } from 'react';
 import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPreview';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
+import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from '@/utils/protocolDuplicateCheck';
+import { upsertProtocolItemSourcesFromRecommendation } from '@/services/protocolItemSources';
 
 // Health level key mapping for translations
 const HEALTH_LEVEL_KEYS: Record<string, {
@@ -686,22 +688,79 @@ export default function HormoneCompassResults() {
         return mapping[category] || 'habit';
       };
 
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: mapCategoryToItemType(item.category),
+      }));
+
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      if (uniqueItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setProtocolDialogOpen(false);
+        return;
+      }
+
       // 3. Create protocol_items for selected items
-      const itemsToInsert = selectedItems.map(item => ({
+      const itemsToInsert = uniqueItems.map(item => ({
         protocol_id: newProtocol.id,
         name: item.name,
         description: item.description,
-        item_type: mapCategoryToItemType(item.category),
+        item_type: item.item_type,
         frequency: 'daily' as const,
         is_active: true,
         product_id: null // Will be linked if product match exists
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedItems, error: itemsError } = await supabase
         .from('protocol_items')
-        .insert(itemsToInsert);
+        .insert(itemsToInsert)
+        .select('id');
 
       if (itemsError) throw itemsError;
+
+      const insertedIds = insertedItems?.map((item) => item.id) || [];
+      await upsertProtocolItemSourcesFromRecommendation({
+        userId: user.id,
+        recommendationId: currentRecommendationId,
+        protocolItemIds: insertedIds,
+      });
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = `${normalizeItemName(item.name)}|${item.item_type}`;
+            return existingItemsMap.get(key);
+          })
+          .filter((id): id is string => !!id);
+
+        if (duplicateIds.length > 0) {
+          await upsertProtocolItemSourcesFromRecommendation({
+            userId: user.id,
+            recommendationId: currentRecommendationId,
+            protocolItemIds: duplicateIds,
+          });
+        }
+      }
 
       // 4. Update recommendation status
       const allItemsSelected = selectedItems.length === (protocol.immediate.length + protocol.foundation.length + protocol.optimization.length);

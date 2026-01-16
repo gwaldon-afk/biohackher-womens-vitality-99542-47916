@@ -156,3 +156,36 @@ export const fetchExistingItemsSet = async (
     existingItems.map(e => `${normalizeItemName(e.name)}|${e.item_type}`)
   );
 };
+
+/**
+ * Fetch existing item id map (name|type -> id) for quick provenance linking
+ */
+export const fetchExistingItemsMap = async (
+  userId: string
+): Promise<Map<string, string>> => {
+  const { data: protocols } = await supabase
+    .from('protocols')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('is_active', true);
+
+  if (!protocols || protocols.length === 0) {
+    return new Map();
+  }
+
+  const protocolIds = protocols.map(p => p.id);
+
+  const { data: existingItems } = await supabase
+    .from('protocol_items')
+    .select('id, name, item_type')
+    .in('protocol_id', protocolIds)
+    .eq('is_active', true);
+
+  if (!existingItems || existingItems.length === 0) {
+    return new Map();
+  }
+
+  return new Map(
+    existingItems.map(e => [`${normalizeItemName(e.name)}|${e.item_type}`, e.id])
+  );
+};
