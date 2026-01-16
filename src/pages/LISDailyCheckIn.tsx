@@ -98,7 +98,17 @@ export default function LISDailyCheckIn() {
   if (!user) {
     // Redirect to auth if not logged in
     navigate('/auth');
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="w-full max-w-md p-6 space-y-4">
+          <div className="text-lg font-semibold">Redirecting to sign in...</div>
+          <p className="text-sm text-muted-foreground">
+            Please sign in to complete your daily check-in.
+          </p>
+          <Button onClick={() => navigate('/auth')}>Go to Sign In</Button>
+        </Card>
+      </div>
+    );
   }
 
   const question = DAILY_QUESTIONS[currentQuestion];

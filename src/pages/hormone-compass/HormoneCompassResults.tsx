@@ -483,7 +483,21 @@ export default function HormoneCompassResults() {
 
   if (!healthLevel) {
     navigate('/hormone-compass/assessment');
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="w-full max-w-md p-6 space-y-4">
+          <div className="text-lg font-semibold">
+            {t('hormoneResults.missing.title', 'We couldn’t load your results')}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {t('hormoneResults.missing.description', 'Please restart the assessment to generate results.')}
+          </p>
+          <Button onClick={() => navigate('/hormone-compass/assessment')}>
+            {t('hormoneResults.missing.restart', 'Restart Assessment')}
+          </Button>
+        </Card>
+      </div>
+    );
   }
 
   const levelKeys = HEALTH_LEVEL_KEYS[healthLevel as keyof typeof HEALTH_LEVEL_KEYS];
@@ -492,7 +506,21 @@ export default function HormoneCompassResults() {
   if (!levelKeys) {
     console.error('Invalid health level:', healthLevel);
     navigate('/hormone-compass/assessment');
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="w-full max-w-md p-6 space-y-4">
+          <div className="text-lg font-semibold">
+            {t('hormoneResults.invalid.title', 'Invalid results data')}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {t('hormoneResults.invalid.description', 'Please restart the assessment to continue.')}
+          </p>
+          <Button onClick={() => navigate('/hormone-compass/assessment')}>
+            {t('hormoneResults.invalid.restart', 'Restart Assessment')}
+          </Button>
+        </Card>
+      </div>
+    );
   }
 
   // Get translated level info

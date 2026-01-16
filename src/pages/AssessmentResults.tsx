@@ -599,7 +599,30 @@ const AssessmentResults = () => {
   }, [user, toolkitItems, symptomTags, savingRecommendations, toast]);
 
   if (!hasRequiredInputs) {
-    return null;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>{t('assessmentResults.missing.title', 'We couldn’t load your results')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {t('assessmentResults.missing.description', 'Please restart the assessment or return to your pillar selection.')}
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button onClick={() => navigate('/pillars')}>
+                {t('assessmentResults.missing.backToPillars', 'Back to Pillars')}
+              </Button>
+              {symptomId && (
+                <Button variant="outline" onClick={() => navigate(`/assessment/${symptomId}`)}>
+                  {t('assessmentResults.missing.restartAssessment', 'Restart Assessment')}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

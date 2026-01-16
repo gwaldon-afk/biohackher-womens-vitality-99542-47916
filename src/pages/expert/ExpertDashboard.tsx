@@ -29,7 +29,23 @@ export default function ExpertDashboard() {
   }
 
   if (!profile) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Expert profile unavailable</CardTitle>
+            <CardDescription>
+              Please complete your expert registration to access the dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/expert/register')} className="w-full">
+              Go to Expert Registration
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const getStatusBadge = () => {

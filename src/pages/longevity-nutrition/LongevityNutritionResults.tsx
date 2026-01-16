@@ -251,7 +251,23 @@ export default function LongevityNutritionResults() {
     );
   }
 
-  if (!assessment) return null;
+  if (!assessment) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <Card className="w-full max-w-md p-6 space-y-4">
+          <div className="text-lg font-semibold">
+            {t('nutritionResults.missing.title', 'We couldn’t load your results')}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {t('nutritionResults.missing.description', 'Please restart the assessment to generate results.')}
+          </p>
+          <Button onClick={() => navigate('/longevity-nutrition')}>
+            {t('nutritionResults.missing.restart', 'Restart Assessment')}
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   // Handler for adding to cart
   const handleAddToCart = (product: Product) => {
