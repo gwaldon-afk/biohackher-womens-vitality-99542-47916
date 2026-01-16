@@ -31,7 +31,12 @@ import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useState, useMemo } from "react";
 import { fetchExistingItemsMap, filterDuplicateItems, normalizeItemName } from "@/utils/protocolDuplicateCheck";
-import { upsertProtocolItemSourcesFromRecommendation } from "@/services/protocolItemSources";
+import { upsertProtocolItemSources, upsertProtocolItemSourcesFromRecommendation } from "@/services/protocolItemSources";
+import {
+  consolidateProtocolRecommendations,
+  getProtocolItemKey,
+  ProtocolRecommendationRecord,
+} from "@/lib/longitudinal/protocolConsolidation";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -54,6 +59,7 @@ const MyProtocol = () => {
   const { addToCart } = useCart();
   const [selectedRecommendation, setSelectedRecommendation] = useState<any>(null);
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
+  const [consolidatedDialogOpen, setConsolidatedDialogOpen] = useState(false);
   
   // URL-based source filtering
   const sourceFilter = searchParams.get('source');
@@ -80,6 +86,28 @@ const MyProtocol = () => {
     dismissRecommendation,
     pendingCount 
   } = useProtocolRecommendations({ status: 'pending' });
+
+  const consolidatedProtocol = useMemo(
+    () =>
+      consolidateProtocolRecommendations(
+        (recommendations || []) as ProtocolRecommendationRecord[]
+      ),
+    [recommendations]
+  );
+
+  const consolidatedSourcesByKey = useMemo(() => {
+    const sourcesMap = new Map<string, typeof consolidatedProtocol.immediate[number]["sources"]>();
+    const allItems = [
+      ...consolidatedProtocol.immediate,
+      ...consolidatedProtocol.foundation,
+      ...consolidatedProtocol.optimization,
+    ];
+    allItems.forEach((item) => {
+      const key = getProtocolItemKey(item.name, item.item_type);
+      sourcesMap.set(key, item.sources);
+    });
+    return sourcesMap;
+  }, [consolidatedProtocol]);
   
   // Filter and sort recommended protocols
   const filteredRecommendations = useMemo(() => {
@@ -444,6 +472,131 @@ const MyProtocol = () => {
     }
   };
 
+  const handleConsolidatedSelection = async (selectedItems: any[], cartItems: any[]) => {
+    if (!user) return;
+
+    try {
+      let { data: protocols } = await supabase
+        .from('protocols')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .limit(1);
+
+      let protocolId: string;
+
+      if (!protocols || protocols.length === 0) {
+        const { data: newProtocol, error: protocolError } = await supabase
+          .from('protocols')
+          .insert({
+            user_id: user.id,
+            name: `Consolidated Protocol - ${new Date().toLocaleDateString()}`,
+            description: 'Consolidated from multiple assessments',
+            source_type: 'custom',
+            is_active: true,
+            start_date: new Date().toISOString()
+          })
+          .select('id')
+          .single();
+
+        if (protocolError) throw protocolError;
+        protocolId = newProtocol.id;
+      } else {
+        protocolId = protocols[0].id;
+      }
+
+      const itemsWithType = selectedItems.map(item => ({
+        ...item,
+        item_type: item.item_type || 'supplement'
+      }));
+
+      const existingItemsMap = await fetchExistingItemsMap(user.id);
+      const { uniqueItems, duplicateItems } = await filterDuplicateItems(user.id, itemsWithType);
+
+      const applySources = async (itemId: string, itemKey: string) => {
+        const sources = consolidatedSourcesByKey.get(itemKey) || [];
+        if (sources.length === 0) return;
+        await Promise.all(
+          sources.map((source) =>
+            upsertProtocolItemSources({
+              userId: user.id,
+              protocolItemIds: [itemId],
+              source,
+            })
+          )
+        );
+      };
+
+      if (uniqueItems.length === 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = getProtocolItemKey(item.name, item.item_type || 'supplement');
+            return { key, id: existingItemsMap.get(key) };
+          })
+          .filter((entry): entry is { key: string; id: string } => !!entry.id);
+
+        await Promise.all(duplicateIds.map((entry) => applySources(entry.id, entry.key)));
+
+        toast({
+          title: t('protocol.allDuplicates'),
+          description: t('protocol.allDuplicatesDesc'),
+        });
+        setConsolidatedDialogOpen(false);
+        return;
+      }
+
+      const protocolItems = uniqueItems.map(item => ({
+        protocol_id: protocolId,
+        name: item.name,
+        description: item.description,
+        item_type: item.item_type,
+        frequency: 'daily' as const,
+        is_active: true,
+        product_id: null
+      }));
+
+      const { data: insertedItems, error: itemsError } = await supabase
+        .from('protocol_items')
+        .insert(protocolItems)
+        .select('id, name, item_type');
+
+      if (itemsError) throw itemsError;
+
+      await Promise.all(
+        (insertedItems || []).map((item) => {
+          const key = getProtocolItemKey(item.name, item.item_type);
+          return applySources(item.id, key);
+        })
+      );
+
+      if (duplicateItems.length > 0) {
+        const duplicateIds = duplicateItems
+          .map((item) => {
+            const key = getProtocolItemKey(item.name, item.item_type || 'supplement');
+            return { key, id: existingItemsMap.get(key) };
+          })
+          .filter((entry): entry is { key: string; id: string } => !!entry.id);
+
+        await Promise.all(duplicateIds.map((entry) => applySources(entry.id, entry.key)));
+      }
+
+      toast({
+        title: t('protocol.added'),
+        description: t('protocol.addedDesc', { count: uniqueItems.length }),
+      });
+
+      setConsolidatedDialogOpen(false);
+      navigate('/my-protocol');
+    } catch (error: any) {
+      console.error('Error saving consolidated protocol:', error);
+      toast({
+        title: t('protocol.saveFailed'),
+        description: error?.message || t('protocol.saveFailed'),
+        variant: "destructive"
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -683,6 +836,25 @@ const MyProtocol = () => {
                 </div>
               </CardHeader>
               <CardContent>
+              {!loadingRecommendations && recommendations.length > 1 && (
+                <Card className="border-dashed border-primary/40 mb-6">
+                  <CardHeader>
+                    <CardTitle>Consolidated Recommendations</CardTitle>
+                    <CardDescription>
+                      Combine overlapping items across assessments into one set.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex items-center justify-between gap-4">
+                    <div className="text-sm text-muted-foreground">
+                      Review a single, deduplicated protocol set.
+                    </div>
+                    <Button onClick={() => setConsolidatedDialogOpen(true)}>
+                      Review consolidated
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+
                 {loadingRecommendations ? (
                   <p className="text-muted-foreground">{t('myProtocol.recommended.loading')}</p>
                 ) : recommendations.length === 0 ? (
@@ -1122,6 +1294,16 @@ const MyProtocol = () => {
               setProtocolDialogOpen(false);
               setSelectedRecommendation(null);
             }}
+          />
+        )}
+
+        {consolidatedDialogOpen && (
+          <ProtocolSelectionDialog
+            open={consolidatedDialogOpen}
+            onOpenChange={setConsolidatedDialogOpen}
+            protocol={consolidatedProtocol}
+            onSave={handleConsolidatedSelection}
+            onCancel={() => setConsolidatedDialogOpen(false)}
           />
         )}
         
