@@ -2,6 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Lock, Utensils, Calendar, ChevronRight } from "lucide-react";
 import { CategoryBlock } from "@/components/today/CategoryBlock";
@@ -658,6 +659,17 @@ export const UnifiedDailyChecklist = () => {
         )}
         {modifiers?.intensity_modifier < 0 && (
           <p className="text-sm text-muted-foreground">{modifiers.reasoning_short}</p>
+        )}
+        {modifiers && (
+          <Collapsible>
+            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+              <span>{t("checkin.why.title")}</span>
+              <ChevronRight className="h-4 w-4 transition-transform data-[state=open]:rotate-90" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2 text-sm text-muted-foreground">
+              {t("checkin.why.body")}
+            </CollapsibleContent>
+          </Collapsible>
         )}
         {(checkinLoading || settingsLoading) && (
           <p className="text-xs text-muted-foreground">{t("common.loading")}</p>

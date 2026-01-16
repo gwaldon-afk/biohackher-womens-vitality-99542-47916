@@ -3118,6 +3118,10 @@
       "title": "Let’s reset",
       "body": "We couldn’t load your check-in, but your plan is still available.",
       "primary": "Show today’s plan"
+    },
+    "why": {
+      "title": "Why this matters today",
+      "body": "Your check-in helps me keep today realistic. If sleep is low or stress is high, we’ll lean into recovery and smaller wins. If energy is strong, we can safely push a little more. You’re always in control — this just helps match the plan to the day you’re actually having."
     }
   },
   "today": {
