@@ -583,6 +583,54 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_checkins: {
+        Row: {
+          context_tags: string[] | null
+          created_at: string | null
+          date: string
+          energy_level: number | null
+          id: string
+          mood_score: number | null
+          skipped: boolean | null
+          sleep_hours: number | null
+          sleep_quality_score: number | null
+          stress_level: number | null
+          updated_at: string | null
+          user_id: string
+          user_note: string | null
+        }
+        Insert: {
+          context_tags?: string[] | null
+          created_at?: string | null
+          date: string
+          energy_level?: number | null
+          id?: string
+          mood_score?: number | null
+          skipped?: boolean | null
+          sleep_hours?: number | null
+          sleep_quality_score?: number | null
+          stress_level?: number | null
+          updated_at?: string | null
+          user_id: string
+          user_note?: string | null
+        }
+        Update: {
+          context_tags?: string[] | null
+          created_at?: string | null
+          date?: string
+          energy_level?: number | null
+          id?: string
+          mood_score?: number | null
+          skipped?: boolean | null
+          sleep_hours?: number | null
+          sleep_quality_score?: number | null
+          stress_level?: number | null
+          updated_at?: string | null
+          user_id?: string
+          user_note?: string | null
+        }
+        Relationships: []
+      }
       daily_scores: {
         Row: {
           active_minutes: number | null
@@ -4751,6 +4799,27 @@ export type Database = {
           title?: string
           user_id?: string
           viewed_at?: string | null
+        }
+        Relationships: []
+      }
+      user_checkin_settings: {
+        Row: {
+          enabled: boolean | null
+          questions_config: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          enabled?: boolean | null
+          questions_config?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          enabled?: boolean | null
+          questions_config?: Json | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
