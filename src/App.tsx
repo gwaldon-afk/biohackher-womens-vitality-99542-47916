@@ -130,6 +130,19 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <div
+      style={{
+        position: "fixed",
+        top: 40,
+        left: 0,
+        zIndex: 999999,
+        background: "yellow",
+        padding: 8,
+        fontSize: 12,
+      }}
+    >
+      REACT RENDERED
+    </div>
     <AuthProvider>
       <CartProvider>
         <TooltipProvider>
