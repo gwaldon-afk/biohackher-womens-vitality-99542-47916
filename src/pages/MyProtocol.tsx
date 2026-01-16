@@ -703,6 +703,41 @@ const MyProtocol = () => {
               </Alert>
             )}
 
+            <Card>
+              <CardHeader>
+                <CardTitle>Protocol Selection</CardTitle>
+                <CardDescription>
+                  Choose which protocols are active and feed your plans.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {loadingProtocols ? (
+                  <p className="text-muted-foreground">Loading protocols…</p>
+                ) : protocols.length === 0 ? (
+                  <p className="text-muted-foreground">No protocols yet.</p>
+                ) : (
+                  protocols.map((protocol) => (
+                    <div key={protocol.id} className="flex items-center justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="font-medium truncate">{protocol.name}</p>
+                        {protocol.description && (
+                          <p className="text-sm text-muted-foreground truncate">{protocol.description}</p>
+                        )}
+                      </div>
+                      <Button
+                        variant={protocol.is_active ? "secondary" : "outline"}
+                        onClick={() =>
+                          handleUpdateProtocol(protocol.id, { is_active: !protocol.is_active })
+                        }
+                      >
+                        {protocol.is_active ? "Active" : "Activate"}
+                      </Button>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+
             {/* Protocol Bundle Card */}
             {activeProtocols.length > 0 && displayProtocolItems.length > 0 && (
               <ProtocolBundleCard
