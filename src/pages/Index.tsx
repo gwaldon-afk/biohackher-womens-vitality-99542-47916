@@ -3,7 +3,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
-import biohackherLogo from "@/assets/logos/biohackher-logo-master.png";
+import biohackherLogo from "@/assets/logos/biohackher-logo-master.svg";
+import taglineSvg from "@/assets/logos/biohackher-tagline.svg";
 import heroImage from "@/assets/hero-biohackher.jpg";
 import { AssessmentHeroCard } from "@/components/AssessmentHeroCard";
 import StatisticsBar from "@/components/StatisticsBar";
@@ -33,9 +34,12 @@ const Index = () => {
               {/* Logo directly above headline */}
               <img src={biohackherLogo} alt="Biohackher Logo" className="h-auto w-full object-contain mb-2" />
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight uppercase">
-                {t('home.hero.tagline')}
-              </h1>
+              <h1 className="sr-only">{t('home.hero.tagline')}</h1>
+              <img 
+                src={taglineSvg} 
+                alt={t('home.hero.tagline')} 
+                className="h-auto w-full max-w-xl object-contain" 
+              />
               
               <div className="space-y-4 text-base md:text-lg text-muted-foreground leading-relaxed">
                 <p className="font-semibold text-foreground">

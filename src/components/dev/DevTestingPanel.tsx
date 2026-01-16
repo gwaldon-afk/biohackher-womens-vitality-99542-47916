@@ -63,9 +63,14 @@ export const DevTestingPanel = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isSeedingUsers, setIsSeedingUsers] = useState(false);
-  const [usersSeeded, setUsersSeeded] = useState(() => 
-    localStorage.getItem('testUsersSeeded') === 'true'
-  );
+  const safeGet = (key: string) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+  const [usersSeeded, setUsersSeeded] = useState(() => safeGet('testUsersSeeded') === 'true');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { user } = useAuth();

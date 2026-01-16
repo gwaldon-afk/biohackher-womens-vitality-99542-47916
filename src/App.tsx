@@ -11,6 +11,7 @@ import { FloatingMealSnapButton } from "@/components/today/FloatingMealSnapButto
 import { Shell } from "@/components/layout/Shell";
 
 import { DevTestingPanel } from "@/components/dev/DevTestingPanel";
+import { TEST_MODE_ENABLED } from "@/config/testMode";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
 import { ProtocolRecommendationsNotifier } from "@/components/ProtocolRecommendationsNotifier";
@@ -285,7 +286,7 @@ const App = () => (
               </Suspense>
           <FloatingMealSnapButton />
           <FloatingAIAssistant />
-          <DevTestingPanel />
+          {TEST_MODE_ENABLED && <DevTestingPanel />}
         </ErrorBoundary>
       </BrowserRouter>
       </TooltipProvider>
