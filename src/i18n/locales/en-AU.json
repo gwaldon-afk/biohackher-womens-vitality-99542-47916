@@ -1252,7 +1252,11 @@
     "healthProfile": "Health Profile",
     "personalInfo": "Personal Information",
     "saveChanges": "Save Changes",
-    "savingChanges": "Saving changes..."
+    "savingChanges": "Saving changes...",
+    "checkin": {
+      "title": "Daily check-in",
+      "desc": "A quick, optional check-in to personalise your daily plan."
+    }
   },
   "menomap": {
     "assessment": {

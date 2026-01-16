@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { getCheckinSettings, upsertCheckinSettings } from "@/lib/checkin/checkinStorage";
 
 const Settings = () => {
   const { t } = useTranslation();
@@ -40,6 +41,8 @@ const Settings = () => {
     assessmentReminders: true
   });
   const [loadingPreferences, setLoadingPreferences] = useState(false);
+  const [checkinEnabled, setCheckinEnabled] = useState(true);
+  const [checkinLoading, setCheckinLoading] = useState(false);
 
   const [privacy, setPrivacy] = useState({
     dataSharing: false,
@@ -58,6 +61,23 @@ const Settings = () => {
       fetchBaselineData();
       fetchNotificationPreferences();
     }
+  }, [user]);
+
+  useEffect(() => {
+    const loadCheckinSettings = async () => {
+      if (!user) return;
+      setCheckinLoading(true);
+      try {
+        const settings = await getCheckinSettings(user.id);
+        setCheckinEnabled(settings?.enabled !== false);
+      } catch (error) {
+        console.error("Error loading check-in settings:", error);
+      } finally {
+        setCheckinLoading(false);
+      }
+    };
+
+    loadCheckinSettings();
   }, [user]);
   
   const fetchNotificationPreferences = async () => {
@@ -122,6 +142,31 @@ const Settings = () => {
       });
     } finally {
       setLoadingPreferences(false);
+    }
+  };
+
+  const updateCheckinSetting = async (enabled: boolean) => {
+    if (!user) return;
+    setCheckinLoading(true);
+    try {
+      await upsertCheckinSettings({
+        user_id: user.id,
+        enabled,
+        questions_config: null,
+      });
+      setCheckinEnabled(enabled);
+      toast({
+        description: enabled ? t("checkin.enable.toast") : t("checkin.disable.toast"),
+      });
+    } catch (error: any) {
+      console.error("Error updating check-in settings:", error);
+      toast({
+        title: t("common.error"),
+        description: error?.message || t("common.error"),
+        variant: "destructive",
+      });
+    } finally {
+      setCheckinLoading(false);
     }
   };
 
@@ -482,6 +527,24 @@ const Settings = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">{t('settings.checkin.title')}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('settings.checkin.desc')}
+                      </p>
+                      {checkinLoading && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {t('common.loading')}
+                        </p>
+                      )}
+                    </div>
+                    <Switch
+                      checked={checkinEnabled}
+                      onCheckedChange={(checked) => updateCheckinSetting(checked)}
+                      disabled={checkinLoading || !user}
+                    />
+                  </div>
                   {/* Assessment Reminders */}
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
