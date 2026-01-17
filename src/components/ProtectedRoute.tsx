@@ -12,12 +12,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const guestAllowedPaths = [
-    "/hormone-compass/assessment",
-    "/hormone-compass/results",
-  ];
-  const isGuestAllowed = guestAllowedPaths.includes(location.pathname);
-
   useEffect(() => {
     if (!loading && !user) {
       // Save current path to return after authentication
@@ -26,7 +20,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
   }, [user, loading, navigate, location]);
 
-  if (loading && !isGuestAllowed) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -35,10 +29,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
         </div>
       </div>
     );
-  }
-
-  if (!user && isGuestAllowed) {
-    return <>{children}</>;
   }
 
   if (!user) {
