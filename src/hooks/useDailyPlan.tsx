@@ -274,9 +274,14 @@ export const useDailyPlan = () => {
       // Adjust volume by activity level
       const maxExercises: Record<string, number> = {
         'sedentary': 1,
+        'light': 2,
         'lightly_active': 2,
+        'moderate': 2,
+        'moderately_active': 2,
         'active': 2,
         'very_active': 3,
+        'athlete': 3,
+        'extremely_active': 3,
       };
       
       const exerciseLimit = maxExercises[activityLevel] || 2;

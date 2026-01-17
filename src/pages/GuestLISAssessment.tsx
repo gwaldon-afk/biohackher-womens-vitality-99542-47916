@@ -30,6 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { TEST_MODE_ENABLED } from '@/config/testMode';
+import { normalizeActivityLevel } from '@/utils/activityLevel';
 import { useGuestAssessmentGate } from '@/hooks/useGuestAssessmentGate';
 import { GuestAssessmentGate } from '@/components/onboarding/GuestAssessmentGate';
 
@@ -1001,6 +1002,8 @@ export default function GuestLISAssessment() {
           }
         }
 
+        const normalizedActivityLevel = normalizeActivityLevel(activityLevel);
+
         // 1. Create/update health profile
         const { error: profileError } = await supabase
           .from('user_health_profile')
@@ -1010,7 +1013,7 @@ export default function GuestLISAssessment() {
             height_cm: parseFloat(baselineData.heightCm),
             weight_kg: parseFloat(baselineData.weightKg),
             current_bmi: calculateBMI(),
-            activity_level: activityLevel,
+            activity_level: normalizedActivityLevel,
           }, {
             onConflict: 'user_id'
           });
@@ -1018,7 +1021,6 @@ export default function GuestLISAssessment() {
         if (profileError) {
           console.error('Error saving health profile:', profileError);
           toast.error(t('lisAssessment.toasts.failedSaveProfile'));
-          return;
         }
 
         // 2. Create baseline daily_score (upsert to handle duplicates)

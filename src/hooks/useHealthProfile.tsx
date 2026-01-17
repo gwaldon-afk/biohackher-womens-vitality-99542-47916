@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeActivityLevel } from "@/utils/activityLevel";
 
 interface HealthProfile {
   id?: string;
@@ -106,6 +107,9 @@ export const useHealthProfile = () => {
         user_id: user.id,
         current_bmi: bmi,
       };
+      if (dataToSave.activity_level) {
+        dataToSave.activity_level = normalizeActivityLevel(dataToSave.activity_level);
+      }
 
       const { data, error: upsertError } = await supabase
         .from('user_health_profile')

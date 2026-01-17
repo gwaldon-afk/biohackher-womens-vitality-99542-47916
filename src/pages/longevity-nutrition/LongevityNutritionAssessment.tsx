@@ -259,13 +259,18 @@ export default function LongevityNutritionAssessment() {
           }
           
           // Update user_health_profile with calculated targets
-          await createOrUpdateProfile({
-            recommended_protein_min: proteinMin,
-            recommended_protein_max: proteinMax,
-            recommended_daily_calories: Math.round(calories),
-            nutrition_calculation_date: new Date().toISOString().split('T')[0],
-            activity_level: activityLevel,
-          });
+          try {
+            await createOrUpdateProfile({
+              recommended_protein_min: proteinMin,
+              recommended_protein_max: proteinMax,
+              recommended_daily_calories: Math.round(calories),
+              nutrition_calculation_date: new Date().toISOString().split('T')[0],
+              activity_level: activityLevel,
+            });
+          } catch (profileError) {
+            console.error('Error saving nutrition targets:', profileError);
+            toast.error(t('nutritionAssessment.failedToSave'));
+          }
         }
         
         // 4. Generate daily nutrition actions
