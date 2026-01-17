@@ -39,7 +39,6 @@ export function RequireHealthProfile({
     // Redirect to complete profile if incomplete
     if (!isProfileComplete()) {
       const returnTo = encodeURIComponent(location.pathname + location.search);
-      console.warn(`Redirecting to /complete-profile from ${location.pathname} because profile incomplete`);
       navigate(`/complete-profile?returnTo=${returnTo}`, { replace: true });
     }
   }, [user, authLoading, profile, profileLoading, navigate, location]);

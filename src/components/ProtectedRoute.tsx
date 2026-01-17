@@ -17,7 +17,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (!loading && !user) {
       // Save current path to return after authentication
       const returnTo = encodeURIComponent(location.pathname + location.search);
-      console.warn(`Redirecting to /auth from ${location.pathname} because unauthenticated`);
       navigate(`/auth?returnTo=${returnTo}`);
     }
   }, [user, loading, navigate, location]);
