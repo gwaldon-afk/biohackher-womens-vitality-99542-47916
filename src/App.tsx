@@ -277,12 +277,12 @@ const App = () => (
                     <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
 
                     {/* New User Journey Routes */}
-                    <Route path="/plan-home" element={<PlanHome />} />
-                    <Route path="/nutrition-scan" element={<NutritionScan />} />
-                    <Route path="/mood-checkin" element={<MoodCheckin />} />
-                    <Route path="/quick-log" element={<QuickLog />} />
-                    <Route path="/dashboard-main" element={<DashboardMain />} />
-                    <Route path="/insights-detail" element={<InsightsDetail />} />
+                    <Route path="/plan-home" element={<ProtectedRoute><PlanHome /></ProtectedRoute>} />
+                    <Route path="/nutrition-scan" element={<ProtectedRoute><NutritionScan /></ProtectedRoute>} />
+                    <Route path="/mood-checkin" element={<ProtectedRoute><MoodCheckin /></ProtectedRoute>} />
+                    <Route path="/quick-log" element={<ProtectedRoute><QuickLog /></ProtectedRoute>} />
+                    <Route path="/dashboard-main" element={<ProtectedRoute><DashboardMain /></ProtectedRoute>} />
+                    <Route path="/insights-detail" element={<ProtectedRoute><InsightsDetail /></ProtectedRoute>} />
                     <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
                     <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
