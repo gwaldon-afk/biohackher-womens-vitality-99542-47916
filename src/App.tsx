@@ -159,22 +159,22 @@ const App = () => (
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding" element={<OnboardingFlow />} />
                     <Route path="/dashboard" element={<Navigate to="/today" replace />} />
-                    <Route path="/analytics" element={<AnalyticsDashboard />} />
-                    <Route path="/achievements" element={<Achievements />} />
-                    <Route path="/symptom-trends" element={<SymptomTrends />} />
+                    <Route path="/analytics" element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
+                    <Route path="/achievements" element={<ProtectedRoute><Achievements /></ProtectedRoute>} />
+                    <Route path="/symptom-trends" element={<ProtectedRoute><SymptomTrends /></ProtectedRoute>} />
                     <Route path="/wearables" element={<ProtectedRoute><WearableIntegrations /></ProtectedRoute>} />
                     <Route path="/symptoms" element={<Navigate to="/pillars" replace />} />
                     <Route path="/assessment/:symptomId" element={<SymptomAssessment />} />
                     <Route path="/assessment/:symptomId/results" element={<AssessmentResults />} />
-                    <Route path="/assessment-history" element={<AssessmentHistory />} />
+                    <Route path="/assessment-history" element={<ProtectedRoute><AssessmentHistory /></ProtectedRoute>} />
                     <Route path="/biohacking-toolkit" element={<BiohackingToolkit />} />
                     <Route path="/research-evidence" element={<ResearchEvidence />} />
                     <Route path="/sleep" element={<Sleep />} />
-                    <Route path="/nutrition" element={<ProtectedRoute><RequireHealthProfile><Nutrition /></RequireHealthProfile></ProtectedRoute>} />
+                    <Route path="/nutrition" element={<Nutrition />} />
                     <Route path="/longevity-nutrition" element={<LongevityNutritionAssessment />} />
                     <Route path="/longevity-nutrition/results" element={<LongevityNutritionResults />} />
                     <Route path="/coaching" element={<Coaching />} />
-                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
                     <Route path="/upgrade" element={<Upgrade />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/faq" element={<RedirectToAbout tab="faq" />} />
@@ -200,7 +200,7 @@ const App = () => (
                     <Route path="/my-protocol" element={<ProtectedRoute><RequireHealthProfile><MyProtocol /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/protocol-library" element={<ProtectedRoute><ProtocolLibrary /></ProtectedRoute>} />
                     <Route path="/master-dashboard" element={<ProtectedRoute><RequireHealthProfile><MasterDashboard /></RequireHealthProfile></ProtectedRoute>} />
-                    <Route path="/progress" element={<ProgressTracking />} />
+                    <Route path="/progress" element={<ProtectedRoute><RequireHealthProfile><ProgressTracking /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/advisory-board" element={<RedirectToAbout tab="advisory" />} />
                     <Route path="/research-evidence" element={<RedirectToAbout tab="research" />} />
                     <Route path="/about" element={<About />} />
@@ -220,8 +220,8 @@ const App = () => (
                     <Route path="/:categorySlug" element={<ToolkitCategory />} />
 
                     {/* HormoneCompass™ Routes - Assessment only (dashboard deprecated) */}
-                    <Route path="/hormone-compass/assessment" element={<ProtectedRoute><HormoneCompassAssessment /></ProtectedRoute>} />
-                    <Route path="/hormone-compass/results" element={<ProtectedRoute><HormoneCompassResults /></ProtectedRoute>} />
+                    <Route path="/hormone-compass/assessment" element={<HormoneCompassAssessment />} />
+                    <Route path="/hormone-compass/results" element={<HormoneCompassResults />} />
                     {/* Legacy redirects - redirect dashboard to profile */}
                     <Route path="/hormone-compass" element={<Navigate to="/profile" replace />} />
                     <Route path="/hormone-compass/tracker" element={<Navigate to="/profile" replace />} />
@@ -277,12 +277,12 @@ const App = () => (
                     <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
 
                     {/* New User Journey Routes */}
-                    <Route path="/plan-home" element={<ProtectedRoute><PlanHome /></ProtectedRoute>} />
-                    <Route path="/nutrition-scan" element={<ProtectedRoute><NutritionScan /></ProtectedRoute>} />
-                    <Route path="/mood-checkin" element={<ProtectedRoute><MoodCheckin /></ProtectedRoute>} />
-                    <Route path="/quick-log" element={<ProtectedRoute><QuickLog /></ProtectedRoute>} />
-                    <Route path="/dashboard-main" element={<ProtectedRoute><DashboardMain /></ProtectedRoute>} />
-                    <Route path="/insights-detail" element={<ProtectedRoute><InsightsDetail /></ProtectedRoute>} />
+                    <Route path="/plan-home" element={<PlanHome />} />
+                    <Route path="/nutrition-scan" element={<NutritionScan />} />
+                    <Route path="/mood-checkin" element={<MoodCheckin />} />
+                    <Route path="/quick-log" element={<QuickLog />} />
+                    <Route path="/dashboard-main" element={<DashboardMain />} />
+                    <Route path="/insights-detail" element={<InsightsDetail />} />
                     <Route path="/expert-finder-map" element={<ExpertFinderMap />} />
                     <Route path="/profile-settings" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
