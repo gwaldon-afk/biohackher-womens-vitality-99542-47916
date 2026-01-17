@@ -1,16 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
 import { Calendar, Home, User, Utensils } from "lucide-react";
 import { getRouteMeta } from "@/navigation/routeMeta";
+import { useAuth } from "@/hooks/useAuth";
 
 export const MobileBottomNav = () => {
   const location = useLocation();
+  const { user } = useAuth();
   const meta = getRouteMeta(location);
 
   // Only show on AppShell routes (Shell also guards this, but keep it safe).
   if (meta.shell !== "app") return null;
 
+  const homePath = user ? "/plan-home" : "/";
+
   const navItems = [
-    { path: "/plan-home", icon: Home, label: "Home" },
+    { path: homePath, icon: Home, label: "Home" },
     { path: "/today", icon: Calendar, label: "My Plan" },
     { path: "/nutrition", icon: Utensils, label: "My Nutrition" },
     { path: "/profile", icon: User, label: "My Profile" },
