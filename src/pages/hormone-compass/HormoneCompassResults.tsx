@@ -913,70 +913,70 @@ export default function HormoneCompassResults() {
         />
       )}
 
-      {/* Personalized Protocol Preview - Detailed View */}
-      <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
-          <CardTitle className="flex items-center gap-2">
-            <Target className="w-5 h-5 text-primary" />
-            {t('hormoneResults.protocolTitle')}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {t('hormoneResults.protocolSubtitle')}
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <p className="text-xs text-muted-foreground bg-primary/5 p-3 rounded border border-primary/10">
-            <strong>Note:</strong> This protocol is generated based on your assessment responses and represents 
-            general wellness recommendations. It is not personalized medical advice. Consult your healthcare 
-            provider before starting any new supplement regimen, especially if you have existing health conditions 
-            or take medications.
-          </p>
-          {/* Immediate Actions */}
-          {protocol.immediate.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="destructive">{t('hormoneResults.doToday')}</Badge>
-                <h3 className="font-semibold">{t('hormoneResults.immediateActions')}</h3>
+      {/* Personalized Protocol Preview - Detailed View (logged-in only) */}
+      {user ? (
+        <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              {t('hormoneResults.protocolTitle')}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {t('hormoneResults.protocolSubtitle')}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-xs text-muted-foreground bg-primary/5 p-3 rounded border border-primary/10">
+              <strong>Note:</strong> This protocol is generated based on your assessment responses and represents 
+              general wellness recommendations. It is not personalized medical advice. Consult your healthcare 
+              provider before starting any new supplement regimen, especially if you have existing health conditions 
+              or take medications.
+            </p>
+            {/* Immediate Actions */}
+            {protocol.immediate.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="destructive">{t('hormoneResults.doToday')}</Badge>
+                  <h3 className="font-semibold">{t('hormoneResults.immediateActions')}</h3>
+                </div>
+                <div className="space-y-2">
+                  {protocol.immediate.map((item, index) => 
+                    renderProtocolItem(item, index, 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50')
+                  )}
+                </div>
               </div>
-              <div className="space-y-2">
-                {protocol.immediate.map((item, index) => 
-                  renderProtocolItem(item, index, 'bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50')
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Foundation Protocol */}
-          {protocol.foundation.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="secondary">{t('hormoneResults.thisWeek')}</Badge>
-                <h3 className="font-semibold">{t('hormoneResults.foundationProtocol')}</h3>
+            {/* Foundation Protocol */}
+            {protocol.foundation.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="secondary">{t('hormoneResults.thisWeek')}</Badge>
+                  <h3 className="font-semibold">{t('hormoneResults.foundationProtocol')}</h3>
+                </div>
+                <div className="space-y-2">
+                  {protocol.foundation.map((item, index) => 
+                    renderProtocolItem(item, index, 'bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50')
+                  )}
+                </div>
               </div>
-              <div className="space-y-2">
-                {protocol.foundation.map((item, index) => 
-                  renderProtocolItem(item, index, 'bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50')
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Optimization Layer */}
-          {protocol.optimization.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="outline">{t('hormoneResults.next30Days')}</Badge>
-                <h3 className="font-semibold">{t('hormoneResults.optimisationLayer')}</h3>
+            {/* Optimization Layer */}
+            {protocol.optimization.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Badge variant="outline">{t('hormoneResults.next30Days')}</Badge>
+                  <h3 className="font-semibold">{t('hormoneResults.optimisationLayer')}</h3>
+                </div>
+                <div className="space-y-2">
+                  {protocol.optimization.map((item, index) => 
+                    renderProtocolItem(item, index, 'bg-muted/30 border')
+                  )}
+                </div>
               </div>
-              <div className="space-y-2">
-                {protocol.optimization.map((item, index) => 
-                  renderProtocolItem(item, index, 'bg-muted/30 border')
-                )}
-              </div>
-            </div>
-          )}
+            )}
 
-          {user ? (
             <div className="space-y-3">
               <Button onClick={handleAddToProtocol} className="w-full" size="lg">
                 <Target className="w-5 h-5 mr-2" />
@@ -992,13 +992,19 @@ export default function HormoneCompassResults() {
                 {t('hormoneResults.createGoal')}
               </Button>
             </div>
-          ) : (
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
+          <CardContent className="p-6 text-center space-y-3">
+            <Target className="w-10 h-10 text-primary mx-auto" />
+            <p className="font-semibold">{t('hormoneResults.createFreeAccountSave')}</p>
             <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
-              {t('hormoneResults.createFreeAccountSave')}
+              {t('hormoneResults.createFreeAccount')}
             </Button>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Guest Registration CTA */}
       {!user && (

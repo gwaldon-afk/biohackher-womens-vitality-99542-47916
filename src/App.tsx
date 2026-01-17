@@ -220,8 +220,8 @@ const App = () => (
                     <Route path="/:categorySlug" element={<ToolkitCategory />} />
 
                     {/* HormoneCompass™ Routes - Assessment only (dashboard deprecated) */}
-                    <Route path="/hormone-compass/assessment" element={<ProtectedRoute><HormoneCompassAssessment /></ProtectedRoute>} />
-                    <Route path="/hormone-compass/results" element={<ProtectedRoute><HormoneCompassResults /></ProtectedRoute>} />
+                    <Route path="/hormone-compass/assessment" element={<HormoneCompassAssessment />} />
+                    <Route path="/hormone-compass/results" element={<HormoneCompassResults />} />
                     {/* Legacy redirects - redirect dashboard to profile */}
                     <Route path="/hormone-compass" element={<Navigate to="/profile" replace />} />
                     <Route path="/hormone-compass/tracker" element={<Navigate to="/profile" replace />} />

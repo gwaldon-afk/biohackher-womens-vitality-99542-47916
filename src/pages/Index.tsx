@@ -92,7 +92,7 @@ const Index = () => {
               headline={t('home.assessments.hormone.headline')} 
               benefit={t('home.assessments.hormone.benefit')} 
               duration={t('home.assessments.hormone.duration')} 
-              ctaRoute="/menomap/assessment" 
+              ctaRoute="/hormone-compass/assessment" 
             />
           </div>
         </div>
