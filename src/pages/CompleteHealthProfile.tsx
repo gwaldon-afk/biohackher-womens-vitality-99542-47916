@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,8 @@ import { Loader2, User, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { normalizeActivityLevel } from '@/utils/activityLevel';
 
 export default function CompleteHealthProfile() {
   const { t } = useTranslation();
@@ -28,6 +30,13 @@ export default function CompleteHealthProfile() {
   
   const [submitting, setSubmitting] = useState(false);
   const [prePopulated, setPrePopulated] = useState<string[]>([]);
+  const [saveError, setSaveError] = useState<{
+    message: string;
+    code?: string;
+    details?: string;
+    hint?: string;
+    payloadKeys: string[];
+  } | null>(null);
 
   // Check if profile is already complete - if so, redirect away (self-healing)
   const isProfileComplete = profile && 
@@ -99,19 +108,39 @@ export default function CompleteHealthProfile() {
 
     try {
       setSubmitting(true);
-      
-      await createOrUpdateProfile({
+      setSaveError(null);
+      const payload = {
         date_of_birth: formData.date_of_birth,
         weight_kg: weight,
         height_cm: height,
-        activity_level: formData.activity_level
-      });
+        activity_level: normalizeActivityLevel(formData.activity_level),
+      };
+      
+      await createOrUpdateProfile(payload);
       
       toast.success(t('completeProfile.success'));
       navigate(decodeURIComponent(returnTo), { replace: true });
-    } catch (error) {
+    } catch (error: any) {
+      const payloadKeys = Array.isArray(error?.payloadKeys)
+        ? error.payloadKeys
+        : Object.keys({
+            date_of_birth: true,
+            weight_kg: true,
+            height_cm: true,
+            activity_level: true,
+          });
+      const message = error?.message ?? 'Unknown error';
+      setSaveError({
+        message,
+        code: error?.code,
+        details: error?.details,
+        hint: error?.hint,
+        payloadKeys,
+      });
       console.error('Error saving profile:', error);
-      toast.error(t('completeProfile.errors.saveFailed'));
+      toast.error(`Couldn't save your profile. ${message}`, {
+        description: error?.details || error?.hint || undefined,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -164,6 +193,23 @@ export default function CompleteHealthProfile() {
         </CardHeader>
         
         <CardContent>
+          {saveError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Couldn't save your profile. {saveError.message}</AlertTitle>
+              <AlertDescription>
+                <details className="mt-2">
+                  <summary className="cursor-pointer text-sm">Details</summary>
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div><span className="font-medium">Code:</span> {saveError.code || 'N/A'}</div>
+                    <div><span className="font-medium">Message:</span> {saveError.message || 'N/A'}</div>
+                    <div><span className="font-medium">Details:</span> {saveError.details || 'N/A'}</div>
+                    <div><span className="font-medium">Hint:</span> {saveError.hint || 'N/A'}</div>
+                    <div><span className="font-medium">Payload keys:</span> {saveError.payloadKeys.join(', ') || 'N/A'}</div>
+                  </div>
+                </details>
+              </AlertDescription>
+            </Alert>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Date of Birth */}
             <div className="space-y-2">
@@ -288,6 +334,9 @@ export default function CompleteHealthProfile() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
+            </Button>
+            <Button asChild variant="ghost" className="w-full">
+              <Link to="/">Back to Home</Link>
             </Button>
           </form>
         </CardContent>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeActivityLevel } from "@/utils/activityLevel";
 
 interface HealthProfile {
   id?: string;
@@ -89,6 +90,7 @@ export const useHealthProfile = () => {
 
   const createOrUpdateProfile = useCallback(async (profileData: Partial<HealthProfile>) => {
     if (!user) return;
+    let payloadKeys: string[] = [];
 
     try {
       setLoading(true);
@@ -105,7 +107,9 @@ export const useHealthProfile = () => {
         ...profileData,
         user_id: user.id,
         current_bmi: bmi,
+        activity_level: normalizeActivityLevel(profileData.activity_level),
       };
+      payloadKeys = Object.keys(dataToSave);
 
       const { data, error: upsertError } = await supabase
         .from('user_health_profile')
@@ -119,8 +123,11 @@ export const useHealthProfile = () => {
       setFetchedForUserId(user.id);
       return data;
     } catch (err: any) {
+      if (err && typeof err === "object") {
+        err.payloadKeys = payloadKeys;
+      }
       console.error('Error saving health profile:', err);
-      setError(err.message);
+      setError(err?.message ?? "Unknown error");
       throw err;
     } finally {
       setLoading(false);

@@ -16,7 +16,7 @@ export function RequireHealthProfile({
 }: RequireHealthProfileProps) {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading } = useHealthProfile();
+  const { profile, loading: profileLoading, error: profileError } = useHealthProfile();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,11 +37,11 @@ export function RequireHealthProfile({
     if (!user) return;
     
     // Redirect to complete profile if incomplete
-    if (!isProfileComplete()) {
+    if (!isProfileComplete() && !profileError) {
       const returnTo = encodeURIComponent(location.pathname + location.search);
       navigate(`/complete-profile?returnTo=${returnTo}`, { replace: true });
     }
-  }, [user, authLoading, profile, profileLoading, navigate, location]);
+  }, [user, authLoading, profile, profileLoading, profileError, navigate, location]);
 
   // Show loading while checking
   if (authLoading || (user && profileLoading)) {
@@ -61,7 +61,7 @@ export function RequireHealthProfile({
   }
 
   // If profile is complete, render children
-  if (isProfileComplete()) {
+  if (isProfileComplete() || profileError) {
     return <>{children}</>;
   }
 

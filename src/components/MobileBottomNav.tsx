@@ -5,6 +5,9 @@ import { getRouteMeta } from "@/navigation/routeMeta";
 export const MobileBottomNav = () => {
   const location = useLocation();
   const meta = getRouteMeta(location);
+  const pathname = location.pathname !== "/" && location.pathname.endsWith("/")
+    ? location.pathname.slice(0, -1)
+    : location.pathname;
 
   // Only show on AppShell routes (Shell also guards this, but keep it safe).
   if (meta.shell !== "app") return null;
@@ -17,7 +20,6 @@ export const MobileBottomNav = () => {
   ];
 
   const isActive = (path: string) => {
-    const pathname = location.pathname;
     if (path === "/profile") return pathname === "/profile" || pathname.startsWith("/profile/");
     if (path === "/nutrition") return pathname === "/nutrition" || pathname.startsWith("/nutrition/");
     return pathname === path;

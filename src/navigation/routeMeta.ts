@@ -215,7 +215,9 @@ const MATCHERS: Array<{
 ];
 
 export function getRouteMeta(location: Pick<Location, "pathname" | "search">): RouteMeta {
-  const pathname = location.pathname;
+  const pathname = location.pathname !== "/" && location.pathname.endsWith("/")
+    ? location.pathname.slice(0, -1)
+    : location.pathname;
   for (const m of MATCHERS) {
     if (m.test(pathname)) return m.meta(location);
   }
