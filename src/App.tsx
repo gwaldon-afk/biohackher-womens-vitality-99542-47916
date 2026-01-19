@@ -64,6 +64,7 @@ const HealthAssistant = lazy(() => import("./pages/HealthAssistant"));
 const ImportResearch = lazy(() => import("./pages/ImportResearch"));
 const CompleteHealthProfile = lazy(() => import("./pages/CompleteHealthProfile"));
 const MyDailyPlan = lazy(() => import("./pages/MyDailyPlan"));
+const TodayPreview = lazy(() => import("./pages/TodayPreview"));
 const ToolkitCategory = lazy(() => import("./pages/ToolkitCategory"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const SymptomTrends = lazy(() => import("./pages/SymptomTrends"));
@@ -151,6 +152,7 @@ const App = () => (
                     <Route path="/" element={<Index />} />
                     <Route path="/complete-profile" element={<ProtectedRoute><CompleteHealthProfile /></ProtectedRoute>} />
                     <Route path="/today" element={<ProtectedRoute><RequireHealthProfile><MyDailyPlan /></RequireHealthProfile></ProtectedRoute>} />
+                    <Route path="/today-preview" element={<TodayPreview />} />
                     <Route path="/plans/28-day" element={<ProtectedRoute><RequireHealthProfile><TwentyEightDayPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/plans/90-day" element={<ProtectedRoute><RequireHealthProfile><NinetyDayPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/plans/weekly" element={<ProtectedRoute><RequireHealthProfile><WeeklyPlan /></RequireHealthProfile></ProtectedRoute>} />
