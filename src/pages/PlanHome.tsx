@@ -6,10 +6,16 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import CheckinMenu from "@/components/CheckinMenu";
 import GlowMeter_Ring from "@/components/GlowMeter_Ring";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const PlanHome = () => {
   const { t } = useTranslation();
   const [bioScore, setBioScore] = useState(0);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [needsBaseline, setNeedsBaseline] = useState(false);
 
   const pillarCards = [
     {
@@ -49,6 +55,19 @@ const PlanHome = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    const checkBaseline = async () => {
+      const { data } = await supabase
+        .from('user_health_profile')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      setNeedsBaseline(!data);
+    };
+    checkBaseline();
+  }, [user]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 pb-24">
       <div className="max-w-4xl mx-auto space-y-8 pt-8">
@@ -59,6 +78,19 @@ const PlanHome = () => {
             <GlowMeter_Ring value={bioScore} size={200} strokeWidth={16} />
           </div>
         </div>
+
+        {user && needsBaseline && (
+          <Card className="p-4 border-primary/20 bg-primary/5">
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                You can explore, but we can’t personalise your plan yet.
+              </p>
+              <Button size="sm" onClick={() => navigate('/lis-intro')}>
+                Do assessment to unlock your plan
+              </Button>
+            </div>
+          </Card>
+        )}
 
         <div className="grid md:grid-cols-2 gap-4">
           {pillarCards.map((pillar) => {

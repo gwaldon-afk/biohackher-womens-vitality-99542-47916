@@ -55,6 +55,7 @@ const LongevityMindsetQuiz = lazy(() => import("./pages/LongevityMindsetQuiz"));
 const BrainAssessment = lazy(() => import("./pages/BrainAssessment"));
 const GuestLISAssessment = lazy(() => import("./pages/GuestLISAssessment"));
 const LIS2Research = lazy(() => import("./pages/LIS2Research"));
+const LisBaselineIntro = lazy(() => import("./pages/LisBaselineIntro"));
 const MyProtocol = lazy(() => import("./pages/MyProtocol"));
 const ProtocolLibrary = lazy(() => import("./pages/ProtocolLibrary"));
 const ProgressTracking = lazy(() => import("./pages/ProgressTracking"));
@@ -156,6 +157,7 @@ const App = () => (
                     <Route path="/plans/weekly" element={<ProtectedRoute><RequireHealthProfile><WeeklyPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/nutrition/meal-plan" element={<ProtectedRoute><RequireHealthProfile><MealPlanWeek /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
+                    <Route path="/lis-intro" element={<LisBaselineIntro />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding" element={<OnboardingFlow />} />
                     <Route path="/dashboard" element={<Navigate to="/today" replace />} />

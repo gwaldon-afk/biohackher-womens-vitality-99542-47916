@@ -257,8 +257,8 @@ const Auth = () => {
         // If onboarding not completed, redirect to unified assessment
         if (profile && !profile.onboarding_completed) {
           const onboardingPath = returnTo
-            ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
-            : '/guest-lis-assessment';
+            ? `/lis-intro?returnTo=${encodeURIComponent(returnTo)}`
+            : '/lis-intro';
           navigate(onboardingPath);
           return;
         }
@@ -277,7 +277,7 @@ const Auth = () => {
           .maybeSingle();
         
         if (!healthProfile) {
-          navigate('/guest-lis-assessment');
+          navigate('/lis-intro');
         } else {
           navigate('/dashboard');
         }
@@ -348,7 +348,7 @@ const Auth = () => {
           .maybeSingle();
         
         if (!healthProfile) {
-          navigate('/guest-lis-assessment');
+          navigate('/lis-intro');
         } else {
           navigate('/dashboard');
         }
@@ -412,8 +412,8 @@ const Auth = () => {
         // Standard flow - redirect to unified assessment
         toast.success("Welcome! Let's set up your health profile.");
         const onboardingPath = returnTo
-          ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
-          : '/guest-lis-assessment';
+          ? `/lis-intro?returnTo=${encodeURIComponent(returnTo)}`
+          : '/lis-intro';
         navigate(onboardingPath);
       }
     }

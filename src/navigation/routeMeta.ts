@@ -88,6 +88,10 @@ const MATCHERS: Array<{
     meta: () => ({ title: "Assessment", shell: "flow", showBack: true, parentRoute: "/" }),
   },
   {
+    test: (p) => p === "/lis-intro",
+    meta: () => ({ title: "Baseline", shell: "flow", showBack: true, parentRoute: "/" }),
+  },
+  {
     test: (p) => p.startsWith("/assessment/") && !p.endsWith("/results"),
     meta: () => ({ title: "Assessment", shell: "flow", showBack: true, parentRoute: "/pillars" }),
   },
