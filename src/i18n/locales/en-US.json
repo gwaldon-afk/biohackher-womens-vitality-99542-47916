@@ -3094,6 +3094,23 @@
     "tailored": {
       "badge": "Tailored for today",
       "tooltip": "Based on your check-in"
+    },
+    "doNow": {
+      "title": "Do now",
+      "subtitle": "One small win to start.",
+      "seeFullPlan": "See full plan"
+    },
+    "fullPlan": {
+      "title": "Full plan for today",
+      "subtitle": "See everything planned for today.",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "insights": {
+      "title": "Optional insights",
+      "subtitle": "Only if you want the details.",
+      "show": "Show",
+      "hide": "Hide"
     }
   },
   "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }

@@ -129,6 +129,8 @@ export const UnifiedDailyChecklist = () => {
   const [mealModalOpen, setMealModalOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
   const [exerciseModalOpen, setExerciseModalOpen] = useState(false);
+  const [isFullPlanOpen, setIsFullPlanOpen] = useState(false);
+  const [isInsightsOpen, setIsInsightsOpen] = useState(false);
   
   // State for category card grid drawer
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -525,6 +527,13 @@ export const UnifiedDailyChecklist = () => {
     return actions.find(a => a.id === actionId)?.completed || false;
   };
 
+  const doNowItems = useMemo(() => {
+    const incomplete = actions.filter((action: any) => !getItemCompleted(action.id));
+    const nonOptional = incomplete.filter((action: any) => action.category !== "optional");
+    const source = nonOptional.length > 0 ? nonOptional : incomplete;
+    return source.slice(0, 3);
+  }, [actions, getItemCompleted]);
+
   // Categorize actions by status
   const categorizeByStatus = () => {
     const filteredActions = !hasMealPlan 
@@ -618,375 +627,445 @@ export const UnifiedDailyChecklist = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Date & Quote Header */}
-      <div className="space-y-4 pb-4 border-b-2 border-primary/20">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            TODAY - {dateString}
-          </h1>
-          {user && (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/plans/weekly')}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                {t('weeklyPlan.viewWeek')}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/plans/90-day')}
-              >
-                {t('weeklyPlan.view90Day')}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
+      {/* Do Now */}
+      <Card className="border-primary/20 bg-background">
+        <CardContent className="p-6 space-y-4">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">{t('today.doNow.title')}</h2>
+            <p className="text-sm text-muted-foreground">{t('today.doNow.subtitle')}</p>
+          </div>
+          {doNowItems.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t('today.plan.noActiveItemsDesc')}</p>
+          ) : (
+            <div className="space-y-2">
+              {doNowItems.map((item: any) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleRowClick(item)}
+                  className="w-full flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3 text-left hover:border-primary/40 hover:bg-muted/30"
+                >
+                  <div className="space-y-1">
+                    <div className="font-medium text-foreground">{item.title}</div>
+                    {item.estimatedMinutes ? (
+                      <div className="text-xs text-muted-foreground">{item.estimatedMinutes} min</div>
+                    ) : null}
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </button>
+              ))}
             </div>
           )}
-        </div>
-        {modifiers && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge variant="secondary" className="w-fit">
-                  {t("today.tailored.badge")}
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent>{t("today.tailored.tooltip")}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
-        {modifiers?.intensity_modifier < 0 && (
-          <p className="text-sm text-muted-foreground">{modifiers.reasoning_short}</p>
-        )}
-        {modifiers && (
-          <Collapsible>
-            <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <span>{t("checkin.why.title")}</span>
-              <ChevronRight className="h-4 w-4 transition-transform data-[state=open]:rotate-90" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-2 text-sm text-muted-foreground">
-              {t("checkin.why.body")}
-            </CollapsibleContent>
-          </Collapsible>
-        )}
-        {(checkinLoading || settingsLoading) && (
-          <p className="text-xs text-muted-foreground">{t("common.loading")}</p>
-        )}
-        {/* Motivational Quote - Compact */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/70 p-4 shadow-md">
-          <div className="relative flex items-center gap-3 text-center justify-center">
-            <span className="text-3xl">💫</span>
-            <div>
-              <p className="text-xl font-semibold text-foreground italic leading-tight">
-                "{todaysQuote.quote}"
-              </p>
-              <p className="text-sm text-foreground/80 mt-1">
-                — {todaysQuote.author}
-              </p>
-            </div>
+          <div className="flex justify-end">
+            <Button variant="ghost" size="sm" onClick={() => setIsFullPlanOpen(true)}>
+              {t('today.doNow.seeFullPlan')}
+            </Button>
           </div>
-        </div>
-        
-        {/* Progress Summary + Adherence Indicator */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold text-foreground">
-              {t('today.plan.progress', { completed: completedCount, total: totalCount })}
-            </span>
-            <div className="flex items-center gap-3">
-              {adherencePercent !== null && user && (
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                  adherencePercent >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                  adherencePercent >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                }`}>
-                  {t('today.adherence.label', { percent: adherencePercent })}
-                </span>
+        </CardContent>
+      </Card>
+
+      {/* Today at a glance */}
+      <Card className="border-border/60 bg-background">
+        <CardContent className="p-6 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">Today</div>
+            <div className="text-sm font-medium text-foreground">{dateString}</div>
+          </div>
+          {modifiers && (
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="w-fit">
+                {t("today.tailored.badge")}
+              </Badge>
+              {modifiers?.intensity_modifier < 0 && (
+                <span className="text-xs text-muted-foreground">{modifiers.reasoning_short}</span>
               )}
-              <span className="text-muted-foreground">{progressPercent}%</span>
             </div>
-          </div>
-          <Progress value={progressPercent} className="h-2 bg-muted" />
-        </div>
-      </div>
+          )}
+          {(checkinLoading || settingsLoading) && (
+            <p className="text-xs text-muted-foreground">{t("common.loading")}</p>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Guest Top Banner CTA */}
-      {!user && (
-        <div className="mb-4 p-6 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-secondary border-2 border-primary/30 shadow-lg">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/20 backdrop-blur-sm">
-              <span className="text-2xl">👋</span>
-              <span className="text-sm font-semibold text-foreground">{t('today.guest.sampleBanner')}</span>
+      {/* Full plan (collapsed by default) */}
+      <Card className="border-border/60 bg-background">
+        <CardContent className="p-6 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-foreground">{t('today.fullPlan.title')}</div>
+              <div className="text-sm text-muted-foreground">{t('today.fullPlan.subtitle')}</div>
             </div>
-            <h3 className="text-2xl font-bold text-foreground">
-              {t('today.guest.readyTitle')}
-            </h3>
-            <p className="text-foreground/90 max-w-2xl mx-auto">
-              {t('today.guest.readyDesc')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-              <Button 
-                size="lg" 
-                variant="secondary"
-                onClick={() => navigate('/guest-lis-assessment')}
-                className="font-semibold"
-              >
-                {t('today.guest.takeAssessment')}
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                onClick={() => navigate('/longevity-nutrition')}
-                className="bg-background/10 backdrop-blur-sm border-background/30 hover:bg-background/20"
-              >
-                {t('today.guest.nutritionAssessment')}
-              </Button>
-            </div>
-            <p className="text-xs text-foreground/70">
-              {t('today.guest.alreadyAccount')} <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">{t('today.guest.signIn')}</button>
-            </p>
-          </div>
-        </div>
-      )}
-
-      {hiddenCount > 0 && (
-        <div className="flex justify-end">
-          <Button variant="ghost" size="sm" onClick={() => setShowAllOptional(true)}>
-            More (optional)
-          </Button>
-        </div>
-      )}
-
-      {/* FILTER BAR */}
-      <DailyPlanFilters
-        viewBy={viewBy}
-        statusFilter={statusFilter}
-        onViewByChange={setViewBy}
-        onStatusFilterChange={setStatusFilter}
-      />
-
-      {/* TIME BLOCKS - The Core Actionable Content */}
-      <div className="space-y-4">
-        {viewBy === 'time' && (
-          <CategoryCardGrid
-            categories={[
-              { 
-                key: 'morning', 
-                icon: '☀️', 
-                title: t('today.timeBlocks.morning'), 
-                items: applyStatusFilter(timeBlocks.morning),
-                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.morning)).minutes,
-                color: 'yellow',
-                isCurrentPeriod: isCurrentPeriod('morning')
-              },
-              { 
-                key: 'afternoon', 
-                icon: '🌤️', 
-                title: t('today.timeBlocks.afternoon'), 
-                items: applyStatusFilter(timeBlocks.afternoon),
-                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).minutes,
-                color: 'blue',
-                isCurrentPeriod: isCurrentPeriod('afternoon')
-              },
-              { 
-                key: 'evening', 
-                icon: '🌅', 
-                title: t('today.timeBlocks.evening'), 
-                items: applyStatusFilter(timeBlocks.evening),
-                completedCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.evening)).minutes,
-                color: 'purple',
-                isCurrentPeriod: isCurrentPeriod('evening')
-              },
-            ]}
-            onCardClick={(key) => {
-              setSelectedCategory(key);
-              setIsCategoryDrawerOpen(true);
-            }}
-          />
-        )}
-
-        {viewBy === 'type' && (
-          <CategoryCardGrid
-            categories={[
-              { 
-                key: 'supplements', 
-                icon: '💊', 
-                title: t('today.filters.supplements'), 
-                items: applyStatusFilter(typeBlocks.supplements),
-                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).minutes,
-                color: 'orange' 
-              },
-              { 
-                key: 'exercise', 
-                icon: '🏃', 
-                title: t('today.filters.exercise'), 
-                items: applyStatusFilter(typeBlocks.exercise),
-                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).minutes,
-                color: 'green' 
-              },
-              { 
-                key: 'habits', 
-                icon: '✨', 
-                title: t('today.filters.habits'), 
-                items: applyStatusFilter(typeBlocks.habits),
-                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.habits)).minutes,
-                color: 'pink' 
-              },
-              { 
-                key: 'meals', 
-                icon: '🍽️', 
-                title: t('today.filters.meals'), 
-                items: applyStatusFilter(typeBlocks.meals),
-                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.meals)).minutes,
-                color: 'yellow' 
-              },
-              { 
-                key: 'goals', 
-                icon: '🎯', 
-                title: t('today.filters.goals'), 
-                items: applyStatusFilter(typeBlocks.goals),
-                completedCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).completed,
-                totalCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).total,
-                totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.goals)).minutes,
-                color: 'blue' 
-              },
-            ]}
-            onCardClick={(key) => {
-              setSelectedCategory(key);
-              setIsCategoryDrawerOpen(true);
-            }}
-          />
-        )}
-
-        {viewBy === 'status' && (
-          <CategoryCardGrid
-            categories={[
-              { 
-                key: 'toDo', 
-                icon: '📋', 
-                title: t('today.filters.toDo'), 
-                items: statusBlocks.toDo,
-                completedCount: 0,
-                totalCount: statusBlocks.toDo.length,
-                totalMinutes: getCategoryStats(statusBlocks.toDo).minutes,
-                color: 'orange'
-              },
-              { 
-                key: 'completed', 
-                icon: '✅', 
-                title: t('today.filters.done'), 
-                items: statusBlocks.completed,
-                completedCount: statusBlocks.completed.length,
-                totalCount: statusBlocks.completed.length,
-                totalMinutes: getCategoryStats(statusBlocks.completed).minutes,
-                color: 'green'
-              },
-            ]}
-            onCardClick={(key) => {
-              setSelectedCategory(key);
-              setIsCategoryDrawerOpen(true);
-            }}
-          />
-        )}
-      </div>
-
-      {/* SECONDARY CONTENT - Below Time Blocks */}
-      <div className="space-y-4 pt-4 border-t border-border/50">
-        {/* Protocol Management Link */}
-        {user && actions.length > 0 && (
-          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
-            <div className="flex flex-col">
-              <p className="font-semibold text-foreground">{t('today.plan.fromActiveProtocol')}</p>
-              <p className="text-sm text-muted-foreground">{t('today.plan.fromActiveProtocolDesc')}</p>
-            </div>
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/my-protocol')}
-              className="shrink-0"
-            >
-              {t('today.plan.manageProtocol')}
+            <Button variant="ghost" size="sm" onClick={() => setIsFullPlanOpen((prev) => !prev)}>
+              {isFullPlanOpen ? t('today.fullPlan.hide') : t('today.fullPlan.show')}
             </Button>
           </div>
-        )}
 
-        {/* Goal Progress - Compact */}
-        <TodayGoalProgressCard />
-
-        {/* Daily Health Metrics Check-In */}
-        {user && <DailyHealthMetricsCard />}
-
-        {/* LIS Impact & Biological Age Prediction */}
-        <LISImpactPreview 
-          completedCount={completedCount}
-          totalCount={totalCount}
-          sustainedLIS={sustainedLIS}
-          currentAge={42}
-        />
-
-        {/* Nutrition Scorecard Widget or Generic Guidance */}
-        {user && hasMealPlan && <NutritionScorecardWidget />}
-        
-        {user && !hasMealPlan && (
-          <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+          {isFullPlanOpen && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <Utensils className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold text-foreground">{t('today.nutrition.focusTitle')}</h3>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <p>• {t('today.nutrition.focusTip1')}</p>
-                <p>• {t('today.nutrition.focusTip2')}</p>
-                <p>• {t('today.nutrition.focusTip3')}</p>
-                <p>• {t('today.nutrition.focusTip4')}</p>
-              </div>
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/nutrition/meal-plan')}
-                className="w-full mt-4"
-              >
-                {t('today.nutrition.createMealPlan')}
-              </Button>
-              <p className="text-xs text-center text-muted-foreground">
-                {t('today.nutrition.getMealsDesc')}
-              </p>
-            </div>
-          </Card>
-        )}
-      </div>
+              {hiddenCount > 0 && (
+                <div className="flex justify-end">
+                  <Button variant="ghost" size="sm" onClick={() => setShowAllOptional(true)}>
+                    More (optional)
+                  </Button>
+                </div>
+              )}
 
-      {/* Guest CTA */}
-      {!user && (
-        <div className="mt-8 p-6 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 text-center space-y-3">
-          <h3 className="text-xl font-bold text-foreground">{t('today.guest.unlockTitle')}</h3>
-          <p className="text-muted-foreground">
-            {t('today.guest.unlockDesc')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button size="lg" onClick={() => navigate('/auth')}>
-              {t('today.guest.createAccount')}
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate('/guest-lis-assessment')}>
-              {t('today.guest.takeAssessmentFirst')}
+              {/* FILTER BAR */}
+              <DailyPlanFilters
+                viewBy={viewBy}
+                statusFilter={statusFilter}
+                onViewByChange={setViewBy}
+                onStatusFilterChange={setStatusFilter}
+              />
+
+              {/* TIME BLOCKS - The Core Actionable Content */}
+              <div className="space-y-4">
+                {viewBy === 'time' && (
+                  <CategoryCardGrid
+                    categories={[
+                      { 
+                        key: 'morning', 
+                        icon: '☀️', 
+                        title: t('today.timeBlocks.morning'), 
+                        items: applyStatusFilter(timeBlocks.morning),
+                        completedCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(timeBlocks.morning)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.morning)).minutes,
+                        color: 'yellow',
+                        isCurrentPeriod: isCurrentPeriod('morning')
+                      },
+                      { 
+                        key: 'afternoon', 
+                        icon: '🌤️', 
+                        title: t('today.timeBlocks.afternoon'), 
+                        items: applyStatusFilter(timeBlocks.afternoon),
+                        completedCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.afternoon)).minutes,
+                        color: 'blue',
+                        isCurrentPeriod: isCurrentPeriod('afternoon')
+                      },
+                      { 
+                        key: 'evening', 
+                        icon: '🌅', 
+                        title: t('today.timeBlocks.evening'), 
+                        items: applyStatusFilter(timeBlocks.evening),
+                        completedCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(timeBlocks.evening)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(timeBlocks.evening)).minutes,
+                        color: 'purple',
+                        isCurrentPeriod: isCurrentPeriod('evening')
+                      },
+                    ]}
+                    onCardClick={(key) => {
+                      setSelectedCategory(key);
+                      setIsCategoryDrawerOpen(true);
+                    }}
+                  />
+                )}
+
+                {viewBy === 'type' && (
+                  <CategoryCardGrid
+                    categories={[
+                      { 
+                        key: 'supplements', 
+                        icon: '💊', 
+                        title: t('today.filters.supplements'), 
+                        items: applyStatusFilter(typeBlocks.supplements),
+                        completedCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.supplements)).minutes,
+                        color: 'orange' 
+                      },
+                      { 
+                        key: 'exercise', 
+                        icon: '🏃', 
+                        title: t('today.filters.exercise'), 
+                        items: applyStatusFilter(typeBlocks.exercise),
+                        completedCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.exercise)).minutes,
+                        color: 'green' 
+                      },
+                      { 
+                        key: 'habits', 
+                        icon: '✨', 
+                        title: t('today.filters.habits'), 
+                        items: applyStatusFilter(typeBlocks.habits),
+                        completedCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(typeBlocks.habits)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.habits)).minutes,
+                        color: 'pink' 
+                      },
+                      { 
+                        key: 'meals', 
+                        icon: '🍽️', 
+                        title: t('today.filters.meals'), 
+                        items: applyStatusFilter(typeBlocks.meals),
+                        completedCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(typeBlocks.meals)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.meals)).minutes,
+                        color: 'yellow' 
+                      },
+                      { 
+                        key: 'goals', 
+                        icon: '🎯', 
+                        title: t('today.filters.goals'), 
+                        items: applyStatusFilter(typeBlocks.goals),
+                        completedCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).completed,
+                        totalCount: getCategoryStats(applyStatusFilter(typeBlocks.goals)).total,
+                        totalMinutes: getCategoryStats(applyStatusFilter(typeBlocks.goals)).minutes,
+                        color: 'blue' 
+                      },
+                    ]}
+                    onCardClick={(key) => {
+                      setSelectedCategory(key);
+                      setIsCategoryDrawerOpen(true);
+                    }}
+                  />
+                )}
+
+                {viewBy === 'status' && (
+                  <CategoryCardGrid
+                    categories={[
+                      { 
+                        key: 'toDo', 
+                        icon: '📋', 
+                        title: t('today.filters.toDo'), 
+                        items: statusBlocks.toDo,
+                        completedCount: 0,
+                        totalCount: statusBlocks.toDo.length,
+                        totalMinutes: getCategoryStats(statusBlocks.toDo).minutes,
+                        color: 'orange'
+                      },
+                      { 
+                        key: 'completed', 
+                        icon: '✅', 
+                        title: t('today.filters.done'), 
+                        items: statusBlocks.completed,
+                        completedCount: statusBlocks.completed.length,
+                        totalCount: statusBlocks.completed.length,
+                        totalMinutes: getCategoryStats(statusBlocks.completed).minutes,
+                        color: 'green'
+                      },
+                    ]}
+                    onCardClick={(key) => {
+                      setSelectedCategory(key);
+                      setIsCategoryDrawerOpen(true);
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Optional insights */}
+      <Card className="border-border/60 bg-background">
+        <CardContent className="p-6 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-foreground">{t('today.insights.title')}</div>
+              <div className="text-sm text-muted-foreground">{t('today.insights.subtitle')}</div>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setIsInsightsOpen((prev) => !prev)}>
+              {isInsightsOpen ? t('today.insights.hide') : t('today.insights.show')}
             </Button>
           </div>
-        </div>
-      )}
+
+          {isInsightsOpen && (
+            <div className="space-y-4 pt-2">
+              {modifiers && (
+                <Collapsible>
+                  <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                    <span>{t("checkin.why.title")}</span>
+                    <ChevronRight className="h-4 w-4 transition-transform data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="mt-2 text-sm text-muted-foreground">
+                    {t("checkin.why.body")}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+
+              {/* Motivational Quote */}
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/80 via-primary/70 to-secondary/70 p-4 shadow-md">
+                <div className="relative flex items-center gap-3 text-center justify-center">
+                  <span className="text-3xl">💫</span>
+                  <div>
+                    <p className="text-xl font-semibold text-foreground italic leading-tight">
+                      "{todaysQuote.quote}"
+                    </p>
+                    <p className="text-sm text-foreground/80 mt-1">
+                      — {todaysQuote.author}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress Summary + Adherence Indicator */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-semibold text-foreground">
+                    {t('today.plan.progress', { completed: completedCount, total: totalCount })}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    {adherencePercent !== null && user && (
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                        adherencePercent >= 80 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                        adherencePercent >= 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                        'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                      }`}>
+                        {t('today.adherence.label', { percent: adherencePercent })}
+                      </span>
+                    )}
+                    <span className="text-muted-foreground">{progressPercent}%</span>
+                  </div>
+                </div>
+                <Progress value={progressPercent} className="h-2 bg-muted" />
+              </div>
+
+              {/* Protocol Management Link */}
+              {user && actions.length > 0 && (
+                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-foreground">{t('today.plan.fromActiveProtocol')}</p>
+                    <p className="text-sm text-muted-foreground">{t('today.plan.fromActiveProtocolDesc')}</p>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate('/my-protocol')}
+                    className="shrink-0"
+                  >
+                    {t('today.plan.manageProtocol')}
+                  </Button>
+                </div>
+              )}
+
+              {/* Goal Progress - Compact */}
+              <TodayGoalProgressCard />
+
+              {/* Daily Health Metrics Check-In */}
+              {user && <DailyHealthMetricsCard />}
+
+              {/* LIS Impact & Biological Age Prediction */}
+              <LISImpactPreview 
+                completedCount={completedCount}
+                totalCount={totalCount}
+                sustainedLIS={sustainedLIS}
+                currentAge={42}
+              />
+
+              {/* Nutrition Scorecard Widget or Generic Guidance */}
+              {user && hasMealPlan && <NutritionScorecardWidget />}
+              
+              {user && !hasMealPlan && (
+                <Card className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Utensils className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold text-foreground">{t('today.nutrition.focusTitle')}</h3>
+                    </div>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>• {t('today.nutrition.focusTip1')}</p>
+                      <p>• {t('today.nutrition.focusTip2')}</p>
+                      <p>• {t('today.nutrition.focusTip3')}</p>
+                      <p>• {t('today.nutrition.focusTip4')}</p>
+                    </div>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate('/nutrition/meal-plan')}
+                      className="w-full mt-4"
+                    >
+                      {t('today.nutrition.createMealPlan')}
+                    </Button>
+                    <p className="text-xs text-center text-muted-foreground">
+                      {t('today.nutrition.getMealsDesc')}
+                    </p>
+                  </div>
+                </Card>
+              )}
+
+              {!user && (
+                <div className="mb-4 p-6 rounded-xl bg-gradient-to-br from-primary via-primary/90 to-secondary border-2 border-primary/30 shadow-lg">
+                  <div className="text-center space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/20 backdrop-blur-sm">
+                      <span className="text-2xl">👋</span>
+                      <span className="text-sm font-semibold text-foreground">{t('today.guest.sampleBanner')}</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground">
+                      {t('today.guest.readyTitle')}
+                    </h3>
+                    <p className="text-foreground/90 max-w-2xl mx-auto">
+                      {t('today.guest.readyDesc')}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                      <Button 
+                        size="lg" 
+                        variant="secondary"
+                        onClick={() => navigate('/guest-lis-assessment')}
+                        className="font-semibold"
+                      >
+                        {t('today.guest.takeAssessment')}
+                      </Button>
+                      <Button 
+                        size="lg" 
+                        variant="outline"
+                        onClick={() => navigate('/longevity-nutrition')}
+                        className="bg-background/10 backdrop-blur-sm border-background/30 hover:bg-background/20"
+                      >
+                        {t('today.guest.nutritionAssessment')}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-foreground/70">
+                      {t('today.guest.alreadyAccount')} <button onClick={() => navigate('/auth')} className="underline hover:text-foreground">{t('today.guest.signIn')}</button>
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Guest CTA */}
+              {!user && (
+                <div className="p-6 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 text-center space-y-3">
+                  <h3 className="text-xl font-bold text-foreground">{t('today.guest.unlockTitle')}</h3>
+                  <p className="text-muted-foreground">
+                    {t('today.guest.unlockDesc')}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                    <Button size="lg" onClick={() => navigate('/auth')}>
+                      {t('today.guest.createAccount')}
+                    </Button>
+                    <Button size="lg" variant="outline" onClick={() => navigate('/guest-lis-assessment')}>
+                      {t('today.guest.takeAssessmentFirst')}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {user && (
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/plans/weekly')}
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    {t('weeklyPlan.viewWeek')}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/plans/90-day')}
+                  >
+                    {t('weeklyPlan.view90Day')}
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Meal Detail Modal */}
       {selectedMeal && (
