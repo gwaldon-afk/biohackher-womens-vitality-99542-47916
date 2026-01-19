@@ -142,6 +142,10 @@ const MATCHERS: Array<{
     test: (p) => p === "/hormone-compass/results",
     meta: () => ({ title: "Results", shell: "flow", showBack: true, parentRoute: "/hormone-compass/assessment" }),
   },
+  {
+    test: (p) => p === "/today-preview",
+    meta: () => ({ title: "Today preview", shell: "flow", showBack: true, parentRoute: "/plan-home" }),
+  },
 
   // Energy loop: treat as focused subflow except dashboard
   {
