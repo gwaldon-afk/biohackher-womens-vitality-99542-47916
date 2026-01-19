@@ -13,6 +13,7 @@ import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFro
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useLocale } from '@/hooks/useLocale';
 import { useProtocols } from '@/hooks/useProtocols';
 import { Product, searchProductsBySymptoms, formatProductPrice, getProductPrice, getProducts } from '@/services/productService';
@@ -31,6 +32,8 @@ import {
 } from '@/utils/hormoneCompassProtocolGenerator';
 import { useState, useEffect, useMemo } from 'react';
 import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPreview';
+import { LockedProtocolPreview } from '@/components/assessment/LockedProtocolPreview';
+import { TrialGateCard } from '@/components/subscription/TrialGateCard';
 import { useProtocolRecommendations } from '@/hooks/useProtocolRecommendations';
 
 // Health level key mapping for translations
@@ -69,6 +72,7 @@ const HEALTH_LEVEL_KEYS: Record<string, {
 export default function HormoneCompassResults() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -76,6 +80,7 @@ export default function HormoneCompassResults() {
   const { profile } = useHealthProfile();
   const { isMetric, getCurrentLocale } = useLocale();
   const { addProtocolFromLibrary, protocols, fetchProtocolItems } = useProtocols();
+  const trialAccess = hasTrialAccess();
   const [productMatches, setProductMatches] = useState<Record<string, Product | null>>({});
   const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
   const [currentRecommendationId, setCurrentRecommendationId] = useState<string | null>(null);
@@ -891,8 +896,8 @@ export default function HormoneCompassResults() {
         </CardContent>
       </Card>
 
-      {/* Inline Protocol Preview - For Logged In Users */}
-      {user && protocol && (
+      {/* Inline Protocol Preview - Only for trial/subscribed users */}
+      {user && trialAccess && protocol && (
         <InlineProtocolPreview
           protocolData={{
             immediate: protocol.immediate.map(item => ({
@@ -913,8 +918,17 @@ export default function HormoneCompassResults() {
         />
       )}
 
-      {/* Personalized Protocol Preview - Detailed View (logged-in only) */}
-      {user ? (
+      {/* Locked protocol preview for guests or registered users without trial */}
+      {!trialAccess && (
+        <LockedProtocolPreview
+          title="Protocol preview"
+          subtitle="Unlock full protocol details with a free account and trial."
+          protocolData={protocol}
+        />
+      )}
+
+      {/* Personalized Protocol Preview - Detailed View (trial/subscribed only) */}
+      {user && trialAccess ? (
         <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/30 shadow-lg">
           <CardHeader className="bg-gradient-to-r from-primary/5 to-background">
             <CardTitle className="flex items-center gap-2">
@@ -994,52 +1008,23 @@ export default function HormoneCompassResults() {
             </div>
           </CardContent>
         </Card>
+      ) : user ? (
+        <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
       ) : (
         <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
           <CardContent className="p-6 text-center space-y-3">
             <Target className="w-10 h-10 text-primary mx-auto" />
-            <p className="font-semibold">{t('hormoneResults.createFreeAccountSave')}</p>
-            <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
-              {t('hormoneResults.createFreeAccount')}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Guest Registration CTA */}
-      {!user && (
-        <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-primary/30">
-          <CardContent className="p-6">
-            <div className="text-center space-y-4">
-              <Sparkles className="w-12 h-12 text-primary mx-auto" />
-              <h3 className="text-xl font-bold">{t('hormoneResults.guestCtaTitle')}</h3>
-              <div className="grid grid-cols-2 gap-4 text-left">
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{t('hormoneResults.saveProtocol')}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{t('hormoneResults.dailyTracking')}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{t('hormoneResults.monthlyReassessments')}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{t('hormoneResults.aiInsights')}</span>
-                </div>
-              </div>
-              <Button onClick={() => navigate('/auth')} size="lg" className="w-full">
-                {t('hormoneResults.createFreeAccount')}
+            <h3 className="text-xl font-bold">Want the detailed protocols?</h3>
+            <p className="text-muted-foreground">
+              Create a free account to save your results and unlock the full protocol breakdown.
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button onClick={() => navigate('/auth')} className="w-full" size="lg">
+                Create free account
               </Button>
-              <p className="text-xs text-muted-foreground">
-                {t('hormoneResults.freeTrial')}
-              </p>
-              <p className="text-xs text-amber-600/80 dark:text-amber-400/80 mt-2">
-                {t('hormoneResults.guestDisclaimer')}
-              </p>
+              <Button variant="ghost" onClick={() => navigate("/")}>
+                Not now
+              </Button>
             </div>
           </CardContent>
         </Card>

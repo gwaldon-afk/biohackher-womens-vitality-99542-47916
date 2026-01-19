@@ -7,11 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Calendar, CheckCircle2, PlayCircle, Timer, Utensils, Activity, Brain, Heart, Sparkles, Pill, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { SupplementProductCard } from "@/components/SupplementProductCard";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "@/services/productService";
 import { matchSupplementToProduct } from "@/utils/supplementMatcher";
 import { useCart } from "@/hooks/useCart";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 interface DayPlan {
   day: number;
@@ -45,9 +47,21 @@ const SevenDayPlan = () => {
   const { pillar } = useParams<{ pillar: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
   const { addToCart } = useCart();
   const [currentDay, setCurrentDay] = useState(1);
   const [completedActivities, setCompletedActivities] = useState<Set<string>>(new Set());
+  const trialAccess = hasTrialAccess();
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background p-4 pb-24">
+        <div className="max-w-5xl mx-auto pt-6">
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+        </div>
+      </div>
+    );
+  }
 
   // Fetch products for supplement matching
   const { data: products = [] } = useQuery({

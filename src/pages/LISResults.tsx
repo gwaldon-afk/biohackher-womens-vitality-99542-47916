@@ -18,6 +18,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { AssessmentAIAnalysisCard } from '@/components/AssessmentAIAnalysisCard';
 import { useProtocolGeneration } from '@/hooks/useProtocolGeneration';
 import { useProtocols } from '@/hooks/useProtocols';
+import { useSubscription } from '@/hooks/useSubscription';
 import { LISPillarAnalysisCard } from '@/components/LISPillarAnalysisCard';
 import { generatePillarAnalysis } from '@/utils/pillarAnalysisGenerator';
 import { EmailShareDialog } from '@/components/EmailShareDialog';
@@ -27,13 +28,17 @@ import { CreateGoalFromAssessmentDialog } from '@/components/goals/CreateGoalFro
 import ShopYourProtocolButton from '@/components/ShopYourProtocolButton';
 import { MethodologyDisclaimer } from '@/components/assessment/MethodologyDisclaimer';
 import { InlineProtocolPreview } from '@/components/assessment/InlineProtocolPreview';
+import { LockedProtocolPreview } from '@/components/assessment/LockedProtocolPreview';
+import { TrialGateCard } from '@/components/subscription/TrialGateCard';
 
 const LISResults = () => {
   const navigate = useNavigate();
   const { t, ready } = useTranslation();
   const { user, loading } = useAuth();
+  const { hasTrialAccess } = useSubscription();
   const [searchParams] = useSearchParams();
   const isGuest = !user;
+  const trialAccess = hasTrialAccess();
   const score = parseFloat(searchParams.get('score') || '0');
   const urlAge = searchParams.get('age');
   const lisData = useLISData();
@@ -991,13 +996,22 @@ const LISResults = () => {
         </Accordion>
       </div>
 
-      {/* Inline Protocol Preview - For Logged In Users */}
-      {user && (
+      {/* Inline Protocol Preview - Only for trial/subscribed users */}
+      {user && trialAccess && (
         <InlineProtocolPreview
           protocolData={lisProtocol}
           sourceType="lis"
           sourceAssessmentId="lis-baseline"
           onProtocolSaved={() => refetchRecommendations()}
+        />
+      )}
+
+      {/* Locked protocol preview for guests or registered users without trial */}
+      {!trialAccess && (
+        <LockedProtocolPreview
+          title="Protocol preview"
+          subtitle="Unlock full protocol details with a free account and trial."
+          protocolData={lisProtocol}
         />
       )}
 
@@ -1010,56 +1024,27 @@ const LISResults = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/20 mb-2">
                   <Sparkles className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold">{t('lisResults.guestCta.title')}</h3>
+                <h3 className="text-2xl font-bold">Want the detailed protocols?</h3>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  {t('lisResults.guestCta.description')}
+                  Create a free account to save your results and unlock the full protocol breakdown.
                 </p>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left max-w-2xl mx-auto mb-4">
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit1')}</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit2')}</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit3')}</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit4')}</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit5')}</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm">
-                    <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <span>{t('lisResults.guestCta.benefit6')}</span>
-                  </li>
-                </ul>
-                <Button 
-                  onClick={() => {
-                    if (user) {
-                      handleGenerateProtocol();
-                    } else {
+                <div className="flex flex-col gap-2 items-center">
+                  <Button 
+                    onClick={() => {
                       const sessionId = localStorage.getItem('lis_guest_session_id');
                       const returnTo = encodeURIComponent('/lis-results');
                       const sessionParam = sessionId ? `&session=${encodeURIComponent(sessionId)}` : '';
                       navigate(`/auth?source=lis-results&returnTo=${returnTo}${sessionParam}`);
-                    }
-                  }} 
-                  size="lg"
-                  className="text-lg px-8 py-6 h-auto"
-                  disabled={user && generatingProtocol}
-                >
-                  {user ? t('lisResults.guestCta.unlockProtocol') : t('lisResults.guestCta.createAccount')}
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  {t('lisResults.guestCta.trial')}
-                </p>
+                    }} 
+                    size="lg"
+                    className="text-lg px-8 py-6 h-auto"
+                  >
+                    Create free account
+                  </Button>
+                  <Button variant="ghost" onClick={() => navigate("/")}>
+                    Not now
+                  </Button>
+                </div>
                 
                 {/* Email and Share Buttons for Guests */}
                 <div className="flex gap-3 justify-center mt-4">
@@ -1085,7 +1070,13 @@ const LISResults = () => {
           )}
 
           {/* Registered User - Show Comprehensive Insights */}
-          {!isGuest && (
+          {user && !trialAccess && (
+            <div className="mt-6">
+              <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+            </div>
+          )}
+
+          {user && trialAccess && (
             <div className="mt-6 space-y-6">
               {/* View Protocol CTA */}
               {user && (

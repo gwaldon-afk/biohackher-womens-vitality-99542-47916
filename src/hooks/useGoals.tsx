@@ -90,9 +90,7 @@ export const useGoals = () => {
       .insert({
         user_id: userId,
         subscription_tier: 'registered',
-        subscription_status: 'trialing',
-        trial_start_date: new Date().toISOString(),
-        trial_end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        subscription_status: 'active',
       })
       .select()
       .single();

@@ -277,7 +277,7 @@ const App = () => (
                     <Route path="/onboarding/goal-affirmation" element={<GoalAffirmation />} />
 
                     {/* New User Journey Routes */}
-                    <Route path="/plan-home" element={<ProtectedRoute><PlanHome /></ProtectedRoute>} />
+                    <Route path="/plan-home" element={<PlanHome />} />
                     <Route path="/nutrition-scan" element={<ProtectedRoute><NutritionScan /></ProtectedRoute>} />
                     <Route path="/mood-checkin" element={<ProtectedRoute><MoodCheckin /></ProtectedRoute>} />
                     <Route path="/quick-log" element={<ProtectedRoute><QuickLog /></ProtectedRoute>} />

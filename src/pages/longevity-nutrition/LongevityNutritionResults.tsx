@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Activity, Brain, Heart, Sparkles, Mail, ShoppingCart, Target, CheckCircle2 } from "lucide-react";
@@ -21,6 +22,8 @@ import { MetabolicAgeDisplay } from "@/components/nutrition/MetabolicAgeDisplay"
 import { ProtocolSelectionDialog } from "@/components/ProtocolSelectionDialog";
 import { useProtocolRecommendations } from "@/hooks/useProtocolRecommendations";
 import { InlineProtocolPreview } from "@/components/assessment/InlineProtocolPreview";
+import { LockedProtocolPreview } from "@/components/assessment/LockedProtocolPreview";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 import { filterDuplicateItems } from "@/utils/protocolDuplicateCheck";
 
 // Protocol Item Card Component
@@ -118,6 +121,8 @@ export default function LongevityNutritionResults() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
+  const trialAccess = hasTrialAccess();
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [assessment, setAssessment] = useState<any>(null);
@@ -695,8 +700,8 @@ export default function LongevityNutritionResults() {
           </Card>
         )}
 
-        {/* Inline Protocol Preview - For Logged In Users */}
-        {user && nutritionProtocol && (
+        {/* Inline Protocol Preview - Only for trial/subscribed users */}
+        {user && trialAccess && nutritionProtocol && (
           <InlineProtocolPreview
             protocolData={{
               immediate: nutritionProtocol.immediate.map(item => ({
@@ -718,17 +723,26 @@ export default function LongevityNutritionResults() {
           />
         )}
 
-        {/* Protocol Recommendations Section - For Guests and detailed view */}
-        <div className="space-y-6">
-          <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">{t('nutritionResults.protocolTitle')}</h2>
-                <p className="text-muted-foreground">
-                  {t('nutritionResults.protocolSubtitle')}
-                </p>
-              </div>
-              {user && (
+        {/* Locked protocol preview for guests or registered users without trial */}
+        {!trialAccess && (
+          <LockedProtocolPreview
+            title="Protocol preview"
+            subtitle="Unlock full protocol details with a free account and trial."
+            protocolData={nutritionProtocol}
+          />
+        )}
+
+        {/* Protocol Recommendations Section - Full detail for trial/subscribed users */}
+        {trialAccess && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background border-2 border-primary/20 rounded-lg p-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">{t('nutritionResults.protocolTitle')}</h2>
+                  <p className="text-muted-foreground">
+                    {t('nutritionResults.protocolSubtitle')}
+                  </p>
+                </div>
                 <Button 
                   onClick={handleReviewFullProtocol}
                   size="lg"
@@ -737,113 +751,107 @@ export default function LongevityNutritionResults() {
                   <Target className="w-4 h-4" />
                   {t('nutritionResults.reviewFullProtocol')}
                 </Button>
-              )}
+              </div>
             </div>
+
+            {/* Immediate Actions */}
+            {nutritionProtocol.immediate.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-1 bg-red-500 rounded-full" />
+                  <h3 className="text-xl font-bold">{t('nutritionResults.startNow')}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">{t('nutritionResults.criticalGaps')}</p>
+                <div className="space-y-3">
+                  {nutritionProtocol.immediate.map((item, idx) => (
+                    <ProtocolItemCard
+                      key={idx}
+                      item={item}
+                      matchedProduct={productMatches[item.name]}
+                      onAddToCart={handleAddToCart}
+                      onAddToProtocol={handleAddToProtocol}
+                      isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
+                      isGuest={!user}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Foundation */}
+            {nutritionProtocol.foundation.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-1 bg-orange-500 rounded-full" />
+                  <h3 className="text-xl font-bold">{t('nutritionResults.foundation')}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">{t('nutritionResults.coreLongevity')}</p>
+                <div className="space-y-3">
+                  {nutritionProtocol.foundation.map((item, idx) => (
+                    <ProtocolItemCard
+                      key={idx}
+                      item={item}
+                      matchedProduct={productMatches[item.name]}
+                      onAddToCart={handleAddToCart}
+                      onAddToProtocol={handleAddToProtocol}
+                      isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
+                      isGuest={!user}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Optimization */}
+            {nutritionProtocol.optimization.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-1 bg-green-500 rounded-full" />
+                  <h3 className="text-xl font-bold">{t('nutritionResults.optimisation')}</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">{t('nutritionResults.advancedSupport')}</p>
+                <div className="space-y-3">
+                  {nutritionProtocol.optimization.map((item, idx) => (
+                    <ProtocolItemCard
+                      key={idx}
+                      item={item}
+                      matchedProduct={productMatches[item.name]}
+                      onAddToCart={handleAddToCart}
+                      onAddToProtocol={handleAddToProtocol}
+                      isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
+                      isGuest={!user}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        )}
 
-          {/* Immediate Actions */}
-          {nutritionProtocol.immediate.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-red-500 rounded-full" />
-                <h3 className="text-xl font-bold">{t('nutritionResults.startNow')}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">{t('nutritionResults.criticalGaps')}</p>
-              <div className="space-y-3">
-                {nutritionProtocol.immediate.map((item, idx) => (
-                  <ProtocolItemCard
-                    key={idx}
-                    item={item}
-                    matchedProduct={productMatches[item.name]}
-                    onAddToCart={handleAddToCart}
-                    onAddToProtocol={handleAddToProtocol}
-                    isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
-                    isGuest={!user}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Foundation */}
-          {nutritionProtocol.foundation.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-orange-500 rounded-full" />
-                <h3 className="text-xl font-bold">{t('nutritionResults.foundation')}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">{t('nutritionResults.coreLongevity')}</p>
-              <div className="space-y-3">
-                {nutritionProtocol.foundation.map((item, idx) => (
-                  <ProtocolItemCard
-                    key={idx}
-                    item={item}
-                    matchedProduct={productMatches[item.name]}
-                    onAddToCart={handleAddToCart}
-                    onAddToProtocol={handleAddToProtocol}
-                    isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
-                    isGuest={!user}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Optimization */}
-          {nutritionProtocol.optimization.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-green-500 rounded-full" />
-                <h3 className="text-xl font-bold">{t('nutritionResults.optimisation')}</h3>
-              </div>
-              <p className="text-sm text-muted-foreground">{t('nutritionResults.advancedSupport')}</p>
-              <div className="space-y-3">
-                {nutritionProtocol.optimization.map((item, idx) => (
-                  <ProtocolItemCard
-                    key={idx}
-                    item={item}
-                    matchedProduct={productMatches[item.name]}
-                    onAddToCart={handleAddToCart}
-                    onAddToProtocol={handleAddToProtocol}
-                    isAdded={addedToProtocol.has(item.name.toLowerCase().trim())}
-                    isGuest={!user}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        {user && !trialAccess && (
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+        )}
 
         {/* Guest Registration CTA */}
         {!user && (
           <Card className="p-8 border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-secondary/5 to-background shadow-lg">
             <div className="text-center space-y-4">
               <ShoppingCart className="h-12 w-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-bold">{t('nutritionResults.guestCtaTitle')}</h2>
+              <h2 className="text-2xl font-bold">Want the detailed protocols?</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                {t('nutritionResults.guestCtaSubtitle')}
+                Create a free account to save your results and unlock the full protocol breakdown.
               </p>
-              <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto my-6">
-                <div className="text-center">
-                  <div className="font-semibold">{t('nutritionResults.saveProtocolToDashboard')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold">{t('nutritionResults.purchaseSupplements')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold">{t('nutritionResults.dailyNutritionTracking')}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold">{t('nutritionResults.monthlyReassessments')}</div>
-                </div>
+              <div className="flex flex-col gap-2 items-center">
+                <Button size="lg" onClick={() => {
+                  const sessionId = assessment?.session_id || localStorage.getItem('nutrition_guest_session');
+                  navigate(sessionId ? `/auth?session=${sessionId}&source=nutrition` : "/auth");
+                }} className="text-lg px-8">
+                  Create free account
+                </Button>
+                <Button variant="ghost" onClick={() => navigate("/")}>
+                  Not now
+                </Button>
               </div>
-              <Button size="lg" onClick={() => {
-                const sessionId = assessment?.session_id || localStorage.getItem('nutrition_guest_session');
-                navigate(sessionId ? `/auth?session=${sessionId}&source=nutrition` : "/auth");
-              }} className="text-lg px-8">
-                {t('nutritionResults.createFreeAccount')}
-              </Button>
-              <p className="text-xs text-muted-foreground">{t('nutritionResults.freeTrial')}</p>
             </div>
           </Card>
         )}

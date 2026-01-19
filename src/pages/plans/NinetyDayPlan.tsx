@@ -3,14 +3,18 @@ import { useTranslation } from "react-i18next";
 import { NinetyDayPlanOverview } from "@/components/NinetyDayPlanOverview";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import AssessmentGatewayScreen from "@/components/AssessmentGatewayScreen";
 import { Button } from "@/components/ui/button";
 import { Calendar, ChevronLeft } from "lucide-react";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 export default function NinetyDayPlan() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
+  const trialAccess = hasTrialAccess();
   const breadcrumbs = [
     { label: t('common.home'), href: "/" },
     { label: t('weeklyPlan.myPlans'), href: "/today" },
@@ -24,6 +28,8 @@ export default function NinetyDayPlan() {
         
         {!user ? (
           <AssessmentGatewayScreen pageName="90-day" />
+        ) : !trialAccess ? (
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
         ) : (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

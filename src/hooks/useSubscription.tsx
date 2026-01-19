@@ -15,12 +15,6 @@ export interface SubscriptionData {
   last_submission_date?: string;
 }
 
-const getTrialDays = (): number => {
-  const raw = import.meta.env.VITE_TRIAL_DAYS;
-  const parsed = raw ? Number(raw) : NaN;
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 7;
-};
-
 // Mock subscription for test mode - reads from localStorage tier selection
 const getMockSubscription = (): SubscriptionData | null => {
   const selectedTier = localStorage.getItem('testModeTier') || 'premium';
@@ -53,18 +47,12 @@ export const useSubscription = () => {
   };
 
   const ensureSubscriptionExists = async (userId: string): Promise<SubscriptionData> => {
-    const trialDays = getTrialDays();
-    const now = new Date();
-    const trialEnd = new Date(now.getTime() + trialDays * 24 * 60 * 60 * 1000);
-
     const { data, error } = await supabase
       .from('user_subscriptions')
       .insert({
         user_id: userId,
         subscription_tier: 'registered',
-        subscription_status: 'trialing',
-        trial_start_date: now.toISOString(),
-        trial_end_date: trialEnd.toISOString(),
+        subscription_status: 'active',
         daily_submissions_count: 0,
       })
       .select('*')
@@ -137,6 +125,10 @@ export const useSubscription = () => {
     return subscription.subscription_tier === 'subscribed' || subscription.subscription_tier === 'premium';
   };
 
+  const hasTrialAccess = () => {
+    return isTrialing() || isSubscribed();
+  };
+
   const canSubmitDaily = () => {
     if (!subscription) return false;
     return isTrialing() || isSubscribed();
@@ -155,6 +147,7 @@ export const useSubscription = () => {
     loading,
     isTrialing,
     isSubscribed,
+    hasTrialAccess,
     canSubmitDaily,
     getDaysRemainingInTrial,
     refetch: fetchSubscription

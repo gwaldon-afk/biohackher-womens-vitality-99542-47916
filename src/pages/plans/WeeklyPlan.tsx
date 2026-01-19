@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useWeeklyPlan, DayPlanData, WeeklyAction } from "@/hooks/useWeeklyPlan";
 import AssessmentGatewayScreen from "@/components/AssessmentGatewayScreen";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 import {
   Calendar,
   Sun,
@@ -171,7 +173,9 @@ export default function WeeklyPlan() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
   const { weeklyData, loading } = useWeeklyPlan();
+  const trialAccess = hasTrialAccess();
   
   // Find today's index for default tab
   const todayIndex = weeklyData?.days.findIndex(d => d.isToday) ?? 0;
@@ -189,6 +193,16 @@ export default function WeeklyPlan() {
         <main className="container mx-auto px-4 py-8 max-w-5xl">
           <AssessmentGatewayScreen pageName="weekly" />
         </main>
+      </div>
+    );
+  }
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background p-4 pb-24">
+        <div className="max-w-5xl mx-auto pt-6">
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+        </div>
       </div>
     );
   }

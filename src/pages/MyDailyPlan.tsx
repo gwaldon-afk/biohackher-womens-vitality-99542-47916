@@ -5,12 +5,16 @@ import { OnboardingGoalPrompt } from "@/components/onboarding/OnboardingGoalProm
 import { DailyCheckInEntry } from "@/components/checkin/DailyCheckInEntry";
 import { useAuth } from "@/hooks/useAuth";
 import { useGoals } from "@/hooks/useGoals";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { TrialCountdownBanner } from "@/components/subscription/TrialCountdownBanner";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 export default function MyDailyPlan() {
   const { user } = useAuth();
   const { goals } = useGoals();
+  const { hasTrialAccess } = useSubscription();
+  const trialAccess = hasTrialAccess();
   const [showTour, setShowTour] = useState(false);
   const [showGoalPrompt, setShowGoalPrompt] = useState(false);
   const [lowestPillars, setLowestPillars] = useState<{ pillar: string; score: number }[]>([]);
@@ -82,6 +86,16 @@ export default function MyDailyPlan() {
   const handleGoalPromptClose = () => {
     setShowGoalPrompt(false);
   };
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="container mx-auto px-4 py-8 pb-24 md:pb-8 max-w-5xl">
+          <TrialGateCard />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

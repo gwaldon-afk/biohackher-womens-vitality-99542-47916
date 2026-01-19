@@ -8,17 +8,20 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, Utensils, Dumbbell, Pill, Sparkles, Heart, Search, Loader2 } from "lucide-react";
 import { ProtocolLibraryCard } from "@/components/ProtocolLibraryCard";
 import { useProtocols } from "@/hooks/useProtocols";
+import { useSubscription } from "@/hooks/useSubscription";
 import { fetchAllLibraryProtocols, getProtocolsByCategory, LibraryProtocol } from "@/services/protocolLibraryService";
 import { useToast } from "@/hooks/use-toast";
 import { EvidenceBasedIntervention } from "@/data/evidenceBasedProtocols";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EvidenceExplainer from "@/components/EvidenceExplainer";
 import { supabase } from "@/integrations/supabase/client";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 const ProtocolLibrary = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addProtocolFromLibrary } = useProtocols();
+  const { hasTrialAccess } = useSubscription();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [protocols, setProtocols] = useState<LibraryProtocol[]>([]);
@@ -27,6 +30,17 @@ const ProtocolLibrary = () => {
   const [extractedKeywords, setExtractedKeywords] = useState<string[]>([]);
   const [isExtracting, setIsExtracting] = useState(false);
   const [primaryIntent, setPrimaryIntent] = useState<string>('');
+  const trialAccess = hasTrialAccess();
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background p-4 pb-24">
+        <div className="max-w-5xl mx-auto pt-6">
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+        </div>
+      </div>
+    );
+  }
 
   const categories = [
     { id: "all", label: "All Protocols", icon: Activity },

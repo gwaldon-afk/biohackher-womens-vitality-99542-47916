@@ -6,10 +6,18 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import CheckinMenu from "@/components/CheckinMenu";
 import GlowMeter_Ring from "@/components/GlowMeter_Ring";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
+import { useNavigate } from "react-router-dom";
 
 const PlanHome = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [bioScore, setBioScore] = useState(0);
+  const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
+  const trialAccess = hasTrialAccess();
 
   const pillarCards = [
     {
@@ -48,6 +56,40 @@ const PlanHome = () => {
       setBioScore(parseInt(stored));
     }
   }, []);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 pb-24">
+        <div className="max-w-4xl mx-auto pt-8">
+          <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-secondary/5 to-background p-6 text-center space-y-4">
+            <Sparkles className="h-12 w-12 mx-auto text-primary" />
+            <h2 className="text-2xl font-bold">Want the detailed protocols?</h2>
+            <p className="text-muted-foreground">
+              Create a free account to save your results and unlock the full protocol breakdown.
+            </p>
+            <div className="flex flex-col gap-2 items-center">
+              <Button size="lg" onClick={() => navigate('/auth')}>
+                Create free account
+              </Button>
+              <Button variant="ghost" onClick={() => navigate('/')}>
+                Not now
+              </Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 pb-24">
+        <div className="max-w-4xl mx-auto pt-8">
+          <TrialGateCard />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-4 pb-24">

@@ -3,8 +3,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Dumbbell } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 export default function TwentyEightDayPlan() {
+  const { hasTrialAccess } = useSubscription();
+  const trialAccess = hasTrialAccess();
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background p-4 pb-24">
+        <div className="max-w-6xl mx-auto pt-6">
+          <TrialGateCard />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container mx-auto px-4 py-10 pb-24 md:pb-10 max-w-6xl space-y-6">

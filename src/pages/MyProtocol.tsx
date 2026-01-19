@@ -11,6 +11,7 @@ import balancePillar from "@/assets/balance-pillar.png";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { matchProductsToAssessment, calculateBundlePrice } from "@/utils/productMatcher";
 import { useAdherence } from "@/hooks/useAdherence";
 import { ProtocolItemCard } from "@/components/ProtocolItemCard";
@@ -34,6 +35,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { navigateBack } from "@/utils/navigationUtils";
+import { TrialGateCard } from "@/components/subscription/TrialGateCard";
 
 interface AssessmentData {
   id: string;
@@ -47,6 +49,7 @@ const MyProtocol = () => {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { hasTrialAccess } = useSubscription();
   const { t } = useTranslation();
   const { adherence, toggleAdherence } = useAdherence();
   const { addToCart } = useCart();
@@ -65,6 +68,8 @@ const MyProtocol = () => {
   const [historyStatusFilter, setHistoryStatusFilter] = useState<string>('all');
   const [historySortBy, setHistorySortBy] = useState<string>('date-desc');
 
+  const trialAccess = hasTrialAccess();
+
   // Use React Query hooks
   const { data: protocols = [], isLoading: loadingProtocols } = useProtocols(user?.id);
   const deleteProtocolMutation = useDeleteProtocol();
@@ -78,6 +83,16 @@ const MyProtocol = () => {
     dismissRecommendation,
     pendingCount 
   } = useProtocolRecommendations({ status: 'pending' });
+
+  if (!trialAccess) {
+    return (
+      <div className="min-h-screen bg-background p-4 pb-24">
+        <div className="max-w-5xl mx-auto pt-6">
+          <TrialGateCard onKeepExploring={() => navigate('/biohacking-toolkit')} />
+        </div>
+      </div>
+    );
+  }
   
   // Filter and sort recommended protocols
   const filteredRecommendations = useMemo(() => {
