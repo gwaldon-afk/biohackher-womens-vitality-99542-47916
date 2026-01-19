@@ -3257,6 +3257,35 @@
     "programSavedDescription": "Your exercise programme has been set up and is ready to start.",
     "saveFailed": "Failed to save programme. Please try again."
   },
+  "todayPreview": {
+    "title": "Your Today Plan (Preview)",
+    "subtitle": "This is a preview of how BiohackHer turns your assessments into daily actions.",
+    "cta": {
+      "title": "Want your plan personalised?",
+      "body": "Create a free account to save your results, unlock detailed protocols, and generate your full Today Plan.",
+      "primary": "Create free account",
+      "secondary": "Not now"
+    },
+    "empty": {
+      "title": "Start with a quick assessment",
+      "body": "Complete one free assessment to generate your Today Plan preview.",
+      "primary": "Start an assessment",
+      "secondary": "Back"
+    },
+    "locked": {
+      "badge": "Locked",
+      "modalTitle": "Unlock the full plan",
+      "modalBody": "Create a free account to unlock detailed protocols and personalise your plan.",
+      "modalPrimary": "Create free account",
+      "modalSecondary": "Not now"
+    },
+    "action": {
+      "breathwork": "5-minute breathwork",
+      "breakfast": "Protein-forward breakfast",
+      "strengthLocked": "Strength session",
+      "protocolLocked": "Protocol details"
+    }
+  },
   "common": {
     "back": "Back",
     "continue": "Continue",
