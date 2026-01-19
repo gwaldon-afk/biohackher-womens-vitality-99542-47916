@@ -12,13 +12,14 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const isTodayPreview = location.pathname === "/today-preview";
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isTodayPreview) {
       // Save current path to return after authentication
       const returnTo = encodeURIComponent(location.pathname + location.search);
       navigate(`/auth?returnTo=${returnTo}`);
     }
-  }, [user, loading, navigate, location]);
+  }, [user, loading, navigate, location, isTodayPreview]);
 
   if (loading) {
     return (
@@ -31,7 +32,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (!user) {
+  if (!user && !isTodayPreview) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-3">
