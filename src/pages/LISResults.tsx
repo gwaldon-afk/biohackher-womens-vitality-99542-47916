@@ -40,6 +40,9 @@ const LISResults = () => {
   const { toast } = useToast();
   const { generateProtocolFromAssessments, loading: protocolGenerating } = useProtocolGeneration();
   const { protocols, loading: protocolsLoading } = useProtocols();
+  const pendingProfileKey = 'lis_pending_profile_save';
+  const profileNoticeKey = 'lis_profile_save_notice';
+  const [showProfileSaveNotice, setShowProfileSaveNotice] = useState(false);
   
   // Check if this is a new baseline assessment
   const isNewBaseline = searchParams.get('isNewBaseline') === 'true';
@@ -84,6 +87,39 @@ const LISResults = () => {
       fetchBaseline();
     }
   }, [isNewBaseline, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const pending = localStorage.getItem(pendingProfileKey);
+    const shouldShowNotice = localStorage.getItem(profileNoticeKey) === 'true';
+    if (!pending && !shouldShowNotice) return;
+    if (shouldShowNotice) {
+      setShowProfileSaveNotice(true);
+    }
+
+    const retryProfileSave = async () => {
+      if (!pending) {
+        return;
+      }
+
+      try {
+        const payload = JSON.parse(pending);
+        const { error } = await supabase
+          .from('user_health_profile')
+          .upsert(payload, { onConflict: 'user_id' });
+
+        if (error) throw error;
+
+        localStorage.removeItem(pendingProfileKey);
+        localStorage.removeItem(profileNoticeKey);
+      } catch (error) {
+        console.error('Retry profile save failed:', error);
+        setShowProfileSaveNotice(true);
+      }
+    };
+
+    retryProfileSave();
+  }, [user]);
 
   // Generate LIS-based protocol from pillar scores
   const generateLISProtocol = (pillarScores: any) => {
@@ -509,6 +545,15 @@ const LISResults = () => {
             >
               {t('lisResults.sharedBanner.cta')}
             </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {showProfileSaveNotice && (
+        <Alert className="mb-6 border-amber-200 bg-amber-50/60 text-amber-900">
+          <AlertTriangle className="h-5 w-5 text-amber-600" />
+          <AlertDescription>
+            We couldn't finish saving your details just yet - your results are ready, and we'll retry automatically.
           </AlertDescription>
         </Alert>
       )}

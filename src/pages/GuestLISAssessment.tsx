@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
@@ -716,6 +715,8 @@ export default function GuestLISAssessment() {
   const [answers, setAnswers] = useState<Record<string, QuestionOption>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const pendingProfileKey = 'lis_pending_profile_save';
+  const profileNoticeKey = 'lis_profile_save_notice';
 
   // Check guest gate on mount
   useEffect(() => {
@@ -804,10 +805,8 @@ export default function GuestLISAssessment() {
     setShowBaseline(false);
   };
 
-  // Calculate total questions and progress
+  // Calculate total questions
   const totalQuestions = ASSESSMENT_QUESTIONS.length;
-  const answeredQuestions = Object.keys(answers).length;
-  const progress = showBaseline ? 0 : (answeredQuestions / totalQuestions) * 100;
 
   const handleExitToHome = () => {
     setShowExitDialog(false);
@@ -819,9 +818,6 @@ export default function GuestLISAssessment() {
       ...prev,
       [questionId]: option
     }));
-    
-    // Auto-advance after 400ms
-    setTimeout(() => handleNext(), 400);
   };
 
   const handleNext = () => {
@@ -1001,112 +997,114 @@ export default function GuestLISAssessment() {
           }
         }
 
-        // 1. Create/update health profile
-        const { error: profileError } = await supabase
-          .from('user_health_profile')
-          .upsert({
-            user_id: user.id,
-            date_of_birth: baselineData.dateOfBirth,
-            height_cm: parseFloat(baselineData.heightCm),
-            weight_kg: parseFloat(baselineData.weightKg),
-            current_bmi: calculateBMI(),
-            activity_level: activityLevel,
-          }, {
-            onConflict: 'user_id'
-          });
+        const profilePayload = {
+          user_id: user.id,
+          date_of_birth: baselineData.dateOfBirth,
+          height_cm: parseFloat(baselineData.heightCm),
+          weight_kg: parseFloat(baselineData.weightKg),
+          current_bmi: calculateBMI(),
+          activity_level: activityLevel,
+        };
 
-        if (profileError) {
-          console.error('Error saving health profile:', profileError);
-          toast.error(t('lisAssessment.toasts.failedSaveProfile'));
-          return;
-        }
+        const runBackgroundSaves = async () => {
+          try {
+            const { error: profileError } = await supabase
+              .from('user_health_profile')
+              .upsert(profilePayload, { onConflict: 'user_id' });
 
-        // 2. Create baseline daily_score (upsert to handle duplicates)
-        const { error: scoreError } = await supabase
-          .from('daily_scores')
-          .upsert({
-            user_id: user.id,
-            date: new Date().toISOString().split('T')[0],
-            longevity_impact_score: scoreData.finalScore,
-            biological_age_impact: scoreData.finalScore,
-            is_baseline: true,
-            assessment_type: 'lifestyle_baseline',
-            user_chronological_age: age,
-            lis_version: 'LIS 2.0',
-            source_type: 'manual_entry',
-            sleep_score: scoreData.pillarScores.sleep || 0,
-            stress_score: scoreData.pillarScores.stress || 0,
-            physical_activity_score: scoreData.pillarScores.activity || 0,
-            nutrition_score: scoreData.pillarScores.nutrition || 0,
-            social_connections_score: scoreData.pillarScores.social || 0,
-            cognitive_engagement_score: scoreData.pillarScores.cognitive || 0,
-            color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
-          }, {
-            onConflict: 'user_id,date'
-          });
-
-        if (scoreError) {
-          console.error('Error saving daily score:', scoreError);
-          // Don't block the flow for duplicate entries
-        }
-
-        // 3. Create synthetic assessment_completions for protocol generation
-        const syntheticAssessments = [
-          { assessment_id: 'sleep-quality', pillar: 'sleep', score: scoreData.pillarScores.sleep || 0 },
-          { assessment_id: 'stress-management', pillar: 'stress', score: scoreData.pillarScores.stress || 0 },
-          { assessment_id: 'cognitive-function', pillar: 'cognitive', score: scoreData.pillarScores.cognitive || 0 },
-          { assessment_id: 'physical-activity', pillar: 'activity', score: scoreData.pillarScores.activity || 0 },
-          { assessment_id: 'nutrition-quality', pillar: 'nutrition', score: scoreData.pillarScores.nutrition || 0 },
-          { assessment_id: 'social-connection', pillar: 'social', score: scoreData.pillarScores.social || 0 },
-        ];
-
-        for (const assessment of syntheticAssessments) {
-          await supabase.from('user_assessment_completions').insert({
-            user_id: user.id,
-            assessment_id: assessment.assessment_id,
-            pillar: assessment.pillar,
-            score: assessment.score,
-            completed_at: new Date().toISOString()
-          });
-        }
-
-        // 4. Generate protocol automatically
-        toast.promise(
-          supabase.functions.invoke('generate-protocol-from-assessments', { body: {} }),
-          {
-            loading: t('lisAssessment.toasts.generatingProtocol'),
-            success: (result) => {
-              const data = result.data;
-              return t('lisAssessment.toasts.protocolCreated', { count: data?.items_count || 0 });
-            },
-            error: t('lisAssessment.toasts.protocolBackground')
+            if (profileError) {
+              console.error('Error saving health profile:', profileError);
+              localStorage.setItem(pendingProfileKey, JSON.stringify(profilePayload));
+              localStorage.setItem(profileNoticeKey, 'true');
+            } else {
+              localStorage.removeItem(pendingProfileKey);
+              localStorage.removeItem(profileNoticeKey);
+            }
+          } catch (profileSaveError) {
+            console.error('Error saving health profile:', profileSaveError);
+            localStorage.setItem(pendingProfileKey, JSON.stringify(profilePayload));
+            localStorage.setItem(profileNoticeKey, 'true');
           }
-        );
 
-        // 5. Mark onboarding as complete
-        await supabase
-          .from('profiles')
-          .update({ onboarding_completed: true })
-          .eq('user_id', user.id);
+          const { error: scoreError } = await supabase
+            .from('daily_scores')
+            .upsert({
+              user_id: user.id,
+              date: new Date().toISOString().split('T')[0],
+              longevity_impact_score: scoreData.finalScore,
+              biological_age_impact: scoreData.finalScore,
+              is_baseline: true,
+              assessment_type: 'lifestyle_baseline',
+              user_chronological_age: age,
+              lis_version: 'LIS 2.0',
+              source_type: 'manual_entry',
+              sleep_score: scoreData.pillarScores.sleep || 0,
+              stress_score: scoreData.pillarScores.stress || 0,
+              physical_activity_score: scoreData.pillarScores.activity || 0,
+              nutrition_score: scoreData.pillarScores.nutrition || 0,
+              social_connections_score: scoreData.pillarScores.social || 0,
+              cognitive_engagement_score: scoreData.pillarScores.cognitive || 0,
+              color_code: scoreData.finalScore >= 75 ? 'green' : scoreData.finalScore >= 50 ? 'yellow' : 'red'
+            }, {
+              onConflict: 'user_id,date'
+            });
 
-        // 6. Trigger incremental AI analysis (non-blocking)
-        try {
-          await supabase.functions.invoke('analyze-cross-assessments', {
-            body: { trigger_assessment: 'lis' }
-          });
-        } catch (e) {
-          console.error('Analysis trigger failed:', e);
-        }
-
-        // Navigate to results page with score data
-        setTimeout(() => {
-          if (returnTo) {
-            navigate(decodeURIComponent(returnTo));
-          } else {
-            navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
+          if (scoreError) {
+            console.error('Error saving daily score:', scoreError);
           }
-        }, 2000);
 
+          const syntheticAssessments = [
+            { assessment_id: 'sleep-quality', pillar: 'sleep', score: scoreData.pillarScores.sleep || 0 },
+            { assessment_id: 'stress-management', pillar: 'stress', score: scoreData.pillarScores.stress || 0 },
+            { assessment_id: 'cognitive-function', pillar: 'cognitive', score: scoreData.pillarScores.cognitive || 0 },
+            { assessment_id: 'physical-activity', pillar: 'activity', score: scoreData.pillarScores.activity || 0 },
+            { assessment_id: 'nutrition-quality', pillar: 'nutrition', score: scoreData.pillarScores.nutrition || 0 },
+            { assessment_id: 'social-connection', pillar: 'social', score: scoreData.pillarScores.social || 0 },
+          ];
+
+          for (const assessment of syntheticAssessments) {
+            await supabase.from('user_assessment_completions').insert({
+              user_id: user.id,
+              assessment_id: assessment.assessment_id,
+              pillar: assessment.pillar,
+              score: assessment.score,
+              completed_at: new Date().toISOString()
+            });
+          }
+
+          toast.promise(
+            supabase.functions.invoke('generate-protocol-from-assessments', { body: {} }),
+            {
+              loading: t('lisAssessment.toasts.generatingProtocol'),
+              success: (result) => {
+                const data = result.data;
+                return t('lisAssessment.toasts.protocolCreated', { count: data?.items_count || 0 });
+              },
+              error: t('lisAssessment.toasts.protocolBackground')
+            }
+          );
+
+          await supabase
+            .from('profiles')
+            .update({ onboarding_completed: true })
+            .eq('user_id', user.id);
+
+          try {
+            await supabase.functions.invoke('analyze-cross-assessments', {
+              body: { trigger_assessment: 'lis' }
+            });
+          } catch (e) {
+            console.error('Analysis trigger failed:', e);
+          }
+        };
+
+        runBackgroundSaves();
+
+        if (returnTo) {
+          navigate(decodeURIComponent(returnTo));
+        } else {
+          navigate(`/lis-results?score=${scoreData.finalScore}&pillarScores=${encodeURIComponent(JSON.stringify(scoreData.pillarScores))}&isNewBaseline=true`);
+        }
       } else {
         // Guest user - save to guest table
         const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -1124,8 +1122,6 @@ export default function GuestLISAssessment() {
 
         if (error) {
           console.error('Error saving guest assessment:', error);
-          toast.error(t('lisAssessment.toasts.failedSave'));
-          return;
         }
 
         // Record guest assessment completion for gate tracking
@@ -1318,11 +1314,16 @@ export default function GuestLISAssessment() {
           )}
         </div>
 
-        <p className="text-center text-muted-foreground mb-8">
+        <p className="text-center text-muted-foreground mb-2">
           {t('lisAssessment.subtitle')}
         </p>
+        {showBaseline && (
+          <p className="text-center text-sm text-muted-foreground mb-8">
+            Takes about 6-8 minutes. You can pause anytime.
+          </p>
+        )}
 
-        {/* Enhanced Progress Header */}
+        {/* Progress Header */}
         {!showBaseline && (
           <div className="mb-8 sticky top-0 bg-gradient-to-b from-background via-background to-transparent backdrop-blur-md z-10 py-4 -mt-4 border-b border-primary/10">
             <div className="flex items-center justify-between mb-3">
@@ -1332,9 +1333,6 @@ export default function GuestLISAssessment() {
                     current: isOnModifier ? totalQuestions : absoluteQuestionNumber, 
                     total: totalQuestions 
                   })}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  • {t('lisAssessment.progress.complete', { percent: Math.round(progress) })}
                 </div>
               </div>
               {!isOnModifier && currentPillarInfo && (
@@ -1353,14 +1351,6 @@ export default function GuestLISAssessment() {
                   <span className="font-medium">{t('lisAssessment.progress.riskModifier')}</span>
                 </Badge>
               )}
-            </div>
-            <div className="relative h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${progress}%` }}
-              >
-                <div className="absolute inset-0 bg-white/20 animate-pulse" />
-              </div>
             </div>
           </div>
         )}
@@ -1658,15 +1648,6 @@ export default function GuestLISAssessment() {
         </div>
 
         {/* Footer Note */}
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          {showBaseline 
-            ? t('lisAssessment.footer.assessmentTime')
-            : t('lisAssessment.footer.questionsRemaining', { 
-                count: totalQuestions - answeredQuestions, 
-                minutes: Math.ceil((totalQuestions - answeredQuestions) / 10) 
-              })
-          }
-        </p>
       </div>
       <GuestAssessmentGate 
         isOpen={showGate} 
