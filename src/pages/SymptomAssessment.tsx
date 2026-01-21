@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
+import AssessmentOption from "@/components/assessment/AssessmentOption";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -90,17 +90,22 @@ const SymptomAssessment = () => {
   const questions = assessmentConfig.questions;
 
   const handleAnswerChange = (questionId: string, score: number) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: score
-    }));
+    setAnswers(prev => {
+      const nextAnswers = {
+        ...prev,
+        [questionId]: score
+      };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
-  const handleNext = () => {
+  const handleNext = (answersOverride?: Record<string, number>) => {
+    const currentAnswers = answersOverride ?? answers;
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      calculateScore();
+      calculateScore(currentAnswers);
     }
   };
 
@@ -110,9 +115,10 @@ const SymptomAssessment = () => {
     }
   };
 
-  const calculateScore = async () => {
-    const totalScore = Object.values(answers).reduce((sum, score) => sum + score, 0);
-    const averageScore = totalScore / Object.keys(answers).length;
+  const calculateScore = async (answersOverride?: Record<string, number>) => {
+    const currentAnswers = answersOverride ?? answers;
+    const totalScore = Object.values(currentAnswers).reduce((sum, score) => sum + score, 0);
+    const averageScore = totalScore / Object.keys(currentAnswers).length;
     
     // Determine category based on scoring guidance
     const { scoringGuidance } = assessmentConfig;
@@ -197,7 +203,7 @@ const SymptomAssessment = () => {
     navigate(`/assessment/${symptomId}/results`, {
       state: { 
         score: averageScore, 
-        answers,
+        answers: currentAnswers,
         assessmentName: assessmentConfig.name,
         assessmentDescription: assessmentConfig.description,
         scoringGuidance: scoringGuidance,
@@ -258,23 +264,15 @@ const SymptomAssessment = () => {
               >
                 <div className="space-y-3">
                   {currentQ.options.map((option, index) => (
-                    <div
+                    <AssessmentOption
                       key={index}
-                      className={`flex items-center space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                        answers[currentQ.id] === option.score
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-primary/50'
-                      }`}
-                      onClick={() => handleAnswerChange(currentQ.id, option.score)}
-                    >
-                      <RadioGroupItem value={option.score.toString()} id={`option-${index}`} />
-                      <Label
-                        htmlFor={`option-${index}`}
-                        className="flex-1 cursor-pointer font-normal"
-                      >
-                        {option.text}
-                      </Label>
-                    </div>
+                      id={`option-${index}`}
+                      value={option.score.toString()}
+                      label={option.text}
+                      selected={answers[currentQ.id] === option.score}
+                      onSelect={() => handleAnswerChange(currentQ.id, option.score)}
+                      labelClassName="font-normal"
+                    />
                   ))}
                 </div>
               </RadioGroup>

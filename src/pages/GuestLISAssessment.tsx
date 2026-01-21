@@ -765,8 +765,8 @@ export default function GuestLISAssessment() {
     .reduce((sum, p) => sum + p.questions.length, 0) + currentQuestionIndex + 1;
   
   // Check if current question is answered
-  const isCurrentQuestionAnswered = () => {
-    return currentQuestion && !!answers[currentQuestion.question_id];
+  const isCurrentQuestionAnswered = (answersToCheck = answers) => {
+    return currentQuestion && !!answersToCheck[currentQuestion.question_id];
   };
 
   const calculateBMI = (): number => {
@@ -823,15 +823,20 @@ export default function GuestLISAssessment() {
   };
 
   const handleAnswerSelect = (questionId: string, option: QuestionOption) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: option
-    }));
+    setAnswers(prev => {
+      const nextAnswers = {
+        ...prev,
+        [questionId]: option
+      };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
-  const handleNext = () => {
+  const handleNext = (answersOverride?: Record<string, QuestionOption>) => {
+    const currentAnswers = answersOverride ?? answers;
     // Don't auto-advance if manually clicking Continue - question must be answered
-    if (!isCurrentQuestionAnswered()) {
+    if (!isCurrentQuestionAnswered(currentAnswers)) {
       toast.error(t('lisAssessment.toasts.selectAnswer'));
       return;
     }
@@ -1563,25 +1568,6 @@ export default function GuestLISAssessment() {
                         <h4 className="font-semibold text-base leading-relaxed">
                           {option.text.replace(/^[A-D]\.\s*/, '')}
                         </h4>
-                        
-                        {/* Score indicator - redesigned */}
-                        <div className="w-full space-y-1.5">
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>{t('lisAssessment.question.healthImpact')}</span>
-                            <span className="font-semibold">{scorePercent}%</span>
-                          </div>
-                          <div className="h-2 bg-muted rounded-full overflow-hidden">
-                            <div 
-                              className={cn(
-                                "h-full transition-all duration-500 rounded-full",
-                                scorePercent >= 75 ? "bg-gradient-to-r from-green-500 to-green-600" :
-                                scorePercent >= 40 ? "bg-gradient-to-r from-yellow-500 to-orange-500" :
-                                "bg-gradient-to-r from-red-500 to-red-600"
-                              )}
-                              style={{ width: `${scorePercent}%` }}
-                            />
-                          </div>
-                        </div>
                         
                         {/* Selection indicator */}
                         {isSelected && (

@@ -7,6 +7,7 @@ interface MenopauseStageStepProps {
     menopause_stage?: string;
   };
   onChange: (field: string, value: any) => void;
+  onAutoAdvance?: () => void;
 }
 
 const menopauseStages = [
@@ -37,7 +38,7 @@ const menopauseStages = [
   },
 ];
 
-export function MenopauseStageStep({ data, onChange }: MenopauseStageStepProps) {
+export function MenopauseStageStep({ data, onChange, onAutoAdvance }: MenopauseStageStepProps) {
   return (
     <Card>
       <CardHeader>
@@ -56,7 +57,10 @@ export function MenopauseStageStep({ data, onChange }: MenopauseStageStepProps) 
           return (
             <button
               key={stage.value}
-              onClick={() => onChange('menopause_stage', stage.value)}
+              onClick={() => {
+                onChange('menopause_stage', stage.value);
+                onAutoAdvance?.();
+              }}
               className={cn(
                 "w-full text-left p-4 rounded-lg border-2 transition-all hover:border-primary/50",
                 isSelected ? "border-primary bg-primary/5" : "border-border"

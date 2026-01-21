@@ -7,6 +7,7 @@ interface EatingPersonalityStepProps {
     nutrition_identity_type?: string;
   };
   onChange: (field: string, value: any) => void;
+  onAutoAdvance?: () => void;
 }
 
 const personalities = [
@@ -60,7 +61,7 @@ const personalities = [
   },
 ];
 
-export function EatingPersonalityStep({ data, onChange }: EatingPersonalityStepProps) {
+export function EatingPersonalityStep({ data, onChange, onAutoAdvance }: EatingPersonalityStepProps) {
   return (
     <Card>
       <CardHeader>
@@ -79,7 +80,10 @@ export function EatingPersonalityStep({ data, onChange }: EatingPersonalityStepP
           return (
             <button
               key={personality.value}
-              onClick={() => onChange('nutrition_identity_type', personality.value)}
+              onClick={() => {
+                onChange('nutrition_identity_type', personality.value);
+                onAutoAdvance?.();
+              }}
               className={cn(
                 "w-full text-left p-4 rounded-lg border-2 transition-all hover:border-primary/50",
                 isSelected ? "border-primary bg-primary/5" : "border-border"

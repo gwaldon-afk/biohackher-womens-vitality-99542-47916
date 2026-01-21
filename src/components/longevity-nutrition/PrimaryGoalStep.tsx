@@ -7,6 +7,7 @@ interface PrimaryGoalStepProps {
     goal_primary?: string;
   };
   onChange: (field: string, value: any) => void;
+  onAutoAdvance?: () => void;
 }
 
 const goals = [
@@ -29,7 +30,7 @@ function TrendingDown(props: any) {
   );
 }
 
-export function PrimaryGoalStep({ data, onChange }: PrimaryGoalStepProps) {
+export function PrimaryGoalStep({ data, onChange, onAutoAdvance }: PrimaryGoalStepProps) {
   return (
     <Card>
       <CardHeader>
@@ -49,7 +50,10 @@ export function PrimaryGoalStep({ data, onChange }: PrimaryGoalStepProps) {
             return (
               <button
                 key={goal.value}
-                onClick={() => onChange('goal_primary', goal.value)}
+                onClick={() => {
+                  onChange('goal_primary', goal.value);
+                  onAutoAdvance?.();
+                }}
                 className={cn(
                   "text-left p-4 rounded-lg border-2 transition-all hover:border-primary/50",
                   isSelected ? "border-primary bg-primary/5" : "border-border"

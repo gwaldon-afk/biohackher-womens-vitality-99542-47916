@@ -304,14 +304,14 @@ export default function LongevityNutritionAssessment() {
   const steps = [
     null, // Index 0 unused (step numbering starts at 1)
     <CoreDetailsStep data={assessmentData} onChange={updateData} />,
-    <PrimaryGoalStep data={assessmentData} onChange={updateData} />,
-    <ActivityLevelStep data={assessmentData} onChange={updateData} />,
-    <EatingPersonalityStep data={assessmentData} onChange={updateData} />,
+    <PrimaryGoalStep data={assessmentData} onChange={updateData} onAutoAdvance={handleNext} />,
+    <ActivityLevelStep data={assessmentData} onChange={updateData} onAutoAdvance={handleNext} />,
+    <EatingPersonalityStep data={assessmentData} onChange={updateData} onAutoAdvance={handleNext} />,
     <ProteinIntakeStep data={assessmentData} onChange={updateData} />,
     <FiberGutHealthStep data={assessmentData} onChange={updateData} />,
     <InflammationStep data={assessmentData} onChange={updateData} />,
     <ChronoNutritionStep data={assessmentData} onChange={updateData} />,
-    <MenopauseStageStep data={assessmentData} onChange={updateData} />,
+    <MenopauseStageStep data={assessmentData} onChange={updateData} onAutoAdvance={handleNext} />,
     <CravingsStep data={assessmentData} onChange={updateData} />,
     <HydrationStimulantsStep data={assessmentData} onChange={updateData} />,
     <AllergiesDietaryStep data={assessmentData} onChange={updateData} />,

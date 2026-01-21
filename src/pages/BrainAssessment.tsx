@@ -2,14 +2,14 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight, Brain, Zap, Target, Moon, TrendingUp, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
+import AssessmentOption from "@/components/assessment/AssessmentOption";
 
 const BrainAssessment = () => {
   const navigate = useNavigate();
@@ -280,14 +280,19 @@ const BrainAssessment = () => {
   const currentQ = questions[currentQuestion];
 
   const handleAnswerChange = (value: string) => {
-    setAnswers({ ...answers, [currentQuestion]: value });
+    setAnswers(prev => {
+      const nextAnswers = { ...prev, [currentQuestion]: value };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
-  const handleNext = () => {
+  const handleNext = (answersOverride?: Record<number, string>) => {
+    const currentAnswers = answersOverride ?? answers;
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      calculateResults();
+      calculateResults(currentAnswers);
     }
   };
 
@@ -297,13 +302,14 @@ const BrainAssessment = () => {
     }
   };
 
-  const calculateResults = async () => {
+  const calculateResults = async (answersOverride?: Record<number, string>) => {
+    const currentAnswers = answersOverride ?? answers;
     let totalScore = 0;
     let categoryScores = { memory: 0, focus: 0, processing: 0, clarity: 0 };
     let categoryCounts = { memory: 0, focus: 0, processing: 0, clarity: 0 };
 
     questions.forEach((question, idx) => {
-      const answer = answers[idx];
+      const answer = currentAnswers[idx];
       if (answer) {
         const option = question.options.find(opt => opt.value === answer);
         if (option) {
@@ -702,20 +708,15 @@ const BrainAssessment = () => {
               onValueChange={handleAnswerChange}
             >
               {currentQ.options.map((option) => (
-                <div
+                <AssessmentOption
                   key={option.value}
-                  className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer transition-colors ${
-                    answers[currentQuestion] === option.value
-                      ? "bg-primary/10 border-primary"
-                      : "hover:bg-muted/50"
-                  }`}
-                  onClick={() => handleAnswerChange(option.value)}
-                >
-                  <RadioGroupItem value={option.value} id={option.value} />
-                  <Label htmlFor={option.value} className="flex-1 cursor-pointer">
-                    {option.label}
-                  </Label>
-                </div>
+                  id={option.value}
+                  value={option.value}
+                  label={option.label}
+                  selected={answers[currentQuestion] === option.value}
+                  onSelect={() => handleAnswerChange(option.value)}
+                  labelClassName="font-normal"
+                />
               ))}
             </RadioGroup>
 
@@ -730,7 +731,7 @@ const BrainAssessment = () => {
                 {t('common.back')}
               </Button>
               <Button
-                onClick={handleNext}
+                onClick={() => handleNext()}
                 disabled={!answers[currentQuestion]}
                 className="flex-1"
               >

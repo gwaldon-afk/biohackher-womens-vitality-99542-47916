@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Brain, Heart, Sparkles, Target, TrendingUp, Users, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import AssessmentOption from "@/components/assessment/AssessmentOption";
 
 interface Question {
   id: string;
@@ -177,11 +177,16 @@ const LongevityMindsetQuiz = () => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleAnswer = (questionId: string, value: number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+    setAnswers((prev) => {
+      const nextAnswers = { ...prev, [questionId]: value };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
-  const handleNext = () => {
-    if (!answers[questions[currentQuestion].id]) {
+  const handleNext = (answersOverride?: Record<string, number>) => {
+    const currentAnswers = answersOverride ?? answers;
+    if (!currentAnswers[questions[currentQuestion].id]) {
       toast.error("Please select an answer before continuing");
       return;
     }
@@ -632,28 +637,20 @@ const LongevityMindsetQuiz = () => {
               <CardTitle className="text-2xl leading-relaxed">{currentQ.question}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <RadioGroup
+            <RadioGroup
                 value={answers[currentQ.id] !== undefined ? answers[currentQ.id].toString() : ""}
                 onValueChange={(value) => handleAnswer(currentQ.id, parseInt(value))}
               >
                 {currentQ.options.map((option) => (
-                  <div
-                    key={option.value}
-                    className={`flex items-start space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all hover:border-primary/50 ${
-                      answers[currentQ.id] === option.value
-                        ? "border-primary bg-primary/5"
-                        : "border-border"
-                    }`}
-                    onClick={() => handleAnswer(currentQ.id, option.value)}
-                  >
-                    <RadioGroupItem value={option.value.toString()} id={`option-${option.value}`} />
-                    <Label
-                      htmlFor={`option-${option.value}`}
-                      className="flex-1 cursor-pointer text-base leading-relaxed"
-                    >
-                      {option.label}
-                    </Label>
-                  </div>
+                <AssessmentOption
+                  key={option.value}
+                  id={`option-${option.value}`}
+                  value={option.value.toString()}
+                  label={option.label}
+                  selected={answers[currentQ.id] === option.value}
+                  onSelect={() => handleAnswer(currentQ.id, option.value)}
+                  labelClassName="font-normal text-base leading-relaxed"
+                />
                 ))}
               </RadioGroup>
 

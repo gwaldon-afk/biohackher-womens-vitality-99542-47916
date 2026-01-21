@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { RadioGroup } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Activity, Brain, Heart, Home, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import AssessmentOption from '@/components/assessment/AssessmentOption';
 
 interface QuestionOption {
   text: string;
@@ -117,14 +117,19 @@ export default function LISDailyCheckIn() {
   const selectedAnswer = answers[question.question_id];
 
   const handleAnswerSelect = (option: QuestionOption) => {
-    setAnswers(prev => ({
-      ...prev,
-      [question.question_id]: option
-    }));
+    setAnswers(prev => {
+      const nextAnswers = {
+        ...prev,
+        [question.question_id]: option
+      };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
-  const handleNext = () => {
-    if (!selectedAnswer) {
+  const handleNext = (answersOverride?: Record<string, QuestionOption>) => {
+    const currentAnswers = answersOverride ?? answers;
+    if (!currentAnswers[question.question_id]) {
       toast.error('Please select an answer to continue');
       return;
     }
@@ -132,7 +137,7 @@ export default function LISDailyCheckIn() {
     if (currentQuestion < DAILY_QUESTIONS.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      handleSubmit();
+      handleSubmit(currentAnswers);
     }
   };
 
@@ -142,14 +147,15 @@ export default function LISDailyCheckIn() {
     }
   };
 
-  const calculateScore = () => {
+  const calculateScore = (answersOverride?: Record<string, QuestionOption>) => {
+    const currentAnswers = answersOverride ?? answers;
     const pillarScores: Record<string, { score: number; count: number }> = {
       Body: { score: 0, count: 0 },
       Balance: { score: 0, count: 0 },
       Brain: { score: 0, count: 0 }
     };
 
-    Object.entries(answers).forEach(([questionId, option]) => {
+    Object.entries(currentAnswers).forEach(([questionId, option]) => {
       const q = DAILY_QUESTIONS.find(q => q.question_id === questionId);
       if (q) {
         const pillar = q.pillar;
@@ -178,11 +184,11 @@ export default function LISDailyCheckIn() {
     };
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (answersOverride?: Record<string, QuestionOption>) => {
     setIsSubmitting(true);
 
     try {
-      const scoreData = calculateScore();
+      const scoreData = calculateScore(answersOverride);
 
       // Save daily score
       const { error } = await supabase
@@ -289,24 +295,20 @@ export default function LISDailyCheckIn() {
             className="space-y-3"
           >
             {question.options.map((option, index) => (
-              <div
-                key={index}
-                className={`relative flex items-start space-x-3 p-4 rounded-lg border-2 transition-all cursor-pointer hover:border-primary/50 ${
-                  selectedAnswer?.text === option.text
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border'
-                }`}
-                onClick={() => handleAnswerSelect(option)}
-              >
-                <RadioGroupItem value={option.text} id={`option-${index}`} />
-                <Label
-                  htmlFor={`option-${index}`}
-                  className="flex-1 cursor-pointer leading-relaxed"
-                >
-                  {option.emoji && <span className="mr-2 text-xl">{option.emoji}</span>}
-                  {option.text}
-                </Label>
-              </div>
+                <AssessmentOption
+                  key={index}
+                  id={`option-${index}`}
+                  value={option.text}
+                  label={
+                    <span>
+                      {option.emoji ? <span className="mr-2 text-xl">{option.emoji}</span> : null}
+                      {option.text}
+                    </span>
+                  }
+                  selected={selectedAnswer?.text === option.text}
+                  onSelect={() => handleAnswerSelect(option)}
+                  labelClassName="font-normal leading-relaxed"
+                />
             ))}
           </RadioGroup>
         </Card>
@@ -322,7 +324,7 @@ export default function LISDailyCheckIn() {
           </Button>
 
           <Button
-            onClick={handleNext}
+            onClick={() => handleNext()}
             disabled={!selectedAnswer || isSubmitting}
             className="min-w-32"
           >

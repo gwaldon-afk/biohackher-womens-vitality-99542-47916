@@ -7,6 +7,7 @@ interface ActivityLevelStepProps {
     activity_level?: string;
   };
   onChange: (field: string, value: any) => void;
+  onAutoAdvance?: () => void;
 }
 
 const activityLevels = [
@@ -47,7 +48,7 @@ const activityLevels = [
   },
 ];
 
-export function ActivityLevelStep({ data, onChange }: ActivityLevelStepProps) {
+export function ActivityLevelStep({ data, onChange, onAutoAdvance }: ActivityLevelStepProps) {
   return (
     <Card>
       <CardHeader>
@@ -66,7 +67,10 @@ export function ActivityLevelStep({ data, onChange }: ActivityLevelStepProps) {
           return (
             <button
               key={level.value}
-              onClick={() => onChange('activity_level', level.value)}
+              onClick={() => {
+                onChange('activity_level', level.value);
+                onAutoAdvance?.();
+              }}
               className={cn(
                 "w-full text-left p-4 rounded-lg border-2 transition-all hover:border-primary/50",
                 isSelected ? "border-primary bg-primary/5" : "border-border"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { useUserProgress } from "@/hooks/useUserProgress";
 import { useToast } from "@/hooks/use-toast";
 import { useHealthProfile } from "@/hooks/useHealthProfile";
 import { supabase } from "@/integrations/supabase/client";
+import AssessmentOption from "@/components/assessment/AssessmentOption";
 
 interface QuestionOption {
   text: string;
@@ -266,7 +267,8 @@ const Onboarding = () => {
     };
   };
 
-  const handleNext = async () => {
+  const handleNext = async (answersOverride?: Record<string, QuestionOption>) => {
+    const currentAnswers = answersOverride ?? answers;
     if (currentStep === 0) {
       // Validate baseline data
       if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
@@ -295,7 +297,7 @@ const Onboarding = () => {
       // Check if current question is answered
       const questionIndex = currentStep - 1;
       const question = ASSESSMENT_QUESTIONS[questionIndex];
-      if (!answers[question.question_id]) {
+      if (!currentAnswers[question.question_id]) {
         toast({ title: "Please select an answer", variant: "destructive" });
         return;
       }
@@ -377,10 +379,14 @@ const Onboarding = () => {
     if (currentStep === 0 || currentStep > 12) return;
     const questionIndex = currentStep - 1;
     const question = ASSESSMENT_QUESTIONS[questionIndex];
-    setAnswers(prev => ({
-      ...prev,
-      [question.question_id]: option
-    }));
+    setAnswers(prev => {
+      const nextAnswers = {
+        ...prev,
+        [question.question_id]: option
+      };
+      requestAnimationFrame(() => handleNext(nextAnswers));
+      return nextAnswers;
+    });
   };
 
   const renderStep = () => {
@@ -475,12 +481,16 @@ const Onboarding = () => {
               }}
             >
               {question.options.map((option, idx) => (
-                <div key={idx} className="flex items-start space-x-3 mb-4 p-4 rounded-lg border hover:bg-accent/50 transition-colors">
-                  <RadioGroupItem value={option.text} id={`option-${idx}`} className="mt-1" />
-                  <Label htmlFor={`option-${idx}`} className="cursor-pointer flex-1">
-                    <div className="font-medium">{option.text}</div>
-                  </Label>
-                </div>
+                <AssessmentOption
+                  key={idx}
+                  id={`option-${idx}`}
+                  value={option.text}
+                  label={option.text}
+                  selected={selectedAnswer?.text === option.text}
+                  onSelect={() => handleAnswerSelect(option)}
+                  className="mb-4"
+                  labelClassName="font-normal"
+                />
               ))}
             </RadioGroup>
           </CardContent>
@@ -586,7 +596,7 @@ const Onboarding = () => {
             Previous
           </Button>
           <Button
-            onClick={handleNext}
+            onClick={() => handleNext()}
             disabled={isNextDisabled()}
           >
             {currentStep === totalSteps - 1 ? "Complete" : "Next"}
