@@ -47,6 +47,7 @@ const Coaching = lazy(() => import("./pages/Coaching"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Upgrade = lazy(() => import("./pages/Upgrade"));
 const Settings = lazy(() => import("./pages/Settings"));
+const ClinicianSummaryExport = lazy(() => import("./pages/ClinicianSummaryExport"));
 const Shop = lazy(() => import("./pages/Shop"));
 const Pillars = lazy(() => import("./pages/Pillars"));
 const PillarsDisplay = lazy(() => import("./pages/PillarsDisplay"));
@@ -179,6 +180,7 @@ const App = () => (
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/upgrade" element={<Upgrade />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/export/clinician-summary" element={<ProtectedRoute><ClinicianSummaryExport /></ProtectedRoute>} />
                     <Route path="/faq" element={<RedirectToAbout tab="faq" />} />
                     <Route path="/shop" element={<Shop />} />
                     <Route path="/pillars" element={<Pillars />} />

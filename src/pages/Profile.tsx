@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HealthSummaryCard } from "@/components/profile/HealthSummaryCard";
 import { WhatToDoNextCard } from "@/components/profile/WhatToDoNextCard";
 import { AssessmentHistoryTab } from "@/components/profile/AssessmentHistoryTab";
@@ -13,6 +14,7 @@ import { AssessmentOverviewCards } from "@/components/AssessmentOverviewCards";
 import { ConsolidatedInsightsCard } from "@/components/profile/ConsolidatedInsightsCard";
 import { UnifiedSymptomView } from "@/components/profile/UnifiedSymptomView";
 import { MasterProtocolSheet } from "@/components/profile/MasterProtocolSheet";
+import { ClinicianSummaryDownloadButton } from "@/components/export/ClinicianSummaryDownloadButton";
 import { User, ClipboardList, Target, Settings, Sliders, Home, Activity, FileStack } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,6 +56,29 @@ const Profile = () => {
 
         {/* Health Summary Card - Always visible at top */}
         <HealthSummaryCard />
+
+        <Card className="mt-6 p-4">
+          <Collapsible>
+            <div className="flex items-center justify-between">
+              <div className="font-semibold">{t("profile.biologicalAge.title")}</div>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  {t("profile.biologicalAge.why")}
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <div className="mt-2 text-sm text-muted-foreground">
+              {t("profile.biologicalAge.body")}
+            </div>
+            <CollapsibleContent className="mt-3 text-sm text-muted-foreground">
+              {t("profile.biologicalAge.whyBody")}
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
+
+        <Card className="mt-6 p-4 flex items-center justify-between">
+          <ClinicianSummaryDownloadButton variant="outline" size="default" />
+        </Card>
 
         {/* What To Do Next - Actionable Recommendations */}
         <WhatToDoNextCard />

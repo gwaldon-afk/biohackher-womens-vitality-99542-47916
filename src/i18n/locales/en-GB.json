@@ -3178,5 +3178,24 @@
       "updateHelper": "This projection updates as new assessments and health data are added."
     }
   },
+  "export": {
+    "clinicianSummary": {
+      "downloadButton": "Download clinician summary",
+      "pdf": {
+        "header": "BiohackHer — Lifestyle & Biological Age Summary",
+        "bioAgeSectionTitle": "Biological Age (Lifestyle-based estimate)",
+        "bioAgeFootnote": "Biological age is an estimate derived from lifestyle factors and does not replace clinical testing.",
+        "trajectoryTitle": "Expected biological age trajectory (90 days)",
+        "trajectoryInterpretation": "If the current plan is maintained, biological age is expected to move toward {Y} over approximately 90 days.",
+        "qualifier": "This is an evidence-based estimate, not a guarantee. Individual results vary.",
+        "primaryFactorsTitle": "Primary factors influencing biological age",
+        "protocolsTitle": "Lifestyle protocols currently in use",
+        "protocolsNote": "These protocols are lifestyle-based recommendations and are not medical prescriptions.",
+        "inputsTitle": "Assessment inputs contributing to this summary",
+        "globalDisclaimer": "BiohackHer provides educational, evidence-based insights and is not a substitute for medical advice or diagnosis.",
+        "clinicalContext": "This report is intended to support informed conversations between patients and healthcare professionals. It does not diagnose, treat, or prevent disease."
+      }
+    }
+  },
   "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }
 }
