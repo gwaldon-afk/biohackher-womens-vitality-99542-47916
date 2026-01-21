@@ -30,6 +30,7 @@ import { ProteinTrackingSummary } from "@/components/today/ProteinTrackingSummar
 import { useNutritionPreferences } from "@/hooks/useNutritionPreferences";
 import { DailyHealthMetricsCard } from "@/components/today/DailyHealthMetricsCard";
 import { TodayGoalProgressCard } from "@/components/today/TodayGoalProgressCard";
+import { BiologicalAgeTrajectory90 } from "@/components/insights/BiologicalAgeTrajectory90";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getTodaysNutritionActions, completeNutritionAction, uncompleteNutritionAction } from '@/services/nutritionActionService';
 import { useTranslation } from 'react-i18next';
@@ -908,6 +909,9 @@ export const UnifiedDailyChecklist = () => {
 
       {/* SECONDARY CONTENT - Below Time Blocks */}
       <div className="space-y-4 pt-4 border-t border-border/50">
+        {/* Optional Insights */}
+        <BiologicalAgeTrajectory90 />
+
         {/* Protocol Management Link */}
         {user && actions.length > 0 && (
           <div className="flex items-center justify-between p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border border-primary/20">

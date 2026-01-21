@@ -528,6 +528,12 @@
     "description": "View your health summary, assessment history, goals, and preferences",
     "returnToToday": "Return to Today",
     "backToHome": "Back to Home",
+    "biologicalAge": {
+      "title": "Your Biological Age picture",
+      "body": "Your Biological Age reflects lifestyle factors like sleep, stress, movement, and nutrition. Each assessment adds clarity so your recommendations feel more personal over time.",
+      "why": "Why this matters",
+      "whyBody": "Genetics can influence risk, but your daily choices shape your trajectory. This view helps you focus on the actions that move your Biological Age in the right direction."
+    },
     "tabs": {
       "assessments": "Assessments",
       "assessmentsShort": "Assess",
@@ -2865,6 +2871,26 @@
     "duplicateSkipped": "Already in Your Plan",
     "duplicateSkippedDesc": "{{name}} is already in your protocol."
   },
+  "protocols": {
+    "provenance": {
+      "title": "Why you’re seeing “{{protocolName}}”",
+      "subtitle": "This protocol is recommended based on your assessments and check-ins. You’re in control — this is here to guide, not judge.",
+      "sourcesTitle": "Sources we used",
+      "whyTrigger": "Why am I seeing this?",
+      "whyBody": "We surface protocols when multiple lifestyle factors point to the same support. As you complete more assessments, this becomes more tailored and confident.",
+      "urgencyTitle": "When to discuss with a clinician",
+      "urgencyBody": "If anything feels urgent, unusual, or persistent, please discuss it with your clinician. This app supports you, but it doesn’t diagnose.",
+      "sources": {
+        "lis": "Longevity Assessment",
+        "nutrition": "Nutrition Assessment",
+        "hormone": "Hormone Assessment",
+        "symptom": "Symptom Check",
+        "daily_checkin": "Daily Check-in",
+        "biometrics": "Biometrics",
+        "manual": "Manual Entry"
+      }
+    }
+  },
   "wearables": {
     "pageTitle": "Wearable Integrations",
     "pageSubtitle": "Automatically sync data from your fitness trackers and health devices",
@@ -3128,6 +3154,28 @@
     "tailored": {
       "badge": "Tailored for today",
       "tooltip": "Based on your check-in"
+    }
+  },
+  "biologicalAge": {
+    "trajectory90": {
+      "title": "Your 90-day biological age trajectory",
+      "annotation": "This projection shows the expected direction of change if you maintain your current plan consistently.",
+      "whatThisMeansTitle": "What this means",
+      "whatThisMeansBody": "Based on your lifestyle inputs, your biological age is {X}.\nIf you maintain this rhythm over the next 90 days, it is expected to move toward {Y} — an improvement of approximately {Z} years.",
+      "qualifier": "This is an evidence-based estimate, not a guarantee. Individual results vary.",
+      "keepsMovingTitle": "What keeps this moving in the right direction",
+      "keepsMovingBullets": "• Showing up most days (not every day)\n• Protecting sleep and recovery\n• Keeping stress manageable\n• Following the highest-impact protocols",
+      "whyChangedLabel": "Why your age changed",
+      "whyChangedP1": "Your biological age reflects how your body is responding to your lifestyle — not just how many birthdays you’ve had.",
+      "whyChangedP2": "When factors like sleep, stress, movement, and nutrition improve, the body’s systems tend to function more efficiently. Over time, this is associated in research with a younger biological age.",
+      "whyChangedP3": "This change doesn’t happen overnight. It reflects patterns sustained over weeks and months, not individual days.",
+      "tooltipBioAge": "Biological age is an estimate of how your body is functioning based on lifestyle-related factors linked to aging in scientific research.",
+      "legendChronologicalAge": "Chronological age",
+      "confidenceBandTooltip": "Expected range based on current data",
+      "emptyStateTitle": "Your trajectory will appear here",
+      "emptyStateBody": "As you complete more assessments and follow your plan, we’ll be able to show how your biological age is trending over time.",
+      "emptyStateCta": "Continue with today’s plan",
+      "updateHelper": "This projection updates as new assessments and health data are added."
     }
   },
   "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }
