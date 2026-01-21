@@ -717,6 +717,11 @@ export default function GuestLISAssessment() {
   const [showExitDialog, setShowExitDialog] = useState(false);
   const pendingProfileKey = 'lis_pending_profile_save';
   const profileNoticeKey = 'lis_profile_save_notice';
+  const buildCommit =
+    import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA ||
+    import.meta.env.VITE_GIT_SHA ||
+    "unknown";
+  const buildDate = new Date().toISOString().slice(0, 10);
 
   // Check guest gate on mount
   useEffect(() => {
@@ -724,6 +729,10 @@ export default function GuestLISAssessment() {
       // Gate will show modal - user already did another assessment
     }
   }, [user, checkGuestGate]);
+
+  useEffect(() => {
+    console.info("[BUILD]", buildCommit, "GuestLISAssessment");
+  }, [buildCommit]);
 
   // Group questions by pillar
   const questionsByPillar = PILLAR_GROUPS.map(pillarGroup => ({
@@ -1266,6 +1275,9 @@ export default function GuestLISAssessment() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="fixed top-2 left-2 z-50 rounded bg-background/80 px-2 py-1 text-[10px] text-muted-foreground shadow-sm">
+        BUILD: {buildCommit} | {buildDate} | GuestLISAssessment
+      </div>
       {/* Exit Confirmation Dialog */}
       <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <AlertDialogContent>
