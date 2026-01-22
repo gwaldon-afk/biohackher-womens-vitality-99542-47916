@@ -2500,6 +2500,52 @@
       "totalProtein": "Total Protein",
       "viewAll": "View All",
       "showLess": "Show Less"
+    },
+    "week": {
+      "title": "Your meal plan for this week",
+      "subtitle": "Meals are mapped into Today so you always know what to eat next."
+    },
+    "nextWeek": {
+      "title": "Next week",
+      "generated": "Next week is ready.",
+      "notGenerated": "Next week isn’t generated yet."
+    },
+    "generateNextWeek": {
+      "button": "Generate next week",
+      "button_loading": "Generating next week…",
+      "success": "Next week generated.",
+      "alreadyExists": "Next week is already generated.",
+      "error": "Couldn’t generate next week. Please try again."
+    },
+    "shoppingList": {
+      "button": "Shopping list",
+      "title": "Shopping list (7 days)",
+      "subtitle": "Combined ingredients for the week. Duplicates are merged automatically.",
+      "copyButton": "Copy list",
+      "copied": "Copied to clipboard.",
+      "empty": "No ingredients found for this week yet."
+    },
+    "meals": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "mealCard": {
+      "view": "View",
+      "swap": "Swap",
+      "swap_comingSoon": "Swap (coming soon)",
+      "love": "Love this",
+      "loved": "Loved",
+      "notForMe": "Not for me",
+      "saved": "Saved",
+      "saveError": "Couldn’t save your preference. Please try again."
+    },
+    "completion": {
+      "markDone": "Mark as done",
+      "done": "Done",
+      "undo": "Undo",
+      "saveError": "Couldn’t save completion. Please try again."
     }
   },
   "mealSnap": {
@@ -3094,7 +3140,31 @@
     "tailored": {
       "badge": "Tailored for today",
       "tooltip": "Based on your check-in"
+    },
+    "meals": {
+      "sectionTitle": "Meals for today",
+      "helper": "Your plan maps meals into your day so it’s easy to follow.",
+      "emptyTitle": "No meals planned yet",
+      "emptyBody": "Generate a meal plan to see breakfast, lunch and dinner here.",
+      "emptyPrimaryCta": "Go to Nutrition",
+      "emptySecondaryCta": "Generate next week"
     }
   },
-  "common": { "back": "Back", "continue": "Continue", "loading": "Loading...", "error": "Error", "saving": "Saving..." }
+  "protocols": {
+    "tags": {
+      "nutritionProtocol": "Nutrition protocol"
+    }
+  },
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "loading": "Loading...",
+    "error": "Error",
+    "saving": "Saving...",
+    "comingSoon": "Coming soon",
+    "learnMore": "Learn more",
+    "close": "Close",
+    "cancel": "Cancel",
+    "ok": "OK"
+  }
 }
