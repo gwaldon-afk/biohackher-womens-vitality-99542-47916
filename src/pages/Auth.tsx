@@ -39,15 +39,14 @@ const Auth = () => {
 
   // Get session ID from URL if user is registering from guest results.
   // Fall back to known localStorage keys so deep-links still work.
-  const guestSessionId =
+  const lisGuestSessionId =
     searchParams.get('session') ||
-    (source === 'lis-results'
-      ? localStorage.getItem('lis_guest_session_id')
-      : source === 'nutrition'
-        ? localStorage.getItem('nutrition_guest_session')
-        : source === 'health-assistant'
-          ? localStorage.getItem('health_questions_session_id')
-          : null);
+    localStorage.getItem('guest_session_id') ||
+    localStorage.getItem('lis_guest_session_id');
+  const nutritionGuestSessionId =
+    source === 'nutrition' ? localStorage.getItem('nutrition_guest_session') : null;
+  const healthAssistantSessionId =
+    source === 'health-assistant' ? localStorage.getItem('health_questions_session_id') : null;
 
   const assessmentSession = searchParams.get('assessmentSession');
   const returnToParam = searchParams.get('returnTo') || '';
@@ -70,6 +69,7 @@ const Auth = () => {
       const assessmentData = (guestAssessment as any).assessment_data as any;
       const baselineData = assessmentData?.baselineData;
       const briefResults = (guestAssessment as any).brief_results as any;
+      const completedAt = (guestAssessment as any).created_at || new Date().toISOString();
 
       // Create/Update health profile from guest baseline data (idempotent)
       if (baselineData?.dateOfBirth) {
@@ -80,6 +80,7 @@ const Auth = () => {
             height_cm: baselineData.heightCm,
             weight_kg: baselineData.weightKg,
             current_bmi: baselineData.bmi,
+            activity_level: baselineData.activityLevel ?? undefined,
           },
           { onConflict: 'user_id' },
         );
@@ -129,7 +130,19 @@ const Auth = () => {
         { onConflict: 'user_id,date' },
       );
 
+      await supabase
+        .from('assessment_progress')
+        .upsert(
+          {
+            user_id: currentUserId,
+            lis_completed: true,
+            lis_completed_at: completedAt,
+          },
+          { onConflict: 'user_id' },
+        );
+
       // Clear local storage so we don't keep re-offering migration
+      localStorage.removeItem('guest_session_id');
       localStorage.removeItem('lis_guest_session_id');
 
       return { migrated: true as const };
@@ -246,7 +259,7 @@ const Auth = () => {
   // BUT: Don't redirect if coming from guest session or assessment session - let them complete signup
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
-      if (user && !guestSessionId && !assessmentSession) {
+      if (user && !lisGuestSessionId && !assessmentSession) {
         // Check onboarding status first
         const { data: profile } = await supabase
           .from('profiles')
@@ -297,7 +310,7 @@ const Auth = () => {
     };
     
     checkProfileAndRedirect();
-  }, [user, navigate, guestSessionId, assessmentSession, returnTo]);
+  }, [user, navigate, lisGuestSessionId, assessmentSession, returnTo]);
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(true);
@@ -309,8 +322,8 @@ const Auth = () => {
       
       if (currentUser) {
         // If the user came from guest LIS results, claim/migrate that assessment on sign-in too.
-        if (source === 'lis-results' && guestSessionId) {
-          const result = await migrateGuestLIS(currentUser.id, guestSessionId);
+        if (lisGuestSessionId) {
+          const result = await migrateGuestLIS(currentUser.id, lisGuestSessionId);
           if (result.migrated) {
             toast.success("Your guest assessment has been added to your account.");
           } else if (result.reason === 'claimed_by_other') {
@@ -318,16 +331,16 @@ const Auth = () => {
           }
         }
         // Same behavior for guest Nutrition assessments (claim on sign-in).
-        if (source === 'nutrition' && guestSessionId) {
-          const result = await migrateGuestNutrition(currentUser.id, guestSessionId);
+        if (source === 'nutrition' && nutritionGuestSessionId) {
+          const result = await migrateGuestNutrition(currentUser.id, nutritionGuestSessionId);
           if (result.migrated) {
             toast.success("Your nutrition assessment has been added to your account.");
           } else if (result.reason === 'claimed_by_other') {
             toast.error("These nutrition results have already been claimed by another account.");
           }
         }
-        if (source === 'health-assistant' && guestSessionId) {
-          const result = await claimHealthAssistantSession(guestSessionId);
+        if (source === 'health-assistant' && healthAssistantSessionId) {
+          const result = await claimHealthAssistantSession(healthAssistantSessionId);
           if (result.claimed) {
             toast.success("Your conversation has been saved to your account.");
           }
@@ -364,7 +377,7 @@ const Auth = () => {
     // Check if user is signing up from nutrition preview
     const fromNutrition = searchParams.get('source') === 'nutrition';
     
-    if (!error && guestSessionId) {
+    if (!error && (lisGuestSessionId || nutritionGuestSessionId || healthAssistantSessionId)) {
       // Set first time user flag for tour modal
       localStorage.setItem('first_time_user', 'true');
       
@@ -372,24 +385,26 @@ const Auth = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
       if (currentUser) {
-        const migrated = await migrateGuestLIS(currentUser.id, guestSessionId);
-        if (migrated.migrated) {
-          toast.success("Welcome! Your assessment has been saved.");
-        } else if (migrated.reason === 'claimed_by_other') {
-          toast.error("These guest results have already been claimed by another account.");
+        if (lisGuestSessionId) {
+          const migrated = await migrateGuestLIS(currentUser.id, lisGuestSessionId);
+          if (migrated.migrated) {
+            toast.success("Welcome! Your assessment has been saved.");
+          } else if (migrated.reason === 'claimed_by_other') {
+            toast.error("These guest results have already been claimed by another account.");
+          }
         }
         
         // NEW: Nutrition Assessment Migration
-        if (fromNutrition) {
-          const result = await migrateGuestNutrition(currentUser.id, guestSessionId);
+        if (fromNutrition && nutritionGuestSessionId) {
+          const result = await migrateGuestNutrition(currentUser.id, nutritionGuestSessionId);
           if (result.migrated) {
             toast.success("Your nutrition assessment has been saved to your account!");
           } else if (result.reason === 'claimed_by_other') {
             toast.error("These nutrition results have already been claimed by another account.");
           }
         }
-        if (source === 'health-assistant' && guestSessionId) {
-          await claimHealthAssistantSession(guestSessionId);
+        if (source === 'health-assistant' && healthAssistantSessionId) {
+          await claimHealthAssistantSession(healthAssistantSessionId);
         }
 
         // If from nutrition, redirect to dashboard with firstLogin flag

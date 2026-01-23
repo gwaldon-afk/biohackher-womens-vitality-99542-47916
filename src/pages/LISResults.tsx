@@ -339,7 +339,7 @@ const LISResults = () => {
           }
         } else {
           // Handle guest users
-          const sessionId = localStorage.getItem('lis_guest_session_id');
+    const sessionId = localStorage.getItem('guest_session_id') || localStorage.getItem('lis_guest_session_id');
           if (sessionId) {
             // Rehydrate via RPC (guest tables are not directly selectable for privacy).
             const { data: guestAssessment, error } = await supabase.rpc('get_guest_lis_assessment', {
@@ -1100,7 +1100,7 @@ const LISResults = () => {
                     if (user) {
                       handleGenerateProtocol();
                     } else {
-                      const sessionId = localStorage.getItem('lis_guest_session_id');
+                      const sessionId = localStorage.getItem('guest_session_id') || localStorage.getItem('lis_guest_session_id');
                       const returnTo = encodeURIComponent('/lis-results');
                       const sessionParam = sessionId ? `&session=${encodeURIComponent(sessionId)}` : '';
                       navigate(`/auth?source=lis-results&returnTo=${returnTo}${sessionParam}`);

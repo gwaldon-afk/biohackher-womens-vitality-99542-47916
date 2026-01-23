@@ -16,7 +16,9 @@ export const GuestAssessmentGate = ({ isOpen, onClose, assessmentName }: GuestAs
 
   const handleRegister = () => {
     // Get existing guest session if any
-    const lisSession = localStorage.getItem('lis_guest_session_id');
+    const lisSession =
+      localStorage.getItem('guest_session_id') ||
+      localStorage.getItem('lis_guest_session_id');
     const nutritionSession = localStorage.getItem('nutrition_guest_session');
     const sessionParam = lisSession || nutritionSession;
     

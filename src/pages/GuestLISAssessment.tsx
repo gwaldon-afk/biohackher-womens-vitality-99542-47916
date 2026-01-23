@@ -986,7 +986,8 @@ export default function GuestLISAssessment() {
           age: calculateAgeFromDOB(baselineData.dateOfBirth),
           heightCm: parseFloat(baselineData.heightCm),
           weightKg: parseFloat(baselineData.weightKg),
-          bmi: calculateBMI()
+          bmi: calculateBMI(),
+          activityLevel: baselineData.activityLevel
         },
         answers: Object.entries(answers).map(([questionId, option]) => ({
           questionId,
@@ -1135,6 +1136,7 @@ export default function GuestLISAssessment() {
         const sessionId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
         // Save sessionId to localStorage for later retrieval
+        localStorage.setItem('guest_session_id', sessionId);
         localStorage.setItem('lis_guest_session_id', sessionId);
 
         const { error } = await supabase
