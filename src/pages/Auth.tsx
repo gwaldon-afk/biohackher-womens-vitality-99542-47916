@@ -71,6 +71,8 @@ const Auth = () => {
       const briefResults = (guestAssessment as any).brief_results as any;
       const completedAt = (guestAssessment as any).created_at || new Date().toISOString();
 
+      const pillarScores = briefResults?.pillarScores || {};
+
       // Create/Update health profile from guest baseline data (idempotent)
       if (baselineData?.dateOfBirth) {
         await supabase.from('user_health_profile').upsert(
@@ -102,7 +104,6 @@ const Auth = () => {
 
       // Save baseline daily score (idempotent per user/date)
       const today = new Date().toISOString().split('T')[0];
-      const ps = briefResults?.pillarScores || {};
       await supabase.from('daily_scores').upsert(
         {
           user_id: currentUserId,
@@ -114,12 +115,12 @@ const Auth = () => {
           user_chronological_age: userAge ?? undefined,
           lis_version: 'LIS 2.0',
           source_type: 'manual_entry',
-          sleep_score: ps.Sleep ?? ps.sleep ?? 0,
-          stress_score: ps.Stress ?? ps.stress ?? 0,
-          physical_activity_score: ps.Body ?? ps.activity ?? 0,
-          nutrition_score: ps.Nutrition ?? ps.nutrition ?? 0,
-          social_connections_score: ps.Social ?? ps.social ?? 0,
-          cognitive_engagement_score: ps.Brain ?? ps.cognitive ?? 0,
+          sleep_score: pillarScores.Sleep ?? pillarScores.sleep ?? 0,
+          stress_score: pillarScores.Stress ?? pillarScores.stress ?? 0,
+          physical_activity_score: pillarScores.Body ?? pillarScores.activity ?? 0,
+          nutrition_score: pillarScores.Nutrition ?? pillarScores.nutrition ?? 0,
+          social_connections_score: pillarScores.Social ?? pillarScores.social ?? 0,
+          cognitive_engagement_score: pillarScores.Brain ?? pillarScores.cognitive ?? 0,
           color_code:
             (briefResults?.finalScore ?? 0) >= 75
               ? 'green'
@@ -129,6 +130,31 @@ const Auth = () => {
         },
         { onConflict: 'user_id,date' },
       );
+
+      const syntheticAssessments = [
+        { assessment_id: 'sleep-quality', pillar: 'sleep', score: pillarScores.Sleep ?? pillarScores.sleep ?? 0 },
+        { assessment_id: 'stress-management', pillar: 'stress', score: pillarScores.Stress ?? pillarScores.stress ?? 0 },
+        { assessment_id: 'cognitive-function', pillar: 'cognitive', score: pillarScores.Brain ?? pillarScores.cognitive ?? 0 },
+        { assessment_id: 'physical-activity', pillar: 'activity', score: pillarScores.Body ?? pillarScores.activity ?? 0 },
+        { assessment_id: 'nutrition-quality', pillar: 'nutrition', score: pillarScores.Nutrition ?? pillarScores.nutrition ?? 0 },
+        { assessment_id: 'social-connection', pillar: 'social', score: pillarScores.Social ?? pillarScores.social ?? 0 },
+      ];
+
+      await supabase
+        .from('user_assessment_completions')
+        .delete()
+        .eq('user_id', currentUserId)
+        .in('assessment_id', syntheticAssessments.map((item) => item.assessment_id));
+
+      for (const assessment of syntheticAssessments) {
+        await supabase.from('user_assessment_completions').insert({
+          user_id: currentUserId,
+          assessment_id: assessment.assessment_id,
+          pillar: assessment.pillar,
+          score: assessment.score,
+          completed_at: completedAt,
+        });
+      }
 
       await supabase
         .from('assessment_progress')
@@ -328,6 +354,13 @@ const Auth = () => {
             toast.success("Your guest assessment has been added to your account.");
           } else if (result.reason === 'claimed_by_other') {
             toast.error("These guest results have already been claimed by another account.");
+          } else if (result.reason === 'error') {
+            toast.error("We couldn't attach your guest results yet.", {
+              action: {
+                label: "Retry",
+                onClick: () => migrateGuestLIS(currentUser.id, lisGuestSessionId),
+              },
+            });
           }
         }
         // Same behavior for guest Nutrition assessments (claim on sign-in).
@@ -391,6 +424,13 @@ const Auth = () => {
             toast.success("Welcome! Your assessment has been saved.");
           } else if (migrated.reason === 'claimed_by_other') {
             toast.error("These guest results have already been claimed by another account.");
+          } else if (migrated.reason === 'error') {
+            toast.error("We couldn't attach your guest results yet.", {
+              action: {
+                label: "Retry",
+                onClick: () => migrateGuestLIS(currentUser.id, lisGuestSessionId),
+              },
+            });
           }
         }
         
