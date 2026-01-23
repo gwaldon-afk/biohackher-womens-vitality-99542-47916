@@ -553,7 +553,17 @@ const LISResults = () => {
         <Alert className="mb-6 border-amber-200 bg-amber-50/60 text-amber-900">
           <AlertTriangle className="h-5 w-5 text-amber-600" />
           <AlertDescription>
-            We couldn't finish saving your details just yet - your results are ready, and we'll retry automatically.
+            <div className="flex flex-col gap-3">
+              <span>{t('lisResults.profileSaveNotice')}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-fit"
+                onClick={() => navigate('/profile')}
+              >
+                {t('lisResults.profileSaveNoticeCta')}
+              </Button>
+            </div>
           </AlertDescription>
         </Alert>
       )}

@@ -12,7 +12,7 @@ interface RequireHealthProfileProps {
 
 export function RequireHealthProfile({ 
   children, 
-  requiredFields = ['weight_kg', 'height_cm', 'activity_level', 'date_of_birth'] 
+  requiredFields = ['weight_kg', 'height_cm', 'date_of_birth'] 
 }: RequireHealthProfileProps) {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();

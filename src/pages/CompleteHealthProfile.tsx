@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,10 @@ export default function CompleteHealthProfile() {
   const [searchParams] = useSearchParams();
   const returnTo = searchParams.get('returnTo') || '/today';
   
+  const { user } = useAuth();
   const { profile, createOrUpdateProfile, loading } = useHealthProfile();
+  const pendingProfileKey = 'lis_pending_profile_save';
+  const profileNoticeKey = 'lis_profile_save_notice';
   
   const [formData, setFormData] = useState({
     date_of_birth: '',
@@ -97,21 +101,28 @@ export default function CompleteHealthProfile() {
       return;
     }
 
+    const payload = {
+      date_of_birth: formData.date_of_birth,
+      weight_kg: weight,
+      height_cm: height,
+      activity_level: formData.activity_level
+    };
+
     try {
       setSubmitting(true);
-      
-      await createOrUpdateProfile({
-        date_of_birth: formData.date_of_birth,
-        weight_kg: weight,
-        height_cm: height,
-        activity_level: formData.activity_level
-      });
+
+      await createOrUpdateProfile(payload);
       
       toast.success(t('completeProfile.success'));
       navigate(decodeURIComponent(returnTo), { replace: true });
     } catch (error) {
       console.error('Error saving profile:', error);
-      toast.error(t('completeProfile.errors.saveFailed'));
+      localStorage.setItem(pendingProfileKey, JSON.stringify({
+        user_id: user?.id,
+        ...payload
+      }));
+      localStorage.setItem(profileNoticeKey, 'true');
+      navigate(decodeURIComponent(returnTo), { replace: true });
     } finally {
       setSubmitting(false);
     }

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 
@@ -695,6 +696,7 @@ interface BaselineData {
   dateOfBirth: string;
   heightCm: string;
   weightKg: string;
+  activityLevel: string;
 }
 
 export default function GuestLISAssessment() {
@@ -708,7 +710,8 @@ export default function GuestLISAssessment() {
   const [baselineData, setBaselineData] = useState<BaselineData>({
     dateOfBirth: '',
     heightCm: '',
-    weightKg: ''
+    weightKg: '',
+    activityLevel: ''
   });
   const [currentPillar, setCurrentPillar] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -789,8 +792,16 @@ export default function GuestLISAssessment() {
     return age;
   };
 
+  const activityLevels = [
+    { value: 'sedentary', labelKey: 'completeProfile.activityLevels.sedentary', descKey: 'completeProfile.activityLevels.sedentaryDesc' },
+    { value: 'lightly_active', labelKey: 'completeProfile.activityLevels.lightlyActive', descKey: 'completeProfile.activityLevels.lightlyActiveDesc' },
+    { value: 'moderately_active', labelKey: 'completeProfile.activityLevels.moderatelyActive', descKey: 'completeProfile.activityLevels.moderatelyActiveDesc' },
+    { value: 'very_active', labelKey: 'completeProfile.activityLevels.veryActive', descKey: 'completeProfile.activityLevels.veryActiveDesc' },
+    { value: 'extremely_active', labelKey: 'completeProfile.activityLevels.extremelyActive', descKey: 'completeProfile.activityLevels.extremelyActiveDesc' }
+  ];
+
   const handleBaselineSubmit = () => {
-    if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg) {
+    if (!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg || !baselineData.activityLevel) {
       toast.error(t('lisAssessment.toasts.fillBaseline'));
       return;
     }
@@ -996,12 +1007,12 @@ export default function GuestLISAssessment() {
       if (user && !TEST_MODE_ENABLED) {
         const age = calculateAgeFromDOB(baselineData.dateOfBirth);
 
-        // Determine activity level from answers (Q8 + Q9)
-        let activityLevel = 'sedentary';
+        // Determine activity level from answers (Q8 + Q9) if baseline not provided
+        let activityLevel = baselineData.activityLevel || 'sedentary';
         const activityLevelAnswer = answers['Q8_ActivityLevel'];
         const intensityAnswer = answers['Q9_ExerciseIntensity'];
         
-        if (activityLevelAnswer && intensityAnswer) {
+        if (!baselineData.activityLevel && activityLevelAnswer && intensityAnswer) {
           if (activityLevelAnswer.text.includes('8,000+') && intensityAnswer.score_value >= 85) {
             activityLevel = 'very_active';
           } else if (activityLevelAnswer.score_value >= 70 || intensityAnswer.score_value >= 60) {
@@ -1461,6 +1472,35 @@ export default function GuestLISAssessment() {
                   )}
                 </div>
 
+                {/* Activity Level */}
+                <div className="space-y-2">
+                  <Label htmlFor="activityLevel" className="text-base font-medium flex items-center gap-2">
+                    <Dumbbell className="w-4 h-4 text-primary" />
+                    {t('completeProfile.fields.activityLevel')}
+                  </Label>
+                  <Select
+                    value={baselineData.activityLevel}
+                    onValueChange={(value) => setBaselineData(prev => ({ ...prev, activityLevel: value }))}
+                  >
+                    <SelectTrigger
+                      id="activityLevel"
+                      className="h-12 text-base focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    >
+                      <SelectValue placeholder={t('completeProfile.placeholders.activityLevel')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {activityLevels.map((level) => (
+                        <SelectItem key={level.value} value={level.value}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{t(level.labelKey)}</span>
+                            <span className="text-xs text-muted-foreground">{t(level.descKey)}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* BMI Display */}
                 {bmi > 0 && (
                   <div className="p-5 bg-primary/5 rounded-lg border border-primary/10">
@@ -1604,7 +1644,7 @@ export default function GuestLISAssessment() {
               </Button>
               <Button
                 onClick={handleBaselineSubmit}
-                disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg}
+                disabled={!baselineData.dateOfBirth || !baselineData.heightCm || !baselineData.weightKg || !baselineData.activityLevel}
                 size="lg"
                 className="min-w-48"
               >

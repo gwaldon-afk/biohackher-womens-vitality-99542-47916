@@ -5,6 +5,8 @@
       "description": "This is a preview of what you could discover about your own longevity. Want to know your biological age and longevity score?",
       "cta": "Take Your Free Assessment"
     },
+    "profileSaveNotice": "We couldn’t save that update. Your results are ready — you can retry saving from Profile.",
+    "profileSaveNoticeCta": "Go to Profile",
     "summary": {
       "title": "Your Longevity Summary",
       "excellent": "Your Longevity Impact Score of {{score}} demonstrates exceptional health fundamentals. You're in the top tier of longevity optimisation, with lifestyle choices that are actively supporting healthy cellular ageing.",
