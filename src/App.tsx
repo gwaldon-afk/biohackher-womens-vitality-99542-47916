@@ -25,7 +25,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { RequireHealthProfile } from "./components/RequireHealthProfile";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import EvidenceDrawer from "./components/EvidenceDrawer";
-import BuildStamp from "@/components/BuildStamp";
 
 // Route-level code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -300,7 +299,6 @@ const App = () => (
               </Suspense>
               <FloatingMealSnapButton />
               <FloatingAIAssistant />
-              <BuildStamp />
               {TEST_MODE_ENABLED && <DevTestingPanel />}
         </ErrorBoundary>
       </BrowserRouter>
