@@ -176,7 +176,7 @@ VALUES ('YOUR-USER-ID-HERE', 'admin');
 ```
 
 ### 4. Stripe Integration (When Ready)
-Follow the Stripe implementation guides provided by Lovable:
+Follow the Stripe implementation guides:
 - Set up Stripe products for each tier
 - Create checkout edge function
 - Add webhook handling for subscriptions
