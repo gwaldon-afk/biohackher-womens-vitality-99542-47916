@@ -25,6 +25,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { RequireHealthProfile } from "./components/RequireHealthProfile";
 import { RedirectToAbout } from "./pages/RedirectToAbout";
 import EvidenceDrawer from "./components/EvidenceDrawer";
+import BuildStamp from "@/components/BuildStamp";
 
 // Route-level code splitting
 const Index = lazy(() => import("./pages/Index"));
@@ -101,6 +102,7 @@ const GoalAffirmation = lazy(() => import("./pages/onboarding/GoalAffirmation"))
 const HormonalHealthTriage = lazy(() => import("./pages/HormonalHealthTriage"));
 const LISDailyCheckIn = lazy(() => import("./pages/LISDailyCheckIn"));
 const PlanHome = lazy(() => import("./pages/PlanHome"));
+const PlansPreview = lazy(() => import("./pages/PlansPreview"));
 const NutritionScan = lazy(() => import("./pages/NutritionScan"));
 const MoodCheckin = lazy(() => import("./pages/MoodCheckin"));
 const QuickLog = lazy(() => import("./pages/QuickLog"));
@@ -156,6 +158,9 @@ const App = () => (
                     <Route path="/plans/weekly" element={<ProtectedRoute><RequireHealthProfile><WeeklyPlan /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/nutrition/meal-plan" element={<ProtectedRoute><RequireHealthProfile><MealPlanWeek /></RequireHealthProfile></ProtectedRoute>} />
                     <Route path="/guest-lis-assessment" element={<GuestLISAssessment />} />
+                    <Route path="/plans-preview" element={<PlansPreview />} />
+                    <Route path="/assessments" element={<Navigate to="/" replace />} />
+                    <Route path="/lis" element={<Navigate to="/guest-lis-assessment" replace />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/onboarding" element={<OnboardingFlow />} />
                     <Route path="/dashboard" element={<Navigate to="/today" replace />} />
@@ -293,9 +298,10 @@ const App = () => (
                   </Route>
                 </Routes>
               </Suspense>
-          <FloatingMealSnapButton />
-          <FloatingAIAssistant />
-          {TEST_MODE_ENABLED && <DevTestingPanel />}
+              <FloatingMealSnapButton />
+              <FloatingAIAssistant />
+              <BuildStamp />
+              {TEST_MODE_ENABLED && <DevTestingPanel />}
         </ErrorBoundary>
       </BrowserRouter>
       </TooltipProvider>
