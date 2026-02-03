@@ -167,6 +167,13 @@ const Auth = () => {
           { onConflict: 'user_id' },
         );
 
+      // Best-effort: generate protocols so Today can load actions
+      try {
+        await supabase.functions.invoke('generate-protocol-from-assessments', { body: {} });
+      } catch (e) {
+        console.error('Protocol generation after LIS claim failed:', e);
+      }
+
       // Clear local storage so we don't keep re-offering migration
       localStorage.removeItem('guest_session_id');
       localStorage.removeItem('lis_guest_session_id');
@@ -281,45 +288,52 @@ const Auth = () => {
     },
   });
 
-  // Redirect if already authenticated and check for health profile AND onboarding
+  const isSafeReturnTo = (target: string) =>
+    target.startsWith('/') && !target.startsWith('/auth');
+
+  const getLisCompleted = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('assessment_progress')
+      .select('lis_completed')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error checking LIS completion:', error);
+      return false;
+    }
+
+    return !!data?.lis_completed;
+  };
+
+  const clearPostAuthRedirect = () => {
+    localStorage.removeItem('postAuthRedirect');
+    sessionStorage.removeItem('postAuthRedirect');
+    localStorage.removeItem('returnTo');
+    sessionStorage.removeItem('returnTo');
+  };
+
+  // Redirect if already authenticated (no auto-redirect to /today)
   // BUT: Don't redirect if coming from guest session or assessment session - let them complete signup
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
       if (user && !lisGuestSessionId && !assessmentSession) {
-        // Check onboarding status first
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        
-        // If onboarding not completed, redirect to unified assessment
-        if (profile && !profile.onboarding_completed) {
-          const onboardingPath = returnTo
-            ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
-            : '/guest-lis-assessment';
-          navigate(onboardingPath);
+        // If returnTo exists and is safe, redirect there (with /today guarded by LIS completion)
+        if (returnTo && isSafeReturnTo(returnTo)) {
+          const lisCompleted = await getLisCompleted(user.id);
+          if (returnTo.startsWith('/today') && !lisCompleted) {
+            clearPostAuthRedirect();
+            navigate('/');
+          } else {
+            clearPostAuthRedirect();
+            navigate(returnTo);
+          }
           return;
         }
 
-        // If returnTo exists, redirect there directly
-        if (returnTo) {
-          navigate(returnTo);
-          return;
-        }
-
-        // Check if user has completed initial assessment
-        const { data: healthProfile } = await supabase
-          .from('user_health_profile')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-        
-        if (!healthProfile) {
-          navigate('/guest-lis-assessment');
-        } else {
-          navigate('/dashboard');
-        }
+        // Default: go to public home
+        clearPostAuthRedirect();
+        navigate('/');
       } else if (user && assessmentSession) {
         // User logged in with assessment session - continue flow
         const flowStore = useAssessmentFlowStore.getState();
@@ -327,9 +341,11 @@ const Auth = () => {
         
         if (nextAssessmentId) {
           // Continue to next assessment
+          clearPostAuthRedirect();
           navigate(`/assessment/${nextAssessmentId}`);
         } else {
           // No more assessments, go to dashboard
+          clearPostAuthRedirect();
           navigate('/dashboard');
         }
       }
@@ -379,25 +395,22 @@ const Auth = () => {
           }
         }
 
-        // If returnTo exists, redirect there directly
-        if (returnTo) {
-          navigate(returnTo);
+        // If returnTo exists and is safe, redirect there (with /today guarded by LIS completion)
+        if (returnTo && isSafeReturnTo(returnTo)) {
+          const lisCompleted = await getLisCompleted(currentUser.id);
+          if (returnTo.startsWith('/today') && !lisCompleted) {
+            clearPostAuthRedirect();
+            navigate('/');
+          } else {
+            clearPostAuthRedirect();
+            navigate(returnTo);
+          }
           return;
         }
 
-        // If no returnTo, check health profile and redirect appropriately
-        // Check health profile
-        const { data: healthProfile } = await supabase
-          .from('user_health_profile')
-          .select('id')
-          .eq('user_id', currentUser.id)
-          .maybeSingle();
-        
-        if (!healthProfile) {
-          navigate('/guest-lis-assessment');
-        } else {
-          navigate('/dashboard');
-        }
+        // Default: go to public home
+        clearPostAuthRedirect();
+        navigate('/');
       }
     }
     setIsLoading(false);
@@ -449,8 +462,10 @@ const Auth = () => {
 
         // If from nutrition, redirect to dashboard with firstLogin flag
         if (fromNutrition) {
+          clearPostAuthRedirect();
           navigate('/dashboard?firstLogin=true&source=nutrition');
         } else {
+          clearPostAuthRedirect();
           navigate('/lis-results');
         }
       }
@@ -459,17 +474,16 @@ const Auth = () => {
       localStorage.setItem('first_time_user', 'true');
       
       // New user without guest session
-      if (fromNutrition) {
+        if (fromNutrition) {
         // Redirect to dashboard with firstLogin flag for nutrition onboarding
         toast.success("Welcome! Let's get you started with nutrition tracking.");
-        navigate('/dashboard?firstLogin=true&source=nutrition');
+          clearPostAuthRedirect();
+          navigate('/dashboard?firstLogin=true&source=nutrition');
       } else {
-        // Standard flow - redirect to unified assessment
+        // Standard flow - go to public home
         toast.success("Welcome! Let's set up your health profile.");
-        const onboardingPath = returnTo
-          ? `/guest-lis-assessment?returnTo=${encodeURIComponent(returnTo)}`
-          : '/guest-lis-assessment';
-        navigate(onboardingPath);
+          clearPostAuthRedirect();
+        navigate('/');
       }
     }
     
@@ -481,10 +495,14 @@ const Auth = () => {
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
-          <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Button
+            variant="ghost"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            onClick={() => navigate("/", { replace: false })}
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to home
-          </Link>
+          </Button>
           <div>
             <h1 className="text-3xl font-bold gradient-text">
               Biohack<em className="italic">her</em>

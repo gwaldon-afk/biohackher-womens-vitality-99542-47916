@@ -27,7 +27,7 @@ function FlowHeader({ title, parentRoute }: { title: string; parentRoute?: strin
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1 truncate text-sm font-medium">{title}</div>
-        <Button variant="ghost" size="icon" onClick={() => navigate("/today")} aria-label="Home">
+        <Button variant="ghost" size="icon" onClick={() => navigate("/")} aria-label="Home">
           <Home className="h-5 w-5" />
         </Button>
       </div>

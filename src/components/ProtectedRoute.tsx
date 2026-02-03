@@ -14,9 +14,26 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const location = useLocation();
   useEffect(() => {
     if (!loading && !user) {
+      const pathname = location.pathname;
+      const planOnlyRoutes = [
+        "/today",
+        "/plans",
+        "/my-protocol",
+        "/protocol-library",
+        "/7-day-plan",
+      ];
+      const isPlanOnly = planOnlyRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+      if (isPlanOnly) {
+        sessionStorage.setItem('homeBanner', 'plansRequireAccount');
+        navigate("/", {
+          replace: false,
+        });
+        return;
+      }
+
       // Save current path to return after authentication
       const returnTo = encodeURIComponent(location.pathname + location.search);
-      navigate(`/auth?returnTo=${returnTo}`);
+      navigate(`/auth?returnTo=${returnTo}`, { replace: false });
     }
   }, [user, loading, navigate, location]);
 

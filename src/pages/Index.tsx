@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Activity, Package, Heart } from "lucide-react";
 import biohackherLogo from "@/assets/logos/biohackher-logo-master.svg";
 import taglineSvg from "@/assets/logos/biohackher-tagline.svg";
@@ -14,8 +14,11 @@ import BenefitsSection from "@/components/BenefitsSection";
 
 const Index = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const notice = (location.state as { notice?: string } | null)?.notice;
+  const [showPlansBanner, setShowPlansBanner] = useState(false);
 
   // Redirect authenticated users to /today
   useEffect(() => {
@@ -24,8 +27,44 @@ const Index = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    const banner = sessionStorage.getItem('homeBanner');
+    if (banner === 'plansRequireAccount') {
+      setShowPlansBanner(true);
+      sessionStorage.removeItem('homeBanner');
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
+      {(notice || showPlansBanner) && (
+        <div className="mx-auto max-w-4xl px-4 pt-6">
+          <div className="rounded-lg border border-border bg-background/80 px-4 py-3 text-sm text-muted-foreground">
+            <div className="flex flex-col gap-3">
+              <span>
+                {notice || "Create a free account to save your plan and access Today."}
+              </span>
+              {showPlansBanner && (
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+                    onClick={() => navigate("/guest-lis-assessment")}
+                  >
+                    Start assessment
+                  </button>
+                  <button
+                    className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground"
+                    onClick={() => navigate("/auth")}
+                  >
+                    Sign in
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section - Header Only */}
       <section className="relative overflow-hidden py-8 md:py-12">
         <div className="max-w-6xl mx-auto px-4">
