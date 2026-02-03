@@ -37,6 +37,7 @@ import { calculateAdherenceScore, persistAdherenceScore } from '@/services/adher
 import { getCheckinForDate, getCheckinSettings, getLocalDateString } from "@/lib/checkin/checkinStorage";
 import { normalizeCheckin } from "@/lib/checkin/normalizeCheckin";
 import { derivePlanModifiers } from "@/lib/checkin/derivePlanModifiers";
+import { useProtocols } from "@/hooks/useProtocols";
 
 const TAP_HINT_KEY = 'today_row_tap_hint_shown';
 const FILTER_VIEW_KEY = 'today_filter_view';
@@ -50,6 +51,7 @@ export const UnifiedDailyChecklist = () => {
   const { goals } = useGoals();
   const { addToCart } = useCart();
   const { actions: userActions, loading, completedCount: userCompletedCount, totalCount: userTotalCount, refetch } = useDailyPlan();
+  const { protocols, loading: protocolsLoading, fetchProtocols } = useProtocols();
   const { currentScore: sustainedLIS, refetch: refetchLIS } = useLISData();
   const { preferences: nutritionPrefs, isLoading: nutritionLoading } = useNutritionPreferences();
   const hasMealPlan = nutritionPrefs?.selectedMealPlanTemplate;
@@ -567,6 +569,28 @@ export const UnifiedDailyChecklist = () => {
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
           <p>{t('today.plan.loading')}</p>
         </div>
+      </div>
+    );
+  }
+
+  if (user && !loading && !protocolsLoading && protocols.length === 0) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <Card className="p-6 text-center space-y-4">
+          <h2 className="text-xl font-semibold text-foreground">We’re generating your plan…</h2>
+          <p className="text-muted-foreground">
+            Your personalised protocols are being created from your latest assessment. This usually takes a few seconds.
+          </p>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await fetchProtocols();
+              refetch();
+            }}
+          >
+            Refresh
+          </Button>
+        </Card>
       </div>
     );
   }

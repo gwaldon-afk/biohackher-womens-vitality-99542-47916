@@ -726,13 +726,6 @@ export default function GuestLISAssessment() {
     "unknown";
   const buildDate = new Date().toISOString().slice(0, 10);
 
-  // Check guest gate on mount
-  useEffect(() => {
-    if (!user && checkGuestGate('lis')) {
-      // Gate will show modal - user already did another assessment
-    }
-  }, [user, checkGuestGate]);
-
   useEffect(() => {
     console.info("[BUILD]", buildCommit, "GuestLISAssessment");
   }, [buildCommit]);

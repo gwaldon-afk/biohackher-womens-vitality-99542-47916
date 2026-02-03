@@ -27,6 +27,8 @@ export type CheckinSettings = {
 export const getLocalDateString = (date: Date = new Date()) =>
   format(date, "yyyy-MM-dd");
 
+const isNotFoundError = (error: { code?: string } | null) => error?.code === "PGRST116";
+
 export const getCheckinForDate = async (userId: string | null, date: string) => {
   if (!userId) return null;
   const { data, error } = await supabase
@@ -36,7 +38,7 @@ export const getCheckinForDate = async (userId: string | null, date: string) => 
     .eq("date", date)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error && !isNotFoundError(error)) throw error;
   return data as DailyCheckinRecord | null;
 };
 
@@ -66,14 +68,8 @@ export const getCheckinSettings = async (userId: string | null) => {
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (error) throw error;
-  return (
-    (data as CheckinSettings | null) ?? {
-      user_id: userId,
-      enabled: true,
-      questions_config: null,
-    }
-  );
+  if (error && !isNotFoundError(error)) throw error;
+  return data as CheckinSettings | null;
 };
 
 export const upsertCheckinSettings = async (payload: CheckinSettings) => {
