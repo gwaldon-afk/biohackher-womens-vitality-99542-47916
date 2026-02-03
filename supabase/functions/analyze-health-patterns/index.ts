@@ -60,7 +60,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('Calling Lovable AI for analysis...');
+    console.log('Calling BiohackHer AI for analysis...');
     const startTime = Date.now();
 
     const systemPrompt = `You are a health analysis AI specializing in women's health. Analyze symptom assessments and provide comprehensive insights.

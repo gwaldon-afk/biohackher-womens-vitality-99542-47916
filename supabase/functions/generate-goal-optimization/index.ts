@@ -51,7 +51,7 @@ serve(async (req) => {
       .eq("user_id", user_id)
       .maybeSingle();
 
-    // Generate AI optimization plan using Lovable AI
+    // Generate AI optimization plan using BiohackHer AI
     const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!lovableApiKey) {
       throw new Error("LOVABLE_API_KEY not configured");

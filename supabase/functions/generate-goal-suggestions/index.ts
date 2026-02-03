@@ -126,7 +126,7 @@ Return the response in this exact JSON structure:
 }
 `;
 
-    // Call Lovable AI
+    // Call BiohackHer AI
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -199,7 +199,7 @@ Always respond with valid JSON only, no markdown formatting.`
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: 'Payment required, please add funds to your Lovable AI workspace.' }), 
+          JSON.stringify({ error: 'Payment required, please add funds to your BiohackHer AI workspace.' }), 
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }

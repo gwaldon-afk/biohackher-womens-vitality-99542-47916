@@ -68,7 +68,7 @@ serve(async (req) => {
     // Determine token budget
     const tokenBudget = getTokenBudget(scoreCategory);
 
-    // Call Lovable AI
+    // Call BiohackHer AI
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -107,7 +107,7 @@ serve(async (req) => {
     const aiData = await aiResponse.json();
     console.log('AI response received:', JSON.stringify(aiData).substring(0, 500));
     
-    // Check for provider errors in response body (Lovable AI Gateway error format)
+    // Check for provider errors in response body (BiohackHer AI Gateway error format)
     if (aiData && aiData.error) {
       console.error('Provider error in response:', JSON.stringify(aiData.error));
       const errorMsg = aiData.error.message || 'AI provider error';

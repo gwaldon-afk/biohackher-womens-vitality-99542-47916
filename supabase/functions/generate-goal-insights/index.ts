@@ -136,7 +136,7 @@ Focus on:
 
 Trigger: ${triggerType}`;
 
-    console.log('Calling Lovable AI for insights...');
+    console.log('Calling BiohackHer AI for insights...');
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

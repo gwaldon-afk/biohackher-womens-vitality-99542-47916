@@ -84,7 +84,7 @@ When responding:
 
 CRITICAL: Only recommend assessments that are in the available assessments list above. Do not make up assessment names.`;
 
-    // Call Lovable AI with tool calling
+    // Call BiohackHer AI with tool calling
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {

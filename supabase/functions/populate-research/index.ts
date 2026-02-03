@@ -132,7 +132,7 @@ async function fetchPubMedDetails(pmids: string[]): Promise<PubMedArticle[]> {
 }
 
 async function generateAISummary(article: PubMedArticle, intervention: string): Promise<string> {
-  // Use Lovable AI gateway for summaries
+  // Use BiohackHer AI gateway for summaries
   const gatewayUrl = Deno.env.get('LOVABLE_API_URL') || 'https://api.lovable.dev';
   const apiKey = Deno.env.get('LOVABLE_API_KEY');
   

@@ -120,7 +120,7 @@ serve(async (req) => {
     let parsedAnalysis;
     
     if (lovableApiKey) {
-      // Use Lovable AI for evidence-based analysis
+      // Use BiohackHer AI for evidence-based analysis
       const prompt = buildEvidenceBasedPrompt(
         lisData, 
         nutritionData, 
@@ -132,7 +132,7 @@ serve(async (req) => {
         triggerAssessment
       );
 
-      console.log('Calling Lovable AI Gateway...');
+      console.log('Calling BiohackHer AI Gateway...');
       
       try {
         const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -159,7 +159,7 @@ Provide actionable, empathetic guidance that empowers women to optimize their he
 
         if (!aiResponse.ok) {
           const errorText = await aiResponse.text();
-          console.error('Lovable AI error:', aiResponse.status, errorText);
+          console.error('BiohackHer AI error:', aiResponse.status, errorText);
           throw new Error(`AI API error: ${aiResponse.status}`);
         }
 
@@ -197,7 +197,7 @@ Provide actionable, empathetic guidance that empowers women to optimize their he
         };
       }
     } else {
-      console.log('No Lovable API key, returning basic analysis');
+      console.log('No BiohackHer API key, returning basic analysis');
       parsedAnalysis = {
         insights: generateBasicInsights(lisData, nutritionData, hormoneData, symptomData, pillarData),
         priorities: generateBasicConnections(lisData, nutritionData, hormoneData, symptomData, pillarData),
